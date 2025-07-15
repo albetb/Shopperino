@@ -189,7 +189,7 @@ export default function SpellbookTable() {
           className={`filter-box rest-box ${inst.Spells.filter(x => x.Used > 0).length <= 0 ? "opacity-50" : ""}`}
           onClick={() => dispatch(onRefreshSpell())}
           disabled={inst.Spells.filter(x => x.Used > 0).length > 0}>
-          <div className="card-side-div card-expand-div" style={{ width: "100%" }}>
+          <div className="card-side-div card-expand-div" style={{ width: "100%", height: "100%" }}>
             <button className="close-button no-margin-left" >
               <span style={{ color: "var(--white)" }} className="material-symbols-outlined">bedtime</span>
             </button>
