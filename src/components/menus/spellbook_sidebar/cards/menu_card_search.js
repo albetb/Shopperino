@@ -18,7 +18,7 @@ export default function MenuCardSearch() {
         <input
           className='modern-dropdown small-longer padding-left'
           type='text'
-          placeholder={"Search spells name"}
+          placeholder={"Search spell name"}
           value={searchSpellName}
           onChange={(e) => handleNameChange(e.target.value)}
         />

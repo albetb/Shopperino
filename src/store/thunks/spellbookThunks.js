@@ -1,7 +1,7 @@
 import Spellbook from '../../lib/spellbook';
 import * as db from '../../lib/storage';
 import { cap } from '../../lib/utils';
-import { setIsSpellTableCollapsed, setSelectedSpellbook, setSpellbook, setSpellbooks } from '../slices/spellbookSlice';
+import { setIsSpellTableCollapsed, setSelectedSpellbook, setSpellbook, setSpellbookPage, setSpellbooks } from '../slices/spellbookSlice';
 
 export const onNewSpellbook = nameRaw => (dispatch, getState) => {
   const name = cap(nameRaw);
@@ -18,6 +18,10 @@ export const onNewSpellbook = nameRaw => (dispatch, getState) => {
     dispatch(setSpellbooks([...spellbooks, entry]));
     dispatch(setSpellbook(s));
     dispatch(setSelectedSpellbook(entry));
+    if (["Sorcerer", "Bard", "Wizard"].includes(s.Class))
+      dispatch(setSpellbookPage(0));
+    else
+      dispatch(setSpellbookPage(1));
   }
 };
 
@@ -42,8 +46,13 @@ export const onPlayerClassChange = _class => (dispatch, getState) => {
   const { spellbook } = getState().spellbook;
   if (!spellbook) return;
   const s = new Spellbook().load(spellbook);
+  s.Spells = []; // delete spellbook on change class
   s.setClass(_class);
   dispatch(setSpellbook(s));
+  if (["Sorcerer", "Bard", "Wizard"].includes(s.Class))
+    dispatch(setSpellbookPage(0));
+  else
+    dispatch(setSpellbookPage(1));
 };
 
 export const onPlayerCharacteristicChange = char => (dispatch, getState) => {
@@ -75,4 +84,60 @@ export const onCollapseSpellTable = num => (dispatch, getState) => {
   if (!isSpellTableCollapsed) return;
   const updated = isSpellTableCollapsed.map((x, i) => i === num ? !x : x);
   dispatch(setIsSpellTableCollapsed(updated));
+};
+
+export const onLearnUnlearnSpell = spell_link => (dispatch, getState) => {
+  const { spellbook } = getState().spellbook;
+  if (!spellbook) return;
+  const s = new Spellbook().load(spellbook);
+  s.learnUnlearnSpell(spell_link);
+  dispatch(setSpellbook(s));
+};
+
+export const onLearnSpell = spell_link => (dispatch, getState) => {
+  const { spellbook } = getState().spellbook;
+  if (!spellbook) return;
+  const s = new Spellbook().load(spellbook);
+  s.learnSpell(spell_link);
+  dispatch(setSpellbook(s));
+};
+
+export const onUnlearnSpell = spell_link => (dispatch, getState) => {
+  const { spellbook } = getState().spellbook;
+  if (!spellbook) return;
+  const s = new Spellbook().load(spellbook);
+  s.unlearnSpell(spell_link);
+  dispatch(setSpellbook(s));
+};
+
+export const onPrepareSpell = spell_link => (dispatch, getState) => {
+  const { spellbook } = getState().spellbook;
+  if (!spellbook) return;
+  const s = new Spellbook().load(spellbook);
+  s.prepareSpell(spell_link);
+  dispatch(setSpellbook(s));
+};
+
+export const onUnprepareSpell = spell_link => (dispatch, getState) => {
+  const { spellbook } = getState().spellbook;
+  if (!spellbook) return;
+  const s = new Spellbook().load(spellbook);
+  s.unprepareSpell(spell_link);
+  dispatch(setSpellbook(s));
+};
+
+export const onUseSpell = spell_link => (dispatch, getState) => {
+  const { spellbook } = getState().spellbook;
+  if (!spellbook) return;
+  const s = new Spellbook().load(spellbook);
+  s.useSpell(spell_link);
+  dispatch(setSpellbook(s));
+};
+
+export const onRefreshSpell = () => (dispatch, getState) => {
+  const { spellbook } = getState().spellbook;
+  if (!spellbook) return;
+  const s = new Spellbook().load(spellbook);
+  s.refreshSpell();
+  dispatch(setSpellbook(s));
 };

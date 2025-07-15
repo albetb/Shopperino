@@ -34,8 +34,13 @@
 }
 
 .close-button.no-margin-right {
-    padding-inline: 0px;
-    padding-left: 6px;
+  padding-inline: 0px;
+  padding-left: 6px;
+}
+
+.close-button.no-margin-left {
+  padding-inline: 0px;
+  padding-right: 6px;
 }
 
 .card-title {
@@ -65,11 +70,24 @@
   margin-top: 0.6rem;
 }
 
-.levels-div {
+.levels-div,
+.spell-slot-div,
+.spell-slot-div2 {
   width: calc(var(--btn-width-sm) * 3.2);
   max-width: calc(var(--btn-width-sm) * 3.2);
   display: flex;
   justify-content: space-between;
+  align-items: center;
+}
+
+.spell-slot-div {
+  width: calc(var(--btn-width-sm) * 2.5);
+  max-width: calc(var(--btn-width-sm) * 2.5);
+}
+
+.spell-slot-div2 {
+  width: calc(var(--btn-width-sm) * 1.6);
+  max-width: calc(var(--btn-width-sm) * 1.6);
 }
 
 .modern-dropdown {
@@ -126,5 +144,13 @@ tr {
 
   .card-side-div {
     width: 97%;
+  }
+
+  .spell-slot-div {
+    max-width: 28vw;
+  }
+
+  .spell-slot-div2 {
+    max-width: 18vw;
   }
 }

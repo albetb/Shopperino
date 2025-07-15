@@ -90,9 +90,9 @@ export function getIsSpellbookSidebarCollapsed() {
     return value ? JSON.parse(decompressFromUTF16(value)) : false;
 }
 
-export function getIsEditingSpellbook() {
-    const value = localStorage.getItem('IsEditingSpellbook');
-    return value ? JSON.parse(decompressFromUTF16(value)) : true;
+export function getSpellbookPage() {
+    const value = localStorage.getItem('SpellbookPage');
+    return value ? JSON.parse(decompressFromUTF16(value)) : 0;
 }
 
 export function getIsClassDescriptionCollapsed() {
@@ -182,8 +182,8 @@ export function setIsSpellbookSidebarCollapsed(value) {
     localStorage.setItem('IsSpellbookSidebarCollapsed', compressToUTF16(JSON.stringify(value)));
 }
 
-export function setIsEditingSpellbook(value) {
-    localStorage.setItem('IsEditingSpellbook', compressToUTF16(JSON.stringify(value)));
+export function setSpellbookPage(value) {
+    localStorage.setItem('SpellbookPage', compressToUTF16(JSON.stringify(value)));
 }
 
 export function setIsClassDescriptionCollapsed(value) {

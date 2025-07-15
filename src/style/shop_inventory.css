@@ -1,11 +1,12 @@
 .shop-table,
 .spellbook-table {
   width: 50vw;
+  margin-bottom: 0.3em;
 }
 
 th,
 td {
-  padding: 14px 8px;
+  padding: 8px 8px;
   text-align: left;
   color: var(--white);
 }
@@ -145,6 +146,11 @@ h4 {
     border-radius: 1em;
     height: 0em;
     margin-bottom: 8px;
+}
+
+.rest-box {
+  border: 2px solid var(--blue-t);
+  cursor: pointer;
 }
 
 .time-div-row {

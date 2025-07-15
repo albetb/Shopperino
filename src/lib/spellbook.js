@@ -19,7 +19,8 @@ export const MAGICSCHOOLS = [
     "Evocation",
     "Illusion",
     "Necromancy",
-    "Transmutation"
+    "Transmutation",
+    "Universal"
 ];
 
 class Spellbook {
@@ -52,6 +53,12 @@ class Spellbook {
     setClass(_class) {
         if (CLASSES.includes(_class))
             this.Class = _class;
+        if (_class === "Wizard") { // add all level 0 spells to known
+            const level_0_spells = this.getAllSpells({ level: 0 });
+            level_0_spells.forEach(spell => {
+                this.learnSpell(spell.Link);
+            });
+        }
     }
 
     setLevel(level) {
@@ -64,41 +71,80 @@ class Spellbook {
             this.Characteristic = char;
     }
 
-    addSpell(spell_link) {
+    learnSpell(spell_link) {
         const existing = this.Spells.find(s => s.Link === spell_link);
-        if (existing) {
-            existing.Known += 1;
-        } else {
-            this.Spells.push({
-                Link: spell_link,
-                Known: 1,
-                Prepared: 0
-            });
+        if (!existing) {
+            this.Spells = [
+                ...this.Spells,
+                { Link: spell_link, Prepared: 0, Used: 0 }
+            ];
         }
     }
 
-    removeSpell(spell_link) {
+    unlearnSpell(spell_link) {
+        const existing = this.Spells.find(s => s.Link === spell_link);
+
+        const all_spells = loadFile("spells");
+        const spell = all_spells.find(x => x.Link === spell_link);
+
+        if (existing && !(this.Class === "Wizard" && spell.Level.includes("Sor/Wiz 0"))) {
+            this.Spells = this.Spells.filter(s => s.Link !== spell_link);
+        }
+    }
+
+    learnUnlearnSpell(spell_link) {
         const existing = this.Spells.find(s => s.Link === spell_link);
         if (existing) {
-            existing.Known -= 1;
-            if (existing.Known <= 0) {
-                this.Spells = this.Spells.filter(s => s.Link !== spell_link);
-            }
+            this.unlearnSpell(spell_link);
+        } else {
+            this.learnSpell(spell_link);
         }
     }
 
     prepareSpell(spell_link) {
-        const spell = this.Spells.find(s => s.Link === spell_link);
-        if (spell) {
-            spell.Prepared += 1;
+        // ensure the spell exists
+        if (!this.Spells.some(s => s.Link === spell_link)) {
+            this.Spells = [
+                ...this.Spells,
+                { Link: spell_link, Prepared: 1, Used: 0 }
+            ];
+            return;
         }
+        // bump Prepared immutably
+        this.Spells = this.Spells.map(s =>
+            s.Link === spell_link
+                ? { ...s, Prepared: (s.Prepared || 0) + 1 }
+                : s
+        );
     }
 
     unprepareSpell(spell_link) {
-        const spell = this.Spells.find(s => s.Link === spell_link);
-        if (spell) {
-            spell.Prepared = Math.max(0, spell.Prepared - 1);
+        this.Spells = this.Spells.map(s =>
+            s.Link === spell_link
+                ? { ...s, Prepared: Math.max(0, (s.Prepared || 0) - 1) }
+                : s
+        );
+    }
+
+    useSpell(spell_link) {
+        // ensure the spell exists
+        if (!this.Spells.some(s => s.Link === spell_link)) {
+            this.Spells = [
+                ...this.Spells,
+                { Link: spell_link, Prepared: 0, Used: 1 }
+            ];
+            return;
         }
+        // bump Prepared immutably
+        this.Spells = this.Spells.map(s =>
+            s.Link === spell_link
+                ? { ...s, Used: (s.Used || 0) + 1 }
+                : s
+        );
+    }
+
+    refreshSpell() {
+        this.Spells = this.Spells.map(s => ({ ...s, Used: 0 }));
     }
 
     getCharBonus() {
@@ -115,6 +161,16 @@ class Spellbook {
 
     getClassDescription() {
         return loadFile("tables")["Class description"][this.Class] ?? "";
+    }
+
+    getSpellsKnown() {
+        if (this.Class === "Sorcerer")
+            return loadFile("tables")["Spell slot"]["Sorcerer known"][this.Level - 1];
+        if (this.Class === "Bard")
+            return loadFile("tables")["Spell slot"]["Bard known"][this.Level - 1];
+        if (this.Class === "Wizard")
+            return 1 + this.getCharBonus() + 2 * this.Level
+        return [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     }
 
     getSpellsPerDay() {
@@ -179,8 +235,19 @@ class Spellbook {
 
     getLearnedSpells({ name, school, level } = {}) {
         const all_spells = loadFile("spells");
-        const spells = this.Spells.map(x => all_spells.find(y => y.Link === x));
+        const spells = this.Spells.map(x => all_spells.find(y => y.Link === x.Link));
         return this._getSpells(spells, { name, school, level });
+    }
+
+    getPreparedSpells({ name, school, level } = {}) {
+        const all_spells = loadFile("spells");
+        const spells = this.Spells.filter(x => x.Prepared > 0)
+            .map(x => all_spells.find(y => y.Link === x.Link));
+        return this._getSpells(spells, { name, school, level });
+    }
+
+    getHasUsedSpells({ name, school, level } = {}) {
+        return this.Spells.filter(x => x.Used > 0).length > 0;
     }
 
     _getSpells(spells, { name, school, level } = {}) {

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Spellbook, { CLASSES } from '../../../../lib/spellbook';
 import { order } from '../../../../lib/utils';
-import { setIsEditingSpellbook } from '../../../../store/slices/spellbookSlice';
+import { setSpellbookPage } from '../../../../store/slices/spellbookSlice';
 import {
   onDeleteSpellbook,
   onNewSpellbook,
@@ -23,6 +23,7 @@ export default function MenuCardPlayer() {
   // Redux state
   const spellbook = useSelector(state => state.spellbook.spellbook);
   const spellbooks = useSelector(state => state.spellbook.spellbooks);
+  const spellbookPage = useSelector(s => s.spellbook.spellbookPage);
 
   const selectedName = spellbook?.Name;
   const saved = order(spellbooks.map(w => w.Name), selectedName);
@@ -69,6 +70,11 @@ export default function MenuCardPlayer() {
     );
   }
 
+  const isLearnVisible = ["Sorcerer", "Wizard", "Bard"].includes(playerClass);
+  const isPrepareVisible = ["Wizard", "Cleric", "Druid", "Ranger", "Paladin"].includes(playerClass);
+  const buttonClass = `modern-button 
+                ${playerClass === "Wizard" ? "small-middle-long3" : "small-middle-long2"}`;
+
   return (
     <>
       <SelectComponent
@@ -99,42 +105,42 @@ export default function MenuCardPlayer() {
             </select>
           </div>
 
-          <LevelComponent props={levelProps} />
+          {playerClass && <LevelComponent props={levelProps} />}
 
-          <LevelComponent props={charProps} />
+          {playerClass && <LevelComponent props={charProps} />}
 
-
-        </>
-      )}
-    </>
-  );
-}
-/*
-          <div className="menu-side-by-side">
-
-            <div className="card-side-div margin-top">
+          {playerClass && <div className="card-side-div margin-top">
+            {isLearnVisible &&
               <button
-                className={`modern-button small-long ${isInEditing ? "opacity-50" : ""}`}
-                onClick={e => handleEditingChange(true)}
-                disabled={isInEditing}
+                className={buttonClass + `${spellbookPage === 0 ? " opacity-50" : ""}`}
+                onClick={() => dispatch(setSpellbookPage(0))}
+                disabled={spellbookPage === 0}
+              >
+                <b>Learn</b>
+              </button>
+            }
+
+            {isPrepareVisible &&
+              <button
+                className={buttonClass + `${spellbookPage === 1 ? " opacity-50" : ""}`}
+                onClick={() => dispatch(setSpellbookPage(1))}
+                disabled={spellbookPage === 1}
               >
                 <b>Prepare</b>
               </button>
-            </div>
+            }
 
-            <div className="card-side-div margin-top">
-              <button
-                className={`modern-button small-long ${!isInEditing ? "opacity-50" : ""}`}
-                onClick={e => handleEditingChange(false)}
-                disabled={!isInEditing}
-              >
-                <b>Spellbook</b>
-              </button>
-            </div>
+            <button
+              className={buttonClass + `${spellbookPage === 2 ? " opacity-50" : ""}`}
+              onClick={() => dispatch(setSpellbookPage(2))}
+              disabled={spellbookPage === 2}
+            >
+              <b>Spellbook</b>
+            </button>
           </div>
+          }
         </>
       )}
     </>
   );
 }
-*/

@@ -37,6 +37,11 @@
 }
 
 /* Size modifiers */
+.smaller {
+  height: calc(var(--btn-height-sm) * 0.8) !important;
+  width: calc(var(--btn-width-sm) * 0.8) !important;
+}
+
 .small {
   height: var(--btn-height-sm) !important;
   width: var(--btn-width-sm) !important;
@@ -50,6 +55,16 @@
 .small-middle {
   height: var(--btn-height-sm) !important;
   width: calc(var(--btn-width-sm) * 1.7) !important;
+}
+
+.small-middle-long3 {
+  height: var(--btn-height-sm) !important;
+  width: calc(var(--btn-width-sm) * 2) !important;
+}
+
+.small-middle-long2 {
+  height: var(--btn-height-sm) !important;
+  width: calc(var(--btn-width-sm) * 3.1) !important;
 }
 
 .small-long {

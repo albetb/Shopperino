@@ -1,12 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 import * as db from '../../lib/storage';
-import { serialize } from '../../lib/utils';
+import { isMobile, serialize } from '../../lib/utils';
 
 const initialState = {
   spellbooks: [],
   selectedSpellbook: null,
   spellbook: null,
-  isEditingSpellbook: true,
+  spellbookPage: 0, // 0: learn, 1: prepare, 2: spellbook
   isSpellbookSidebarCollapsed: false,
   isSpellTableCollapsed: [false, false, false, false, false, false, false, false, false, false],
   isClassDescriptionCollapsed: false,
@@ -35,9 +35,13 @@ export const spellbookSlice = createSlice({
         return { payload: serialize(spellbookInstance) };
       }
     },
-    setIsEditingSpellbook(state, action) {
-      db.setIsEditingSpellbook(action.payload);
-      state.isEditingSpellbook = action.payload;
+    setSpellbookPage(state, action) {
+      if (isMobile()) {
+        db.setIsSpellbookSidebarCollapsed(true);
+        state.isSpellbookSidebarCollapsed = true;
+      }
+      db.setSpellbookPage(action.payload);
+      state.spellbookPage = action.payload;
     },
     setIsSpellTableCollapsed(state, action) {
       db.setIsSpellTableCollapsed(action.payload);
@@ -66,7 +70,7 @@ export const {
   setSpellbooks,
   setSelectedSpellbook,
   setSpellbook,
-  setIsEditingSpellbook,
+  setSpellbookPage,
   setIsSpellTableCollapsed,
   setIsSpellbookSidebarCollapsed,
   setIsClassDescriptionCollapsed,

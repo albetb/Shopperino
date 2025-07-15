@@ -21,7 +21,7 @@ import {
 } from './store/slices/shopSlice';
 import {
   setIsClassDescriptionCollapsed,
-  setIsEditingSpellbook,
+  setSpellbookPage,
   setIsSpellbookSidebarCollapsed,
   setIsSpellTableCollapsed,
   setSearchSpellName,
@@ -54,7 +54,7 @@ export default function App() {
     const sbs = db.getSpellbooks();
     const ssb = db.getSelectedSpellbook();
     const sb = db.getSpellbook(ssb?.Id);
-    const ie = db.getIsEditingSpellbook();
+    const ie = db.getSpellbookPage();
     const stc = db.getIsSpellTableCollapsed();
     const ssc = db.getIsSpellbookSidebarCollapsed();
     const cdc = db.getIsClassDescriptionCollapsed();
@@ -71,7 +71,7 @@ export default function App() {
     dispatch(setSpellbooks(sbs));
     dispatch(setSelectedSpellbook(ssb));
     dispatch(setSpellbook(sb));
-    dispatch(setIsEditingSpellbook(ie));
+    dispatch(setSpellbookPage(ie));
     dispatch(setIsSpellTableCollapsed(stc));
     dispatch(setIsSpellbookSidebarCollapsed(ssc));
     dispatch(setIsClassDescriptionCollapsed(cdc));
