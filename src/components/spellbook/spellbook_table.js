@@ -91,7 +91,7 @@ export default function SpellbookTable() {
 
       spell_level = spell.Level.split(class_map[inst.Class])[1];
       if (spell_level.includes(","))
-        spell_level = spell_level.split[","][0];
+        spell_level = spell_level.split(",")[0];
       spell_level = parseInt(spell_level);
 
       const total_per_level = learned.filter(x => x.Level.includes(class_map[inst.Class] + spell_level))
@@ -227,7 +227,7 @@ export default function SpellbookTable() {
               className="card-side-div card-expand-div"
               onClick={() => dispatch(onCollapseSpellTable(lvl))}
             >
-              <h3 className="card-title">{trimLine(spellCardTitle(lvl), isMobile() ? 25 : 45)}</h3>
+              <h3 className="card-title">{trimLine(spellCardTitle(lvl), isMobile() ? 35 : 45)}</h3>
               <button
                 className="collapse-button"
               >

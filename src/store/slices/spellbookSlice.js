@@ -43,6 +43,10 @@ export const spellbookSlice = createSlice({
       db.setSpellbookPage(action.payload);
       state.spellbookPage = action.payload;
     },
+    setSpellbookPageNoCollapsing(state, action) {
+      db.setSpellbookPage(action.payload);
+      state.spellbookPage = action.payload;
+    },
     setIsSpellTableCollapsed(state, action) {
       db.setIsSpellTableCollapsed(action.payload);
       state.isSpellTableCollapsed = action.payload;
@@ -71,6 +75,7 @@ export const {
   setSelectedSpellbook,
   setSpellbook,
   setSpellbookPage,
+  setSpellbookPageNoCollapsing,
   setIsSpellTableCollapsed,
   setIsSpellbookSidebarCollapsed,
   setIsClassDescriptionCollapsed,

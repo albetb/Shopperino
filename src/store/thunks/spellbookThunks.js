@@ -1,7 +1,7 @@
 import Spellbook from '../../lib/spellbook';
 import * as db from '../../lib/storage';
 import { cap } from '../../lib/utils';
-import { setIsSpellTableCollapsed, setSelectedSpellbook, setSpellbook, setSpellbookPage, setSpellbooks } from '../slices/spellbookSlice';
+import { setIsSpellTableCollapsed, setSelectedSpellbook, setSpellbook, setSpellbookPageNoCollapsing, setSpellbooks } from '../slices/spellbookSlice';
 
 export const onNewSpellbook = nameRaw => (dispatch, getState) => {
   const name = cap(nameRaw);
@@ -19,9 +19,9 @@ export const onNewSpellbook = nameRaw => (dispatch, getState) => {
     dispatch(setSpellbook(s));
     dispatch(setSelectedSpellbook(entry));
     if (["Sorcerer", "Bard", "Wizard"].includes(s.Class))
-      dispatch(setSpellbookPage(0));
+      dispatch(setSpellbookPageNoCollapsing(0));
     else
-      dispatch(setSpellbookPage(1));
+      dispatch(setSpellbookPageNoCollapsing(1));
   }
 };
 
@@ -50,9 +50,9 @@ export const onPlayerClassChange = _class => (dispatch, getState) => {
   s.setClass(_class);
   dispatch(setSpellbook(s));
   if (["Sorcerer", "Bard", "Wizard"].includes(s.Class))
-    dispatch(setSpellbookPage(0));
+    dispatch(setSpellbookPageNoCollapsing(0));
   else
-    dispatch(setSpellbookPage(1));
+    dispatch(setSpellbookPageNoCollapsing(1));
 };
 
 export const onPlayerCharacteristicChange = char => (dispatch, getState) => {
