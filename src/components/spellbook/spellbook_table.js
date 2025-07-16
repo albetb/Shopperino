@@ -244,7 +244,7 @@ export default function SpellbookTable() {
                     <tr key={i}>
 
                       {spellbookPage === 0 && (
-                        <td style={{ width: 'var(--btn-width-sm)' }} className={i === 0 ? 'first' : ''}>
+                        <td style={{ width: 'auto' }} className={i === 0 ? 'first' : ''}>
                           <button className={`item-number-button smaller ${learned.map(x => x.Link).includes(item.Link) ? "opacity-50" : ""}`}>
                             <span
                               className="material-symbols-outlined"
@@ -287,7 +287,7 @@ export default function SpellbookTable() {
                       )}
 
                       {spellbookPage === 2 && (
-                        <td style={{ width: 'var(--btn-width-sm)' }} className={i === 0 ? 'first' : ''}>
+                        <td style={{ width: 'var(--btn-width-sm)', maxWidth: 'calc(var(--btn-width-sm) * 1.2)', paddingRight: '0px' }} className={i === 0 ? 'first' : ''}>
                           <div className='card-side-div'>
                             <div className='spell-slot-div2'>
 
@@ -317,7 +317,7 @@ export default function SpellbookTable() {
                           {item.Name}
                         </button>
                       </td>
-                      {((spellbookPage !== 1 && spellbookPage !== 2) || !isMobile()) &&
+                      {((spellbookPage !== 1) || !isMobile()) &&
                         <td style={{ width: '30%', fontSize: 'small' }} className={i === 0 ? 'first' : ''}>
                           {item.School.split(' ')[0]}
                         </td>
