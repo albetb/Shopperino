@@ -22,6 +22,9 @@ export const MAGICSCHOOLS = [
     "Transmutation",
     "Universal"
 ];
+export const DOMAINS = ["Air", "Animal", "Artifice", "Chaos", "Charm", "Community", "Creation", "Darkness", "Death", "Destruction", "Earth", "Evil", "Fire", "Glory", "Good", "Healing", "Knowledge", "Law", "Liberation", "Luck", "Madness", "Magic", "Nobility", "Plant", "Protection", "Repose", "Rune", "Skalykind", "Strength", "Sun", "Travel", "Trickery", "War", "Water", "Weather"];
+export const ETHICALALIGNMENTS = ["Lawful", "Neutral", "Chaotic"];
+export const MORALALIGNMENTS = ["Good", "Neutral", "Evil"];
 
 class Spellbook {
 
@@ -32,6 +35,8 @@ class Spellbook {
         this.Level = 1;
         this.Characteristic = 10;
         this.Spells = [];
+        this.MoralAlignment = "Neutral";
+        this.EthicalAlignment = "Neutral";
     }
 
     load(data) {
@@ -46,6 +51,8 @@ class Spellbook {
         this.Level = data.Level;
         this.Characteristic = data.Characteristic;
         this.Spells = data.Spells;
+        this.MoralAlignment = data.MoralAlignment;
+        this.EthicalAlignment = data.EthicalAlignment;
 
         return this;
     }
@@ -69,6 +76,16 @@ class Spellbook {
     setCharacteristic(char) {
         if (char > 0)
             this.Characteristic = char;
+    }
+
+    setMoralAlignment(align) {
+        if (!MORALALIGNMENTS.includes(align)) return;
+        this.MoralAlignment = align;
+    }
+
+    setEthicalAlignment(align) {
+        if (!ETHICALALIGNMENTS.includes(align)) return;
+        this.EthicalAlignment = align;
     }
 
     learnSpell(spell_link) {
@@ -246,8 +263,11 @@ class Spellbook {
         return this._getSpells(spells, { name, school, level });
     }
 
-    getHasUsedSpells({ name, school, level } = {}) {
-        return this.Spells.filter(x => x.Used > 0).length > 0;
+    getHasUsedSpells() {
+        const filtered = this.getLearnedSpells().map(x => x.Link);
+        console.log(filtered);
+        return this.Spells
+            .filter(x => x.Used > 0 && filtered.includes(x.Link)).length > 0;
     }
 
     _getSpells(spells, { name, school, level } = {}) {
@@ -273,6 +293,20 @@ class Spellbook {
             if (school && !spell.School.toLowerCase().includes(school.toLowerCase())) {
                 return false;
             }
+            if (["Druid", "Cleric"].includes(this.Class)) {
+                const alignmentConflicts = {
+                    "Lawful": "[Chaotic]",
+                    "Chaotic": "[Lawful]",
+                    "Good": "[Evil]",
+                    "Evil": "[Good]"
+                };
+
+                const forbiddenMoral = alignmentConflicts[this.MoralAlignment];
+                const forbiddenEthic = alignmentConflicts[this.EthicalAlignment];
+                if ((forbiddenMoral && spell.School.includes(forbiddenMoral))
+                    || (forbiddenEthic && spell.School.includes(forbiddenEthic)))
+                    return false;
+            }
             if (typeof level === 'number') {
                 const lvlNum = parseInt(entry.slice(key.length).trim(), 10);
                 if (lvlNum !== level) return false;
@@ -292,7 +326,9 @@ class Spellbook {
             Class: this.Class,
             Level: this.Level,
             Characteristic: this.Characteristic,
-            Spells: this.Spells
+            Spells: this.Spells,
+            MoralAlignment: this.MoralAlignment,
+            EthicalAlignment: this.EthicalAlignment
         };
     }
 }

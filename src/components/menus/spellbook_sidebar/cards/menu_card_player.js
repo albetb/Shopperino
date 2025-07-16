@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import Spellbook, { CLASSES } from '../../../../lib/spellbook';
+import Spellbook, { CLASSES, ETHICALALIGNMENTS, MORALALIGNMENTS } from '../../../../lib/spellbook';
 import { order } from '../../../../lib/utils';
 import { setSpellbookPage } from '../../../../store/slices/spellbookSlice';
 import {
   onDeleteSpellbook,
+  onEthicalAlignmentChange,
+  onMoralAlignmentChange,
   onNewSpellbook,
   onPlayerCharacteristicChange,
   onPlayerClassChange,
@@ -29,6 +31,8 @@ export default function MenuCardPlayer() {
   const saved = order(spellbooks.map(w => w.Name), selectedName);
   const playerLevel = spellbook?.Level ?? 1;
   const playerClass = spellbook?.Class ?? "";
+  const moralAlign = spellbook?.MoralAlignment ?? "Neutral";
+  const ethicalAlign = spellbook?.EthicalAlignment ?? "Neutral";
   const charLevel = spellbook?.Characteristic ?? 1;
   const spellbookInstance = spellbook ? new Spellbook().load(spellbook) : null;
   const charName = spellbookInstance?.getCharName() ?? "Characteristic";
@@ -42,6 +46,8 @@ export default function MenuCardPlayer() {
   const handleLevelChange = lvl => dispatch(onPlayerLevelChange(lvl));
   const handleClassChange = cls => dispatch(onPlayerClassChange(cls));
   const handleCharChange = char => dispatch(onPlayerCharacteristicChange(char));
+  const handleMoralAlignmentChange = align => dispatch(onMoralAlignmentChange(align));
+  const handleEthicalAlignmentChange = align => dispatch(onEthicalAlignmentChange(align));
 
   const classList = CLASSES;
 
@@ -108,6 +114,40 @@ export default function MenuCardPlayer() {
           {playerClass && <LevelComponent props={levelProps} />}
 
           {playerClass && <LevelComponent props={charProps} />}
+
+          {["Cleric", "Druid"].includes(playerClass) &&
+            <>
+              <div className="card-side-div margin-top">
+                <label className="modern-label">Moral:</label>
+                <select
+                  className="modern-dropdown small-long"
+                  value={moralAlign}
+                  onChange={e => handleMoralAlignmentChange(e.target.value)}
+                >
+                  {MORALALIGNMENTS.map(align => (
+                    <option key={align} value={align}>
+                      {align}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="card-side-div margin-top">
+                <label className="modern-label">Ethics:</label>
+                <select
+                  className="modern-dropdown small-long"
+                  value={ethicalAlign}
+                  onChange={e => handleEthicalAlignmentChange(e.target.value)}
+                >
+                  {ETHICALALIGNMENTS.map(align => (
+                    <option key={align} value={align}>
+                      {align}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </>
+          }
 
           {playerClass && <div className="card-side-div margin-top">
             {isLearnVisible &&

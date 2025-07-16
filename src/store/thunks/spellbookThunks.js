@@ -63,6 +63,22 @@ export const onPlayerCharacteristicChange = char => (dispatch, getState) => {
   dispatch(setSpellbook(s));
 };
 
+export const onMoralAlignmentChange = align => (dispatch, getState) => {
+  const { spellbook } = getState().spellbook;
+  if (!spellbook) return;
+  const s = new Spellbook().load(spellbook);
+  s.setMoralAlignment(align);
+  dispatch(setSpellbook(s));
+};
+
+export const onEthicalAlignmentChange = align => (dispatch, getState) => {
+  const { spellbook } = getState().spellbook;
+  if (!spellbook) return;
+  const s = new Spellbook().load(spellbook);
+  s.setEthicalAlignment(align);
+  dispatch(setSpellbook(s));
+};
+
 export const onDeleteSpellbook = () => (dispatch, getState) => {
   const { spellbooks, selectedSpellbook } = getState().spellbook;
   if (!selectedSpellbook) return;

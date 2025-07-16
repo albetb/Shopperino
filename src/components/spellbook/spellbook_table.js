@@ -186,9 +186,9 @@ export default function SpellbookTable() {
 
       {spellbookPage === 2 && (
         <div
-          className={`filter-box rest-box ${inst.Spells.filter(x => x.Used > 0).length <= 0 ? "opacity-50" : ""}`}
+          className={`filter-box rest-box ${!inst.getHasUsedSpells() ? "opacity-50" : ""}`}
           onClick={() => dispatch(onRefreshSpell())}
-          disabled={inst.Spells.filter(x => x.Used > 0).length > 0}>
+          disabled={!inst.getHasUsedSpells()}>
           <div className="card-side-div card-expand-div" style={{ width: "100%", height: "100%" }}>
             <button className="close-button no-margin-left" >
               <span style={{ color: "var(--white)" }} className="material-symbols-outlined">bedtime</span>
@@ -287,7 +287,7 @@ export default function SpellbookTable() {
                       )}
 
                       {spellbookPage === 2 && (
-                        <td style={{ width: 'var(--btn-width-sm)', maxWidth: 'calc(var(--btn-width-sm) * 1.2)', paddingRight: '0px' }} className={i === 0 ? 'first' : ''}>
+                        <td style={{ width: 'var(--btn-width-sm)', maxWidth: 'calc(var(--btn-width-sm) * 1.4)', paddingRight: '0px' }} className={i === 0 ? 'first' : ''}>
                           <div className='card-side-div'>
                             <div className='spell-slot-div2'>
 
