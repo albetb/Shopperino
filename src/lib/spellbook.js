@@ -1,5 +1,6 @@
 import { loadFile, newGuid } from './utils';
 
+const ALL_SPELLS = loadFile("spells");
 const REQUIRED_KEYS = ['Id', 'Name', 'Class', 'Level', 'Characteristic', 'Spells'];
 export const CLASSES = ["Sorcerer", "Wizard", "Cleric", "Druid", "Bard", "Ranger", "Paladin"];
 const CLASSCHARMAP = {
@@ -101,8 +102,7 @@ class Spellbook {
     unlearnSpell(spell_link) {
         const existing = this.Spells.find(s => s.Link === spell_link);
 
-        const all_spells = loadFile("spells");
-        const spell = all_spells.find(x => x.Link === spell_link);
+        const spell = ALL_SPELLS.find(x => x.Link === spell_link);
 
         if (existing && !(this.Class === "Wizard" && spell.Level.includes("Sor/Wiz 0"))) {
             this.Spells = this.Spells.filter(s => s.Link !== spell_link);
@@ -190,6 +190,22 @@ class Spellbook {
         return [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     }
 
+    getSpontaneousSpells() {
+        let spell_list = [];
+        if (this.Class === "Cleric") {
+            if (this.MoralAlignment !== "Good")
+                spell_list.push(...["inflict-minor-wounds", "inflict-light-wounds", "inflict-moderate-wounds", "inflict-serious-wounds", "inflict-critical-wounds", "mass-inflict-light-wounds", "mass-inflict-moderate-wounds", "mass-inflict-serious-wounds", "mass-inflict-critical-wounds"]);
+
+            if (this.MoralAlignment !== "Evil")
+                spell_list.push(...["cure-minor-wounds", "cure-light-wounds", "cure-moderate-wounds", "cure-serious-wounds", "cure-critical-wounds", "mass-cure-light-wounds", "mass-cure-moderate-wounds", "mass-cure-serious-wounds", "mass-cure-critical-wounds"]);
+        }
+        else if (this.Class === "Druid")
+            spell_list = ["summon-natures-ally-i", "summon-natures-ally-ii", "summon-natures-ally-iii", "summon-natures-ally-iv", "summon-natures-ally-v", "summon-natures-ally-vi", "summon-natures-ally-vii", "summon-natures-ally-viii", "summon-natures-ally-ix"];
+
+        console.log(spell_list.map(x => ALL_SPELLS.find(y => y.Link === x)))
+        return spell_list.map(x => ALL_SPELLS.find(y => y.Link === x));
+    }
+
     getSpellsPerDay() {
         const spells_per_day_tables = loadFile("tables")["Spell slot"]
         const wizardSpellsPerDay = spells_per_day_tables["Wizard per day"];
@@ -251,21 +267,18 @@ class Spellbook {
     }
 
     getLearnedSpells({ name, school, level } = {}) {
-        const all_spells = loadFile("spells");
-        const spells = this.Spells.map(x => all_spells.find(y => y.Link === x.Link));
+        const spells = this.Spells.map(x => ALL_SPELLS.find(y => y.Link === x.Link));
         return this._getSpells(spells, { name, school, level });
     }
 
     getPreparedSpells({ name, school, level } = {}) {
-        const all_spells = loadFile("spells");
         const spells = this.Spells.filter(x => x.Prepared > 0)
-            .map(x => all_spells.find(y => y.Link === x.Link));
+            .map(x => ALL_SPELLS.find(y => y.Link === x.Link));
         return this._getSpells(spells, { name, school, level });
     }
 
     getHasUsedSpells() {
         const filtered = this.getLearnedSpells().map(x => x.Link);
-        console.log(filtered);
         return this.Spells
             .filter(x => x.Used > 0 && filtered.includes(x.Link)).length > 0;
     }
