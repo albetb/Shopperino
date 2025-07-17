@@ -109,12 +109,12 @@ class Spellbook {
     }
 
     setDomain1(domain) {
-        if (!this.getPossibleDomain1().includes(domain)) return;
+        if (!this.getPossibleDomain1().includes(domain) && domain !== "") return;
         this.Domain1 = domain;
     }
 
     setDomain2(domain) {
-        if (!this.getPossibleDomain2().includes(domain)) return;
+        if (!this.getPossibleDomain2().includes(domain) && domain !== "") return;
         this.Domain2 = domain;
     }
 
@@ -254,7 +254,7 @@ class Spellbook {
                 "summon-natures-ally-vii", "summon-natures-ally-viii", "summon-natures-ally-ix"];
 
         const spell_temp = spell_list.splice(0, this.maxSpellLevel() + 1).map(x => ALL_SPELLS.find(y => y.Link === x))
-        
+
         return this._getSpells(spell_temp, { name, school, level });
     }
 
