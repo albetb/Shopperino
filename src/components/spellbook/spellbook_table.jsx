@@ -46,7 +46,9 @@ export default function SpellbookTable() {
         toggle={() => dispatch({ type: 'spellbook/setIsClassDescriptionCollapsed', payload: !isCollapsed.classDesc })}
       />
 
-      {spellbook?.Class === "Cleric" && <DomainDescriptionCard
+      {spellbook?.Class === "Cleric"
+      && (spellbook?.Domain1 || spellbook?.Domain2)
+      && <DomainDescriptionCard
         description={domainDesc}
         collapsed={isCollapsed.domainDesc}
         toggle={() => dispatch({ type: 'spellbook/setIsDomainDescriptionCollapsed', payload: !isCollapsed.domainDesc })}
