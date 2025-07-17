@@ -156,7 +156,7 @@ export default function MenuCardPlayer() {
               </div>
             </>
           }
-          {["Cleric", "Druid"].includes(playerClass) &&
+          {playerClass === "Cleric" &&
             <>
               <div className="card-side-div margin-top">
                 <label className="modern-label">Domains:</label>
