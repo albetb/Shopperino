@@ -28,6 +28,7 @@ export default function SpellLevelCard({
   charBonus,
   dispatch
 }) {
+
   const key = classKeyMap[inst.Class] || '';
 
   const spontList = spontaneousSpells || [];
@@ -118,7 +119,7 @@ export default function SpellLevelCard({
       {!collapsed && (
         <table className="spellbook-table">
           <tbody>
-            {spells.map((item, i) => (
+            {spells && spells.map((item, i) => (
               <tr key={i}>
                 {page === 0 && (
                   <td className={i === 0 ? 'first' : ''} style={{ width: 'var(--btn-width-sm)', maxWidth: 'var(--btn-width-sm)' }}>

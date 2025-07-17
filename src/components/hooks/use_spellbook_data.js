@@ -15,13 +15,13 @@ function groupByLevel(items = [], key) {
 }
 
 function mergeByLevel(mapA, mapB) {
-  const merged = { ...mapA };
-  Object.entries(mapB).forEach(([level, listB]) => {
-    merged[level] = merged[level]
-      ? merged[level].concat(listB)
-      : listB.slice();  // clone B’s list
-  });
-  return merged;
+    const merged = { ...mapA };
+    Object.entries(mapB).forEach(([level, listB]) => {
+        merged[level] = merged[level]
+            ? merged[level].concat(listB)
+            : listB.slice();  // clone B’s list
+    });
+    return merged;
 }
 
 export default function useSpellbookData() {
@@ -56,13 +56,21 @@ export default function useSpellbookData() {
     const key = keyMap[inst.Class] || '';
 
     // group both sets by level
-    const spellsByLevel = groupByLevel(spells, key);
-    const spontaneousByLevel = groupByLevel(spontaneous, key);
     const domainByLevel1 = groupByLevel(domain, inst.Domain1);
     const domainByLevel2 = groupByLevel(domain, inst.Domain2);
-    const domainByLevel = mergeByLevel(domainByLevel1, domainByLevel2);
+    const spellsByLevel = groupByLevel(spells || [], key);
+    const spontaneousByLevel = groupByLevel(spontaneous || [], key);
+    const domainByLevel = mergeByLevel(domainByLevel1 || {}, domainByLevel2 || {});
 
-    const levels = Object.keys(spellsByLevel).map(Number).sort((a, b) => a - b);
+    const allLevelKeys = [
+        ...Object.keys(spellsByLevel),
+        ...Object.keys(spontaneousByLevel),
+        ...Object.keys(domainByLevel),
+    ];
+    
+    const levels = Array
+        .from(new Set(allLevelKeys.map(Number)))
+        .sort((a, b) => a - b);
 
     return {
         spellbook,

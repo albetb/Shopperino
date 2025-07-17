@@ -235,7 +235,7 @@ class Spellbook {
         return [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     }
 
-    getSpontaneousSpells() {
+    getSpontaneousSpells({ name, school, level } = {}) {
         let spell_list = [];
         if (this.Class === "Cleric") {
             if (this.MoralAlignment !== "Good")
@@ -253,7 +253,9 @@ class Spellbook {
                 "summon-natures-ally-iv", "summon-natures-ally-v", "summon-natures-ally-vi",
                 "summon-natures-ally-vii", "summon-natures-ally-viii", "summon-natures-ally-ix"];
 
-        return spell_list.map(x => ALL_SPELLS.find(y => y.Link === x));
+        const spell_temp = spell_list.splice(0, this.maxSpellLevel() + 1).map(x => ALL_SPELLS.find(y => y.Link === x))
+        
+        return this._getSpells(spell_temp, { name, school, level });
     }
 
     getSpellsPerDay() {
@@ -360,13 +362,12 @@ class Spellbook {
             "Ranger": 'Rgr',
             "Paladin": 'Pal'
         };
-        const key = classKeyMap[this.Class];
+        let key = classKeyMap[this.Class];
+        if (domain && DOMAINS.includes(domain))
+            key = domain;
 
         return spells.filter(spell => {
             if (!spell || domain === "") return false;
-            if (domain && DOMAINS.includes(domain)) {
-                return spell.Level.toLowerCase().includes(domain.toLowerCase());
-            }
             const parts = spell.Level.split(',').map(s => s.trim());
             const entry = parts.find(p => p.startsWith(key + ' '));
             if (!entry) return false;
