@@ -5,6 +5,8 @@ import { order } from '../../../../lib/utils';
 import { setSpellbookPage } from '../../../../store/slices/spellbookSlice';
 import {
   onDeleteSpellbook,
+  onDomain1Change,
+  onDomain2Change,
   onEthicalAlignmentChange,
   onMoralAlignmentChange,
   onNewSpellbook,
@@ -34,8 +36,12 @@ export default function MenuCardPlayer() {
   const moralAlign = spellbook?.MoralAlignment ?? "Neutral";
   const ethicalAlign = spellbook?.EthicalAlignment ?? "Neutral";
   const charLevel = spellbook?.Characteristic ?? 1;
+  const domain1 = spellbook?.Domain1 ?? "";
+  const domain2 = spellbook?.Domain2 ?? "";
   const spellbookInstance = spellbook ? new Spellbook().load(spellbook) : null;
   const charName = spellbookInstance?.getCharName() ?? "Characteristic";
+  const possibleDomains1 = spellbookInstance?.getPossibleDomain1();
+  const possibleDomains2 = spellbookInstance?.getPossibleDomain2();
 
   // Handlers
   const showCreate = () => setIsNewVisible(true);
@@ -48,6 +54,8 @@ export default function MenuCardPlayer() {
   const handleCharChange = char => dispatch(onPlayerCharacteristicChange(char));
   const handleMoralAlignmentChange = align => dispatch(onMoralAlignmentChange(align));
   const handleEthicalAlignmentChange = align => dispatch(onEthicalAlignmentChange(align));
+  const handleDomain1Change = domain => dispatch(onDomain1Change(domain));
+  const handleDomain2Change = domain => dispatch(onDomain2Change(domain));
 
   const classList = CLASSES;
 
@@ -142,6 +150,41 @@ export default function MenuCardPlayer() {
                   {ETHICALALIGNMENTS.map(align => (
                     <option key={align} value={align}>
                       {align}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </>
+          }
+          {["Cleric", "Druid"].includes(playerClass) &&
+            <>
+              <div className="card-side-div margin-top">
+                <label className="modern-label">Domains:</label>
+                <select
+                  className="modern-dropdown small-long"
+                  value={domain1}
+                  onChange={e => handleDomain1Change(e.target.value)}
+                >
+                  <option value="">-</option>
+                  {possibleDomains1.map(domain => (
+                    <option key={domain} value={domain}>
+                      {domain}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="card-side-div margin-top">
+                <label className="modern-label"></label>
+                <select
+                  className="modern-dropdown small-long"
+                  value={domain2}
+                  onChange={e => handleDomain2Change(e.target.value)}
+                >
+                  <option value="">-</option>
+                  {possibleDomains2.map(domain => (
+                    <option key={domain} value={domain}>
+                      {domain}
                     </option>
                   ))}
                 </select>

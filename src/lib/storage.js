@@ -4,7 +4,7 @@ import City from './city';
 import Shop from './shop';
 import Spellbook from './spellbook';
 
-const CURRENT_STORAGE_VERSION = 250707; // last modified date as yymmdd
+const CURRENT_STORAGE_VERSION = 250716; // last modified date as yymmdd
 
 //#region get
 
@@ -100,6 +100,11 @@ export function getIsClassDescriptionCollapsed() {
     return value ? JSON.parse(decompressFromUTF16(value)) : false;
 }
 
+export function getIsDomainDescriptionCollapsed() {
+    const value = localStorage.getItem('IsDomainDescriptionCollapsed');
+    return value ? JSON.parse(decompressFromUTF16(value)) : false;
+}
+
 export function getSearchSpellName() {
     const value = localStorage.getItem('SearchSpellName');
     return value ? JSON.parse(decompressFromUTF16(value)) : "";
@@ -188,6 +193,10 @@ export function setSpellbookPage(value) {
 
 export function setIsClassDescriptionCollapsed(value) {
     localStorage.setItem('IsClassDescriptionCollapsed', compressToUTF16(JSON.stringify(value)));
+}
+
+export function setIsDomainDescriptionCollapsed(value) {
+    localStorage.setItem('IsDomainDescriptionCollapsed', compressToUTF16(JSON.stringify(value)));
 }
 
 export function setSearchSpellName(value) {

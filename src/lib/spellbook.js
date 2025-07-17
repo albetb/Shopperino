@@ -1,7 +1,8 @@
 import { loadFile, newGuid } from './utils';
 
 const ALL_SPELLS = loadFile("spells");
-const REQUIRED_KEYS = ['Id', 'Name', 'Class', 'Level', 'Characteristic', 'Spells'];
+const REQUIRED_KEYS = ['Id', 'Name', 'Class', 'Level', 'Characteristic', 'Spells',
+    'MoralAlignment', 'EthicalAlignment', 'Domain1', 'Domain2', 'UsedDomainSpells'];
 export const CLASSES = ["Sorcerer", "Wizard", "Cleric", "Druid", "Bard", "Ranger", "Paladin"];
 const CLASSCHARMAP = {
     "Sorcerer": 'Charisma',
@@ -23,7 +24,11 @@ export const MAGICSCHOOLS = [
     "Transmutation",
     "Universal"
 ];
-export const DOMAINS = ["Air", "Animal", "Artifice", "Chaos", "Charm", "Community", "Creation", "Darkness", "Death", "Destruction", "Earth", "Evil", "Fire", "Glory", "Good", "Healing", "Knowledge", "Law", "Liberation", "Luck", "Madness", "Magic", "Nobility", "Plant", "Protection", "Repose", "Rune", "Skalykind", "Strength", "Sun", "Travel", "Trickery", "War", "Water", "Weather"];
+export const DOMAINS = ["Air", "Animal", "Chaos", "Death", "Destruction",
+    "Earth", "Evil", "Fire", "Good", "Healing",
+    "Knowledge", "Law", "Luck", "Magic", "Plant",
+    "Protection", "Strength", "Sun", "Travel", "Trickery",
+    "War", "Water"];
 export const ETHICALALIGNMENTS = ["Lawful", "Neutral", "Chaotic"];
 export const MORALALIGNMENTS = ["Good", "Neutral", "Evil"];
 
@@ -38,6 +43,9 @@ class Spellbook {
         this.Spells = [];
         this.MoralAlignment = "Neutral";
         this.EthicalAlignment = "Neutral";
+        this.Domain1 = "";
+        this.Domain2 = "";
+        this.UsedDomainSpells = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     }
 
     load(data) {
@@ -54,6 +62,9 @@ class Spellbook {
         this.Spells = data.Spells;
         this.MoralAlignment = data.MoralAlignment;
         this.EthicalAlignment = data.EthicalAlignment;
+        this.Domain1 = data.Domain1;
+        this.Domain2 = data.Domain2;
+        this.UsedDomainSpells = data.UsedDomainSpells;
 
         return this;
     }
@@ -82,11 +93,29 @@ class Spellbook {
     setMoralAlignment(align) {
         if (!MORALALIGNMENTS.includes(align)) return;
         this.MoralAlignment = align;
+        if (this.Domain1 === { "Good": "Evil", "Evil": "Good" }[this.MoralAlignment])
+            this.Domain1 = "";
+        if (this.Domain2 === { "Good": "Evil", "Evil": "Good" }[this.MoralAlignment])
+            this.Domain2 = "";
     }
 
     setEthicalAlignment(align) {
         if (!ETHICALALIGNMENTS.includes(align)) return;
         this.EthicalAlignment = align;
+        if (this.Domain1 === { "Lawful": "Chaos", "Chaotic": "Law" }[this.EthicalAlignment])
+            this.Domain1 = "";
+        if (this.Domain2 === { "Lawful": "Chaos", "Chaotic": "Law" }[this.EthicalAlignment])
+            this.Domain2 = "";
+    }
+
+    setDomain1(domain) {
+        if (!this.getPossibleDomain1().includes(domain)) return;
+        this.Domain1 = domain;
+    }
+
+    setDomain2(domain) {
+        if (!this.getPossibleDomain2().includes(domain)) return;
+        this.Domain2 = domain;
     }
 
     learnSpell(spell_link) {
@@ -160,8 +189,18 @@ class Spellbook {
         );
     }
 
+    useDomainSpell(lvl) {
+        if (0 >= lvl || lvl >= 10) return;
+        this.UsedDomainSpells = this.UsedDomainSpells.map((x, i) => i === lvl ? 1 : x);
+    }
+
     refreshSpell() {
         this.Spells = this.Spells.map(s => ({ ...s, Used: 0 }));
+        this.refreshDomainSpell();
+    }
+
+    refreshDomainSpell() {
+        this.UsedDomainSpells = this.UsedDomainSpells.map(s => 0);
     }
 
     getCharBonus() {
@@ -180,6 +219,12 @@ class Spellbook {
         return loadFile("tables")["Class description"][this.Class] ?? "";
     }
 
+    getDomainDescription() {
+        if (this.Class !== "Cleric") return "";
+        return (loadFile("tables")["Domains"][this.Domain1] ?? "")
+            + (loadFile("tables")["Domains"][this.Domain2] ?? "");
+    }
+
     getSpellsKnown() {
         if (this.Class === "Sorcerer")
             return loadFile("tables")["Spell slot"]["Sorcerer known"][this.Level - 1];
@@ -194,15 +239,20 @@ class Spellbook {
         let spell_list = [];
         if (this.Class === "Cleric") {
             if (this.MoralAlignment !== "Good")
-                spell_list.push(...["inflict-minor-wounds", "inflict-light-wounds", "inflict-moderate-wounds", "inflict-serious-wounds", "inflict-critical-wounds", "mass-inflict-light-wounds", "mass-inflict-moderate-wounds", "mass-inflict-serious-wounds", "mass-inflict-critical-wounds"]);
+                spell_list.push(...["inflict-minor-wounds", "inflict-light-wounds", "inflict-moderate-wounds",
+                    "inflict-serious-wounds", "inflict-critical-wounds", "mass-inflict-light-wounds",
+                    "mass-inflict-moderate-wounds", "mass-inflict-serious-wounds", "mass-inflict-critical-wounds"]);
 
             if (this.MoralAlignment !== "Evil")
-                spell_list.push(...["cure-minor-wounds", "cure-light-wounds", "cure-moderate-wounds", "cure-serious-wounds", "cure-critical-wounds", "mass-cure-light-wounds", "mass-cure-moderate-wounds", "mass-cure-serious-wounds", "mass-cure-critical-wounds"]);
+                spell_list.push(...["cure-minor-wounds", "cure-light-wounds", "cure-moderate-wounds",
+                    "cure-serious-wounds", "cure-critical-wounds", "mass-cure-light-wounds",
+                    "mass-cure-moderate-wounds", "mass-cure-serious-wounds", "mass-cure-critical-wounds"]);
         }
         else if (this.Class === "Druid")
-            spell_list = ["summon-natures-ally-i", "summon-natures-ally-ii", "summon-natures-ally-iii", "summon-natures-ally-iv", "summon-natures-ally-v", "summon-natures-ally-vi", "summon-natures-ally-vii", "summon-natures-ally-viii", "summon-natures-ally-ix"];
+            spell_list = ["summon-natures-ally-i", "summon-natures-ally-ii", "summon-natures-ally-iii",
+                "summon-natures-ally-iv", "summon-natures-ally-v", "summon-natures-ally-vi",
+                "summon-natures-ally-vii", "summon-natures-ally-viii", "summon-natures-ally-ix"];
 
-        console.log(spell_list.map(x => ALL_SPELLS.find(y => y.Link === x)))
         return spell_list.map(x => ALL_SPELLS.find(y => y.Link === x));
     }
 
@@ -262,8 +312,7 @@ class Spellbook {
     }
 
     getAllSpells({ name, school, level } = {}) {
-        const spells = loadFile('spells');
-        return this._getSpells(spells, { name, school, level });
+        return this._getSpells(ALL_SPELLS, { name, school, level });
     }
 
     getLearnedSpells({ name, school, level } = {}) {
@@ -277,13 +326,31 @@ class Spellbook {
         return this._getSpells(spells, { name, school, level });
     }
 
+    getDomainSpells({ name, school, level }) {
+        if (this.Class !== "Cleric") return [];
+        return this._getSpells(ALL_SPELLS, { name, school, level, domain: this.Domain1 })
+            .concat(this._getSpells(ALL_SPELLS, { name, school, level, domain: this.Domain2 }));
+    }
+
+    getHasUsedDomainSpells() {
+        if (this.Class !== "Cleric") return false;
+        const end = Math.min(Math.max(this.maxSpellLevel(), 0), this.UsedDomainSpells.length - 1);
+        for (let i = 0; i <= end; i++) {
+            if (typeof this.UsedDomainSpells[i] === 'number' && this.UsedDomainSpells[i] > 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     getHasUsedSpells() {
         const filtered = this.getLearnedSpells().map(x => x.Link);
         return this.Spells
-            .filter(x => x.Used > 0 && filtered.includes(x.Link)).length > 0;
+            .filter(x => x.Used > 0 && filtered.includes(x.Link)).length > 0
+            || this.getHasUsedDomainSpells();
     }
 
-    _getSpells(spells, { name, school, level } = {}) {
+    _getSpells(spells, { name, school, level, domain } = {}) {
         const classKeyMap = {
             "Sorcerer": 'Sor/Wiz',
             "Wizard": 'Sor/Wiz',
@@ -296,7 +363,10 @@ class Spellbook {
         const key = classKeyMap[this.Class];
 
         return spells.filter(spell => {
-            if (!spell) return false;
+            if (!spell || domain === "") return false;
+            if (domain && DOMAINS.includes(domain)) {
+                return spell.Level.toLowerCase().includes(domain.toLowerCase());
+            }
             const parts = spell.Level.split(',').map(s => s.trim());
             const entry = parts.find(p => p.startsWith(key + ' '));
             if (!entry) return false;
@@ -332,6 +402,18 @@ class Spellbook {
         });
     }
 
+    getPossibleDomain1() {
+        return DOMAINS.filter(x => x !== { "Lawful": "Chaos", "Chaotic": "Law" }[this.EthicalAlignment]
+            && x !== { "Good": "Evil", "Evil": "Good" }[this.MoralAlignment]
+            && x !== this.Domain2);
+    }
+
+    getPossibleDomain2() {
+        return DOMAINS.filter(x => x !== { "Lawful": "Chaos", "Chaotic": "Law" }[this.EthicalAlignment]
+            && x !== { "Good": "Evil", "Evil": "Good" }[this.MoralAlignment]
+            && x !== this.Domain1);
+    }
+
     serialize() {
         return {
             Id: this.Id,
@@ -341,7 +423,10 @@ class Spellbook {
             Characteristic: this.Characteristic,
             Spells: this.Spells,
             MoralAlignment: this.MoralAlignment,
-            EthicalAlignment: this.EthicalAlignment
+            EthicalAlignment: this.EthicalAlignment,
+            Domain1: this.Domain1,
+            Domain2: this.Domain2,
+            UsedDomainSpells: this.UsedDomainSpells
         };
     }
 }

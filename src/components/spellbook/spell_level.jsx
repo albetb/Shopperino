@@ -3,6 +3,7 @@ import { isMobile, trimLine } from '../../lib/utils';
 import { addCardByLink } from '../../store/slices/appSlice';
 import { onLearnUnlearnSpell, onPrepareSpell, onUnprepareSpell, onUseSpell } from '../../store/thunks/spellbookThunks';
 import SpontaneousSpells from './spontaneous_spells';
+import DomainSpells from './domain_spells';
 
 const classKeyMap = {
   Sorcerer: 'Sor/Wiz',
@@ -18,6 +19,7 @@ export default function SpellLevelCard({
   level,
   spells,
   spontaneousSpells,
+  domainSpells,
   collapsed,
   toggle,
   page,
@@ -28,9 +30,11 @@ export default function SpellLevelCard({
 }) {
   const key = classKeyMap[inst.Class] || '';
 
-  console.log(spontaneousSpells);
   const spontList = spontaneousSpells || [];
   const showSpont = page === 2 && spontList.length > 0 && !collapsed;
+  const domainList = domainSpells || [];
+  const showDomain = page === 2 && domainList.length > 0 && !collapsed;
+  const usedDomain = inst.UsedDomainSpells;
 
   const getRemaining = link => {
     if (["Sorcerer", "Bard"].includes(inst.Class)) {
@@ -98,6 +102,15 @@ export default function SpellLevelCard({
         <SpontaneousSpells
           spontaneousByLevel={{ [level]: spontList }}
           spontaneousLevels={[level]}
+          dispatch={dispatch}
+        />
+      )}
+
+      {showDomain && (
+        <DomainSpells
+          domainByLevel={{ [level]: domainList }}
+          domainLevels={[level]}
+          usedDomain={usedDomain}
           dispatch={dispatch}
         />
       )}

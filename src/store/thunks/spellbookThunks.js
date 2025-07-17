@@ -79,6 +79,30 @@ export const onEthicalAlignmentChange = align => (dispatch, getState) => {
   dispatch(setSpellbook(s));
 };
 
+export const onDomain1Change = domain => (dispatch, getState) => {
+  const { spellbook } = getState().spellbook;
+  if (!spellbook) return;
+  const s = new Spellbook().load(spellbook);
+  s.setDomain1(domain);
+  dispatch(setSpellbook(s));
+};
+
+export const onDomain2Change = domain => (dispatch, getState) => {
+  const { spellbook } = getState().spellbook;
+  if (!spellbook) return;
+  const s = new Spellbook().load(spellbook);
+  s.setDomain2(domain);
+  dispatch(setSpellbook(s));
+};
+
+export const onUseDomainSpell = lvl => (dispatch, getState) => {
+  const { spellbook } = getState().spellbook;
+  if (!spellbook) return;
+  const s = new Spellbook().load(spellbook);
+  s.useDomainSpell(lvl);
+  dispatch(setSpellbook(s));
+};
+
 export const onDeleteSpellbook = () => (dispatch, getState) => {
   const { spellbooks, selectedSpellbook } = getState().spellbook;
   if (!selectedSpellbook) return;

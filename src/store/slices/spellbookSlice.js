@@ -10,6 +10,7 @@ const initialState = {
   isSpellbookSidebarCollapsed: false,
   isSpellTableCollapsed: [false, false, false, false, false, false, false, false, false, false],
   isClassDescriptionCollapsed: false,
+  isDomainDescriptionCollapsed: false,
   searchSpellName: false,
   searchSpellSchool: false,
 };
@@ -59,6 +60,10 @@ export const spellbookSlice = createSlice({
       db.setIsClassDescriptionCollapsed(action.payload);
       state.isClassDescriptionCollapsed = action.payload;
     },
+    setIsDomainDescriptionCollapsed(state, action) {
+      db.setIsDomainDescriptionCollapsed(action.payload);
+      state.isDomainDescriptionCollapsed = action.payload;
+    },
     setSearchSpellName(state, action) {
       db.setSearchSpellName(action.payload);
       state.searchSpellName = action.payload;
@@ -79,6 +84,7 @@ export const {
   setIsSpellTableCollapsed,
   setIsSpellbookSidebarCollapsed,
   setIsClassDescriptionCollapsed,
+  setIsDomainDescriptionCollapsed,
   setSearchSpellName,
   setSearchSpellSchool
 } = spellbookSlice.actions;
