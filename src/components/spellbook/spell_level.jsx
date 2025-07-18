@@ -67,9 +67,9 @@ export default function SpellLevelCard({
         return `Lv${lvl} (${count}/${known[lvl]} known)`;
       }
       case (inst.Class === 'Wizard' && page === 0):
-        return lvl === 0
-          ? `Lv${lvl} (Wizards know all lv0 spells)`
-          : `Lv${lvl} (${inst.Spells.length - 19}/${known} known in total)`;
+        return "test";//lvl === 0
+          //? `Lv${lvl} (Wizards know all lv0 spells)`
+          //: `Lv${lvl} (${inst.Spells.length - 19}/${known} known in total)`;
       case (page === 1): {
         const preparedList = learned.reduce((acc, sp) => {
           const entry = sp.Level.split(',').map(p => p.trim()).find(p => p.startsWith(`${key} `));
