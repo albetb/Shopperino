@@ -93,7 +93,7 @@ const AddItemForm = ({ onAddItem, items, setShowAddItemForm }) => {
           onChange={(e) => setNumber(e.target.value)}
           onBlur={handleNumberBlur}
           className='modern-input add-item-height'
-          style={{ width: "80%" }}
+          style={{ width: "80%", color: "var(--white2)" }}
         />
       </td>
       <td className='name-size name-small no-border-top'>
@@ -105,7 +105,7 @@ const AddItemForm = ({ onAddItem, items, setShowAddItemForm }) => {
           onFocus={() => setIsFocused(true)}
           onBlur={handleNameBlur}
           className='name-size modern-input add-item-height'
-          style={{ width: "98%" }}
+          style={{ width: "98%", color: "var(--white2)" }}
         />
         {shouldShowSuggestions && (
           <ul className='suggestions'>
@@ -126,7 +126,7 @@ const AddItemForm = ({ onAddItem, items, setShowAddItemForm }) => {
           value={itemType}
           onChange={(e) => setItemType(e.target.value)}
           className='type-size modern-input add-item-height'
-          style={{ width: "104%", height: "2.26rem", maxHeight: "2.26rem" }}
+          style={{ width: "104%", height: "2.26rem", maxHeight: "2.26rem", color: "var(--white2)" }}
         >
           {itemTypes.map((type, index) => (
             <option key={index} value={type}>
@@ -144,6 +144,7 @@ const AddItemForm = ({ onAddItem, items, setShowAddItemForm }) => {
           onChange={(e) => setCost(e.target.value)}
           onBlur={handleCostBlur}
           className='cost-size modern-input add-item-height'
+          style={{color: "var(--white2)"}}
         />
       </td>
       <td className='action-size no-border-top'>

@@ -8,12 +8,15 @@ import {
   onDomain1Change,
   onDomain2Change,
   onEthicalAlignmentChange,
+  onForbidden1Change,
+  onForbidden2Change,
   onMoralAlignmentChange,
   onNewSpellbook,
   onPlayerCharacteristicChange,
   onPlayerClassChange,
   onPlayerLevelChange,
-  onSelectSpellbook
+  onSelectSpellbook,
+  onSpecializedChange
 } from '../../../../store/thunks/spellbookThunks';
 import CreateComponent from '../../../common/create_component';
 import LevelComponent from '../../../common/level_component';
@@ -38,10 +41,16 @@ export default function MenuCardPlayer() {
   const charLevel = spellbook?.Characteristic ?? 1;
   const domain1 = spellbook?.Domain1 ?? "";
   const domain2 = spellbook?.Domain2 ?? "";
+  const specialized = spellbook?.Specialized ?? "";
+  const forbidden1 = spellbook?.Forbidden1 ?? "";
+  const forbidden2 = spellbook?.Forbidden2 ?? "";
   const spellbookInstance = spellbook ? new Spellbook().load(spellbook) : null;
   const charName = spellbookInstance?.getCharName() ?? "Characteristic";
   const possibleDomains1 = spellbookInstance?.getPossibleDomain1();
   const possibleDomains2 = spellbookInstance?.getPossibleDomain2();
+  const possibleSpecialized = spellbookInstance?.getPossibleSpecialized();
+  const possibleForbidden1 = spellbookInstance?.getPossibleForbidden1();
+  const possibleForbidden2 = spellbookInstance?.getPossibleForbidden2();
 
   // Handlers
   const showCreate = () => setIsNewVisible(true);
@@ -56,6 +65,9 @@ export default function MenuCardPlayer() {
   const handleEthicalAlignmentChange = align => dispatch(onEthicalAlignmentChange(align));
   const handleDomain1Change = domain => dispatch(onDomain1Change(domain));
   const handleDomain2Change = domain => dispatch(onDomain2Change(domain));
+  const handleSpecializedChange = domain => dispatch(onSpecializedChange(domain));
+  const handleForbidden1Change = domain => dispatch(onForbidden1Change(domain));
+  const handleForbidden2Change = domain => dispatch(onForbidden2Change(domain));
 
   const classList = CLASSES;
 
@@ -189,6 +201,59 @@ export default function MenuCardPlayer() {
                   ))}
                 </select>
               </div>
+            </>
+          }
+          {playerClass === "Wizard" &&
+            <>
+              <div className="card-side-div margin-top">
+                <label className="modern-label">Specialized:</label>
+                <select
+                  className="modern-dropdown small-long"
+                  value={specialized}
+                  onChange={e => handleSpecializedChange(e.target.value)}
+                >
+                  <option value="">-</option>
+                  {possibleSpecialized.map(school => (
+                    <option key={school} value={school}>
+                      {school}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="card-side-div margin-top">
+                <label className="modern-label">Forbidden:</label>
+                <select
+                  className="modern-dropdown small-long"
+                  value={forbidden1}
+                  onChange={e => handleForbidden1Change(e.target.value)}
+                >
+                  <option value="">-</option>
+                  {possibleForbidden1.map(domain => (
+                    <option key={domain} value={domain}>
+                      {domain}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {specialized !== "Divination" &&
+                <div className="card-side-div margin-top">
+                  <label className="modern-label"></label>
+                  <select
+                    className="modern-dropdown small-long"
+                    value={forbidden2}
+                    onChange={e => handleForbidden2Change(e.target.value)}
+                  >
+                    <option value="">-</option>
+                    {possibleForbidden2.map(domain => (
+                      <option key={domain} value={domain}>
+                        {domain}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              }
             </>
           }
 

@@ -29,7 +29,7 @@ export default function DomainSpells({ domainByLevel, domainLevels, usedDomain, 
                                     <div className='card-side-div'>
                                         <div className='spell-slot-div2'>
                                             <button
-                                                className={`item-number-button smaller ${getRemaining(lvl) <= 0 ? 'opacity-50' : ''}`}
+                                                className={`flat-button smaller ${getRemaining(lvl) <= 0 ? 'opacity-50' : ''}`}
                                                 onClick={() => dispatch(onUseDomainSpell(lvl))}
                                                 disabled={getRemaining(lvl) <= 0}
                                             >

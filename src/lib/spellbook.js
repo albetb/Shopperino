@@ -2,7 +2,8 @@ import { loadFile, newGuid } from './utils';
 
 const ALL_SPELLS = loadFile("spells");
 const REQUIRED_KEYS = ['Id', 'Name', 'Class', 'Level', 'Characteristic', 'Spells',
-    'MoralAlignment', 'EthicalAlignment', 'Domain1', 'Domain2', 'UsedDomainSpells'];
+    'MoralAlignment', 'EthicalAlignment', 'Domain1', 'Domain2', 'UsedDomainSpells',
+    'Specialized', 'Forbidden1', 'Forbidden2'];
 export const CLASSES = ["Sorcerer", "Wizard", "Cleric", "Druid", "Bard", "Ranger", "Paladin"];
 const CLASSCHARMAP = {
     "Sorcerer": 'Charisma',
@@ -24,6 +25,7 @@ export const MAGICSCHOOLS = [
     "Transmutation",
     "Universal"
 ];
+const FILTEREDSCHOOLS = MAGICSCHOOLS.filter(x => x !== "Universal");
 export const DOMAINS = ["Air", "Animal", "Chaos", "Death", "Destruction",
     "Earth", "Evil", "Fire", "Good", "Healing",
     "Knowledge", "Law", "Luck", "Magic", "Plant",
@@ -46,6 +48,9 @@ class Spellbook {
         this.Domain1 = "";
         this.Domain2 = "";
         this.UsedDomainSpells = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        this.Specialized = "";
+        this.Forbidden1 = "";
+        this.Forbidden2 = "";
     }
 
     load(data) {
@@ -65,6 +70,9 @@ class Spellbook {
         this.Domain1 = data.Domain1;
         this.Domain2 = data.Domain2;
         this.UsedDomainSpells = data.UsedDomainSpells;
+        this.Specialized = data.Specialized;
+        this.Forbidden1 = data.Forbidden1;
+        this.Forbidden2 = data.Forbidden2;
 
         return this;
     }
@@ -116,6 +124,24 @@ class Spellbook {
     setDomain2(domain) {
         if (!this.getPossibleDomain2().includes(domain) && domain !== "") return;
         this.Domain2 = domain;
+    }
+
+    setSpecialized(school) {
+        if (!this.getPossibleSpecialized().includes(school) && school !== "") return;
+        this.Specialized = school;
+        if (school === "Divination")
+            this.Forbidden2 = "";
+    }
+
+    setForbidden1(school) {
+        if (!this.getPossibleForbidden1().includes(school) && school !== "") return;
+        this.Forbidden1 = school;
+    }
+
+    setForbidden2(school) {
+        if (this.Specialized === "Divination"
+            || (!this.getPossibleForbidden2().includes(school) && school !== "")) return;
+        this.Forbidden2 = school;
     }
 
     learnSpell(spell_link) {
@@ -377,6 +403,11 @@ class Spellbook {
             if (school && !spell.School.toLowerCase().includes(school.toLowerCase())) {
                 return false;
             }
+            if (this.Class === "Wizard"
+                && ((this.Forbidden1 && spell.School.toLowerCase().includes(this.Forbidden1.toLowerCase()))
+                    || (this.Forbidden2 && spell.School.toLowerCase().includes(this.Forbidden2.toLowerCase())))) {
+                return false;
+            }
             if (["Druid", "Cleric"].includes(this.Class)) {
                 const alignmentConflicts = {
                     "Lawful": "[Chaotic]",
@@ -415,6 +446,23 @@ class Spellbook {
             && x !== this.Domain1);
     }
 
+    getPossibleSpecialized() {
+        return FILTEREDSCHOOLS.filter(x => x !== this.Forbidden1
+            && x !== this.Forbidden2);
+    }
+
+    getPossibleForbidden1() {
+        return FILTEREDSCHOOLS.filter(x => x !== "Divination"
+            && x !== this.Specialized
+            && x !== this.Forbidden2);
+    }
+
+    getPossibleForbidden2() {
+        return FILTEREDSCHOOLS.filter(x => x !== "Divination"
+            && x !== this.Specialized
+            && x !== this.Forbidden1);
+    }
+
     serialize() {
         return {
             Id: this.Id,
@@ -427,7 +475,10 @@ class Spellbook {
             EthicalAlignment: this.EthicalAlignment,
             Domain1: this.Domain1,
             Domain2: this.Domain2,
-            UsedDomainSpells: this.UsedDomainSpells
+            UsedDomainSpells: this.UsedDomainSpells,
+            Specialized: this.Specialized,
+            Forbidden1: this.Forbidden1,
+            Forbidden2: this.Forbidden2
         };
     }
 }

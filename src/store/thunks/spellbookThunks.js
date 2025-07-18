@@ -103,6 +103,30 @@ export const onUseDomainSpell = lvl => (dispatch, getState) => {
   dispatch(setSpellbook(s));
 };
 
+export const onSpecializedChange = school => (dispatch, getState) => {
+  const { spellbook } = getState().spellbook;
+  if (!spellbook) return;
+  const s = new Spellbook().load(spellbook);
+  s.setSpecialized(school);
+  dispatch(setSpellbook(s));
+};
+
+export const onForbidden1Change = school => (dispatch, getState) => {
+  const { spellbook } = getState().spellbook;
+  if (!spellbook) return;
+  const s = new Spellbook().load(spellbook);
+  s.setForbidden1(school);
+  dispatch(setSpellbook(s));
+};
+
+export const onForbidden2Change = school => (dispatch, getState) => {
+  const { spellbook } = getState().spellbook;
+  if (!spellbook) return;
+  const s = new Spellbook().load(spellbook);
+  s.setForbidden2(school);
+  dispatch(setSpellbook(s));
+};
+
 export const onDeleteSpellbook = () => (dispatch, getState) => {
   const { spellbooks, selectedSpellbook } = getState().spellbook;
   if (!selectedSpellbook) return;

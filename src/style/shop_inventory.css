@@ -240,7 +240,7 @@ h4 {
 }
 
 .button-link:hover {
-  color: var(--white);
+  color: var(--white2);
   text-decoration: underline;
 }
 
@@ -250,6 +250,19 @@ h4 {
 
 .class-desc>p {
   font-size: small;
+}
+
+.highlight{
+text-shadow:
+    1px 1px 1px var(--grey-t),
+    0 0 2px var(--blue-t)
+}
+
+.flat-button {
+  box-shadow: none;
+  box-shadow: 0px 0px 0px 2px var(--blue-t);
+  background-color: transparent;
+  border: none;
 }
 
 
@@ -300,7 +313,7 @@ h4 {
   }
 
   .action-size {
-    width: 3.3rem;
+    width: 2rem;
   }
 
   .header-container {

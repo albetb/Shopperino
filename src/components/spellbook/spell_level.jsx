@@ -53,6 +53,8 @@ export default function SpellLevelCard({
   const spellCardTitle = lvl => {
     const known = inst.getSpellsKnown();
     const learned = inst.getLearnedSpells();
+    const isSpecialized = inst.Class === "Wizard"
+      && inst.Specialized && inst.Forbidden1 && (inst.Forbidden2 || inst.Specialized === "Divination");
     switch (true) {
       case (["Sorcerer", "Bard"].includes(inst.Class) && page === 0): {
         const learnedByLevel = learned.reduce((acc, sp) => {
@@ -76,14 +78,37 @@ export default function SpellLevelCard({
           return acc;
         }, {});
         const spellsFor = preparedList[lvl] || [];
-        const totalPrep = spellsFor
+        let totalPrep = spellsFor
           .map(x => parseInt(inst.Spells.find(y => y.Link === x.Link).Prepared, 10))
           .reduce((a, b) => a + b, 0);
-        return `Lv${lvl} (${totalPrep}/${spellsPerDay[lvl]} per day)`;
+        let totalPrepSpec = spellsFor
+          .filter(x => x.School.toLowerCase().includes(inst.Specialized.toLowerCase()))
+          .map(x => parseInt(inst.Spells.find(y => y.Link === x.Link).Prepared, 10))
+          .reduce((a, b) => a + b, 0);
+
+        let mageSpec = "";
+        const hasOneSpellOfSpec = totalPrepSpec > 0;
+        if (isSpecialized) {
+          mageSpec = `${hasOneSpellOfSpec ? "1" : "0"}/1 ${trimLine(inst.Specialized, isMobile() ? 4 : 15)}`;
+          if (hasOneSpellOfSpec)
+            totalPrep -= 1;
+        }
+
+
+        return `Lv${lvl} (${totalPrep}/${spellsPerDay[lvl]} per day) ${mageSpec}`;
       }
       default:
-        return `Lv${lvl} (${spellsPerDay[lvl]}/day) CD ${10 + charBonus + lvl}`;
+        const mageSpec = isSpecialized ? "+1" : "";
+        return `Lv${lvl} (${spellsPerDay[lvl]}${mageSpec}/day) CD ${10 + charBonus + lvl}`;
     }
+  };
+
+  const schoolClass = school => {
+    if (inst.Class === "Wizard"
+      && inst.Specialized && school.toLowerCase().includes(inst.Specialized.toLowerCase())
+      && inst.Forbidden1 && (inst.Forbidden2 || inst.Specialized === "Divination"))
+      return " highlight";
+    return "";
   };
 
   return (
@@ -124,7 +149,7 @@ export default function SpellLevelCard({
                 {page === 0 && (
                   <td className={i === 0 ? 'first' : ''} style={{ width: 'var(--btn-width-sm)', maxWidth: 'var(--btn-width-sm)' }}>
                     <button
-                      className={`item-number-button smaller ${inst.getLearnedSpells().map(x => x.Link).includes(item.Link) ? 'opacity-50' : ''}`}
+                      className={`flat-button smaller ${inst.getLearnedSpells().map(x => x.Link).includes(item.Link) ? 'opacity-50' : ''}`}
                       onClick={() => dispatch(onLearnUnlearnSpell(item.Link))}
                     >
                       <span className="material-symbols-outlined">
@@ -139,7 +164,7 @@ export default function SpellLevelCard({
                     <div className='card-side-div'>
                       <div className='spell-slot-div'>
                         <button
-                          className={`levels-button smaller ${(inst.Spells.find(x => x.Link === item.Link)?.Prepared || 0) === 0 ? 'opacity-50' : ''
+                          className={`smaller flat-button ${(inst.Spells.find(x => x.Link === item.Link)?.Prepared || 0) === 0 ? 'opacity-50' : ''
                             }`}
                           onClick={() => dispatch(onUnprepareSpell(item.Link))}
                           disabled={(inst.Spells.find(x => x.Link === item.Link)?.Prepared || 0) === 0}
@@ -150,7 +175,7 @@ export default function SpellLevelCard({
                           {inst.Spells.find(x => x.Link === item.Link)?.Prepared || 0}
                         </label>
                         <button
-                          className='levels-button smaller'
+                          className='smaller flat-button'
                           onClick={() => dispatch(onPrepareSpell(item.Link))}
                         >
                           <span className='material-symbols-outlined'>add</span>
@@ -165,7 +190,7 @@ export default function SpellLevelCard({
                     <div className='card-side-div'>
                       <div className='spell-slot-div2'>
                         <button
-                          className={`item-number-button smaller ${getRemaining(item.Link) <= 0 ? 'opacity-50' : ''}`}
+                          className={`flat-button smaller ${getRemaining(item.Link) <= 0 ? 'opacity-50' : ''}`}
                           onClick={() => dispatch(onUseSpell(item.Link))}
                           disabled={getRemaining(item.Link) <= 0}
                         >
@@ -179,7 +204,7 @@ export default function SpellLevelCard({
 
                 <td className={i === 0 ? 'first' : ''} style={{ width: 'auto' }}>
                   <button
-                    className='button-link'
+                    className={'button-link' + schoolClass(item.School)}
                     style={{ color: 'var(--black)' }}
                     onClick={() => dispatch(addCardByLink({ links: item.Link, bonus: 0 }))}
                   >
@@ -188,7 +213,9 @@ export default function SpellLevelCard({
                 </td>
 
                 {!(page === 1 && isMobile()) && (
-                  <td className={i === 0 ? 'first' : ''} style={{ width: '30%', fontSize: 'small' }}>
+                  <td className={(i === 0 ? 'first' : '')
+                    + schoolClass(item.School)
+                  } style={{ width: '30%', fontSize: 'small' }}>
                     {item.School.split(' ')[0]}
                   </td>
                 )}

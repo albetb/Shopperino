@@ -91,6 +91,7 @@ export default function TopMenu() {
             className="modern-dropdown small-middle"
             onClick={handleDownloadClick}
             title="Export save file"
+            style={{ background: "var(--white-t)" }}
         >
             <span className="material-symbols-outlined">download</span>
         </button>;
@@ -108,6 +109,7 @@ export default function TopMenu() {
                 className="modern-dropdown small-middle"
                 onClick={handleUploadClick}
                 title="Import save file"
+                style={{ background: "var(--white-t)" }}
             >
                 <span className="material-symbols-outlined">drive_folder_upload</span>
             </button>
@@ -121,6 +123,7 @@ export default function TopMenu() {
             onClick={handleShopClick}
             title="Shop generator"
             disabled={currentTab === 1}
+            style={{ background: "var(--white-t)" }}
         >
             <span className="material-symbols-outlined">shopping_cart</span>
         </button>
@@ -131,6 +134,7 @@ export default function TopMenu() {
             onClick={handleSpellbookClick}
             title="Spellbook"
             disabled={currentTab === 2}
+            style={{ background: "var(--white-t)" }}
         >
             <span className="material-symbols-outlined">menu_book</span>
         </button>
@@ -176,6 +180,7 @@ export default function TopMenu() {
                 onClick={handleToggleOptions}
                 title="Open options"
                 ref={optionsButtonRef}
+                style={{ background: "var(--white-t)" }}
             >
                 <span className="material-symbols-outlined">settings</span>
             </button>
@@ -193,6 +198,7 @@ export default function TopMenu() {
                 onClick={handleToggleMobileMenu}
                 title="Open menu"
                 ref={menuButtonRef}
+                style={{ background: "var(--white-t)" }}
             >
                 <span className="material-symbols-outlined">menu</span>
             </button>

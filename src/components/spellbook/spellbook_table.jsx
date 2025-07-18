@@ -47,12 +47,12 @@ export default function SpellbookTable() {
       />
 
       {spellbook?.Class === "Cleric"
-      && (spellbook?.Domain1 || spellbook?.Domain2)
-      && <DomainDescriptionCard
-        description={domainDesc}
-        collapsed={isCollapsed.domainDesc}
-        toggle={() => dispatch({ type: 'spellbook/setIsDomainDescriptionCollapsed', payload: !isCollapsed.domainDesc })}
-      />}
+        && (spellbook?.Domain1 || spellbook?.Domain2)
+        && <DomainDescriptionCard
+          description={domainDesc}
+          collapsed={isCollapsed.domainDesc}
+          toggle={() => dispatch({ type: 'spellbook/setIsDomainDescriptionCollapsed', payload: !isCollapsed.domainDesc })}
+        />}
 
       {levels.map(lvl => (
         <SpellLevelCard
