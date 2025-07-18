@@ -11,9 +11,9 @@ export default function SpontaneousSpells({ spontaneousByLevel, spontaneousLevel
                 <table key={lvl} className="spellbook-table">
                     <thead>
                         <tr>
-                            <th style={{ width: 'var(--btn-width-sm)' }}></th>
-                            <th style={{ fontSize: "small", width: "auto", textAlign: "left" }}>Spontaneous spells</th>
-                            {!isMobile() && (<th style={{ width: "30%" }}></th>)}
+                            <th className="dark-grey" style={{ width: 'var(--btn-width-sm)' }}></th>
+                            <th className="dark-grey" style={{ fontSize: "small", width: "auto", textAlign: "left" }}>Spontaneous spells</th>
+                            {!isMobile() && (<th className="dark-grey" style={{ width: "30%" }}></th>)}
                         </tr>
                     </thead>
                     <tbody>
