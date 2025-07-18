@@ -27,7 +27,7 @@ export default function MainPage() {
       </div>
 
       <div className="card" style={{ width: ww, padding: pp, paddingLeft: plr, paddingRight: plr, cursor: "pointer" }} onClick={handleSpellbookClick}>
-        <p style={{ textShadow: "1px 1px #0d0d0d1a" }}><b>Spellbook</b><sup>BETA</sup></p>
+        <p style={{ textShadow: "1px 1px #0d0d0d1a" }}><b>Spellbook</b></p>
         <span className="material-symbols-outlined" style={{ color: "#0d0d0d" }}>menu_book</span>
         <p style={{ textAlign: "center" }}>A spellbook that lets players organize and track their learned spells.</p>
       </div>

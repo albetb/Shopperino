@@ -89,7 +89,7 @@ export default function SpellLevelCard({
         let mageSpec = "";
         const hasOneSpellOfSpec = totalPrepSpec > 0;
         if (isSpecialized) {
-          mageSpec = `${hasOneSpellOfSpec ? "1" : "0"}/1 ${trimLine(inst.Specialized, isMobile() ? 4 : 15)}`;
+          mageSpec = `${hasOneSpellOfSpec ? "1" : "0"}/1 ${inst.Specialized}`;
           if (hasOneSpellOfSpec)
             totalPrep -= 1;
         }
