@@ -50,11 +50,13 @@ export default function SpellLevelCard({
     return Math.max(0, Prepared - Used);
   };
 
+  const spellLength = inst.Spells.length;
+  const isSpecialized = inst.Class === "Wizard"
+    && inst.Specialized && inst.Forbidden1 && (inst.Forbidden2 || inst.Specialized === "Divination");
+
   const spellCardTitle = lvl => {
     const known = inst.getSpellsKnown();
     const learned = inst.getLearnedSpells();
-    const isSpecialized = inst.Class === "Wizard"
-      && inst.Specialized && inst.Forbidden1 && (inst.Forbidden2 || inst.Specialized === "Divination");
     switch (true) {
       case (["Sorcerer", "Bard"].includes(inst.Class) && page === 0): {
         const learnedByLevel = learned.reduce((acc, sp) => {
@@ -67,9 +69,9 @@ export default function SpellLevelCard({
         return `Lv${lvl} (${count}/${known[lvl]} known)`;
       }
       case (inst.Class === 'Wizard' && page === 0):
-        return "test";//lvl === 0
-          //? `Lv${lvl} (Wizards know all lv0 spells)`
-          //: `Lv${lvl} (${inst.Spells.length - 19}/${known} known in total)`;
+        return lvl === 0
+          ? `Lv${lvl} (Wizards know all lv0 spells)`
+          : `Lv${lvl} (${spellLength - 19}/${known} known in total)`;
       case (page === 1): {
         const preparedList = learned.reduce((acc, sp) => {
           const entry = sp.Level.split(',').map(p => p.trim()).find(p => p.startsWith(`${key} `));
