@@ -50,28 +50,32 @@ export default function SpellLevelCard({
     return Math.max(0, Prepared - Used);
   };
 
-  const spellLength = inst.Spells.length;
+  const learned = inst.getLearnedSpells();
+  const spellLength = learned.length;
+
+  const learnedByLevel = learned.reduce((acc, sp) => {
+    const entry = sp.Level.split(',').map(p => p.trim()).find(p => p.startsWith(`${key} `));
+    const l = entry ? parseInt(entry.slice(key.length).trim(), 10) : null;
+    if (l != null) (acc[l] = acc[l] || []).push(sp);
+    return acc;
+  }, {});
+  const learnedByLevel0Length = learnedByLevel[0].length;
+
   const isSpecialized = inst.Class === "Wizard"
     && inst.Specialized && inst.Forbidden1 && (inst.Forbidden2 || inst.Specialized === "Divination");
 
   const spellCardTitle = lvl => {
     const known = inst.getSpellsKnown();
-    const learned = inst.getLearnedSpells();
     switch (true) {
       case (["Sorcerer", "Bard"].includes(inst.Class) && page === 0): {
-        const learnedByLevel = learned.reduce((acc, sp) => {
-          const entry = sp.Level.split(',').map(p => p.trim()).find(p => p.startsWith(`${key} `));
-          const l = entry ? parseInt(entry.slice(key.length).trim(), 10) : null;
-          if (l != null) (acc[l] = acc[l] || []).push(sp);
-          return acc;
-        }, {});
+
         const count = (learnedByLevel[lvl] || []).length;
         return `Lv${lvl} (${count}/${known[lvl]} known)`;
       }
       case (inst.Class === 'Wizard' && page === 0):
         return lvl === 0
           ? `Lv${lvl} (Wizards know all lv0 spells)`
-          : `Lv${lvl} (${spellLength - 19}/${known} known in total)`;
+          : `Lv${lvl} (${spellLength - learnedByLevel0Length}/${known} known in total)`;
       case (page === 1): {
         const preparedList = learned.reduce((acc, sp) => {
           const entry = sp.Level.split(',').map(p => p.trim()).find(p => p.startsWith(`${key} `));
@@ -106,8 +110,8 @@ export default function SpellLevelCard({
   };
 
   const specialized = inst.Specialized;
-  const baseSchoolClass = inst.Class === "Wizard" && specialized 
-      && inst.Forbidden1 && (inst.Forbidden2 || specialized === "Divination")
+  const baseSchoolClass = inst.Class === "Wizard" && specialized
+    && inst.Forbidden1 && (inst.Forbidden2 || specialized === "Divination")
 
   const schoolClass = school => {
     if (baseSchoolClass && school.includes(specialized))
