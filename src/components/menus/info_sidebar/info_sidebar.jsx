@@ -1,8 +1,13 @@
+import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { toggleInfoSidebar, clearInfoCards, removeCard } from '../../../store/slices/appSlice';
-import '../../../style/sidebar.css';
 import { isMobile } from '../../../lib/utils';
+import {
+  clearInfoCards,
+  removeCard,
+  toggleInfoSidebar
+} from '../../../store/slices/appSlice';
 import InfoMenuCards from './cards/info_menu_cards';
+import '../../../style/sidebar.css';
 
 export default function InfoSidebar() {
   const dispatch = useDispatch();
@@ -10,16 +15,55 @@ export default function InfoSidebar() {
   const shopBarIsCollapsed = useSelector(state => state.app.sidebarCollapsed);
   const spellBarIsCollapsed = useSelector(state => state.spellbook.isSpellbookSidebarCollapsed);
   const currentTab = useSelector(state => state.app.currentTab);
-  const otherBarIsCollapsed = currentTab === 1 ? shopBarIsCollapsed
-    : currentTab === 2 ? spellBarIsCollapsed : false;
   const cardsData = useSelector(state => state.app.infoCards);
 
-  const handleToggle = () => dispatch(toggleInfoSidebar());
-  const handleClearInfoCards = () => dispatch(clearInfoCards());
-  const handleCloseCard = (card) => dispatch(removeCard(card));
+  const otherBarIsCollapsed =
+    currentTab === 1 ? shopBarIsCollapsed :
+      currentTab === 2 ? spellBarIsCollapsed :
+        false;
 
-  if (cardsData.length === 0
-    || (isMobile() && !otherBarIsCollapsed)) return null;
+  const handleToggle = useCallback(
+    () => dispatch(toggleInfoSidebar()),
+    [dispatch]
+  );
+  const handleClearInfoCards = useCallback(
+    () => dispatch(clearInfoCards()),
+    [dispatch]
+  );
+  const handleCloseCard = useCallback(
+    card => dispatch(removeCard(card)),
+    [dispatch]
+  );
+
+  useEffect(() => {
+    if (!isMobile()) return;
+
+    if (!isCollapsed) {
+      window.history.pushState({ infoSidebar: 'open' }, '');
+    }
+
+    const onPopState = event => {
+      if (!isCollapsed && event.state?.infoSidebar === 'open') {
+        handleToggle();
+        window.history.pushState({ infoSidebar: 'open' }, '');
+      }
+    };
+
+    window.addEventListener('popstate', onPopState);
+    return () => {
+      window.removeEventListener('popstate', onPopState);
+      if (!isCollapsed) {
+        window.history.back();
+      }
+    };
+  }, [isCollapsed, handleToggle]);
+
+  if (
+    cardsData.length === 0 ||
+    (isMobile() && !otherBarIsCollapsed)
+  ) {
+    return null;
+  }
 
   return (
     <div className={`info-sidebar ${isCollapsed ? 'collapsed' : ''}`}>
@@ -31,11 +75,17 @@ export default function InfoSidebar() {
 
       {!isCollapsed && (
         <>
-          <button className="saving-button delete-info-button" onClick={handleClearInfoCards}>
+          <button
+            className="saving-button delete-info-button"
+            onClick={handleClearInfoCards}
+          >
             <span className="material-symbols-outlined">delete</span>
           </button>
 
-          <InfoMenuCards cardsData={cardsData} closeCard={handleCloseCard} />
+          <InfoMenuCards
+            cardsData={cardsData}
+            closeCard={handleCloseCard}
+          />
         </>
       )}
     </div>

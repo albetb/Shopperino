@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Spellbook, { CLASSES, ETHICALALIGNMENTS, MORALALIGNMENTS } from '../../../../lib/spellbook';
-import { order } from '../../../../lib/utils';
+import { isMobile, order } from '../../../../lib/utils';
 import { setSpellbookPage } from '../../../../store/slices/spellbookSlice';
 import {
   onDeleteSpellbook,
@@ -197,7 +197,7 @@ export default function MenuCardPlayer() {
               <button
                 className={buttonClass + `${spellbookPage === 0 ? " opacity-50" : ""}`}
                 onClick={() => dispatch(setSpellbookPage(0))}
-                disabled={spellbookPage === 0}
+                disabled={spellbookPage === 0 && !isMobile()}
               >
                 <b>Learn</b>
               </button>
@@ -207,7 +207,7 @@ export default function MenuCardPlayer() {
               <button
                 className={buttonClass + `${spellbookPage === 1 ? " opacity-50" : ""}`}
                 onClick={() => dispatch(setSpellbookPage(1))}
-                disabled={spellbookPage === 1}
+                disabled={spellbookPage === 1 && !isMobile()}
               >
                 <b>Prepare</b>
               </button>
@@ -216,7 +216,7 @@ export default function MenuCardPlayer() {
             <button
               className={buttonClass + `${spellbookPage === 2 ? " opacity-50" : ""}`}
               onClick={() => dispatch(setSpellbookPage(2))}
-              disabled={spellbookPage === 2}
+              disabled={spellbookPage === 2 && !isMobile()}
             >
               <b>Spellbook</b>
             </button>
