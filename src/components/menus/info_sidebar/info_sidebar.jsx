@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { isMobile } from '../../../lib/utils';
 import {
@@ -6,6 +6,7 @@ import {
   removeCard,
   toggleInfoSidebar
 } from '../../../store/slices/appSlice';
+import { useBackButtonHandler } from '../../hooks/use_back_button';
 import InfoMenuCards from './cards/info_menu_cards';
 import '../../../style/sidebar.css';
 
@@ -35,28 +36,7 @@ export default function InfoSidebar() {
     [dispatch]
   );
 
-  useEffect(() => {
-    if (!isMobile()) return;
-
-    if (!isCollapsed) {
-      window.history.pushState({ infoSidebar: 'open' }, '');
-    }
-
-    const onPopState = event => {
-      if (!isCollapsed && event.state?.infoSidebar === 'open') {
-        handleToggle();
-        window.history.pushState({ infoSidebar: 'open' }, '');
-      }
-    };
-
-    window.addEventListener('popstate', onPopState);
-    return () => {
-      window.removeEventListener('popstate', onPopState);
-      if (!isCollapsed) {
-        window.history.back();
-      }
-    };
-  }, [isCollapsed, handleToggle]);
+  useBackButtonHandler(!isCollapsed, handleToggle);
 
   if (
     cardsData.length === 0 ||
