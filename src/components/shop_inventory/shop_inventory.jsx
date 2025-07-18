@@ -140,7 +140,7 @@ export default function ShopInventory() {
                 <td style={{ color: "#c0c0c0", fontSize: "0.73em" }}>{formatNumber(item.Cost)}</td>
                 <td>
                   <button
-                    className="item-number-button smaller"
+                    className="flat-button smaller"
                     onClick={e => handleDeleteItemClick(e, item.Name, item.ItemType, item.Number)}
                     onMouseDown={e => longPressEvent.onMouseDown(e, [item.Name, item.ItemType, item.Number])}
                     onTouchStart={e => longPressEvent.onTouchStart(e, [item.Name, item.ItemType, item.Number])}
@@ -150,6 +150,7 @@ export default function ShopInventory() {
                       longPressEvent.onTouchEnd(e);
                       handleDeleteItemClick(e, item.Name, item.ItemType, item.Number);
                     }}
+                    style={{ color: "#c0c0c0" }}
                   >
                     <span className="material-symbols-outlined">remove_shopping_cart</span>
                   </button>

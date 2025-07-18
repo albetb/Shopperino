@@ -33,28 +33,23 @@
   -ms-user-select: none;
 }
 
-.comment {
-  box-shadow: 2px 2px 1.5px 0px var(--blue-t2),
-    inset -2px -2px 5px 0px var(--white-t);
-  background-color: var(--white);
-  border: 1px solid var(--white2);
-}
-
 .saving-button,
 .item-number-button,
 .add-item-button,
 .modern-button,
 .levels-button,
 .modern-input,
-.modern-dropdown,
+.modern-dropdown {
+  box-shadow: 2px 2px 1.5px 0px var(--blue-t2),
+    inset -2px -2px 5px 0px var(--white-t);
+  background-color: var(--white);
+  border: 1px solid var(--white2);
+}
+
 .flat-button {
   box-shadow: 0px 0px 0px 2px var(--blue-t);
   background-color: var(--grey-t2);
   border: none;
-}
-.item-number-button,
-.add-item-button {
-  color: var(--white2);
 }
 
 /* Size modifiers */
