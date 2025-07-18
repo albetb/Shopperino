@@ -59,7 +59,7 @@ export default function SpellLevelCard({
     if (l != null) (acc[l] = acc[l] || []).push(sp);
     return acc;
   }, {});
-  const learnedByLevel0Length = learnedByLevel[0].length;
+  const learnedByLevel0Length = (learnedByLevel[0] ?? []).length;
 
   const isSpecialized = inst.Class === "Wizard"
     && inst.Specialized && inst.Forbidden1 && (inst.Forbidden2 || inst.Specialized === "Divination");
