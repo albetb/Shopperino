@@ -105,10 +105,12 @@ export default function SpellLevelCard({
     }
   };
 
+  const specialized = inst.Specialized;
+  const baseSchoolClass = inst.Class === "Wizard" && specialized 
+      && inst.Forbidden1 && (inst.Forbidden2 || specialized === "Divination")
+
   const schoolClass = school => {
-    if (inst.Class === "Wizard"
-      && inst.Specialized && school.toLowerCase().includes(inst.Specialized.toLowerCase())
-      && inst.Forbidden1 && (inst.Forbidden2 || inst.Specialized === "Divination"))
+    if (baseSchoolClass && school.includes(specialized))
       return " highlight";
     return "";
   };
