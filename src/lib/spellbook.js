@@ -392,21 +392,21 @@ class Spellbook {
         if (domain && DOMAINS.includes(domain))
             key = domain;
 
-        if (this.Class === "Wizard" && (this.Forbidden1 || this.Forbidden2)) {
-            const forbidden = [];
-            if (this.Forbidden1) forbidden.push(this.Forbidden1);
-            if (this.Forbidden2) forbidden.push(this.Forbidden2);
-
-            spells = spells.filter(spell => {
-                const schools = spell.School;
-                for (let i = 0, len = forbidden.length; i < len; i++) {
-                    if (schools.indexOf(forbidden[i]) !== -1) {
-                        return false;
-                    }
-                }
-                return true;
-            });
-        }
+        //if (this.Class === "Wizard" && (this.Forbidden1 || this.Forbidden2)) {
+        //    const forbidden = [];
+        //    if (this.Forbidden1) forbidden.push(this.Forbidden1);
+        //    if (this.Forbidden2) forbidden.push(this.Forbidden2);
+//
+        //    spells = spells.filter(spell => {
+        //        const schools = spell.School;
+        //        for (let i = 0, len = forbidden.length; i < len; i++) {
+        //            if (schools.indexOf(forbidden[i]) !== -1) {
+        //                return false;
+        //            }
+        //        }
+        //        return true;
+        //    });
+        //}
 
         return spells.filter(spell => {
             if (!spell || domain === "") return false;
