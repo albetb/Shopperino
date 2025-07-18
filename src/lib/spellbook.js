@@ -392,6 +392,22 @@ class Spellbook {
         if (domain && DOMAINS.includes(domain))
             key = domain;
 
+        if (this.Class === "Wizard" && (this.Forbidden1 || this.Forbidden2)) {
+            const forbidden = [];
+            if (this.Forbidden1) forbidden.push(this.Forbidden1);
+            if (this.Forbidden2) forbidden.push(this.Forbidden2);
+
+            spells = spells.filter(spell => {
+                const schools = spell.School;
+                for (let i = 0, len = forbidden.length; i < len; i++) {
+                    if (schools.indexOf(forbidden[i]) !== -1) {
+                        return false;
+                    }
+                }
+                return true;
+            });
+        }
+
         return spells.filter(spell => {
             if (!spell || domain === "") return false;
             const parts = spell.Level.split(',').map(s => s.trim());
@@ -401,11 +417,6 @@ class Spellbook {
                 return false;
             }
             if (school && !spell.School.toLowerCase().includes(school.toLowerCase())) {
-                return false;
-            }
-            if (this.Class === "Wizard"
-                && ((this.Forbidden1 && spell.School.toLowerCase().includes(this.Forbidden1.toLowerCase()))
-                    || (this.Forbidden2 && spell.School.toLowerCase().includes(this.Forbidden2.toLowerCase())))) {
                 return false;
             }
             if (["Druid", "Cleric"].includes(this.Class)) {
