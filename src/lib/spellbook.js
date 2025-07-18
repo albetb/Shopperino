@@ -253,9 +253,9 @@ class Spellbook {
 
     getSpellsKnown() {
         if (this.Class === "Sorcerer")
-            return loadFile("tables")["Spell slot"]["Sorcerer known"][this.Level - 1];
+            return loadFile("tables")["Spell slot"]["Sorcerer known"][Math.min(this.Level - 1, 19)];
         if (this.Class === "Bard")
-            return loadFile("tables")["Spell slot"]["Bard known"][this.Level - 1];
+            return loadFile("tables")["Spell slot"]["Bard known"][Math.min(this.Level - 1, 19)];
         if (this.Class === "Wizard")
             return 1 + this.getCharBonus() + 2 * this.Level
         return [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
