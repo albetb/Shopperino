@@ -3,6 +3,7 @@ import { isMobile } from '../../lib/utils';
 
 export function useBackButtonHandler(active, onBack) {
   const hasPushed = useRef(false);
+  hasPushed.current = active;
 
   // 1) Install the popstate listener once
   useEffect(() => {
