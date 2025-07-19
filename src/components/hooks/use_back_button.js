@@ -3,7 +3,11 @@ import { isMobile } from '../../lib/utils';
 
 export function useBackButtonHandler(active, onBack) {
   const hasPushed = useRef(false);
-  hasPushed.current = active;
+
+  if (active) {
+    window.history.pushState({}, '');
+    hasPushed.current = true;
+  }
 
   // 1) Install the popstate listener once
   useEffect(() => {
@@ -18,6 +22,7 @@ export function useBackButtonHandler(active, onBack) {
     };
 
     window.addEventListener('popstate', handlePop);
+
     return () => {
       window.removeEventListener('popstate', handlePop);
     };
