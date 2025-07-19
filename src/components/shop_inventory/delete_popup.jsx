@@ -53,7 +53,7 @@ const DeletePopup = ({ itemName, itemType, itemNumber, onClose, onDelete, positi
           className="no-padding slider"
         />
         <div className="level-frame">
-          <span>{num}</span>
+          <label className='level-text'>{num}</label>
         </div>
       </div>
 
