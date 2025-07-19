@@ -93,7 +93,7 @@ const AddItemForm = ({ onAddItem, items, setShowAddItemForm }) => {
           onChange={(e) => setNumber(e.target.value)}
           onBlur={handleNumberBlur}
           className='modern-input add-item-height'
-          style={{ width: "80%" }}
+          style={{ marginLeft: "0.25rem" }}
         />
       </td>
       <td className='name-size name-small no-border-top'>
@@ -105,7 +105,6 @@ const AddItemForm = ({ onAddItem, items, setShowAddItemForm }) => {
           onFocus={() => setIsFocused(true)}
           onBlur={handleNameBlur}
           className='name-size modern-input add-item-height'
-          style={{ width: "98%" }}
         />
         {shouldShowSuggestions && (
           <ul className='suggestions'>
@@ -126,7 +125,6 @@ const AddItemForm = ({ onAddItem, items, setShowAddItemForm }) => {
           value={itemType}
           onChange={(e) => setItemType(e.target.value)}
           className='type-size modern-input add-item-height'
-          style={{ width: "104%", height: "2.26rem", maxHeight: "2.26rem" }}
         >
           {itemTypes.map((type, index) => (
             <option key={index} value={type}>
@@ -148,8 +146,7 @@ const AddItemForm = ({ onAddItem, items, setShowAddItemForm }) => {
       </td>
       <td className='action-size no-border-top'>
         <button className='item-number-button medium-short'
-        style={{ height: "2rem !important", maxHeight: "2rem !important" }}
-        onClick={handleAddItemClick}>
+          onClick={handleAddItemClick}>
           <span className='material-symbols-outlined'>
             add_shopping_cart
           </span>

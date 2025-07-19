@@ -34,11 +34,8 @@
 }
 
 .saving-button,
-.item-number-button,
-.add-item-button,
 .modern-button,
 .levels-button,
-.modern-input,
 .modern-dropdown {
   box-shadow: 2px 2px 1.5px 0px var(--blue-t2),
     inset -2px -2px 5px 0px var(--white-t);
@@ -46,6 +43,9 @@
   border: 1px solid var(--white2);
 }
 
+.item-number-button,
+.modern-input,
+.add-item-button,
 .flat-button {
   box-shadow: 0px 0px 0px 2px var(--blue-t);
   background-color: var(--grey-t2);

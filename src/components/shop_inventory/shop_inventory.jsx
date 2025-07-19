@@ -96,7 +96,7 @@ export default function ShopInventory() {
         </div>
       </div>
 
-      <table className="shop-table">
+      <table className={`shop-table ${showAddItemForm ? "shop-table-adding" : ""}`}>
         <thead>
           <tr>
             <th className="number-size" style={{ color: "#c0c0c0", fontSize: "0.73em" }}>#</th>
@@ -138,7 +138,7 @@ export default function ShopInventory() {
                 </td>
                 <td style={{ color: "#c0c0c0", fontSize: "0.73em" }}>{abbrevType}</td>
                 <td style={{ color: "#c0c0c0", fontSize: "0.73em" }}>{formatNumber(item.Cost)}</td>
-                <td>
+                <td style={{ textAlign: "center" }}>
                   <button
                     className="flat-button smaller"
                     onClick={e => handleDeleteItemClick(e, item.Name, item.ItemType, item.Number)}
