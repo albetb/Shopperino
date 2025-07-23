@@ -21,6 +21,10 @@ export default function TopMenu() {
         dispatch(setStateCurrentTab(2));
         setMobileMenuOpen(false);
     };
+    const handleLootClick = () => {
+        dispatch(setStateCurrentTab(3));
+        setMobileMenuOpen(false);
+    };
 
     const handleUploadClick = () => {
         document.getElementById('upload').click();
@@ -135,10 +139,21 @@ export default function TopMenu() {
             <span className="material-symbols-outlined">menu_book</span>
         </button>
 
+    const lootButton =
+        <button
+            className={`modern-dropdown ${buttonDimension} ${currentTab === 3 ? "opacity-50" : ""}`}
+            onClick={handleLootClick}
+            title="Loot generator"
+            disabled={currentTab === 3}
+        >
+            <span className="material-symbols-outlined">money_bag</span>
+        </button>
+
     const buttons = (
         <>
             {shopButton}
             {spellbookButton}
+            {lootButton}
         </>
     );
 
@@ -151,6 +166,10 @@ export default function TopMenu() {
             <div className="menu-side-by-side">
                 <p style={{ textShadow: "1px 1px #12121366" }}>Spellbook</p>
                 {spellbookButton}
+            </div>
+            <div className="menu-side-by-side">
+                <p style={{ textShadow: "1px 1px #12121366" }}>Loot generator</p>
+                {lootButton}
             </div>
         </>
     );

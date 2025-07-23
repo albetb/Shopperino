@@ -49,8 +49,8 @@ function newRandomItem(itemType, shopLevel, partyLevel, arcaneChance = 0.7, qual
     return itemGenerators[itemType]();
 }
 
-function randomMagicItem(shopLevel, partyLevel) {
-    const quality = itemQuality(shopLevel, partyLevel);
+function randomMagicItem(shopLevel, partyLevel, quality = null) {
+    quality = quality ?? itemQuality(shopLevel, partyLevel);
     const itemTable = itemChoice('Random Magic Item Chance', {
         quality: quality,
         file: 'tables'
@@ -162,7 +162,7 @@ function newWand(shopLevel, quality) {
 }
 
 function newWondrous(shopLevel, quality) {
-    const id = Math.min(Math.floor(Math.random() * (1.5 * shopLevel)) + Math.floor(Math.random() * 100) + 1, 100);
+    const id = Math.min(100, Math.floor(Math.random() * (1.5 * shopLevel)) + Math.ceil(Math.random() * 100));
     const itemsData = (loadFile('items'))['Wondrous Item'];
     const item = itemsData.find(x => x.Id === id && x.Type === quality);
     if (item) {
@@ -379,4 +379,4 @@ function newMagicArmor(shopLevel, quality) {
     return armor;
 }
 
-export { newRandomItem, randomMagicItem, getItem };
+export { newRandomItem, randomMagicItem, getItem, newWeapon, newArmor, newShield };

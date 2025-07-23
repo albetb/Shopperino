@@ -98,13 +98,6 @@ export default function App() {
     </header>
   </>;
 
-  const spellbook = <>
-    <SpellbookSidebar />
-    <header className="app-header">
-      <SpellbookTable />
-    </header>
-  </>;
-
   const shopper = <>
     <ShopSidebar />
     <header className="app-header">
@@ -112,10 +105,25 @@ export default function App() {
     </header>
   </>;
 
+  const spellbook = <>
+    <SpellbookSidebar />
+    <header className="app-header">
+      <SpellbookTable />
+    </header>
+  </>;
+
+  const loot = <>
+    <></>
+    <header className="app-header">
+      <></>
+    </header>
+  </>;
+
   const tabPages = {
     0: mainPage,
     1: shopper,
-    2: spellbook
+    2: spellbook,
+    3: loot
   };
 
   const currentTabContent = tabPages[currentTab] ??

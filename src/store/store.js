@@ -4,6 +4,7 @@ import cityReducer from './slices/citySlice';
 import shopReducer from './slices/shopSlice';
 import worldReducer from './slices/worldSlice';
 import spellbookReducer from './slices/spellbookSlice';
+import lootReducer from './slices/lootSlice';
 
 const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ const store = configureStore({
     city: cityReducer,
     shop: shopReducer,
     spellbook: spellbookReducer,
+    loot: lootReducer
   },
 });
 

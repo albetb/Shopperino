@@ -230,11 +230,11 @@
       "Description": "<p>A hooded lantern clearly illuminates a 30-foot radius and provides shadowy illumination in a 60-foot radius. It burns for 6 hours on a pint of oil. You can carry a hooded lantern in one hand.</p>"
     },
     {
-      "Name": "Lock, Very simple",
+      "Name": "Lock, Simple",
       "Chance": 4,
       "Cost": 20,
       "Weight": 0.5,
-      "Link": "lock-very-simple",
+      "Link": "lock-simple",
       "Description": "<p>The DC to open a lock with the Open Lock skill depends on the lock’s quality: simple (DC 20), average (DC 25), good (DC 30), or superior (DC 40).</p>"
     },
     {
