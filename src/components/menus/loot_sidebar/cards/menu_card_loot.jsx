@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { onDeleteLoot, onNewLoot, onSelectLoot } from '../../../../store/thunks/lootThunks';
 import '../../../../style/menu_cards.css';
 import LevelComponent from '../../../common/level_component';
+import { setIsLootSidebarCollapsed } from '../../../../lib/storage';
+import { isMobile } from '../../../../lib/utils';
 
 const MODIFIER_OPTIONS = [
   { value: 0, label: 'x0' },
@@ -32,11 +34,15 @@ export default function MenuCardLoot() {
       setItemsMod(loot.ItemsMod);
     }
   }, [loot]);
-  console.log(loot)
 
   const handleSelectLoot = (l) => { dispatch(onSelectLoot(l)); };
   const handleDelete = () => { dispatch(onDeleteLoot()); };
-  const handleGenerate = () => { dispatch(onNewLoot(level, goldMod, goodsMod, itemsMod)); };
+  const handleGenerate = () => { 
+    dispatch(onNewLoot(level, goldMod, goodsMod, itemsMod)); 
+    if (isMobile()) {
+      dispatch(setIsLootSidebarCollapsed(true));
+    }
+  };
 
   return (
     <>
