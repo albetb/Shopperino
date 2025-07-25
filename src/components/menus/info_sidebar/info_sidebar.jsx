@@ -15,13 +15,15 @@ export default function InfoSidebar() {
   const isCollapsed = useSelector(state => state.app.infoSidebarCollapsed);
   const shopBarIsCollapsed = useSelector(state => state.app.sidebarCollapsed);
   const spellBarIsCollapsed = useSelector(state => state.spellbook.isSpellbookSidebarCollapsed);
+  const lootBarIsCollapsed = useSelector(state => state.loot.isLootSidebarCollapsed);
   const currentTab = useSelector(state => state.app.currentTab);
   const cardsData = useSelector(state => state.app.infoCards);
 
   const otherBarIsCollapsed =
     currentTab === 1 ? shopBarIsCollapsed :
       currentTab === 2 ? spellBarIsCollapsed :
-        false;
+        currentTab === 3 ? lootBarIsCollapsed :
+          false;
 
   const handleToggle = useCallback(
     () => dispatch(toggleInfoSidebar()),
