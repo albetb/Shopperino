@@ -35,10 +35,15 @@ export default function MenuCardLoot() {
     }
   }, [loot]);
 
-  const handleSelectLoot = (l) => { dispatch(onSelectLoot(l)); };
+  const handleSelectLoot = (l) => {
+    dispatch(onSelectLoot(l));
+    if (isMobile()) {
+      dispatch(setIsLootSidebarCollapsed(true));
+    }
+  };
   const handleDelete = () => { dispatch(onDeleteLoot()); };
-  const handleGenerate = () => { 
-    dispatch(onNewLoot(level, goldMod, goodsMod, itemsMod)); 
+  const handleGenerate = () => {
+    dispatch(onNewLoot(level, goldMod, goodsMod, itemsMod));
     if (isMobile()) {
       dispatch(setIsLootSidebarCollapsed(true));
     }
