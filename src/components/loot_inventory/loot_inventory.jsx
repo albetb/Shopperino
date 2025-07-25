@@ -13,6 +13,7 @@ export default function LootInventory() {
   const goodsObj = lootInst?.Goods || {};
   const goodsList = goodsObj.gems || goodsObj.art || [];
   const itemsList = lootInst?.Items?.items || [];
+  const goodsValue = goodsList.map(x => x.Cost).reduce((sum, cost) => sum + cost, 0);
 
   if (!lootName) return null;
 
@@ -34,8 +35,11 @@ export default function LootInventory() {
         <div className="label-container">
           <h2>Generated at {timeLabel()}</h2>
         </div>
-        <div className="money-box">
-          <h4><b>Gold: {formatNumber(gold)}</b></h4>
+        <div className="money-box" style={{ alignItems: 'center', flexDirection: 'column' }}>
+          <h4 style={{ margin: '0.2rem' }}><b>Gold: {formatNumber(gold)}gp</b></h4>
+          {goodsList.length > 0 &&
+            <h2 style={{ margin: '0.2rem' }}>+ goods {formatNumber(goodsValue)}gp</h2>
+          }
         </div>
       </div>
 
