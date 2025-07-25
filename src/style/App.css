@@ -1,5 +1,5 @@
 :root {
-  --menu-height: 7vh;
+  --menu-height: calc(var(--btn-height-sm) * 1.6);
 
   --white: #f9f9f9;
   --white2: #c0c0c0;

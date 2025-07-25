@@ -1,6 +1,6 @@
 .shop-table,
 .spellbook-table {
-  width: 50vw;
+  width: calc(var(--btn-width-sm) * 20);
   margin-bottom: 0.3em;
 }
 

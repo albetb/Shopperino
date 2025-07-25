@@ -2,7 +2,7 @@
 .info-sidebar {
   position: fixed;
   display: flex;
-  width: 20vw;
+  width: calc(var(--btn-width-sm) * 7.4);
   top: var(--menu-height);
   height: calc(100vh - var(--menu-height));
   background-color: var(--blue);
