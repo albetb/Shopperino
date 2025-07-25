@@ -14,8 +14,8 @@ export const lootSlice = createSlice({
   initialState,
   reducers: {
     setLoots(state, action) {
-      db.setLoot(action.payload);
-      state.loot = action.payload;
+      db.setLoots(action.payload);
+      state.loots = action.payload;
     },
     setSelectedLoot(state, action) {
       db.setSelectedLoot(action.payload);
@@ -23,8 +23,10 @@ export const lootSlice = createSlice({
     },
     setLoot: {
       reducer(state, action) {
-        db.setLoot(action.payload);
-        state.loot = action.payload;
+        if (action.payload?.Id) {
+          db.setLoot(action.payload);
+          state.loot = action.payload;
+        }
       },
       prepare(lootInstance) {
         return { payload: serialize(lootInstance) };

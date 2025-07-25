@@ -9,6 +9,8 @@ const CURRENT_STORAGE_VERSION = 250716; // last modified date as yymmdd
 
 //#region get
 
+//#region Shopper
+
 export function getWorlds() {
     const value = localStorage.getItem('Worlds');
     return value ? JSON.parse(decompressFromUTF16(value)) : [];
@@ -54,6 +56,8 @@ export function getCurrentTab() {
     return value ? JSON.parse(decompressFromUTF16(value)) : 0;
 }
 
+//#endregion
+
 //#region Spellbook
 
 export function getSpellbooks() {
@@ -63,7 +67,7 @@ export function getSpellbooks() {
 
 export function getSpellbook(id) {
     const value = localStorage.getItem(`Spellbook/${id}`);
-    return value ? new Spellbook().load(JSON.parse(decompressFromUTF16(value))) : new Spellbook();
+    return value ? new Spellbook().load(JSON.parse(decompressFromUTF16(value))) : null;
 }
 
 export function getSelectedSpellbook() {
@@ -127,7 +131,7 @@ export function getLoots() {
 
 export function getLoot(id) {
     const value = localStorage.getItem(`Loot/${id}`);
-    return value ? new Loot().load(JSON.parse(decompressFromUTF16(value))) : new Loot();
+    return value ? new Loot().load(JSON.parse(decompressFromUTF16(value))) : null;
 }
 
 export function getSelectedLoot() {
@@ -140,11 +144,18 @@ export function getIsLootSidebarCollapsed() {
     return value ? JSON.parse(decompressFromUTF16(value)) : false;
 }
 
+export function getIsLootCollapsed() {
+    const value = localStorage.getItem('IsLootCollapsed');
+    return value ? JSON.parse(decompressFromUTF16(value)) : false;
+}
+
 //#endregion
 
 //#endregion
 
 //#region set
+
+//#region Shopper
 
 export function setWorlds(value) {
     localStorage.setItem('Worlds', compressToUTF16(JSON.stringify(value)));
@@ -155,15 +166,18 @@ export function setSelectedWorld(value) {
 }
 
 export function setWorld(value) {
-    localStorage.setItem(`World/${value?.Id}`, compressToUTF16(JSON.stringify(value)));
+    if (value?.Id)
+        localStorage.setItem(`World/${value.Id}`, compressToUTF16(JSON.stringify(value)));
 }
 
 export function setCity(value) {
-    localStorage.setItem(`City/${value?.Id}`, compressToUTF16(JSON.stringify(value)));
+    if (value?.Id)
+        localStorage.setItem(`City/${value.Id}`, compressToUTF16(JSON.stringify(value)));
 }
 
 export function setShop(value) {
-    localStorage.setItem(`Shop/${value?.Id}`, compressToUTF16(JSON.stringify(value)));
+    if (value?.Id)
+        localStorage.setItem(`Shop/${value.Id}`, compressToUTF16(JSON.stringify(value)));
 }
 
 export function setIsWorldCollapsed(value) {
@@ -182,6 +196,8 @@ export function setCurrentTab(value) {
     localStorage.setItem('CurrentTab', compressToUTF16(JSON.stringify(value)));
 }
 
+//#endregion
+
 //#region Spellbook
 
 export function setSpellbooks(value) {
@@ -189,7 +205,8 @@ export function setSpellbooks(value) {
 }
 
 export function setSpellbook(value) {
-    localStorage.setItem(`Spellbook/${value?.Id}`, compressToUTF16(JSON.stringify(value)));
+    if (value?.Id)
+        localStorage.setItem(`Spellbook/${value.Id}`, compressToUTF16(JSON.stringify(value)));
 }
 
 export function setSelectedSpellbook(value) {
@@ -241,7 +258,8 @@ export function setLoots(value) {
 }
 
 export function setLoot(value) {
-    localStorage.setItem(`Loot/${value?.Id}`, compressToUTF16(JSON.stringify(value)));
+    if (value?.Id)
+        localStorage.setItem(`Loot/${value.Id}`, compressToUTF16(JSON.stringify(value)));
 }
 
 export function setSelectedLoot(value) {
@@ -250,6 +268,10 @@ export function setSelectedLoot(value) {
 
 export function setIsLootSidebarCollapsed(value) {
     localStorage.setItem('IsLootSidebarCollapsed', compressToUTF16(JSON.stringify(value)));
+}
+
+export function setIsLootCollapsed(value) {
+    localStorage.setItem('IsLootCollapsed', compressToUTF16(JSON.stringify(value)));
 }
 
 //#endregion

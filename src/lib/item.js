@@ -177,7 +177,8 @@ function newScroll(shopLevel, quality, arcaneChance = 0.7) {
     const scrollType = ['Arcane', 'Divine'][weightedRandom([arcaneChance, divineChance])];
     const level = itemChoice('Scroll Level', { quality: quality, mod: Math.sqrt(shopLevel), file: 'tables' });
     const scrollsData = (loadFile('scrolls'))[scrollType];
-    const scrolls = scrollsData.filter(x => x.Level === level.Level);
+    const scrolls = scrollsData?.filter(x => x.Level === level.Level);
+    if (!scrolls) return null;
     const selectedScroll = weightedRandom(scrolls.map(x => x.Chance));
     const scroll = removeUnusedAttributes(scrolls[selectedScroll]);
     return scroll;

@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import MainPage from './components/main_page/main_page';
 import InfoSidebar from './components/menus/info_sidebar/info_sidebar';
+import LootSidebar from './components/menus/loot_sidebar/loot_sidebar';
 import ShopSidebar from './components/menus/shop_sidebar/shop_sidebar';
 import SpellbookSidebar from './components/menus/spellbook_sidebar/spellbook_sidebar';
 import TopMenu from './components/menus/top_menu';
@@ -16,19 +17,25 @@ import {
   setCity
 } from './store/slices/citySlice';
 import {
+  setIsLootSidebarCollapsed,
+  setLoot,
+  setLoots,
+  setSelectedLoot
+} from './store/slices/lootSlice';
+import {
   setShop,
   setShopGenerated
 } from './store/slices/shopSlice';
 import {
   setIsClassDescriptionCollapsed,
   setIsDomainDescriptionCollapsed,
-  setSpellbookPage,
   setIsSpellbookSidebarCollapsed,
   setIsSpellTableCollapsed,
   setSearchSpellName,
   setSearchSpellSchool,
   setSelectedSpellbook,
   setSpellbook,
+  setSpellbookPage,
   setSpellbooks
 } from './store/slices/spellbookSlice';
 import {
@@ -38,6 +45,7 @@ import {
 } from './store/slices/worldSlice';
 import './style/App.css';
 import './style/buttons.css';
+import LootInventory from './components/loot_inventory/loot_inventory';
 
 export default function App() {
   const dispatch = useDispatch();
@@ -62,17 +70,21 @@ export default function App() {
     const ddc = db.getIsDomainDescriptionCollapsed();
     const ssn = db.getSearchSpellName();
     const sss = db.getSearchSpellSchool();
+    const ls = db.getLoots();
+    const sl = db.getSelectedLoot();
+    const l = db.getLoot(sl?.Id);
+    const lsc = db.getIsLootSidebarCollapsed();
 
     // Populate Redux
     dispatch(setWorlds(worldsDb));
     dispatch(setSelectedWorld(selW));
-    dispatch(setWorld(w));
-    dispatch(setCity(c));
-    dispatch(setShop(s));
+    if (w) dispatch(setWorld(w));
+    if (c) dispatch(setCity(c));
+    if (s) dispatch(setShop(s));
     dispatch(setStateCurrentTab(ct));
     dispatch(setSpellbooks(sbs));
     dispatch(setSelectedSpellbook(ssb));
-    dispatch(setSpellbook(sb));
+    if (sb) dispatch(setSpellbook(sb));
     dispatch(setSpellbookPage(ie));
     dispatch(setIsSpellTableCollapsed(stc));
     dispatch(setIsSpellbookSidebarCollapsed(ssc));
@@ -80,6 +92,10 @@ export default function App() {
     dispatch(setIsDomainDescriptionCollapsed(ddc));
     dispatch(setSearchSpellName(ssn));
     dispatch(setSearchSpellSchool(sss));
+    if (l) dispatch(setLoot(l));
+    dispatch(setSelectedLoot(sl));
+    dispatch(setLoots(ls));
+    dispatch(setIsLootSidebarCollapsed(lsc));
 
     // Compute shopGenerated flag
     const generated = w?.Cities?.some(ci =>
@@ -113,9 +129,9 @@ export default function App() {
   </>;
 
   const loot = <>
-    <></>
+    <LootSidebar />
     <header className="app-header">
-      <></>
+      <LootInventory />
     </header>
   </>;
 

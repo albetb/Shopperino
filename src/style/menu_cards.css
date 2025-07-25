@@ -19,7 +19,7 @@
 }
 
 .card-width-spellbook {
-  width: 52%;
+  width: calc(var(--btn-width-sm) * 20.4);
 }
 
 .card.collapsed {

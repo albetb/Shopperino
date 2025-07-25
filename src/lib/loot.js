@@ -1,11 +1,12 @@
 import { newArmor, newShield, newWeapon, randomMagicItem } from "./item";
-import { loadFile } from "./utils";
+import { loadFile, newGuid } from "./utils";
 
-const REQUIRED_KEYS = ['Level', 'GoldMod', 'GoodsMod', 'ItemsMod', 'Gold', 'Goods', 'Items', 'Timestamp'];
+const REQUIRED_KEYS = ['Id', 'Level', 'GoldMod', 'GoodsMod', 'ItemsMod', 'Gold', 'Goods', 'Items', 'Timestamp'];
 
 class Loot {
-    constructor(playerLevel = 1, goldMod = 1, goodsMod = 1, itemsMod = 1) {
-        this.Level = playerLevel;
+    constructor(level = 1, goldMod = 1, goodsMod = 1, itemsMod = 1) {
+        this.Id = newGuid();
+        this.Level = level;
         this.GoldMod = goldMod;
         this.GoodsMod = goodsMod;
         this.ItemsMod = itemsMod;
@@ -21,6 +22,7 @@ class Loot {
             return this;
         }
 
+        this.Id = data.Id;
         this.Level = data.Level;
         this.GoldMod = data.GoldMod;
         this.GoodsMod = data.GoodsMod;
@@ -35,12 +37,13 @@ class Loot {
     generateTimestamp() {
         const now = new Date();
         const pad = n => n.toString().padStart(2, '0');
-        const yyyy = now.getFullYear();
+        const yyyy = now.getFullYear().toString().substring(2);
         const MM = pad(now.getMonth() + 1);
         const dd = pad(now.getDate());
         const hh = pad(now.getHours());
+        const mm = pad(now.getMinutes());
         const ss = pad(now.getSeconds());
-        return `${yyyy}/${MM}/${dd} ${hh}:${ss}`;
+        return `${yyyy}/${MM}/${dd} ${hh}:${mm}:${ss}`;
     }
 
     rollDice(times, sides) {
@@ -132,6 +135,7 @@ class Loot {
                 break;
             }
         }
+        if (!pools[tier]) return { Name: "A strange bug", Cost: 1 };
         const name = pools[tier][Math.floor(Math.random() * pools[tier].length)];
         const cost = rolls[tier].cost();
         return { Name: name, Cost: cost };
@@ -502,6 +506,7 @@ class Loot {
 
     serialize() {
         return {
+            Id: this.Id,
             Level: this.Level,
             GoldMod: this.GoldMod,
             GoodsMod: this.GoodsMod,
