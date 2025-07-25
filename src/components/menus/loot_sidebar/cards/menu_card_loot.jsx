@@ -68,7 +68,9 @@ export default function MenuCardLoot() {
           onClick={handleDelete}
           disabled={!selectedLoot}
         >
-          Delete
+          <span className="material-symbols-outlined">
+            delete
+          </span>
         </button>
       </div>
 
