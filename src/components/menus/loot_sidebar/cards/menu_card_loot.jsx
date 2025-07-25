@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { onDeleteLoot, onNewLoot, onSelectLoot } from '../../../../store/thunks/lootThunks';
 import '../../../../style/menu_cards.css';
 import LevelComponent from '../../../common/level_component';
-import { setIsLootSidebarCollapsed } from '../../../../lib/storage';
 import { isMobile } from '../../../../lib/utils';
+import { setIsLootSidebarCollapsed } from '../../../../store/slices/lootSlice';
 
 const MODIFIER_OPTIONS = [
   { value: 0, label: 'x0' },
