@@ -69,7 +69,7 @@ export default function LootInventory() {
       }
 
       {/* Items Table */}
-      {itemsList.filter(x => x).length > 0 &&
+      {itemsList.filter(x => x && x.Name).length > 0 &&
 
         <table className="shop-table" style={{ marginBottom: "0.5rem" }}>
           <thead>
