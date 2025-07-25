@@ -91,7 +91,7 @@ class Loot {
             }
         }
 
-        return 0;
+        return this.rollDice(1, 6) * 10 * this.GoldMod; // Never zero
     }
 
     generateGems() {
@@ -135,7 +135,7 @@ class Loot {
                 break;
             }
         }
-        if (!pools[tier]) return { Name: "A strange bug", Cost: 1 };
+        if (!pools[tier]) return { Name: "A strange bug", Cost: 4.04 };
         const name = pools[tier][Math.floor(Math.random() * pools[tier].length)];
         const cost = rolls[tier].cost();
         return { Name: name, Cost: cost };
@@ -400,6 +400,9 @@ class Loot {
                 items.push(randomMagicItem(0, this.Level, 'Major'));
             }
         }
+
+        if (items.length < 1 && this.ItemsMod >= 1) // At least one item
+            items.push(this.generateMundane());
 
         return { items };
     }
