@@ -1,6 +1,6 @@
 import Loot from '../../lib/loot';
 import * as db from '../../lib/storage';
-import { setLoot, setLoots, setSelectedLoot } from '../slices/lootSlice';
+import { resetLoot, setLoot, setLoots, setSelectedLoot } from '../slices/lootSlice';
 
 export const onNewLoot = (level, goldMod, goodsMod, itemsMod) => (dispatch, getState) => {
   const { loots } = getState().loot;
@@ -32,6 +32,6 @@ export const onDeleteLoot = () => (dispatch, getState) => {
     const l = db.getLoot(next.Id);
     dispatch(setLoot(l));
   } else {
-    dispatch(setLoot(null));
+    dispatch(resetLoot());
   }
 };

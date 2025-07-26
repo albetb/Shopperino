@@ -26,6 +26,11 @@ export default function MenuCardLoot() {
   const [goodsMod, setGoodsMod] = useState(1);
   const [itemsMod, setItemsMod] = useState(1);
 
+  const onSetLevel = (lvl) => {
+    if (lvl > 0)
+      setLevel(lvl);
+  };
+
   useEffect(() => {
     if (loot) {
       setLevel(loot.Level);
@@ -74,7 +79,7 @@ export default function MenuCardLoot() {
         </button>
       </div>
 
-      <LevelComponent props={{ level, levelName: 'Player Level', onLevelChange: setLevel }} />
+      <LevelComponent props={{ level, levelName: 'Encounter lv', onLevelChange: onSetLevel }} />
 
       <div className="card-side-div margin-top">
         <label className="modern-label">Gold:</label>

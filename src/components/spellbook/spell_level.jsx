@@ -244,7 +244,7 @@ SpellLevelCard.propTypes = {
     Name: PropTypes.string,
     Level: PropTypes.string,
     School: PropTypes.string
-  })).isRequired,
+  })),
   collapsed: PropTypes.bool.isRequired,
   toggle: PropTypes.func.isRequired,
   page: PropTypes.number.isRequired,

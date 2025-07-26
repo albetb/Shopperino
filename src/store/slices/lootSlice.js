@@ -32,6 +32,12 @@ export const lootSlice = createSlice({
         return { payload: serialize(lootInstance) };
       }
     },
+    resetLoot(state) {
+      db.setSelectedLoot(null);
+      state.selectedLoot = null;
+      db.setLoot(null);
+      state.loot = null;
+    },
     setIsLootSidebarCollapsed(state, action) {
       db.setIsLootSidebarCollapsed(action.payload);
       state.isLootSidebarCollapsed = action.payload;
@@ -43,6 +49,7 @@ export const {
   setLoots,
   setSelectedLoot,
   setLoot,
+  resetLoot,
   setIsLootSidebarCollapsed,
 } = lootSlice.actions;
 

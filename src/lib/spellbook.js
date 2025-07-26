@@ -267,19 +267,19 @@ class Spellbook {
             if (this.MoralAlignment !== "Good")
                 spell_list.push(...["inflict-minor-wounds", "inflict-light-wounds", "inflict-moderate-wounds",
                     "inflict-serious-wounds", "inflict-critical-wounds", "mass-inflict-light-wounds",
-                    "mass-inflict-moderate-wounds", "mass-inflict-serious-wounds", "mass-inflict-critical-wounds"]);
+                    "mass-inflict-moderate-wounds", "mass-inflict-serious-wounds", "mass-inflict-critical-wounds"].splice(0, this.maxSpellLevel() + 1));
 
             if (this.MoralAlignment !== "Evil")
                 spell_list.push(...["cure-minor-wounds", "cure-light-wounds", "cure-moderate-wounds",
                     "cure-serious-wounds", "cure-critical-wounds", "mass-cure-light-wounds",
-                    "mass-cure-moderate-wounds", "mass-cure-serious-wounds", "mass-cure-critical-wounds"]);
+                    "mass-cure-moderate-wounds", "mass-cure-serious-wounds", "mass-cure-critical-wounds"].splice(0, this.maxSpellLevel() + 1));
         }
         else if (this.Class === "Druid")
             spell_list = ["summon-natures-ally-i", "summon-natures-ally-ii", "summon-natures-ally-iii",
                 "summon-natures-ally-iv", "summon-natures-ally-v", "summon-natures-ally-vi",
-                "summon-natures-ally-vii", "summon-natures-ally-viii", "summon-natures-ally-ix"];
+                "summon-natures-ally-vii", "summon-natures-ally-viii", "summon-natures-ally-ix"].splice(0, this.maxSpellLevel() + 1);
 
-        const spell_temp = spell_list.splice(0, this.maxSpellLevel() + 1).map(x => ALL_SPELLS.find(y => y.Link === x))
+        const spell_temp = spell_list.map(x => ALL_SPELLS.find(y => y.Link === x))
 
         return this._getSpells(spell_temp, { name, school, level });
     }
