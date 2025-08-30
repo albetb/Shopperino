@@ -9,7 +9,7 @@ const initialState = {
   spellbookPage: 0, // 0: learn, 1: prepare, 2: spellbook
   isSpellbookSidebarCollapsed: false,
   isSpellTableCollapsed: [false, false, false, false, false, false, false, false, false, false],
-  isClassDescriptionCollapsed: false,
+  isClassDescriptionCollapsed: true,
   isDomainDescriptionCollapsed: false,
   searchSpellName: false,
   searchSpellSchool: false,

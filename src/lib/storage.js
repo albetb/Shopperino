@@ -102,7 +102,7 @@ export function getSpellbookPage() {
 
 export function getIsClassDescriptionCollapsed() {
     const value = localStorage.getItem('IsClassDescriptionCollapsed');
-    return value ? JSON.parse(decompressFromUTF16(value)) : false;
+    return value ? JSON.parse(decompressFromUTF16(value)) : true;
 }
 
 export function getIsDomainDescriptionCollapsed() {
