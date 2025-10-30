@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Spellbook, { CLASSES, ETHICALALIGNMENTS, MORALALIGNMENTS } from '../../../../lib/spellbook';
 import { isMobile, order } from '../../../../lib/utils';
-import { setSpellbookPage } from '../../../../store/slices/spellbookSlice';
+import { setIsClassDescriptionCollapsed, setIsSpellTableCollapsed, setSpellbookPage } from '../../../../store/slices/spellbookSlice';
 import {
   onDeleteSpellbook,
   onDomain1Change,
@@ -22,6 +22,7 @@ import CreateComponent from '../../../common/create_component';
 import LevelComponent from '../../../common/level_component';
 import SelectComponent from '../../../common/select_component';
 import '../../../../style/menu_cards.css';
+import { setIsPlayerCollapsed } from '../../../../lib/storage';
 
 export default function MenuCardPlayer() {
   const dispatch = useDispatch();
@@ -100,6 +101,12 @@ export default function MenuCardPlayer() {
   const isPrepareVisible = ["Wizard", "Cleric", "Druid", "Ranger", "Paladin"].includes(playerClass);
   const buttonClass = `modern-button 
                 ${playerClass === "Wizard" ? "small-middle-long3" : "small-middle-long2"}`;
+
+  const changeToSpellbook = () => {
+    dispatch(setSpellbookPage(2));
+    dispatch(setIsClassDescriptionCollapsed(true));
+    dispatch(setIsSpellTableCollapsed([false, false, false, false, false, false, false, false, false, false]))
+  };
 
   return (
     <>
@@ -280,7 +287,7 @@ export default function MenuCardPlayer() {
 
             <button
               className={buttonClass + `${spellbookPage === 2 ? " opacity-50" : ""}`}
-              onClick={() => dispatch(setSpellbookPage(2))}
+              onClick={() => changeToSpellbook()}
               disabled={spellbookPage === 2 && !isMobile()}
             >
               <b>Spellbook</b>
