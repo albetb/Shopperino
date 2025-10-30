@@ -2,7 +2,7 @@
 const ALPHA_B3 = 'b3';
 const ALPHA_43 = '43';
 
-// call this with a hex string (e.g. '#017474') or null to restore defaults
+// call this with a hex string (e.g. '#2fa6a1') or null to restore defaults
 export function applyColors(mainHex) {
   const root = document.documentElement.style;
 
