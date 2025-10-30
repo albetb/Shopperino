@@ -5,7 +5,7 @@
   width: calc(var(--btn-width-sm) * 7.4);
   top: var(--menu-height);
   height: calc(100vh - var(--menu-height));
-  background-color: var(--blue);
+  background-color: var(--main);
   z-index: 900;
   overflow-y: auto;
   scrollbar-width: thin;
@@ -13,12 +13,12 @@
 }
 
 .sidebar {
-  box-shadow: 2px 0px 5px 1px var(--blue-t);
+  box-shadow: 2px 0px 5px 1px var(--main-t);
   left: 0;
 }
 
 .info-sidebar {
-  box-shadow: -2px 0px 5px 1px var(--blue-t);
+  box-shadow: -2px 0px 5px 1px var(--main-t);
   right: 0;
 }
 
@@ -30,7 +30,7 @@
   left: 0;
   width: 100%;
   height: var(--menu-height);
-  background-color: var(--blue);
+  background-color: var(--main);
   align-items: center;
   justify-content: space-between;
   padding: 0 0.4rem;
@@ -70,10 +70,10 @@
   width: 15vw;
   margin-right: 2vw;
   right: 2vw;
-  background-color: var(--blue);
-  box-shadow: 0 0 20px var(--blue-t);
+  background-color: var(--main);
+  box-shadow: 0 0 20px var(--main-t);
   border-radius: 1rem;
-  border: 2px solid var(--blue-t);
+  border: 2px solid var(--main-t);
   display: flex;
   flex-direction: column;
   align-items: center;

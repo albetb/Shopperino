@@ -9,7 +9,7 @@
 .card {
   width: 100%;
   background-color: var(--white-t);
-  box-shadow: 3px 4px 5px var(--blue-t);
+  box-shadow: 3px 4px 5px var(--main-t);
   margin-bottom: 0.6rem;
   border-radius: 0.8rem;
   display: flex;

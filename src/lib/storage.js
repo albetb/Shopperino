@@ -56,6 +56,11 @@ export function getCurrentTab() {
     return value ? JSON.parse(decompressFromUTF16(value)) : 0;
 }
 
+export function getMainColor() {
+    const value = localStorage.getItem('MainColor');
+    return value ? JSON.parse(decompressFromUTF16(value)) : null;
+}
+
 //#endregion
 
 //#region Spellbook
@@ -194,6 +199,10 @@ export function setIsShopCollapsed(value) {
 
 export function setCurrentTab(value) {
     localStorage.setItem('CurrentTab', compressToUTF16(JSON.stringify(value)));
+}
+
+export function setMainColor(value) {
+    localStorage.setItem('MainColor', compressToUTF16(JSON.stringify(value)));
 }
 
 //#endregion

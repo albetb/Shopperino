@@ -179,7 +179,7 @@ h4 {
 }
 
 .rest-box {
-  border: 2px solid var(--blue-t);
+  border: 2px solid var(--main-t);
   cursor: pointer;
 }
 
@@ -285,12 +285,12 @@ h4 {
 .highlight {
   text-shadow:
     1px 1px 1px var(--grey-t),
-    0 0 2px var(--blue-t);
+    0 0 2px var(--main-t);
 }
 
 .flat-button {
   box-shadow: none;
-  box-shadow: 0px 0px 0px 2px var(--blue-t);
+  box-shadow: 0px 0px 0px 2px var(--main-t);
   background-color: transparent;
   border: none;
 }

@@ -5,13 +5,13 @@
   --white2: #c0c0c0;
   --dark-grey: #333333;
   --black: #0d0d0d;
-  --blue: #017474;
+  --main: #017474;
   --white-t: #c0c0c0cc;
   --grey-t: #444a577e;
   --grey-t2: #55575b19;
   --black-t: #0d0d0d1a;
-  --blue-t: #015974b3;
-  --blue-t2: #01597443;
+  --main-t: #015974b3;
+  --main-t2: #01597443;
 }
 
 .app {
@@ -42,7 +42,7 @@
 }
 
 .app-link {
-  color: var(--blue);
+  color: var(--main);
 }
 
 body {
@@ -54,7 +54,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   /* Firefox */
   scrollbar-width: thin;
-  scrollbar-color: var(--blue) var(--dark-grey);
+  scrollbar-color: var(--main) var(--dark-grey);
 }
 
 code {
@@ -75,14 +75,14 @@ body::-webkit-scrollbar-track {
 }
 
 body::-webkit-scrollbar-thumb {
-  background: var(--blue);
+  background: var(--main);
   border-radius: 1rem;
   border: 3px transparent var(--dark-grey);
   -webkit-box-shadow: inset 0 0 6px var(--black-t);
 }
 
 body::-webkit-scrollbar-thumb:hover {
-  background: var(--blue-t);
+  background: var(--main-t);
 }
 
 table {

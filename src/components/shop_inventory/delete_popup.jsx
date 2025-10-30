@@ -12,7 +12,7 @@ const DeletePopup = ({ itemName, itemType, itemNumber, onClose, onDelete, positi
     if (!sliderRef.current) return;
     const percent = (num / itemNumber) * 100;
     sliderRef.current.style.background =
-      `linear-gradient(to right, var(--blue-t) ${percent}%, var(--black-t) ${percent}%)`;
+      `linear-gradient(to right, var(--main-t) ${percent}%, var(--black-t) ${percent}%)`;
   }, [num, itemNumber]);
 
   const handleDelete = () => {

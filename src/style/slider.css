@@ -19,7 +19,7 @@
   appearance: none;
   width: 1.1rem;
   height: 1.1rem;
-  background: var(--blue);
+  background: var(--main);
   border-radius: 50%;
   cursor: pointer;
 }
@@ -27,14 +27,14 @@
 .slider::-moz-range-thumb {
   width: 1.1rem;
   height: 1.1rem;
-  background: var(--blue);
+  background: var(--main);
   border: none;
   border-radius: 50%;
   cursor: pointer;
 }
 
 .slider::-ms-thumb {
-  background: var(--blue);
+  background: var(--main);
   border: none;
   border-radius: 50%;
   width: 1.1rem;

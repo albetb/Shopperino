@@ -5,6 +5,7 @@ import { downloadLocalStorage, handleFileUpload } from '../../lib/storage';
 import { isMobile } from '../../lib/utils';
 import { setStateCurrentTab } from '../../store/slices/appSlice';
 import '../../style/sidebar.css';
+import ColorPicker from './colorPicker';
 
 export default function TopMenu() {
     const dispatch = useDispatch();
@@ -184,6 +185,11 @@ export default function TopMenu() {
             <div className="menu-side-by-side">
                 <p style={{ textShadow: "1px 1px #12121366" }}>Import save</p>
                 {importButton}
+            </div>
+
+            <div className="menu-side-by-side">
+                <p style={{ textShadow: "1px 1px #12121366" }}>Change theme</p>
+                <ColorPicker />
             </div>
         </>
     );

@@ -1,12 +1,24 @@
 import { createSlice } from '@reduxjs/toolkit';
 import * as db from '../../lib/storage';
 import { getEffectByLink, getItemByLink, getSpellByLink, isMobile } from '../../lib/utils';
+import { applyColors } from '../../lib/colorUtils';
+
+const DEFAULT_BLUE = '#017474';
+const DEFAULT_BLUE_T = '#015974b3';
+const DEFAULT_BLUE_T2 = '#01597443';
+
+export const DEFAULTS = {
+  blue: DEFAULT_BLUE,
+  blueT: DEFAULT_BLUE_T,
+  blueT2: DEFAULT_BLUE_T2,
+};
 
 const initialState = {
   sidebarCollapsed: false,
   infoSidebarCollapsed: false,
   infoCards: [],
-  currentTab: 100
+  currentTab: 100,
+  mainColor: null
 };
 
 export const appSlice = createSlice({
@@ -64,6 +76,18 @@ export const appSlice = createSlice({
     setStateCurrentTab(state, action) {
       state.currentTab = action.payload;
       db.setCurrentTab(action.payload);
+    },
+
+    setMainColor(state, action) {
+      state.mainColor = action.payload; // expect a hex like '#1a2b3c'
+      db.setMainColor(action.payload);
+      applyColors(action.payload);
+    },
+
+    resetMainColor(state) {
+      state.mainColor = null;
+      db.setMainColor(null);
+      applyColors(null);
     }
   }
 });
@@ -86,13 +110,17 @@ function composeNameWithEffect(name, effect) {
   return `${joined}${space}${suffix}`;
 }
 
+export const selectMainColor = state => state.app.mainColor;
+
 export const {
   toggleSidebar,
   toggleInfoSidebar,
   addCardByLink,
   removeCard,
   clearInfoCards,
-  setStateCurrentTab
+  setStateCurrentTab,
+  setMainColor,
+  resetMainColor
 } = appSlice.actions;
 
 export default appSlice.reducer;

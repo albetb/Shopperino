@@ -11,7 +11,8 @@ import SpellbookTable from './components/spellbook/spellbook_table';
 import * as db from './lib/storage';
 import { serialize } from './lib/utils';
 import {
-  setStateCurrentTab
+  setStateCurrentTab,
+  setMainColor
 } from './store/slices/appSlice';
 import {
   setCity
@@ -74,6 +75,7 @@ export default function App() {
     const sl = db.getSelectedLoot();
     const l = db.getLoot(sl?.Id);
     const lsc = db.getIsLootSidebarCollapsed();
+    const mc = db.getMainColor();
 
     // Populate Redux
     dispatch(setWorlds(worldsDb));
@@ -96,6 +98,7 @@ export default function App() {
     dispatch(setSelectedLoot(sl));
     dispatch(setLoots(ls));
     dispatch(setIsLootSidebarCollapsed(lsc));
+    dispatch(setMainColor(mc));
 
     // Compute shopGenerated flag
     const generated = w?.Cities?.some(ci =>
