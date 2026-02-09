@@ -13,7 +13,7 @@ export default function SpellbookTable() {
   const {
     spellbook, page, isCollapsed, filters,
     spellsByLevel, levels,
-    spontaneousByLevel, domainByLevel,
+    spontaneousByLevel, domainByLevel, preparedDomainByLevel,
     classDesc, domainDesc, hasUsedSpells, inst,
     spellsPerDay, charBonus
   } = useSpellbookData();
@@ -61,6 +61,7 @@ export default function SpellbookTable() {
           spells={spellsByLevel[lvl]}
           spontaneousSpells={spontaneousByLevel[lvl]}
           domainSpells={domainByLevel[lvl]}
+          preparedDomainSpells={preparedDomainByLevel[lvl]}
           collapsed={isCollapsed.levels[lvl]}
           toggle={() => dispatch({ type: 'spellbook/setIsSpellTableCollapsed', payload: isCollapsed.levels.map((x, i) => i !== lvl ? x : !x) })}
           page={page}

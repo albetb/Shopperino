@@ -39,6 +39,7 @@ export default function useSpellbookData() {
     const prepared = inst.getPreparedSpells({ name: nameFilter, school: schoolFilter });
     const spontaneous = inst.getSpontaneousSpells({ name: nameFilter, school: schoolFilter });
     const domain = inst.getDomainSpells({ name: nameFilter, school: schoolFilter });
+    const preparedDomain = inst.getPreparedDomainSpells({ name: nameFilter, school: schoolFilter });
     const spellsPerDay = inst.getSpellsPerDay();
     const charBonus = inst.getCharBonus();
     const classDesc = inst.getClassDescription();
@@ -62,6 +63,12 @@ export default function useSpellbookData() {
     const spontaneousByLevel = groupByLevel(spontaneous || [], key);
     const domainByLevel = mergeByLevel(domainByLevel1 || {}, domainByLevel2 || {});
 
+    const preparedDomainByLevel = preparedDomain.reduce((acc, { level, spell, Prepared, Used }) => {
+        if (!acc[level]) acc[level] = [];
+        acc[level].push({ spell, Prepared, Used });
+        return acc;
+    }, {});
+
     const allLevelKeys = [
         ...Object.keys(spellsByLevel),
         ...Object.keys(spontaneousByLevel),
@@ -81,6 +88,7 @@ export default function useSpellbookData() {
         levels,
         spontaneousByLevel,
         domainByLevel,
+        preparedDomainByLevel,
         classDesc,
         domainDesc,
         hasUsedSpells: inst.getHasUsedSpells(),

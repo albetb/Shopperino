@@ -48,6 +48,8 @@ class Spellbook {
         this.Domain1 = "";
         this.Domain2 = "";
         this.UsedDomainSpells = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        /** @type {Record<number, Array<{ Link: string, Prepared: number, Used: number }>>} Prepared domain spells per level (can have both domains). */
+        this.PreparedDomainSpells = {};
         this.Specialized = "";
         this.Forbidden1 = "";
         this.Forbidden2 = "";
@@ -70,6 +72,13 @@ class Spellbook {
         this.Domain1 = data.Domain1;
         this.Domain2 = data.Domain2;
         this.UsedDomainSpells = data.UsedDomainSpells;
+        const raw = data.PreparedDomainSpells ?? {};
+        this.PreparedDomainSpells = Object.fromEntries(
+            Object.entries(raw).map(([lvl, val]) => [
+                lvl,
+                Array.isArray(val) ? val : (val && val.Link ? [val] : [])
+            ])
+        );
         this.Specialized = data.Specialized;
         this.Forbidden1 = data.Forbidden1;
         this.Forbidden2 = data.Forbidden2;
@@ -215,9 +224,50 @@ class Spellbook {
         );
     }
 
-    useDomainSpell(lvl) {
-        if (0 >= lvl || lvl >= 10) return;
-        this.UsedDomainSpells = this.UsedDomainSpells.map((x, i) => i === lvl ? 1 : x);
+    useDomainSpell(spell_link) {
+        for (const [lvl, arr] of Object.entries(this.PreparedDomainSpells)) {
+            const idx = (arr || []).findIndex(s => s && s.Link === spell_link);
+            if (idx === -1) continue;
+            const slot = arr[idx];
+            if (slot.Used >= slot.Prepared) return;
+            const next = arr.slice();
+            next[idx] = { ...slot, Used: slot.Used + 1 };
+            this.PreparedDomainSpells = { ...this.PreparedDomainSpells, [lvl]: next };
+            return;
+        }
+    }
+
+    prepareDomainSpell(level, spell_link) {
+        if (this.Class !== "Cleric" || typeof level !== 'number' || level < 0 || level > 9) return;
+        const domainSpellsAtLevel = this.getDomainSpells({ level });
+        if (!domainSpellsAtLevel.some(s => s.Link === spell_link)) return;
+        const arr = this.PreparedDomainSpells[level] || [];
+        const idx = arr.findIndex(s => s && s.Link === spell_link);
+        if (idx >= 0) {
+            const slot = arr[idx];
+            const next = arr.slice();
+            next[idx] = { ...slot, Prepared: slot.Prepared + 1 };
+            this.PreparedDomainSpells = { ...this.PreparedDomainSpells, [level]: next };
+        } else {
+            this.PreparedDomainSpells = { ...this.PreparedDomainSpells, [level]: [...arr, { Link: spell_link, Prepared: 1, Used: 0 }] };
+        }
+    }
+
+    unprepareDomainSpell(level, spell_link) {
+        if (typeof level !== 'number') return;
+        const arr = this.PreparedDomainSpells[level];
+        if (!arr || !arr.length) return;
+        const idx = arr.findIndex(s => s && s.Link === spell_link);
+        if (idx === -1) return;
+        const slot = arr[idx];
+        if (slot.Prepared <= 1) {
+            const next = arr.filter((_, i) => i !== idx);
+            this.PreparedDomainSpells = next.length ? { ...this.PreparedDomainSpells, [level]: next } : (() => { const o = { ...this.PreparedDomainSpells }; delete o[level]; return o; })();
+        } else {
+            const next = arr.slice();
+            next[idx] = { ...slot, Prepared: slot.Prepared - 1 };
+            this.PreparedDomainSpells = { ...this.PreparedDomainSpells, [level]: next };
+        }
     }
 
     refreshSpell() {
@@ -226,7 +276,10 @@ class Spellbook {
     }
 
     refreshDomainSpell() {
-        this.UsedDomainSpells = this.UsedDomainSpells.map(s => 0);
+        this.UsedDomainSpells = this.UsedDomainSpells.map(() => 0);
+        this.PreparedDomainSpells = Object.fromEntries(
+            Object.entries(this.PreparedDomainSpells).map(([lvl, arr]) => [lvl, (arr || []).map(slot => ({ ...slot, Used: 0 }))])
+        );
     }
 
     getCharBonus() {
@@ -354,21 +407,30 @@ class Spellbook {
         return this._getSpells(spells, { name, school, level });
     }
 
-    getDomainSpells({ name, school, level }) {
+    getDomainSpells({ name, school, level } = {}) {
         if (this.Class !== "Cleric") return [];
         return this._getSpells(ALL_SPELLS, { name, school, level, domain: this.Domain1 })
             .concat(this._getSpells(ALL_SPELLS, { name, school, level, domain: this.Domain2 }));
     }
 
+    /** Returns prepared domain spells for spellbook tab: { level, spell, Prepared, Used }[] */
+    getPreparedDomainSpells({ name, school } = {}) {
+        if (this.Class !== "Cleric") return [];
+        return Object.entries(this.PreparedDomainSpells).flatMap(([level, arr]) =>
+            (arr || [])
+                .filter(slot => slot && slot.Link)
+                .map(slot => {
+                    const spell = ALL_SPELLS.find(s => s.Link === slot.Link);
+                    return spell ? { level: parseInt(level, 10), spell, Prepared: slot.Prepared, Used: slot.Used } : null;
+                })
+                .filter(Boolean)
+        ).filter(({ spell }) => (!name || spell.Name.toLowerCase().includes(name.toLowerCase()))
+            && (!school || spell.School.toLowerCase().includes(school.toLowerCase())));
+    }
+
     getHasUsedDomainSpells() {
         if (this.Class !== "Cleric") return false;
-        const end = Math.min(Math.max(this.maxSpellLevel(), 0), this.UsedDomainSpells.length - 1);
-        for (let i = 0; i <= end; i++) {
-            if (typeof this.UsedDomainSpells[i] === 'number' && this.UsedDomainSpells[i] > 0) {
-                return true;
-            }
-        }
-        return false;
+        return Object.values(this.PreparedDomainSpells).some(arr => (arr || []).some(slot => slot && slot.Used > 0));
     }
 
     getHasUsedSpells() {
@@ -487,6 +549,7 @@ class Spellbook {
             Domain1: this.Domain1,
             Domain2: this.Domain2,
             UsedDomainSpells: this.UsedDomainSpells,
+            PreparedDomainSpells: this.PreparedDomainSpells,
             Specialized: this.Specialized,
             Forbidden1: this.Forbidden1,
             Forbidden2: this.Forbidden2

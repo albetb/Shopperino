@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { isMobile, trimLine } from '../../lib/utils';
 import { addCardByLink } from '../../store/slices/appSlice';
-import { onLearnUnlearnSpell, onPrepareSpell, onUnprepareSpell, onUseSpell } from '../../store/thunks/spellbookThunks';
+import { onLearnUnlearnSpell, onPrepareDomainSpell, onPrepareSpell, onUnprepareDomainSpell, onUnprepareSpell, onUseSpell } from '../../store/thunks/spellbookThunks';
 import SpontaneousSpells from './spontaneous_spells';
 import DomainSpells from './domain_spells';
 
@@ -20,6 +20,7 @@ export default function SpellLevelCard({
   spells,
   spontaneousSpells,
   domainSpells,
+  preparedDomainSpells,
   collapsed,
   toggle,
   page,
@@ -34,8 +35,9 @@ export default function SpellLevelCard({
   const spontList = spontaneousSpells || [];
   const showSpont = page === 2 && spontList.length > 0 && !collapsed;
   const domainList = domainSpells || [];
-  const showDomain = page === 2 && domainList.length > 0 && !collapsed;
-  const usedDomain = inst.UsedDomainSpells;
+  const showDomainPrepare = page === 1 && inst.Class === 'Cleric' && level !== 0 && domainList.length > 0 && !collapsed;
+  const showDomainSpellbook = page === 2 && level !== 0 && preparedDomainSpells && preparedDomainSpells.length > 0 && !collapsed;
+  const slotsAtLevel = (inst.PreparedDomainSpells && inst.PreparedDomainSpells[level]) || [];
 
   const getRemaining = link => {
     if (["Sorcerer", "Bard"].includes(inst.Class)) {
@@ -100,8 +102,10 @@ export default function SpellLevelCard({
             totalPrep -= 1;
         }
 
-
-        return `Lv${lvl} (${totalPrep}/${spellsPerDay[lvl]} per day) ${mageSpec}`;
+        const domainPart = inst.Class === 'Cleric' && lvl !== 0
+          ? ` Domain (${((inst.PreparedDomainSpells && inst.PreparedDomainSpells[lvl]) || []).reduce((sum, s) => sum + (s.Prepared || 0), 0)}/1)`
+          : '';
+        return `Lv${lvl} (${totalPrep}/${spellsPerDay[lvl]} per day) ${mageSpec}${domainPart}`;
       }
       default:
         const mageSpec = isSpecialized ? "+1" : "";
@@ -140,11 +144,68 @@ export default function SpellLevelCard({
         />
       )}
 
-      {showDomain && (
+      {showDomainPrepare && (
+        <table className="spellbook-table">
+          <thead>
+            <tr>
+              <th className="dark-grey" style={{ width: 'var(--btn-width-sm)' }}></th>
+              <th className="dark-grey" style={{ fontSize: 'small', width: 'auto', textAlign: 'left' }}>
+                Domain spell
+              </th>
+              {!isMobile() && (<th className="dark-grey" style={{ width: '30%' }}></th>)}
+            </tr>
+          </thead>
+          <tbody>
+            {domainList.map((item, i) => {
+              const slotForSpell = slotsAtLevel.find(s => s.Link === item.Link);
+              const prepCount = slotForSpell ? slotForSpell.Prepared : 0;
+              return (
+                <tr key={i}>
+                  <td className={i === 0 ? 'first' : ''} style={{ width: 'var(--btn-width-sm)' }}>
+                    <div className="card-side-div">
+                      <div className="spell-slot-div">
+                        <button
+                          className={`smaller flat-button ${prepCount === 0 ? 'opacity-50' : ''}`}
+                          onClick={() => dispatch(onUnprepareDomainSpell(level, item.Link))}
+                          disabled={prepCount === 0}
+                        >
+                          <span className="material-symbols-outlined">remove</span>
+                        </button>
+                        <label className="level-text">{prepCount}</label>
+                        <button
+                          className="smaller flat-button"
+                          onClick={() => dispatch(onPrepareDomainSpell(level, item.Link))}
+                        >
+                          <span className="material-symbols-outlined">add</span>
+                        </button>
+                      </div>
+                    </div>
+                  </td>
+                  <td className={i === 0 ? 'first' : ''} style={{ width: 'auto' }}>
+                    <button
+                      className="button-link"
+                      style={{ color: 'var(--black)' }}
+                      onClick={() => dispatch(addCardByLink({ links: item.Link, bonus: 0 }))}
+                    >
+                      {item.Name}
+                    </button>
+                  </td>
+                  {!isMobile() && (
+                    <td className={i === 0 ? 'first' : ''} style={{ width: '30%', fontSize: 'small' }}>
+                      {item.School.split(' ')[0]}
+                    </td>
+                  )}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      )}
+
+      {showDomainSpellbook && (
         <DomainSpells
-          domainByLevel={{ [level]: domainList }}
-          domainLevels={[level]}
-          usedDomain={usedDomain}
+          preparedByLevel={{ [level]: preparedDomainSpells }}
+          preparedLevels={[level]}
           dispatch={dispatch}
         />
       )}
@@ -244,6 +305,13 @@ SpellLevelCard.propTypes = {
     Name: PropTypes.string,
     Level: PropTypes.string,
     School: PropTypes.string
+  })),
+  spontaneousSpells: PropTypes.array,
+  domainSpells: PropTypes.array,
+  preparedDomainSpells: PropTypes.arrayOf(PropTypes.shape({
+    spell: PropTypes.object,
+    Prepared: PropTypes.number,
+    Used: PropTypes.number
   })),
   collapsed: PropTypes.bool.isRequired,
   toggle: PropTypes.func.isRequired,

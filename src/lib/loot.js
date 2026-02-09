@@ -1,10 +1,10 @@
 import { newArmor, newShield, newWeapon, randomMagicItem } from "./item";
 import { loadFile, newGuid } from "./utils";
 
-const REQUIRED_KEYS = ['Id', 'Level', 'GoldMod', 'GoodsMod', 'ItemsMod', 'Gold', 'Goods', 'Items', 'Timestamp'];
+const REQUIRED_KEYS = ['Id', 'Level', 'GoldMod', 'GoodsMod', 'ItemsMod', 'Gold', 'Goods', 'Items', 'Timestamp', 'ClassicGen'];
 
 class Loot {
-    constructor(level = 1, goldMod = 1, goodsMod = 1, itemsMod = 1) {
+    constructor(level = 1, goldMod = 1, goodsMod = 1, itemsMod = 1, classicGen = true) {
         this.Id = newGuid();
         this.Level = level;
         this.GoldMod = goldMod;
@@ -14,6 +14,7 @@ class Loot {
         this.Goods = this.generateGoods();
         this.Items = this.generateItems();
         this.Timestamp = this.generateTimestamp();
+        this.ClassicGen = classicGen;
     }
 
     load(data) {
@@ -31,6 +32,7 @@ class Loot {
         this.Goods = data.Goods;
         this.Items = data.Items;
         this.Timestamp = data.Timestamp;
+        this.ClassicGen = data.ClassicGen;
         return this;
     }
 
@@ -55,6 +57,52 @@ class Loot {
     }
 
     generateGold() {
+        if (this.ClassicGen)
+            return this.generateGoldClassic();
+        return this.generateGoldNew();
+    }
+
+    generateGoldClassic() {
+        const table = {
+            1: [{ range: [15, 29], roll: () => this.rollDice(1, 6) * 10 }, { range: [30, 52], roll: () => this.rollDice(1, 8) * 10 }, { range: [53, 95], roll: () => this.rollDice(2, 8) * 10 }, { range: [96, 100], roll: () => this.rollDice(1, 4) * 100 }],
+            2: [{ range: [14, 23], roll: () => this.rollDice(1, 10) * 10 }, { range: [24, 43], roll: () => this.rollDice(2, 10) * 10 }, { range: [44, 95], roll: () => this.rollDice(4, 10) * 10 }, { range: [96, 100], roll: () => this.rollDice(2, 8) * 100 }],
+            3: [{ range: [12, 21], roll: () => this.rollDice(2, 10) * 10 }, { range: [22, 41], roll: () => this.rollDice(4, 8) * 10 }, { range: [42, 95], roll: () => this.rollDice(1, 4) * 100 }, { range: [96, 100], roll: () => this.rollDice(1, 10) * 100 }],
+            4: [{ range: [12, 21], roll: () => this.rollDice(3, 10) * 10 }, { range: [22, 41], roll: () => this.rollDice(4, 12) * 100 }, { range: [42, 95], roll: () => this.rollDice(1, 6) * 100 }, { range: [96, 100], roll: () => this.rollDice(1, 8) * 100 }],
+            5: [{ range: [11, 19], roll: () => this.rollDice(1, 4) * 100 }, { range: [20, 38], roll: () => this.rollDice(1, 6) * 100 }, { range: [39, 95], roll: () => this.rollDice(1, 8) * 100 }, { range: [96, 100], roll: () => this.rollDice(1, 10) * 100 }],
+            6: [{ range: [11, 18], roll: () => this.rollDice(1, 6) * 100 }, { range: [19, 37], roll: () => this.rollDice(1, 8) * 100 }, { range: [38, 95], roll: () => this.rollDice(1, 10) * 100 }, { range: [96, 100], roll: () => this.rollDice(1, 12) * 100 }],
+            7: [{ range: [12, 18], roll: () => this.rollDice(1, 10) * 100 }, { range: [19, 35], roll: () => this.rollDice(1, 12) * 100 }, { range: [36, 93], roll: () => this.rollDice(2, 6) * 100 }, { range: [94, 100], roll: () => this.rollDice(3, 4) * 100 }],
+            8: [{ range: [11, 15], roll: () => this.rollDice(1, 12) * 100 }, { range: [16, 29], roll: () => this.rollDice(2, 6) * 100 }, { range: [30, 87], roll: () => this.rollDice(2, 8) * 100 }, { range: [88, 100], roll: () => this.rollDice(3, 6) * 100 }],
+            9: [{ range: [11, 15], roll: () => this.rollDice(2, 6) * 100 }, { range: [16, 29], roll: () => this.rollDice(2, 8) * 100 }, { range: [30, 85], roll: () => this.rollDice(5, 4) * 100 }, { range: [86, 100], roll: () => this.rollDice(2, 12) * 100 }],
+            10: [{ range: [11, 24], roll: () => this.rollDice(2, 10) * 100 }, { range: [25, 79], roll: () => this.rollDice(6, 4) * 100 }, { range: [80, 100], roll: () => this.rollDice(5, 6) * 100 }],
+            11: [{ range: [9, 14], roll: () => this.rollDice(3, 10) * 100 }, { range: [15, 75], roll: () => this.rollDice(4, 8) * 100 }, { range: [76, 100], roll: () => this.rollDice(4, 10) * 100 }],
+            12: [{ range: [9, 14], roll: () => this.rollDice(3, 12) * 100 }, { range: [15, 100], roll: () => this.rollDice(1, 4) * 1000 }],
+            13: [{ range: [9, 75], roll: () => this.rollDice(1, 4) * 1000 }, { range: [76, 100], roll: () => this.rollDice(1, 10) * 1000 }],
+            14: [{ range: [9, 75], roll: () => this.rollDice(1, 6) * 1000 }, { range: [76, 100], roll: () => this.rollDice(1, 12) * 1000 }],
+            15: [{ range: [4, 74], roll: () => this.rollDice(1, 8) * 1000 }, { range: [75, 100], roll: () => this.rollDice(3, 4) * 1000 }],
+            16: [{ range: [4, 74], roll: () => this.rollDice(1, 12) * 1000 }, { range: [75, 100], roll: () => this.rollDice(3, 4) * 1000 }],
+            17: [{ range: [4, 68], roll: () => this.rollDice(3, 4) * 1000 }, { range: [69, 100], roll: () => this.rollDice(2, 10) * 1000 }],
+            18: [{ range: [3, 65], roll: () => this.rollDice(3, 6) * 1000 }, { range: [66, 100], roll: () => this.rollDice(5, 4) * 1000 }],
+            19: [{ range: [3, 65], roll: () => this.rollDice(3, 8) * 1000 }, { range: [66, 100], roll: () => this.rollDice(3, 10) * 1000 }],
+            20: [{ range: [3, 65], roll: () => this.rollDice(4, 8) * 1000 }, { range: [66, 100], roll: () => this.rollDice(4, 10) * 1000 }],
+        };
+
+        const lootOptions = table[Math.min(this.Level, 20)];
+        const d100 = Math.floor(Math.random() * 100) + 1;
+
+        for (let option of lootOptions) {
+            const [min, max] = option.range;
+            if (d100 >= min && d100 <= max) {
+                const gold = option.roll() * this.GoldMod;
+
+                const isFloat = Number(gold) === gold && gold % 1 !== 0;
+                return isFloat ? parseFloat(gold.toFixed(2)) : Math.floor(gold);
+            }
+        }
+
+        return this.rollDice(1, 6) * 10 * this.GoldMod; // Never zero
+    }
+
+    generateGoldNew() {
         const table = {
             1: [{ range: [15, 29], roll: () => this.rollDice(1, 6) * 10 }, { range: [30, 52], roll: () => this.rollDice(1, 8) * 10 }, { range: [53, 95], roll: () => this.rollDice(2, 8) * 10 }, { range: [96, 100], roll: () => this.rollDice(1, 4) * 100 }],
             2: [{ range: [14, 23], roll: () => this.rollDice(1, 10) * 10 }, { range: [24, 43], roll: () => this.rollDice(2, 10) * 10 }, { range: [44, 95], roll: () => this.rollDice(4, 10) * 10 }, { range: [96, 100], roll: () => this.rollDice(2, 8) * 100 }],
@@ -517,7 +565,8 @@ class Loot {
             Gold: this.Gold,
             Goods: this.Goods,
             Items: this.Items,
-            Timestamp: this.Timestamp
+            Timestamp: this.Timestamp,
+            ClassicGen: this.ClassicGen
         };
     }
 }

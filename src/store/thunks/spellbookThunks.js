@@ -95,11 +95,27 @@ export const onDomain2Change = domain => (dispatch, getState) => {
   dispatch(setSpellbook(s));
 };
 
-export const onUseDomainSpell = lvl => (dispatch, getState) => {
+export const onUseDomainSpell = spell_link => (dispatch, getState) => {
   const { spellbook } = getState().spellbook;
   if (!spellbook) return;
   const s = new Spellbook().load(spellbook);
-  s.useDomainSpell(lvl);
+  s.useDomainSpell(spell_link);
+  dispatch(setSpellbook(s));
+};
+
+export const onPrepareDomainSpell = (level, spell_link) => (dispatch, getState) => {
+  const { spellbook } = getState().spellbook;
+  if (!spellbook) return;
+  const s = new Spellbook().load(spellbook);
+  s.prepareDomainSpell(level, spell_link);
+  dispatch(setSpellbook(s));
+};
+
+export const onUnprepareDomainSpell = (level, spell_link) => (dispatch, getState) => {
+  const { spellbook } = getState().spellbook;
+  if (!spellbook) return;
+  const s = new Spellbook().load(spellbook);
+  s.unprepareDomainSpell(level, spell_link);
   dispatch(setSpellbook(s));
 };
 
