@@ -94,7 +94,7 @@ export default function MenuCardWorld() {
             <>
               <LevelComponent props={levelProps} />
 
-              <div className={`card-side-div margin-top ${isShopGenerated ? '' : 'opacity-50'}`}>
+              {false && (<div className={`card-side-div margin-top ${isShopGenerated ? '' : 'opacity-50'}`}>
                 <input
                   type="number"
                   placeholder="hours"
@@ -125,6 +125,7 @@ export default function MenuCardWorld() {
                   {buttonIcon}
                 </button>
               </div>
+            )}
             </>
           )}
         </>

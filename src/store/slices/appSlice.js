@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import * as db from '../../lib/storage';
-import { getEffectByLink, getItemByLink, getSpellByLink, isMobile } from '../../lib/utils';
+import { getConditionByLink, getEffectByLink, getFeatByLink, getItemByLink, getSkillByLink, getSpellByLink, isMobile } from '../../lib/utils';
 import { applyColors } from '../../lib/colorUtils';
 
 const DEFAULT_BLUE = '#2fa6a1';
@@ -36,10 +36,30 @@ export const appSlice = createSlice({
     addCardByLink(state, action) {
       const { links: raw, bonus = 0 } = action.payload;
       const links = Array.isArray(raw) ? raw : [raw];
+      const firstLink = links[0];
+      const linkStr = firstLink && String(firstLink);
+      const hasHash = linkStr && linkStr.includes('#');
+      const isSpellLink = linkStr && (linkStr.startsWith('spells#') || linkStr === 'spells');
+      const isFeatLink = linkStr && (linkStr.startsWith('feats#') || linkStr === 'feats');
+      const isSkillLink = linkStr && (linkStr.startsWith('skills#') || linkStr === 'skills');
+      const isConditionLink = linkStr && linkStr.includes('abilitiesAndConditions#');
+      const conditionAnchor = isConditionLink ? linkStr.split('#')[1] : null;
+      const spellLookupLink = isSpellLink && hasHash
+        ? linkStr.split('#')[1]
+        : (hasHash ? linkStr.split('#')[1] : firstLink);
+      const featLookupLink = isFeatLink && hasHash ? linkStr.split('#')[1] : null;
+      const skillLookupLink = isSkillLink && hasHash ? linkStr.split('#')[1] : null;
 
-      state.infoCards = state.infoCards.filter(c => c.Link !== links[0]);
+      state.infoCards = state.infoCards.filter(c => {
+        if (c.Link === firstLink) return false;
+        if (conditionAnchor && c.Link === conditionAnchor) return false;
+        if (spellLookupLink && c.Link === spellLookupLink) return false;
+        if (featLookupLink && c.Link === featLookupLink) return false;
+        if (skillLookupLink && c.Link === skillLookupLink) return false;
+        return true;
+      });
 
-      let cards = getSpellByLink(links[0]);
+      let cards = getSpellByLink(spellLookupLink);
 
       if (cards.length) {
         state.infoCards.unshift(...cards);
@@ -47,7 +67,37 @@ export const appSlice = createSlice({
         return;
       }
 
-      cards = getItemByLink(links[0], bonus);
+      if (isSpellLink) return;
+
+      cards = getConditionByLink(conditionAnchor ?? firstLink);
+
+      if (cards.length) {
+        state.infoCards.unshift(...cards);
+        if (isMobile()) state.infoSidebarCollapsed = false;
+        return;
+      }
+
+      cards = getFeatByLink(featLookupLink ?? (isFeatLink ? firstLink : null));
+
+      if (cards.length) {
+        state.infoCards.unshift(...cards);
+        if (isMobile()) state.infoSidebarCollapsed = false;
+        return;
+      }
+
+      if (isFeatLink) return;
+
+      cards = getSkillByLink(skillLookupLink ?? (isSkillLink ? firstLink : null));
+
+      if (cards.length) {
+        state.infoCards.unshift(...cards);
+        if (isMobile()) state.infoSidebarCollapsed = false;
+        return;
+      }
+
+      if (isSkillLink) return;
+
+      cards = getItemByLink(firstLink, bonus);
 
       links.slice(1).forEach(link => {
         const effect = getEffectByLink(link);

@@ -2,6 +2,8 @@ import items from '../data/items.json';
 import scrolls from '../data/scrolls.json';
 import tables from '../data/tables.json';
 import spells from '../data/spells.json';
+import featsData from '../data/feats.json';
+import skillsData from '../data/skills.json';
 
 export const itemTypes = [
     'Ammo',
@@ -31,6 +33,10 @@ export function loadFile(fileName) {
                 return tables;
             case 'spells':
                 return spells;
+            case 'feats':
+                return featsData?.Feats || [];
+            case 'skills':
+                return skillsData?.Skills || [];
             default:
                 return null
         }
@@ -39,11 +45,85 @@ export function loadFile(fileName) {
     }
 }
 
+/** Resolve a spell by link (anchor). Searches only in the complete spells.json. */
 export function getSpellByLink(link) {
     try {
         const spells = loadFile('spells');
         const spell = spells.find(s => s.Link === link);
         return spell ? [spell] : [];
+    } catch (err) {
+        return [];
+    }
+}
+
+/** Slug for feat href: lowercase, spaces to hyphens. */
+function featSlug(name) {
+    if (!name || typeof name !== 'string') return '';
+    return name.toLowerCase().trim().replace(/\s+/g, '-');
+}
+
+/** Returns a card for the info sidebar when link is a feat anchor (e.g. "endurance", "armor-proficiency-(heavy)"). */
+export function getFeatByLink(link) {
+    try {
+        const feats = loadFile('feats');
+        if (!Array.isArray(feats) || !link || typeof link !== 'string') return [];
+        const normalized = link.toLowerCase().trim();
+        const feat = feats.find(f => featSlug(f.Name) === normalized);
+        if (!feat) return [];
+        const tagsLine = Array.isArray(feat.Tags) && feat.Tags.length
+            ? '<p><i>' + feat.Tags.join(', ') + '</i></p>'
+            : '';
+        const prereqLine = feat.Prerequisites
+            ? '<p><b>Prerequisites:</b> ' + feat.Prerequisites + '</p>'
+            : '';
+        const description = (tagsLine + prereqLine + (feat.Description || '')).trim();
+        return [{ Name: feat.Name, Description: description, Link: normalized }];
+    } catch (err) {
+        return [];
+    }
+}
+
+/** Slug for skill href: lowercase, spaces to hyphens. */
+function skillSlug(name) {
+    if (!name || typeof name !== 'string') return '';
+    return name.toLowerCase().trim().replace(/\s+/g, '-');
+}
+
+const CHARACTERISTIC_FULL = { Str: 'Strength', Dex: 'Dexterity', Con: 'Constitution', Int: 'Intelligence', Wis: 'Wisdom', Cha: 'Charisma', None: 'None' };
+
+/** Returns a card for the info sidebar when link is a skill anchor (e.g. "spellcraft", "sleight-of-hand"). */
+export function getSkillByLink(link) {
+    try {
+        const skills = loadFile('skills');
+        if (!Array.isArray(skills) || !link || typeof link !== 'string') return [];
+        const normalized = link.toLowerCase().trim();
+        const skill = skills.find(s => skillSlug(s.Name) === normalized);
+        if (!skill) return [];
+        const charFull = (skill.Characteristic && CHARACTERISTIC_FULL[skill.Characteristic]) ? CHARACTERISTIC_FULL[skill.Characteristic] : (skill.Characteristic || '');
+        const italicParts = [charFull, skill.Note].filter(Boolean);
+        const italicLine = italicParts.length ? '<p><i>' + italicParts.join(' — ') + '</i></p>' : '';
+        const description = (italicLine + (skill.Description || '')).trim();
+        return [{ Name: skill.Name, Description: description, Link: normalized }];
+    } catch (err) {
+        return [];
+    }
+}
+
+/** Returns a card for the info sidebar when link is a condition anchor (e.g. "dazed", "flat-footed"). */
+export function getConditionByLink(link) {
+    try {
+        const data = loadFile('tables');
+        const conditions = data?.Conditions;
+        if (!conditions || typeof link !== 'string' || !link.trim()) return [];
+        const normalized = link.toLowerCase().trim().replace(/\s+/g, '-');
+        const keyToSlug = k => k.toLowerCase().replace(/\s+/g, '-');
+        let entry = Object.entries(conditions).find(([k]) => keyToSlug(k) === normalized);
+        if (!entry && normalized === 'deafend') {
+            entry = Object.entries(conditions).find(([k]) => k === 'Deafened');
+        }
+        if (!entry) return [];
+        const [name, description] = entry;
+        return [{ Name: name, Description: description || '', Link: link }];
     } catch (err) {
         return [];
     }

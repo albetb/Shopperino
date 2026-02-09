@@ -7,15 +7,15 @@ const LS_KEY = 'app_main_color';
 
 // 9 hard-coded theme colors
 const PALETTE = [
-  '#2fa6a1', // softened teal
-  '#60b8ff', // baby-blue accent
-  '#ff9e80', // peachy coral
-  '#8ecf9e', // mint-green
-  '#ad7aff', // lilac purple
-  '#ffe066', // soft butter yellow
-  '#4fd8c4', // pale aqua
-  '#e48fbf', // pastel pink-mauve
-  '#9e9ba8', // muted slate-grey
+  '#238f8b', // cooler, deeper teal (less milky)
+  '#3f97e6', // crisper blue, less babyish
+  '#e8886f', // coral pulled cooler + slightly muted
+  '#6fb889', // greener, less minty pastel
+  '#8f63e6', // cooler purple, less lilac
+  '#e6c84f', // cooler yellow, less buttery
+  '#35bfae', // cleaner aqua, less pale
+  '#cc6fa6', // cooler mauve, reduced pink softness
+  '#585658ff', // dark mode
 ];
 
 export default function ColorPicker() {

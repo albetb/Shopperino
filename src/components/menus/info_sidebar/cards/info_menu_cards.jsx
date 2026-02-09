@@ -29,15 +29,19 @@ export default function InfoMenuCards({ cardsData, closeCard }) {
         domNode.attribs?.href
       ) {
         const href = domNode.attribs.href;
-        let slug = null;
-        if (href.includes('.html#')) {
-          [, slug] = href.split('#');
-        } else if (href.startsWith('#')) {
-          slug = href.slice(1);
+        let link = null;
+        if (href && href.includes('abilitiesAndConditions#')) {
+          link = href;
+        } else if (href && href.includes('#')) {
+          link = href;
+        } else if (href && href.startsWith('#')) {
+          link = href.slice(1);
+        } else if (href && !href.includes('://')) {
+          link = href;
         }
-        if (slug) {
+        if (link) {
           return (
-            <SpellLink key={href} link={slug}>
+            <SpellLink key={href} link={link}>
               {domToReact(domNode.children, descriptionOptions)}
             </SpellLink>
           );
