@@ -63,18 +63,19 @@ function randomMagicItem(shopLevel, partyLevel, quality = null) {
 function getItem(itemName, itemType) {
     var itemList = [];
     if (itemType === 'Scroll') {
-        const arcaneScroll = loadFile('scrolls')['Arcane'];
-        const divineScroll = loadFile('scrolls')['Divine'];
-
+        const arcaneScroll = (loadFile('scrolls')['Arcane'] || []).map(item => ({ ...removeUnusedAttributes(item), ItemType: 'Scroll', Source: 'Arcane' }));
+        const divineScroll = (loadFile('scrolls')['Divine'] || []).map(item => ({ ...removeUnusedAttributes(item), ItemType: 'Scroll', Source: 'Divine' }));
         itemList = [...arcaneScroll, ...divineScroll];
     } else {
         itemList = loadFile('items')[itemType] ?? [];
     }
 
-    const items = itemList
-        .filter(item => item?.Name?.toLowerCase().includes(itemName.toLowerCase()))
-        .map(item => removeUnusedAttributes(item));
-    items.forEach(item => item.ItemType = itemType);
+    const items = itemType === 'Scroll'
+        ? itemList.filter(item => item?.Name?.toLowerCase().includes(itemName.toLowerCase()))
+        : itemList
+            .filter(item => item?.Name?.toLowerCase().includes(itemName.toLowerCase()))
+            .map(item => removeUnusedAttributes(item));
+    if (itemType !== 'Scroll') items.forEach(item => item.ItemType = itemType);
 
     return items;
 }
@@ -181,6 +182,8 @@ function newScroll(shopLevel, quality, arcaneChance = 0.7) {
     if (!scrolls) return null;
     const selectedScroll = weightedRandom(scrolls.map(x => x.Chance));
     const scroll = removeUnusedAttributes(scrolls[selectedScroll]);
+    scroll.Source = scrollType;
+    scroll.ItemType = 'Scroll';
     return scroll;
 }
 
@@ -257,6 +260,7 @@ function newMagicWeapon(shopLevel, quality) {
 
     weapon.Bonus = baseBonus;
     weapon.Name = `${weapon.Name} +${baseBonus}`;
+    weapon.BaseItemType = 'Weapon';
 
     if (weapon.Ability && weapon.Ability.length > 0) {
         weapon.Link = [weapon.Link, ...weapon.Ability.flatMap(item => item.Link)];
@@ -370,6 +374,7 @@ function newMagicArmor(shopLevel, quality) {
 
     armor.Bonus = baseBonus;
     armor.Name = `${armor.Name} +${baseBonus}`;
+    armor.BaseItemType = isArmor ? 'Armor' : 'Shield';
 
     if (armor.Ability && armor.Ability.length > 0) {
         armor.Link = [armor.Link, ...armor.Ability.flatMap(item => item.Link)];
@@ -378,6 +383,28 @@ function newMagicArmor(shopLevel, quality) {
     armor.Cost += 300 + 2000 * bonus ** 2;
 
     return armor;
+}
+
+/**
+ * Build a reference link for an item for shop stock: "items/ItemType/slug" or "scrolls/Arcane|Divine/slug".
+ * Used so the shop can store only the link and resolve item data when needed.
+ */
+export function itemRefLink(item) {
+    if (!item || !item.Link) return null;
+    if (item.ItemType === 'Scroll' && item.Source) {
+        return `scrolls/${item.Source}/${item.Link}`;
+    }
+    if (item.ItemType) {
+        return `items/${item.ItemType}/${item.Link}`;
+    }
+    return null;
+}
+
+/**
+ * True if this item should be saved in full (generated magic weapon/armor with Bonus, Ability, etc.).
+ */
+export function isGeneratedMagicItem(item) {
+    return item && (item.ItemType === 'Magic Weapon' || item.ItemType === 'Magic Armor');
 }
 
 export { newRandomItem, randomMagicItem, getItem, newWeapon, newArmor, newShield };

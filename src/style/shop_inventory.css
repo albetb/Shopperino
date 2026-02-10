@@ -20,6 +20,20 @@ th {
   border-bottom: 1px solid var(--white);
 }
 
+th.sortable {
+  user-select: none;
+}
+
+th.sortable:hover {
+  color: var(--white);
+  opacity: 0.9;
+}
+
+th.sort-active .sort-arrow {
+  margin-left: 0.15em;
+  opacity: 0.9;
+}
+
 th.dark-grey {
   border-bottom: 1px solid var(--dark-grey);
 }

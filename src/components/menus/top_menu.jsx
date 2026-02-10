@@ -101,22 +101,13 @@ export default function TopMenu() {
         </button>;
 
     const importButton =
-        <>
-            <input
-                type="file"
-                id="upload"
-                style={{ display: 'none' }}
-                accept="application/json"
-                onChange={handleFileUpload}
-            />
-            <button
-                className="modern-dropdown small-middle"
-                onClick={handleUploadClick}
-                title="Import save file"
-            >
-                <span className="material-symbols-outlined">drive_folder_upload</span>
-            </button>
-        </>;
+        <button
+            className="modern-dropdown small-middle"
+            onClick={handleUploadClick}
+            title="Import save file"
+        >
+            <span className="material-symbols-outlined">drive_folder_upload</span>
+        </button>;
 
     const buttonDimension = isMobile() ? "small-middle" : "small-long";
 
@@ -228,9 +219,20 @@ export default function TopMenu() {
             )}
         </>;
 
+    const fileInput = (
+        <input
+            type="file"
+            id="upload"
+            style={{ display: 'none' }}
+            accept=".json,application/json"
+            onChange={handleFileUpload}
+        />
+    );
+
     if (isMobile()) {
         return (
             <div className="top-menu">
+                {fileInput}
                 {topLogo}
 
                 {mobileMenuButton}
@@ -242,6 +244,7 @@ export default function TopMenu() {
 
     return (
         <div className="top-menu">
+            {fileInput}
             {topLogo}
             <div className="top-menu-button-container">
                 {buttons}

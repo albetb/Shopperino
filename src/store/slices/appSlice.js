@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import * as db from '../../lib/storage';
-import { getConditionByLink, getEffectByLink, getFeatByLink, getItemByLink, getSkillByLink, getSpellByLink, isMobile } from '../../lib/utils';
+import { getConditionByLink, getEffectByLink, getFeatByLink, getItemByLink, getItemByRef, getSkillByLink, getSpellByLink, isMobile } from '../../lib/utils';
 import { applyColors } from '../../lib/colorUtils';
 
 const DEFAULT_BLUE = '#2fa6a1';
@@ -96,6 +96,18 @@ export const appSlice = createSlice({
       }
 
       if (isSkillLink) return;
+
+      const itemRef = linkStr && linkStr.includes('/') ? getItemByRef(firstLink) : null;
+      const spellSlug = itemRef?.raw?.Link && getSpellByLink(itemRef.raw.Link).length ? itemRef.raw.Link : null;
+      if (spellSlug) {
+        cards = getSpellByLink(spellSlug);
+        if (cards.length) {
+          state.infoCards = state.infoCards.filter(c => c.Link !== spellSlug);
+          state.infoCards.unshift(...cards);
+          if (isMobile()) state.infoSidebarCollapsed = false;
+          return;
+        }
+      }
 
       cards = getItemByLink(firstLink, bonus);
 

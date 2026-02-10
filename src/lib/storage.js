@@ -5,7 +5,7 @@ import Shop from './shop';
 import Spellbook from './spellbook';
 import Loot from './loot';
 
-const CURRENT_STORAGE_VERSION = 250716; // last modified date as yymmdd
+const CURRENT_STORAGE_VERSION = 260210; // last modified date as yymmdd
 
 //#region get
 
@@ -350,20 +350,27 @@ export const downloadLocalStorage = () => {
 };
 
 export const handleFileUpload = (event) => {
-    const file = event.target.files[0];
-    const reader = new FileReader();
+    const input = event.target;
+    const file = input.files?.[0];
+    if (!file) return;
 
+    const reader = new FileReader();
     reader.onload = (e) => {
         try {
             const data = JSON.parse(e.target.result);
+            if (!data || typeof data !== 'object') return;
             localStorage.clear();
             for (const key in data) {
-                localStorage.setItem(key, compressToUTF16(data[key]));
+                const value = data[key];
+                const str = typeof value === 'string' ? value : JSON.stringify(value);
+                localStorage.setItem(key, compressToUTF16(str));
             }
+            input.value = '';
             window.location.reload();
-        } catch (error) { }
+        } catch (err) {
+            input.value = '';
+        }
     };
-
     reader.readAsText(file);
 };
 

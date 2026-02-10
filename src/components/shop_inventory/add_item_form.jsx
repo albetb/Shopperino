@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getItem } from '../../lib/item';
+import { getItem, itemRefLink } from '../../lib/item';
 import { itemTypes } from '../../lib/utils';
 import '../../style/shop_inventory.css';
 
@@ -45,7 +45,7 @@ const AddItemForm = ({ onAddItem, items, setShowAddItemForm }) => {
     setItemName(suggestion.Name);
     setItemType(suggestion.ItemType);
     setCost(suggestion.Cost);
-    setLink(suggestion.Link);
+    setLink(itemRefLink(suggestion) || suggestion.Link || '');
     setSuggestions([]);
     setIsFocused(false);
   };

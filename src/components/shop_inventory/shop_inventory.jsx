@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Shop from '../../lib/shop';
 import { isMobile, trimLine } from '../../lib/utils';
@@ -12,6 +12,8 @@ import '../../style/shop_inventory.css';
 export default function ShopInventory() {
   const dispatch = useDispatch();
   const [showAddItemForm, setShowAddItemForm] = useState(false);
+  const [sortColumn, setSortColumn] = useState(null);
+  const [sortDesc, setSortDesc] = useState(true);
   const [deletingItems, setDeletingItems] = useState({});
   const [popup, setPopup] = useState({
     visible: false,
@@ -63,9 +65,31 @@ export default function ShopInventory() {
   );
 
   // don’t render if no items at all
+  const handleSort = (col) => {
+    if (sortColumn === col) {
+      setSortDesc((d) => !d);
+    } else {
+      setSortColumn(col);
+      setSortDesc(col === 'name' || col === 'type');
+    }
+  };
+
+  const sortedItems = useMemo(() => {
+    const list = items.filter((i) => i.Number > 0);
+    if (!sortColumn) return list;
+    const mult = sortDesc ? 1 : -1;
+    return [...list].sort((a, b) => {
+      let cmp = 0;
+      if (sortColumn === 'number') cmp = (a.Number ?? 0) - (b.Number ?? 0);
+      else if (sortColumn === 'name') cmp = (a.Name || '').localeCompare(b.Name || '');
+      else if (sortColumn === 'type') cmp = (a.ItemType || '').localeCompare(b.ItemType || '');
+      else if (sortColumn === 'cost') cmp = (parseFloat(a.Cost) || 0) - (parseFloat(b.Cost) || 0);
+      return mult * cmp;
+    });
+  }, [items, sortColumn, sortDesc]);
+
   if (!items.some(i => i.Number > 0)) return null;
 
-  // --- Formatting ---
   const formatNumber = num => {
     const n = parseFloat(num);
     if (isNaN(n)) return '0';
@@ -99,25 +123,42 @@ export default function ShopInventory() {
       <table className={`shop-table ${showAddItemForm ? "shop-table-adding" : ""}`}>
         <thead>
           <tr>
-            <th className="number-size" style={{ color: "#c0c0c0", fontSize: "0.73em" }}>#</th>
-            <th className="name-size" style={{ color: "#c0c0c0", fontSize: "0.73em" }}>Name</th>
-            <th className="type-size" style={{ color: "#c0c0c0", fontSize: "0.73em" }}>Type</th>
-            <th className="cost-size" style={{ color: "#c0c0c0", fontSize: "0.73em" }}>Cost</th>
+            {(['number', 'name', 'type', 'cost']).map((col) => {
+              const label = col === 'number' ? '#' : col === 'name' ? 'Name' : col === 'type' ? 'Type' : 'Cost';
+              const isActive = sortColumn === col;
+              const thClass = col === 'number' ? 'number-size' : col === 'name' ? 'name-size' : col === 'type' ? 'type-size' : 'cost-size';
+              return (
+                <th
+                  key={col}
+                  className={`${thClass} sortable ${isActive ? 'sort-active' : ''}`}
+                  style={{ color: '#c0c0c0', fontSize: '0.73em', cursor: 'pointer' }}
+                  onClick={() => handleSort(col)}
+                >
+                  {label}
+                  {isActive && (
+                    <span className="sort-arrow" aria-hidden="true">
+                      {sortDesc ? ' ↓' : ' ↑'}
+                    </span>
+                  )}
+                </th>
+              );
+            })}
             <th className="action-size"></th>
           </tr>
         </thead>
         <tbody>
-          {items.map((item, idx) => {
-            if (item.Number <= 0) return null;
+          {sortedItems.map((item, idx) => {
             const key = `${item.Name}-${item.ItemType}`;
             const abbrevType = isMobile() && item.ItemType === 'Wondrous Item'
               ? 'W. Item'
               : item.ItemType;
-            const itemBonus = item.Name.includes("+")
-              ? parseInt(item.Name.split("+")[1], 10)
-              : item.Name.includes("perfect")
-                ? -1
-                : 0;
+            const itemBonus = item.Bonus != null && !isNaN(item.Bonus)
+              ? item.Bonus
+              : item.Name.includes("+")
+                ? parseInt(item.Name.split("+")[1], 10)
+                : item.Name.includes("perfect")
+                  ? -1
+                  : 0;
 
             return (
               <tr key={idx} className={deletingItems[key] ? 'deleting' : ''}>

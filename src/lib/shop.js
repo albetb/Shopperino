@@ -1,8 +1,36 @@
-import { newRandomItem } from './item';
-import { cap, loadFile, newGuid, shopTypes } from './utils';
+import { newRandomItem, itemRefLink } from './item';
+import { cap, getItemByRef, loadFile, newGuid, shopTypes } from './utils';
 
 const BASE_ARCANE_CHANCE = 0.7;
 const REQUIRED_KEYS = ['Id', 'Name', 'Level', 'CityLevel', 'PlayerLevel', 'Reputation', 'Stock', 'Gold', 'Time', 'ArcaneChance', 'ShopType', 'ItemModifier'];
+
+/** Stock entry is either a ref { link, Number, PriceModifier, ItemType, CostOverride? } or ref+bonus { link, Bonus, ... } or full item. */
+function isRefEntry(entry) {
+    return entry && typeof entry.link === 'string';
+}
+
+/** Resolve a stock entry to an item-like object for display and trueCost (Name, Cost, PriceModifier, ItemType, Number, Link, Bonus?). */
+function resolveEntry(entry) {
+    if (!entry) return null;
+    if (isRefEntry(entry)) {
+        const ref = getItemByRef(entry.link);
+        if (!ref || !ref.raw) return null;
+        const base = ref.raw;
+        const baseCost = entry.CostOverride != null ? entry.CostOverride : base.Cost;
+        const bonus = entry.Bonus != null ? (typeof entry.Bonus === 'string' ? parseInt(entry.Bonus, 10) : entry.Bonus) : null;
+        const name = bonus != null && !isNaN(bonus) ? `${base.Name} +${bonus}` : base.Name;
+        return {
+            Name: name,
+            Cost: baseCost,
+            PriceModifier: entry.PriceModifier ?? 0,
+            ItemType: entry.ItemType,
+            Number: entry.Number ?? 1,
+            Link: entry.link,
+            ...(bonus != null && !isNaN(bonus) ? { Bonus: bonus } : {}),
+        };
+    }
+    return { ...entry };
+}
 
 class Shop {
 
@@ -75,10 +103,15 @@ class Shop {
     }
 
     addItem(addedItem, itemType) {
-        if (addedItem && addedItem.Cost !== undefined) {
-            let found = false;
-            for (let item of this.Stock) {
-                if (item.Name === addedItem.Name) {
+        if (!addedItem) return;
+        let found = false;
+        const isMagic = itemType === 'Magic Weapon' || itemType === 'Magic Armor';
+        const hasAbilities = Array.isArray(addedItem.Link) || (addedItem.Ability && addedItem.Ability.length > 0);
+        const simpleBonus = !hasAbilities && addedItem.Bonus != null && addedItem.BaseItemType && typeof addedItem.Link === 'string';
+
+        if (isMagic && (hasAbilities || !simpleBonus)) {
+            for (const item of this.Stock) {
+                if (!isRefEntry(item) && item.Name === addedItem.Name && item.ItemType === itemType) {
                     item.Number += 1;
                     found = true;
                     break;
@@ -89,6 +122,69 @@ class Shop {
                 addedItem.Number = 1;
                 addedItem.ItemType = itemType;
                 this.Stock.push(addedItem);
+            }
+            return;
+        }
+        if (isMagic && simpleBonus) {
+            const baseLink = `items/${addedItem.BaseItemType}/${addedItem.Link}`;
+            const bonusNum = typeof addedItem.Bonus === 'string' ? parseInt(addedItem.Bonus, 10) : addedItem.Bonus;
+            for (const entry of this.Stock) {
+                if (isRefEntry(entry) && entry.link === baseLink && entry.ItemType === itemType && entry.Bonus === bonusNum) {
+                    entry.Number = (entry.Number || 0) + 1;
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                this.Stock.push({
+                    link: baseLink,
+                    Bonus: bonusNum,
+                    Number: 1,
+                    PriceModifier: Math.floor(Math.random() * 41) - 20,
+                    ItemType: itemType,
+                    CostOverride: addedItem.Cost,
+                });
+            }
+            return;
+        }
+        const refLink = itemRefLink({ ...addedItem, ItemType: itemType });
+        if (refLink) {
+            for (const entry of this.Stock) {
+                if (isRefEntry(entry) && entry.link === refLink && entry.ItemType === itemType) {
+                    entry.Number = (entry.Number || 0) + 1;
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                this.Stock.push({
+                    link: refLink,
+                    Number: 1,
+                    PriceModifier: Math.floor(Math.random() * 41) - 20,
+                    ItemType: itemType,
+                });
+            }
+            return;
+        }
+        if (addedItem.Name) {
+            for (const item of this.Stock) {
+                if (!isRefEntry(item) && item.Name === addedItem.Name && item.ItemType === itemType) {
+                    item.Number += 1;
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                // Custom item added by user: save completely as full object (no ref)
+                const fullItem = {
+                    isCustom: true,
+                    Name: cap(addedItem.Name),
+                    ItemType: itemType,
+                    Cost: addedItem.Cost !== undefined ? addedItem.Cost : 1,
+                    Number: 1,
+                    PriceModifier: Math.floor(Math.random() * 41) - 20,
+                };
+                this.Stock.push(fullItem);
             }
         }
     }
@@ -110,23 +206,35 @@ class Shop {
     //#region get / set
 
     getInventory() {
-        return this.Stock.map(item => ({
-            ...item,
-            Cost: this.trueCost(item, true)
-        }));
+        return this.Stock.map(entry => {
+            const resolved = resolveEntry(entry);
+            if (!resolved) return null;
+            return {
+                ...resolved,
+                Cost: this.trueCost(resolved, true),
+            };
+        }).filter(Boolean);
     }
 
     getInventoryValue() {
-        return this.Stock.reduce((total, item) => total + this.trueCost(item, false), 0) * 0.95;
+        return this.Stock.reduce((total, entry) => {
+            const r = resolveEntry(entry);
+            if (!r) return total;
+            return total + this.trueCost(r, false) * (r.Number || 1);
+        }, 0) * 0.95;
     }
 
     sortByType() {
-        this.Stock.sort((a, b) => a.Name.localeCompare(b.Name));
-        this.Stock.sort((a, b) => a.ItemType.localeCompare(b.ItemType));
+        this.Stock.sort((a, b) => (resolveEntry(a)?.Name || '').localeCompare(resolveEntry(b)?.Name || ''));
+        this.Stock.sort((a, b) => (a?.ItemType || '').localeCompare(b?.ItemType || ''));
     }
 
     sortByCost() {
-        this.Stock.sort((a, b) => a.Cost - b.Cost);
+        this.Stock.sort((a, b) => {
+            const ra = resolveEntry(a);
+            const rb = resolveEntry(b);
+            return this.trueCost(ra, false) - this.trueCost(rb, false);
+        });
     }
 
     setPlayerLevel(lv) {
@@ -159,9 +267,10 @@ class Shop {
     }
 
     trueCost(item, forParty = true) {
+        if (!item) return 0;
         const rep = forParty ? this.Reputation * 2 : 0;
-        const mod = (100 + item.PriceModifier - rep + this.CityLevel) / 100;
-        let cost = Math.max((parseFloat(item.Cost) * mod), 0.01);
+        const mod = (100 + (item.PriceModifier ?? 0) - rep + this.CityLevel) / 100;
+        let cost = Math.max((parseFloat(item.Cost) || 0) * mod, 0.01);
         const dec = cost < 100 ? 1 : (cost < 1000 ? 5 : 10);
         return parseFloat(cost < 1 ? cost.toFixed(2) : Math.round(cost / dec) * dec);
     }
@@ -210,21 +319,23 @@ class Shop {
     }
 
     sellSomething() {
-        const itemNumber = this.getInventory().reduce((acc, item) => acc + item.Number, 0);
-        if (Math.random() > 0.5) return; // 50% sell nothing
-        if (Math.random() >= itemNumber / 10) return; // If have < 10 items, may sell nothing
+        const inv = this.getInventory();
+        const itemNumber = inv.reduce((acc, item) => acc + item.Number, 0);
+        if (Math.random() > 0.5) return;
+        if (Math.random() >= itemNumber / 10) return;
         let num = Math.floor(Math.random() * Math.max(itemNumber / 10, 1));
-        if (num === 0 && Math.random() <= 0.03 && itemNumber > 3) {
-            num = 1; // 3% to sell something in any case
-        }
+        if (num === 0 && Math.random() <= 0.03 && itemNumber > 3) num = 1;
         for (let i = 0; i < num; i++) {
-            const itemsPossessed = this.Stock.filter(item => item.Number > 0);
-            const item = { ...itemsPossessed[Math.floor(Math.random() * itemsPossessed.length)] };
-            for (let selledItem of this.Stock) {
-                if (selledItem.Name === item.Name) {
-                    selledItem.Number -= 1;
-                    this.setGold(this.Gold + this.trueCost(selledItem, false));
-                }
+            if (inv.length === 0) break;
+            const picked = inv[Math.floor(Math.random() * inv.length)];
+            const name = picked.Name;
+            const itemType = picked.ItemType;
+            for (const entry of this.Stock) {
+                const r = resolveEntry(entry);
+                if (!r || r.Name !== name || r.ItemType !== itemType) continue;
+                entry.Number = Math.max(0, (entry.Number || 1) - 1);
+                this.setGold(this.Gold + this.trueCost(r, false));
+                break;
             }
         }
     }
@@ -258,50 +369,59 @@ class Shop {
 
     buy(itemName, itemType, cost = 1, number = 1, link = "") {
         if (itemName.trim() === '' || number <= 0) return;
-        let updatedInventory = [...this.Stock];
         const savedName = itemName.length > 64 ? cap(itemName).slice(0, 64) : cap(itemName);
-        const savedCost = Math.min(Math.max(parseFloat(cost).toFixed(2), 1), 999999999);
-        const savedNumber = Math.min(Math.max(parseInt(number), 0), 99);
-        const itemIndex = updatedInventory.findIndex(
-            (item) => item.Name === savedName && item.ItemType === itemType
-        );
+        const savedCost = Math.min(Math.max(parseFloat(cost), 1), 999999999);
+        const savedNumber = Math.min(Math.max(parseInt(number, 10), 0), 99);
+        const fullLink = link && link.includes('/') ? link : null;
+
+        const itemIndex = this.Stock.findIndex(entry => {
+            const r = resolveEntry(entry);
+            return r && r.Name === savedName && entry.ItemType === itemType;
+        });
 
         if (itemIndex !== -1) {
-            const updatedItem = { ...updatedInventory[itemIndex] };
-            updatedItem.Number += savedNumber;
-            updatedInventory[itemIndex] = updatedItem;
-            this.setGold(this.Gold - this.trueCost(updatedItem) * savedNumber);
+            const entry = this.Stock[itemIndex];
+            entry.Number = (entry.Number || 0) + savedNumber;
+            const r = resolveEntry(entry);
+            this.setGold(this.Gold - (r ? this.trueCost(r, true) * savedNumber : 0));
+        } else if (fullLink) {
+            const newEntry = {
+                link: fullLink,
+                Number: savedNumber,
+                PriceModifier: 0,
+                ItemType: itemType,
+                CostOverride: savedCost,
+            };
+            this.Stock.push(newEntry);
+            const r = resolveEntry(newEntry);
+            this.setGold(this.Gold - (r ? this.trueCost(r, true) * savedNumber : 0));
         } else {
+            // Custom item added by user: save completely as full object (no ref)
             const newItem = {
+                isCustom: true,
                 Name: savedName,
                 ItemType: itemType,
                 Cost: savedCost,
                 Number: savedNumber,
                 PriceModifier: 0,
-                Link: link
             };
-            updatedInventory.push(newItem);
+            this.Stock.push(newItem);
             this.setGold(this.Gold - savedCost * savedNumber);
         }
-
-        this.Stock = updatedInventory;
         this.sortByType();
     }
 
     sell(itemName, itemType, num = 1) {
-        let updatedInventory = [...this.Stock];
-        const itemIndex = updatedInventory.findIndex(
-            (item) => item.Name === cap(itemName) && item.ItemType === itemType
-        );
-
+        const itemIndex = this.Stock.findIndex(entry => {
+            const r = resolveEntry(entry);
+            return r && r.Name === cap(itemName) && entry.ItemType === itemType;
+        });
         if (itemIndex === -1) return;
 
-        const updatedItem = { ...updatedInventory[itemIndex] };
-        updatedItem.Number = Math.max(0, updatedItem.Number - num);
-        updatedInventory[itemIndex] = updatedItem;
-
-        this.setGold(this.Gold + this.trueCost(updatedItem) * num);
-        this.Stock = updatedInventory;
+        const entry = this.Stock[itemIndex];
+        const r = resolveEntry(entry);
+        entry.Number = Math.max(0, (entry.Number || 1) - num);
+        this.setGold(this.Gold + (r ? this.trueCost(r, false) * num : 0));
     }
 
     serialize() {

@@ -129,19 +129,76 @@ export function getConditionByLink(link) {
     }
 }
 
+/**
+ * Resolve item or scroll by reference link: "items/ItemType/slug" or "scrolls/Arcane|Divine/slug".
+ * Returns { raw, source: 'items'|'scrolls' } or null.
+ */
+export function getItemByRef(link) {
+  if (!link || typeof link !== 'string') return null;
+  const parts = link.split('/');
+  if (parts.length < 3) return null;
+  const [source, typeOrSub, slug] = parts;
+  if (source === 'items') {
+    const items = loadFile('items');
+    const list = items[typeOrSub] || [];
+    const raw = list.find(item => item.Link === slug) || null;
+    return raw ? { raw, source: 'items' } : null;
+  }
+  if (source === 'scrolls' && (typeOrSub === 'Arcane' || typeOrSub === 'Divine')) {
+    const scrolls = loadFile('scrolls');
+    const list = scrolls[typeOrSub] || [];
+    const raw = list.find(s => s.Link === slug) || null;
+    return raw ? { raw, source: 'scrolls' } : null;
+  }
+  return null;
+}
+
 export function getItemByLink(link, bonus = 0) {
   try {
-    const items = loadFile('items');
-    const types = [
-      "Good", "Ammo", "Weapon", "Specific Weapon", "Armor",
-      "Specific Armor", "Shield", "Specific Shield", "Potion",
-      "Ring", "Rod", "Staff", "Wand", "Wondrous Item"
-    ];
-    const allItems = types.flatMap(type => items[type] || []);
-    const found = allItems.find(item => item.Link === link);
+    const isPathLink = typeof link === 'string' && link.includes('/');
+    let found = null;
+    let refSource = null;
+    if (isPathLink) {
+      const refResult = getItemByRef(link);
+      if (refResult) {
+        found = refResult.raw;
+        refSource = refResult.source;
+      }
+    }
+    if (!found) {
+      const items = loadFile('items');
+      const types = [
+        "Good", "Ammo", "Weapon", "Specific Weapon", "Armor",
+        "Specific Armor", "Shield", "Specific Shield", "Potion",
+        "Ring", "Rod", "Staff", "Wand", "Wondrous Item"
+      ];
+      const allItems = types.flatMap(type => items[type] || []);
+      const slug = isPathLink ? (link.split('/').pop() || link) : link;
+      found = allItems.find(item => item.Link === slug) || null;
+    }
+    if (!found) {
+      const scrolls = loadFile('scrolls');
+      const slug = isPathLink ? (link.split('/').pop() || link) : link;
+      for (const sub of ['Arcane', 'Divine']) {
+        found = (scrolls[sub] || []).find(s => s.Link === slug) || null;
+        if (found) {
+          refSource = 'scrolls';
+          break;
+        }
+      }
+    }
     if (!found) return [];
 
-    // strip out unused props
+    if (refSource === 'scrolls') {
+      const { Chance, ...scrollCard } = found;
+      const spellCards = getSpellByLink(found.Link);
+      const spellName = spellCards.length ? spellCards[0].Name : (found.Name || '').replace(/^Scroll of /i, '').trim();
+      const spellLink = `<a href="spells#${found.Link}">${spellName}</a>`;
+      const description = `<p>Contains the spell: ${spellLink}.</p><p><b>Spell level:</b> ${found.Level ?? '—'}</p>`;
+      return [{ ...scrollCard, Link: found.Link, Description: description }];
+    }
+
+    // strip out unused props (items)
     const { Minor, Medium, Major, Chance, Id, Type, Cost, ...card } = found;
 
     // unit‑suffix normalization
@@ -178,6 +235,14 @@ export function getItemByLink(link, bonus = 0) {
       if ((card["Dmg (S)"] || card["Dmg (M)"]) && !card["Armor/Shield Bonus"]) {
         const desc = card.Description ? card.Description : "";
         card.Description = `<p><i>+${bonus} to attack rolls when used in combat.</i></p>` + desc;
+      }
+    }
+
+    if (card.Link) {
+      const spellCards = getSpellByLink(card.Link);
+      if (spellCards.length) {
+        const spellLink = `<a href="spells#${card.Link}">${spellCards[0].Name}</a>`;
+        card.Description = (card.Description || '') + `<p>Contains the spell: ${spellLink}.</p>`;
       }
     }
 
