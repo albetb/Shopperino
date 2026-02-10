@@ -18,9 +18,11 @@ export default function InfoSidebar() {
   const lootBarIsCollapsed = useSelector(state => state.loot.isLootSidebarCollapsed);
   const currentTab = useSelector(state => state.app.currentTab);
   const cardsData = useSelector(state => state.app.infoCards);
+  const sharedShop = useSelector(state => state.app.sharedShop);
 
+  // When viewing shared shop (tab 1, no left bar), treat as "other bar collapsed" so info sidebar can show on mobile
   const otherBarIsCollapsed =
-    currentTab === 1 ? shopBarIsCollapsed :
+    currentTab === 1 ? (sharedShop ? true : shopBarIsCollapsed) :
       currentTab === 2 ? spellBarIsCollapsed :
         currentTab === 3 ? lootBarIsCollapsed :
           true;

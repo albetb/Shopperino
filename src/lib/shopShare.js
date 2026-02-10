@@ -99,35 +99,51 @@ export function parseSharedShop(encodedString) {
 
 /**
  * Turn shared shop stock into display items: [{ Name, Number, Cost, Link?, Bonus?, ItemType? }].
+ * Defensive: never throws; skips invalid entries.
  */
 export function sharedStockToDisplayItems(stock) {
   if (!Array.isArray(stock)) return [];
-  return stock.map(entry => {
-    const Number = entry.Number ?? 1;
-    const Cost = entry.Cost ?? 0;
-    if (entry.link) {
-      const ref = getItemByRef(entry.link);
-      const base = ref?.raw;
-      const bonus = entry.Bonus != null && !isNaN(entry.Bonus) ? entry.Bonus : null;
-      const Name = base
-        ? (bonus != null ? `${base.Name} +${bonus}` : base.Name)
-        : entry.link;
-      const parts = entry.link.split('/');
-      const ItemType = parts.length >= 2 ? parts[1] : 'Item';
-      return {
-        Name,
-        Number,
-        Cost,
-        Link: entry.link,
-        ...(bonus != null ? { Bonus: bonus } : {}),
-        ItemType,
-      };
+  const result = [];
+  for (let i = 0; i < stock.length; i++) {
+    try {
+      const entry = stock[i];
+      if (!entry || typeof entry !== 'object') continue;
+      const num = entry.Number ?? 1;
+      const cost = entry.Cost ?? 0;
+      if (!(num > 0)) continue;
+      if (entry.link && typeof entry.link === 'string') {
+        let ref = null;
+        try {
+          ref = getItemByRef(entry.link);
+        } catch (_) {
+          /* use link as fallback name */
+        }
+        const base = ref?.raw;
+        const bonus = entry.Bonus != null && !isNaN(entry.Bonus) ? entry.Bonus : null;
+        const name = base
+          ? (bonus != null ? `${base.Name} +${bonus}` : base.Name)
+          : entry.link;
+        const parts = entry.link.split('/');
+        const itemType = parts.length >= 2 ? parts[1] : 'Item';
+        result.push({
+          Name: name,
+          Number: num,
+          Cost: cost,
+          Link: entry.link,
+          ...(bonus != null ? { Bonus: bonus } : {}),
+          ItemType: itemType,
+        });
+      } else {
+        result.push({
+          Name: entry.Name ?? 'Unknown',
+          Number: num,
+          Cost: cost,
+          ItemType: 'Custom',
+        });
+      }
+    } catch (_) {
+      /* skip invalid entry */
     }
-    return {
-      Name: entry.Name ?? 'Unknown',
-      Number,
-      Cost,
-      ItemType: 'Custom',
-    };
-  }).filter(i => i.Number > 0);
+  }
+  return result;
 }

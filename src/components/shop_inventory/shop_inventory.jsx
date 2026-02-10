@@ -31,10 +31,10 @@ export default function ShopInventory() {
   const rawShop = useSelector(state => state.shop.shop);
   const isViewOnly = !!sharedShop;
   const items = isViewOnly
-    ? sharedStockToDisplayItems(sharedShop.stock)
+    ? (Array.isArray(sharedShop.stock) ? sharedStockToDisplayItems(sharedShop.stock) : [])
     : (rawShop ? new Shop().load(rawShop).getInventory() : []);
-  const shopName = isViewOnly ? sharedShop.name : (rawShop?.Name || '');
-  const gold = isViewOnly ? sharedShop.gold : (rawShop?.Gold ?? 0);
+  const shopName = isViewOnly ? (sharedShop.name ?? 'Shared shop') : (rawShop?.Name || '');
+  const gold = isViewOnly ? (Number(sharedShop.gold) || 0) : (rawShop?.Gold ?? 0);
   const cityNameFromRedux = useSelector(state => state.city.city?.Name) || '';
   const cityName = isViewOnly ? '' : cityNameFromRedux;
 

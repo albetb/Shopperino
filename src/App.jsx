@@ -13,7 +13,8 @@ import * as db from './lib/storage';
 import { serialize } from './lib/utils';
 import {
   setStateCurrentTab,
-  setMainColor
+  setMainColor,
+  clearSharedShop
 } from './store/slices/appSlice';
 import {
   setCity
@@ -114,6 +115,14 @@ export default function App() {
   }, [dispatch]);
 
   const currentTab = useSelector(state => state.app.currentTab);
+  const sharedShop = useSelector(state => state.app.sharedShop);
+
+  // When user leaves the shop tab, clear shared shop so content is lost
+  useEffect(() => {
+    if (currentTab !== 1 && sharedShop) {
+      dispatch(clearSharedShop());
+    }
+  }, [currentTab, sharedShop, dispatch]);
 
   const mainPage = <>
     <header className="app-header">
@@ -121,12 +130,19 @@ export default function App() {
     </header>
   </>;
 
-  const shopper = <>
-    <ShopSidebar />
+  // Mini shop (read-only, no left sidebar) when viewing a scanned shared shop
+  const shopper = sharedShop ? (
     <header className="app-header">
       <ShopInventory />
     </header>
-  </>;
+  ) : (
+    <>
+      <ShopSidebar />
+      <header className="app-header">
+        <ShopInventory />
+      </header>
+    </>
+  );
 
   const spellbook = <>
     <SpellbookSidebar />
