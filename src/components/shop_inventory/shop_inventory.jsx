@@ -1,8 +1,9 @@
 import { useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Shop from '../../lib/shop';
+import { sharedStockToDisplayItems } from '../../lib/shopShare';
 import { isMobile, trimLine } from '../../lib/utils';
-import { addCardByLink } from '../../store/slices/appSlice';
+import { addCardByLink, clearSharedShop } from '../../store/slices/appSlice';
 import { updateShop } from '../../store/slices/shopSlice';
 import useLongPress from '../hooks/use_long_press';
 import AddItemForm from './add_item_form';
@@ -26,11 +27,16 @@ export default function ShopInventory() {
   const LONGPRESS_TIME = 400;
 
   // --- Redux selectors ---
+  const sharedShop = useSelector(state => state.app.sharedShop);
   const rawShop = useSelector(state => state.shop.shop);
-  const items = rawShop ? new Shop().load(rawShop).getInventory() : [];
-  const shopName = rawShop?.Name || '';
-  const gold = rawShop?.Gold ?? 0;
-  const cityName = useSelector(state => state.city.city?.Name) || '';
+  const isViewOnly = !!sharedShop;
+  const items = isViewOnly
+    ? sharedStockToDisplayItems(sharedShop.stock)
+    : (rawShop ? new Shop().load(rawShop).getInventory() : []);
+  const shopName = isViewOnly ? sharedShop.name : (rawShop?.Name || '');
+  const gold = isViewOnly ? sharedShop.gold : (rawShop?.Gold ?? 0);
+  const cityNameFromRedux = useSelector(state => state.city.city?.Name) || '';
+  const cityName = isViewOnly ? '' : cityNameFromRedux;
 
   // --- Handlers ---
   const handleDeleteItemClick = (e, name, type, number) => {
@@ -88,7 +94,8 @@ export default function ShopInventory() {
     });
   }, [items, sortColumn, sortDesc]);
 
-  if (!items.some(i => i.Number > 0)) return null;
+  const hasItems = items.some(i => (i.Number ?? 0) > 0);
+  if (!hasItems && !isViewOnly) return null;
 
   const formatNumber = num => {
     const n = parseFloat(num);
@@ -112,15 +119,32 @@ export default function ShopInventory() {
         <div className="label-container">
           <h2>{shopLabel()}</h2>
           <div className="space-left">
-            <h4>{cityLabel()}</h4>
+            {isViewOnly ? (
+              <h4 style={{ fontStyle: 'italic' }}>Shared shop (view only)</h4>
+            ) : (
+              <h4>{cityLabel()}</h4>
+            )}
           </div>
         </div>
-        <div className="money-box">
+        <div className="money-box" style={isViewOnly ? { display: 'flex', alignItems: 'center', gap: '0.5rem' } : undefined}>
+          {isViewOnly && (
+            <button
+              type="button"
+              className="modern-button small-middle"
+              onClick={() => dispatch(clearSharedShop())}
+            >
+              Close
+            </button>
+          )}
           <h4><b>Gold: {formatNumber(gold)}</b></h4>
         </div>
       </div>
 
-      <table className={`shop-table ${showAddItemForm ? "shop-table-adding" : ""}`}>
+      {isViewOnly && !hasItems && (
+        <p style={{ color: '#c0c0c0', margin: '1rem' }}>No items in this shop.</p>
+      )}
+
+      <table className={`shop-table ${showAddItemForm ? "shop-table-adding" : ""}`} style={hasItems ? undefined : { display: 'none' }}>
         <thead>
           <tr>
             {(['number', 'name', 'type', 'cost']).map((col) => {
@@ -143,12 +167,12 @@ export default function ShopInventory() {
                 </th>
               );
             })}
-            <th className="action-size"></th>
+            {!isViewOnly && <th className="action-size"></th>}
           </tr>
         </thead>
         <tbody>
           {sortedItems.map((item, idx) => {
-            const key = `${item.Name}-${item.ItemType}`;
+            const key = `${item.Name}-${item.ItemType}-${idx}`;
             const abbrevType = isMobile() && item.ItemType === 'Wondrous Item'
               ? 'W. Item'
               : item.ItemType;
@@ -161,7 +185,7 @@ export default function ShopInventory() {
                   : 0;
 
             return (
-              <tr key={idx} className={deletingItems[key] ? 'deleting' : ''}>
+              <tr key={key} className={deletingItems[`${item.Name}-${item.ItemType}`] ? 'deleting' : ''}>
                 <td className="align-right" style={{ color: "#c0c0c0", fontSize: "0.73em" }}>{item.Number}</td>
                 <td style={{ color: "#c0c0c0", fontSize: "0.73em" }}>
                   {item.Link ? (
@@ -179,33 +203,37 @@ export default function ShopInventory() {
                 </td>
                 <td style={{ color: "#c0c0c0", fontSize: "0.73em" }}>{abbrevType}</td>
                 <td style={{ color: "#c0c0c0", fontSize: "0.73em" }}>{formatNumber(item.Cost)}</td>
-                <td style={{ textAlign: "center" }}>
-                  <button
-                    className="flat-button smaller"
-                    onClick={e => handleDeleteItemClick(e, item.Name, item.ItemType, item.Number)}
-                    onMouseDown={e => longPressEvent.onMouseDown(e, [item.Name, item.ItemType, item.Number])}
-                    onTouchStart={e => longPressEvent.onTouchStart(e, [item.Name, item.ItemType, item.Number])}
-                    onMouseUp={longPressEvent.onMouseUp}
-                    onMouseLeave={longPressEvent.onMouseLeave}
-                    onTouchEnd={e => {
-                      longPressEvent.onTouchEnd(e);
-                      handleDeleteItemClick(e, item.Name, item.ItemType, item.Number);
-                    }}
-                    style={{ color: "#c0c0c0" }}
-                  >
-                    <span className="material-symbols-outlined">remove_shopping_cart</span>
-                  </button>
-                </td>
+                {!isViewOnly && (
+                  <td style={{ textAlign: "center" }}>
+                    <button
+                      className="flat-button smaller"
+                      onClick={e => handleDeleteItemClick(e, item.Name, item.ItemType, item.Number)}
+                      onMouseDown={e => longPressEvent.onMouseDown(e, [item.Name, item.ItemType, item.Number])}
+                      onTouchStart={e => longPressEvent.onTouchStart(e, [item.Name, item.ItemType, item.Number])}
+                      onMouseUp={longPressEvent.onMouseUp}
+                      onMouseLeave={longPressEvent.onMouseLeave}
+                      onTouchEnd={e => {
+                        longPressEvent.onTouchEnd(e);
+                        handleDeleteItemClick(e, item.Name, item.ItemType, item.Number);
+                      }}
+                      style={{ color: "#c0c0c0" }}
+                    >
+                      <span className="material-symbols-outlined">remove_shopping_cart</span>
+                    </button>
+                  </td>
+                )}
               </tr>
             );
           })}
         </tbody>
       </table>
 
-      {showAddItemForm ? (
-        <AddItemForm onAddItem={handleAddItem} items={items} setShowAddItemForm={setShowAddItemForm} />
-      ) : (
-        <button className="add-item-button medium-long" onClick={() => setShowAddItemForm(true)}>Add Item</button>
+      {!isViewOnly && (
+        showAddItemForm ? (
+          <AddItemForm onAddItem={handleAddItem} items={items} setShowAddItemForm={setShowAddItemForm} />
+        ) : (
+          <button className="add-item-button medium-long" onClick={() => setShowAddItemForm(true)}>Add Item</button>
+        )
       )}
 
       {popup.visible && (

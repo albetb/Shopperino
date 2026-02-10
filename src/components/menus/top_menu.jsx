@@ -3,8 +3,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import logo from '../../data/logo-shopperino.png';
 import { downloadLocalStorage, handleFileUpload } from '../../lib/storage';
 import { isMobile } from '../../lib/utils';
-import { setStateCurrentTab } from '../../store/slices/appSlice';
+import { setSharedShop, setStateCurrentTab } from '../../store/slices/appSlice';
 import '../../style/sidebar.css';
+import ScanShopScanner from '../common/ScanShopScanner';
 import ColorPicker from './colorPicker';
 
 export default function TopMenu() {
@@ -12,6 +13,7 @@ export default function TopMenu() {
 
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [optionsOpen, setOptionsOpen] = useState(false);
+    const [showScan, setShowScan] = useState(false);
 
     const handleLogoClick = () => dispatch(setStateCurrentTab(0));
     const handleShopClick = () => {
@@ -38,6 +40,15 @@ export default function TopMenu() {
     const handleDownloadClick = () => {
         downloadLocalStorage();
         setOptionsOpen(false);
+    };
+    const handleScanClick = () => {
+        setShowScan(true);
+        setOptionsOpen(false);
+    };
+    const handleScanSuccess = (shop) => {
+        dispatch(setSharedShop(shop));
+        dispatch(setStateCurrentTab(1));
+        setShowScan(false);
     };
     const handleToggleMobileMenu = () => setMobileMenuOpen(prev => !prev);
     const handleToggleOptions = () => setOptionsOpen(prev => !prev);
@@ -185,6 +196,15 @@ export default function TopMenu() {
         </>
     );
 
+    const scanButton =
+        <button
+            className="modern-dropdown small-middle"
+            onClick={handleScanClick}
+            title="Scan shop QR code"
+        >
+            <span className="material-symbols-outlined">qr_code_scanner</span>
+        </button>;
+
     const optionsButtons = (
         <>
             <div className="menu-side-by-side">
@@ -195,6 +215,11 @@ export default function TopMenu() {
             <div className="menu-side-by-side">
                 <p style={{ textShadow: "1px 1px #12121366" }}>Import save</p>
                 {importButton}
+            </div>
+
+            <div className="menu-side-by-side">
+                <p style={{ textShadow: "1px 1px #12121366" }}>Scan</p>
+                {scanButton}
             </div>
 
             <div className="menu-side-by-side">
@@ -253,10 +278,14 @@ export default function TopMenu() {
             <div className="top-menu">
                 {fileInput}
                 {topLogo}
-
                 {mobileMenuButton}
-
                 {optionsButton}
+                {showScan && (
+                    <ScanShopScanner
+                        onClose={() => setShowScan(false)}
+                        onSuccess={handleScanSuccess}
+                    />
+                )}
             </div>
         );
     }
@@ -270,6 +299,12 @@ export default function TopMenu() {
                 <br></br>
                 {optionsButton}
             </div>
+            {showScan && (
+                <ScanShopScanner
+                    onClose={() => setShowScan(false)}
+                    onSuccess={handleScanSuccess}
+                />
+            )}
         </div>
     );
 }

@@ -18,7 +18,8 @@ const initialState = {
   infoSidebarCollapsed: false,
   infoCards: [],
   currentTab: 100,
-  mainColor: null
+  mainColor: null,
+  sharedShop: null, // { name, gold, stock } when viewing a scanned shop (read-only)
 };
 
 export const appSlice = createSlice({
@@ -162,6 +163,14 @@ export const appSlice = createSlice({
       state.mainColor = null;
       db.setMainColor(null);
       applyColors(null);
+    },
+
+    setSharedShop(state, action) {
+      state.sharedShop = action.payload; // { name, gold, stock } or null
+    },
+
+    clearSharedShop(state) {
+      state.sharedShop = null;
     }
   }
 });
@@ -194,7 +203,9 @@ export const {
   clearInfoCards,
   setStateCurrentTab,
   setMainColor,
-  resetMainColor
+  resetMainColor,
+  setSharedShop,
+  clearSharedShop
 } = appSlice.actions;
 
 export default appSlice.reducer;

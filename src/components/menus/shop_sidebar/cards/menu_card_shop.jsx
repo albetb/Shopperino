@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { compressShopForShare } from '../../../../lib/shopShare';
 import { isMobile, order, shopTypes } from '../../../../lib/utils';
 import {
   onCreateShop,
@@ -13,17 +14,22 @@ import {
 import CreateComponent from '../../../common/create_component';
 import LevelComponent from '../../../common/level_component';
 import SelectComponent from '../../../common/select_component';
+import ShareShopModal from '../../../common/ShareShopModal';
 import '../../../../style/menu_cards.css';
 import { toggleSidebar } from '../../../../store/slices/appSlice';
 
 export default function MenuCardShop() {
   const dispatch = useDispatch();
   const [isNewVisible, setIsNewVisible] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [sharePayload, setSharePayload] = useState(null);
 
   // Redux state
   const shops = useSelector(state => state.city.city?.Shops.map(s => s.Name) || []);
   const selectedName = useSelector(state => state.city.city?.SelectedShop?.Name);
   const saved = order(shops, selectedName);
+  const rawShop = useSelector(state => state.shop.shop);
+  const shopGenerated = useSelector(state => state.shop.shopGenerated);
 
   const shopLevel = useSelector(state => state.shop.shop?.Level) ?? 0;
   const reputation = useSelector(state => state.shop.shop?.Reputation) ?? 0;
@@ -42,6 +48,25 @@ export default function MenuCardShop() {
   const handleTypeChange = event => dispatch(updateShop(['setShopType', event.target.value]));
   const handleGenerate = () => {
     dispatch(onCreateShop());
+    if (isMobile()) {
+      dispatch(toggleSidebar());
+    }
+  };
+
+  const handleShare = () => {
+    const result = compressShopForShare(rawShop);
+    if (!result.ok) {
+      alert(result.error);
+      return;
+    }
+    setSharePayload(result.payload);
+    setShowShareModal(true);
+    // Do not close sidebar here on mobile: closing would unmount this component and the modal would never show
+  };
+
+  const handleCloseShareModal = () => {
+    setShowShareModal(false);
+    setSharePayload(null);
     if (isMobile()) {
       dispatch(toggleSidebar());
     }
@@ -104,16 +129,31 @@ export default function MenuCardShop() {
             </select>
           </div>
 
-          <div className="card-side-div margin-top" style={{justifyContent: "center"}}>
+          <div className="card-side-div margin-top buttons-row" style={{ justifyContent: 'flex-start', flexWrap: 'wrap', gap: '0.5rem' }}>
             <button
-              className="modern-button small-long"
+              className={`modern-button ${shopGenerated ? 'small-middle-long2' : 'small-long'}`}
               onClick={handleGenerate}
               disabled={!canGenerate}
             >
               <b>Generate</b>
             </button>
+            {shopGenerated && (
+              <button
+                className="modern-button small-middle-long2"
+                onClick={handleShare}
+              >
+                <b>Share</b>
+              </button>
+            )}
           </div>
         </>
+      )}
+
+      {showShareModal && (
+        <ShareShopModal
+          payload={sharePayload}
+          onClose={handleCloseShareModal}
+        />
       )}
     </>
   );
