@@ -218,7 +218,7 @@ export default function TopMenu() {
             </div>
 
             <div className="menu-side-by-side">
-                <p style={{ textShadow: "1px 1px #12121366" }}>Scan</p>
+                <p style={{ textShadow: "1px 1px #12121366" }}>Scan shop</p>
                 {scanButton}
             </div>
 

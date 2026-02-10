@@ -17,12 +17,22 @@ function buildSharePayload(serializedShop) {
     .map(item => {
       const totalPrice = (parseFloat(item.Cost) || 0) * (item.Number ?? 1);
       const p = Math.round(totalPrice * 100) / 100;
-      if (item.Link) {
-        const entry = { l: item.Link, N: item.Number, p };
+      const N = item.Number ?? 1;
+      // Magic item with abilities: Link is array; save display name and base link+bonus for tooltip as +x
+      if (Array.isArray(item.Link) && item.Name && item.BaseItemType) {
+        const baseSlug = typeof item.Link[0] === 'string' ? item.Link[0] : '';
+        const baseLink = baseSlug ? `items/${item.BaseItemType}/${baseSlug}` : null;
+        const entry = { n: item.Name, N, p };
+        if (baseLink) entry.l = baseLink;
         if (item.Bonus != null && !isNaN(item.Bonus)) entry.b = item.Bonus;
         return entry;
       }
-      return { n: item.Name, N: item.Number, p };
+      if (typeof item.Link === 'string') {
+        const entry = { l: item.Link, N, p };
+        if (item.Bonus != null && !isNaN(item.Bonus)) entry.b = item.Bonus;
+        return entry;
+      }
+      return { n: item.Name ?? 'Unknown', N, p };
     });
 
   return {
@@ -73,18 +83,21 @@ export function parseSharedShop(encodedString) {
     const N = entry.N ?? entry.Number ?? 1;
     const p = typeof entry.p === 'number' ? entry.p : (parseFloat(entry.price) || 0);
     const costPerUnit = N > 0 ? p / N : 0;
+    const savedName = entry.n ?? entry.Name ?? '';
     if (entry.l ?? entry.link) {
       const link = entry.l ?? entry.link;
+      if (typeof link !== 'string') return null;
       const b = entry.b ?? entry.Bonus;
-      return {
+      const out = {
         link,
         Number: N,
         Cost: costPerUnit,
         ...(b != null && !isNaN(b) ? { Bonus: typeof b === 'number' ? b : parseInt(b, 10) } : {}),
       };
+      if (savedName) out.Name = savedName;
+      return out;
     }
-    const n = entry.n ?? entry.Name ?? '';
-    return { Name: n, Number: N, Cost: costPerUnit, isCustom: true };
+    return { Name: savedName || 'Unknown', Number: N, Cost: costPerUnit, isCustom: true };
   }).filter(Boolean);
 
   return {
@@ -116,13 +129,14 @@ export function sharedStockToDisplayItems(stock) {
         try {
           ref = getItemByRef(entry.link);
         } catch (_) {
-          /* use link as fallback name */
+          /* use saved name or link as fallback */
         }
         const base = ref?.raw;
         const bonus = entry.Bonus != null && !isNaN(entry.Bonus) ? entry.Bonus : null;
-        const name = base
+        const resolvedName = base
           ? (bonus != null ? `${base.Name} +${bonus}` : base.Name)
           : entry.link;
+        const name = (entry.Name && String(entry.Name).trim()) ? entry.Name : resolvedName;
         const parts = entry.link.split('/');
         const itemType = parts.length >= 2 ? parts[1] : 'Item';
         result.push({

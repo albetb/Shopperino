@@ -141,7 +141,16 @@ export function getItemByRef(link) {
   if (source === 'items') {
     const items = loadFile('items');
     const list = items[typeOrSub] || [];
-    const raw = list.find(item => item.Link === slug) || null;
+    let raw = list.find(item => item.Link === slug) || null;
+    if (!raw) {
+      const types = [
+        'Good', 'Ammo', 'Weapon', 'Specific Weapon', 'Armor',
+        'Specific Armor', 'Shield', 'Specific Shield', 'Potion',
+        'Ring', 'Rod', 'Staff', 'Wand', 'Wondrous Item'
+      ];
+      const allItems = types.flatMap(type => items[type] || []);
+      raw = allItems.find(item => item.Link === slug) || null;
+    }
     return raw ? { raw, source: 'items' } : null;
   }
   if (source === 'scrolls' && (typeOrSub === 'Arcane' || typeOrSub === 'Divine')) {

@@ -120,7 +120,7 @@ export default function ShopInventory() {
           <h2>{shopLabel()}</h2>
           <div className="space-left">
             {isViewOnly ? (
-              <h4 style={{ fontStyle: 'italic' }}>Shared shop (view only)</h4>
+              <h4 style={{ fontStyle: 'italic' }}>(view only)</h4>
             ) : (
               <h4>{cityLabel()}</h4>
             )}
