@@ -6,9 +6,10 @@ import { isMobile } from '../../lib/utils';
 export default function MainPage() {
   const dispatch = useDispatch();
 
-  const handleShopClick = () => dispatch(setStateCurrentTab(1));;
+  const handleShopClick = () => dispatch(setStateCurrentTab(1));
   const handleSpellbookClick = () => dispatch(setStateCurrentTab(2));
   const handleLootClick = () => dispatch(setStateCurrentTab(3));
+  const handleSearchClick = () => dispatch(setStateCurrentTab(4));
 
   const isMobileNow = isMobile();
   const ww = isMobileNow ? "80%" : "20%";
@@ -37,6 +38,12 @@ export default function MainPage() {
         <p style={{ textShadow: "1px 1px #0d0d0d1a" }}><b>Loot generator</b></p>
         <span className="material-symbols-outlined" style={{ color: "#0d0d0d" }}>money_bag</span>
         <p style={{ textAlign: "center" }}>Generates randomized loot tailored to the player’s level, including gold, goods, and magic items.</p>
+      </div>
+
+      <div className="card" style={{ width: ww, padding: pp, paddingLeft: plr, paddingRight: plr, cursor: "pointer" }} onClick={handleSearchClick}>
+        <p style={{ textShadow: "1px 1px #0d0d0d1a" }}><b>Search</b></p>
+        <span className="material-symbols-outlined" style={{ color: "#0d0d0d" }}>search</span>
+        <p style={{ textAlign: "center" }}>Search and browse spells, items, feats and skills in one place.</p>
       </div>
 
       <p style={{ color: "#f9f9f9", width: "90%", textAlign: "center" }}>

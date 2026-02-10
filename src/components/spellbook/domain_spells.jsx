@@ -3,7 +3,7 @@ import { isMobile } from '../../lib/utils';
 import { addCardByLink } from '../../store/slices/appSlice';
 import { onUseDomainSpell } from '../../store/thunks/spellbookThunks';
 
-export default function DomainSpells({ preparedByLevel, preparedLevels, dispatch }) {
+export default function DomainSpells({ preparedByLevel, preparedLevels, dispatch, showShortDescriptions }) {
     if (!preparedLevels || preparedLevels.length === 0) return null;
 
     return (
@@ -47,6 +47,11 @@ export default function DomainSpells({ preparedByLevel, preparedLevels, dispatch
                                             >
                                                 {item.Name}
                                             </button>
+                                            {showShortDescriptions && item['Short Description'] && (
+                                                <div style={{ marginTop: '0.15rem', fontSize: '0.85em', color: 'var(--dark-grey)' }}>
+                                                    {item['Short Description']}
+                                                </div>
+                                            )}
                                         </td>
                                         {!isMobile() && (
                                             <td className={i === 0 ? 'first' : ''} style={{ width: '30%', fontSize: 'small' }}>
@@ -72,4 +77,5 @@ DomainSpells.propTypes = {
     }))).isRequired,
     preparedLevels: PropTypes.arrayOf(PropTypes.number).isRequired,
     dispatch: PropTypes.func.isRequired,
+    showShortDescriptions: PropTypes.bool.isRequired,
 };

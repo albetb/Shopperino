@@ -23,7 +23,7 @@ export default function InfoSidebar() {
     currentTab === 1 ? shopBarIsCollapsed :
       currentTab === 2 ? spellBarIsCollapsed :
         currentTab === 3 ? lootBarIsCollapsed :
-          false;
+          true;
 
   const handleToggle = useCallback(
     () => dispatch(toggleInfoSidebar()),

@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import * as db from '../../../../lib/storage';
-import { isMobile, trimLine } from '../../../../lib/utils';
 import MenuCardPlayer from './menu_card_player';
 import MenuCardSearch from './menu_card_search';
 import '../../../../style/menu_cards.css';
@@ -47,10 +46,9 @@ export default function SpellbookMenuCards() {
     { id: 2, title: 'Filter', saved: null, selected: null, level: null, class: null }
   ];
 
-  const trimLength = isMobile() ? 23 : 10;
-  const formatTitle = ({ id, title, saved, selected, level, _class }) => {
+  const formatTitle = ({ title, saved, selected, level, _class }) => {
     if (!saved || saved.length === 0) return title;
-    const displayName = trimLine(selected || saved[0], trimLength);
+    const displayName = selected || saved[0];
     return `${displayName} - ${_class} lv${level}`;
   };
 

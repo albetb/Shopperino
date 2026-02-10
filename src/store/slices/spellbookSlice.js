@@ -13,6 +13,7 @@ const initialState = {
   isDomainDescriptionCollapsed: false,
   searchSpellName: false,
   searchSpellSchool: false,
+  showShortDescriptions: true,
 };
 
 export const spellbookSlice = createSlice({
@@ -71,6 +72,10 @@ export const spellbookSlice = createSlice({
     setSearchSpellSchool(state, action) {
       db.setSearchSpellSchool(action.payload);
       state.searchSpellSchool = action.payload;
+    },
+    setShowShortDescriptions(state, action) {
+      db.setShowShortDescriptions(action.payload);
+      state.showShortDescriptions = action.payload;
     }
   }
 });
@@ -86,7 +91,8 @@ export const {
   setIsClassDescriptionCollapsed,
   setIsDomainDescriptionCollapsed,
   setSearchSpellName,
-  setSearchSpellSchool
+  setSearchSpellSchool,
+  setShowShortDescriptions
 } = spellbookSlice.actions;
 
 export default spellbookSlice.reducer;

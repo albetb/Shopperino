@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { MAGICSCHOOLS } from '../../../../lib/spellbook';
-import { setSearchSpellName, setSearchSpellSchool } from '../../../../store/slices/spellbookSlice';
+import { setSearchSpellName, setSearchSpellSchool, setShowShortDescriptions } from '../../../../store/slices/spellbookSlice';
 import '../../../../style/menu_cards.css';
 
 export default function MenuCardSearch() {
@@ -8,8 +8,11 @@ export default function MenuCardSearch() {
 
   const searchSpellName = useSelector(s => s.spellbook.searchSpellName);
   const searchSpellSchool = useSelector(state => state.spellbook.searchSpellSchool);
+  const showShortDescriptions = useSelector(state => state.spellbook.showShortDescriptions);
+
   const handleNameChange = name => dispatch(setSearchSpellName(name));
   const handleSchoolChange = cls => dispatch(setSearchSpellSchool(cls));
+  const handleToggleShortDescriptions = checked => dispatch(setShowShortDescriptions(checked));
 
   return (
     <>
@@ -38,6 +41,18 @@ export default function MenuCardSearch() {
             </option>
           ))}
         </select>
+      </div>
+
+      <div className="card-side-div margin-top">
+        <label className="modern-label" style={{ display: 'flex', alignItems: 'center' }}>
+          <input
+            type="checkbox"
+            checked={!!showShortDescriptions}
+            onChange={e => handleToggleShortDescriptions(e.target.checked)}
+            style={{ marginRight: '0.5rem' }}
+          />
+          Show spell descriptions
+        </label>
       </div>
     </>
   );

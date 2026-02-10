@@ -8,6 +8,7 @@ import SpellbookSidebar from './components/menus/spellbook_sidebar/spellbook_sid
 import TopMenu from './components/menus/top_menu';
 import ShopInventory from './components/shop_inventory/shop_inventory';
 import SpellbookTable from './components/spellbook/spellbook_table';
+import SearchPage from './components/search/search_page';
 import * as db from './lib/storage';
 import { serialize } from './lib/utils';
 import {
@@ -37,7 +38,8 @@ import {
   setSelectedSpellbook,
   setSpellbook,
   setSpellbookPage,
-  setSpellbooks
+  setSpellbooks,
+  setShowShortDescriptions
 } from './store/slices/spellbookSlice';
 import {
   setSelectedWorld,
@@ -71,6 +73,7 @@ export default function App() {
     const ddc = db.getIsDomainDescriptionCollapsed();
     const ssn = db.getSearchSpellName();
     const sss = db.getSearchSpellSchool();
+    const ssd = db.getShowShortDescriptions();
     const ls = db.getLoots();
     const sl = db.getSelectedLoot();
     const l = db.getLoot(sl?.Id);
@@ -94,6 +97,7 @@ export default function App() {
     dispatch(setIsDomainDescriptionCollapsed(ddc));
     dispatch(setSearchSpellName(ssn));
     dispatch(setSearchSpellSchool(sss));
+    dispatch(setShowShortDescriptions(ssd));
     if (l) dispatch(setLoot(l));
     dispatch(setSelectedLoot(sl));
     dispatch(setLoots(ls));
@@ -138,11 +142,16 @@ export default function App() {
     </header>
   </>;
 
+  const search = <>
+    <SearchPage />
+  </>;
+
   const tabPages = {
     0: mainPage,
     1: shopper,
     2: spellbook,
-    3: loot
+    3: loot,
+    4: search
   };
 
   const currentTabContent = tabPages[currentTab] ??
@@ -151,7 +160,7 @@ export default function App() {
   return (
     <div className="app">
       <TopMenu />
-      {tabPages !== 0 && <InfoSidebar />}
+      {currentTab !== 0 && <InfoSidebar />}
       {currentTabContent}
     </div>
   );

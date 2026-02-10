@@ -1,4 +1,4 @@
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import SpellbookTableHeader from './spellbook_header';
 import SpellFilters from './spell_filters';
 import RestBox from './rest_box';
@@ -10,6 +10,7 @@ import '../../style/shop_inventory.css';
 
 export default function SpellbookTable() {
   const dispatch = useDispatch();
+  const showShortDescriptions = useSelector(state => state.spellbook.showShortDescriptions);
   const {
     spellbook, page, isCollapsed, filters,
     spellsByLevel, levels,
@@ -68,6 +69,7 @@ export default function SpellbookTable() {
           inst={inst}
           spellsPerDay={spellsPerDay}
           charBonus={charBonus}
+          showShortDescriptions={showShortDescriptions}
           dispatch={dispatch}
         />
       ))}

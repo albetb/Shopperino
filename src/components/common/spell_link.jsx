@@ -17,10 +17,12 @@ export default function SpellLink({ link, children }) {
         border: 'none',
         padding: 0,
         margin: 0,
-        color: '#222222',
+        color: 'inherit',
         cursor: 'pointer',
         textDecoration: 'underline',
-        font: 'inherit'   // preserve font styling
+        font: 'inherit',   // preserve font styling
+        textAlign: 'left',
+        display: 'inline'
       }}
     >
       {children}

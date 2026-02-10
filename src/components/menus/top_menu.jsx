@@ -26,6 +26,10 @@ export default function TopMenu() {
         dispatch(setStateCurrentTab(3));
         setMobileMenuOpen(false);
     };
+    const handleSearchClick = () => {
+        dispatch(setStateCurrentTab(4));
+        setMobileMenuOpen(false);
+    };
 
     const handleUploadClick = () => {
         document.getElementById('upload').click();
@@ -141,11 +145,22 @@ export default function TopMenu() {
             <span className="material-symbols-outlined">money_bag</span>
         </button>
 
+    const searchButton =
+        <button
+            className={`modern-dropdown ${buttonDimension} ${currentTab === 4 ? "opacity-50" : ""}`}
+            onClick={handleSearchClick}
+            title="Search"
+            disabled={currentTab === 4}
+        >
+            <span className="material-symbols-outlined">search</span>
+        </button>
+
     const buttons = (
         <>
             {shopButton}
             {spellbookButton}
             {lootButton}
+            {searchButton}
         </>
     );
 
@@ -162,6 +177,10 @@ export default function TopMenu() {
             <div className="menu-side-by-side">
                 <p style={{ textShadow: "1px 1px #12121366" }}>Loot generator</p>
                 {lootButton}
+            </div>
+            <div className="menu-side-by-side">
+                <p style={{ textShadow: "1px 1px #12121366" }}>Search</p>
+                {searchButton}
             </div>
         </>
     );

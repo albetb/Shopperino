@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import { isMobile } from '../../lib/utils';
 import { addCardByLink } from '../../store/slices/appSlice';
 
-export default function SpontaneousSpells({ spontaneousByLevel, spontaneousLevels, dispatch }) {
+export default function SpontaneousSpells({ spontaneousByLevel, spontaneousLevels, dispatch, showShortDescriptions }) {
     if (spontaneousLevels.length === 0) return null;
 
     return (
@@ -37,6 +37,11 @@ export default function SpontaneousSpells({ spontaneousByLevel, spontaneousLevel
                                     >
                                         {item.Name}
                                     </button>
+                                    {showShortDescriptions && item['Short Description'] && (
+                                        <div style={{ marginTop: '0.15rem', fontSize: '0.85em', color: 'var(--dark-grey)' }}>
+                                            {item['Short Description']}
+                                        </div>
+                                    )}
                                 </td>
                                 {!isMobile() && (
                                     <td className={i === 0 ? 'first' : ''} style={{ width: '30%', fontSize: 'small' }}>
@@ -56,4 +61,5 @@ SpontaneousSpells.propTypes = {
     spontaneousByLevel: PropTypes.objectOf(PropTypes.array).isRequired,
     spontaneousLevels: PropTypes.arrayOf(PropTypes.number).isRequired,
     dispatch: PropTypes.func.isRequired,
+    showShortDescriptions: PropTypes.bool.isRequired,
 };

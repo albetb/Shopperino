@@ -125,6 +125,11 @@ export function getSearchSpellSchool() {
     return value ? JSON.parse(decompressFromUTF16(value)) : "";
 }
 
+export function getShowShortDescriptions() {
+    const value = localStorage.getItem('ShowShortDescriptions');
+    return value ? JSON.parse(decompressFromUTF16(value)) : true;
+}
+
 //#endregion
 
 //#region Loot
@@ -256,6 +261,10 @@ export function setSearchSpellName(value) {
 
 export function setSearchSpellSchool(value) {
     localStorage.setItem('SearchSpellSchool', compressToUTF16(JSON.stringify(value)));
+}
+
+export function setShowShortDescriptions(value) {
+    localStorage.setItem('ShowShortDescriptions', compressToUTF16(JSON.stringify(value)));
 }
 
 //#endregion

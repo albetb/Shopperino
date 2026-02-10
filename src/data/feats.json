@@ -190,7 +190,7 @@
         "General"
       ],
       "Prerequisites": "<a href=\"feats#endurance\">Endurance</a>.",
-      "Description": "<p><b>Benefit:</b> When reduced to between –1 and –9 hit points, you automatically become stable. You don’t have to roll d% to see if you lose 1 hit point each round.</p>\n<p>When reduced to negative hit points, you may choose to act as if you were disabled, rather than dying. You must make this decision as soon as you are reduced to negative hit points (even if it isn’t your turn). If you do not choose to act as if you were disabled, you immediately fall unconscious.</p>\n<p>When using this feat, you can take either a single move or standard action each turn, but not both, and you cannot take a full round action. You can take a move action without further injuring yourself, but if you <a href=\"skills#perform\">Perform</a> any standard action (or any other action deemed as strenuous, including some free actions, such as casting a quickened spell) you take 1 point of damage after completing the act. If you reach –10 hit points, you immediately die.</p>\n<p><b>Normal:</b> A character without this feat who is reduced to between –1 and –9 hit points is unconscious and dying.</p>"
+      "Description": "<p><b>Benefit:</b> When reduced to between –1 and –9 hit points, you automatically become stable. You don’t have to roll d% to see if you lose 1 hit point each round.</p>\n<p>When reduced to negative hit points, you may choose to act as if you were disabled, rather than dying. You must make this decision as soon as you are reduced to negative hit points (even if it isn’t your turn). If you do not choose to act as if you were disabled, you immediately fall unconscious.</p>\n<p>When using this feat, you can take either a single move or standard action each turn, but not both, and you cannot take a full round action. You can take a move action without further injuring yourself, but if you perform any standard action (or any other action deemed as strenuous, including some free actions, such as casting a quickened spell) you take 1 point of damage after completing the act. If you reach –10 hit points, you immediately die.</p>\n<p><b>Normal:</b> A character without this feat who is reduced to between –1 and –9 hit points is unconscious and dying.</p>"
     },
     {
       "Name": "Diligent",
@@ -350,7 +350,7 @@
         "General"
       ],
       "Prerequisites": "Str 13, <a href=\"feats#power-attack\">Power attack</a>.",
-      "Description": "<p><b>Benefit:</b> When you <a href=\"skills#perform\">Perform</a> a bull rush you do not provoke an attack of opportunity from the defender. You also gain a +4 bonus on the opposed Strength check you make to push back the defender.</p>\n<p><b>Special:</b> A fighter may select Improved Bull Rush as one of his fighter bonus feats.</p>"
+      "Description": "<p><b>Benefit:</b> When you perform a bull rush you do not provoke an attack of opportunity from the defender. You also gain a +4 bonus on the opposed Strength check you make to push back the defender.</p>\n<p><b>Special:</b> A fighter may select Improved Bull Rush as one of his fighter bonus feats.</p>"
     },
     {
       "Name": "Improved counterspell",
@@ -430,7 +430,7 @@
         "General"
       ],
       "Prerequisites": "<a href=\"feats#shield-proficiency\">Shield proficiency</a>.",
-      "Description": "<p><b>Benefit:</b> When you <a href=\"skills#perform\">Perform</a> a shield bash, you may still apply the shield’s shield bonus to your AC.</p>\n<p><b>Normal:</b> Without this feat, a character who <a href=\"skills#perform\">Perform</a>s a shield bash loses the shield’s shield bonus to AC until his or her next turn.</p>\n<p><b>Special:</b> A fighter may select Improved Shield Bash as one of his fighter bonus feats.</p>"
+      "Description": "<p><b>Benefit:</b> When you perform a shield bash, you may still apply the shield’s shield bonus to your AC.</p>\n<p><b>Normal:</b> Without this feat, a character who performs a shield bash loses the shield’s shield bonus to AC until his or her next turn.</p>\n<p><b>Special:</b> A fighter may select Improved Shield Bash as one of his fighter bonus feats.</p>"
     },
     {
       "Name": "Improved sunder",
@@ -630,7 +630,7 @@
         "Metamagic"
       ],
       "Prerequisites": "",
-      "Description": "<p><b>Benefit:</b> Casting a quickened spell is a free action. You can <a href=\"skills#perform\">Perform</a> another action, even casting another spell, in the same round as you cast a quickened spell. You may cast only one quickened spell per round. A spell whose casting time is more than 1 full round action cannot be quickened. A quickened spell uses up a spell slot four levels higher than the spell’s actual level. Casting a quickened spell doesn’t provoke an attack of opportunity.</p>\n<p><b>Special:</b> This feat can’t be applied to any spell cast spontaneously (including sorcerer spells, bard spells, and cleric or druid spells cast spontaneously), since applying a metamagic feat to a spontaneously cast spell automatically increases the casting time to a full-round action.</p>"
+      "Description": "<p><b>Benefit:</b> Casting a quickened spell is a free action. You can perform another action, even casting another spell, in the same round as you cast a quickened spell. You may cast only one quickened spell per round. A spell whose casting time is more than 1 full round action cannot be quickened. A quickened spell uses up a spell slot four levels higher than the spell’s actual level. Casting a quickened spell doesn’t provoke an attack of opportunity.</p>\n<p><b>Special:</b> This feat can’t be applied to any spell cast spontaneously (including sorcerer spells, bard spells, and cleric or druid spells cast spontaneously), since applying a metamagic feat to a spontaneously cast spell automatically increases the casting time to a full-round action.</p>"
     },
     {
       "Name": "Rapid reload",

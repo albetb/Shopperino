@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import parse, { domToReact } from 'html-react-parser';
 import SpellLink from '../../../common/spell_link';
-import { trimLine } from '../../../../lib/utils';
 import '../../../../style/menu_cards.css';
 
 export default function InfoMenuCards({ cardsData, closeCard }) {
@@ -24,6 +23,16 @@ export default function InfoMenuCards({ cardsData, closeCard }) {
 
   const descriptionOptions = {
     replace: domNode => {
+      if (domNode.name === 'table') {
+        const { style, ...rest } = domNode.attribs || {};
+        return (
+          <div className="description-table-wrapper">
+            <table {...rest}>
+              {domToReact(domNode.children, descriptionOptions)}
+            </table>
+          </div>
+        );
+      }
       if (
         domNode.name === 'a' &&
         domNode.attribs?.href
@@ -54,7 +63,7 @@ export default function InfoMenuCards({ cardsData, closeCard }) {
     <div className="cards">
       {cardsData.map((data, idx) => {
         const state = cardStates.find(s => s.id === idx) || { collapsed: idx !== 0 };
-        const title = (state.collapsed ? trimLine(data.Name, 18) : data.Name) || `Card ${idx + 1}`;
+        const title = data.Name || `Card ${idx + 1}`;
         return (
           <div key={idx} className={`card ${state.collapsed ? 'collapsed' : ''}`}>
             <div className="card-side-div card-expand-div">
@@ -72,20 +81,23 @@ export default function InfoMenuCards({ cardsData, closeCard }) {
             </div>
             {!state.collapsed && (
               <div className="card-content">
-                {Object.entries(data).map(([key, value]) => (
-                  <div key={key} className="info-card-row">
-                    {['Link', 'Name', 'Description'].includes(key) ? null : (
-                      <span className="info-key info-card">{key}: </span>
-                    )}
-                    {key === 'Description' ? (
-                      <span className="info-value info-card">
-                        {parse(value, descriptionOptions)}
-                      </span>
-                    ) : ['Link', 'Name'].includes(key) ? null : (
-                      <span className="info-value info-card">{value}</span>
-                    )}
-                  </div>
-                ))}
+                {Object.entries(data).map(([key, value]) => {
+                  if (key === 'Short Description') return null;
+                  return (
+                    <div key={key} className="info-card-row">
+                      {['Link', 'Name', 'Description'].includes(key) ? null : (
+                        <span className="info-key info-card">{key}: </span>
+                      )}
+                      {key === 'Description' ? (
+                        <div className="info-value info-card description-content">
+                          {parse(value, descriptionOptions)}
+                        </div>
+                      ) : ['Link', 'Name'].includes(key) ? null : (
+                        <span className="info-value info-card">{value}</span>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>

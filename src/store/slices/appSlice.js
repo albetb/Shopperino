@@ -44,9 +44,9 @@ export const appSlice = createSlice({
       const isSkillLink = linkStr && (linkStr.startsWith('skills#') || linkStr === 'skills');
       const isConditionLink = linkStr && linkStr.includes('abilitiesAndConditions#');
       const conditionAnchor = isConditionLink ? linkStr.split('#')[1] : null;
-      const spellLookupLink = isSpellLink && hasHash
-        ? linkStr.split('#')[1]
-        : (hasHash ? linkStr.split('#')[1] : firstLink);
+      const spellLookupLink = isSpellLink
+        ? (hasHash ? linkStr.split('#')[1] : firstLink)
+        : null;
       const featLookupLink = isFeatLink && hasHash ? linkStr.split('#')[1] : null;
       const skillLookupLink = isSkillLink && hasHash ? linkStr.split('#')[1] : null;
 
@@ -59,11 +59,11 @@ export const appSlice = createSlice({
         return true;
       });
 
-      let cards = getSpellByLink(spellLookupLink);
+      let cards = spellLookupLink ? getSpellByLink(spellLookupLink) : [];
 
       if (cards.length) {
         state.infoCards.unshift(...cards);
-        if (isMobile()) state.infoSidebarCollapsed = false;
+        state.infoSidebarCollapsed = false;
         return;
       }
 
@@ -73,7 +73,7 @@ export const appSlice = createSlice({
 
       if (cards.length) {
         state.infoCards.unshift(...cards);
-        if (isMobile()) state.infoSidebarCollapsed = false;
+        state.infoSidebarCollapsed = false;
         return;
       }
 
@@ -81,7 +81,7 @@ export const appSlice = createSlice({
 
       if (cards.length) {
         state.infoCards.unshift(...cards);
-        if (isMobile()) state.infoSidebarCollapsed = false;
+        state.infoSidebarCollapsed = false;
         return;
       }
 
@@ -96,6 +96,18 @@ export const appSlice = createSlice({
       }
 
       if (isSkillLink) return;
+
+      // Fallback: if this looks like a plain spell slug (and not explicitly a feat/skill/condition),
+      // prefer opening the spell card instead of an item/scroll card.
+      if (!isSpellLink && !isFeatLink && !isSkillLink && !isConditionLink && linkStr) {
+        const plainSpellSlug = hasHash ? linkStr.split('#')[1] : linkStr;
+        const spellCards = getSpellByLink(plainSpellSlug);
+        if (spellCards.length) {
+          state.infoCards.unshift(...spellCards);
+          state.infoSidebarCollapsed = false;
+          return;
+        }
+      }
 
       const itemRef = linkStr && linkStr.includes('/') ? getItemByRef(firstLink) : null;
       const spellSlug = itemRef?.raw?.Link && getSpellByLink(itemRef.raw.Link).length ? itemRef.raw.Link : null;

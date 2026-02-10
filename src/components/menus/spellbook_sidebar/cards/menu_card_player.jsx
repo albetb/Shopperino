@@ -263,7 +263,7 @@ export default function MenuCardPlayer() {
             </>
           }
 
-          {playerClass && <div className="card-side-div margin-top">
+          {playerClass && <div className="card-side-div margin-top buttons-row">
             {isLearnVisible &&
               <button
                 className={buttonClass + `${spellbookPage === 0 ? " opacity-50" : ""}`}

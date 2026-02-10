@@ -43,8 +43,22 @@
   padding-right: 6px;
 }
 
+.card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.15rem;
+  flex-shrink: 0;
+}
+
 .card-title {
   margin: 0.7rem;
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .card-content {
@@ -63,6 +77,11 @@
 
 .card-side-div.around {
   justify-content: space-around;
+}
+
+.buttons-row {
+  justify-content: flex-start;
+  gap: 0.4rem;
 }
 
 .card-expand-div {

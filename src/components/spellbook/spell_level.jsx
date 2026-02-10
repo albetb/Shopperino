@@ -27,7 +27,8 @@ export default function SpellLevelCard({
   inst,
   spellsPerDay,
   charBonus,
-  dispatch
+  dispatch,
+  showShortDescriptions
 }) {
 
   const key = classKeyMap[inst.Class] || '';
@@ -141,6 +142,7 @@ export default function SpellLevelCard({
           spontaneousByLevel={{ [level]: spontList }}
           spontaneousLevels={[level]}
           dispatch={dispatch}
+          showShortDescriptions={showShortDescriptions}
         />
       )}
 
@@ -189,6 +191,11 @@ export default function SpellLevelCard({
                     >
                       {item.Name}
                     </button>
+                    {showShortDescriptions && item['Short Description'] && (
+                      <div style={{ marginTop: '0.15rem', fontSize: '0.85em', color: 'var(--dark-grey)', textAlign: 'left' }}>
+                        {item['Short Description']}
+                      </div>
+                    )}
                   </td>
                   {!isMobile() && (
                     <td className={i === 0 ? 'first' : ''} style={{ width: '30%', fontSize: 'small' }}>
@@ -207,90 +214,95 @@ export default function SpellLevelCard({
           preparedByLevel={{ [level]: preparedDomainSpells }}
           preparedLevels={[level]}
           dispatch={dispatch}
+          showShortDescriptions={showShortDescriptions}
         />
       )}
 
       {!collapsed && (
         <table className="spellbook-table">
           <tbody>
-            {spells && spells.map((item, i) => (
-              <tr key={i}>
-                {page === 0 && (
-                  <td className={i === 0 ? 'first' : ''} style={{ width: 'var(--btn-width-sm)', maxWidth: 'var(--btn-width-sm)' }}>
+            {spells && spells.map((item, i) => {
+              const firstClass = i === 0 ? 'first' : '';
+              return (
+                <tr key={i}>
+                  {page === 0 && (
+                    <td className={firstClass} style={{ width: 'var(--btn-width-sm)', maxWidth: 'var(--btn-width-sm)' }}>
+                      <button
+                        className={`flat-button smaller ${inst.getLearnedSpells().map(x => x.Link).includes(item.Link) ? 'opacity-50' : ''}`}
+                        onClick={() => dispatch(onLearnUnlearnSpell(item.Link))}
+                      >
+                        <span className="material-symbols-outlined">
+                          {inst.getLearnedSpells().map(x => x.Link).includes(item.Link) ? 'bookmark_remove' : 'bookmark_add'}
+                        </span>
+                      </button>
+                    </td>
+                  )}
+
+                  {page === 1 && (
+                    <td className={firstClass} style={{ width: 'var(--btn-width-sm)' }}>
+                      <div className='card-side-div'>
+                        <div className='spell-slot-div'>
+                          <button
+                            className={`smaller flat-button ${(inst.Spells.find(x => x.Link === item.Link)?.Prepared || 0) === 0 ? 'opacity-50' : ''}`}
+                            onClick={() => dispatch(onUnprepareSpell(item.Link))}
+                            disabled={(inst.Spells.find(x => x.Link === item.Link)?.Prepared || 0) === 0}
+                          >
+                            <span className='material-symbols-outlined'>remove</span>
+                          </button>
+                          <label className='level-text'>
+                            {inst.Spells.find(x => x.Link === item.Link)?.Prepared || 0}
+                          </label>
+                          <button
+                            className='smaller flat-button'
+                            onClick={() => dispatch(onPrepareSpell(item.Link))}
+                          >
+                            <span className='material-symbols-outlined'>add</span>
+                          </button>
+                        </div>
+                      </div>
+                    </td>
+                  )}
+
+                  {page === 2 && (
+                    <td className={firstClass} style={{ width: 'var(--btn-width-sm)', maxWidth: 'calc(var(--btn-width-sm)*1.4)', paddingRight: 0 }}>
+                      <div className='card-side-div'>
+                        <div className='spell-slot-div2'>
+                          <button
+                            className={`flat-button smaller ${getRemaining(item.Link) <= 0 ? 'opacity-50' : ''}`}
+                            onClick={() => dispatch(onUseSpell(item.Link))}
+                            disabled={getRemaining(item.Link) <= 0}
+                          >
+                            <span className='material-symbols-outlined'>wand_stars</span>
+                          </button>
+                          <label className='level-text'>{getRemaining(item.Link)}</label>
+                        </div>
+                      </div>
+                    </td>
+                  )}
+
+                  <td className={firstClass} style={{ width: 'auto' }}>
                     <button
-                      className={`flat-button smaller ${inst.getLearnedSpells().map(x => x.Link).includes(item.Link) ? 'opacity-50' : ''}`}
-                      onClick={() => dispatch(onLearnUnlearnSpell(item.Link))}
+                      className={'button-link' + schoolClass(item.School)}
+                      style={{ color: 'var(--black)' }}
+                      onClick={() => dispatch(addCardByLink({ links: item.Link, bonus: 0 }))}
                     >
-                      <span className="material-symbols-outlined">
-                        {inst.getLearnedSpells().map(x => x.Link).includes(item.Link) ? 'bookmark_remove' : 'bookmark_add'}
-                      </span>
+                      {item.Name}
                     </button>
-                  </td>
-                )}
-
-                {page === 1 && (
-                  <td className={i === 0 ? 'first' : ''} style={{ width: 'var(--btn-width-sm)' }}>
-                    <div className='card-side-div'>
-                      <div className='spell-slot-div'>
-                        <button
-                          className={`smaller flat-button ${(inst.Spells.find(x => x.Link === item.Link)?.Prepared || 0) === 0 ? 'opacity-50' : ''
-                            }`}
-                          onClick={() => dispatch(onUnprepareSpell(item.Link))}
-                          disabled={(inst.Spells.find(x => x.Link === item.Link)?.Prepared || 0) === 0}
-                        >
-                          <span className='material-symbols-outlined'>remove</span>
-                        </button>
-                        <label className='level-text'>
-                          {inst.Spells.find(x => x.Link === item.Link)?.Prepared || 0}
-                        </label>
-                        <button
-                          className='smaller flat-button'
-                          onClick={() => dispatch(onPrepareSpell(item.Link))}
-                        >
-                          <span className='material-symbols-outlined'>add</span>
-                        </button>
+                    {showShortDescriptions && item['Short Description'] && (
+                      <div style={{ marginTop: '0.15rem', fontSize: '0.85em', color: 'var(--dark-grey)', textAlign: 'left' }}>
+                        {item['Short Description']}
                       </div>
-                    </div>
+                    )}
                   </td>
-                )}
 
-                {page === 2 && (
-                  <td className={i === 0 ? 'first' : ''} style={{ width: 'var(--btn-width-sm)', maxWidth: 'calc(var(--btn-width-sm)*1.4)', paddingRight: 0 }}>
-                    <div className='card-side-div'>
-                      <div className='spell-slot-div2'>
-                        <button
-                          className={`flat-button smaller ${getRemaining(item.Link) <= 0 ? 'opacity-50' : ''}`}
-                          onClick={() => dispatch(onUseSpell(item.Link))}
-                          disabled={getRemaining(item.Link) <= 0}
-                        >
-                          <span className='material-symbols-outlined'>wand_stars</span>
-                        </button>
-                        <label className='level-text'>{getRemaining(item.Link)}</label>
-                      </div>
-                    </div>
-                  </td>
-                )}
-
-                <td className={i === 0 ? 'first' : ''} style={{ width: 'auto' }}>
-                  <button
-                    className={'button-link' + schoolClass(item.School)}
-                    style={{ color: 'var(--black)' }}
-                    onClick={() => dispatch(addCardByLink({ links: item.Link, bonus: 0 }))}
-                  >
-                    {item.Name}
-                  </button>
-                </td>
-
-                {!(page === 1 && isMobile()) && (
-                  <td className={(i === 0 ? 'first' : '')
-                    + schoolClass(item.School)
-                  } style={{ width: '30%', fontSize: 'small' }}>
-                    {item.School.split(' ')[0]}
-                  </td>
-                )}
-
-              </tr>
-            ))}
+                  {!(page === 1 && isMobile()) && (
+                    <td className={firstClass + schoolClass(item.School)} style={{ width: '30%', fontSize: 'small' }}>
+                      {item.School.split(' ')[0]}
+                    </td>
+                  )}
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       )}
@@ -319,5 +331,6 @@ SpellLevelCard.propTypes = {
   inst: PropTypes.object.isRequired,
   spellsPerDay: PropTypes.arrayOf(PropTypes.number).isRequired,
   charBonus: PropTypes.number.isRequired,
-  dispatch: PropTypes.func.isRequired
+  dispatch: PropTypes.func.isRequired,
+  showShortDescriptions: PropTypes.bool.isRequired
 };
