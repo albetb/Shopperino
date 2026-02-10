@@ -1,4 +1,8 @@
 {
+  "ShareFileMap": {
+    "i": "items",
+    "s": "scrolls"
+  },
   "Shop Types": [
     {
       "Name": "None",

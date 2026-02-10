@@ -1,6 +1,15 @@
 import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from 'lz-string';
 import Shop from './shop';
-import { getItemByRef, getEffectById, getEffectIdBySlug } from './utils';
+import {
+  loadFile,
+  getItemByRef,
+  getItemById,
+  getItemIdByRef,
+  getScrollById,
+  getScrollIdByLink,
+  getEffectById,
+  getEffectIdBySlug,
+} from './utils';
 
 /** Max length of compressed string for QR code (fits in medium-sized QR). */
 export const SHARE_QR_MAX_CHARS = 2500;
@@ -8,13 +17,26 @@ export const SHARE_QR_MAX_CHARS = 2500;
 const DELIM = '|';
 const VERSION = 'V2';
 
+/** Letter → file name from data/tables.json ShareFileMap. Decode uses this to know which file an id refers to. */
+function getShareFileMap() {
+  const tables = loadFile('tables');
+  const map = tables && tables.ShareFileMap && typeof tables.ShareFileMap === 'object' ? tables.ShareFileMap : null;
+  return map || { i: 'items', s: 'scrolls' };
+}
+
+/** File name → letter for encoding. */
+function getFileToLetter() {
+  const letterToFile = getShareFileMap();
+  const fileToLetter = {};
+  for (const [letter, file] of Object.entries(letterToFile)) fileToLetter[file] = letter;
+  return fileToLetter;
+}
+
 /**
- * Build share string in custom delimiter format (no JSON).
- * Uses link (path) for items/scrolls so any file/source works; no numeric ids.
+ * Build share string: id-based with file letter (from tables.json ShareFileMap) for compression.
  * Format: V2|<nameLen>|<name>|<gold>|<count>|<entry>...
- * Entry type 0 (item): 0|<linkLen>|<link>|<N>|<p>  or  0|<linkLen>|<link>|<b>|<N>|<p>  or  0|<linkLen>|<link>|<b>|<e1,e2>|<nameLen>|<name>|<N>|<p>
- * Entry type 1 (scroll): 1|<linkLen>|<link>|<N>|<p>
- * Entry type 2 (custom): 2|<nameLen>|<name>|<N>|<p>
+ * Entry type 0 (ref from any file): 0|<f>|<id>|N|p  or  0|<f>|<id>|b|N|p  or  0|<f>|<id>|b|e1,e2|nameLen|name|N|p  (f = file letter, id = numeric id in that file)
+ * Entry type 2 (custom): 2|<nameLen>|<name>|N|p
  */
 function buildShareString(serializedShop) {
   if (!serializedShop || !Array.isArray(serializedShop.Stock)) return null;
@@ -22,6 +44,7 @@ function buildShareString(serializedShop) {
   const inventory = shop.getInventory();
   if (!inventory.length) return null;
 
+  const fileToLetter = getFileToLetter();
   const name = (serializedShop.Name || '').toString();
   const gold = Math.floor(Number(serializedShop.Gold) || 0);
   const parts = [VERSION, String(name.length), name, String(gold)];
@@ -42,23 +65,37 @@ function buildShareString(serializedShop) {
     const linkStr = typeof item.Link === 'string' ? item.Link : null;
     const linkArray = Array.isArray(item.Link) ? item.Link : null;
 
+    if (linkStr && linkStr.startsWith('scrolls/')) {
+      const scrollId = getScrollIdByLink(linkStr);
+      if (scrollId == null) continue;
+      const f = fileToLetter['scrolls'] || 's';
+      entries.push([0, f, scrollId, N, p]);
+      continue;
+    }
+
     if (linkArray && item.Name && item.BaseItemType) {
       const baseLink = `items/${item.BaseItemType}/${linkArray[0]}`;
+      const itemId = getItemIdByRef(baseLink);
+      if (itemId == null) continue;
+      const f = fileToLetter['items'] || 'i';
       const bonus = item.Bonus != null && !isNaN(item.Bonus) ? parseInt(item.Bonus, 10) : 0;
       const effectIds = (item.Ability || [])
         .map(a => (a && a.Link ? getEffectIdBySlug(a.Link) : null))
         .filter(id => id != null);
       const n = (item.Name || '').toString();
-      entries.push([0, baseLink.length, baseLink, bonus, effectIds.join(','), n.length, n, N, p]);
+      entries.push([0, f, itemId, bonus, effectIds.join(','), n.length, n, N, p]);
       continue;
     }
 
     if (linkStr && linkStr.length > 0) {
+      const itemId = getItemIdByRef(linkStr);
+      if (itemId == null) continue;
+      const f = fileToLetter['items'] || 'i';
       const bonus = item.Bonus != null && !isNaN(item.Bonus) ? parseInt(item.Bonus, 10) : null;
       if (bonus != null && !isNaN(bonus)) {
-        entries.push([0, linkStr.length, linkStr, bonus, N, p]);
+        entries.push([0, f, itemId, bonus, N, p]);
       } else {
-        entries.push([0, linkStr.length, linkStr, N, p]);
+        entries.push([0, f, itemId, N, p]);
       }
       continue;
     }
@@ -73,10 +110,27 @@ function buildShareString(serializedShop) {
 }
 
 /**
+ * Resolve id in a given file (from ShareFileMap) to link. Returns link string or null.
+ */
+function idToLink(fileLetter, idNum) {
+  const letterToFile = getShareFileMap();
+  const file = letterToFile[fileLetter];
+  if (!file || idNum == null || typeof idNum !== 'number') return null;
+  if (file === 'items') {
+    const ref = getItemById(idNum);
+    return ref ? `items/${ref.itemType}/${ref.item.Link}` : null;
+  }
+  if (file === 'scrolls') {
+    const ref = getScrollById(idNum);
+    return ref ? `scrolls/${ref.source}/${ref.scroll.Link}` : null;
+  }
+  return null;
+}
+
+/**
  * Parse custom-format share string into { name, gold, stock }.
- * stock entries: { link?, Number, Cost, Bonus?, effectIds?, Name?, isCustom? }
- * V2: type 0 uses link (no ids). Type 0: 0|<linkLen>|<link>|N|p  or  0|<linkLen>|<link>|b|N|p  or  0|<linkLen>|<link>|b|e1,e2|nameLen|name|N|p
- * Type 1: 1|<linkLen>|<link>|N|p. Type 2: 2|<nameLen>|<name>|N|p
+ * V2: type 0 = 0|<f>|<id>|N|p  or  0|<f>|<id>|b|N|p  or  0|<f>|<id>|b|e1,e2|nameLen|name|N|p  (f = file letter from ShareFileMap)
+ * Type 2: 2|nameLen|name|N|p. Resolve id via tables.json ShareFileMap to get link.
  */
 function parseShareString(raw) {
   if (!raw || typeof raw !== 'string') return null;
@@ -104,20 +158,10 @@ function parseShareString(raw) {
       stock.push({ Name: name2 || 'Unknown', Number: N, Cost: costPerUnit(N, p), isCustom: true });
       continue;
     }
-    if (t === 1) {
-      const linkLen = parseInt(segments[idx++], 10);
-      const link = segments[idx++];
-      const N = parseInt(segments[idx++], 10) || 1;
-      const p = parseFloat(segments[idx++]) || 0;
-      if (link != null && typeof link === 'string') {
-        stock.push({ link, Number: N, Cost: costPerUnit(N, p) });
-      }
-      continue;
-    }
     if (t === 0) {
-      const linkLen = parseInt(segments[idx++], 10);
-      const link = segments[idx++];
-      if (link == null || typeof link !== 'string') continue;
+      const f = segments[idx++];
+      const idNum = parseInt(segments[idx++], 10);
+      const link = idToLink(f, idNum);
       const rem = segments.length - idx;
       const hasEffects = rem >= 6 && segments[idx + 1] && String(segments[idx + 1]).includes(',');
       const hasBonus = rem >= 3 && !hasEffects;
@@ -131,34 +175,40 @@ function parseShareString(raw) {
         const p3 = parseFloat(segments[idx + 5]) || 0;
         idx += 6;
         const effectIds = eList.split(',').map(s => parseInt(s, 10)).filter(n => !isNaN(n));
-        stock.push({
-          link,
-          Bonus: b,
-          effectIds,
-          Name: name3 || undefined,
-          Number: N3,
-          Cost: costPerUnit(N3, p3),
-        });
+        if (link) {
+          stock.push({
+            link,
+            Bonus: b,
+            effectIds,
+            Name: name3 || undefined,
+            Number: N3,
+            Cost: costPerUnit(N3, p3),
+          });
+        }
       } else if (hasBonus) {
         const b = parseInt(segments[idx], 10);
         const N2 = parseInt(segments[idx + 1], 10) || 1;
         const p2 = parseFloat(segments[idx + 2]) || 0;
         idx += 3;
-        stock.push({
-          link,
-          Bonus: b,
-          Number: N2,
-          Cost: costPerUnit(N2, p2),
-        });
+        if (link) {
+          stock.push({
+            link,
+            Bonus: b,
+            Number: N2,
+            Cost: costPerUnit(N2, p2),
+          });
+        }
       } else if (hasSimple) {
         const N0 = parseInt(segments[idx], 10) || 1;
         const p0 = parseFloat(segments[idx + 1]) || 0;
         idx += 2;
-        stock.push({
-          link,
-          Number: N0,
-          Cost: costPerUnit(N0, p0),
-        });
+        if (link) {
+          stock.push({
+            link,
+            Number: N0,
+            Cost: costPerUnit(N0, p0),
+          });
+        }
       }
     }
   }
