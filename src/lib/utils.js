@@ -272,12 +272,12 @@ export function getItemByLink(link, bonus = 0) {
   }
 }
 
+const EFFECT_TABLE_ORDER = ['Magic Melee Weapon', 'Magic Ranged Weapon', 'Magic Shield', 'Magic Armor'];
+
 export function getEffectByLink(link) {
     try {
-        const types = ["Magic Melee Weapon", "Magic Ranged Weapon", "Magic Shield", "Magic Armor"];
-
         const effectsRaw = loadFile('tables');
-        const effects = types.flatMap(type => effectsRaw[type] || []);
+        const effects = EFFECT_TABLE_ORDER.flatMap(type => effectsRaw[type] || []);
 
         const found = effects.find(item => item.Link === link);
         if (!found) return [];
@@ -288,6 +288,93 @@ export function getEffectByLink(link) {
     } catch (err) {
         return null;
     }
+}
+
+/** Get item by global id (canonical order: Good, Ammo, Weapon, ...). Returns { item, itemType } or null. */
+export function getItemById(id) {
+    const items = loadFile('items');
+    if (!items || typeof id !== 'number' || id < 0) return null;
+    let cursor = 0;
+    for (const itemType of ITEM_TYPES) {
+        const arr = items[itemType];
+        if (!Array.isArray(arr)) continue;
+        for (const item of arr) {
+            if (item && typeof item === 'object' && item.id === id)
+                return { item, itemType };
+            if (item && typeof item === 'object' && item.id !== undefined)
+                cursor++;
+        }
+    }
+    return null;
+}
+
+/** Get global item id from link "items/ItemType/slug" or slug. Returns number or null. */
+export function getItemIdByRef(link) {
+    if (!link || typeof link !== 'string') return null;
+    const ref = getItemByRef(link);
+    if (!ref || !ref.raw) return null;
+    const id = ref.raw.id;
+    return typeof id === 'number' ? id : null;
+}
+
+/** Get scroll by global id (Arcane then Divine). Returns { scroll, source: 'Arcane'|'Divine' } or null. */
+export function getScrollById(id) {
+    const scrolls = loadFile('scrolls');
+    if (!scrolls || typeof id !== 'number' || id < 0) return null;
+    let cursor = 0;
+    for (const source of ['Arcane', 'Divine']) {
+        const arr = scrolls[source];
+        if (!Array.isArray(arr)) continue;
+        for (const scroll of arr) {
+            if (scroll && typeof scroll === 'object' && scroll.id === id)
+                return { scroll, source };
+            cursor++;
+        }
+    }
+    return null;
+}
+
+/** Get global scroll id from link "scrolls/Arcane|Divine/slug". Returns number or null. */
+export function getScrollIdByLink(link) {
+    if (!link || typeof link !== 'string') return null;
+    const parts = link.split('/').map(p => p.trim()).filter(Boolean);
+    if (parts.length < 3 || parts[0] !== 'scrolls') return null;
+    const source = parts[1];
+    const slug = parts[2];
+    if (source !== 'Arcane' && source !== 'Divine') return null;
+    const scrolls = loadFile('scrolls');
+    const arr = scrolls[source];
+    if (!Array.isArray(arr)) return null;
+    const scroll = arr.find(s => s && s.Link === slug);
+    return scroll && typeof scroll.id === 'number' ? scroll.id : null;
+}
+
+/** Get effect by global id. Returns same shape as getEffectByLink (Name, Link, Description) or null. */
+export function getEffectById(id) {
+    try {
+        const tables = loadFile('tables');
+        if (!tables || typeof id !== 'number' || id < 0) return null;
+        const effects = EFFECT_TABLE_ORDER.flatMap(type => tables[type] || []);
+        const found = effects.find(entry => entry && entry.id === id);
+        if (!found) return null;
+        const { Minor, Medium, Major, "Cost Modifier": costModifier, ...cleaned } = found;
+        return cleaned;
+    } catch (err) {
+        return null;
+    }
+}
+
+/** Get effect id from slug (e.g. "flaming"). Returns number or null. */
+export function getEffectIdBySlug(slug) {
+    if (!slug || typeof slug !== 'string') return null;
+    const tables = loadFile('tables');
+    if (!tables) return null;
+    for (const type of EFFECT_TABLE_ORDER) {
+        const arr = tables[type] || [];
+        const entry = arr.find(e => e && e.Link === slug);
+        if (entry && typeof entry.id === 'number') return entry.id;
+    }
+    return null;
 }
 
 export function weightedRandom(weights) {

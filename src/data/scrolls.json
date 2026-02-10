@@ -5,2884 +5,3296 @@
       "Link": "acid-splash",
       "Name": "Scroll of Acid splash",
       "Cost": 12.5,
-      "Level": 0
+      "Level": 0,
+      "id": 0
     },
     {
       "Chance": 4,
       "Link": "arcane-mark",
       "Name": "Scroll of Arcane mark",
       "Cost": 12.5,
-      "Level": 0
+      "Level": 0,
+      "id": 1
     },
     {
       "Chance": 5,
       "Link": "dancing-lights",
       "Name": "Scroll of Dancing lights",
       "Cost": 12.5,
-      "Level": 0
+      "Level": 0,
+      "id": 2
     },
     {
       "Chance": 4,
       "Link": "daze",
       "Name": "Scroll of Daze",
       "Cost": 12.5,
-      "Level": 0
+      "Level": 0,
+      "id": 3
     },
     {
       "Chance": 7,
       "Link": "detect-magic",
       "Name": "Scroll of Detect magic",
       "Cost": 12.5,
-      "Level": 0
+      "Level": 0,
+      "id": 4
     },
     {
       "Chance": 4,
       "Link": "detect-poison",
       "Name": "Scroll of Detect poison",
       "Cost": 12.5,
-      "Level": 0
+      "Level": 0,
+      "id": 5
     },
     {
       "Chance": 4,
       "Link": "disrupt-undead",
       "Name": "Scroll of Disrupt undead",
       "Cost": 12.5,
-      "Level": 0
+      "Level": 0,
+      "id": 6
     },
     {
       "Chance": 5,
       "Link": "flare",
       "Name": "Scroll of Flare",
       "Cost": 12.5,
-      "Level": 0
+      "Level": 0,
+      "id": 7
     },
     {
       "Chance": 5,
       "Link": "ghost-sound",
       "Name": "Scroll of Ghost sound",
       "Cost": 12.5,
-      "Level": 0
+      "Level": 0,
+      "id": 8
     },
     {
       "Chance": 2,
       "Link": "know-direction",
       "Name": "Scroll of Know direction",
       "Cost": 12.5,
-      "Level": 0
+      "Level": 0,
+      "id": 9
     },
     {
       "Chance": 6,
       "Link": "light",
       "Name": "Scroll of Light",
       "Cost": 12.5,
-      "Level": 0
+      "Level": 0,
+      "id": 10
     },
     {
       "Chance": 2,
       "Link": "lullaby",
       "Name": "Scroll of Lullaby",
       "Cost": 12.5,
-      "Level": 0
+      "Level": 0,
+      "id": 11
     },
     {
       "Chance": 5,
       "Link": "mage-hand",
       "Name": "Scroll of Mage hand",
       "Cost": 12.5,
-      "Level": 0
+      "Level": 0,
+      "id": 12
     },
     {
       "Chance": 5,
       "Link": "mending",
       "Name": "Scroll of Mending",
       "Cost": 12.5,
-      "Level": 0
+      "Level": 0,
+      "id": 13
     },
     {
       "Chance": 5,
       "Link": "message",
       "Name": "Scroll of Message",
       "Cost": 12.5,
-      "Level": 0
+      "Level": 0,
+      "id": 14
     },
     {
       "Chance": 5,
       "Link": "open/close",
       "Name": "Scroll of Open/close",
       "Cost": 12.5,
-      "Level": 0
+      "Level": 0,
+      "id": 15
     },
     {
       "Chance": 5,
       "Link": "prestidigitation",
       "Name": "Scroll of Prestidigitation",
       "Cost": 12.5,
-      "Level": 0
+      "Level": 0,
+      "id": 16
     },
     {
       "Chance": 4,
       "Link": "ray-of-frost",
       "Name": "Scroll of Ray of frost",
       "Cost": 12.5,
-      "Level": 0
+      "Level": 0,
+      "id": 17
     },
     {
       "Chance": 6,
       "Link": "read-magic",
       "Name": "Scroll of Read magic",
       "Cost": 12.5,
-      "Level": 0
+      "Level": 0,
+      "id": 18
     },
     {
       "Chance": 7,
       "Link": "resistance",
       "Name": "Scroll of Resistance",
       "Cost": 12.5,
-      "Level": 0
+      "Level": 0,
+      "id": 19
     },
     {
       "Chance": 2,
       "Link": "summon-instrument",
       "Name": "Scroll of Summon instrument",
       "Cost": 12.5,
-      "Level": 0
+      "Level": 0,
+      "id": 20
     },
     {
       "Chance": 4,
       "Link": "touch-of-fatigue",
       "Name": "Scroll of Touch of fatigue",
       "Cost": 12.5,
-      "Level": 0
+      "Level": 0,
+      "id": 21
     },
     {
       "Chance": 3,
       "Link": "alarm",
       "Name": "Scroll of Alarm",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 22
     },
     {
       "Chance": 2,
       "Link": "animate-rope",
       "Name": "Scroll of Animate rope",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 23
     },
     {
       "Chance": 2,
       "Link": "burning-hands",
       "Name": "Scroll of Burning hands",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 24
     },
     {
       "Chance": 2,
       "Link": "cause-fear",
       "Name": "Scroll of Cause fear",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 25
     },
     {
       "Chance": 3,
       "Link": "charm-person",
       "Name": "Scroll of Charm person",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 26
     },
     {
       "Chance": 2,
       "Link": "chill-touch",
       "Name": "Scroll of Chill touch",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 27
     },
     {
       "Chance": 2,
       "Link": "color-spray",
       "Name": "Scroll of Color spray",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 28
     },
     {
       "Chance": 3,
       "Link": "comprehend-languages",
       "Name": "Scroll of Comprehend languages",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 29
     },
     {
       "Chance": 1,
       "Link": "lesser-confusion",
       "Name": "Scroll of Confusion, lesser",
       "Cost": 50,
-      "Level": 1
+      "Level": 1,
+      "id": 30
     },
     {
       "Chance": 1,
       "Link": "cure-light-wounds",
       "Name": "Scroll of Cure light wounds",
       "Cost": 50,
-      "Level": 1
+      "Level": 1,
+      "id": 31
     },
     {
       "Chance": 3,
       "Link": "detect-secret-doors",
       "Name": "Scroll of Detect secret doors",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 32
     },
     {
       "Chance": 2,
       "Link": "detect-undead",
       "Name": "Scroll of Detect undead",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 33
     },
     {
       "Chance": 3,
       "Link": "disguise-self",
       "Name": "Scroll of Disguise self",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 34
     },
     {
       "Chance": 3,
       "Link": "endure-elements",
       "Name": "Scroll of Endure elements",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 35
     },
     {
       "Chance": 3,
       "Link": "enlarge-person",
       "Name": "Scroll of Enlarge person",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 36
     },
     {
       "Chance": 2,
       "Link": "erase",
       "Name": "Scroll of Erase",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 37
     },
     {
       "Chance": 3,
       "Link": "expeditious-retreat",
       "Name": "Scroll of Expeditious retreat",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 38
     },
     {
       "Chance": 1,
       "Link": "feather-fall",
       "Name": "Scroll of Feather fall",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 39
     },
     {
       "Chance": 2,
       "Link": "grease",
       "Name": "Scroll of Grease",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 40
     },
     {
       "Chance": 2,
       "Link": "hold-portal",
       "Name": "Scroll of Hold portal",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 41
     },
     {
       "Chance": 2,
       "Link": "hypnotism",
       "Name": "Scroll of Hypnotism",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 42
     },
     {
       "Chance": 2,
       "Link": "identify",
       "Name": "Scroll of Identify",
       "Cost": 125,
-      "Level": 1
+      "Level": 1,
+      "id": 43
     },
     {
       "Chance": 2,
       "Link": "jump",
       "Name": "Scroll of Jump",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 44
     },
     {
       "Chance": 3,
       "Link": "mage-armor",
       "Name": "Scroll of Mage armor",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 45
     },
     {
       "Chance": 2,
       "Link": "magic-missile",
       "Name": "Scroll of Magic missile",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 46
     },
     {
       "Chance": 3,
       "Link": "magic-weapon",
       "Name": "Scroll of Magic weapon",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 47
     },
     {
       "Chance": 3,
       "Link": "mount",
       "Name": "Scroll of Mount",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 48
     },
     {
       "Chance": 2,
       "Link": "magic-aura",
       "Name": "Scroll of Magic aura",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 49
     },
     {
       "Chance": 2,
       "Link": "obscuring-mist",
       "Name": "Scroll of Obscuring mist",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 50
     },
     {
       "Chance": 2,
       "Link": "protection-from-chaos",
       "Name": "Scroll of Protection from chaos",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 51
     },
     {
       "Chance": 2,
       "Link": "protection-from-evil",
       "Name": "Scroll of Protection from evil",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 52
     },
     {
       "Chance": 2,
       "Link": "protection-from-good",
       "Name": "Scroll of Protection from good",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 53
     },
     {
       "Chance": 2,
       "Link": "protection-from-law",
       "Name": "Scroll of Protection from law",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 54
     },
     {
       "Chance": 2,
       "Link": "ray-of-enfeeblement",
       "Name": "Scroll of Ray of enfeeblement",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 55
     },
     {
       "Chance": 2,
       "Link": "reduce-person",
       "Name": "Scroll of Reduce person",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 56
     },
     {
       "Chance": 2,
       "Link": "remove-fear",
       "Name": "Scroll of Remove fear",
       "Cost": 50,
-      "Level": 1
+      "Level": 1,
+      "id": 57
     },
     {
       "Chance": 2,
       "Link": "shield",
       "Name": "Scroll of Shield",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 58
     },
     {
       "Chance": 2,
       "Link": "shocking-grasp",
       "Name": "Scroll of Shocking grasp",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 59
     },
     {
       "Chance": 2,
       "Link": "silent-image",
       "Name": "Scroll of Silent image",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 60
     },
     {
       "Chance": 2,
       "Link": "sleep",
       "Name": "Scroll of Sleep",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 61
     },
     {
       "Chance": 2,
       "Link": "summon-monster-i",
       "Name": "Scroll of Summon monster I",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 62
     },
     {
       "Chance": 3,
       "Link": "floating-disk",
       "Name": "Scroll of Floating disk",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 63
     },
     {
       "Chance": 2,
       "Link": "true-strike",
       "Name": "Scroll of True strike",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 64
     },
     {
       "Chance": 1,
       "Link": "undetectable-alignment",
       "Name": "Scroll of Undetectable alignment",
       "Cost": 50,
-      "Level": 1
+      "Level": 1,
+      "id": 65
     },
     {
       "Chance": 2,
       "Link": "unseen-servant",
       "Name": "Scroll of Unseen servant",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 66
     },
     {
       "Chance": 2,
       "Link": "ventriloquism",
       "Name": "Scroll of Ventriloquism",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 67
     },
     {
       "Chance": 1,
       "Link": "animal-messenger",
       "Name": "Scroll of Animal messenger",
       "Cost": 200,
-      "Level": 2
+      "Level": 2,
+      "id": 68
     },
     {
       "Chance": 1,
       "Link": "animal-trance",
       "Name": "Scroll of Animal trance",
       "Cost": 200,
-      "Level": 2
+      "Level": 2,
+      "id": 69
     },
     {
       "Chance": 1,
       "Link": "arcane-lock",
       "Name": "Scroll of Arcane lock",
       "Cost": 175,
-      "Level": 2
+      "Level": 2,
+      "id": 70
     },
     {
       "Chance": 3,
       "Link": "bears-endurance",
       "Name": "Scroll of Bear's endurance",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 71
     },
     {
       "Chance": 2,
       "Link": "blindness/deafness",
       "Name": "Scroll of Blindness/deafness",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 72
     },
     {
       "Chance": 2,
       "Link": "blur",
       "Name": "Scroll of Blur",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 73
     },
     {
       "Chance": 3,
       "Link": "bulls-strength",
       "Name": "Scroll of Bull's strength",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 74
     },
     {
       "Chance": 1,
       "Link": "calm-emotions",
       "Name": "Scroll of Calm emotions",
       "Cost": 200,
-      "Level": 2
+      "Level": 2,
+      "id": 75
     },
     {
       "Chance": 3,
       "Link": "cats-grace",
       "Name": "Scroll of Cat's grace",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 76
     },
     {
       "Chance": 2,
       "Link": "command-undead",
       "Name": "Scroll of Command undead",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 77
     },
     {
       "Chance": 1,
       "Link": "continual-flame",
       "Name": "Scroll of Continual flame",
       "Cost": 200,
-      "Level": 2
+      "Level": 2,
+      "id": 78
     },
     {
       "Chance": 1,
       "Link": "cure-moderate-wounds",
       "Name": "Scroll of Cure moderate wounds",
       "Cost": 200,
-      "Level": 2
+      "Level": 2,
+      "id": 79
     },
     {
       "Chance": 1,
       "Link": "darkness",
       "Name": "Scroll of Darkness",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 80
     },
     {
       "Chance": 3,
       "Link": "darkvision",
       "Name": "Scroll of Darkvision",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 81
     },
     {
       "Chance": 1,
       "Link": "daze-monster",
       "Name": "Scroll of Daze monster",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 82
     },
     {
       "Chance": 1,
       "Link": "delay-poison",
       "Name": "Scroll of Delay poison",
       "Cost": 200,
-      "Level": 2
+      "Level": 2,
+      "id": 83
     },
     {
       "Chance": 2,
       "Link": "detect-thoughts",
       "Name": "Scroll of Detect thoughts",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 84
     },
     {
       "Chance": 2,
       "Link": "disguise-self",
       "Name": "Scroll of Disguise self",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 85
     },
     {
       "Chance": 3,
       "Link": "eagles-splendor",
       "Name": "Scroll of Eagle's splendor",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 86
     },
     {
       "Chance": 1,
       "Link": "enthrall",
       "Name": "Scroll of Enthrall",
       "Cost": 200,
-      "Level": 2
+      "Level": 2,
+      "id": 87
     },
     {
       "Chance": 2,
       "Link": "false-life",
       "Name": "Scroll of False life",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 88
     },
     {
       "Chance": 2,
       "Link": "flaming-sphere",
       "Name": "Scroll of Flaming sphere",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 89
     },
     {
       "Chance": 1,
       "Link": "fog-cloud",
       "Name": "Scroll of Fog cloud",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 90
     },
     {
       "Chance": 3,
       "Link": "foxs-cunning",
       "Name": "Scroll of Fox's cunning",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 91
     },
     {
       "Chance": 1,
       "Link": "ghoul-touch",
       "Name": "Scroll of Ghoul touch",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 92
     },
     {
       "Chance": 2,
       "Link": "glitterdust",
       "Name": "Scroll of Glitterdust",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 93
     },
     {
       "Chance": 1,
       "Link": "gust-of-wind",
       "Name": "Scroll of Gust of wind",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 94
     },
     {
       "Chance": 2,
       "Link": "hypnotic-pattern",
       "Name": "Scroll of Hypnotic pattern",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 95
     },
     {
       "Chance": 3,
       "Link": "invisibility",
       "Name": "Scroll of Invisibility",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 96
     },
     {
       "Chance": 3,
       "Link": "knock",
       "Name": "Scroll of Knock",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 97
     },
     {
       "Chance": 1,
       "Link": "phantom-trap",
       "Name": "Scroll of Phantom trap",
       "Cost": 200,
-      "Level": 2
+      "Level": 2,
+      "id": 98
     },
     {
       "Chance": 2,
       "Link": "levitate",
       "Name": "Scroll of Levitate",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 99
     },
     {
       "Chance": 1,
       "Link": "locate-object",
       "Name": "Scroll of Locate object",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 100
     },
     {
       "Chance": 1,
       "Link": "magic-mouth",
       "Name": "Scroll of Magic mouth",
       "Cost": 160,
-      "Level": 2
+      "Level": 2,
+      "id": 101
     },
     {
       "Chance": 2,
       "Link": "acid-arrow",
       "Name": "Scroll of Acid arrow",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 102
     },
     {
       "Chance": 1,
       "Link": "minor-image",
       "Name": "Scroll of Minor image",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 103
     },
     {
       "Chance": 2,
       "Link": "mirror-image",
       "Name": "Scroll of Mirror image",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 104
     },
     {
       "Chance": 1,
       "Link": "misdirection",
       "Name": "Scroll of Misdirection",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 105
     },
     {
       "Chance": 1,
       "Link": "obscure-object",
       "Name": "Scroll of Obscure object",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 106
     },
     {
       "Chance": 3,
       "Link": "owls-wisdom",
       "Name": "Scroll of Owl's wisdom",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 107
     },
     {
       "Chance": 3,
       "Link": "protection-from-arrows",
       "Name": "Scroll of Protection from arrows",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 108
     },
     {
       "Chance": 2,
       "Link": "pyrotechnics",
       "Name": "Scroll of Pyrotechnics",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 109
     },
     {
       "Chance": 3,
       "Link": "resist-energy",
       "Name": "Scroll of Resist energy",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 110
     },
     {
       "Chance": 1,
       "Link": "rope-trick",
       "Name": "Scroll of Rope trick",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 111
     },
     {
       "Chance": 1,
       "Link": "scare",
       "Name": "Scroll of Scare",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 112
     },
     {
       "Chance": 2,
       "Link": "scorching-ray",
       "Name": "Scroll of Scorching ray",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 113
     },
     {
       "Chance": 3,
       "Link": "see-invisibility",
       "Name": "Scroll of See invisibility",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 114
     },
     {
       "Chance": 1,
       "Link": "shatter",
       "Name": "Scroll of Shatter",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 115
     },
     {
       "Chance": 1,
       "Link": "silence",
       "Name": "Scroll of Silence",
       "Cost": 200,
-      "Level": 2
+      "Level": 2,
+      "id": 116
     },
     {
       "Chance": 1,
       "Link": "sound-burst",
       "Name": "Scroll of Sound burst",
       "Cost": 200,
-      "Level": 2
+      "Level": 2,
+      "id": 117
     },
     {
       "Chance": 1,
       "Link": "spectral-hand",
       "Name": "Scroll of Spectral hand",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 118
     },
     {
       "Chance": 2,
       "Link": "spider-climb",
       "Name": "Scroll of Spider climb",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 119
     },
     {
       "Chance": 2,
       "Link": "summon-monster-ii",
       "Name": "Scroll of Summon monster II",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 120
     },
     {
       "Chance": 2,
       "Link": "summon-swarm",
       "Name": "Scroll of Summon swarm",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 121
     },
     {
       "Chance": 1,
       "Link": "hideous-laughter",
       "Name": "Scroll of Hideous laughter",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 122
     },
     {
       "Chance": 1,
       "Link": "touch-of-idiocy",
       "Name": "Scroll of Touch of idiocy",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 123
     },
     {
       "Chance": 2,
       "Link": "web",
       "Name": "Scroll of Web",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 124
     },
     {
       "Chance": 1,
       "Link": "whispering-wind",
       "Name": "Scroll of Whispering wind",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 125
     },
     {
       "Chance": 2,
       "Link": "arcane-sight",
       "Name": "Scroll of Arcane sight",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 126
     },
     {
       "Chance": 2,
       "Link": "blink",
       "Name": "Scroll of Blink",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 127
     },
     {
       "Chance": 2,
       "Link": "clairaudience/clairvoyance",
       "Name": "Scroll of Clairaudience/clairvoyance",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 128
     },
     {
       "Chance": 1,
       "Link": "cure-serious-wounds",
       "Name": "Scroll of Cure serious wounds",
       "Cost": 525,
-      "Level": 3
+      "Level": 3,
+      "id": 129
     },
     {
       "Chance": 3,
       "Link": "daylight",
       "Name": "Scroll of Daylight",
       "Cost": 525,
-      "Level": 3
+      "Level": 3,
+      "id": 130
     },
     {
       "Chance": 2,
       "Link": "deep-slumber",
       "Name": "Scroll of Deep slumber",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 131
     },
     {
       "Chance": 3,
       "Link": "dispel-magic",
       "Name": "Scroll of Dispel magic",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 132
     },
     {
       "Chance": 2,
       "Link": "displacement",
       "Name": "Scroll of Displacement",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 133
     },
     {
       "Chance": 1,
       "Link": "explosive-runes",
       "Name": "Scroll of Explosive runes",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 134
     },
     {
       "Chance": 2,
       "Link": "fireball",
       "Name": "Scroll of Fireball",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 135
     },
     {
       "Chance": 2,
       "Link": "flame-arrow",
       "Name": "Scroll of Flame arrow",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 136
     },
     {
       "Chance": 3,
       "Link": "fly",
       "Name": "Scroll of Fly",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 137
     },
     {
       "Chance": 2,
       "Link": "gaseous-form",
       "Name": "Scroll of Gaseous form",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 138
     },
     {
       "Chance": 2,
       "Link": "gentle-repose",
       "Name": "Scroll of Gentle repose",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 139
     },
     {
       "Chance": 1,
       "Link": "glibness",
       "Name": "Scroll of Glibness",
       "Cost": 525,
-      "Level": 3
+      "Level": 3,
+      "id": 140
     },
     {
       "Chance": 1,
       "Link": "good-hope",
       "Name": "Scroll of Good hope",
       "Cost": 525,
-      "Level": 3
+      "Level": 3,
+      "id": 141
     },
     {
       "Chance": 2,
       "Link": "halt-undead",
       "Name": "Scroll of Halt undead",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 142
     },
     {
       "Chance": 3,
       "Link": "haste",
       "Name": "Scroll of Haste",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 143
     },
     {
       "Chance": 2,
       "Link": "heroism",
       "Name": "Scroll of Heroism",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 144
     },
     {
       "Chance": 2,
       "Link": "hold-person",
       "Name": "Scroll of Hold person",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 145
     },
     {
       "Chance": 1,
       "Link": "illusory-script",
       "Name": "Scroll of Illusory script",
       "Cost": 425,
-      "Level": 3
+      "Level": 3,
+      "id": 146
     },
     {
       "Chance": 3,
       "Link": "invisibility-sphere",
       "Name": "Scroll of Invisibility sphere",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 147
     },
     {
       "Chance": 3,
       "Link": "keen-edge",
       "Name": "Scroll of Keen edge",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 148
     },
     {
       "Chance": 2,
       "Link": "tiny-hut",
       "Name": "Scroll of Tiny hut",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 149
     },
     {
       "Chance": 2,
       "Link": "lightning-bolt",
       "Name": "Scroll of Lightning bolt",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 150
     },
     {
       "Chance": 2,
       "Link": "magic-circle-against-chaos",
       "Name": "Scroll of Magic circle against chaos",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 151
     },
     {
       "Chance": 2,
       "Link": "magic-circle-against-evil",
       "Name": "Scroll of Magic circle against evil",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 152
     },
     {
       "Chance": 2,
       "Link": "magic-circle-against-good",
       "Name": "Scroll of Magic circle against good",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 153
     },
     {
       "Chance": 2,
       "Link": "magic-circle-against-law",
       "Name": "Scroll of Magic circle against law",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 154
     },
     {
       "Chance": 3,
       "Link": "greater-magic-weapon",
       "Name": "Scroll of Magic weapon, greater",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 155
     },
     {
       "Chance": 2,
       "Link": "major-image",
       "Name": "Scroll of Major image",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 156
     },
     {
       "Chance": 2,
       "Link": "nondetection",
       "Name": "Scroll of Nondetection",
       "Cost": 425,
-      "Level": 3
+      "Level": 3,
+      "id": 157
     },
     {
       "Chance": 2,
       "Link": "phantom-steed",
       "Name": "Scroll of Phantom steed",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 158
     },
     {
       "Chance": 3,
       "Link": "protection-from-energy",
       "Name": "Scroll of Protection from energy",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 159
     },
     {
       "Chance": 2,
       "Link": "rage",
       "Name": "Scroll of Rage",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 160
     },
     {
       "Chance": 2,
       "Link": "ray-of-exhaustion",
       "Name": "Scroll of Ray of exhaustion",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 161
     },
     {
       "Chance": 1,
       "Link": "sculpt-sound",
       "Name": "Scroll of Sculpt sound",
       "Cost": 525,
-      "Level": 3
+      "Level": 3,
+      "id": 162
     },
     {
       "Chance": 1,
       "Link": "secret-page",
       "Name": "Scroll of Secret page",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 163
     },
     {
       "Chance": 1,
       "Link": "sepia-snake-sigil",
       "Name": "Scroll of Sepia snake sigil",
       "Cost": 875,
-      "Level": 3
+      "Level": 3,
+      "id": 164
     },
     {
       "Chance": 1,
       "Link": "shrink-item",
       "Name": "Scroll of Shrink item",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 165
     },
     {
       "Chance": 2,
       "Link": "sleet-storm",
       "Name": "Scroll of Sleet storm",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 166
     },
     {
       "Chance": 2,
       "Link": "slow",
       "Name": "Scroll of Slow",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 167
     },
     {
       "Chance": 1,
       "Link": "speak-with-animals",
       "Name": "Scroll of Speak with animals",
       "Cost": 525,
-      "Level": 3
+      "Level": 3,
+      "id": 168
     },
     {
       "Chance": 2,
       "Link": "stinking-cloud",
       "Name": "Scroll of Stinking cloud",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 169
     },
     {
       "Chance": 2,
       "Link": "suggestion",
       "Name": "Scroll of Suggestion",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 170
     },
     {
       "Chance": 2,
       "Link": "summon-monster-iii",
       "Name": "Scroll of Summon monster III",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 171
     },
     {
       "Chance": 3,
       "Link": "tongues",
       "Name": "Scroll of Tongues",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 172
     },
     {
       "Chance": 2,
       "Link": "vampiric-touch",
       "Name": "Scroll of Vampiric touch",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 173
     },
     {
       "Chance": 3,
       "Link": "water-breathing",
       "Name": "Scroll of Water breathing",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 174
     },
     {
       "Chance": 2,
       "Link": "wind-wall",
       "Name": "Scroll of Wind wall",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 175
     },
     {
       "Chance": 2,
       "Link": "animate-dead",
       "Name": "Scroll of Animate dead",
       "Cost": 1050,
-      "Level": 4
+      "Level": 4,
+      "id": 176
     },
     {
       "Chance": 3,
       "Link": "arcane-eye",
       "Name": "Scroll of Arcane eye",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 177
     },
     {
       "Chance": 2,
       "Link": "bestow-curse",
       "Name": "Scroll of Bestow curse",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 178
     },
     {
       "Chance": 3,
       "Link": "charm-monster",
       "Name": "Scroll of Charm monster",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 179
     },
     {
       "Chance": 3,
       "Link": "confusion",
       "Name": "Scroll of Confusion",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 180
     },
     {
       "Chance": 2,
       "Link": "contagion",
       "Name": "Scroll of Contagion",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 181
     },
     {
       "Chance": 2,
       "Link": "crushing-despair",
       "Name": "Scroll of Crushing despair",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 182
     },
     {
       "Chance": 1,
       "Link": "cure-critical-wounds",
       "Name": "Scroll of Cure critical wounds",
       "Cost": 1000,
-      "Level": 4
+      "Level": 4,
+      "id": 183
     },
     {
       "Chance": 1,
       "Link": "detect-scrying",
       "Name": "Scroll of Detect scrying",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 184
     },
     {
       "Chance": 4,
       "Link": "dimension-door",
       "Name": "Scroll of Dimension door",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 185
     },
     {
       "Chance": 3,
       "Link": "dimensional-anchor",
       "Name": "Scroll of Dimensional anchor",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 186
     },
     {
       "Chance": 2,
       "Link": "enervation",
       "Name": "Scroll of Enervation",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 187
     },
     {
       "Chance": 2,
       "Link": "mass-enlarge-person",
       "Name": "Scroll of Enlarge person, mass",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 188
     },
     {
       "Chance": 2,
       "Link": "black-tentacles",
       "Name": "Scroll of Black tentacles",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 189
     },
     {
       "Chance": 2,
       "Link": "fear",
       "Name": "Scroll of Fear",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 190
     },
     {
       "Chance": 3,
       "Link": "fire-shield",
       "Name": "Scroll of Fire shield",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 191
     },
     {
       "Chance": 2,
       "Link": "fire-trap",
       "Name": "Scroll of Fire trap",
       "Cost": 725,
-      "Level": 4
+      "Level": 4,
+      "id": 192
     },
     {
       "Chance": 3,
       "Link": "freedom-of-movement",
       "Name": "Scroll of Freedom of movement",
       "Cost": 1000,
-      "Level": 4
+      "Level": 4,
+      "id": 193
     },
     {
       "Chance": 1,
       "Link": "lesser-geas",
       "Name": "Scroll of Geas, lesser",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 194
     },
     {
       "Chance": 3,
       "Link": "lesser-globe-of-invulnerability",
       "Name": "Scroll of Globe of invulnerability, lesser",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 195
     },
     {
       "Chance": 2,
       "Link": "hallucinatory-terrain",
       "Name": "Scroll of Hallucinatory terrain",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 196
     },
     {
       "Chance": 2,
       "Link": "ice-storm",
       "Name": "Scroll of Ice storm",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 197
     },
     {
       "Chance": 2,
       "Link": "illusory-wall",
       "Name": "Scroll of Illusory wall",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 198
     },
     {
       "Chance": 3,
       "Link": "greater-invisibility",
       "Name": "Scroll of Invisibility, greater",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 199
     },
     {
       "Chance": 2,
       "Link": "secure-shelter",
       "Name": "Scroll of Secure shelter",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 200
     },
     {
       "Chance": 1,
       "Link": "locate-creature",
       "Name": "Scroll of Locate creature",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 201
     },
     {
       "Chance": 2,
       "Link": "minor-creation",
       "Name": "Scroll of Minor creation",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 202
     },
     {
       "Chance": 1,
       "Link": "modify-memory",
       "Name": "Scroll of Modify memory",
       "Cost": 1000,
-      "Level": 4
+      "Level": 4,
+      "id": 203
     },
     {
       "Chance": 1,
       "Link": "neutralize-poison",
       "Name": "Scroll of Neutralize poison",
       "Cost": 1000,
-      "Level": 4
+      "Level": 4,
+      "id": 204
     },
     {
       "Chance": 2,
       "Link": "resilient-sphere",
       "Name": "Scroll of Resilient sphere",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 205
     },
     {
       "Chance": 2,
       "Link": "phantasmal-killer",
       "Name": "Scroll of Phantasmal killer",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 206
     },
     {
       "Chance": 2,
       "Link": "polymorph",
       "Name": "Scroll of Polymorph",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 207
     },
     {
       "Chance": 2,
       "Link": "rainbow-pattern",
       "Name": "Scroll of Rainbow pattern",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 208
     },
     {
       "Chance": 1,
       "Link": "mnemonic-enhancer",
       "Name": "Scroll of Mnemonic enhancer",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 209
     },
     {
       "Chance": 2,
       "Link": "mass-reduce-person",
       "Name": "Scroll of Reduce person, mass",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 210
     },
     {
       "Chance": 3,
       "Link": "remove-curse",
       "Name": "Scroll of Remove curse",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 211
     },
     {
       "Chance": 1,
       "Link": "repel-vermin",
       "Name": "Scroll of Repel vermin",
       "Cost": 1000,
-      "Level": 4
+      "Level": 4,
+      "id": 212
     },
     {
       "Chance": 2,
       "Link": "scrying",
       "Name": "Scroll of Scrying",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 213
     },
     {
       "Chance": 2,
       "Link": "shadow-conjuration",
       "Name": "Scroll of Shadow conjuration",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 214
     },
     {
       "Chance": 2,
       "Link": "shout",
       "Name": "Scroll of Shout",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 215
     },
     {
       "Chance": 2,
       "Link": "solid-fog",
       "Name": "Scroll of Solid fog",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 216
     },
     {
       "Chance": 1,
       "Link": "speak-with-plants",
       "Name": "Scroll of Speak with plants",
       "Cost": 1000,
-      "Level": 4
+      "Level": 4,
+      "id": 217
     },
     {
       "Chance": 2,
       "Link": "stone-shape",
       "Name": "Scroll of Stone shape",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 218
     },
     {
       "Chance": 3,
       "Link": "stoneskin",
       "Name": "Scroll of Stoneskin",
       "Cost": 950,
-      "Level": 4
+      "Level": 4,
+      "id": 219
     },
     {
       "Chance": 2,
       "Link": "summon-monster-iv",
       "Name": "Scroll of Summon monster IV",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 220
     },
     {
       "Chance": 3,
       "Link": "wall-of-fire",
       "Name": "Scroll of Wall of fire",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 221
     },
     {
       "Chance": 3,
       "Link": "wall-of-ice",
       "Name": "Scroll of Wall of ice",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 222
     },
     {
       "Chance": 1,
       "Link": "zone-of-silence",
       "Name": "Scroll of Zone of silence",
       "Cost": 1000,
-      "Level": 4
+      "Level": 4,
+      "id": 223
     },
     {
       "Chance": 2,
       "Link": "animal-growth",
       "Name": "Scroll of Animal growth",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 224
     },
     {
       "Chance": 3,
       "Link": "baleful-polymorph",
       "Name": "Scroll of Baleful polymorph",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 225
     },
     {
       "Chance": 2,
       "Link": "interposing-hand",
       "Name": "Scroll of Interposing hand",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 226
     },
     {
       "Chance": 2,
       "Link": "blight",
       "Name": "Scroll of Blight",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 227
     },
     {
       "Chance": 3,
       "Link": "break-enchantment",
       "Name": "Scroll of Break enchantment",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 228
     },
     {
       "Chance": 2,
       "Link": "cloudkill",
       "Name": "Scroll of Cloudkill",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 229
     },
     {
       "Chance": 3,
       "Link": "cone-of-cold",
       "Name": "Scroll of Cone of cold",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 230
     },
     {
       "Chance": 2,
       "Link": "contact-other-plane",
       "Name": "Scroll of Contact other plane",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 231
     },
     {
       "Chance": 1,
       "Link": "mass-cure-light-wounds",
       "Name": "Scroll of Cure light wounds, mass",
       "Cost": 1625,
-      "Level": 5
+      "Level": 5,
+      "id": 232
     },
     {
       "Chance": 3,
       "Link": "dismissal",
       "Name": "Scroll of Dismissal",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 233
     },
     {
       "Chance": 3,
       "Link": "greater-dispel-magic",
       "Name": "Scroll of Dispel magic, greater",
       "Cost": 1625,
-      "Level": 5
+      "Level": 5,
+      "id": 234
     },
     {
       "Chance": 2,
       "Link": "dominate-person",
       "Name": "Scroll of Dominate person",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 235
     },
     {
       "Chance": 1,
       "Link": "dream",
       "Name": "Scroll of Dream",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 236
     },
     {
       "Chance": 2,
       "Link": "fabricate",
       "Name": "Scroll of Fabricate",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 237
     },
     {
       "Chance": 2,
       "Link": "false-vision",
       "Name": "Scroll of False vision",
       "Cost": 1375,
-      "Level": 5
+      "Level": 5,
+      "id": 238
     },
     {
       "Chance": 2,
       "Link": "feeblemind",
       "Name": "Scroll of Feeblemind",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 239
     },
     {
       "Chance": 4,
       "Link": "hold-monster",
       "Name": "Scroll of Hold monster",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 240
     },
     {
       "Chance": 1,
       "Link": "secret-chest",
       "Name": "Scroll of Secret chest",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 241
     },
     {
       "Chance": 1,
       "Link": "magic-jar",
       "Name": "Scroll of Magic jar",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 242
     },
     {
       "Chance": 2,
       "Link": "major-creation",
       "Name": "Scroll of Major creation",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 243
     },
     {
       "Chance": 2,
       "Link": "mind-fog",
       "Name": "Scroll of Mind fog",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 244
     },
     {
       "Chance": 2,
       "Link": "mirage-arcana",
       "Name": "Scroll of Mirage arcana",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 245
     },
     {
       "Chance": 2,
       "Link": "mages-faithful-hound",
       "Name": "Scroll of Mage's faithful hound",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 246
     },
     {
       "Chance": 2,
       "Link": "mages-private-sanctum",
       "Name": "Scroll of Mage's private sanctum",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 247
     },
     {
       "Chance": 2,
       "Link": "nightmare",
       "Name": "Scroll of Nightmare",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 248
     },
     {
       "Chance": 4,
       "Link": "overland-flight",
       "Name": "Scroll of Overland flight",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 249
     },
     {
       "Chance": 3,
       "Link": "passwall",
       "Name": "Scroll of Passwall",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 250
     },
     {
       "Chance": 1,
       "Link": "permanency",
       "Name": "Scroll of Permanency",
       "Cost": 10125,
-      "Level": 5
+      "Level": 5,
+      "id": 251
     },
     {
       "Chance": 2,
       "Link": "persistent-image",
       "Name": "Scroll of Persistent image",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 252
     },
     {
       "Chance": 2,
       "Link": "lesser-planar-binding",
       "Name": "Scroll of Planar binding, lesser",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 253
     },
     {
       "Chance": 2,
       "Link": "prying-eyes",
       "Name": "Scroll of Prying eyes",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 254
     },
     {
       "Chance": 2,
       "Link": "telepathic-bond",
       "Name": "Scroll of Telepathic bond",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 255
     },
     {
       "Chance": 2,
       "Link": "seeming",
       "Name": "Scroll of Seeming",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 256
     },
     {
       "Chance": 3,
       "Link": "sending",
       "Name": "Scroll of Sending",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 257
     },
     {
       "Chance": 2,
       "Link": "shadow-evocation",
       "Name": "Scroll of Shadow evocation",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 258
     },
     {
       "Chance": 1,
       "Link": "song-of-discord",
       "Name": "Scroll of Song of discord",
       "Cost": 1625,
-      "Level": 5
+      "Level": 5,
+      "id": 259
     },
     {
       "Chance": 2,
       "Link": "summon-monster-v",
       "Name": "Scroll of Summon monster V",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 260
     },
     {
       "Chance": 1,
       "Link": "symbol-of-pain",
       "Name": "Scroll of Symbol of pain",
       "Cost": 2125,
-      "Level": 5
+      "Level": 5,
+      "id": 261
     },
     {
       "Chance": 1,
       "Link": "symbol-of-sleep",
       "Name": "Scroll of Symbol of sleep",
       "Cost": 2125,
-      "Level": 5
+      "Level": 5,
+      "id": 262
     },
     {
       "Chance": 2,
       "Link": "telekinesis",
       "Name": "Scroll of Telekinesis",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 263
     },
     {
       "Chance": 5,
       "Link": "teleport",
       "Name": "Scroll of Teleport",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 264
     },
     {
       "Chance": 2,
       "Link": "transmute-mud-to-rock",
       "Name": "Scroll of Transmute mud to rock",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 265
     },
     {
       "Chance": 2,
       "Link": "transmute-rock-to-mud",
       "Name": "Scroll of Transmute rock to mud",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 266
     },
     {
       "Chance": 3,
       "Link": "wall-of-force",
       "Name": "Scroll of Wall of force",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 267
     },
     {
       "Chance": 3,
       "Link": "wall-of-stone",
       "Name": "Scroll of Wall of stone",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 268
     },
     {
       "Chance": 2,
       "Link": "waves-of-fatigue",
       "Name": "Scroll of Waves of fatigue",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 269
     },
     {
       "Chance": 2,
       "Link": "acid-fog",
       "Name": "Scroll of Acid fog",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 270
     },
     {
       "Chance": 3,
       "Link": "analyze-dweomer",
       "Name": "Scroll of Analyze dweomer",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 271
     },
     {
       "Chance": 1,
       "Link": "animate-objects",
       "Name": "Scroll of Animate objects",
       "Cost": 2400,
-      "Level": 6
+      "Level": 6,
+      "id": 272
     },
     {
       "Chance": 3,
       "Link": "antimagic-field",
       "Name": "Scroll of Antimagic field",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 273
     },
     {
       "Chance": 3,
       "Link": "mass-bears-endurance",
       "Name": "Scroll of Bear's endurance, mass",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 274
     },
     {
       "Chance": 2,
       "Link": "forceful-hand",
       "Name": "Scroll of Forceful hand",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 275
     },
     {
       "Chance": 3,
       "Link": "mass-bulls-strength",
       "Name": "Scroll of Bull's strength, mass",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 276
     },
     {
       "Chance": 3,
       "Link": "mass-cats-grace",
       "Name": "Scroll of Cat's grace, mass",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 277
     },
     {
       "Chance": 3,
       "Link": "chain-lightning",
       "Name": "Scroll of Chain lightning",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 278
     },
     {
       "Chance": 2,
       "Link": "circle-of-death",
       "Name": "Scroll of Circle of death",
       "Cost": 2150,
-      "Level": 6
+      "Level": 6,
+      "id": 279
     },
     {
       "Chance": 1,
       "Link": "contingency",
       "Name": "Scroll of Contingency",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 280
     },
     {
       "Chance": 2,
       "Link": "control-water",
       "Name": "Scroll of Control water",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 281
     },
     {
       "Chance": 1,
       "Link": "create-undead",
       "Name": "Scroll of Create undead",
       "Cost": 2350,
-      "Level": 6
+      "Level": 6,
+      "id": 282
     },
     {
       "Chance": 1,
       "Link": "mass-cure-moderate-wounds",
       "Name": "Scroll of Cure moderate wounds, mass",
       "Cost": 2400,
-      "Level": 6
+      "Level": 6,
+      "id": 283
     },
     {
       "Chance": 3,
       "Link": "disintegrate",
       "Name": "Scroll of Disintegrate",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 284
     },
     {
       "Chance": 4,
       "Link": "greater-dispel-magic",
       "Name": "Scroll of Dispel magic, greater",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 285
     },
     {
       "Chance": 3,
       "Link": "mass-eagles-splendor",
       "Name": "Scroll of Eagle's splendor, mass",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 286
     },
     {
       "Chance": 2,
       "Link": "eyebite",
       "Name": "Scroll of Eyebite",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 287
     },
     {
       "Chance": 1,
       "Link": "find-the-path",
       "Name": "Scroll of Find the path",
       "Cost": 2400,
-      "Level": 6
+      "Level": 6,
+      "id": 288
     },
     {
       "Chance": 2,
       "Link": "flesh-to-stone",
       "Name": "Scroll of Flesh to stone",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 289
     },
     {
       "Chance": 3,
       "Link": "mass-foxs-cunning",
       "Name": "Scroll of Fox's cunning, mass",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 290
     },
     {
       "Chance": 1,
       "Link": "geas/quest",
       "Name": "Scroll of Geas/quest",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 291
     },
     {
       "Chance": 3,
       "Link": "globe-of-invulnerability",
       "Name": "Scroll of Globe of invulnerability",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 292
     },
     {
       "Chance": 1,
       "Link": "guards-and-wards",
       "Name": "Scroll of Guards and wards",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 293
     },
     {
       "Chance": 1,
       "Link": "heroes-feast",
       "Name": "Scroll of Heroes' feast",
       "Cost": 2400,
-      "Level": 6
+      "Level": 6,
+      "id": 294
     },
     {
       "Chance": 2,
       "Link": "greater-heroism",
       "Name": "Scroll of Heroism, greater",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 295
     },
     {
       "Chance": 1,
       "Link": "legend-lore",
       "Name": "Scroll of Legend lore",
       "Cost": 1900,
-      "Level": 6
+      "Level": 6,
+      "id": 296
     },
     {
       "Chance": 2,
       "Link": "mislead",
       "Name": "Scroll of Mislead",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 297
     },
     {
       "Chance": 1,
       "Link": "mages-lucubration",
       "Name": "Scroll of Mage's lucubration",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 298
     },
     {
       "Chance": 2,
       "Link": "move-earth",
       "Name": "Scroll of Move earth",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 299
     },
     {
       "Chance": 2,
       "Link": "freezing-sphere",
       "Name": "Scroll of Freezing sphere",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 300
     },
     {
       "Chance": 3,
       "Link": "mass-owls-wisdom",
       "Name": "Scroll of Owl's wisdom, mass",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 301
     },
     {
       "Chance": 2,
       "Link": "permanent-image",
       "Name": "Scroll of Permanent image",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 302
     },
     {
       "Chance": 2,
       "Link": "planar-binding",
       "Name": "Scroll of Planar binding",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 303
     },
     {
       "Chance": 2,
       "Link": "programmed-image",
       "Name": "Scroll of Programmed image",
       "Cost": 1675,
-      "Level": 6
+      "Level": 6,
+      "id": 304
     },
     {
       "Chance": 2,
       "Link": "repulsion",
       "Name": "Scroll of Repulsion",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 305
     },
     {
       "Chance": 3,
       "Link": "shadow-walk",
       "Name": "Scroll of Shadow walk",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 306
     },
     {
       "Chance": 3,
       "Link": "stone-to-flesh",
       "Name": "Scroll of Stone to flesh",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 307
     },
     {
       "Chance": 2,
       "Link": "mass-suggestion",
       "Name": "Scroll of Suggestion, mass",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 308
     },
     {
       "Chance": 2,
       "Link": "summon-monster-vi",
       "Name": "Scroll of Summon monster VI",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 309
     },
     {
       "Chance": 1,
       "Link": "symbol-of-fear",
       "Name": "Scroll of Symbol of fear",
       "Cost": 2650,
-      "Level": 6
+      "Level": 6,
+      "id": 310
     },
     {
       "Chance": 1,
       "Link": "symbol-of-persuasion",
       "Name": "Scroll of Symbol of persuasion",
       "Cost": 6650,
-      "Level": 6
+      "Level": 6,
+      "id": 311
     },
     {
       "Chance": 1,
       "Link": "sympathetic-vibration",
       "Name": "Scroll of Sympathetic vibration",
       "Cost": 2400,
-      "Level": 6
+      "Level": 6,
+      "id": 312
     },
     {
       "Chance": 2,
       "Link": "transformation",
       "Name": "Scroll of Transformation",
       "Cost": 1950,
-      "Level": 6
+      "Level": 6,
+      "id": 313
     },
     {
       "Chance": 3,
       "Link": "true-seeing",
       "Name": "Scroll of True seeing",
       "Cost": 1900,
-      "Level": 6
+      "Level": 6,
+      "id": 314
     },
     {
       "Chance": 2,
       "Link": "undeath-to-death",
       "Name": "Scroll of Undeath to death",
       "Cost": 2150,
-      "Level": 6
+      "Level": 6,
+      "id": 315
     },
     {
       "Chance": 2,
       "Link": "veil",
       "Name": "Scroll of Veil",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 316
     },
     {
       "Chance": 3,
       "Link": "wall-of-iron",
       "Name": "Scroll of Wall of iron",
       "Cost": 1700,
-      "Level": 6
+      "Level": 6,
+      "id": 317
     },
     {
       "Chance": 3,
       "Link": "greater-arcane-sight",
       "Name": "Scroll of Arcane sight, greater",
       "Cost": 2275,
-      "Level": 7
+      "Level": 7,
+      "id": 318
     },
     {
       "Chance": 4,
       "Link": "banishment",
       "Name": "Scroll of Banishment",
       "Cost": 2275,
-      "Level": 7
+      "Level": 7,
+      "id": 319
     },
     {
       "Chance": 3,
       "Link": "grasping-hand",
       "Name": "Scroll of Grasping hand",
       "Cost": 2275,
-      "Level": 7
+      "Level": 7,
+      "id": 320
     },
     {
       "Chance": 3,
       "Link": "control-undead",
       "Name": "Scroll of Control undead",
       "Cost": 2275,
-      "Level": 7
+      "Level": 7,
+      "id": 321
     },
     {
       "Chance": 3,
       "Link": "control-weather",
       "Name": "Scroll of Control weather",
       "Cost": 2275,
-      "Level": 7
+      "Level": 7,
+      "id": 322
     },
     {
       "Chance": 3,
       "Link": "delayed-blast-fireball",
       "Name": "Scroll of Delayed blast fireball",
       "Cost": 2275,
-      "Level": 7
+      "Level": 7,
+      "id": 323
     },
     {
       "Chance": 2,
       "Link": "instant-summons",
       "Name": "Scroll of Instant summons",
       "Cost": 3275,
-      "Level": 7
+      "Level": 7,
+      "id": 324
     },
     {
       "Chance": 4,
       "Link": "ethereal-jaunt",
       "Name": "Scroll of Ethereal jaunt",
       "Cost": 2275,
-      "Level": 7
+      "Level": 7,
+      "id": 325
     },
     {
       "Chance": 3,
       "Link": "finger-of-death",
       "Name": "Scroll of Finger of death",
       "Cost": 2275,
-      "Level": 7
+      "Level": 7,
+      "id": 326
     },
     {
       "Chance": 3,
       "Link": "forcecage",
       "Name": "Scroll of Forcecage",
       "Cost": 23775,
-      "Level": 7
+      "Level": 7,
+      "id": 327
     },
     {
       "Chance": 4,
       "Link": "mass-hold-person",
       "Name": "Scroll of Hold person, mass",
       "Cost": 2275,
-      "Level": 7
+      "Level": 7,
+      "id": 328
     },
     {
       "Chance": 3,
       "Link": "insanity",
       "Name": "Scroll of Insanity",
       "Cost": 2275,
-      "Level": 7
+      "Level": 7,
+      "id": 329
     },
     {
       "Chance": 4,
       "Link": "mass-invisibility",
       "Name": "Scroll of Invisibility, mass",
       "Cost": 2275,
-      "Level": 7
+      "Level": 7,
+      "id": 330
     },
     {
       "Chance": 1,
       "Link": "limited-wish",
       "Name": "Scroll of Limited wish",
       "Cost": 3775,
-      "Level": 7
+      "Level": 7,
+      "id": 331
     },
     {
       "Chance": 2,
       "Link": "mages-magnificent-mansion",
       "Name": "Scroll of Mage's magnificent mansion",
       "Cost": 2275,
-      "Level": 7
+      "Level": 7,
+      "id": 332
     },
     {
       "Chance": 3,
       "Link": "mages-sword",
       "Name": "Scroll of Mage's sword",
       "Cost": 2275,
-      "Level": 7
+      "Level": 7,
+      "id": 333
     },
     {
       "Chance": 3,
       "Link": "phase-door",
       "Name": "Scroll of Phase door",
       "Cost": 2275,
-      "Level": 7
+      "Level": 7,
+      "id": 334
     },
     {
       "Chance": 3,
       "Link": "plane-shift",
       "Name": "Scroll of Plane shift",
       "Cost": 2275,
-      "Level": 7
+      "Level": 7,
+      "id": 335
     },
     {
       "Chance": 3,
       "Link": "power-word-blind",
       "Name": "Scroll of Power word blind",
       "Cost": 2275,
-      "Level": 7
+      "Level": 7,
+      "id": 336
     },
     {
       "Chance": 4,
       "Link": "prismatic-spray",
       "Name": "Scroll of Prismatic spray",
       "Cost": 2275,
-      "Level": 7
+      "Level": 7,
+      "id": 337
     },
     {
       "Chance": 3,
       "Link": "project-image",
       "Name": "Scroll of Project image",
       "Cost": 2280,
-      "Level": 7
+      "Level": 7,
+      "id": 338
     },
     {
       "Chance": 3,
       "Link": "reverse-gravity",
       "Name": "Scroll of Reverse gravity",
       "Cost": 2275,
-      "Level": 7
+      "Level": 7,
+      "id": 339
     },
     {
       "Chance": 3,
       "Link": "greater-scrying",
       "Name": "Scroll of Scrying, greater",
       "Cost": 2275,
-      "Level": 7
+      "Level": 7,
+      "id": 340
     },
     {
       "Chance": 3,
       "Link": "sequester",
       "Name": "Scroll of Sequester",
       "Cost": 2275,
-      "Level": 7
+      "Level": 7,
+      "id": 341
     },
     {
       "Chance": 3,
       "Link": "greater-shadow-conjuration",
       "Name": "Scroll of Shadow conjuration, greater",
       "Cost": 2275,
-      "Level": 7
+      "Level": 7,
+      "id": 342
     },
     {
       "Chance": 1,
       "Link": "simulacrum",
       "Name": "Scroll of Simulacrum",
       "Cost": 7275,
-      "Level": 7
+      "Level": 7,
+      "id": 343
     },
     {
       "Chance": 3,
       "Link": "spell-turning",
       "Name": "Scroll of Spell turning",
       "Cost": 2275,
-      "Level": 7
+      "Level": 7,
+      "id": 344
     },
     {
       "Chance": 2,
       "Link": "statue",
       "Name": "Scroll of Statue",
       "Cost": 2275,
-      "Level": 7
+      "Level": 7,
+      "id": 345
     },
     {
       "Chance": 3,
       "Link": "summon-monster-vii",
       "Name": "Scroll of Summon monster VII",
       "Cost": 2275,
-      "Level": 7
+      "Level": 7,
+      "id": 346
     },
     {
       "Chance": 1,
       "Link": "symbol-of-stunning",
       "Name": "Scroll of Symbol of stunning",
       "Cost": 7275,
-      "Level": 7
+      "Level": 7,
+      "id": 347
     },
     {
       "Chance": 1,
       "Link": "symbol-of-weakness",
       "Name": "Scroll of Symbol of weakness",
       "Cost": 7275,
-      "Level": 7
+      "Level": 7,
+      "id": 348
     },
     {
       "Chance": 3,
       "Link": "teleport-object",
       "Name": "Scroll of Teleport object",
       "Cost": 2275,
-      "Level": 7
+      "Level": 7,
+      "id": 349
     },
     {
       "Chance": 5,
       "Link": "greater-teleport",
       "Name": "Scroll of Teleport, greater",
       "Cost": 2275,
-      "Level": 7
+      "Level": 7,
+      "id": 350
     },
     {
       "Chance": 2,
       "Link": "vision",
       "Name": "Scroll of Vision",
       "Cost": 2775,
-      "Level": 7
+      "Level": 7,
+      "id": 351
     },
     {
       "Chance": 3,
       "Link": "waves-of-exhaustion",
       "Name": "Scroll of Waves of exhaustion",
       "Cost": 2275,
-      "Level": 7
+      "Level": 7,
+      "id": 352
     },
     {
       "Chance": 2,
       "Link": "antipathy",
       "Name": "Scroll of Antipathy",
       "Cost": 3000,
-      "Level": 8
+      "Level": 8,
+      "id": 353
     },
     {
       "Chance": 3,
       "Link": "clenched-fist",
       "Name": "Scroll of Clenched fist",
       "Cost": 3000,
-      "Level": 8
+      "Level": 8,
+      "id": 354
     },
     {
       "Chance": 3,
       "Link": "binding",
       "Name": "Scroll of Binding",
       "Cost": 8500,
-      "Level": 8
+      "Level": 8,
+      "id": 355
     },
     {
       "Chance": 4,
       "Link": "mass-charm-monster",
       "Name": "Scroll of Charm monster, mass",
       "Cost": 3000,
-      "Level": 8
+      "Level": 8,
+      "id": 356
     },
     {
       "Chance": 1,
       "Link": "clone",
       "Name": "Scroll of Clone",
       "Cost": 4000,
-      "Level": 8
+      "Level": 8,
+      "id": 357
     },
     {
       "Chance": 3,
       "Link": "create-greater-undead",
       "Name": "Scroll of Create greater undead",
       "Cost": 3000,
-      "Level": 8
+      "Level": 8,
+      "id": 358
     },
     {
       "Chance": 3,
       "Link": "demand",
       "Name": "Scroll of Demand",
       "Cost": 3600,
-      "Level": 8
+      "Level": 8,
+      "id": 359
     },
     {
       "Chance": 3,
       "Link": "dimensional-lock",
       "Name": "Scroll of Dimensional lock",
       "Cost": 3000,
-      "Level": 8
+      "Level": 8,
+      "id": 360
     },
     {
       "Chance": 4,
       "Link": "discern-location",
       "Name": "Scroll of Discern location",
       "Cost": 3000,
-      "Level": 8
+      "Level": 8,
+      "id": 361
     },
     {
       "Chance": 3,
       "Link": "horrid-wilting",
       "Name": "Scroll of Horrid wilting",
       "Cost": 3000,
-      "Level": 8
+      "Level": 8,
+      "id": 362
     },
     {
       "Chance": 3,
       "Link": "incendiary-cloud",
       "Name": "Scroll of Incendiary cloud",
       "Cost": 3000,
-      "Level": 8
+      "Level": 8,
+      "id": 363
     },
     {
       "Chance": 3,
       "Link": "iron-body",
       "Name": "Scroll of Iron body",
       "Cost": 3000,
-      "Level": 8
+      "Level": 8,
+      "id": 364
     },
     {
       "Chance": 3,
       "Link": "maze",
       "Name": "Scroll of Maze",
       "Cost": 3000,
-      "Level": 8
+      "Level": 8,
+      "id": 365
     },
     {
       "Chance": 3,
       "Link": "mind-blank",
       "Name": "Scroll of Mind blank",
       "Cost": 3000,
-      "Level": 8
+      "Level": 8,
+      "id": 366
     },
     {
       "Chance": 3,
       "Link": "moment-of-prescience",
       "Name": "Scroll of Moment of prescience",
       "Cost": 3000,
-      "Level": 8
+      "Level": 8,
+      "id": 367
     },
     {
       "Chance": 4,
       "Link": "telekinetic-sphere",
       "Name": "Scroll of Telekinetic sphere",
       "Cost": 3000,
-      "Level": 8
+      "Level": 8,
+      "id": 368
     },
     {
       "Chance": 3,
       "Link": "irresistible-dance",
       "Name": "Scroll of Irresistible dance",
       "Cost": 3000,
-      "Level": 8
+      "Level": 8,
+      "id": 369
     },
     {
       "Chance": 3,
       "Link": "greater-planar-binding",
       "Name": "Scroll of Planar binding, greater",
       "Cost": 3000,
-      "Level": 8
+      "Level": 8,
+      "id": 370
     },
     {
       "Chance": 3,
       "Link": "polar-ray",
       "Name": "Scroll of Polar ray",
       "Cost": 3000,
-      "Level": 8
+      "Level": 8,
+      "id": 371
     },
     {
       "Chance": 3,
       "Link": "polymorph-any-object",
       "Name": "Scroll of Polymorph any object",
       "Cost": 3000,
-      "Level": 8
+      "Level": 8,
+      "id": 372
     },
     {
       "Chance": 3,
       "Link": "power-word-stun",
       "Name": "Scroll of Power word stun",
       "Cost": 3000,
-      "Level": 8
+      "Level": 8,
+      "id": 373
     },
     {
       "Chance": 3,
       "Link": "prismatic-wall",
       "Name": "Scroll of Prismatic wall",
       "Cost": 3000,
-      "Level": 8
+      "Level": 8,
+      "id": 374
     },
     {
       "Chance": 4,
       "Link": "protection-from-spells",
       "Name": "Scroll of Protection from spells",
       "Cost": 3500,
-      "Level": 8
+      "Level": 8,
+      "id": 375
     },
     {
       "Chance": 3,
       "Link": "greater-prying-eyes",
       "Name": "Scroll of Prying eyes, greater",
       "Cost": 3000,
-      "Level": 8
+      "Level": 8,
+      "id": 376
     },
     {
       "Chance": 3,
       "Link": "scintillating-pattern",
       "Name": "Scroll of Scintillating pattern",
       "Cost": 3000,
-      "Level": 8
+      "Level": 8,
+      "id": 377
     },
     {
       "Chance": 2,
       "Link": "screen",
       "Name": "Scroll of Screen",
       "Cost": 3000,
-      "Level": 8
+      "Level": 8,
+      "id": 378
     },
     {
       "Chance": 3,
       "Link": "greater-shadow-evocation",
       "Name": "Scroll of Shadow evocation, greater",
       "Cost": 3000,
-      "Level": 8
+      "Level": 8,
+      "id": 379
     },
     {
       "Chance": 3,
       "Link": "greater-shout",
       "Name": "Scroll of Shout, greater",
       "Cost": 3000,
-      "Level": 8
+      "Level": 8,
+      "id": 380
     },
     {
       "Chance": 3,
       "Link": "summon-monster-viii",
       "Name": "Scroll of Summon monster VIII",
       "Cost": 3000,
-      "Level": 8
+      "Level": 8,
+      "id": 381
     },
     {
       "Chance": 3,
       "Link": "sunburst",
       "Name": "Scroll of Sunburst",
       "Cost": 3000,
-      "Level": 8
+      "Level": 8,
+      "id": 382
     },
     {
       "Chance": 1,
       "Link": "symbol-of-death",
       "Name": "Scroll of Symbol of death",
       "Cost": 8000,
-      "Level": 8
+      "Level": 8,
+      "id": 383
     },
     {
       "Chance": 1,
       "Link": "symbol-of-insanity",
       "Name": "Scroll of Symbol of insanity",
       "Cost": 8000,
-      "Level": 8
+      "Level": 8,
+      "id": 384
     },
     {
       "Chance": 2,
       "Link": "sympathy",
       "Name": "Scroll of Sympathy",
       "Cost": 4500,
-      "Level": 8
+      "Level": 8,
+      "id": 385
     },
     {
       "Chance": 4,
       "Link": "temporal-stasis",
       "Name": "Scroll of Temporal stasis",
       "Cost": 3500,
-      "Level": 8
+      "Level": 8,
+      "id": 386
     },
     {
       "Chance": 2,
       "Link": "trap-the-soul",
       "Name": "Scroll of Trap the soul",
       "Cost": 13000,
-      "Level": 8
+      "Level": 8,
+      "id": 387
     },
     {
       "Chance": 3,
       "Link": "astral-projection",
       "Name": "Scroll of Astral projection",
       "Cost": 4870,
-      "Level": 9
+      "Level": 9,
+      "id": 388
     },
     {
       "Chance": 4,
       "Link": "crushing-hand",
       "Name": "Scroll of Crushing hand",
       "Cost": 3825,
-      "Level": 9
+      "Level": 9,
+      "id": 389
     },
     {
       "Chance": 5,
       "Link": "dominate-monster",
       "Name": "Scroll of Dominate monster",
       "Cost": 3825,
-      "Level": 9
+      "Level": 9,
+      "id": 390
     },
     {
       "Chance": 4,
       "Link": "energy-drain",
       "Name": "Scroll of Energy drain",
       "Cost": 3825,
-      "Level": 9
+      "Level": 9,
+      "id": 391
     },
     {
       "Chance": 5,
       "Link": "etherealness",
       "Name": "Scroll of Etherealness",
       "Cost": 3825,
-      "Level": 9
+      "Level": 9,
+      "id": 392
     },
     {
       "Chance": 4,
       "Link": "foresight",
       "Name": "Scroll of Foresight",
       "Cost": 3825,
-      "Level": 9
+      "Level": 9,
+      "id": 393
     },
     {
       "Chance": 6,
       "Link": "freedom",
       "Name": "Scroll of Freedom",
       "Cost": 3825,
-      "Level": 9
+      "Level": 9,
+      "id": 394
     },
     {
       "Chance": 5,
       "Link": "gate",
       "Name": "Scroll of Gate",
       "Cost": 8825,
-      "Level": 9
+      "Level": 9,
+      "id": 395
     },
     {
       "Chance": 4,
       "Link": "mass-hold-monster",
       "Name": "Scroll of Hold monster, mass",
       "Cost": 3825,
-      "Level": 9
+      "Level": 9,
+      "id": 396
     },
     {
       "Chance": 4,
       "Link": "imprisonment",
       "Name": "Scroll of Imprisonment",
       "Cost": 3825,
-      "Level": 9
+      "Level": 9,
+      "id": 397
     },
     {
       "Chance": 5,
       "Link": "meteor-swarm",
       "Name": "Scroll of Meteor swarm",
       "Cost": 3825,
-      "Level": 9
+      "Level": 9,
+      "id": 398
     },
     {
       "Chance": 4,
       "Link": "mages-disjunction",
       "Name": "Scroll of Mage's disjunction",
       "Cost": 3825,
-      "Level": 9
+      "Level": 9,
+      "id": 399
     },
     {
       "Chance": 5,
       "Link": "power-word-kill",
       "Name": "Scroll of Power word kill",
       "Cost": 3825,
-      "Level": 9
+      "Level": 9,
+      "id": 400
     },
     {
       "Chance": 4,
       "Link": "prismatic-sphere",
       "Name": "Scroll of Prismatic sphere",
       "Cost": 3825,
-      "Level": 9
+      "Level": 9,
+      "id": 401
     },
     {
       "Chance": 4,
       "Link": "refuge",
       "Name": "Scroll of Refuge",
       "Cost": 3825,
-      "Level": 9
+      "Level": 9,
+      "id": 402
     },
     {
       "Chance": 4,
       "Link": "shades",
       "Name": "Scroll of Shades",
       "Cost": 3825,
-      "Level": 9
+      "Level": 9,
+      "id": 403
     },
     {
       "Chance": 6,
       "Link": "shapechange",
       "Name": "Scroll of Shapechange",
       "Cost": 3825,
-      "Level": 9
+      "Level": 9,
+      "id": 404
     },
     {
       "Chance": 3,
       "Link": "soul-bind",
       "Name": "Scroll of Soul bind",
       "Cost": 3825,
-      "Level": 9
+      "Level": 9,
+      "id": 405
     },
     {
       "Chance": 4,
       "Link": "summon-monster-ix",
       "Name": "Scroll of Summon monster IX",
       "Cost": 3825,
-      "Level": 9
+      "Level": 9,
+      "id": 406
     },
     {
       "Chance": 3,
       "Link": "teleportation-circle",
       "Name": "Scroll of Teleportation circle",
       "Cost": 4825,
-      "Level": 9
+      "Level": 9,
+      "id": 407
     },
     {
       "Chance": 5,
       "Link": "time-stop",
       "Name": "Scroll of Time stop",
       "Cost": 3825,
-      "Level": 9
+      "Level": 9,
+      "id": 408
     },
     {
       "Chance": 4,
       "Link": "wail-of-the-banshee",
       "Name": "Scroll of Wail of the banshee",
       "Cost": 3825,
-      "Level": 9
+      "Level": 9,
+      "id": 409
     },
     {
       "Chance": 4,
       "Link": "weird",
       "Name": "Scroll of Weird",
       "Cost": 3825,
-      "Level": 9
+      "Level": 9,
+      "id": 410
     },
     {
       "Chance": 1,
       "Link": "wish",
       "Name": "Scroll of Wish",
       "Cost": 28825,
-      "Level": 9
+      "Level": 9,
+      "id": 411
     }
   ],
   "Divine": [
@@ -2891,2380 +3303,2720 @@
       "Link": "create-water",
       "Name": "Scroll of Create water",
       "Cost": 12.5,
-      "Level": 0
+      "Level": 0,
+      "id": 412
     },
     {
       "Chance": 7,
       "Link": "cure-minor-wounds",
       "Name": "Scroll of Cure minor wounds",
       "Cost": 12.5,
-      "Level": 0
+      "Level": 0,
+      "id": 413
     },
     {
       "Chance": 8,
       "Link": "detect-magic",
       "Name": "Scroll of Detect magic",
       "Cost": 12.5,
-      "Level": 0
+      "Level": 0,
+      "id": 414
     },
     {
       "Chance": 7,
       "Link": "detect-poison",
       "Name": "Scroll of Detect poison",
       "Cost": 12.5,
-      "Level": 0
+      "Level": 0,
+      "id": 415
     },
     {
       "Chance": 7,
       "Link": "flare",
       "Name": "Scroll of Flare",
       "Cost": 12.5,
-      "Level": 0
+      "Level": 0,
+      "id": 416
     },
     {
       "Chance": 7,
       "Link": "guidance",
       "Name": "Scroll of Guidance",
       "Cost": 12.5,
-      "Level": 0
+      "Level": 0,
+      "id": 417
     },
     {
       "Chance": 7,
       "Link": "inflict-minor-wounds",
       "Name": "Scroll of Inflict minor wounds",
       "Cost": 12.5,
-      "Level": 0
+      "Level": 0,
+      "id": 418
     },
     {
       "Chance": 7,
       "Link": "know-direction",
       "Name": "Scroll of Know direction",
       "Cost": 12.5,
-      "Level": 0
+      "Level": 0,
+      "id": 419
     },
     {
       "Chance": 8,
       "Link": "light",
       "Name": "Scroll of Light",
       "Cost": 12.5,
-      "Level": 0
+      "Level": 0,
+      "id": 420
     },
     {
       "Chance": 7,
       "Link": "mending",
       "Name": "Scroll of Mending",
       "Cost": 12.5,
-      "Level": 0
+      "Level": 0,
+      "id": 421
     },
     {
       "Chance": 7,
       "Link": "purify-food-and-drink",
       "Name": "Scroll of Purify food and drink",
       "Cost": 12.5,
-      "Level": 0
+      "Level": 0,
+      "id": 422
     },
     {
       "Chance": 7,
       "Link": "read-magic",
       "Name": "Scroll of Read magic",
       "Cost": 12.5,
-      "Level": 0
+      "Level": 0,
+      "id": 423
     },
     {
       "Chance": 7,
       "Link": "resistance",
       "Name": "Scroll of Resistance",
       "Cost": 12.5,
-      "Level": 0
+      "Level": 0,
+      "id": 424
     },
     {
       "Chance": 7,
       "Link": "virtue",
       "Name": "Scroll of Virtue",
       "Cost": 12.5,
-      "Level": 0
+      "Level": 0,
+      "id": 425
     },
     {
       "Chance": 1,
       "Link": "alarm",
       "Name": "Scroll of Alarm",
       "Cost": 100,
-      "Level": 1
+      "Level": 1,
+      "id": 426
     },
     {
       "Chance": 2,
       "Link": "bane",
       "Name": "Scroll of Bane",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 427
     },
     {
       "Chance": 3,
       "Link": "bless",
       "Name": "Scroll of Bless",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 428
     },
     {
       "Chance": 3,
       "Link": "bless-water",
       "Name": "Scroll of Bless water",
       "Cost": 50,
-      "Level": 1
+      "Level": 1,
+      "id": 429
     },
     {
       "Chance": 1,
       "Link": "bless-weapon",
       "Name": "Scroll of Bless weapon",
       "Cost": 100,
-      "Level": 1
+      "Level": 1,
+      "id": 430
     },
     {
       "Chance": 2,
       "Link": "calm-animals",
       "Name": "Scroll of Calm animals",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 431
     },
     {
       "Chance": 2,
       "Link": "cause-fear",
       "Name": "Scroll of Cause fear",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 432
     },
     {
       "Chance": 2,
       "Link": "charm-animal",
       "Name": "Scroll of Charm animal",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 433
     },
     {
       "Chance": 3,
       "Link": "command",
       "Name": "Scroll of Command",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 434
     },
     {
       "Chance": 2,
       "Link": "comprehend-languages",
       "Name": "Scroll of Comprehend languages",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 435
     },
     {
       "Chance": 5,
       "Link": "cure-light-wounds",
       "Name": "Scroll of Cure light wounds",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 436
     },
     {
       "Chance": 2,
       "Link": "curse-water",
       "Name": "Scroll of Curse water",
       "Cost": 50,
-      "Level": 1
+      "Level": 1,
+      "id": 437
     },
     {
       "Chance": 2,
       "Link": "deathwatch",
       "Name": "Scroll of Deathwatch",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 438
     },
     {
       "Chance": 2,
       "Link": "detect-animals-or-plants",
       "Name": "Scroll of Detect animals or plants",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 439
     },
     {
       "Chance": 1,
       "Link": "detect-chaos",
       "Name": "Scroll of Detect chaos",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 440
     },
     {
       "Chance": 1,
       "Link": "detect-evil",
       "Name": "Scroll of Detect evil",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 441
     },
     {
       "Chance": 1,
       "Link": "detect-good",
       "Name": "Scroll of Detect good",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 442
     },
     {
       "Chance": 1,
       "Link": "detect-law",
       "Name": "Scroll of Detect law",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 443
     },
     {
       "Chance": 2,
       "Link": "detect-snares-and-pits",
       "Name": "Scroll of Detect snares and pits",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 444
     },
     {
       "Chance": 2,
       "Link": "detect-undead",
       "Name": "Scroll of Detect undead",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 445
     },
     {
       "Chance": 2,
       "Link": "divine-favor",
       "Name": "Scroll of Divine favor",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 446
     },
     {
       "Chance": 2,
       "Link": "doom",
       "Name": "Scroll of Doom",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 447
     },
     {
       "Chance": 5,
       "Link": "endure-elements",
       "Name": "Scroll of Endure elements",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 448
     },
     {
       "Chance": 2,
       "Link": "entangle",
       "Name": "Scroll of Entangle",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 449
     },
     {
       "Chance": 2,
       "Link": "entropic-shield",
       "Name": "Scroll of Entropic shield",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 450
     },
     {
       "Chance": 2,
       "Link": "faerie-fire",
       "Name": "Scroll of Faerie fire",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 451
     },
     {
       "Chance": 2,
       "Link": "goodberry",
       "Name": "Scroll of Goodberry",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 452
     },
     {
       "Chance": 2,
       "Link": "hide-from-animals",
       "Name": "Scroll of Hide from animals",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 453
     },
     {
       "Chance": 2,
       "Link": "hide-from-undead",
       "Name": "Scroll of Hide from undead",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 454
     },
     {
       "Chance": 2,
       "Link": "inflict-light-wounds",
       "Name": "Scroll of Inflict light wounds",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 455
     },
     {
       "Chance": 2,
       "Link": "jump",
       "Name": "Scroll of Jump",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 456
     },
     {
       "Chance": 2,
       "Link": "longstrider",
       "Name": "Scroll of Longstrider",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 457
     },
     {
       "Chance": 2,
       "Link": "magic-fang",
       "Name": "Scroll of Magic fang",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 458
     },
     {
       "Chance": 4,
       "Link": "magic-stone",
       "Name": "Scroll of Magic stone",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 459
     },
     {
       "Chance": 2,
       "Link": "magic-weapon",
       "Name": "Scroll of Magic weapon",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 460
     },
     {
       "Chance": 4,
       "Link": "obscuring-mist",
       "Name": "Scroll of Obscuring mist",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 461
     },
     {
       "Chance": 2,
       "Link": "pass-without-trace",
       "Name": "Scroll of Pass without trace",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 462
     },
     {
       "Chance": 2,
       "Link": "produce-flame",
       "Name": "Scroll of Produce flame",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 463
     },
     {
       "Chance": 1,
       "Link": "protection-from-chaos",
       "Name": "Scroll of Protection from chaos",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 464
     },
     {
       "Chance": 1,
       "Link": "protection-from-evil",
       "Name": "Scroll of Protection from evil",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 465
     },
     {
       "Chance": 1,
       "Link": "protection-from-good",
       "Name": "Scroll of Protection from good",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 466
     },
     {
       "Chance": 1,
       "Link": "protection-from-law",
       "Name": "Scroll of Protection from law",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 467
     },
     {
       "Chance": 2,
       "Link": "remove-fear",
       "Name": "Scroll of Remove fear",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 468
     },
     {
       "Chance": 2,
       "Link": "sanctuary",
       "Name": "Scroll of Sanctuary",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 469
     },
     {
       "Chance": 2,
       "Link": "shield-of-faith",
       "Name": "Scroll of Shield of faith",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 470
     },
     {
       "Chance": 2,
       "Link": "shillelagh",
       "Name": "Scroll of Shillelagh",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 471
     },
     {
       "Chance": 2,
       "Link": "speak-with-animals",
       "Name": "Scroll of Speak with animals",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 472
     },
     {
       "Chance": 2,
       "Link": "summon-monster-i",
       "Name": "Scroll of Summon monster I",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 473
     },
     {
       "Chance": 2,
       "Link": "summon-natures-ally-i",
       "Name": "Scroll of Summon nature's ally I",
       "Cost": 25,
-      "Level": 1
+      "Level": 1,
+      "id": 474
     },
     {
       "Chance": 1,
       "Link": "animal-messenger",
       "Name": "Scroll of Animal messenger",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 475
     },
     {
       "Chance": 1,
       "Link": "animal-trance",
       "Name": "Scroll of Animal trance",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 476
     },
     {
       "Chance": 2,
       "Link": "augury",
       "Name": "Scroll of Augury",
       "Cost": 175,
-      "Level": 2
+      "Level": 2,
+      "id": 477
     },
     {
       "Chance": 2,
       "Link": "barkskin",
       "Name": "Scroll of Barkskin",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 478
     },
     {
       "Chance": 3,
       "Link": "bears-endurance",
       "Name": "Scroll of Bear's endurance",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 479
     },
     {
       "Chance": 3,
       "Link": "bulls-strength",
       "Name": "Scroll of Bull's strength",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 480
     },
     {
       "Chance": 2,
       "Link": "calm-emotions",
       "Name": "Scroll of Calm emotions",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 481
     },
     {
       "Chance": 3,
       "Link": "cats-grace",
       "Name": "Scroll of Cat's grace",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 482
     },
     {
       "Chance": 1,
       "Link": "chill-metal",
       "Name": "Scroll of Chill metal",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 483
     },
     {
       "Chance": 2,
       "Link": "consecrate",
       "Name": "Scroll of Consecrate",
       "Cost": 200,
-      "Level": 2
+      "Level": 2,
+      "id": 484
     },
     {
       "Chance": 4,
       "Link": "cure-moderate-wounds",
       "Name": "Scroll of Cure moderate wounds",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 485
     },
     {
       "Chance": 2,
       "Link": "darkness",
       "Name": "Scroll of Darkness",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 486
     },
     {
       "Chance": 1,
       "Link": "death-knell",
       "Name": "Scroll of Death knell",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 487
     },
     {
       "Chance": 3,
       "Link": "delay-poison",
       "Name": "Scroll of Delay poison",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 488
     },
     {
       "Chance": 2,
       "Link": "desecrate",
       "Name": "Scroll of Desecrate",
       "Cost": 200,
-      "Level": 2
+      "Level": 2,
+      "id": 489
     },
     {
       "Chance": 3,
       "Link": "eagles-splendor",
       "Name": "Scroll of Eagle's splendor",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 490
     },
     {
       "Chance": 2,
       "Link": "enthrall",
       "Name": "Scroll of Enthrall",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 491
     },
     {
       "Chance": 2,
       "Link": "find-traps",
       "Name": "Scroll of Find traps",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 492
     },
     {
       "Chance": 1,
       "Link": "fire-trap",
       "Name": "Scroll of Fire trap",
       "Cost": 175,
-      "Level": 2
+      "Level": 2,
+      "id": 493
     },
     {
       "Chance": 2,
       "Link": "flame-blade",
       "Name": "Scroll of Flame blade",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 494
     },
     {
       "Chance": 2,
       "Link": "flaming-sphere",
       "Name": "Scroll of Flaming sphere",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 495
     },
     {
       "Chance": 2,
       "Link": "fog-cloud",
       "Name": "Scroll of Fog cloud",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 496
     },
     {
       "Chance": 1,
       "Link": "gentle-repose",
       "Name": "Scroll of Gentle repose",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 497
     },
     {
       "Chance": 1,
       "Link": "gust-of-wind",
       "Name": "Scroll of Gust of wind",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 498
     },
     {
       "Chance": 1,
       "Link": "heat-metal",
       "Name": "Scroll of Heat metal",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 499
     },
     {
       "Chance": 2,
       "Link": "hold-animal",
       "Name": "Scroll of Hold animal",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 500
     },
     {
       "Chance": 3,
       "Link": "hold-person",
       "Name": "Scroll of Hold person",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 501
     },
     {
       "Chance": 2,
       "Link": "inflict-moderate-wounds",
       "Name": "Scroll of Inflict moderate wounds",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 502
     },
     {
       "Chance": 2,
       "Link": "make-whole",
       "Name": "Scroll of Make whole",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 503
     },
     {
       "Chance": 3,
       "Link": "owls-wisdom",
       "Name": "Scroll of Owl's wisdom",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 504
     },
     {
       "Chance": 1,
       "Link": "reduce-animal",
       "Name": "Scroll of Reduce animal",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 505
     },
     {
       "Chance": 2,
       "Link": "remove-paralysis",
       "Name": "Scroll of Remove paralysis",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 506
     },
     {
       "Chance": 3,
       "Link": "resist-energy",
       "Name": "Scroll of Resist energy",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 507
     },
     {
       "Chance": 3,
       "Link": "lesser-restoration",
       "Name": "Scroll of Restoration, lesser",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 508
     },
     {
       "Chance": 2,
       "Link": "shatter",
       "Name": "Scroll of Shatter",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 509
     },
     {
       "Chance": 2,
       "Link": "shield-other",
       "Name": "Scroll of Shield other",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 510
     },
     {
       "Chance": 2,
       "Link": "silence",
       "Name": "Scroll of Silence",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 511
     },
     {
       "Chance": 1,
       "Link": "snare",
       "Name": "Scroll of Snare",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 512
     },
     {
       "Chance": 1,
       "Link": "soften-earth-and-stone",
       "Name": "Scroll of Soften earth and stone",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 513
     },
     {
       "Chance": 2,
       "Link": "sound-burst",
       "Name": "Scroll of Sound burst",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 514
     },
     {
       "Chance": 1,
       "Link": "speak-with-plants",
       "Name": "Scroll of Speak with plants",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 515
     },
     {
       "Chance": 2,
       "Link": "spider-climb",
       "Name": "Scroll of Spider climb",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 516
     },
     {
       "Chance": 2,
       "Link": "spiritual-weapon",
       "Name": "Scroll of Spiritual weapon",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 517
     },
     {
       "Chance": 1,
       "Link": "status",
       "Name": "Scroll of Status",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 518
     },
     {
       "Chance": 2,
       "Link": "summon-monster-ii",
       "Name": "Scroll of Summon monster II",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 519
     },
     {
       "Chance": 2,
       "Link": "summon-natures-ally-ii",
       "Name": "Scroll of Summon nature's ally II",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 520
     },
     {
       "Chance": 2,
       "Link": "summon-swarm",
       "Name": "Scroll of Summon swarm",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 521
     },
     {
       "Chance": 1,
       "Link": "tree-shape",
       "Name": "Scroll of Tree shape",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 522
     },
     {
       "Chance": 2,
       "Link": "undetectable-alignment",
       "Name": "Scroll of Undetectable alignment",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 523
     },
     {
       "Chance": 2,
       "Link": "warp-wood",
       "Name": "Scroll of Warp wood",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 524
     },
     {
       "Chance": 1,
       "Link": "wood-shape",
       "Name": "Scroll of Wood shape",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 525
     },
     {
       "Chance": 2,
       "Link": "zone-of-truth",
       "Name": "Scroll of Zone of truth",
       "Cost": 150,
-      "Level": 2
+      "Level": 2,
+      "id": 526
     },
     {
       "Chance": 2,
       "Link": "animate-dead",
       "Name": "Scroll of Animate dead",
       "Cost": 625,
-      "Level": 3
+      "Level": 3,
+      "id": 527
     },
     {
       "Chance": 2,
       "Link": "bestow-curse",
       "Name": "Scroll of Bestow curse",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 528
     },
     {
       "Chance": 2,
       "Link": "blindness/deafness",
       "Name": "Scroll of Blindness/deafness",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 529
     },
     {
       "Chance": 2,
       "Link": "call-lightning",
       "Name": "Scroll of Call lightning",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 530
     },
     {
       "Chance": 2,
       "Link": "contagion",
       "Name": "Scroll of Contagion",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 531
     },
     {
       "Chance": 2,
       "Link": "continual-flame",
       "Name": "Scroll of Continual flame",
       "Cost": 425,
-      "Level": 3
+      "Level": 3,
+      "id": 532
     },
     {
       "Chance": 2,
       "Link": "create-food-and-water",
       "Name": "Scroll of Create food and water",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 533
     },
     {
       "Chance": 4,
       "Link": "cure-serious-wounds",
       "Name": "Scroll of Cure serious wounds",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 534
     },
     {
       "Chance": 1,
       "Link": "darkvision",
       "Name": "Scroll of Darkvision",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 535
     },
     {
       "Chance": 2,
       "Link": "daylight",
       "Name": "Scroll of Daylight",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 536
     },
     {
       "Chance": 2,
       "Link": "deeper-darkness",
       "Name": "Scroll of Deeper darkness",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 537
     },
     {
       "Chance": 2,
       "Link": "diminish-plants",
       "Name": "Scroll of Diminish plants",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 538
     },
     {
       "Chance": 2,
       "Link": "dispel-magic",
       "Name": "Scroll of Dispel magic",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 539
     },
     {
       "Chance": 2,
       "Link": "dominate-animal",
       "Name": "Scroll of Dominate animal",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 540
     },
     {
       "Chance": 2,
       "Link": "glyph-of-warding",
       "Name": "Scroll of Glyph of warding",
       "Cost": 575,
-      "Level": 3
+      "Level": 3,
+      "id": 541
     },
     {
       "Chance": 1,
       "Link": "heal-mount",
       "Name": "Scroll of Heal mount",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 542
     },
     {
       "Chance": 2,
       "Link": "helping-hand",
       "Name": "Scroll of Helping hand",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 543
     },
     {
       "Chance": 2,
       "Link": "inflict-serious-wounds",
       "Name": "Scroll of Inflict serious wounds",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 544
     },
     {
       "Chance": 2,
       "Link": "invisibility-purge",
       "Name": "Scroll of Invisibility purge",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 545
     },
     {
       "Chance": 2,
       "Link": "locate-object",
       "Name": "Scroll of Locate object",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 546
     },
     {
       "Chance": 1,
       "Link": "magic-circle-against-chaos",
       "Name": "Scroll of Magic circle against chaos",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 547
     },
     {
       "Chance": 2,
       "Link": "magic-circle-against-evil",
       "Name": "Scroll of Magic circle against evil",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 548
     },
     {
       "Chance": 1,
       "Link": "magic-circle-against-law",
       "Name": "Scroll of Magic circle against law",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 549
     },
     {
       "Chance": 2,
       "Link": "magic-circle-against-good",
       "Name": "Scroll of Magic circle against good",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 550
     },
     {
       "Chance": 2,
       "Link": "greater-magic-fang",
       "Name": "Scroll of Magic fang, greater",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 551
     },
     {
       "Chance": 2,
       "Link": "magic-vestment",
       "Name": "Scroll of Magic vestment",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 552
     },
     {
       "Chance": 2,
       "Link": "meld-into-stone",
       "Name": "Scroll of Meld into stone",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 553
     },
     {
       "Chance": 3,
       "Link": "neutralize-poison",
       "Name": "Scroll of Neutralize poison",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 554
     },
     {
       "Chance": 2,
       "Link": "obscure-object",
       "Name": "Scroll of Obscure object",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 555
     },
     {
       "Chance": 2,
       "Link": "plant-growth",
       "Name": "Scroll of Plant growth",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 556
     },
     {
       "Chance": 3,
       "Link": "prayer",
       "Name": "Scroll of Prayer",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 557
     },
     {
       "Chance": 2,
       "Link": "protection-from-energy",
       "Name": "Scroll of Protection from energy",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 558
     },
     {
       "Chance": 2,
       "Link": "quench",
       "Name": "Scroll of Quench",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 559
     },
     {
       "Chance": 3,
       "Link": "remove-blindness/deafness",
       "Name": "Scroll of Remove blindness/deafness",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 560
     },
     {
       "Chance": 2,
       "Link": "remove-curse",
       "Name": "Scroll of Remove curse",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 561
     },
     {
       "Chance": 2,
       "Link": "remove-disease",
       "Name": "Scroll of Remove disease",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 562
     },
     {
       "Chance": 3,
       "Link": "searing-light",
       "Name": "Scroll of Searing light",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 563
     },
     {
       "Chance": 2,
       "Link": "sleet-storm",
       "Name": "Scroll of Sleet storm",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 564
     },
     {
       "Chance": 2,
       "Link": "snare",
       "Name": "Scroll of Snare",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 565
     },
     {
       "Chance": 3,
       "Link": "speak-with-dead",
       "Name": "Scroll of Speak with dead",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 566
     },
     {
       "Chance": 2,
       "Link": "speak-with-plants",
       "Name": "Scroll of Speak with plants",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 567
     },
     {
       "Chance": 2,
       "Link": "spike-growth",
       "Name": "Scroll of Spike growth",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 568
     },
     {
       "Chance": 2,
       "Link": "stone-shape",
       "Name": "Scroll of Stone shape",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 569
     },
     {
       "Chance": 2,
       "Link": "summon-monster-iii",
       "Name": "Scroll of Summon monster III",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 570
     },
     {
       "Chance": 2,
       "Link": "summon-natures-ally-iii",
       "Name": "Scroll of Summon nature's ally III",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 571
     },
     {
       "Chance": 3,
       "Link": "water-breathing",
       "Name": "Scroll of Water breathing",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 572
     },
     {
       "Chance": 2,
       "Link": "water-walk",
       "Name": "Scroll of Water walk",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 573
     },
     {
       "Chance": 2,
       "Link": "wind-wall",
       "Name": "Scroll of Wind wall",
       "Cost": 375,
-      "Level": 3
+      "Level": 3,
+      "id": 574
     },
     {
       "Chance": 5,
       "Link": "air-walk",
       "Name": "Scroll of Air walk",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 575
     },
     {
       "Chance": 2,
       "Link": "antiplant-shell",
       "Name": "Scroll of Antiplant shell",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 576
     },
     {
       "Chance": 2,
       "Link": "blight",
       "Name": "Scroll of Blight",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 577
     },
     {
       "Chance": 2,
       "Link": "break-enchantment",
       "Name": "Scroll of Break enchantment",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 578
     },
     {
       "Chance": 2,
       "Link": "command-plants",
       "Name": "Scroll of Command plants",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 579
     },
     {
       "Chance": 2,
       "Link": "control-water",
       "Name": "Scroll of Control water",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 580
     },
     {
       "Chance": 6,
       "Link": "cure-critical-wounds",
       "Name": "Scroll of Cure critical wounds",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 581
     },
     {
       "Chance": 5,
       "Link": "death-ward",
       "Name": "Scroll of Death ward",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 582
     },
     {
       "Chance": 5,
       "Link": "dimensional-anchor",
       "Name": "Scroll of Dimensional anchor",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 583
     },
     {
       "Chance": 3,
       "Link": "discern-lies",
       "Name": "Scroll of Discern lies",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 584
     },
     {
       "Chance": 3,
       "Link": "dismissal",
       "Name": "Scroll of Dismissal",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 585
     },
     {
       "Chance": 2,
       "Link": "divination",
       "Name": "Scroll of Divination",
       "Cost": 725,
-      "Level": 4
+      "Level": 4,
+      "id": 586
     },
     {
       "Chance": 3,
       "Link": "divine-power",
       "Name": "Scroll of Divine power",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 587
     },
     {
       "Chance": 5,
       "Link": "freedom-of-movement",
       "Name": "Scroll of Freedom of movement",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 588
     },
     {
       "Chance": 2,
       "Link": "giant-vermin",
       "Name": "Scroll of Giant vermin",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 589
     },
     {
       "Chance": 2,
       "Link": "holy-sword",
       "Name": "Scroll of Holy sword",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 590
     },
     {
       "Chance": 3,
       "Link": "imbue-with-spell-ability",
       "Name": "Scroll of Imbue with spell ability",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 591
     },
     {
       "Chance": 3,
       "Link": "inflict-critical-wounds",
       "Name": "Scroll of Inflict critical wounds",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 592
     },
     {
       "Chance": 3,
       "Link": "greater-magic-weapon",
       "Name": "Scroll of Magic weapon, greater",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 593
     },
     {
       "Chance": 2,
       "Link": "nondetection",
       "Name": "Scroll of Nondetection",
       "Cost": 750,
-      "Level": 4
+      "Level": 4,
+      "id": 594
     },
     {
       "Chance": 2,
       "Link": "lesser-planar-ally",
       "Name": "Scroll of Planar ally, lesser",
       "Cost": 1200,
-      "Level": 4
+      "Level": 4,
+      "id": 595
     },
     {
       "Chance": 3,
       "Link": "poison",
       "Name": "Scroll of Poison",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 596
     },
     {
       "Chance": 2,
       "Link": "reincarnate",
       "Name": "Scroll of Reincarnate",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 597
     },
     {
       "Chance": 2,
       "Link": "repel-vermin",
       "Name": "Scroll of Repel vermin",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 598
     },
     {
       "Chance": 5,
       "Link": "restoration",
       "Name": "Scroll of Restoration",
       "Cost": 800,
-      "Level": 4
+      "Level": 4,
+      "id": 599
     },
     {
       "Chance": 2,
       "Link": "rusting-grasp",
       "Name": "Scroll of Rusting grasp",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 600
     },
     {
       "Chance": 3,
       "Link": "sending",
       "Name": "Scroll of Sending",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 601
     },
     {
       "Chance": 4,
       "Link": "spell-immunity",
       "Name": "Scroll of Spell immunity",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 602
     },
     {
       "Chance": 2,
       "Link": "spike-stones",
       "Name": "Scroll of Spike stones",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 603
     },
     {
       "Chance": 3,
       "Link": "summon-monster-iv",
       "Name": "Scroll of Summon monster IV",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 604
     },
     {
       "Chance": 3,
       "Link": "summon-natures-ally-iv",
       "Name": "Scroll of Summon nature's ally IV",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 605
     },
     {
       "Chance": 5,
       "Link": "tongues",
       "Name": "Scroll of Tongues",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 606
     },
     {
       "Chance": 2,
       "Link": "tree-stride",
       "Name": "Scroll of Tree stride",
       "Cost": 700,
-      "Level": 4
+      "Level": 4,
+      "id": 607
     },
     {
       "Chance": 3,
       "Link": "animal-growth",
       "Name": "Scroll of Animal growth",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 608
     },
     {
       "Chance": 2,
       "Link": "atonement",
       "Name": "Scroll of Atonement",
       "Cost": 3625,
-      "Level": 5
+      "Level": 5,
+      "id": 609
     },
     {
       "Chance": 1,
       "Link": "awaken",
       "Name": "Scroll of Awaken",
       "Cost": 2375,
-      "Level": 5
+      "Level": 5,
+      "id": 610
     },
     {
       "Chance": 3,
       "Link": "baleful-polymorph",
       "Name": "Scroll of Baleful polymorph",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 611
     },
     {
       "Chance": 4,
       "Link": "break-enchantment",
       "Name": "Scroll of Break enchantment",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 612
     },
     {
       "Chance": 3,
       "Link": "call-lightning-storm",
       "Name": "Scroll of Call lightning storm",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 613
     },
     {
       "Chance": 4,
       "Link": "greater-command",
       "Name": "Scroll of Command, greater",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 614
     },
     {
       "Chance": 1,
       "Link": "commune",
       "Name": "Scroll of Commune",
       "Cost": 1625,
-      "Level": 5
+      "Level": 5,
+      "id": 615
     },
     {
       "Chance": 1,
       "Link": "commune-with-nature",
       "Name": "Scroll of Commune with nature",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 616
     },
     {
       "Chance": 2,
       "Link": "control-winds",
       "Name": "Scroll of Control winds",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 617
     },
     {
       "Chance": 6,
       "Link": "mass-cure-light-wounds",
       "Name": "Scroll of Cure light wounds, mass",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 618
     },
     {
       "Chance": 1,
       "Link": "dispel-chaos",
       "Name": "Scroll of Dispel chaos",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 619
     },
     {
       "Chance": 1,
       "Link": "dispel-evil",
       "Name": "Scroll of Dispel evil",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 620
     },
     {
       "Chance": 1,
       "Link": "dispel-good",
       "Name": "Scroll of Dispel good",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 621
     },
     {
       "Chance": 1,
       "Link": "dispel-law",
       "Name": "Scroll of Dispel law",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 622
     },
     {
       "Chance": 4,
       "Link": "disrupting-weapon",
       "Name": "Scroll of Disrupting weapon",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 623
     },
     {
       "Chance": 3,
       "Link": "flame-strike",
       "Name": "Scroll of Flame strike",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 624
     },
     {
       "Chance": 2,
       "Link": "hallow",
       "Name": "Scroll of Hallow",
       "Cost": 6125,
-      "Level": 5
+      "Level": 5,
+      "id": 625
     },
     {
       "Chance": 3,
       "Link": "ice-storm",
       "Name": "Scroll of Ice storm",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 626
     },
     {
       "Chance": 3,
       "Link": "mass-inflict-light-wounds",
       "Name": "Scroll of Inflict light wounds, mass",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 627
     },
     {
       "Chance": 3,
       "Link": "insect-plague",
       "Name": "Scroll of Insect plague",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 628
     },
     {
       "Chance": 1,
       "Link": "mark-of-justice",
       "Name": "Scroll of Mark of justice",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 629
     },
     {
       "Chance": 3,
       "Link": "plane-shift",
       "Name": "Scroll of Plane shift",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 630
     },
     {
       "Chance": 2,
       "Link": "raise-dead",
       "Name": "Scroll of Raise dead",
       "Cost": 6125,
-      "Level": 5
+      "Level": 5,
+      "id": 631
     },
     {
       "Chance": 3,
       "Link": "righteous-might",
       "Name": "Scroll of Righteous might",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 632
     },
     {
       "Chance": 2,
       "Link": "scrying",
       "Name": "Scroll of Scrying",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 633
     },
     {
       "Chance": 3,
       "Link": "slay-living",
       "Name": "Scroll of Slay living",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 634
     },
     {
       "Chance": 3,
       "Link": "spell-resistance",
       "Name": "Scroll of Spell resistance",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 635
     },
     {
       "Chance": 2,
       "Link": "stoneskin",
       "Name": "Scroll of Stoneskin",
       "Cost": 1375,
-      "Level": 5
+      "Level": 5,
+      "id": 636
     },
     {
       "Chance": 3,
       "Link": "summon-monster-v",
       "Name": "Scroll of Summon monster V",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 637
     },
     {
       "Chance": 3,
       "Link": "summon-natures-ally-v",
       "Name": "Scroll of Summon nature's ally V",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 638
     },
     {
       "Chance": 1,
       "Link": "symbol-of-pain",
       "Name": "Scroll of Symbol of pain",
       "Cost": 2125,
-      "Level": 5
+      "Level": 5,
+      "id": 639
     },
     {
       "Chance": 1,
       "Link": "symbol-of-sleep",
       "Name": "Scroll of Symbol of sleep",
       "Cost": 2125,
-      "Level": 5
+      "Level": 5,
+      "id": 640
     },
     {
       "Chance": 3,
       "Link": "transmute-mud-to-rock",
       "Name": "Scroll of Transmute mud to rock",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 641
     },
     {
       "Chance": 3,
       "Link": "transmute-rock-to-mud",
       "Name": "Scroll of Transmute rock to mud",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 642
     },
     {
       "Chance": 4,
       "Link": "true-seeing",
       "Name": "Scroll of True seeing",
       "Cost": 1375,
-      "Level": 5
+      "Level": 5,
+      "id": 643
     },
     {
       "Chance": 2,
       "Link": "unhallow",
       "Name": "Scroll of Unhallow",
       "Cost": 6125,
-      "Level": 5
+      "Level": 5,
+      "id": 644
     },
     {
       "Chance": 3,
       "Link": "wall-of-fire",
       "Name": "Scroll of Wall of fire",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 645
     },
     {
       "Chance": 3,
       "Link": "wall-of-stone",
       "Name": "Scroll of Wall of stone",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 646
     },
     {
       "Chance": 3,
       "Link": "wall-of-thorns",
       "Name": "Scroll of Wall of thorns",
       "Cost": 1125,
-      "Level": 5
+      "Level": 5,
+      "id": 647
     },
     {
       "Chance": 3,
       "Link": "animate-objects",
       "Name": "Scroll of Animate objects",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 648
     },
     {
       "Chance": 3,
       "Link": "antilife-shell",
       "Name": "Scroll of Antilife shell",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 649
     },
     {
       "Chance": 3,
       "Link": "banishment",
       "Name": "Scroll of Banishment",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 650
     },
     {
       "Chance": 4,
       "Link": "mass-bears-endurance",
       "Name": "Scroll of Bear's endurance, mass",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 651
     },
     {
       "Chance": 3,
       "Link": "blade-barrier",
       "Name": "Scroll of Blade barrier",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 652
     },
     {
       "Chance": 4,
       "Link": "mass-bulls-strength",
       "Name": "Scroll of Bull's strength, mass",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 653
     },
     {
       "Chance": 4,
       "Link": "mass-cats-grace",
       "Name": "Scroll of Cat's grace, mass",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 654
     },
     {
       "Chance": 1,
       "Link": "create-undead",
       "Name": "Scroll of Create undead",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 655
     },
     {
       "Chance": 4,
       "Link": "mass-cure-moderate-wounds",
       "Name": "Scroll of Cure moderate wounds, mass",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 656
     },
     {
       "Chance": 4,
       "Link": "greater-dispel-magic",
       "Name": "Scroll of Dispel magic, greater",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 657
     },
     {
       "Chance": 4,
       "Link": "mass-eagles-splendor",
       "Name": "Scroll of Eagle's splendor, mass",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 658
     },
     {
       "Chance": 3,
       "Link": "find-the-path",
       "Name": "Scroll of Find the path",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 659
     },
     {
       "Chance": 3,
       "Link": "fire-seeds",
       "Name": "Scroll of Fire seeds",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 660
     },
     {
       "Chance": 1,
       "Link": "forbiddance",
       "Name": "Scroll of Forbiddance",
       "Cost": 4650,
-      "Level": 6
+      "Level": 6,
+      "id": 661
     },
     {
       "Chance": 1,
       "Link": "geas/quest",
       "Name": "Scroll of Geas/quest",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 662
     },
     {
       "Chance": 1,
       "Link": "greater-glyph-of-warding",
       "Name": "Scroll of Glyph of warding, greater",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 663
     },
     {
       "Chance": 3,
       "Link": "harm",
       "Name": "Scroll of Harm",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 664
     },
     {
       "Chance": 3,
       "Link": "heal",
       "Name": "Scroll of Heal",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 665
     },
     {
       "Chance": 3,
       "Link": "heroes-feast",
       "Name": "Scroll of Heroes' feast",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 666
     },
     {
       "Chance": 3,
       "Link": "mass-inflict-moderate-wounds",
       "Name": "Scroll of Inflict moderate wounds, mass",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 667
     },
     {
       "Chance": 3,
       "Link": "ironwood",
       "Name": "Scroll of Ironwood",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 668
     },
     {
       "Chance": 1,
       "Link": "liveoak",
       "Name": "Scroll of Liveoak",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 669
     },
     {
       "Chance": 3,
       "Link": "move-earth",
       "Name": "Scroll of Move earth",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 670
     },
     {
       "Chance": 4,
       "Link": "mass-owls-wisdom",
       "Name": "Scroll of Owl's wisdom, mass",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 671
     },
     {
       "Chance": 2,
       "Link": "planar-ally",
       "Name": "Scroll of Planar ally",
       "Cost": 2400,
-      "Level": 6
+      "Level": 6,
+      "id": 672
     },
     {
       "Chance": 3,
       "Link": "repel-wood",
       "Name": "Scroll of Repel wood",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 673
     },
     {
       "Chance": 3,
       "Link": "spellstaff",
       "Name": "Scroll of Spellstaff",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 674
     },
     {
       "Chance": 3,
       "Link": "stone-tell",
       "Name": "Scroll of Stone tell",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 675
     },
     {
       "Chance": 3,
       "Link": "summon-monster-vi",
       "Name": "Scroll of Summon monster VI",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 676
     },
     {
       "Chance": 3,
       "Link": "summon-natures-ally-vi",
       "Name": "Scroll of Summon nature's ally VI",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 677
     },
     {
       "Chance": 1,
       "Link": "symbol-of-fear",
       "Name": "Scroll of Symbol of fear",
       "Cost": 2650,
-      "Level": 6
+      "Level": 6,
+      "id": 678
     },
     {
       "Chance": 1,
       "Link": "symbol-of-persuasion",
       "Name": "Scroll of Symbol of persuasion",
       "Cost": 6650,
-      "Level": 6
+      "Level": 6,
+      "id": 679
     },
     {
       "Chance": 3,
       "Link": "transport-via-plants",
       "Name": "Scroll of Transport via plants",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 680
     },
     {
       "Chance": 3,
       "Link": "undeath-to-death",
       "Name": "Scroll of Undeath to death",
       "Cost": 2150,
-      "Level": 6
+      "Level": 6,
+      "id": 681
     },
     {
       "Chance": 3,
       "Link": "wind-walk",
       "Name": "Scroll of Wind walk",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 682
     },
     {
       "Chance": 3,
       "Link": "word-of-recall",
       "Name": "Scroll of Word of recall",
       "Cost": 1650,
-      "Level": 6
+      "Level": 6,
+      "id": 683
     },
     {
       "Chance": 5,
       "Link": "animate-plants",
       "Name": "Scroll of Animate plants",
       "Cost": 2275,
-      "Level": 7
+      "Level": 7,
+      "id": 684
     },
     {
       "Chance": 4,
       "Link": "blasphemy",
       "Name": "Scroll of Blasphemy",
       "Cost": 2275,
-      "Level": 7
+      "Level": 7,
+      "id": 685
     },
     {
       "Chance": 5,
       "Link": "changestaff",
       "Name": "Scroll of Changestaff",
       "Cost": 2275,
-      "Level": 7
+      "Level": 7,
+      "id": 686
     },
     {
       "Chance": 2,
       "Link": "control-weather",
       "Name": "Scroll of Control weather",
       "Cost": 2275,
-      "Level": 7
+      "Level": 7,
+      "id": 687
     },
     {
       "Chance": 5,
       "Link": "creeping-doom",
       "Name": "Scroll of Creeping doom",
       "Cost": 2275,
-      "Level": 7
+      "Level": 7,
+      "id": 688
     },
     {
       "Chance": 6,
       "Link": "mass-cure-serious-wounds",
       "Name": "Scroll of Cure serious wounds, mass",
       "Cost": 2275,
-      "Level": 7
+      "Level": 7,
+      "id": 689
     },
     {
       "Chance": 5,
       "Link": "destruction",
       "Name": "Scroll of Destruction",
       "Cost": 2275,
-      "Level": 7
+      "Level": 7,
+      "id": 690
     },
     {
       "Chance": 4,
       "Link": "dictum",
       "Name": "Scroll of Dictum",
       "Cost": 2275,
-      "Level": 7
+      "Level": 7,
+      "id": 691
     },
     {
       "Chance": 5,
       "Link": "ethereal-jaunt",
       "Name": "Scroll of Ethereal jaunt",
       "Cost": 2275,
-      "Level": 7
+      "Level": 7,
+      "id": 692
     },
     {
       "Chance": 4,
       "Link": "holy-word",
       "Name": "Scroll of Holy word",
       "Cost": 2275,
-      "Level": 7
+      "Level": 7,
+      "id": 693
     },
     {
       "Chance": 5,
       "Link": "mass-inflict-serious-wounds",
       "Name": "Scroll of Inflict serious wounds, mass",
       "Cost": 2275,
-      "Level": 7
+      "Level": 7,
+      "id": 694
     },
     {
       "Chance": 5,
       "Link": "refuge",
       "Name": "Scroll of Refuge",
       "Cost": 3775,
-      "Level": 7
+      "Level": 7,
+      "id": 695
     },
     {
       "Chance": 5,
       "Link": "regenerate",
       "Name": "Scroll of Regenerate",
       "Cost": 2275,
-      "Level": 7
+      "Level": 7,
+      "id": 696
     },
     {
       "Chance": 5,
       "Link": "repulsion",
       "Name": "Scroll of Repulsion",
       "Cost": 2275,
-      "Level": 7
+      "Level": 7,
+      "id": 697
     },
     {
       "Chance": 4,
       "Link": "greater-restoration",
       "Name": "Scroll of Restoration, greater",
       "Cost": 4775,
-      "Level": 7
+      "Level": 7,
+      "id": 698
     },
     {
       "Chance": 2,
       "Link": "resurrection",
       "Name": "Scroll of Resurrection",
       "Cost": 12275,
-      "Level": 7
+      "Level": 7,
+      "id": 699
     },
     {
       "Chance": 5,
       "Link": "greater-scrying",
       "Name": "Scroll of Scrying, greater",
       "Cost": 2275,
-      "Level": 7
+      "Level": 7,
+      "id": 700
     },
     {
       "Chance": 5,
       "Link": "summon-monster-vii",
       "Name": "Scroll of Summon monster VII",
       "Cost": 2275,
-      "Level": 7
+      "Level": 7,
+      "id": 701
     },
     {
       "Chance": 4,
       "Link": "summon-natures-ally-vii",
       "Name": "Scroll of Summon nature's ally VII",
       "Cost": 2275,
-      "Level": 7
+      "Level": 7,
+      "id": 702
     },
     {
       "Chance": 5,
       "Link": "sunbeam",
       "Name": "Scroll of Sunbeam",
       "Cost": 2275,
-      "Level": 7
+      "Level": 7,
+      "id": 703
     },
     {
       "Chance": 1,
       "Link": "symbol-of-stunning",
       "Name": "Scroll of Symbol of stunning",
       "Cost": 7275,
-      "Level": 7
+      "Level": 7,
+      "id": 704
     },
     {
       "Chance": 1,
       "Link": "symbol-of-weakness",
       "Name": "Scroll of Symbol of weakness",
       "Cost": 7275,
-      "Level": 7
+      "Level": 7,
+      "id": 705
     },
     {
       "Chance": 5,
       "Link": "transmute-metal-to-wood",
       "Name": "Scroll of Transmute metal to wood",
       "Cost": 2275,
-      "Level": 7
+      "Level": 7,
+      "id": 706
     },
     {
       "Chance": 3,
       "Link": "word-of-chaos",
       "Name": "Scroll of Word of chaos",
       "Cost": 2275,
-      "Level": 7
+      "Level": 7,
+      "id": 707
     },
     {
       "Chance": 4,
       "Link": "animal-shapes",
       "Name": "Scroll of Animal shapes",
       "Cost": 3000,
-      "Level": 8
+      "Level": 8,
+      "id": 708
     },
     {
       "Chance": 6,
       "Link": "antimagic-field",
       "Name": "Scroll of Antimagic field",
       "Cost": 3000,
-      "Level": 8
+      "Level": 8,
+      "id": 709
     },
     {
       "Chance": 3,
       "Link": "cloak-of-chaos",
       "Name": "Scroll of Cloak of chaos",
       "Cost": 3000,
-      "Level": 8
+      "Level": 8,
+      "id": 710
     },
     {
       "Chance": 4,
       "Link": "control-plants",
       "Name": "Scroll of Control plants",
       "Cost": 3000,
-      "Level": 8
+      "Level": 8,
+      "id": 711
     },
     {
       "Chance": 3,
       "Link": "create-greater-undead",
       "Name": "Scroll of Create greater undead",
       "Cost": 3600,
-      "Level": 8
+      "Level": 8,
+      "id": 712
     },
     {
       "Chance": 7,
       "Link": "mass-cure-critical-wounds",
       "Name": "Scroll of Cure critical wounds, mass",
       "Cost": 3000,
-      "Level": 8
+      "Level": 8,
+      "id": 713
     },
     {
       "Chance": 5,
       "Link": "dimensional-lock",
       "Name": "Scroll of Dimensional lock",
       "Cost": 3000,
-      "Level": 8
+      "Level": 8,
+      "id": 714
     },
     {
       "Chance": 4,
       "Link": "discern-location",
       "Name": "Scroll of Discern location",
       "Cost": 3000,
-      "Level": 8
+      "Level": 8,
+      "id": 715
     },
     {
       "Chance": 5,
       "Link": "earthquake",
       "Name": "Scroll of Earthquake",
       "Cost": 3000,
-      "Level": 8
+      "Level": 8,
+      "id": 716
     },
     {
       "Chance": 4,
       "Link": "finger-of-death",
       "Name": "Scroll of Finger of death",
       "Cost": 3000,
-      "Level": 8
+      "Level": 8,
+      "id": 717
     },
     {
       "Chance": 4,
       "Link": "fire-storm",
       "Name": "Scroll of Fire storm",
       "Cost": 3000,
-      "Level": 8
+      "Level": 8,
+      "id": 718
     },
     {
       "Chance": 3,
       "Link": "holy-aura",
       "Name": "Scroll of Holy aura",
       "Cost": 3000,
-      "Level": 8
+      "Level": 8,
+      "id": 719
     },
     {
       "Chance": 4,
       "Link": "mass-inflict-critical-wounds",
       "Name": "Scroll of Inflict critical wounds, mass",
       "Cost": 3000,
-      "Level": 8
+      "Level": 8,
+      "id": 720
     },
     {
       "Chance": 4,
       "Link": "greater-planar-ally",
       "Name": "Scroll of Planar ally, greater",
       "Cost": 5500,
-      "Level": 8
+      "Level": 8,
+      "id": 721
     },
     {
       "Chance": 5,
       "Link": "repel-metal-or-stone",
       "Name": "Scroll of Repel metal or stone",
       "Cost": 3000,
-      "Level": 8
+      "Level": 8,
+      "id": 722
     },
     {
       "Chance": 4,
       "Link": "reverse-gravity",
       "Name": "Scroll of Reverse gravity",
       "Cost": 3000,
-      "Level": 8
+      "Level": 8,
+      "id": 723
     },
     {
       "Chance": 3,
       "Link": "shield-of-law",
       "Name": "Scroll of Shield of law",
       "Cost": 3000,
-      "Level": 8
+      "Level": 8,
+      "id": 724
     },
     {
       "Chance": 4,
       "Link": "greater-spell-immunity",
       "Name": "Scroll of Spell immunity, greater",
       "Cost": 3000,
-      "Level": 8
+      "Level": 8,
+      "id": 725
     },
     {
       "Chance": 4,
       "Link": "summon-monster-viii",
       "Name": "Scroll of Summon monster VIII",
       "Cost": 3000,
-      "Level": 8
+      "Level": 8,
+      "id": 726
     },
     {
       "Chance": 4,
       "Link": "summon-natures-ally-viii",
       "Name": "Scroll of Summon nature's ally VIII",
       "Cost": 3000,
-      "Level": 8
+      "Level": 8,
+      "id": 727
     },
     {
       "Chance": 5,
       "Link": "sunburst",
       "Name": "Scroll of Sunburst",
       "Cost": 3000,
-      "Level": 8
+      "Level": 8,
+      "id": 728
     },
     {
       "Chance": 2,
       "Link": "symbol-of-death",
       "Name": "Scroll of Symbol of death",
       "Cost": 8000,
-      "Level": 8
+      "Level": 8,
+      "id": 729
     },
     {
       "Chance": 2,
       "Link": "symbol-of-insanity",
       "Name": "Scroll of Symbol of insanity",
       "Cost": 8000,
-      "Level": 8
+      "Level": 8,
+      "id": 730
     },
     {
       "Chance": 3,
       "Link": "unholy-aura",
       "Name": "Scroll of Unholy aura",
       "Cost": 3000,
-      "Level": 8
+      "Level": 8,
+      "id": 731
     },
     {
       "Chance": 4,
       "Link": "whirlwind",
       "Name": "Scroll of Whirlwind",
       "Cost": 3000,
-      "Level": 8
+      "Level": 8,
+      "id": 732
     },
     {
       "Chance": 4,
       "Link": "antipathy",
       "Name": "Scroll of Antipathy",
       "Cost": 3825,
-      "Level": 9
+      "Level": 9,
+      "id": 733
     },
     {
       "Chance": 3,
       "Link": "astral-projection",
       "Name": "Scroll of Astral projection",
       "Cost": 4870,
-      "Level": 9
+      "Level": 9,
+      "id": 734
     },
     {
       "Chance": 6,
       "Link": "elemental-swarm",
       "Name": "Scroll of Elemental swarm",
       "Cost": 3825,
-      "Level": 9
+      "Level": 9,
+      "id": 735
     },
     {
       "Chance": 6,
       "Link": "energy-drain",
       "Name": "Scroll of Energy drain",
       "Cost": 3825,
-      "Level": 9
+      "Level": 9,
+      "id": 736
     },
     {
       "Chance": 6,
       "Link": "etherealness",
       "Name": "Scroll of Etherealness",
       "Cost": 3825,
-      "Level": 9
+      "Level": 9,
+      "id": 737
     },
     {
       "Chance": 6,
       "Link": "foresight",
       "Name": "Scroll of Foresight",
       "Cost": 3825,
-      "Level": 9
+      "Level": 9,
+      "id": 738
     },
     {
       "Chance": 6,
       "Link": "gate",
       "Name": "Scroll of Gate",
       "Cost": 8825,
-      "Level": 9
+      "Level": 9,
+      "id": 739
     },
     {
       "Chance": 9,
       "Link": "mass-heal",
       "Name": "Scroll of Heal, mass",
       "Cost": 3825,
-      "Level": 9
+      "Level": 9,
+      "id": 740
     },
     {
       "Chance": 7,
       "Link": "implosion",
       "Name": "Scroll of Implosion",
       "Cost": 3825,
-      "Level": 9
+      "Level": 9,
+      "id": 741
     },
     {
       "Chance": 2,
       "Link": "miracle",
       "Name": "Scroll of Miracle",
       "Cost": 28825,
-      "Level": 9
+      "Level": 9,
+      "id": 742
     },
     {
       "Chance": 6,
       "Link": "regenerate",
       "Name": "Scroll of Regenerate",
       "Cost": 3825,
-      "Level": 9
+      "Level": 9,
+      "id": 743
     },
     {
       "Chance": 5,
       "Link": "shambler",
       "Name": "Scroll of Shambler",
       "Cost": 3825,
-      "Level": 9
+      "Level": 9,
+      "id": 744
     },
     {
       "Chance": 6,
       "Link": "shapechange",
       "Name": "Scroll of Shapechange",
       "Cost": 3825,
-      "Level": 9
+      "Level": 9,
+      "id": 745
     },
     {
       "Chance": 5,
       "Link": "soul-bind",
       "Name": "Scroll of Soul bind",
       "Cost": 3825,
-      "Level": 9
+      "Level": 9,
+      "id": 746
     },
     {
       "Chance": 6,
       "Link": "storm-of-vengeance",
       "Name": "Scroll of Storm of vengeance",
       "Cost": 3825,
-      "Level": 9
+      "Level": 9,
+      "id": 747
     },
     {
       "Chance": 6,
       "Link": "summon-monster-ix",
       "Name": "Scroll of Summon monster IX",
       "Cost": 3825,
-      "Level": 9
+      "Level": 9,
+      "id": 748
     },
     {
       "Chance": 6,
       "Link": "summon-natures-ally-ix",
       "Name": "Scroll of Summon nature's ally IX",
       "Cost": 3825,
-      "Level": 9
+      "Level": 9,
+      "id": 749
     },
     {
       "Chance": 4,
       "Link": "sympathy",
       "Name": "Scroll of Sympathy",
       "Cost": 5325,
-      "Level": 9
+      "Level": 9,
+      "id": 750
     },
     {
       "Chance": 1,
       "Link": "true-resurrection",
       "Name": "Scroll of True resurrection",
       "Cost": 28825,
-      "Level": 9
+      "Level": 9,
+      "id": 751
     }
   ]
 }

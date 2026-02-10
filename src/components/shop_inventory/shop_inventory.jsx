@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Shop from '../../lib/shop';
 import { sharedStockToDisplayItems } from '../../lib/shopShare';
-import { isMobile, trimLine } from '../../lib/utils';
+import { isMobile, trimLine, getEffectById } from '../../lib/utils';
 import { addCardByLink, clearSharedShop } from '../../store/slices/appSlice';
 import { updateShop } from '../../store/slices/shopSlice';
 import useLongPress from '../hooks/use_long_press';
@@ -200,7 +200,12 @@ export default function ShopInventory() {
                       type="button"
                       className="button-link"
                       color="#c0c0c0"
-                      onClick={() => dispatch(addCardByLink({ links: item.Link, bonus: itemBonus }))}
+                      onClick={() => {
+                        const links = Array.isArray(item.effectIds) && item.effectIds.length
+                          ? [item.Link, ...item.effectIds.map(id => getEffectById(id)?.Link).filter(Boolean)]
+                          : item.Link;
+                        dispatch(addCardByLink({ links, bonus: itemBonus }));
+                      }}
                     >
                       {item.Name}
                     </button>
