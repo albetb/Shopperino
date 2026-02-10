@@ -22,7 +22,7 @@ export default function SpellbookTable() {
   if (!spellbook?.Class) {
     return (
       <p className="search-hint">
-        Use the left menu to create or select a spellbook.
+        Create a new player and select his class to make a spellbook.
       </p>
     );
   }

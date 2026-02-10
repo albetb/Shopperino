@@ -267,6 +267,22 @@ p {
   margin-top: 0.8rem;
 }
 
+/* Spell class/domain cards: table and rows full width of card content (96%) */
+.search-results .card-width-spellbook .card-content .search-results-table-wrapper {
+  width: 100%;
+}
+.search-results .card-width-spellbook .card-content .search-results-table {
+  width: 100%;
+  table-layout: fixed;
+}
+.search-results .card-width-spellbook .card-content .search-results-table td,
+.search-results .card-width-spellbook .card-content .search-results-table th {
+  box-sizing: border-box;
+}
+.search-results .card-width-spellbook .card-content .search-results-table.search-spell-list-table td {
+  width: 100%;
+}
+
 /* Generic search hint text */
 .search-hint {
   color: #f9f9f9;

@@ -18,7 +18,7 @@ export default function LootInventory() {
   if (!lootName) {
     return (
       <p className="search-hint">
-        Use the left menu to generate loot.
+        Select players level and generate a loot.
       </p>
     );
   }

@@ -276,9 +276,6 @@ export default function SearchPage() {
                       if (value !== 'Spells') {
                         setSpellClassFilter('All');
                       }
-                      if (value && isMobile()) {
-                        setSidebarCollapsed(true);
-                      }
                     }}
                   >
                     {TYPE_OPTIONS.map(opt => (
@@ -299,9 +296,6 @@ export default function SearchPage() {
                       onChange={e => {
                         const value = e.target.value;
                         setSpellClassFilter(value);
-                        if (value && isMobile()) {
-                          setSidebarCollapsed(true);
-                        }
                       }}
                     >
                       {SPELL_CLASS_OPTIONS.map(opt => (
@@ -337,7 +331,7 @@ export default function SearchPage() {
         <div className="search-results">
           {!searchType && (
             <p className="search-hint">
-              Select an item type.
+              Select an item type to search his content.
             </p>
           )}
           {searchType && results.length === 0 && (
