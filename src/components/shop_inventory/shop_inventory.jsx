@@ -95,7 +95,6 @@ export default function ShopInventory() {
   }, [items, sortColumn, sortDesc]);
 
   const hasItems = items.some(i => (i.Number ?? 0) > 0);
-  if (!hasItems && !isViewOnly) return null;
 
   const formatNumber = num => {
     const n = parseFloat(num);
@@ -126,6 +125,7 @@ export default function ShopInventory() {
             )}
           </div>
         </div>
+        {(isViewOnly || hasItems) && (
         <div className="money-box" style={isViewOnly ? { display: 'flex', alignItems: 'center', gap: '0.5rem' } : undefined}>
           {isViewOnly && (
             <button
@@ -138,10 +138,17 @@ export default function ShopInventory() {
           )}
           <h4><b>Gold: {formatNumber(gold)}</b></h4>
         </div>
+        )}
       </div>
 
       {isViewOnly && !hasItems && (
         <p style={{ color: '#c0c0c0', margin: '1rem' }}>No items in this shop.</p>
+      )}
+
+      {!isViewOnly && !hasItems && (
+        <p className="search-hint">
+          Create a world, city and shop, then generate its inventory.
+        </p>
       )}
 
       <table className={`shop-table ${showAddItemForm ? "shop-table-adding" : ""}`} style={hasItems ? undefined : { display: 'none' }}>
@@ -228,7 +235,7 @@ export default function ShopInventory() {
         </tbody>
       </table>
 
-      {!isViewOnly && (
+      {!isViewOnly && hasItems && (
         showAddItemForm ? (
           <AddItemForm onAddItem={handleAddItem} items={items} setShowAddItemForm={setShowAddItemForm} />
         ) : (

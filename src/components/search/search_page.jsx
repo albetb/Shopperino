@@ -337,7 +337,7 @@ export default function SearchPage() {
         <div className="search-results">
           {!searchType && (
             <p className="search-hint">
-              Select a type (Spells, Items, Feats, Skills) to list entries.
+              Select an item type.
             </p>
           )}
           {searchType && results.length === 0 && (
@@ -367,12 +367,11 @@ export default function SearchPage() {
           {/* Generic single-table view for non-spells, and for spells when filter is All */}
           {searchType && results.length > 0 && (searchType !== 'Spells' || spellClassFilter === 'All') && (
             <div className="search-results-table-wrapper">
-              <table className={`search-results-table ${searchType === 'Feats' ? 'feats-table' : ''} ${searchType === 'Skills' ? 'skills-table' : ''}`}>
+              <table className={`search-results-table ${searchType === 'Feats' ? 'feats-table' : ''} ${searchType === 'Skills' ? 'skills-table' : ''} ${searchType === 'Spells' && spellClassFilter === 'All' ? 'spells-all-table' : ''}`}>
                 <thead>
                   <tr>
                     <th>Name</th>
                     {searchType === 'Spells' && spellClassFilter === 'All' && <th>Class</th>}
-                    {searchType === 'Spells' && <th>Description</th>}
                     {searchType === 'Feats' && <th>Prerequisites</th>}
                     {searchType === 'Skills' && <th>Characteristic</th>}
                     {searchType === 'Items' && <th>Weight</th>}
@@ -390,12 +389,14 @@ export default function SearchPage() {
                         >
                           {r.Name}
                         </button>
+                        {searchType === 'Spells' && spellClassFilter === 'All' && r['Short Description'] && (
+                          <div style={{ marginTop: '0.15rem', fontSize: '0.8em', color: 'var(--white2)' }}>
+                            {r['Short Description']}
+                          </div>
+                        )}
                       </td>
                       {searchType === 'Spells' && spellClassFilter === 'All' && (
-                        <>
-                          <td>{r.Level}</td>
-                          <td>{r['Short Description'] || ''}</td>
-                        </>
+                        <td>{r.Level}</td>
                       )}
                       {searchType === 'Spells' && spellClassFilter !== 'All' && (
                         <td>{r['Short Description'] || ''}</td>
@@ -461,30 +462,53 @@ export default function SearchPage() {
                       {!collapsed && (
                         <div className="card-content">
                           <div className="search-results-table-wrapper">
-                            <table className="search-results-table">
-                              <thead>
-                                <tr>
-                                  <th>Name</th>
-                                  <th>Description</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {spells.map(spell => (
-                                  <tr key={spell.Link}>
-                                    <td>
-                                      <button
-                                        type="button"
-                                        className="button-link"
-                                        onClick={() => handleOpenCard(spell)}
-                                      >
-                                        {spell.Name}
-                                      </button>
-                                    </td>
-                                    <td>{spell['Short Description'] || ''}</td>
+                            {isMobile() ? (
+                              <table className="search-results-table search-spell-list-table">
+                                <tbody>
+                                  {spells.map(spell => (
+                                    <tr key={spell.Link}>
+                                      <td>
+                                        <button
+                                          type="button"
+                                          className="button-link"
+                                          onClick={() => handleOpenCard(spell)}
+                                        >
+                                          {spell.Name}
+                                        </button>
+                                        {spell['Short Description'] && (
+                                          <div className="search-spell-short-desc">{spell['Short Description']}</div>
+                                        )}
+                                      </td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            ) : (
+                              <table className="search-results-table">
+                                <thead>
+                                  <tr>
+                                    <th>Name</th>
+                                    <th>Description</th>
                                   </tr>
-                                ))}
-                              </tbody>
-                            </table>
+                                </thead>
+                                <tbody>
+                                  {spells.map(spell => (
+                                    <tr key={spell.Link}>
+                                      <td>
+                                        <button
+                                          type="button"
+                                          className="button-link"
+                                          onClick={() => handleOpenCard(spell)}
+                                        >
+                                          {spell.Name}
+                                        </button>
+                                      </td>
+                                      <td>{spell['Short Description'] || ''}</td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            )}
                           </div>
                         </div>
                       )}
@@ -526,30 +550,53 @@ export default function SearchPage() {
                             />
                           )}
                           <div className="search-results-table-wrapper">
-                            <table className="search-results-table">
-                              <thead>
-                                <tr>
-                                  <th>Name</th>
-                                  <th>Description</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {spells.map(spell => (
-                                  <tr key={spell.Link}>
-                                    <td>
-                                      <button
-                                        type="button"
-                                        className="button-link"
-                                        onClick={() => handleOpenCard(spell)}
-                                      >
-                                        {spell.Name}
-                                      </button>
-                                    </td>
-                                    <td>{spell['Short Description'] || ''}</td>
+                            {isMobile() ? (
+                              <table className="search-results-table search-spell-list-table">
+                                <tbody>
+                                  {spells.map(spell => (
+                                    <tr key={spell.Link}>
+                                      <td>
+                                        <button
+                                          type="button"
+                                          className="button-link"
+                                          onClick={() => handleOpenCard(spell)}
+                                        >
+                                          {spell.Name}
+                                        </button>
+                                        {spell['Short Description'] && (
+                                          <div className="search-spell-short-desc">{spell['Short Description']}</div>
+                                        )}
+                                      </td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            ) : (
+                              <table className="search-results-table">
+                                <thead>
+                                  <tr>
+                                    <th>Name</th>
+                                    <th>Description</th>
                                   </tr>
-                                ))}
-                              </tbody>
-                            </table>
+                                </thead>
+                                <tbody>
+                                  {spells.map(spell => (
+                                    <tr key={spell.Link}>
+                                      <td>
+                                        <button
+                                          type="button"
+                                          className="button-link"
+                                          onClick={() => handleOpenCard(spell)}
+                                        >
+                                          {spell.Name}
+                                        </button>
+                                      </td>
+                                      <td>{spell['Short Description'] || ''}</td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            )}
                           </div>
                         </div>
                       )}

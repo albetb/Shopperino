@@ -129,7 +129,7 @@ export default function MenuCardShop() {
             </select>
           </div>
 
-          <div className="card-side-div margin-top buttons-row" style={{ justifyContent: 'flex-start', flexWrap: 'wrap', gap: '0.5rem' }}>
+          <div className="card-side-div margin-top buttons-row" style={{ justifyContent: 'space-around', flexWrap: 'wrap', gap: '0.5rem' }}>
             <button
               className={`modern-button ${shopGenerated ? 'small-middle-long2' : 'small-long'}`}
               onClick={handleGenerate}
@@ -139,10 +139,11 @@ export default function MenuCardShop() {
             </button>
             {shopGenerated && (
               <button
-                className="modern-button small-middle-long2"
+                className="modern-button small-middle"
                 onClick={handleShare}
+                title="Share shop"
               >
-                <b>Share</b>
+                <span className="material-symbols-outlined">qr_code</span>
               </button>
             )}
           </div>

@@ -51,13 +51,13 @@ tr {
   color: var(--white);
 }
 
-/* Updated .add-item row with consistent heights and alignment */
+/* Updated .add-item row with consistent heights and alignment; same width as .shop-table */
 tr.add-item {
   display: grid;
   grid-template-columns: 3rem 0.8fr 6rem 5rem 3rem;
   align-items: center;
   gap: 0.3rem;
-  width: 50vw;
+  width: calc(var(--btn-width-sm) * 20);
   max-width: 100%;
   justify-content: space-around;
   border-top: 2px solid var(--grey-t);

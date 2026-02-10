@@ -14,7 +14,8 @@ import { serialize } from './lib/utils';
 import {
   setStateCurrentTab,
   setMainColor,
-  clearSharedShop
+  clearSharedShop,
+  setMasterMode
 } from './store/slices/appSlice';
 import {
   setCity
@@ -80,8 +81,11 @@ export default function App() {
     const l = db.getLoot(sl?.Id);
     const lsc = db.getIsLootSidebarCollapsed();
     const mc = db.getMainColor();
+    const isMaster = db.getIsMasterMode();
 
-    // Populate Redux
+    // Populate Redux (shared shop is never persisted — clear so hamburger state is correct after refresh)
+    dispatch(clearSharedShop());
+    dispatch(setMasterMode(isMaster));
     dispatch(setWorlds(worldsDb));
     dispatch(setSelectedWorld(selW));
     if (w) dispatch(setWorld(w));

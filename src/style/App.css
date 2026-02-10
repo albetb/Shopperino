@@ -106,3 +106,29 @@ table {
     transform: rotate(360deg);
   }
 }
+
+/* Master / Player mode toggle */
+.master-player-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  background: var(--dark-grey);
+  border-radius: 999px;
+  padding: 2px;
+  border: 1px solid var(--white2);
+}
+.master-player-label {
+  padding: 0.35rem 0.75rem;
+  cursor: pointer;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  color: var(--white2);
+  transition: background 0.15s, color 0.15s;
+}
+.master-player-label:hover {
+  color: var(--white);
+}
+.master-player-label.active {
+  background: var(--main);
+  color: var(--white);
+}

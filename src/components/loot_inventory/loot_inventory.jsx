@@ -15,7 +15,13 @@ export default function LootInventory() {
   const itemsList = lootInst?.Items?.items || [];
   const goodsValue = goodsList.map(x => x.Cost).reduce((sum, cost) => sum + cost, 0);
 
-  if (!lootName) return null;
+  if (!lootName) {
+    return (
+      <p className="search-hint">
+        Use the left menu to generate loot.
+      </p>
+    );
+  }
 
   const formatNumber = num => {
     const n = parseFloat(num);

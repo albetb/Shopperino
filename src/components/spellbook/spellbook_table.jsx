@@ -19,7 +19,13 @@ export default function SpellbookTable() {
     spellsPerDay, charBonus
   } = useSpellbookData();
 
-  if (!spellbook?.Class) return null;
+  if (!spellbook?.Class) {
+    return (
+      <p className="search-hint">
+        Use the left menu to create or select a spellbook.
+      </p>
+    );
+  }
 
   return (
     <>

@@ -20,6 +20,7 @@ const initialState = {
   currentTab: 100,
   mainColor: null,
   sharedShop: null, // { name, gold, stock } when viewing a scanned shop (read-only)
+  isMasterMode: false, // false = Player (hide Shop/Loot), true = Master (show all)
 };
 
 export const appSlice = createSlice({
@@ -171,6 +172,11 @@ export const appSlice = createSlice({
 
     clearSharedShop(state) {
       state.sharedShop = null;
+    },
+
+    setMasterMode(state, action) {
+      state.isMasterMode = !!action.payload;
+      db.setIsMasterMode(state.isMasterMode);
     }
   }
 });
@@ -205,7 +211,8 @@ export const {
   setMainColor,
   resetMainColor,
   setSharedShop,
-  clearSharedShop
+  clearSharedShop,
+  setMasterMode
 } = appSlice.actions;
 
 export default appSlice.reducer;

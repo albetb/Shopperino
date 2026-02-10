@@ -61,6 +61,11 @@ export function getMainColor() {
     return value ? JSON.parse(decompressFromUTF16(value)) : null;
 }
 
+export function getIsMasterMode() {
+    const value = localStorage.getItem('IsMasterMode');
+    return value ? JSON.parse(decompressFromUTF16(value)) : false;
+}
+
 //#endregion
 
 //#region Spellbook
@@ -208,6 +213,10 @@ export function setCurrentTab(value) {
 
 export function setMainColor(value) {
     localStorage.setItem('MainColor', compressToUTF16(JSON.stringify(value)));
+}
+
+export function setIsMasterMode(value) {
+    localStorage.setItem('IsMasterMode', compressToUTF16(JSON.stringify(!!value)));
 }
 
 //#endregion

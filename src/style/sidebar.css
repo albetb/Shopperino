@@ -64,6 +64,12 @@
   margin-right: 4vw;
 }
 
+/* When left menu button is hidden on mobile, options button takes its place (same position) */
+.mobile-options-in-place-of-menu {
+  margin-left: auto;
+  margin-right: 4vw;
+}
+
 .mobile-dropdown {
   position: absolute;
   top: var(--menu-height);
@@ -303,13 +309,48 @@ p {
 
   /* Center spell cards for class/domain searches on mobile */
   .search-results .card-width-spellbook {
+    width: 99vw;
+    max-width: 99vw;
     margin-left: auto;
     margin-right: auto;
   }
 
   /* Add left/right margin to the "Select a type..." hint on mobile */
   .search-hint {
-    margin: 0.75rem 0.75rem;
+    margin: 1.75rem 6.75rem 0rem 1.75rem;
+  }
+}
+
+@media (max-width: 768px) {
+  /* On mobile, make skills search table span almost full viewport width */
+  .skills-table {
+    width: 98vw;
+    max-width: 98vw;
+  }
+
+  /* Spells > All: Name 67%, Class 33% */
+  .spells-all-table {
+    table-layout: fixed;
+  }
+  .spells-all-table th:first-child,
+  .spells-all-table td:first-child {
+    width: 67%;
+    box-sizing: border-box;
+  }
+  .spells-all-table th:last-child,
+  .spells-all-table td:last-child {
+    width: 33%;
+    box-sizing: border-box;
+  }
+
+  /* Spells > class / domain: single column, no header, description below name (spellbook style) */
+  .search-spell-list-table thead {
+    display: none;
+  }
+  .search-spell-short-desc {
+    margin-top: 0.15rem;
+    font-size: 0.8em;
+    color: var(--black);
   }
 }
 

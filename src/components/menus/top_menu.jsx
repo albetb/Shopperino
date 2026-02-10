@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import logo from '../../data/logo-shopperino.png';
 import { downloadLocalStorage, handleFileUpload } from '../../lib/storage';
 import { isMobile } from '../../lib/utils';
-import { setSharedShop, setStateCurrentTab } from '../../store/slices/appSlice';
+import { setMasterMode, setSharedShop, setStateCurrentTab } from '../../store/slices/appSlice';
 import '../../style/sidebar.css';
 import ScanShopScanner from '../common/ScanShopScanner';
 import ColorPicker from './colorPicker';
@@ -54,6 +54,12 @@ export default function TopMenu() {
     const handleToggleOptions = () => setOptionsOpen(prev => !prev);
 
     const currentTab = useSelector(state => state.app.currentTab);
+    const sharedShop = useSelector(state => state.app.sharedShop);
+    const isMasterMode = useSelector(state => state.app.isMasterMode);
+
+    // On mobile: show hamburger so user can always open the nav menu (Shop, Spellbook, Loot, Search).
+    // Only hide it when viewing a shared shop (no sidebar to toggle; options move into its place; user has Close).
+    const showLeftMenuButton = isMobile() ? !sharedShop : true;
 
     const optionsButtonRef = useRef(null);
     const optionsBoxRef = useRef(null);
@@ -168,30 +174,34 @@ export default function TopMenu() {
 
     const buttons = (
         <>
-            {shopButton}
-            {spellbookButton}
-            {lootButton}
             {searchButton}
+            {isMasterMode && shopButton}
+            {isMasterMode && lootButton}
+            {spellbookButton}
         </>
     );
 
     const mobileButtons = (
         <>
             <div className="menu-side-by-side">
+                <p style={{ textShadow: "1px 1px #12121366" }}>Search</p>
+                {searchButton}
+            </div>
+            {isMasterMode && (
+            <div className="menu-side-by-side">
                 <p style={{ textShadow: "1px 1px #12121366" }}>Shop generator</p>
                 {shopButton}
             </div>
-            <div className="menu-side-by-side">
-                <p style={{ textShadow: "1px 1px #12121366" }}>Spellbook</p>
-                {spellbookButton}
-            </div>
+            )}
+            {isMasterMode && (
             <div className="menu-side-by-side">
                 <p style={{ textShadow: "1px 1px #12121366" }}>Loot generator</p>
                 {lootButton}
             </div>
+            )}
             <div className="menu-side-by-side">
-                <p style={{ textShadow: "1px 1px #12121366" }}>Search</p>
-                {searchButton}
+                <p style={{ textShadow: "1px 1px #12121366" }}>Spellbook</p>
+                {spellbookButton}
             </div>
         </>
     );
@@ -207,6 +217,12 @@ export default function TopMenu() {
 
     const optionsButtons = (
         <>
+            <div className="menu-side-by-side" style={{ justifyContent: 'center', width: '100%' }}>
+                <div className="master-player-toggle">
+                    <span className={isMasterMode ? 'master-player-label active' : 'master-player-label'} onClick={() => dispatch(setMasterMode(true))}>Master</span>
+                    <span className={!isMasterMode ? 'master-player-label active' : 'master-player-label'} onClick={() => dispatch(setMasterMode(false))}>Player</span>
+                </div>
+            </div>
             <div className="menu-side-by-side">
                 <p style={{ textShadow: "1px 1px #12121366" }}>Export save</p>
                 {exportButton}
@@ -217,10 +233,12 @@ export default function TopMenu() {
                 {importButton}
             </div>
 
+            {isMobile() && (
             <div className="menu-side-by-side">
                 <p style={{ textShadow: "1px 1px #12121366" }}>Scan shop</p>
                 {scanButton}
             </div>
+            )}
 
             <div className="menu-side-by-side">
                 <p style={{ textShadow: "1px 1px #12121366" }}>Change theme</p>
@@ -278,8 +296,10 @@ export default function TopMenu() {
             <div className="top-menu">
                 {fileInput}
                 {topLogo}
-                {mobileMenuButton}
-                {optionsButton}
+                {showLeftMenuButton ? mobileMenuButton : null}
+                <div className={showLeftMenuButton ? '' : 'mobile-options-in-place-of-menu'}>
+                    {optionsButton}
+                </div>
                 {showScan && (
                     <ScanShopScanner
                         onClose={() => setShowScan(false)}
