@@ -130,57 +130,66 @@ function parseShareString(raw) {
       const N = parseInt(segments[idx++], 10) || 1;
       const p = parseFloat(segments[idx++]) || 0;
       const ref = getScrollById(scrollId);
-      if (!ref) continue;
-      stock.push({
-        link: `scrolls/${ref.source}/${ref.scroll.Link}`,
-        Number: N,
-        Cost: costPerUnit(N, p),
-      });
+      if (ref) {
+        stock.push({
+          link: `scrolls/${ref.source}/${ref.scroll.Link}`,
+          Number: N,
+          Cost: costPerUnit(N, p),
+        });
+      }
       continue;
     }
     if (t === 0) {
       const itemId = parseInt(segments[idx++], 10);
       const ref = getItemById(itemId);
-      if (!ref) continue;
-      const baseLink = `items/${ref.itemType}/${ref.item.Link}`;
       const rem = segments.length - idx;
-      if (rem >= 6 && segments[idx + 1] && String(segments[idx + 1]).includes(',')) {
-        const b = parseInt(segments[idx], 10);
-        const eList = segments[idx + 1];
-        const nameLen3 = parseInt(segments[idx + 2], 10);
-        const name3 = segments[idx + 3];
-        const N3 = parseInt(segments[idx + 4], 10) || 1;
-        const p3 = parseFloat(segments[idx + 5]) || 0;
-        idx += 6;
-        const effectIds = eList.split(',').map(s => parseInt(s, 10)).filter(n => !isNaN(n));
-        stock.push({
-          link: baseLink,
-          Bonus: b,
-          effectIds,
-          Name: name3 || undefined,
-          Number: N3,
-          Cost: costPerUnit(N3, p3),
-        });
-      } else if (rem >= 3) {
-        const b = parseInt(segments[idx], 10);
-        const N2 = parseInt(segments[idx + 1], 10) || 1;
-        const p2 = parseFloat(segments[idx + 2]) || 0;
-        idx += 3;
-        stock.push({
-          link: baseLink,
-          Bonus: b,
-          Number: N2,
-          Cost: costPerUnit(N2, p2),
-        });
-      } else if (rem >= 2) {
-        const N0 = parseInt(segments[idx], 10) || 1;
-        const p0 = parseFloat(segments[idx + 1]) || 0;
-        idx += 2;
-        stock.push({
-          link: baseLink,
-          Number: N0,
-          Cost: costPerUnit(N0, p0),
-        });
+      const hasEffects = rem >= 6 && segments[idx + 1] && String(segments[idx + 1]).includes(',');
+      const hasBonus = rem >= 3 && !hasEffects;
+      const hasSimple = rem >= 2;
+      if (ref) {
+        const baseLink = `items/${ref.itemType}/${ref.item.Link}`;
+        if (hasEffects) {
+          const b = parseInt(segments[idx], 10);
+          const eList = segments[idx + 1];
+          const nameLen3 = parseInt(segments[idx + 2], 10);
+          const name3 = segments[idx + 3];
+          const N3 = parseInt(segments[idx + 4], 10) || 1;
+          const p3 = parseFloat(segments[idx + 5]) || 0;
+          idx += 6;
+          const effectIds = eList.split(',').map(s => parseInt(s, 10)).filter(n => !isNaN(n));
+          stock.push({
+            link: baseLink,
+            Bonus: b,
+            effectIds,
+            Name: name3 || undefined,
+            Number: N3,
+            Cost: costPerUnit(N3, p3),
+          });
+        } else if (hasBonus) {
+          const b = parseInt(segments[idx], 10);
+          const N2 = parseInt(segments[idx + 1], 10) || 1;
+          const p2 = parseFloat(segments[idx + 2]) || 0;
+          idx += 3;
+          stock.push({
+            link: baseLink,
+            Bonus: b,
+            Number: N2,
+            Cost: costPerUnit(N2, p2),
+          });
+        } else if (hasSimple) {
+          const N0 = parseInt(segments[idx], 10) || 1;
+          const p0 = parseFloat(segments[idx + 1]) || 0;
+          idx += 2;
+          stock.push({
+            link: baseLink,
+            Number: N0,
+            Cost: costPerUnit(N0, p0),
+          });
+        }
+      } else {
+        if (hasEffects) idx += 6;
+        else if (hasBonus) idx += 3;
+        else if (hasSimple) idx += 2;
       }
     }
   }
