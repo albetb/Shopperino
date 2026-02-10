@@ -1,26 +1,19 @@
 import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from 'lz-string';
 import Shop from './shop';
-import {
-  getItemByRef,
-  getItemById,
-  getItemIdByRef,
-  getScrollById,
-  getScrollIdByLink,
-  getEffectById,
-  getEffectIdBySlug,
-} from './utils';
+import { getItemByRef, getEffectById, getEffectIdBySlug } from './utils';
 
 /** Max length of compressed string for QR code (fits in medium-sized QR). */
 export const SHARE_QR_MAX_CHARS = 2500;
 
 const DELIM = '|';
-const VERSION = 'V1';
+const VERSION = 'V2';
 
 /**
  * Build share string in custom delimiter format (no JSON).
- * Format: V1|<nameLen>|<name>|<gold>|<count>|<entry>...
- * Entry type 0 (item): 0|<itemId>|<N>|<p>  or  0|<itemId>|<b>|<N>|<p>  or  0|<itemId>|<b>|<e1,e2>|<nameLen>|<name>|<N>|<p>
- * Entry type 1 (scroll): 1|<scrollId>|<N>|<p>
+ * Uses link (path) for items/scrolls so any file/source works; no numeric ids.
+ * Format: V2|<nameLen>|<name>|<gold>|<count>|<entry>...
+ * Entry type 0 (item): 0|<linkLen>|<link>|<N>|<p>  or  0|<linkLen>|<link>|<b>|<N>|<p>  or  0|<linkLen>|<link>|<b>|<e1,e2>|<nameLen>|<name>|<N>|<p>
+ * Entry type 1 (scroll): 1|<linkLen>|<link>|<N>|<p>
  * Entry type 2 (custom): 2|<nameLen>|<name>|<N>|<p>
  */
 function buildShareString(serializedShop) {
@@ -46,44 +39,29 @@ function buildShareString(serializedShop) {
       continue;
     }
 
-    if (item.ItemType === 'Scroll' && item.Link && item.Link.startsWith('scrolls/')) {
-      const scrollId = getScrollIdByLink(item.Link);
-      if (scrollId == null) continue;
-      entries.push([1, scrollId, N, p]);
-      continue;
-    }
-
     const linkStr = typeof item.Link === 'string' ? item.Link : null;
     const linkArray = Array.isArray(item.Link) ? item.Link : null;
 
     if (linkArray && item.Name && item.BaseItemType) {
       const baseLink = `items/${item.BaseItemType}/${linkArray[0]}`;
-      const itemId = getItemIdByRef(baseLink);
-      if (itemId == null) continue;
       const bonus = item.Bonus != null && !isNaN(item.Bonus) ? parseInt(item.Bonus, 10) : 0;
       const effectIds = (item.Ability || [])
         .map(a => (a && a.Link ? getEffectIdBySlug(a.Link) : null))
         .filter(id => id != null);
       const n = (item.Name || '').toString();
-      entries.push([0, itemId, bonus, effectIds.join(','), n.length, n, N, p]);
+      entries.push([0, baseLink.length, baseLink, bonus, effectIds.join(','), n.length, n, N, p]);
       continue;
     }
 
-    if (linkStr && linkStr.includes('/')) {
-      const itemId = getItemIdByRef(linkStr);
-      if (itemId == null) continue;
+    if (linkStr && linkStr.length > 0) {
       const bonus = item.Bonus != null && !isNaN(item.Bonus) ? parseInt(item.Bonus, 10) : null;
       if (bonus != null && !isNaN(bonus)) {
-        entries.push([0, itemId, bonus, N, p]);
+        entries.push([0, linkStr.length, linkStr, bonus, N, p]);
       } else {
-        entries.push([0, itemId, N, p]);
+        entries.push([0, linkStr.length, linkStr, N, p]);
       }
       continue;
     }
-
-    const itemId = getItemIdByRef(linkStr);
-    if (itemId == null) continue;
-    entries.push([0, itemId, N, p]);
   }
 
   if (!entries.length) return null;
@@ -97,7 +75,8 @@ function buildShareString(serializedShop) {
 /**
  * Parse custom-format share string into { name, gold, stock }.
  * stock entries: { link?, Number, Cost, Bonus?, effectIds?, Name?, isCustom? }
- * Type 0: 0|itemId|N|p  or  0|itemId|b|N|p  or  0|itemId|b|e1,e2|nameLen|name|N|p
+ * V2: type 0 uses link (no ids). Type 0: 0|<linkLen>|<link>|N|p  or  0|<linkLen>|<link>|b|N|p  or  0|<linkLen>|<link>|b|e1,e2|nameLen|name|N|p
+ * Type 1: 1|<linkLen>|<link>|N|p. Type 2: 2|<nameLen>|<name>|N|p
  */
 function parseShareString(raw) {
   if (!raw || typeof raw !== 'string') return null;
@@ -126,70 +105,60 @@ function parseShareString(raw) {
       continue;
     }
     if (t === 1) {
-      const scrollId = parseInt(segments[idx++], 10);
+      const linkLen = parseInt(segments[idx++], 10);
+      const link = segments[idx++];
       const N = parseInt(segments[idx++], 10) || 1;
       const p = parseFloat(segments[idx++]) || 0;
-      const ref = getScrollById(scrollId);
-      if (ref) {
-        stock.push({
-          link: `scrolls/${ref.source}/${ref.scroll.Link}`,
-          Number: N,
-          Cost: costPerUnit(N, p),
-        });
+      if (link != null && typeof link === 'string') {
+        stock.push({ link, Number: N, Cost: costPerUnit(N, p) });
       }
       continue;
     }
     if (t === 0) {
-      const itemId = parseInt(segments[idx++], 10);
-      const ref = getItemById(itemId);
+      const linkLen = parseInt(segments[idx++], 10);
+      const link = segments[idx++];
+      if (link == null || typeof link !== 'string') continue;
       const rem = segments.length - idx;
       const hasEffects = rem >= 6 && segments[idx + 1] && String(segments[idx + 1]).includes(',');
       const hasBonus = rem >= 3 && !hasEffects;
       const hasSimple = rem >= 2;
-      if (ref) {
-        const baseLink = `items/${ref.itemType}/${ref.item.Link}`;
-        if (hasEffects) {
-          const b = parseInt(segments[idx], 10);
-          const eList = segments[idx + 1];
-          const nameLen3 = parseInt(segments[idx + 2], 10);
-          const name3 = segments[idx + 3];
-          const N3 = parseInt(segments[idx + 4], 10) || 1;
-          const p3 = parseFloat(segments[idx + 5]) || 0;
-          idx += 6;
-          const effectIds = eList.split(',').map(s => parseInt(s, 10)).filter(n => !isNaN(n));
-          stock.push({
-            link: baseLink,
-            Bonus: b,
-            effectIds,
-            Name: name3 || undefined,
-            Number: N3,
-            Cost: costPerUnit(N3, p3),
-          });
-        } else if (hasBonus) {
-          const b = parseInt(segments[idx], 10);
-          const N2 = parseInt(segments[idx + 1], 10) || 1;
-          const p2 = parseFloat(segments[idx + 2]) || 0;
-          idx += 3;
-          stock.push({
-            link: baseLink,
-            Bonus: b,
-            Number: N2,
-            Cost: costPerUnit(N2, p2),
-          });
-        } else if (hasSimple) {
-          const N0 = parseInt(segments[idx], 10) || 1;
-          const p0 = parseFloat(segments[idx + 1]) || 0;
-          idx += 2;
-          stock.push({
-            link: baseLink,
-            Number: N0,
-            Cost: costPerUnit(N0, p0),
-          });
-        }
-      } else {
-        if (hasEffects) idx += 6;
-        else if (hasBonus) idx += 3;
-        else if (hasSimple) idx += 2;
+      if (hasEffects) {
+        const b = parseInt(segments[idx], 10);
+        const eList = segments[idx + 1];
+        const nameLen3 = parseInt(segments[idx + 2], 10);
+        const name3 = segments[idx + 3];
+        const N3 = parseInt(segments[idx + 4], 10) || 1;
+        const p3 = parseFloat(segments[idx + 5]) || 0;
+        idx += 6;
+        const effectIds = eList.split(',').map(s => parseInt(s, 10)).filter(n => !isNaN(n));
+        stock.push({
+          link,
+          Bonus: b,
+          effectIds,
+          Name: name3 || undefined,
+          Number: N3,
+          Cost: costPerUnit(N3, p3),
+        });
+      } else if (hasBonus) {
+        const b = parseInt(segments[idx], 10);
+        const N2 = parseInt(segments[idx + 1], 10) || 1;
+        const p2 = parseFloat(segments[idx + 2]) || 0;
+        idx += 3;
+        stock.push({
+          link,
+          Bonus: b,
+          Number: N2,
+          Cost: costPerUnit(N2, p2),
+        });
+      } else if (hasSimple) {
+        const N0 = parseInt(segments[idx], 10) || 1;
+        const p0 = parseFloat(segments[idx + 1]) || 0;
+        idx += 2;
+        stock.push({
+          link,
+          Number: N0,
+          Cost: costPerUnit(N0, p0),
+        });
       }
     }
   }
