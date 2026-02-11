@@ -370,7 +370,10 @@ class Shop {
     buy(itemName, itemType, cost = 1, number = 1, link = "") {
         if (itemName.trim() === '' || number <= 0) return;
         const savedName = itemName.length > 64 ? cap(itemName).slice(0, 64) : cap(itemName);
-        const savedCost = Math.min(Math.max(parseFloat(cost), 1), 999999999);
+        // preserve decimals (down to 0.01) instead of forcing integer >= 1
+        const rawCost = parseFloat(cost);
+        const normalizedCost = Number.isNaN(rawCost) ? 0 : rawCost;
+        const savedCost = Math.min(Math.max(normalizedCost, 0.01), 999999999);
         const savedNumber = Math.min(Math.max(parseInt(number, 10), 0), 99);
         const fullLink = link && link.includes('/') ? link : null;
 

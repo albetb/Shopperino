@@ -103,7 +103,16 @@ export default function ShopInventory() {
     const sep = "'";
     const rev = intPart.split('').reverse().join('');
     const fmtInt = rev.match(/.{1,3}/g).join(sep).split('').reverse().join('');
-    return `${fmtInt}.${decPart}`.replace('.00', '');
+    let decimals = '';
+    if (decPart !== '00') {
+      // if only first decimal digit is non‑zero (e.g. 0.10, 0.30), show a single decimal
+      if (decPart[1] === '0') {
+        decimals = `.${decPart[0]}`;
+      } else {
+        decimals = `.${decPart}`;
+      }
+    }
+    return `${fmtInt}${decimals}`;
   };
 
   const shopLabel = () => trimLine(shopName, isMobile() ? 20 : 30);

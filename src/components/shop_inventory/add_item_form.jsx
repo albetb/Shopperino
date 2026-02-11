@@ -62,14 +62,16 @@ const AddItemForm = ({ onAddItem, items, setShowAddItemForm }) => {
   };
 
   const handleCostBlur = () => {
-    const numValue = cost ? parseInt(cost, 10) : 0;
-    if (numValue < 0) {
-      setCost(0);
-    } else if (numValue > MAX_COST) {
-      setCost(MAX_COST);
-    } else {
-      setCost(numValue);
-    }
+    const numValue = cost !== '' && cost != null ? parseFloat(cost) : 0;
+    let clamped = Number.isNaN(numValue) ? 0 : numValue;
+    if (clamped < 0) clamped = 0;
+    if (clamped > MAX_COST) clamped = MAX_COST;
+    // keep up to 2 decimals when there is a fractional part
+    const rounded =
+      clamped % 1 === 0
+        ? Math.trunc(clamped)
+        : parseFloat(clamped.toFixed(2));
+    setCost(rounded);
   };
 
   const handleNameBlur = () => {
@@ -136,6 +138,7 @@ const AddItemForm = ({ onAddItem, items, setShowAddItemForm }) => {
       <td className='cost-size no-border-top'>
         <input
           type='number'
+          step='0.01'
           value={cost}
           min={0}
           max={MAX_COST}

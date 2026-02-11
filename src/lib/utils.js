@@ -294,15 +294,12 @@ export function getEffectByLink(link) {
 export function getItemById(id) {
     const items = loadFile('items');
     if (!items || typeof id !== 'number' || id < 0) return null;
-    let cursor = 0;
     for (const itemType of ITEM_TYPES) {
         const arr = items[itemType];
         if (!Array.isArray(arr)) continue;
         for (const item of arr) {
             if (item && typeof item === 'object' && item.id === id)
                 return { item, itemType };
-            if (item && typeof item === 'object' && item.id !== undefined)
-                cursor++;
         }
     }
     return null;
