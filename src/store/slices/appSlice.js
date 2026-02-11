@@ -29,10 +29,22 @@ export const appSlice = createSlice({
   reducers: {
     toggleSidebar(state) {
       state.sidebarCollapsed = !state.sidebarCollapsed;
+      db.setIsShopSidebarCollapsed(state.sidebarCollapsed);
     },
 
     toggleInfoSidebar(state) {
       state.infoSidebarCollapsed = !state.infoSidebarCollapsed;
+      db.setIsInfoSidebarCollapsed(state.infoSidebarCollapsed);
+    },
+
+    setSidebarCollapsed(state, action) {
+      state.sidebarCollapsed = !!action.payload;
+      db.setIsShopSidebarCollapsed(state.sidebarCollapsed);
+    },
+
+    setInfoSidebarCollapsed(state, action) {
+      state.infoSidebarCollapsed = !!action.payload;
+      db.setIsInfoSidebarCollapsed(state.infoSidebarCollapsed);
     },
 
     addCardByLink(state, action) {
@@ -204,6 +216,8 @@ export const selectMainColor = state => state.app.mainColor;
 export const {
   toggleSidebar,
   toggleInfoSidebar,
+  setSidebarCollapsed,
+  setInfoSidebarCollapsed,
   addCardByLink,
   removeCard,
   clearInfoCards,

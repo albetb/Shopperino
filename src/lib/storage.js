@@ -66,6 +66,16 @@ export function getIsMasterMode() {
     return value ? JSON.parse(decompressFromUTF16(value)) : false;
 }
 
+export function getIsShopSidebarCollapsed() {
+    const value = localStorage.getItem('IsShopSidebarCollapsed');
+    return value ? JSON.parse(decompressFromUTF16(value)) : false;
+}
+
+export function getIsInfoSidebarCollapsed() {
+    const value = localStorage.getItem('IsInfoSidebarCollapsed');
+    return value ? JSON.parse(decompressFromUTF16(value)) : false;
+}
+
 //#endregion
 
 //#region Spellbook
@@ -217,6 +227,14 @@ export function setMainColor(value) {
 
 export function setIsMasterMode(value) {
     localStorage.setItem('IsMasterMode', compressToUTF16(JSON.stringify(!!value)));
+}
+
+export function setIsShopSidebarCollapsed(value) {
+    localStorage.setItem('IsShopSidebarCollapsed', compressToUTF16(JSON.stringify(!!value)));
+}
+
+export function setIsInfoSidebarCollapsed(value) {
+    localStorage.setItem('IsInfoSidebarCollapsed', compressToUTF16(JSON.stringify(!!value)));
 }
 
 //#endregion
