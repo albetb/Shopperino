@@ -184,23 +184,23 @@ export default function TopMenu() {
     const mobileButtons = (
         <>
             <div className="menu-side-by-side">
-                <p style={{ textShadow: "1px 1px #12121366" }}>Search</p>
+                <p className="menu-item-text">Search</p>
                 {searchButton}
             </div>
             {isMasterMode && (
             <div className="menu-side-by-side">
-                <p style={{ textShadow: "1px 1px #12121366" }}>Shop generator</p>
+                <p className="menu-item-text">Shop generator</p>
                 {shopButton}
             </div>
             )}
             {isMasterMode && (
             <div className="menu-side-by-side">
-                <p style={{ textShadow: "1px 1px #12121366" }}>Loot generator</p>
+                <p className="menu-item-text">Loot generator</p>
                 {lootButton}
             </div>
             )}
             <div className="menu-side-by-side">
-                <p style={{ textShadow: "1px 1px #12121366" }}>Spellbook</p>
+                <p className="menu-item-text">Spellbook</p>
                 {spellbookButton}
             </div>
         </>
@@ -217,31 +217,31 @@ export default function TopMenu() {
 
     const optionsButtons = (
         <>
-            <div className="menu-side-by-side" style={{ justifyContent: 'center', width: '100%' }}>
+            <div className="menu-side-by-side flex-center width-100">
                 <div className="master-player-toggle">
                     <span className={isMasterMode ? 'master-player-label active' : 'master-player-label'} onClick={() => dispatch(setMasterMode(true))}>Master</span>
                     <span className={!isMasterMode ? 'master-player-label active' : 'master-player-label'} onClick={() => dispatch(setMasterMode(false))}>Player</span>
                 </div>
             </div>
             <div className="menu-side-by-side">
-                <p style={{ textShadow: "1px 1px #12121366" }}>Export save</p>
+                <p className="menu-item-text">Export save</p>
                 {exportButton}
             </div>
 
             <div className="menu-side-by-side">
-                <p style={{ textShadow: "1px 1px #12121366" }}>Import save</p>
+                <p className="menu-item-text">Import save</p>
                 {importButton}
             </div>
 
             {isMobile() && (
             <div className="menu-side-by-side">
-                <p style={{ textShadow: "1px 1px #12121366" }}>Scan shop</p>
+                <p className="menu-item-text">Scan shop</p>
                 {scanButton}
             </div>
             )}
 
             <div className="menu-side-by-side">
-                <p style={{ textShadow: "1px 1px #12121366" }}>Change theme</p>
+                <p className="menu-item-text">Change theme</p>
                 <ColorPicker />
             </div>
         </>
@@ -285,7 +285,7 @@ export default function TopMenu() {
         <input
             type="file"
             id="upload"
-            style={{ display: 'none' }}
+            className="hidden-input"
             accept=".json,application/json"
             onChange={handleFileUpload}
         />

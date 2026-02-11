@@ -94,30 +94,25 @@ export default function ScanShopScanner({ onClose, onSuccess }) {
       aria-label="Scan shop QR code"
     >
       <div className="share-shop-modal-box">
-        <h3 style={{ margin: '0 0 0.75rem 0', color: 'var(--dark-grey)' }}>Scan shop</h3>
+        <h3 className="modal-heading">Scan shop</h3>
         {error && (
-          <p style={{ color: 'var(--dark-grey)', marginBottom: '0.75rem' }}>{error}</p>
+          <p className="modal-error modal-error-margin">{error}</p>
         )}
         {!error && (
           <>
-            <p style={{ fontSize: '0.85em', color: 'var(--dark-grey)', margin: '0 0 0.5rem 0' }}>
+            <p className="modal-body-muted">
               Point your camera at a shop QR code.
             </p>
-            <div style={{ position: 'relative', width: '100%', maxWidth: 320, margin: '0 auto 0.75rem' }}>
+            <div className="modal-qr-wrapper">
               <video
                 ref={videoRef}
                 muted
                 playsInline
-                style={{
-                  width: '100%',
-                  borderRadius: '0.5rem',
-                  backgroundColor: '#000',
-                  display: 'block',
-                }}
+                className="modal-video"
               />
               <canvas
                 ref={canvasRef}
-                style={{ display: 'none' }}
+                className="hidden-canvas"
                 width={0}
                 height={0}
               />

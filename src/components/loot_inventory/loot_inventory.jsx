@@ -41,10 +41,10 @@ export default function LootInventory() {
         <div className="label-container">
           <h2>Generated at {timeLabel()}</h2>
         </div>
-        <div className="money-box" style={{ alignItems: 'center', flexDirection: 'column' }}>
-          <h4 style={{ margin: '0.2rem' }}><b>Gold: {formatNumber(gold)}gp</b></h4>
+        <div className="money-box money-box-column">
+          <h4 className="loot-gold-margin"><b>Gold: {formatNumber(gold)}gp</b></h4>
           {goodsList.length > 0 &&
-            <h2 style={{ margin: '0.2rem' }}>+ goods {formatNumber(goodsValue)}gp</h2>
+            <h2 className="loot-gold-margin">+ goods {formatNumber(goodsValue)}gp</h2>
           }
         </div>
       </div>
@@ -52,22 +52,20 @@ export default function LootInventory() {
       {/* Goods Table */}
       {goodsList.length > 0 &&
 
-        <table className="shop-table" style={{ marginBottom: "0.5rem" }}>
+        <table className="shop-table table-margin-sm">
           <thead>
             <tr>
-              <th className="number-size" style={{ color: "#c0c0c0" }}>#</th>
-              <th className="name-size" style={{ color: "#c0c0c0" }}>Goods</th>
-              <th className="cost-size" style={{ color: "#c0c0c0" }}>Cost</th>
+              <th className="number-size td-muted">#</th>
+              <th className="name-size td-muted">Goods</th>
+              <th className="cost-size td-muted">Cost</th>
             </tr>
           </thead>
           <tbody>
             {goodsList.map((g, idx) => (
               <tr key={idx}>
-                <td className="align-right" style={{ color: "#c0c0c0" }}>{g.Quantity ?? '1'}</td>
-                <td style={{ color: "#c0c0c0" }}>
-                  {g.Name}
-                </td>
-                <td style={{ color: "#c0c0c0" }}>{formatNumber(g.Cost)}</td>
+                <td className="align-right td-muted">{g.Quantity ?? '1'}</td>
+                <td className="td-muted">{g.Name}</td>
+                <td className="td-muted">{formatNumber(g.Cost)}</td>
               </tr>
             ))}
           </tbody>
@@ -77,12 +75,12 @@ export default function LootInventory() {
       {/* Items Table */}
       {itemsList.filter(x => x && x.Name).length > 0 &&
 
-        <table className="shop-table" style={{ marginBottom: "0.5rem" }}>
+        <table className="shop-table table-margin-sm">
           <thead>
             <tr>
-              <th className="number-size" style={{ color: "#c0c0c0" }}>#</th>
-              <th className="name-size" style={{ color: "#c0c0c0" }}>Items</th>
-              <th className="cost-size" style={{ color: "#c0c0c0" }}>Cost</th>
+              <th className="number-size td-muted">#</th>
+              <th className="name-size td-muted">Items</th>
+              <th className="cost-size td-muted">Cost</th>
             </tr>
           </thead>
           <tbody>
@@ -95,9 +93,9 @@ export default function LootInventory() {
                   : 0;
 
               return (
-                <tr>
-                  <td className="align-right" style={{ color: "#c0c0c0" }}>{item.Quantity ?? 1}</td>
-                  <td>
+                <tr key={idx}>
+                  <td className="align-right td-muted">{item.Quantity ?? 1}</td>
+                  <td className="td-muted">
                     {item.Link ? (
                       <button
                         type="button"
@@ -110,7 +108,7 @@ export default function LootInventory() {
                       item.Name
                     )}
                   </td>
-                  <td style={{ color: "#c0c0c0" }}>{formatNumber(item.Cost)}</td>
+                  <td className="td-muted">{formatNumber(item.Cost)}</td>
                 </tr>
               );
             })}

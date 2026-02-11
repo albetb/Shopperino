@@ -129,7 +129,7 @@ export default function MenuCardShop() {
             </select>
           </div>
 
-          <div className="card-side-div margin-top buttons-row" style={{ justifyContent: 'space-around', flexWrap: 'wrap', gap: '0.5rem' }}>
+          <div className="card-side-div margin-top buttons-row buttons-row-around">
             <button
               className={`modern-button ${shopGenerated ? 'small-middle-long2' : 'small-long'}`}
               onClick={handleGenerate}

@@ -75,6 +75,10 @@
   justify-content: space-between;
 }
 
+.buttons-row-center {
+  justify-content: center;
+}
+
 .card-side-div.around {
   justify-content: space-around;
 }
@@ -82,6 +86,8 @@
 .buttons-row {
   justify-content: flex-start;
   gap: 0.4rem;
+  display: flex;
+  justify-content: space-around;
 }
 
 .card-expand-div {
@@ -174,6 +180,51 @@ tr {
   .spell-slot-div2 {
     max-width: 18vw;
   }
+}
+
+/* Share shop / Scan modals: heading and body text (no inline styles) */
+.modal-heading {
+  margin: 0 0 0.75rem 0;
+  color: var(--dark-grey);
+}
+
+.modal-body-muted {
+  font-size: 0.85em;
+  color: var(--dark-grey);
+  margin: 0 0 0.75rem 0;
+}
+
+.modal-error {
+  color: var(--dark-grey);
+}
+
+.modal-qr-img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin-bottom: 0.75rem;
+}
+
+.modal-qr-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+  margin: 0 auto 0.75rem;
+}
+
+.modal-error-margin {
+  margin-bottom: 0.75rem;
+}
+
+.modal-video {
+  width: 100%;
+  border-radius: 0.5rem;
+  background-color: #000;
+  display: block;
+}
+
+.hidden-canvas {
+  display: none;
 }
 
 /* Share shop QR modal */

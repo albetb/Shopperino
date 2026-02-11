@@ -22,6 +22,7 @@
   height: calc(100vh - var(--menu-height));
   width: 100%;
   overflow: hidden;
+  align-items: center;
 }
 
 .app-logo {
@@ -131,4 +132,115 @@ table {
 .master-player-label.active {
   background: var(--main);
   color: var(--white);
+}
+
+/* Shared utility classes (replace common inline styles) */
+.text-center {
+  text-align: center;
+}
+
+.text-muted {
+  color: var(--white2);
+}
+
+.text-muted-small {
+  color: var(--white2);
+  font-size: 0.73em;
+}
+
+.desc-muted {
+  margin-top: 0.15rem;
+  font-size: 0.8em;
+  color: var(--white2);
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.flex-gap-sm {
+  gap: 0.5rem;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+.width-100 {
+  width: 100%;
+}
+
+.menu-item-text {
+  text-shadow: 1px 1px #12121366;
+}
+
+.main-intro {
+  color: #f9f9f9;
+  width: 90%;
+  text-align: center;
+}
+
+.main-page{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.main-intro-link {
+  color: #f9f9f9;
+  text-decoration: underline;
+}
+
+.card-clickable {
+  cursor: pointer;
+}
+
+.label-min-width {
+  min-width: 5.5rem;
+}
+
+.hidden-input {
+  display: none;
+}
+
+.margin-v-1 {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* Main page: card dimensions responsive (no inline width/padding) */
+.main-page .card {
+  cursor: pointer;
+}
+
+@media (min-width: 769px) {
+  .main-page .card {
+    width: 40%;
+    padding: 1%;
+    padding-left: 3%;
+    padding-right: 3%;
+  }
+}
+
+@media (max-width: 768px) {
+  .main-page .card {
+    width: 80%;
+    padding: 2%;
+    padding-left: 5%;
+    padding-right: 5%;
+  }
+}
+
+.card-title-shadow {
+  text-shadow: 1px 1px #0d0d0d1a;
+}
+
+.card-icon-dark {
+  color: var(--black);
 }

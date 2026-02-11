@@ -44,12 +44,12 @@ export default function MenuCardSearch() {
       </div>
 
       <div className="card-side-div margin-top">
-        <label className="modern-label" style={{ display: 'flex', alignItems: 'center' }}>
+        <label className="modern-label flex-center">
           <input
             type="checkbox"
             checked={!!showShortDescriptions}
             onChange={e => handleToggleShortDescriptions(e.target.checked)}
-            style={{ marginRight: '0.5rem' }}
+            className="margin-right-sm"
           />
           Show spell descriptions
         </label>

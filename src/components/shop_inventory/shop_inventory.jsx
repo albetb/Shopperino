@@ -128,14 +128,14 @@ export default function ShopInventory() {
           <h2>{shopLabel()}</h2>
           <div className="space-left">
             {isViewOnly ? (
-              <h4 style={{ fontStyle: 'italic' }}>(view only)</h4>
+              <h4 className="view-only-italic">(view only)</h4>
             ) : (
               <h4>{cityLabel()}</h4>
             )}
           </div>
         </div>
         {(isViewOnly || hasItems) && (
-        <div className="money-box" style={isViewOnly ? { display: 'flex', alignItems: 'center', gap: '0.5rem' } : undefined}>
+        <div className={`money-box ${isViewOnly ? 'money-box-inline' : ''}`}>
           {isViewOnly && (
             <button
               type="button"
@@ -151,7 +151,7 @@ export default function ShopInventory() {
       </div>
 
       {isViewOnly && !hasItems && (
-        <p style={{ color: '#c0c0c0', margin: '1rem' }}>No items in this shop.</p>
+        <p className="empty-state-message">No items in this shop.</p>
       )}
 
       {!isViewOnly && !hasItems && (
@@ -160,7 +160,7 @@ export default function ShopInventory() {
         </p>
       )}
 
-      <table className={`shop-table ${showAddItemForm ? "shop-table-adding" : ""}`} style={hasItems ? undefined : { display: 'none' }}>
+      <table className={`shop-table ${showAddItemForm ? "shop-table-adding" : ""} ${hasItems ? '' : 'shop-table-empty'}`}>
         <thead>
           <tr>
             {(['number', 'name', 'type', 'cost']).map((col) => {
@@ -170,8 +170,7 @@ export default function ShopInventory() {
               return (
                 <th
                   key={col}
-                  className={`${thClass} sortable ${isActive ? 'sort-active' : ''}`}
-                  style={{ color: '#c0c0c0', fontSize: '0.73em', cursor: 'pointer' }}
+                  className={`${thClass} sortable th-sortable-muted ${isActive ? 'sort-active' : ''}`}
                   onClick={() => handleSort(col)}
                 >
                   {label}
@@ -202,13 +201,12 @@ export default function ShopInventory() {
 
             return (
               <tr key={key} className={deletingItems[`${item.Name}-${item.ItemType}`] ? 'deleting' : ''}>
-                <td className="align-right" style={{ color: "#c0c0c0", fontSize: "0.73em" }}>{item.Number}</td>
-                <td style={{ color: "#c0c0c0", fontSize: "0.73em" }}>
+                <td className="align-right td-muted">{item.Number}</td>
+                <td className="td-muted">
                   {item.Link ? (
                     <button
                       type="button"
                       className="button-link"
-                      color="#c0c0c0"
                       onClick={() => {
                         const links = Array.isArray(item.effectIds) && item.effectIds.length
                           ? [item.Link, ...item.effectIds.map(id => getEffectById(id)?.Link).filter(Boolean)]
@@ -222,12 +220,12 @@ export default function ShopInventory() {
                     item.Name
                   )}
                 </td>
-                <td style={{ color: "#c0c0c0", fontSize: "0.73em" }}>{abbrevType}</td>
-                <td style={{ color: "#c0c0c0", fontSize: "0.73em" }}>{formatNumber(item.Cost)}</td>
+                <td className="td-muted">{abbrevType}</td>
+                <td className="td-muted">{formatNumber(item.Cost)}</td>
                 {!isViewOnly && (
-                  <td style={{ textAlign: "center" }}>
+                  <td className="td-action">
                     <button
-                      className="flat-button smaller"
+                      className="flat-button smaller btn-cell-muted"
                       onClick={e => handleDeleteItemClick(e, item.Name, item.ItemType, item.Number)}
                       onMouseDown={e => longPressEvent.onMouseDown(e, [item.Name, item.ItemType, item.Number])}
                       onTouchStart={e => longPressEvent.onTouchStart(e, [item.Name, item.ItemType, item.Number])}
@@ -237,7 +235,6 @@ export default function ShopInventory() {
                         longPressEvent.onTouchEnd(e);
                         handleDeleteItemClick(e, item.Name, item.ItemType, item.Number);
                       }}
-                      style={{ color: "#c0c0c0" }}
                     >
                       <span className="material-symbols-outlined">remove_shopping_cart</span>
                     </button>

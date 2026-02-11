@@ -1,7 +1,60 @@
+/* Shop/inventory table: column widths defined here; mobile overrides in one @media block below */
 .shop-table,
 .spellbook-table {
   width: calc(var(--btn-width-sm) * 20);
   margin-bottom: 0.3em;
+}
+
+.shop-table.shop-table-empty {
+  display: none;
+}
+
+.th-sortable-muted {
+  color: var(--white2);
+  font-size: 0.73em;
+  cursor: pointer;
+}
+
+.shop-table .td-muted,
+.shop-table th.td-muted {
+  color: var(--white2);
+  font-size: 0.73em;
+}
+
+.shop-table .td-action {
+  text-align: center;
+}
+
+.shop-table .btn-cell-muted {
+  color: var(--white2);
+}
+
+.money-box.money-box-inline {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.view-only-italic {
+  font-style: italic;
+}
+
+.empty-state-message {
+  color: var(--white2);
+  margin: 1rem;
+}
+
+.money-box.money-box-column {
+  flex-direction: column;
+  align-items: center;
+}
+
+.loot-gold-margin {
+  margin: 0.2rem;
+}
+
+.table-margin-sm {
+  margin-bottom: 0.5rem;
 }
 
 .shop-table-adding {
@@ -182,6 +235,33 @@ tr.add-item td.action-size .item-number-button {
   margin-bottom: 8px;
 }
 
+.filter-box-margin {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.card-expand-full {
+  width: 100%;
+}
+
+.filter-icon-white {
+  color: var(--white);
+}
+
+.buttons-row-around {
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.margin-left-sm {
+  margin-left: 0.25rem;
+}
+
+.margin-right-sm {
+  margin-right: 0.5rem;
+}
+
 .filter-box {
   padding: 0.8em;
   border-radius: 1em;
@@ -192,6 +272,10 @@ tr.add-item td.action-size .item-number-button {
 .rest-box {
   border: 2px solid var(--main-t);
   cursor: pointer;
+}
+
+.rest-box-full {
+  height: 100%;
 }
 
 .time-div-row {

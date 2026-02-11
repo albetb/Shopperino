@@ -264,11 +264,10 @@ export default function SearchPage() {
               </div>
               {!searchCardCollapsed && (
               <div className="card-content">
-                <div className="card-side-div" style={{ gap: '0.5rem' }}>
-                  <label className="modern-label" style={{ minWidth: '5.5rem' }}>Type:</label>
+                <div className="card-side-div flex-gap-sm">
+                  <label className="modern-label label-min-width">Type:</label>
                   <select
-                    className="modern-dropdown small-long"
-                    style={{ flex: 1 }}
+                    className="modern-dropdown small-long flex-1"
                     value={searchType}
                     onChange={e => {
                       const value = e.target.value;
@@ -287,11 +286,10 @@ export default function SearchPage() {
                 </div>
 
                 {searchType === 'Spells' && (
-                  <div className="card-side-div margin-top" style={{ gap: '0.5rem' }}>
-                    <label className="modern-label" style={{ minWidth: '5.5rem' }}>Class:</label>
+                  <div className="card-side-div margin-top flex-gap-sm">
+                    <label className="modern-label label-min-width">Class:</label>
                     <select
-                      className="modern-dropdown small-long"
-                      style={{ flex: 1 }}
+                      className="modern-dropdown small-long flex-1"
                       value={spellClassFilter}
                       onChange={e => {
                         const value = e.target.value;
@@ -308,11 +306,10 @@ export default function SearchPage() {
                 )}
 
                 {searchType && (
-                  <div className="card-side-div margin-top" style={{ gap: '0.5rem' }}>
-                    <label className="modern-label" style={{ minWidth: '5.5rem' }}>Contains:</label>
+                  <div className="card-side-div margin-top flex-gap-sm">
+                    <label className="modern-label label-min-width">Contains:</label>
                     <input
-                      className="modern-dropdown small-long padding-left"
-                      style={{ flex: 1 }}
+                      className="modern-dropdown small-long padding-left flex-1"
                       type="text"
                       placeholder="Filter by name"
                       value={query}
@@ -335,23 +332,23 @@ export default function SearchPage() {
             </p>
           )}
           {searchType && results.length === 0 && (
-            <p style={{ color: '#f9f9f9' }}>
+            <p className="search-hint">
               No {searchType.toLowerCase()} found matching this filter.
             </p>
           )}
 
           {searchType && query.trim() && (
-            <div className="filter-box" style={{ marginTop: '0.5rem', marginBottom: '0.5rem' }}>
-              <div className="card-side-div card-expand-div" style={{ width: '100%' }}>
+            <div className="filter-box filter-box-margin">
+              <div className="card-side-div card-expand-div card-expand-full">
                 <button
                   className="close-button no-margin-left"
                   onClick={() => setQuery('')}
                 >
-                  <span className="material-symbols-outlined" style={{ color: 'var(--white)' }}>
+                  <span className="material-symbols-outlined filter-icon-white">
                     close_small
                   </span>
                 </button>
-                <p style={{ color: 'var(--white)' }}>
+                <p className="filter-icon-white">
                   Filter by name: <b>{query}</b>
                 </p>
               </div>
@@ -384,7 +381,7 @@ export default function SearchPage() {
                           {r.Name}
                         </button>
                         {searchType === 'Spells' && spellClassFilter === 'All' && r['Short Description'] && (
-                          <div style={{ marginTop: '0.15rem', fontSize: '0.8em', color: 'var(--white2)' }}>
+                          <div className="desc-muted">
                             {r['Short Description']}
                           </div>
                         )}

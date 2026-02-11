@@ -27,17 +27,17 @@ export default function ShareShopModal({ payload, onClose }) {
         className="share-shop-modal-box"
         onClick={e => e.stopPropagation()}
       >
-        <h3 style={{ margin: '0 0 0.75rem 0', color: 'var(--dark-grey)' }}>Share shop</h3>
-        {error && <p style={{ color: 'var(--dark-grey)' }}>{error}</p>}
+        <h3 className="modal-heading">Share shop</h3>
+        {error && <p className="modal-error">{error}</p>}
         {dataUrl && !error && (
           <img
             src={dataUrl}
             alt="QR code for shared shop"
-            style={{ maxWidth: '100%', height: 'auto', display: 'block', marginBottom: '0.75rem' }}
+            className="modal-qr-img"
           />
         )}
-        <p style={{ fontSize: '0.85em', color: 'var(--dark-grey)', margin: '0 0 0.75rem 0' }}>
-        Scan this QR code with your phone to access the shop using the button in the Options menu.
+        <p className="modal-body-muted">
+          Scan this QR code with your phone to access the shop using the button in the Options menu.
         </p>
         <button
           type="button"

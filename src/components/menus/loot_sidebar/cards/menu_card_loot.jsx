@@ -120,7 +120,7 @@ export default function MenuCardLoot() {
         </select>
       </div>
 
-      <div className="card-side-div margin-top" style={{ justifyContent: "center" }}>
+      <div className="card-side-div margin-top buttons-row-center">
         <button className="modern-button small-long" onClick={handleGenerate}>
           Generate loot
         </button>

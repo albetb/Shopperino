@@ -13,13 +13,13 @@ export default function RestBox({ page, hasUsedSpells, dispatch }) {
             className={`filter-box rest-box ${!hasUsedSpells ? 'opacity-50' : ''}`}
             onClick={handleRest}
         >
-            <div className="card-side-div card-expand-div" style={{ width: '100%', height: '100%' }}>
+            <div className="card-side-div card-expand-div card-expand-full rest-box-full">
                 <button className="close-button no-margin-left">
-                    <span className="material-symbols-outlined" style={{ color: 'var(--white)' }}>
+                    <span className="material-symbols-outlined filter-icon-white">
                         bedtime
                     </span>
                 </button>
-                <p style={{ color: 'var(--white)' }}>Long rest</p>
+                <p className="filter-icon-white">Long rest</p>
             </div>
         </div>
     );

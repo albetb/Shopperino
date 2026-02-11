@@ -9,6 +9,9 @@
   z-index: 900;
   overflow-y: auto;
   scrollbar-width: thin;
+  flex-direction: column;
+  align-items: center;
+
 }
 
 .sidebar {
@@ -282,6 +285,46 @@ p {
   width: 100%;
 }
 
+/* Spellbook / domain tables: column width classes (single source, no inline widths) */
+.col-btn-sm {
+  width: var(--btn-width-sm);
+  box-sizing: border-box;
+}
+
+.col-btn-sm-max {
+  width: var(--btn-width-sm);
+  max-width: calc(var(--btn-width-sm) * 1.4);
+  padding-right: 0;
+  box-sizing: border-box;
+}
+
+.col-auto {
+  width: auto;
+}
+
+.col-30 {
+  width: 30%;
+  font-size: small;
+  box-sizing: border-box;
+}
+
+.spell-table-header-title {
+  font-size: small;
+  width: auto;
+  text-align: left;
+}
+
+.spell-table-cell-name {
+  color: var(--black);
+}
+
+.spell-table-cell-desc {
+  margin-top: 0.15rem;
+  font-size: 0.85em;
+  color: var(--dark-grey);
+  text-align: left;
+}
+
 /* Generic search hint text */
 .search-hint {
   color: #f9f9f9;
@@ -316,13 +359,13 @@ p {
   white-space: normal;
 }
 
+/* Mobile: single source of truth for breakpoint 768px (sidebar, search tables, layout) */
 @media (max-width: 768px) {
   .search-results-table {
     width: 100%;
     max-width: 96vw;
   }
 
-  /* Center spell cards for class/domain searches on mobile */
   .search-results .card-width-spellbook {
     width: 99vw;
     max-width: 99vw;
@@ -330,20 +373,15 @@ p {
     margin-right: auto;
   }
 
-  /* Add left/right margin to the "Select a type..." hint on mobile */
   .search-hint {
     margin: 1.75rem 6.75rem 0rem 1.75rem;
   }
-}
 
-@media (max-width: 768px) {
-  /* On mobile, make skills search table span almost full viewport width */
   .skills-table {
     width: 98vw;
     max-width: 98vw;
   }
 
-  /* Spells > All: Name 67%, Class 33% */
   .spells-all-table {
     table-layout: fixed;
   }
@@ -358,7 +396,6 @@ p {
     box-sizing: border-box;
   }
 
-  /* Spells > class / domain: single column, no header, description below name (spellbook style) */
   .search-spell-list-table thead {
     display: none;
   }
@@ -367,9 +404,6 @@ p {
     font-size: 0.8em;
     color: var(--black);
   }
-}
-
-@media (max-width: 768px) {
 
   .sidebar,
   .info-sidebar {

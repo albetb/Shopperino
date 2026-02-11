@@ -11,9 +11,9 @@ export default function SpontaneousSpells({ spontaneousByLevel, spontaneousLevel
                 <table key={lvl} className="spellbook-table">
                     <thead>
                         <tr>
-                            <th className="dark-grey" style={{ width: 'var(--btn-width-sm)' }}></th>
-                            <th className="dark-grey" style={{ fontSize: "small", width: "auto", textAlign: "left" }}>Spontaneous spells</th>
-                            {!isMobile() && (<th className="dark-grey" style={{ width: "30%" }}></th>)}
+                            <th className="dark-grey col-btn-sm"></th>
+                            <th className="dark-grey spell-table-header-title">Spontaneous spells</th>
+                            {!isMobile() && (<th className="dark-grey col-30"></th>)}
                         </tr>
                     </thead>
                     <tbody>
@@ -21,30 +21,29 @@ export default function SpontaneousSpells({ spontaneousByLevel, spontaneousLevel
                             <tr key={i}>
 
 
-                                <td className={i === 0 ? 'first' : ''} style={{ width: 'var(--btn-width-sm)', maxWidth: 'calc(var(--btn-width-sm)*1.4)', paddingRight: 0 }}>
+                                <td className={`${i === 0 ? 'first' : ''} col-btn-sm-max`}>
                                     <div className='card-side-div'>
-                                        <div className='spell-slot-div2' style={{ justifyContent: "center" }}>
+                                        <div className='spell-slot-div2 justify-center'>
                                             <span className='material-symbols-outlined'>wand_stars</span>
                                         </div>
                                     </div>
                                 </td>
 
-                                <td className={i === 0 ? 'first' : ''} style={{ width: 'auto' }}>
+                                <td className={`${i === 0 ? 'first' : ''} col-auto`}>
                                     <button
-                                        className="button-link"
-                                        style={{ color: 'var(--black)' }}
+                                        className="button-link spell-table-cell-name"
                                         onClick={() => dispatch(addCardByLink({ links: item.Link, bonus: 0 }))}
                                     >
                                         {item.Name}
                                     </button>
                                     {showShortDescriptions && item['Short Description'] && (
-                                        <div style={{ marginTop: '0.15rem', fontSize: '0.85em', color: 'var(--dark-grey)' }}>
+                                        <div className="spell-table-cell-desc">
                                             {item['Short Description']}
                                         </div>
                                     )}
                                 </td>
                                 {!isMobile() && (
-                                    <td className={i === 0 ? 'first' : ''} style={{ width: '30%', fontSize: 'small' }}>
+                                    <td className={`${i === 0 ? 'first' : ''} col-30`}>
                                         {item.School.split(' ')[0]}
                                     </td>
                                 )}

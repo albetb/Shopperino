@@ -11,32 +11,32 @@ export default function SpellFilters({ filters, dispatch }) {
     return (
         <div className="filter-box">
             {name && (
-                <div className="card-side-div card-expand-div" style={{ width: '100%' }}>
+                <div className="card-side-div card-expand-div card-expand-full">
                     <button
                         className="close-button no-margin-left"
                         onClick={() => dispatch(setSearchSpellName(''))}
                     >
-                        <span style={{ color: 'var(--white)' }} className="material-symbols-outlined">
+                        <span className="material-symbols-outlined filter-icon-white">
                             close_small
                         </span>
                     </button>
-                    <p style={{ color: 'var(--white)' }}>
+                    <p className="filter-icon-white">
                         Filter by name: <b>{name}</b>
                     </p>
                 </div>
             )}
 
             {school && (
-                <div className="card-side-div card-expand-div" style={{ width: '100%' }}>
+                <div className="card-side-div card-expand-div card-expand-full">
                     <button
                         className="close-button no-margin-left"
                         onClick={() => dispatch(setSearchSpellSchool(''))}
                     >
-                        <span style={{ color: 'var(--white)' }} className="material-symbols-outlined">
+                        <span className="material-symbols-outlined filter-icon-white">
                             close_small
                         </span>
                     </button>
-                    <p style={{ color: 'var(--white)' }}>
+                    <p className="filter-icon-white">
                         Filter by school: <b>{school}</b>
                     </p>
                 </div>

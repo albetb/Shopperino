@@ -94,8 +94,7 @@ const AddItemForm = ({ onAddItem, items, setShowAddItemForm }) => {
           value={number}
           onChange={(e) => setNumber(e.target.value)}
           onBlur={handleNumberBlur}
-          className='modern-input add-item-height'
-          style={{ marginLeft: "0.25rem" }}
+          className='modern-input add-item-height margin-left-sm'
         />
       </td>
       <td className='name-size name-small no-border-top'>

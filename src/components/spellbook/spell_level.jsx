@@ -150,11 +150,11 @@ export default function SpellLevelCard({
         <table className="spellbook-table">
           <thead>
             <tr>
-              <th className="dark-grey" style={{ width: 'var(--btn-width-sm)' }}></th>
-              <th className="dark-grey" style={{ fontSize: 'small', width: 'auto', textAlign: 'left' }}>
+              <th className="dark-grey col-btn-sm"></th>
+              <th className="dark-grey spell-table-header-title">
                 Domain spell
               </th>
-              {!isMobile() && (<th className="dark-grey" style={{ width: '30%' }}></th>)}
+              {!isMobile() && (<th className="dark-grey col-30"></th>)}
             </tr>
           </thead>
           <tbody>
@@ -163,7 +163,7 @@ export default function SpellLevelCard({
               const prepCount = slotForSpell ? slotForSpell.Prepared : 0;
               return (
                 <tr key={i}>
-                  <td className={i === 0 ? 'first' : ''} style={{ width: 'var(--btn-width-sm)' }}>
+                  <td className={`${i === 0 ? 'first' : ''} col-btn-sm`}>
                     <div className="card-side-div">
                       <div className="spell-slot-div">
                         <button
@@ -183,22 +183,21 @@ export default function SpellLevelCard({
                       </div>
                     </div>
                   </td>
-                  <td className={i === 0 ? 'first' : ''} style={{ width: 'auto' }}>
+                  <td className={`${i === 0 ? 'first' : ''} col-auto`}>
                     <button
-                      className="button-link"
-                      style={{ color: 'var(--black)' }}
+                      className="button-link spell-table-cell-name"
                       onClick={() => dispatch(addCardByLink({ links: item.Link, bonus: 0 }))}
                     >
                       {item.Name}
                     </button>
                     {showShortDescriptions && item['Short Description'] && (
-                      <div style={{ marginTop: '0.15rem', fontSize: '0.85em', color: 'var(--dark-grey)', textAlign: 'left' }}>
+                      <div className="spell-table-cell-desc">
                         {item['Short Description']}
                       </div>
                     )}
                   </td>
                   {!isMobile() && (
-                    <td className={i === 0 ? 'first' : ''} style={{ width: '30%', fontSize: 'small' }}>
+                    <td className={`${i === 0 ? 'first' : ''} col-30`}>
                       {item.School.split(' ')[0]}
                     </td>
                   )}
@@ -226,7 +225,7 @@ export default function SpellLevelCard({
               return (
                 <tr key={i}>
                   {page === 0 && (
-                    <td className={firstClass} style={{ width: 'var(--btn-width-sm)', maxWidth: 'var(--btn-width-sm)' }}>
+                    <td className={`${firstClass} col-btn-sm`}>
                       <button
                         className={`flat-button smaller ${inst.getLearnedSpells().map(x => x.Link).includes(item.Link) ? 'opacity-50' : ''}`}
                         onClick={() => dispatch(onLearnUnlearnSpell(item.Link))}
@@ -239,7 +238,7 @@ export default function SpellLevelCard({
                   )}
 
                   {page === 1 && (
-                    <td className={firstClass} style={{ width: 'var(--btn-width-sm)' }}>
+                    <td className={`${firstClass} col-btn-sm`}>
                       <div className='card-side-div'>
                         <div className='spell-slot-div'>
                           <button
@@ -264,7 +263,7 @@ export default function SpellLevelCard({
                   )}
 
                   {page === 2 && (
-                    <td className={firstClass} style={{ width: 'var(--btn-width-sm)', maxWidth: 'calc(var(--btn-width-sm)*1.4)', paddingRight: 0 }}>
+                    <td className={`${firstClass} col-btn-sm-max`}>
                       <div className='card-side-div'>
                         <div className='spell-slot-div2'>
                           <button
@@ -280,23 +279,22 @@ export default function SpellLevelCard({
                     </td>
                   )}
 
-                  <td className={firstClass} style={{ width: 'auto' }}>
+                  <td className={`${firstClass} col-auto`}>
                     <button
-                      className={'button-link' + schoolClass(item.School)}
-                      style={{ color: 'var(--black)' }}
+                      className={'button-link spell-table-cell-name' + schoolClass(item.School)}
                       onClick={() => dispatch(addCardByLink({ links: item.Link, bonus: 0 }))}
                     >
                       {item.Name}
                     </button>
                     {showShortDescriptions && item['Short Description'] && (
-                      <div style={{ marginTop: '0.15rem', fontSize: '0.85em', color: 'var(--dark-grey)', textAlign: 'left' }}>
+                      <div className="spell-table-cell-desc">
                         {item['Short Description']}
                       </div>
                     )}
                   </td>
 
                   {!(page === 1 && isMobile()) && (
-                    <td className={firstClass + schoolClass(item.School)} style={{ width: '30%', fontSize: 'small' }}>
+                    <td className={firstClass + schoolClass(item.School) + ' col-30'}>
                       {item.School.split(' ')[0]}
                     </td>
                   )}
