@@ -1,6 +1,6 @@
 import { loadFile, weightedRandom } from './utils';
 
-function itemQuality(shopLevel, partyLevel) {
+function itemQuality(shopLevel, partyLevel, rng) {
     let major = 0, medium = 0, minor = 0;
 
     if (partyLevel === 10) {
@@ -19,31 +19,30 @@ function itemQuality(shopLevel, partyLevel) {
     minor = Math.max(0, 100 - medium - major);
 
     const weights = [minor, medium, major];
-    const qualityOptions = ['Minor', 'Medium', 'Major'];
-    const selectedIndex = weightedRandom(weights);
-    return qualityOptions[selectedIndex];
+    const selectedIndex = weightedRandom(weights, rng);
+    return ['Minor', 'Medium', 'Major'][selectedIndex];
 }
 
-function newRandomItem(itemType, shopLevel, partyLevel, arcaneChance = 0.7, quality = null) {
+function newRandomItem(itemType, shopLevel, partyLevel, arcaneChance = 0.7, quality = null, rng = null) {
     if (quality === null) {
-        quality = itemQuality(shopLevel, partyLevel);
+        quality = itemQuality(shopLevel, partyLevel, rng);
     }
 
     const itemGenerators = {
-        'Good': () => newGood(),
-        'Ammo': () => newAmmo(),
-        'Weapon': () => newWeapon(shopLevel, partyLevel),
-        'Armor': () => newArmor(shopLevel, partyLevel),
-        'Shield': () => newShield(shopLevel, partyLevel),
-        'Magic Weapon': () => newMagicWeapon(shopLevel, quality),
-        'Magic Armor': () => newMagicArmor(shopLevel, quality),
-        'Potion': () => newPotion(shopLevel, quality),
-        'Ring': () => newRing(shopLevel, quality),
-        'Rod': () => newRod(shopLevel, quality),
-        'Staff': () => newStaff(shopLevel, quality),
-        'Wand': () => newWand(shopLevel, quality),
-        'Wondrous Item': () => newWondrous(shopLevel, quality),
-        'Scroll': () => newScroll(shopLevel, quality, arcaneChance)
+        'Good': () => newGood(rng),
+        'Ammo': () => newAmmo(rng),
+        'Weapon': () => newWeapon(shopLevel, partyLevel, rng),
+        'Armor': () => newArmor(shopLevel, partyLevel, rng),
+        'Shield': () => newShield(shopLevel, partyLevel, rng),
+        'Magic Weapon': () => newMagicWeapon(shopLevel, quality, rng),
+        'Magic Armor': () => newMagicArmor(shopLevel, quality, rng),
+        'Potion': () => newPotion(shopLevel, quality, rng),
+        'Ring': () => newRing(shopLevel, quality, rng),
+        'Rod': () => newRod(shopLevel, quality, rng),
+        'Staff': () => newStaff(shopLevel, quality, rng),
+        'Wand': () => newWand(shopLevel, quality, rng),
+        'Wondrous Item': () => newWondrous(shopLevel, quality, rng),
+        'Scroll': () => newScroll(shopLevel, quality, arcaneChance, rng)
     };
 
     return itemGenerators[itemType]();
@@ -80,11 +79,11 @@ function getItem(itemName, itemType) {
     return items;
 }
 
-function itemChoice(name, val = {}) {
+function itemChoice(name, val = {}, rng = null) {
     try {
         const table = loadFile(val.file ?? 'items')[name];
         const weights = table.map(item => item[val.quality ?? 'Chance'] + (val.mod ?? 0) * (item[val.quality ?? 'Chance'] > 0));
-        const chosenItem = table[weightedRandom(weights)];
+        const chosenItem = table[weightedRandom(weights, rng)];
 
         return removeUnusedAttributes(chosenItem);
     } catch (error) {
@@ -102,68 +101,74 @@ function removeUnusedAttributes(item) {
     return cleanItem;
 }
 
-function newGood() {
-    return itemChoice('Good');
+function newGood(rng) {
+    return itemChoice('Good', {}, rng);
 }
 
-function newAmmo() {
-    return itemChoice('Ammo');
+function newAmmo(rng) {
+    return itemChoice('Ammo', {}, rng);
 }
 
-function newWeapon(shopLevel, partyLevel) {
-    const weapon = itemChoice('Weapon', { mod: shopLevel });
+function rand(rng) {
+    return rng ? rng.nextFloat() : Math.random();
+}
+
+function newWeapon(shopLevel, partyLevel, rng) {
+    const weapon = itemChoice('Weapon', { mod: shopLevel }, rng);
     const perfectChance = Math.min((shopLevel + Math.sqrt(partyLevel)) / 10, 1);
-    if (Math.random() < perfectChance) {
+    if (rand(rng) < perfectChance) {
         weapon.Name += ', perfect';
         weapon.Cost += 300;
     }
     return weapon;
 }
 
-function newArmor(shopLevel, partyLevel) {
-    const armor = itemChoice('Armor', { mod: Math.sqrt(shopLevel) });
+function newArmor(shopLevel, partyLevel, rng) {
+    const armor = itemChoice('Armor', { mod: Math.sqrt(shopLevel) }, rng);
     const perfectChance = Math.min((shopLevel + Math.sqrt(partyLevel)) / 10, 1);
-    if (Math.random() < perfectChance) {
+    if (rand(rng) < perfectChance) {
         armor.Name += ', perfect';
         armor.Cost += 300;
     }
     return armor;
 }
 
-function newShield(shopLevel, partyLevel) {
-    const shield = itemChoice('Shield', { mod: Math.sqrt(shopLevel) });
+function newShield(shopLevel, partyLevel, rng) {
+    const shield = itemChoice('Shield', { mod: Math.sqrt(shopLevel) }, rng);
     const perfectChance = Math.min((shopLevel + Math.sqrt(partyLevel)) / 10, 1);
-    if (Math.random() < perfectChance) {
+    if (rand(rng) < perfectChance) {
         shield.Name += ', perfect';
         shield.Cost += 300;
     }
     return shield;
 }
 
-function newPotion(shopLevel, quality) {
-    return itemChoice('Potion', { quality: quality, mod: shopLevel });
+function newPotion(shopLevel, quality, rng) {
+    return itemChoice('Potion', { quality: quality, mod: shopLevel }, rng);
 }
 
-function newRing(shopLevel, quality) {
-    return itemChoice('Ring', { quality: quality, mod: shopLevel });
+function newRing(shopLevel, quality, rng) {
+    return itemChoice('Ring', { quality: quality, mod: shopLevel }, rng);
 }
 
-function newRod(shopLevel, quality) {
+function newRod(shopLevel, quality, rng) {
     if (quality === 'Minor') return null;
-    return itemChoice('Rod', { quality: quality, mod: shopLevel });
+    return itemChoice('Rod', { quality: quality, mod: shopLevel }, rng);
 }
 
-function newStaff(shopLevel, quality) {
+function newStaff(shopLevel, quality, rng) {
     if (quality === 'Minor') return null;
-    return itemChoice('Staff', { quality: quality, mod: shopLevel });
+    return itemChoice('Staff', { quality: quality, mod: shopLevel }, rng);
 }
 
-function newWand(shopLevel, quality) {
-    return itemChoice('Wand', { quality: quality, mod: shopLevel });
+function newWand(shopLevel, quality, rng) {
+    return itemChoice('Wand', { quality: quality, mod: shopLevel }, rng);
 }
 
-function newWondrous(shopLevel, quality) {
-    const id = Math.min(100, Math.floor(Math.random() * (1.5 * shopLevel)) + Math.ceil(Math.random() * 100));
+function newWondrous(shopLevel, quality, rng) {
+    const roll = rand(rng);
+    const roll2 = rand(rng);
+    const id = Math.min(100, Math.floor(roll * (1.5 * shopLevel)) + Math.ceil(roll2 * 100));
     const itemsData = (loadFile('items'))['Wondrous Item'];
     const item = itemsData.find(x => x.Id === id && x.Type === quality);
     if (item) {
@@ -172,34 +177,35 @@ function newWondrous(shopLevel, quality) {
     return null;
 }
 
-function newScroll(shopLevel, quality, arcaneChance = 0.7) {
+function newScroll(shopLevel, quality, arcaneChance = 0.7, rng = null) {
     arcaneChance = Math.max(Math.min(arcaneChance, 1), 0);
     const divineChance = 1 - arcaneChance;
-    const scrollType = ['Arcane', 'Divine'][weightedRandom([arcaneChance, divineChance])];
-    const level = itemChoice('Scroll Level', { quality: quality, mod: Math.sqrt(shopLevel), file: 'tables' });
+    const scrollType = ['Arcane', 'Divine'][weightedRandom([arcaneChance, divineChance], rng)];
+    const level = itemChoice('Scroll Level', { quality: quality, mod: Math.sqrt(shopLevel), file: 'tables' }, rng);
+    if (!level) return null;
     const scrollsData = (loadFile('scrolls'))[scrollType];
     const scrolls = scrollsData?.filter(x => x.Level === level.Level);
     if (!scrolls) return null;
-    const selectedScroll = weightedRandom(scrolls.map(x => x.Chance));
+    const selectedScroll = weightedRandom(scrolls.map(x => x.Chance), rng);
     const scroll = removeUnusedAttributes(scrolls[selectedScroll]);
     scroll.Source = scrollType;
     scroll.ItemType = 'Scroll';
     return scroll;
 }
 
-function newMagicWeapon(shopLevel, quality) {
+function newMagicWeapon(shopLevel, quality, rng) {
     const specificWeaponChance = {
         'Minor': 0.05,
         'Medium': 0.06,
         'Major': 0.14
     };
 
-    if (Math.random() <= specificWeaponChance[quality]) {
-        return itemChoice('Specific Weapon', { quality: quality, file: 'items' });
+    if (rand(rng) <= specificWeaponChance[quality]) {
+        return itemChoice('Specific Weapon', { quality: quality, file: 'items' }, rng);
     }
 
-    let weapon = itemChoice('Weapon', { mod: shopLevel });
-    const baseBonus = (itemChoice('Magic Weapon Base', { quality: quality, mod: Math.sqrt(shopLevel), file: 'tables' })).Name;
+    let weapon = itemChoice('Weapon', { mod: shopLevel }, rng);
+    const baseBonus = (itemChoice('Magic Weapon Base', { quality: quality, mod: Math.sqrt(shopLevel), file: 'tables' }, rng)).Name;
     let bonus = parseInt(baseBonus);
 
     const specialAbilityChance = {
@@ -209,7 +215,7 @@ function newMagicWeapon(shopLevel, quality) {
     };
     let chance = specialAbilityChance[quality] + Math.max((Math.sqrt(shopLevel) - 1) / 100, 0);
 
-    if (Math.random() <= chance) {
+    if (rand(rng) <= chance) {
         let weaponType = 'Magic Melee Weapon';
         if (weapon.Subtype.includes('Ranged')) {
             weaponType = 'Magic Ranged Weapon';
@@ -227,12 +233,12 @@ function newMagicWeapon(shopLevel, quality) {
             };
             chance = doubleAbilityChance[quality];
 
-            if (Math.random() <= chance) {
+            if (rand(rng) <= chance) {
                 rolls += 2;
                 continue;
             }
 
-            let specialAbility = itemChoice(weaponType, { quality: quality, file: 'tables' });
+            let specialAbility = itemChoice(weaponType, { quality: quality, file: 'tables' }, rng);
 
             if (abilityList.some(item => item.Name === specialAbility.Name)) {
                 rolls++;
@@ -271,28 +277,28 @@ function newMagicWeapon(shopLevel, quality) {
     return weapon;
 }
 
-function newMagicArmor(shopLevel, quality) {
+function newMagicArmor(shopLevel, quality, rng) {
     const specificItemChance = {
         'Minor': 0.04,
         'Medium': 0.06,
         'Major': 0.06
     };
 
-    if (Math.random() <= specificItemChance[quality]) {
-        const itemType = Math.random() < 0.5 ? 'Armor' : 'Shield';
-        return itemChoice(`Specific ${itemType}`, { quality: quality, mod: Math.sqrt(shopLevel), file: 'items' });
+    if (rand(rng) <= specificItemChance[quality]) {
+        const itemType = rand(rng) < 0.5 ? 'Armor' : 'Shield';
+        return itemChoice(`Specific ${itemType}`, { quality: quality, mod: Math.sqrt(shopLevel), file: 'items' }, rng);
     }
 
-    const bonusName = (itemChoice('Magic Armor Base', { quality: quality, mod: Math.sqrt(shopLevel), file: 'tables' })).Name;
+    const bonusName = (itemChoice('Magic Armor Base', { quality: quality, mod: Math.sqrt(shopLevel), file: 'tables' }, rng)).Name;
     const baseBonus = parseInt(bonusName[1]);
     let bonus = parseInt(baseBonus);
     const isArmor = bonusName.toLowerCase().includes('armor');
 
     let armor;
     if (isArmor) {
-        armor = (itemChoice('Armor', { mod: Math.sqrt(shopLevel) }));
+        armor = (itemChoice('Armor', { mod: Math.sqrt(shopLevel) }, rng));
     } else {
-        armor = (itemChoice('Shield', { mod: Math.sqrt(shopLevel) }));
+        armor = (itemChoice('Shield', { mod: Math.sqrt(shopLevel) }, rng));
     }
 
     const specialAbilityChance = {
@@ -302,7 +308,7 @@ function newMagicArmor(shopLevel, quality) {
     };
     let chance = specialAbilityChance[quality] + Math.max((Math.sqrt(shopLevel) - 1) / 100, 0);
 
-    if (Math.random() <= chance) {
+    if (rand(rng) <= chance) {
         const itemType = isArmor ? 'Magic Armor' : 'Magic Shield';
 
         const abilityList = [];
@@ -317,12 +323,12 @@ function newMagicArmor(shopLevel, quality) {
             };
             chance = doubleAbilityChance[quality];
 
-            if (Math.random() <= chance) {
+            if (rand(rng) <= chance) {
                 rolls += 2;
                 continue;
             }
 
-            const specialAbility = itemChoice(itemType, { quality: quality, file: 'tables' });
+            const specialAbility = itemChoice(itemType, { quality: quality, file: 'tables' }, rng);
             const mod = specialAbility['Cost Modifier'];
 
             const trimmedName = specialAbility.Name.slice(0, 5);

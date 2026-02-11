@@ -1,261 +1,95 @@
-import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from 'lz-string';
+import { encodeShopPayloadToBase64Url, decodeShopPayloadFromBase64Url } from './shopParamsCodec';
+import { generateShop } from './generateShop';
 import Shop from './shop';
-import {
-  loadFile,
-  getItemByRef,
-  getItemById,
-  getItemIdByRef,
-  getScrollById,
-  getScrollIdByLink,
-  getEffectById,
-  getEffectIdBySlug,
-} from './utils';
-
-/** Max length of compressed string for QR code (fits in medium-sized QR). */
-export const SHARE_QR_MAX_CHARS = 2500;
-
-const DELIM = '|';
-const VERSION = 'V2';
-const NO_BONUS = '-';
-/** Effect list prefix so decoder can tell "b|eList|..." from "b|N|p" when eList has one id (no comma). */
-const EFFECT_LIST_PREFIX = ',';
-
-/** Letter → file name from data/tables.json ShareFileMap. Decode uses this to know which file an id refers to. */
-function getShareFileMap() {
-  const tables = loadFile('tables');
-  const map = tables && tables.ShareFileMap && typeof tables.ShareFileMap === 'object' ? tables.ShareFileMap : null;
-  return map || { i: 'items', s: 'scrolls' };
-}
-
-/** File name → letter for encoding. */
-function getFileToLetter() {
-  const letterToFile = getShareFileMap();
-  const fileToLetter = {};
-  for (const [letter, file] of Object.entries(letterToFile)) fileToLetter[file] = letter;
-  return fileToLetter;
-}
+import { getItemByRef, shopTypes } from './utils';
 
 /**
- * Build share string: id-based with file letter (from tables.json ShareFileMap) for compression.
- * Format: V2|<nameLen>|<name>|<gold>|<count>|<entry>...
- * Entry type 0 (ref): 0|<f>|<id>|<bOr->|N|p  (bOr- = "-" for no bonus, or bonus number)  or  0|<f>|<id>|b|e1,e2|nameLen|name|N|p  for effects
- * Entry type 2 (custom): 2|<nameLen>|<name>|N|p
+ * Convert serialized shop (from generateShop) to shared format { name, gold, stock } for display.
  */
-function buildShareString(serializedShop) {
-  if (!serializedShop || !Array.isArray(serializedShop.Stock)) return null;
-  const shop = new Shop().load(serializedShop);
-  const inventory = shop.getInventory();
-  if (!inventory.length) return null;
-
-  const fileToLetter = getFileToLetter();
-  const name = (serializedShop.Name || '').toString();
-  const gold = Math.floor(Number(serializedShop.Gold) || 0);
-  const parts = [VERSION, String(name.length), name, String(gold)];
-
-  const entries = [];
-  for (const item of inventory) {
-    if (!item || (item.Number ?? 0) <= 0) continue;
-    const N = Math.min(99, Math.max(1, parseInt(item.Number, 10) || 1));
-    const totalPrice = (parseFloat(item.Cost) || 0) * N;
-    const p = Math.round(totalPrice * 100) / 100;
-
-    if (item.isCustom || !item.Link) {
-      const n = (item.Name || 'Unknown').toString();
-      entries.push([2, n.length, n, N, p]);
-      continue;
-    }
-
-    const linkStr = typeof item.Link === 'string' ? item.Link : null;
-    const linkArray = Array.isArray(item.Link) ? item.Link : null;
-
-    if (linkStr && linkStr.startsWith('scrolls/')) {
-      const scrollId = getScrollIdByLink(linkStr);
-      if (scrollId == null) continue;
-      const f = fileToLetter['scrolls'] || 's';
-      entries.push([0, f, scrollId, NO_BONUS, N, p]);
-      continue;
-    }
-
-    if (linkArray && item.Name && item.BaseItemType) {
-      const baseLink = `items/${item.BaseItemType}/${linkArray[0]}`;
-      const itemId = getItemIdByRef(baseLink);
-      if (itemId == null) continue;
-      const f = fileToLetter['items'] || 'i';
-      const bonus = item.Bonus != null && !isNaN(item.Bonus) ? parseInt(item.Bonus, 10) : 0;
-      const effectIds = (item.Ability || [])
-        .map(a => (a && a.Link ? getEffectIdBySlug(a.Link) : null))
-        .filter(id => id != null);
-      const n = (item.Name || '').toString();
-      if (effectIds.length > 0) {
-        const eList = EFFECT_LIST_PREFIX + effectIds.join(',');
-        entries.push([0, f, itemId, bonus, eList, n.length, n, N, p]);
-      } else {
-        entries.push([0, f, itemId, bonus, N, p]);
-      }
-      continue;
-    }
-
-    if (linkStr && linkStr.length > 0) {
-      const itemId = getItemIdByRef(linkStr);
-      if (itemId == null) continue;
-      const f = fileToLetter['items'] || 'i';
-      const bonus = item.Bonus != null && !isNaN(item.Bonus) ? parseInt(item.Bonus, 10) : null;
-      const bOrNo = bonus != null && !isNaN(bonus) ? String(bonus) : NO_BONUS;
-      entries.push([0, f, itemId, bOrNo, N, p]);
-      continue;
-    }
-  }
-
-  if (!entries.length) return null;
-  parts.push(String(entries.length));
-  for (const entry of entries) {
-    parts.push(entry.join(DELIM));
-  }
-  return parts.join(DELIM);
-}
-
-/**
- * Resolve id in a given file (from ShareFileMap) to link. Returns link string or null.
- */
-function idToLink(fileLetter, idNum) {
-  const letterToFile = getShareFileMap();
-  const file = letterToFile[fileLetter];
-  if (!file || idNum == null || typeof idNum !== 'number') return null;
-  if (file === 'items') {
-    const ref = getItemById(idNum);
-    return ref ? `items/${ref.itemType}/${ref.item.Link}` : null;
-  }
-  if (file === 'scrolls') {
-    const ref = getScrollById(idNum);
-    return ref ? `scrolls/${ref.source}/${ref.scroll.Link}` : null;
-  }
-  return null;
-}
-
-/**
- * Parse custom-format share string into { name, gold, stock }.
- * V2: type 0 = 0|<f>|<id>|<bOr->|N|p  (bOr- = "-" no bonus, else bonus)  or  0|<f>|<id>|b|e1,e2|nameLen|name|N|p  for effects.
- * Type 2: 2|nameLen|name|N|p.
- */
-function parseShareString(raw) {
-  if (!raw || typeof raw !== 'string') return null;
-  const segments = raw.split(DELIM);
-  if (segments.length < 5 || segments[0] !== VERSION) return null;
-  let idx = 1;
-  const nameLen = parseInt(segments[idx++], 10);
-  if (isNaN(nameLen) || nameLen < 0) return null;
-  const name = segments[idx++];
-  if (name == null || name.length !== nameLen) return null;
-  const gold = parseInt(segments[idx++], 10);
-  const count = parseInt(segments[idx++], 10);
-  if (isNaN(count) || count < 0) return null;
-
-  const costPerUnit = (n, pr) => (n > 0 ? pr / n : 0);
+function serializedShopToSharedFormat(serialized) {
+  if (!serialized || !Array.isArray(serialized.Stock)) return { name: '', gold: 0, stock: [] };
+  const s = new Shop().load(serialized);
+  const inv = s.getInventory();
   const stock = [];
-
-  for (let i = 0; i < count && idx < segments.length; i++) {
-    const t = parseInt(segments[idx++], 10);
-    if (t === 2) {
-      const nameLen2 = parseInt(segments[idx++], 10);
-      const name2 = segments[idx++];
-      const N = parseInt(segments[idx++], 10) || 1;
-      const p = parseFloat(segments[idx++]) || 0;
-      stock.push({ Name: name2 || 'Unknown', Number: N, Cost: costPerUnit(N, p), isCustom: true });
-      continue;
-    }
-    if (t === 0) {
-      const f = segments[idx++];
-      const idNum = parseInt(segments[idx++], 10);
-      const link = idToLink(f, idNum);
-      const fourth = segments[idx];
-      const nextSeg = segments[idx + 1];
-      const isNoBonus = fourth === NO_BONUS;
-      const isEffects = nextSeg != null && String(nextSeg).startsWith(EFFECT_LIST_PREFIX);
-      if (isEffects && !isNoBonus) {
-        const b = parseInt(segments[idx], 10);
-        const eList = segments[idx + 1];
-        const nameLen3 = parseInt(segments[idx + 2], 10);
-        const name3 = segments[idx + 3];
-        const N3 = parseInt(segments[idx + 4], 10) || 1;
-        const p3 = parseFloat(segments[idx + 5]) || 0;
-        idx += 6;
-        const effectIds = eList.slice(1).split(',').map(s => parseInt(s, 10)).filter(n => !isNaN(n));
-        if (link) {
-          stock.push({
-            link,
-            Bonus: b,
-            effectIds,
-            Name: name3 || undefined,
-            Number: N3,
-            Cost: costPerUnit(N3, p3),
-          });
-        }
-      } else if (isNoBonus) {
-        const N0 = parseInt(segments[idx + 1], 10) || 1;
-        const p0 = parseFloat(segments[idx + 2]) || 0;
-        idx += 3;
-        if (link) {
-          stock.push({
-            link,
-            Number: N0,
-            Cost: costPerUnit(N0, p0),
-          });
-        }
-      } else {
-        const b = parseInt(segments[idx], 10);
-        const N2 = parseInt(segments[idx + 1], 10) || 1;
-        const p2 = parseFloat(segments[idx + 2]) || 0;
-        idx += 3;
-        if (link) {
-          stock.push({
-            link,
-            Bonus: b,
-            Number: N2,
-            Cost: costPerUnit(N2, p2),
-          });
-        }
-      }
+  for (let i = 0; i < serialized.Stock.length; i++) {
+    const entry = serialized.Stock[i];
+    const item = inv[i];
+    if (!item) continue;
+    const cost = item.Cost;
+    const num = entry.Number ?? 1;
+    if (entry.isCustom) {
+      stock.push({ Name: entry.Name ?? 'Unknown', Number: num, Cost: cost, isCustom: true });
+    } else {
+      const o = { link: entry.link, Number: num, Cost: cost };
+      if (entry.Bonus != null) o.Bonus = entry.Bonus;
+      if (Array.isArray(entry.effectIds) && entry.effectIds.length) o.effectIds = entry.effectIds;
+      if (entry.Name) o.Name = entry.Name;
+      stock.push(o);
     }
   }
-
-  return { name, gold, stock };
+  return {
+    name: String(serialized.Name ?? ''),
+    gold: Number(serialized.Gold) || 0,
+    stock,
+  };
 }
 
 /**
- * Compress shop for sharing. Returns { ok: true, payload: encodedString } or { ok: false, error: '...' }.
+ * Encode shop for QR share (seed + params + custom items). Returns { ok: true, payload: base64UrlString } or { ok: false, error }.
+ * Generated items come from seed; custom items (isCustom) are encoded losslessly (name, number, price).
  */
 export function compressShopForShare(serializedShop) {
-  const raw = buildShareString(serializedShop);
-  if (!raw) return { ok: false, error: 'Shop has no items' };
-  const compressed = compressToEncodedURIComponent(raw);
-  if (compressed.length > SHARE_QR_MAX_CHARS) {
-    return { ok: false, error: 'Shop is too large and cannot be shared via QR code.' };
-  }
-  return { ok: true, payload: compressed };
+  if (!serializedShop) return { ok: false, error: 'No shop to share' };
+  const seed = serializedShop.Seed;
+  if (seed == null) return { ok: false, error: 'Regenerate the shop to share it (seed is required).' };
+  const types = shopTypes();
+  const shopTypeIndex = types.indexOf(serializedShop.ShopType);
+  const params = {
+    seed: (seed >>> 0),
+    shopTypeIndex: shopTypeIndex >= 0 ? shopTypeIndex : 0,
+    level: Math.max(0, Math.min(10, serializedShop.Level ?? 0)),
+    cityLevel: Math.max(0, Math.min(5, serializedShop.CityLevel ?? 0)),
+    playerLevel: Math.max(1, Math.min(99, serializedShop.PlayerLevel ?? 1)),
+  };
+  const customItems = (serializedShop.Stock || [])
+    .filter(e => e && e.isCustom)
+    .map(e => ({
+      name: e.Name ?? 'Custom',
+      number: Math.max(1, Math.min(99, (e.Number | 0) || 1)),
+      price: parseFloat(e.Cost) || 0,
+    }));
+  const payload = encodeShopPayloadToBase64Url(params, customItems);
+  return { ok: true, payload };
 }
 
 /**
- * Parse and validate shared shop string. Returns { ok: true, shop: { name, gold, stock } } or { ok: false, error }.
+ * Decode QR payload and regenerate shop. Returns { ok: true, shop: { name, gold, stock } } or { ok: false, error }.
+ * Merges generated stock (from seed) with decoded custom items.
  */
 export function parseSharedShop(encodedString) {
   if (!encodedString || typeof encodedString !== 'string') {
     return { ok: false, error: 'Invalid data' };
   }
-  let raw;
-  try {
-    raw = decompressFromEncodedURIComponent(encodedString.trim());
-    if (!raw) return { ok: false, error: 'Invalid or corrupted data' };
-  } catch (e) {
-    return { ok: false, error: 'Invalid or corrupted data' };
+  const decoded = decodeShopPayloadFromBase64Url(encodedString.trim());
+  if (!decoded) return { ok: false, error: 'Invalid or corrupted data' };
+  const { params, customItems } = decoded;
+  const serialized = generateShop(params.seed, params);
+  if (!serialized) return { ok: false, error: 'Could not generate shop' };
+  for (const c of customItems) {
+    serialized.Stock.push({
+      isCustom: true,
+      Name: c.name,
+      Number: c.number,
+      Cost: c.price,
+    });
   }
-  const parsed = parseShareString(raw);
-  if (!parsed) return { ok: false, error: 'Invalid data' };
+  const shop = serializedShopToSharedFormat(serialized);
   return {
     ok: true,
     shop: {
-      name: String(parsed.name),
-      gold: parsed.gold,
-      stock: parsed.stock,
+      name: String(shop.name),
+      gold: shop.gold,
+      stock: shop.stock,
     },
   };
 }

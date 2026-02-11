@@ -81,16 +81,17 @@ class Shop {
         this.ArcaneChance = data.ArcaneChance;
         this.ShopType = data.ShopType;
         this.ItemModifier = { ...data.ItemModifier };
+        if (data.Seed != null) this.Seed = data.Seed;
 
         return this;
     }
 
-    generateInventory() {
+    generateInventory(rng = null) {
         this.Stock = [];
         for (const key in this.ItemModifier) {
-            for (let i = 0; i < this.modItemNumber(key); i++) {
-                const newItem = newRandomItem(key, this.Level, this.PlayerLevel, this.ArcaneChance);
-                this.addItem(newItem, key);
+            for (let i = 0; i < this.modItemNumber(key, rng); i++) {
+                const newItem = newRandomItem(key, this.Level, this.PlayerLevel, this.ArcaneChance, null, rng);
+                this.addItem(newItem, key, rng);
             }
         }
 
@@ -98,13 +99,15 @@ class Shop {
         while (this.getInventoryValue() > this.Gold * 0.85 && this.Stock.length > 1) {
             this.Stock.pop();
         }
-        this.setGold(Math.max(this.Gold - this.getInventoryValue(), Math.random() * 200));
+        const goldNoise = rng ? Math.floor(rng.nextFloat() * 200) : Math.random() * 200;
+        this.setGold(Math.max(this.Gold - this.getInventoryValue(), goldNoise));
         this.sortByType();
     }
 
-    addItem(addedItem, itemType) {
+    addItem(addedItem, itemType, rng = null) {
         if (!addedItem) return;
         let found = false;
+        const priceMod = rng ? Math.floor(rng.nextFloat() * 41) - 20 : Math.floor(Math.random() * 41) - 20;
         const isMagic = itemType === 'Magic Weapon' || itemType === 'Magic Armor';
         const hasAbilities = Array.isArray(addedItem.Link) || (addedItem.Ability && addedItem.Ability.length > 0);
         const simpleBonus = !hasAbilities && addedItem.Bonus != null && addedItem.BaseItemType && typeof addedItem.Link === 'string';
@@ -118,7 +121,7 @@ class Shop {
                 }
             }
             if (!found) {
-                addedItem.PriceModifier = Math.floor(Math.random() * 41) - 20;
+                addedItem.PriceModifier = priceMod;
                 addedItem.Number = 1;
                 addedItem.ItemType = itemType;
                 this.Stock.push(addedItem);
@@ -140,7 +143,7 @@ class Shop {
                     link: baseLink,
                     Bonus: bonusNum,
                     Number: 1,
-                    PriceModifier: Math.floor(Math.random() * 41) - 20,
+                    PriceModifier: priceMod,
                     ItemType: itemType,
                     CostOverride: addedItem.Cost,
                 });
@@ -160,7 +163,7 @@ class Shop {
                 this.Stock.push({
                     link: refLink,
                     Number: 1,
-                    PriceModifier: Math.floor(Math.random() * 41) - 20,
+                    PriceModifier: priceMod,
                     ItemType: itemType,
                 });
             }
@@ -175,26 +178,27 @@ class Shop {
                 }
             }
             if (!found) {
-                // Custom item added by user: save completely as full object (no ref)
                 const fullItem = {
                     isCustom: true,
                     Name: cap(addedItem.Name),
                     ItemType: itemType,
                     Cost: addedItem.Cost !== undefined ? addedItem.Cost : 1,
                     Number: 1,
-                    PriceModifier: Math.floor(Math.random() * 41) - 20,
+                    PriceModifier: priceMod,
                 };
                 this.Stock.push(fullItem);
             }
         }
     }
 
-    modItemNumber(key) {
+    modItemNumber(key, rng = null) {
         let num = this.ItemModifier[key];
         num *= 1 + 0.1 * (this.PlayerLevel - 1);
         num *= 1 + 0.1 * (this.CityLevel - 1);
         num *= 1 + 0.05 * this.Level;
-        return Math.floor(num + (Math.random() < num - Math.floor(num) ? 1 : 0));
+        const frac = num - Math.floor(num);
+        const addOne = rng ? (rng.nextFloat() < frac) : (Math.random() < frac);
+        return Math.floor(num) + (addOne ? 1 : 0);
     }
 
     baseGold(PlayerLevel, Level) {
@@ -428,7 +432,7 @@ class Shop {
     }
 
     serialize() {
-        return {
+        const out = {
             Id: this.Id,
             Name: this.Name,
             Level: this.Level,
@@ -442,6 +446,8 @@ class Shop {
             ShopType: this.ShopType,
             ItemModifier: this.ItemModifier,
         };
+        if (this.Seed != null) out.Seed = this.Seed;
+        return out;
     }
 }
 

@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import Shop from '../../lib/shop';
+import { createPrng } from '../../lib/prng';
 import * as db from '../../lib/storage';
 import { serialize } from '../../lib/utils';
 
@@ -39,7 +40,9 @@ export const shopSlice = createSlice({
       if (!state.shop) return;
       const s = new Shop().load(state.shop);
       s.template();
-      s.generateInventory();
+      const seed = (Math.random() * 0x100000000) >>> 0;
+      s.Seed = seed;
+      s.generateInventory(createPrng(seed));
       db.setShop(s);
       state.shop = serialize(s);
 
