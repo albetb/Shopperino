@@ -202,14 +202,25 @@ tr {
   text-align: center;
 }
 
+/* Desktop: minimum QR size so it stays scannable on large screens */
+.share-shop-modal-box img {
+  min-width: 300px;
+  min-height: 300px;
+  max-width: 100%;
+  height: auto;
+}
+
 @media (max-width: 760px) {
   .share-shop-modal-box {
-    width: 90vw;
+    width: 85vw;
+    max-width: 85vw;
   }
 
   .share-shop-modal-box img {
-    width: 70vw;
+    width: 100%;
+    min-width: 80vw;
+    max-width: 88vw;
+    min-height: unset;
     height: auto;
-    max-width: none;
   }
 }
