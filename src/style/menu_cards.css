@@ -156,7 +156,6 @@ tr {
 @media (max-width: 768px) {
   .cards {
     top: 3.9rem;
-    margin-left: 2%;
     width: 92%;
   }
 
