@@ -1,14 +1,19 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Shop from '../../lib/shop';
 import { sharedStockToDisplayItems } from '../../lib/shopShare';
-import { isMobile, trimLine, getEffectById } from '../../lib/utils';
+import { formatNumber, getEffectById } from '../../lib/utils';
 import { addCardByLink, clearSharedShop } from '../../store/slices/appSlice';
 import { updateShop } from '../../store/slices/shopSlice';
 import useLongPress from '../hooks/use_long_press';
-import AddItemForm from './add_item_form';
+import { useSortedItems } from './hooks/useSortedItems';
+import { useShopLabels } from './hooks/useShopLabels';
 import DeletePopup from './delete_popup';
+import ShopTableBody from './ShopTableBody';
+import ShopTableHeader from './ShopTableHeader';
 import '../../style/shop_inventory.css';
+
+const LONGPRESS_TIME = 400;
 
 export default function ShopInventory() {
   const dispatch = useDispatch();
@@ -21,24 +26,34 @@ export default function ShopInventory() {
     itemName: '',
     itemType: '',
     itemNumber: 0,
-    position: { x: 0, y: 0 }
+    position: { x: 0, y: 0 },
   });
   const [isLongPress, setIsLongPress] = useState(false);
-  const LONGPRESS_TIME = 400;
 
-  // --- Redux selectors ---
-  const sharedShop = useSelector(state => state.app.sharedShop);
-  const rawShop = useSelector(state => state.shop.shop);
+  const sharedShop = useSelector((state) => state.app.sharedShop);
+  const rawShop = useSelector((state) => state.shop.shop);
   const isViewOnly = !!sharedShop;
   const items = isViewOnly
     ? (Array.isArray(sharedShop.stock) ? sharedStockToDisplayItems(sharedShop.stock) : [])
     : (rawShop ? new Shop().load(rawShop).getInventory() : []);
   const shopName = isViewOnly ? (sharedShop.name ?? 'Shared shop') : (rawShop?.Name || '');
   const gold = isViewOnly ? (Number(sharedShop.gold) || 0) : (rawShop?.Gold ?? 0);
-  const cityNameFromRedux = useSelector(state => state.city.city?.Name) || '';
-  const cityName = isViewOnly ? '' : cityNameFromRedux;
+  const cityFromRedux = useSelector((state) => state.city.city?.Name) || '';
+  const cityName = isViewOnly ? '' : cityFromRedux;
 
-  // --- Handlers ---
+  const sortedItems = useSortedItems(items, sortColumn, sortDesc);
+  const { shopLabel, cityLabel } = useShopLabels(shopName, cityName);
+  const hasItems = items.some((i) => (i.Number ?? 0) > 0);
+
+  const handleSort = (col) => {
+    if (sortColumn === col) {
+      setSortDesc((d) => !d);
+    } else {
+      setSortColumn(col);
+      setSortDesc(col === 'name' || col === 'type');
+    }
+  };
+
   const handleDeleteItemClick = (e, name, type, number) => {
     if (!isLongPress) {
       const pos = e.changedTouches?.length
@@ -51,10 +66,14 @@ export default function ShopInventory() {
   const handleLongPressDelete = (name, type, number) => {
     setIsLongPress(true);
     const key = `${name}-${type}`;
-    setDeletingItems(prev => ({ ...prev, [key]: true }));
+    setDeletingItems((prev) => ({ ...prev, [key]: true }));
     setTimeout(() => {
       dispatch(updateShop(['sell', name, type, number]));
-      setDeletingItems(prev => { const np = { ...prev }; delete np[key]; return np; });
+      setDeletingItems((prev) => {
+        const np = { ...prev };
+        delete np[key];
+        return np;
+      });
       setIsLongPress(false);
     }, LONGPRESS_TIME);
   };
@@ -64,62 +83,15 @@ export default function ShopInventory() {
     setShowAddItemForm(false);
   };
 
+  const handleOpenCard = (links, bonus) => {
+    dispatch(addCardByLink({ links, bonus }));
+  };
+
   const longPressEvent = useLongPress(
     (_name, _type, number) => handleLongPressDelete(_name, _type, number),
-    () => { },
+    () => {},
     { shouldPreventDefault: true, delay: LONGPRESS_TIME }
   );
-
-  // don’t render if no items at all
-  const handleSort = (col) => {
-    if (sortColumn === col) {
-      setSortDesc((d) => !d);
-    } else {
-      setSortColumn(col);
-      setSortDesc(col === 'name' || col === 'type');
-    }
-  };
-
-  const sortedItems = useMemo(() => {
-    const list = items.filter((i) => i.Number > 0);
-    if (!sortColumn) return list;
-    const mult = sortDesc ? 1 : -1;
-    return [...list].sort((a, b) => {
-      let cmp = 0;
-      if (sortColumn === 'number') cmp = (a.Number ?? 0) - (b.Number ?? 0);
-      else if (sortColumn === 'name') cmp = (a.Name || '').localeCompare(b.Name || '');
-      else if (sortColumn === 'type') cmp = (a.ItemType || '').localeCompare(b.ItemType || '');
-      else if (sortColumn === 'cost') cmp = (parseFloat(a.Cost) || 0) - (parseFloat(b.Cost) || 0);
-      return mult * cmp;
-    });
-  }, [items, sortColumn, sortDesc]);
-
-  const hasItems = items.some(i => (i.Number ?? 0) > 0);
-
-  const formatNumber = num => {
-    const n = parseFloat(num);
-    if (isNaN(n)) return '0';
-    let [intPart, decPart] = n.toFixed(2).split('.');
-    const sep = "'";
-    const rev = intPart.split('').reverse().join('');
-    const fmtInt = rev.match(/.{1,3}/g).join(sep).split('').reverse().join('');
-    let decimals = '';
-    if (decPart !== '00') {
-      // if only first decimal digit is non‑zero (e.g. 0.10, 0.30), show a single decimal
-      if (decPart[1] === '0') {
-        decimals = `.${decPart[0]}`;
-      } else {
-        decimals = `.${decPart}`;
-      }
-    }
-    return `${fmtInt}${decimals}`;
-  };
-
-  const shopLabel = () => trimLine(shopName, isMobile() ? 20 : 30);
-  const cityLabel = () =>
-    cityName
-      ? `from ${trimLine(cityName, isMobile() ? 26 : 40)}`
-      : '';
 
   return (
     <>
@@ -135,18 +107,20 @@ export default function ShopInventory() {
           </div>
         </div>
         {(isViewOnly || hasItems) && (
-        <div className={`money-box ${isViewOnly ? 'money-box-inline' : ''}`}>
-          {isViewOnly && (
-            <button
-              type="button"
-              className="modern-button small-middle"
-              onClick={() => dispatch(clearSharedShop())}
-            >
-              Close
-            </button>
-          )}
-          <h4><b>Gold: {formatNumber(gold)}</b></h4>
-        </div>
+          <div className={`money-box ${isViewOnly ? 'money-box-inline' : ''}`}>
+            {isViewOnly && (
+              <button
+                type="button"
+                className="modern-button small-middle"
+                onClick={() => dispatch(clearSharedShop())}
+              >
+                Close
+              </button>
+            )}
+            <h4>
+              <b>Gold: {formatNumber(gold)}</b>
+            </h4>
+          </div>
         )}
       </div>
 
@@ -160,104 +134,33 @@ export default function ShopInventory() {
         </p>
       )}
 
-      <table className={`shop-table ${showAddItemForm ? "shop-table-adding" : ""} ${hasItems ? '' : 'shop-table-empty'}`}>
-        <thead>
-          <tr>
-            {(['number', 'name', 'type', 'cost']).map((col) => {
-              const label = col === 'number' ? '#' : col === 'name' ? 'Name' : col === 'type' ? 'Type' : 'Cost';
-              const isActive = sortColumn === col;
-              const thClass = col === 'number' ? 'number-size' : col === 'name' ? 'name-size' : col === 'type' ? 'type-size' : 'cost-size';
-              return (
-                <th
-                  key={col}
-                  className={`${thClass} sortable th-sortable-muted ${isActive ? 'sort-active' : ''}`}
-                  onClick={() => handleSort(col)}
-                >
-                  {label}
-                  {isActive && (
-                    <span className="sort-arrow" aria-hidden="true">
-                      {sortDesc ? ' ↓' : ' ↑'}
-                    </span>
-                  )}
-                </th>
-              );
-            })}
-            {!isViewOnly && <th className="action-size"></th>}
-          </tr>
-        </thead>
-        <tbody>
-          {sortedItems.map((item, idx) => {
-            const key = `${item.Name}-${item.ItemType}-${idx}`;
-            const abbrevType = isMobile() && item.ItemType === 'Wondrous Item'
-              ? 'W. Item'
-              : item.ItemType;
-            const itemBonus = item.Bonus != null && !isNaN(item.Bonus)
-              ? item.Bonus
-              : item.Name.includes("+")
-                ? parseInt(item.Name.split("+")[1], 10)
-                : item.Name.includes("perfect")
-                  ? -1
-                  : 0;
-
-            return (
-              <tr key={key} className={deletingItems[`${item.Name}-${item.ItemType}`] ? 'deleting' : ''}>
-                <td className="align-right td-muted">{item.Number}</td>
-                <td className="td-muted">
-                  {item.Link ? (
-                    <button
-                      type="button"
-                      className="button-link"
-                      onClick={() => {
-                        const links = Array.isArray(item.effectIds) && item.effectIds.length
-                          ? [item.Link, ...item.effectIds.map(id => getEffectById(id)?.Link).filter(Boolean)]
-                          : item.Link;
-                        dispatch(addCardByLink({ links, bonus: itemBonus }));
-                      }}
-                    >
-                      {item.Name}
-                    </button>
-                  ) : (
-                    item.Name
-                  )}
-                </td>
-                <td className="td-muted">{abbrevType}</td>
-                <td className="td-muted">{formatNumber(item.Cost)}</td>
-                {!isViewOnly && (
-                  <td className="td-action">
-                    <button
-                      className="flat-button smaller btn-cell-muted"
-                      onClick={e => handleDeleteItemClick(e, item.Name, item.ItemType, item.Number)}
-                      onMouseDown={e => longPressEvent.onMouseDown(e, [item.Name, item.ItemType, item.Number])}
-                      onTouchStart={e => longPressEvent.onTouchStart(e, [item.Name, item.ItemType, item.Number])}
-                      onMouseUp={longPressEvent.onMouseUp}
-                      onMouseLeave={longPressEvent.onMouseLeave}
-                      onTouchEnd={e => {
-                        longPressEvent.onTouchEnd(e);
-                        handleDeleteItemClick(e, item.Name, item.ItemType, item.Number);
-                      }}
-                    >
-                      <span className="material-symbols-outlined">remove_shopping_cart</span>
-                    </button>
-                  </td>
-                )}
-              </tr>
-            );
-          })}
-          {!isViewOnly && hasItems && showAddItemForm && (
-            <AddItemForm
-              onAddItem={handleAddItem}
-              items={items}
-              setShowAddItemForm={setShowAddItemForm}
-            />
-          )}
-        </tbody>
+      <table
+        className={`shop-table ${showAddItemForm ? 'shop-table-adding' : ''} ${hasItems ? '' : 'shop-table-empty'}`}
+      >
+        <ShopTableHeader
+          sortColumn={sortColumn}
+          sortDesc={sortDesc}
+          onSort={handleSort}
+          isViewOnly={isViewOnly}
+        />
+        <ShopTableBody
+          sortedItems={sortedItems}
+          items={items}
+          isViewOnly={isViewOnly}
+          showAddItemForm={showAddItemForm}
+          hasItems={hasItems}
+          deletingItems={deletingItems}
+          onAddItem={handleAddItem}
+          setShowAddItemForm={setShowAddItemForm}
+          onDeleteClick={handleDeleteItemClick}
+          longPressHandlers={longPressEvent}
+          onOpenCard={handleOpenCard}
+          getEffectById={getEffectById}
+        />
       </table>
 
       {!isViewOnly && hasItems && !showAddItemForm && (
-        <button
-          className="add-item-button medium-long"
-          onClick={() => setShowAddItemForm(true)}
-        >
+        <button className="add-item-button medium-long" onClick={() => setShowAddItemForm(true)}>
           Add Item
         </button>
       )}

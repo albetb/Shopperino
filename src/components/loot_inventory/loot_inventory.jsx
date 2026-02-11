@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import Loot from '../../lib/loot';
-import { isMobile, trimLine } from '../../lib/utils';
+import { formatNumber, isMobile, trimLine } from '../../lib/utils';
 import { addCardByLink } from '../../store/slices/appSlice';
 import '../../style/shop_inventory.css';
 
@@ -22,16 +22,6 @@ export default function LootInventory() {
       </p>
     );
   }
-
-  const formatNumber = num => {
-    const n = parseFloat(num);
-    if (isNaN(n)) return '0';
-    let [intPart, decPart] = n.toFixed(2).split('.');
-    const sep = "'";
-    const rev = intPart.split('').reverse().join('');
-    const fmtInt = rev.match(/.{1,3}/g).join(sep).split('').reverse().join('');
-    return `${fmtInt}.${decPart}`.replace('.00', '');
-  };
 
   const timeLabel = () => trimLine(lootName, isMobile() ? 20 : 30);
 

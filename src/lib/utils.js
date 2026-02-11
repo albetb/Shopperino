@@ -89,6 +89,22 @@ export function isMobile() {
   return window.innerWidth <= 760;
 }
 
+/** Format a number with thousands separator (') and optional decimals (e.g. 1'234.5). */
+export function formatNumber(num) {
+  const n = parseFloat(num);
+  if (isNaN(n)) return '0';
+  const [intPart, decPart] = n.toFixed(2).split('.');
+  const sep = "'";
+  const rev = intPart.split('').reverse().join('');
+  const fmtInt = rev.match(/.{1,3}/g).join(sep).split('').reverse().join('');
+  let decimals = '';
+  if (decPart !== '00') {
+    if (decPart[1] === '0') decimals = `.${decPart[0]}`;
+    else decimals = `.${decPart}`;
+  }
+  return `${fmtInt}${decimals}`;
+}
+
 export function trimLine(string, endLine = 11) {
   if (string) {
     const dot = string.length > endLine ? '…' : '';

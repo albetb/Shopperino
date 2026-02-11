@@ -1,4 +1,6 @@
 import { newRandomItem, itemRefLink } from './item';
+import { computeTrueCost } from './shopPricing';
+import { passingTime as runPassingTime } from './shopSimulation';
 import { cap, getItemByRef, loadFile, newGuid, shopTypes } from './utils';
 
 const BASE_ARCANE_CHANCE = 0.7;
@@ -271,12 +273,7 @@ class Shop {
     }
 
     trueCost(item, forParty = true) {
-        if (!item) return 0;
-        const rep = forParty ? this.Reputation * 2 : 0;
-        const mod = (100 + (item.PriceModifier ?? 0) - rep + this.CityLevel) / 100;
-        let cost = Math.max((parseFloat(item.Cost) || 0) * mod, 0.01);
-        const dec = cost < 100 ? 1 : (cost < 1000 ? 5 : 10);
-        return parseFloat(cost < 1 ? cost.toFixed(2) : Math.round(cost / dec) * dec);
+        return computeTrueCost(item, forParty, this.Reputation, this.CityLevel);
     }
 
     setGold(gold) {
@@ -301,25 +298,7 @@ class Shop {
     //#region time
 
     passingTime(hours = 0, days = 0) {
-        const time = Math.min(hours + days * 24, 7 * 24); // max 1 week for performance reason
-        for (let i = 0; i < time; i++) {
-            this.Time++;
-            if (this.Stock && this.Stock?.length !== 0) {
-                // Invest some Gold and gain levels
-                if (this.Gold > this.baseGold(this.PlayerLevel, this.Level)) {
-                    this.setGold(this.Gold * 0.9);
-                    this.setShopLevel(this.Level + 0.01 * (10 - parseInt(this.Level)));
-                }
-                // Spend a little amount of Gold per day
-                this.setGold(this.Gold - (this.Time % 3 === 0 ? 1 : 0));
-                this.sellSomething();
-                // ReStock items every day
-                if (this.Time % 24 === 0) {
-                    this.reStock();
-                }
-            }
-        }
-        this.sortByType();
+        runPassingTime(this, hours, days);
     }
 
     sellSomething() {
