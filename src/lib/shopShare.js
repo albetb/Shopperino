@@ -17,6 +17,8 @@ export const SHARE_QR_MAX_CHARS = 2500;
 const DELIM = '|';
 const VERSION = 'V2';
 const NO_BONUS = '-';
+/** Effect list prefix so decoder can tell "b|eList|..." from "b|N|p" when eList has one id (no comma). */
+const EFFECT_LIST_PREFIX = ',';
 
 /** Letter → file name from data/tables.json ShareFileMap. Decode uses this to know which file an id refers to. */
 function getShareFileMap() {
@@ -84,7 +86,12 @@ function buildShareString(serializedShop) {
         .map(a => (a && a.Link ? getEffectIdBySlug(a.Link) : null))
         .filter(id => id != null);
       const n = (item.Name || '').toString();
-      entries.push([0, f, itemId, bonus, effectIds.join(','), n.length, n, N, p]);
+      if (effectIds.length > 0) {
+        const eList = EFFECT_LIST_PREFIX + effectIds.join(',');
+        entries.push([0, f, itemId, bonus, eList, n.length, n, N, p]);
+      } else {
+        entries.push([0, f, itemId, bonus, N, p]);
+      }
       continue;
     }
 
@@ -163,7 +170,7 @@ function parseShareString(raw) {
       const fourth = segments[idx];
       const nextSeg = segments[idx + 1];
       const isNoBonus = fourth === NO_BONUS;
-      const isEffects = nextSeg != null && String(nextSeg).includes(',');
+      const isEffects = nextSeg != null && String(nextSeg).startsWith(EFFECT_LIST_PREFIX);
       if (isEffects && !isNoBonus) {
         const b = parseInt(segments[idx], 10);
         const eList = segments[idx + 1];
@@ -172,7 +179,7 @@ function parseShareString(raw) {
         const N3 = parseInt(segments[idx + 4], 10) || 1;
         const p3 = parseFloat(segments[idx + 5]) || 0;
         idx += 6;
-        const effectIds = eList.split(',').map(s => parseInt(s, 10)).filter(n => !isNaN(n));
+        const effectIds = eList.slice(1).split(',').map(s => parseInt(s, 10)).filter(n => !isNaN(n));
         if (link) {
           stock.push({
             link,
