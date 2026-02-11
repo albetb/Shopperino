@@ -237,15 +237,23 @@ export default function ShopInventory() {
               </tr>
             );
           })}
+          {!isViewOnly && hasItems && showAddItemForm && (
+            <AddItemForm
+              onAddItem={handleAddItem}
+              items={items}
+              setShowAddItemForm={setShowAddItemForm}
+            />
+          )}
         </tbody>
       </table>
 
-      {!isViewOnly && hasItems && (
-        showAddItemForm ? (
-          <AddItemForm onAddItem={handleAddItem} items={items} setShowAddItemForm={setShowAddItemForm} />
-        ) : (
-          <button className="add-item-button medium-long" onClick={() => setShowAddItemForm(true)}>Add Item</button>
-        )
+      {!isViewOnly && hasItems && !showAddItemForm && (
+        <button
+          className="add-item-button medium-long"
+          onClick={() => setShowAddItemForm(true)}
+        >
+          Add Item
+        </button>
       )}
 
       {popup.visible && (

@@ -51,29 +51,17 @@ tr {
   color: var(--white);
 }
 
-/* Updated .add-item row with consistent heights and alignment; same width as .shop-table */
+/* Add-item row: keep it a normal table row so columns match the header widths */
 tr.add-item {
-  display: grid;
-  grid-template-columns: 3rem 0.8fr 6rem 5rem 3rem;
-  align-items: center;
-  gap: 0.3rem;
-  width: calc(var(--btn-width-sm) * 20);
-  max-width: 100%;
-  justify-content: space-around;
   border-top: 2px solid var(--grey-t);
   box-shadow: 0 0 20px var(--black-t);
   border-radius: 0 0 0.9em 0.9em;
-  padding-bottom: 0.5rem;
-  padding-top: 0.5rem;
   background-color: var(--dark-grey);
 }
 
-tr.add-item>td {
-  margin: 0;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+tr.add-item > td {
+  padding-top: 0.4rem;
+  padding-bottom: 0.4rem;
 }
 
 tr.add-item input,
@@ -136,6 +124,15 @@ h4 {
 .add-item-button {
   transition-duration: 0.3s;
   color: var(--white2) !important;
+}
+
+/* Center the add-item button inside its cell */
+tr.add-item td.action-size {
+  text-align: center;
+}
+
+tr.add-item td.action-size .item-number-button {
+  margin: 0 auto;
 }
 
 .add-item-height {
@@ -322,38 +319,24 @@ h4 {
   }
 
   tr.add-item {
-    width: 96vw;
-    grid-template-columns: 3rem 2.4fr 1fr 1fr 3rem;
+    width: 100%;
+    max-width: 100%;
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
   }
-
+  /* Let mobile layout use the natural table columns; inputs expand inside their cells */
   td.number-size,
-  input.number-size {
-    width: 3vw;
-  }
-
   td.name-size,
-  input.name-size {
-    width: 100%;
-    max-width: 35vw;
-  }
-
-  td.name-size>input {
-    width: 33vw;
-  }
-
   td.type-size,
-  select.type-size,
   td.cost-size,
-  input.cost-size {
-    width: 13vw;
-    display: flex;
-    justify-content: center;
+  td.action-size {
+    width: auto;
   }
 
-  .action-size {
-    width: 2rem;
+  td.name-size > input,
+  td.type-size > select,
+  td.cost-size > input {
+    width: 100%;
   }
 
   .header-container {
