@@ -49,8 +49,9 @@ export default function InfoSidebar() {
     return null;
   }
 
+  const sharedShopMobile = isMobile() && !!sharedShop;
   return (
-    <div className={`info-sidebar ${isCollapsed ? 'collapsed' : ''}`}>
+    <div className={`info-sidebar ${isCollapsed ? 'collapsed' : ''} ${sharedShopMobile ? 'info-sidebar-shared-mobile' : ''}`}>
       <button className="info-toggle-button" onClick={handleToggle}>
         <span className="material-symbols-outlined">
           {isCollapsed ? 'manage_search' : 'arrow_forward_ios'}

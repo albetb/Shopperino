@@ -407,6 +407,13 @@ p {
     top: calc(4.7rem + var(--menu-height));
   }
 
+  /* When viewing shared shop the left bar is hidden; show the info bar button where the left bar button would be */
+  .info-sidebar.info-sidebar-shared-mobile.collapsed {
+    left: 0;
+    right: auto;
+    top: var(--menu-height);
+  }
+
   .top-menu-button-container {
     gap: 2vw;
     margin-right: 4vw;
