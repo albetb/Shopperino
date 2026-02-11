@@ -16,6 +16,7 @@ export const SHARE_QR_MAX_CHARS = 2500;
 
 const DELIM = '|';
 const VERSION = 'V2';
+const NO_BONUS = '-';
 
 /** Letter → file name from data/tables.json ShareFileMap. Decode uses this to know which file an id refers to. */
 function getShareFileMap() {
@@ -35,7 +36,7 @@ function getFileToLetter() {
 /**
  * Build share string: id-based with file letter (from tables.json ShareFileMap) for compression.
  * Format: V2|<nameLen>|<name>|<gold>|<count>|<entry>...
- * Entry type 0 (ref from any file): 0|<f>|<id>|N|p  or  0|<f>|<id>|b|N|p  or  0|<f>|<id>|b|e1,e2|nameLen|name|N|p  (f = file letter, id = numeric id in that file)
+ * Entry type 0 (ref): 0|<f>|<id>|<bOr->|N|p  (bOr- = "-" for no bonus, or bonus number)  or  0|<f>|<id>|b|e1,e2|nameLen|name|N|p  for effects
  * Entry type 2 (custom): 2|<nameLen>|<name>|N|p
  */
 function buildShareString(serializedShop) {
@@ -69,7 +70,7 @@ function buildShareString(serializedShop) {
       const scrollId = getScrollIdByLink(linkStr);
       if (scrollId == null) continue;
       const f = fileToLetter['scrolls'] || 's';
-      entries.push([0, f, scrollId, N, p]);
+      entries.push([0, f, scrollId, NO_BONUS, N, p]);
       continue;
     }
 
@@ -92,11 +93,8 @@ function buildShareString(serializedShop) {
       if (itemId == null) continue;
       const f = fileToLetter['items'] || 'i';
       const bonus = item.Bonus != null && !isNaN(item.Bonus) ? parseInt(item.Bonus, 10) : null;
-      if (bonus != null && !isNaN(bonus)) {
-        entries.push([0, f, itemId, bonus, N, p]);
-      } else {
-        entries.push([0, f, itemId, N, p]);
-      }
+      const bOrNo = bonus != null && !isNaN(bonus) ? String(bonus) : NO_BONUS;
+      entries.push([0, f, itemId, bOrNo, N, p]);
       continue;
     }
   }
@@ -129,8 +127,8 @@ function idToLink(fileLetter, idNum) {
 
 /**
  * Parse custom-format share string into { name, gold, stock }.
- * V2: type 0 = 0|<f>|<id>|N|p  or  0|<f>|<id>|b|N|p  or  0|<f>|<id>|b|e1,e2|nameLen|name|N|p  (f = file letter from ShareFileMap)
- * Type 2: 2|nameLen|name|N|p. Resolve id via tables.json ShareFileMap to get link.
+ * V2: type 0 = 0|<f>|<id>|<bOr->|N|p  (bOr- = "-" no bonus, else bonus)  or  0|<f>|<id>|b|e1,e2|nameLen|name|N|p  for effects.
+ * Type 2: 2|nameLen|name|N|p.
  */
 function parseShareString(raw) {
   if (!raw || typeof raw !== 'string') return null;
@@ -162,11 +160,11 @@ function parseShareString(raw) {
       const f = segments[idx++];
       const idNum = parseInt(segments[idx++], 10);
       const link = idToLink(f, idNum);
-      const rem = segments.length - idx;
-      const hasEffects = rem >= 6 && segments[idx + 1] && String(segments[idx + 1]).includes(',');
-      const hasBonus = rem >= 3 && !hasEffects;
-      const hasSimple = rem >= 2;
-      if (hasEffects) {
+      const fourth = segments[idx];
+      const nextSeg = segments[idx + 1];
+      const isNoBonus = fourth === NO_BONUS;
+      const isEffects = nextSeg != null && String(nextSeg).includes(',');
+      if (isEffects && !isNoBonus) {
         const b = parseInt(segments[idx], 10);
         const eList = segments[idx + 1];
         const nameLen3 = parseInt(segments[idx + 2], 10);
@@ -185,7 +183,18 @@ function parseShareString(raw) {
             Cost: costPerUnit(N3, p3),
           });
         }
-      } else if (hasBonus) {
+      } else if (isNoBonus) {
+        const N0 = parseInt(segments[idx + 1], 10) || 1;
+        const p0 = parseFloat(segments[idx + 2]) || 0;
+        idx += 3;
+        if (link) {
+          stock.push({
+            link,
+            Number: N0,
+            Cost: costPerUnit(N0, p0),
+          });
+        }
+      } else {
         const b = parseInt(segments[idx], 10);
         const N2 = parseInt(segments[idx + 1], 10) || 1;
         const p2 = parseFloat(segments[idx + 2]) || 0;
@@ -196,17 +205,6 @@ function parseShareString(raw) {
             Bonus: b,
             Number: N2,
             Cost: costPerUnit(N2, p2),
-          });
-        }
-      } else if (hasSimple) {
-        const N0 = parseInt(segments[idx], 10) || 1;
-        const p0 = parseFloat(segments[idx + 1]) || 0;
-        idx += 2;
-        if (link) {
-          stock.push({
-            link,
-            Number: N0,
-            Cost: costPerUnit(N0, p0),
           });
         }
       }
