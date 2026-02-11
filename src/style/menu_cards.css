@@ -201,3 +201,15 @@ tr {
   align-items: center;
   text-align: center;
 }
+
+@media (max-width: 760px) {
+  .share-shop-modal-box {
+    width: 90vw;
+  }
+
+  .share-shop-modal-box img {
+    width: 70vw;
+    height: auto;
+    max-width: none;
+  }
+}

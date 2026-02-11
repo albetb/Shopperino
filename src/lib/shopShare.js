@@ -1,7 +1,37 @@
 import { encodeShopPayloadToBase64Url, decodeShopPayloadFromBase64Url } from './shopParamsCodec';
 import { generateShop } from './generateShop';
 import Shop from './shop';
-import { getItemByRef, shopTypes } from './utils';
+import { getItemByRef, getEffectIdBySlug, shopTypes } from './utils';
+
+const SPECIFIC_TABLES = ['Specific Weapon', 'Specific Armor', 'Specific Shield'];
+
+/**
+ * Resolve the display link for a stock entry. Handles ref entries (entry.link) and full entries
+ * (Specific Weapon/Armor/Shield or magic items with BaseItemType + Link array).
+ */
+function resolveStockEntryLink(entry) {
+  if (entry.isCustom) return null;
+  if (entry.link && typeof entry.link === 'string') {
+    if (getItemByRef(entry.link)) return entry.link;
+    const slug = entry.link.split('/').pop() || entry.link;
+    for (const table of SPECIFIC_TABLES) {
+      const link = `items/${table}/${slug}`;
+      if (getItemByRef(link)) return link;
+    }
+    return entry.link;
+  }
+  const linkVal = entry.Link;
+  if (typeof linkVal === 'string') {
+    for (const table of SPECIFIC_TABLES) {
+      const link = `items/${table}/${linkVal}`;
+      if (getItemByRef(link)) return link;
+    }
+  }
+  if (Array.isArray(linkVal) && linkVal.length > 0 && entry.BaseItemType) {
+    return `items/${entry.BaseItemType}/${linkVal[0]}`;
+  }
+  return null;
+}
 
 /**
  * Convert serialized shop (from generateShop) to shared format { name, gold, stock } for display.
@@ -20,9 +50,17 @@ function serializedShopToSharedFormat(serialized) {
     if (entry.isCustom) {
       stock.push({ Name: entry.Name ?? 'Unknown', Number: num, Cost: cost, isCustom: true });
     } else {
-      const o = { link: entry.link, Number: num, Cost: cost };
+      const link = resolveStockEntryLink(entry);
+      const o = { Number: num, Cost: cost };
+      if (link) o.link = link;
       if (entry.Bonus != null) o.Bonus = entry.Bonus;
-      if (Array.isArray(entry.effectIds) && entry.effectIds.length) o.effectIds = entry.effectIds;
+      if (Array.isArray(entry.effectIds) && entry.effectIds.length) {
+        o.effectIds = entry.effectIds;
+      } else if (Array.isArray(entry.Ability) && entry.Ability.length) {
+        o.effectIds = entry.Ability
+          .map(a => a && a.Link && getEffectIdBySlug(a.Link))
+          .filter(id => id != null);
+      }
       if (entry.Name) o.Name = entry.Name;
       stock.push(o);
     }

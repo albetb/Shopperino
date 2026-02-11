@@ -37,7 +37,7 @@ export default function ShareShopModal({ payload, onClose }) {
           />
         )}
         <p style={{ fontSize: '0.85em', color: 'var(--dark-grey)', margin: '0 0 0.75rem 0' }}>
-          Scan this QR code with another device to view the shop.
+        Scan this QR code with your phone to access the shop using the button in the Options menu.
         </p>
         <button
           type="button"
