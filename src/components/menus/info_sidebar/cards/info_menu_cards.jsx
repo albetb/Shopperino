@@ -82,7 +82,7 @@ export default function InfoMenuCards({ cardsData, closeCard }) {
             {!state.collapsed && (
               <div className="card-content">
                 {Object.entries(data).map(([key, value]) => {
-                  if (key === 'Short Description') return null;
+                  if (key === 'Short Description' || key === 'id') return null;
                   return (
                     <div key={key} className="info-card-row">
                       {['Link', 'Name', 'Description'].includes(key) ? null : (
