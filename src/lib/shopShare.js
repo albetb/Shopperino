@@ -48,7 +48,13 @@ function serializedShopToSharedFormat(serialized) {
     const cost = item.Cost;
     const num = entry.Number ?? 1;
     if (entry.isCustom) {
-      stock.push({ Name: entry.Name ?? 'Unknown', Number: num, Cost: cost, isCustom: true });
+      stock.push({
+        Name: entry.Name ?? 'Unknown',
+        Number: num,
+        Cost: cost,
+        isCustom: true,
+        ItemType: entry.ItemType ?? 'Custom',
+      });
     } else {
       const link = resolveStockEntryLink(entry);
       const o = { Number: num, Cost: cost };
@@ -95,6 +101,7 @@ export function compressShopForShare(serializedShop) {
       name: e.Name ?? 'Custom',
       number: Math.max(1, Math.min(99, (e.Number | 0) || 1)),
       price: parseFloat(e.Cost) || 0,
+      type: e.ItemType ?? 'Custom',
     }));
   const payload = encodeShopPayloadToBase64Url(params, customItems);
   return { ok: true, payload };
@@ -119,6 +126,7 @@ export function parseSharedShop(encodedString) {
       Name: c.name,
       Number: c.number,
       Cost: c.price,
+      ItemType: c.type ?? 'Custom',
     });
   }
   const shop = serializedShopToSharedFormat(serialized);
@@ -150,7 +158,7 @@ export function sharedStockToDisplayItems(stock) {
           Name: entry.Name ?? 'Unknown',
           Number: num,
           Cost: cost,
-          ItemType: 'Custom',
+          ItemType: entry.ItemType ?? 'Custom',
         });
         continue;
       }
@@ -182,7 +190,7 @@ export function sharedStockToDisplayItems(stock) {
           Name: entry.Name ?? 'Unknown',
           Number: num,
           Cost: cost,
-          ItemType: 'Custom',
+          ItemType: entry.ItemType ?? 'Custom',
         });
       }
     } catch (_) {}

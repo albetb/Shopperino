@@ -10,7 +10,24 @@ const MAX_NAME_BYTES = 255;
 const PRICE_CENTS_MAX = 0xFFFFFFFF;
 
 /** @typedef {{ seed: number; shopTypeIndex: number; level: number; cityLevel: number; playerLevel: number; }} ShopParams */
-/** @typedef {{ name: string; number: number; price: number; }} CustomItem */
+/** @typedef {{ name: string; number: number; price: number; type?: string; }} CustomItem */
+
+/** Item type string -> number for custom items in QR payload. Order is fixed; do not change. */
+const CUSTOM_ITEM_TYPE_LIST = [
+  'Good', 'Ammo', 'Weapon', 'Armor', 'Shield', 'Magic Weapon', 'Magic Armor',
+  'Potion', 'Ring', 'Rod', 'Staff', 'Wand', 'Wondrous Item', 'Scroll', 'Custom'
+];
+const CUSTOM_ITEM_TYPE_TO_NUM = new Map(CUSTOM_ITEM_TYPE_LIST.map((t, i) => [t, i]));
+
+function customItemTypeToNum(type) {
+  const s = (type != null ? String(type).trim() : '') || 'Custom';
+  return CUSTOM_ITEM_TYPE_TO_NUM.has(s) ? CUSTOM_ITEM_TYPE_TO_NUM.get(s) : CUSTOM_ITEM_TYPE_TO_NUM.get('Custom');
+}
+
+function numToCustomItemType(n) {
+  const i = Math.max(0, Math.min((n | 0), CUSTOM_ITEM_TYPE_LIST.length - 1));
+  return CUSTOM_ITEM_TYPE_LIST[i];
+}
 
 /**
  * Encode params to a minimal byte array. Seed is 32-bit.
@@ -148,7 +165,7 @@ function utf8ToString(bytes) {
 }
 
 /**
- * Encode full payload: 7 bytes params + 1 byte custom count + [per custom: 1 byte nameLen, name UTF-8, 1 byte number, 4 bytes price cents BE].
+ * Encode full payload: 7 bytes params + 1 byte custom count + [per custom: 1 byte nameLen, name UTF-8, 1 byte typeNum, 1 byte number, 4 bytes price cents BE].
  * @param {ShopParams} params
  * @param {CustomItem[]} customItems
  * @returns {Uint8Array}
@@ -163,10 +180,11 @@ export function encodeShopPayload(params, customItems = []) {
     const name = (item.name != null ? String(item.name) : '').trim() || 'Custom';
     let nameBytes = stringToUtf8(name);
     if (nameBytes.length > MAX_NAME_BYTES) nameBytes = nameBytes.subarray(0, MAX_NAME_BYTES);
+    const typeNum = customItemTypeToNum(item.type);
     const num = Math.max(1, Math.min(99, (item.number | 0) || 1));
     const price = Math.max(0, Math.min(PRICE_CENTS_MAX, Math.round((Number(item.price) || 0) * 100)));
-    itemBytes.push({ nameLen: nameBytes.length, nameBytes, number: num, priceCents: price });
-    size += 1 + nameBytes.length + 1 + 4;
+    itemBytes.push({ nameLen: nameBytes.length, nameBytes, typeNum, number: num, priceCents: price });
+    size += 1 + nameBytes.length + 1 + 1 + 4;
   }
   const out = new Uint8Array(size);
   out.set(head, 0);
@@ -176,6 +194,7 @@ export function encodeShopPayload(params, customItems = []) {
     out[off++] = t.nameLen;
     out.set(t.nameBytes, off);
     off += t.nameLen;
+    out[off++] = t.typeNum & 0xff;
     out[off++] = t.number;
     out[off++] = (t.priceCents >>> 24) & 0xff;
     out[off++] = (t.priceCents >>> 16) & 0xff;
@@ -198,11 +217,12 @@ export function decodeShopPayload(bytes) {
   if (bytes.length >= 8) {
     const count = bytes[7] & 0xff;
     let off = 8;
-    for (let k = 0; k < count && off + 6 <= bytes.length; k++) {
+    for (let k = 0; k < count && off + 7 <= bytes.length; k++) {
       const nameLen = bytes[off++] & 0xff;
-      if (off + nameLen + 5 > bytes.length) break;
+      if (off + nameLen + 6 > bytes.length) break;
       const nameBytes = bytes.subarray(off, off + nameLen);
       off += nameLen;
+      const typeNum = bytes[off++] & 0xff;
       const number = Math.max(1, Math.min(99, bytes[off++] || 1));
       const priceCents = ((bytes[off] << 24) | (bytes[off + 1] << 16) | (bytes[off + 2] << 8) | bytes[off + 3]) >>> 0;
       off += 4;
@@ -210,6 +230,7 @@ export function decodeShopPayload(bytes) {
         name: utf8ToString(nameBytes),
         number,
         price: priceCents / 100,
+        type: numToCustomItemType(typeNum),
       });
     }
   }

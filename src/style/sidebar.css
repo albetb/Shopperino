@@ -432,6 +432,18 @@ p {
     padding-right: 7vw;
     padding-left: 7vw;
   }
+
+  /* When lateral panel is open on mobile, center the cards in the panel */
+  .sidebar:not(.collapsed) .cards,
+  .info-sidebar:not(.collapsed) .cards {
+    align-items: center;
+    width: 100%;
+  }
+
+  .sidebar:not(.collapsed) .cards .card,
+  .info-sidebar:not(.collapsed) .cards .card {
+    width: 92%;
+  }
 }
 
 @keyframes slideIn {
