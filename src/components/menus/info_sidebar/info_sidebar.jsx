@@ -6,7 +6,7 @@ import {
   removeCard,
   toggleInfoSidebar
 } from '../../../store/slices/appSlice';
-import { useBackButtonHandler } from '../../hooks/use_back_button';
+import { useBackButtonHandler } from 'components/hooks/useBackButton';
 import InfoMenuCards from './cards/info_menu_cards';
 import '../../../style/sidebar.css';
 

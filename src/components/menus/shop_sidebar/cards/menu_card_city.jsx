@@ -65,11 +65,12 @@ export default function MenuCardCity() {
             value={cityLevel}
             onChange={e => handleLevelChange(Number(e.target.value))}
           >
-            <option value={1}>Village</option>
-            <option value={2}>Burg</option>
-            <option value={3}>Town</option>
-            <option value={4}>City</option>
-            <option value={5}>Metropolis</option>
+            <option value={0}>Village</option>
+            <option value={1}>Burg</option>
+            <option value={2}>Town</option>
+            <option value={3}>City</option>
+            <option value={4}>Metropolis</option>
+            <option value={5}>Capital</option>
           </select>
         </div>
       )}

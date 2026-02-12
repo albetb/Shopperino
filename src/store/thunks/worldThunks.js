@@ -1,9 +1,23 @@
+import City from '../../lib/city';
 import * as db from '../../lib/storage';
 import { cap, serialize } from '../../lib/utils';
 import World from '../../lib/world';
 import { setCity } from '../slices/citySlice';
 import { setShop, setShopGenerated } from '../slices/shopSlice';
 import { setSelectedWorld, setWorld, setWorlds } from '../slices/worldSlice';
+
+/** Name and level of the default city created with each world when city card is hidden. */
+const DEFAULT_CITY_NAME = 'Village';
+const DEFAULT_CITY_LEVEL = 0;
+
+function ensureWorldHasDefaultCity(w) {
+  if (w.Cities.length > 0) return w;
+  const c = new City(DEFAULT_CITY_NAME, w.Level);
+  c.Level = DEFAULT_CITY_LEVEL;
+  w.addCity(c.Id, c.Name);
+  db.setCity(c.serialize());
+  return w;
+}
 
 export const onNewWorld = (nameRaw) => (dispatch, getState) => {
   const name = cap(nameRaw);
@@ -15,20 +29,24 @@ export const onNewWorld = (nameRaw) => (dispatch, getState) => {
     dispatch(setWorld(w));
     dispatch(setSelectedWorld(found));
     return;
-  };
+  }
 
   const w = new World(name);
   const entry = { Id: w.Id, Name: w.Name };
 
+  // Create default city (level 0 = village) and assign all shops to it; city card is hidden in UI
+  const wWithCity = ensureWorldHasDefaultCity(w);
+  const defaultCity = db.getCity(wWithCity.SelectedCity.Id);
+
   const newWorlds = [...worlds, entry];
 
-  dispatch(setWorld(w));
+  dispatch(setWorld(wWithCity));
   dispatch(setWorlds(newWorlds));
   dispatch(setSelectedWorld(entry));
-  dispatch(setCity(null));
+  dispatch(setCity(defaultCity));
   dispatch(setShop(null));
 
-  const dbW = db.getWorld(w.Id);
+  const dbW = db.getWorld(wWithCity.Id);
   const hasInventory = dbW.Cities.some(c =>
     db.getCity(c.Id).Shops.some(s => (db.getShop(s.Id).getInventory() || []).length > 0)
   );
@@ -42,10 +60,12 @@ export const onSelectWorld = (name) => (dispatch, getState) => {
 
   dispatch(setSelectedWorld(entry));
 
-  const w = db.getWorld(entry.Id);
+  let w = db.getWorld(entry.Id);
+  // Migration: ensure world has default city (e.g. when city card is hidden)
+  w = ensureWorldHasDefaultCity(w);
   dispatch(setWorld(w));
 
-  const cDb = db.getCity(w.SelectedCity.Id);
+  const cDb = w.SelectedCity?.Id ? db.getCity(w.SelectedCity.Id) : null;
   dispatch(setCity(cDb));
 
   const shop = cDb?.SelectedShop != null ? db.getShop(cDb.SelectedShop.Id) : null;

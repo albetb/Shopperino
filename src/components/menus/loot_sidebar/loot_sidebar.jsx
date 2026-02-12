@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { setIsLootSidebarCollapsed } from '../../../store/slices/lootSlice';
-import { useBackButtonHandler } from '../../hooks/use_back_button';
+import { useBackButtonHandler } from 'components/hooks/useBackButton';
 import LootMenuCards from './cards/loot_menu_cards';
 import '../../../style/sidebar.css';
 

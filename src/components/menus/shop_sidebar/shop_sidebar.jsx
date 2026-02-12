@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleSidebar } from '../../../store/slices/appSlice';
-import { useBackButtonHandler } from '../../hooks/use_back_button';
+import { useBackButtonHandler } from 'components/hooks/useBackButton';
 import ShopMenuCards from './cards/shop_menu_cards';
 import '../../../style/sidebar.css';
 

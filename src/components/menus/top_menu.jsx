@@ -5,7 +5,7 @@ import { downloadLocalStorage, handleFileUpload } from '../../lib/storage';
 import { isMobile } from '../../lib/utils';
 import { setMasterMode, setSharedShop, setStateCurrentTab } from '../../store/slices/appSlice';
 import '../../style/sidebar.css';
-import ScanShopScanner from '../common/ScanShopScanner';
+import { ScanShopScanner } from '../shop/ShareShopModal';
 import ColorPicker from './colorPicker';
 
 export default function TopMenu() {

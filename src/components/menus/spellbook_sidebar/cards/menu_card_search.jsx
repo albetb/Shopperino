@@ -3,6 +3,9 @@ import { MAGICSCHOOLS } from '../../../../lib/spellbook';
 import { setSearchSpellName, setSearchSpellSchool, setShowShortDescriptions } from '../../../../store/slices/spellbookSlice';
 import '../../../../style/menu_cards.css';
 
+/** Set to true to show the "Show spell descriptions" checkbox in the filter card. */
+const SHOW_DESCRIPTION_UI = false;
+
 export default function MenuCardSearch() {
   const dispatch = useDispatch();
 
@@ -43,17 +46,20 @@ export default function MenuCardSearch() {
         </select>
       </div>
 
-      <div className="card-side-div margin-top">
-        <label className="modern-label flex-center">
-          <input
-            type="checkbox"
-            checked={!!showShortDescriptions}
-            onChange={e => handleToggleShortDescriptions(e.target.checked)}
-            className="margin-right-sm"
-          />
-          Show spell descriptions
-        </label>
-      </div>
+      {/* Hidden for now; set SHOW_DESCRIPTION_UI to true to re-enable */}
+      {SHOW_DESCRIPTION_UI && (
+        <div className="card-side-div margin-top">
+          <label className="modern-label flex-center">
+            <input
+              type="checkbox"
+              checked={!!showShortDescriptions}
+              onChange={e => handleToggleShortDescriptions(e.target.checked)}
+              className="margin-right-sm"
+            />
+            Show spell descriptions
+          </label>
+        </div>
+      )}
     </>
   );
 }

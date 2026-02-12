@@ -6,7 +6,7 @@ import LootSidebar from './components/menus/loot_sidebar/loot_sidebar';
 import ShopSidebar from './components/menus/shop_sidebar/shop_sidebar';
 import SpellbookSidebar from './components/menus/spellbook_sidebar/spellbook_sidebar';
 import TopMenu from './components/menus/top_menu';
-import ShopInventory from './components/shop_inventory/shop_inventory';
+import { ShopInventory } from 'components/shop';
 import SpellbookTable from './components/spellbook/spellbook_table';
 import SearchPage from './components/search/search_page';
 import * as db from './lib/storage';
@@ -52,7 +52,7 @@ import {
 } from './store/slices/worldSlice';
 import './style/App.css';
 import './style/buttons.css';
-import LootInventory from './components/loot_inventory/loot_inventory';
+import LootInventory from './components/loot/loot_inventory';
 
 export default function App() {
   const dispatch = useDispatch();

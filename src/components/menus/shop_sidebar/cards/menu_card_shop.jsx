@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { compressShopForShare } from '../../../../lib/shopShare';
+import { compressShopForShare } from 'lib/shop';
 import { isMobile, order, shopTypes } from '../../../../lib/utils';
 import {
   onCreateShop,
@@ -14,7 +14,7 @@ import {
 import CreateComponent from '../../../common/create_component';
 import LevelComponent from '../../../common/level_component';
 import SelectComponent from '../../../common/select_component';
-import ShareShopModal from '../../../common/ShareShopModal';
+import { ShareShopModal } from '../../../shop/ShareShopModal';
 import '../../../../style/menu_cards.css';
 import { toggleSidebar } from '../../../../store/slices/appSlice';
 

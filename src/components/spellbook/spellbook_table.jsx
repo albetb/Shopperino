@@ -5,7 +5,7 @@ import RestBox from './rest_box';
 import ClassDescriptionCard from './class_description';
 import DomainDescriptionCard from './domain_description';
 import SpellLevelCard from './spell_level';
-import useSpellbookData from '../hooks/use_spellbook_data';
+import useSpellbookData from './hooks/use_spellbook_data';
 import '../../style/shop_inventory.css';
 
 export default function SpellbookTable() {

@@ -1,0 +1,138 @@
+import { useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import Loot from '../../lib/loot';
+import { formatNumber, isMobile, trimLine } from '../../lib/utils';
+import { addCardByLink } from '../../store/slices/appSlice';
+import '../../style/shop_inventory.css';
+
+const GOODS_DISPLAY_CHUNK_SIZE = 10;
+
+/**
+ * For the Goods table: show 1 row per 10 items — the most expensive in each chunk,
+ * with the chunk total (all 10 costs) assigned to that displayed row.
+ */
+function consolidateGoodsForDisplay(goodsList) {
+  if (!goodsList?.length) return [];
+  const result = [];
+  for (let i = 0; i < goodsList.length; i += GOODS_DISPLAY_CHUNK_SIZE) {
+    const chunk = goodsList.slice(i, i + GOODS_DISPLAY_CHUNK_SIZE);
+    const totalCost = chunk.reduce((sum, g) => sum + (g.Cost ?? 0), 0);
+    const best = chunk.reduce((a, b) => ((a.Cost ?? 0) >= (b.Cost ?? 0) ? a : b));
+    result.push({
+      ...best,
+      Quantity: 1,
+      Cost: totalCost,
+    });
+  }
+  return result;
+}
+
+export default function LootInventory() {
+  const dispatch = useDispatch();
+  const rawLoot = useSelector(state => state.loot.loot);
+  const lootInst = rawLoot ? new Loot().load(rawLoot) : null;
+  const lootName = rawLoot?.Timestamp || '';
+  const gold = rawLoot?.Gold ?? 0;
+  const goodsObj = lootInst?.Goods || {};
+  const goodsList = goodsObj.gems || goodsObj.art || [];
+  const itemsList = lootInst?.Items?.items || [];
+  const goodsValue = goodsList.map(x => x.Cost).reduce((sum, cost) => sum + cost, 0);
+
+  const goodsDisplayList = useMemo(
+    () => consolidateGoodsForDisplay(goodsList),
+    [goodsList]
+  );
+
+  if (!lootName) {
+    return (
+      <p className="search-hint">
+        Select players level and generate a loot.
+      </p>
+    );
+  }
+
+  const timeLabel = () => trimLine(lootName, isMobile() ? 20 : 30);
+
+  return (
+    <>
+      <div className="header-container">
+        <div className="label-container">
+          <h2>Generated at {timeLabel()}</h2>
+        </div>
+        <div className="money-box money-box-column">
+          <h4 className="loot-gold-margin"><b>Gold: {formatNumber(gold)}gp</b></h4>
+          {goodsList.length > 0 &&
+            <h2 className="loot-gold-margin">+ goods {formatNumber(goodsValue)}gp</h2>
+          }
+        </div>
+      </div>
+
+      {/* Goods Table: 1 row per 10 items (most expensive in chunk, cost = chunk total) */}
+      {goodsList.length > 0 &&
+
+        <table className="shop-table table-margin-sm">
+          <thead>
+            <tr>
+              <th className="number-size td-muted">#</th>
+              <th className="name-size td-muted">Goods</th>
+              <th className="cost-size td-muted">Cost</th>
+            </tr>
+          </thead>
+          <tbody>
+            {goodsDisplayList.map((g, idx) => (
+              <tr key={idx}>
+                <td className="align-right td-muted">{g.Quantity ?? 1}</td>
+                <td className="td-muted">{g.Name}</td>
+                <td className="td-muted">{formatNumber(g.Cost)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      }
+
+      {/* Items Table */}
+      {itemsList.filter(x => x && x.Name).length > 0 &&
+
+        <table className="shop-table table-margin-sm">
+          <thead>
+            <tr>
+              <th className="number-size td-muted">#</th>
+              <th className="name-size td-muted">Items</th>
+              <th className="cost-size td-muted">Cost</th>
+            </tr>
+          </thead>
+          <tbody>
+            {itemsList.map((item, idx) => {
+              if (!item?.Name || (item.Quantity ?? 1) <= 0) return null;
+              const itemBonus = item.Name.includes("+")
+                ? parseInt(item.Name.split("+")[1], 10)
+                : item.Name.toLowerCase().includes("perfect")
+                  ? -1
+                  : 0;
+
+              return (
+                <tr key={idx}>
+                  <td className="align-right td-muted">{item.Quantity ?? 1}</td>
+                  <td className="td-muted">
+                    {item.Link ? (
+                      <button
+                        type="button"
+                        className="button-link"
+                        onClick={() => dispatch(addCardByLink({ links: item.Link, bonus: itemBonus }))}
+                      >
+                        {item.Name}
+                      </button>
+                    ) : (
+                      item.Name
+                    )}
+                  </td>
+                  <td className="td-muted">{formatNumber(item.Cost)}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      }
+    </>
+  );
+}

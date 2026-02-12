@@ -7,6 +7,9 @@ import MenuCardShop from './menu_card_shop';
 import MenuCardWorld from './menu_card_world';
 import '../../../../style/menu_cards.css';
 
+/** Set to true to show the City card in the left bar; when false, user selects shop directly after world. */
+const SHOW_CITY_CARD = false;
+
 export default function ShopMenuCards() {
   const [cardStates, setCardStates] = useState([
     { id: 1, collapsed: false },
@@ -70,6 +73,7 @@ export default function ShopMenuCards() {
       {cards.map(card => {
         const state = cardStates.find(s => s.id === card.id);
         if (card.id === 2 && worlds.length === 0) return null;
+        if (card.id === 2 && !SHOW_CITY_CARD) return null;
         if (card.id === 3 && cities.length === 0) return null;
         return (
           <div key={card.id} className={`card ${state.collapsed ? 'collapsed' : ''}`}>

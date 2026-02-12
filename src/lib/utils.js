@@ -2,10 +2,10 @@ import { loadFile } from './loadFile';
 import { slug } from './slugUtils';
 
 export { loadFile };
-export { itemTypes, getItemByRef, getItemByLink, getItemById, getItemIdByRef } from './itemsUtils';
-export { getScrollById, getScrollIdByLink } from './scrollUtils';
-export { getEffectByLink, getEffectById, getEffectIdBySlug } from './effectsUtils';
-export { getSpellByLink } from './spellsUtils';
+export { itemTypes, getItemByRef, getItemByLink, getItemById, getItemIdByRef } from './item/itemsUtils';
+export { getScrollById, getScrollIdByLink } from './spellbook/scrollUtils';
+export { getEffectByLink, getEffectById, getEffectIdBySlug } from './item/effectsUtils';
+export { getSpellByLink } from './spellbook/spellsUtils';
 
 const CHARACTERISTIC_FULL = { Str: 'Strength', Dex: 'Dexterity', Con: 'Constitution', Int: 'Intelligence', Wis: 'Wisdom', Cha: 'Charisma', None: 'None' };
 
