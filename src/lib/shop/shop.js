@@ -1,23 +1,32 @@
 import { newRandomItem, itemRefLink } from '../item';
 import { computeTrueCost } from './shopPricing';
 import { passingTime as runPassingTime } from './shopSimulation';
+import { getLinkByShareRef, getRefByShareRef, getShareFileCodeAndId } from './shareRef';
 import { cap, getItemByRef, loadFile, newGuid, shopTypes } from '../utils';
 
 const BASE_ARCANE_CHANCE = 0.7;
 const REQUIRED_KEYS = ['Id', 'Name', 'Level', 'CityLevel', 'PlayerLevel', 'Reputation', 'Stock', 'Gold', 'Time', 'ArcaneChance', 'ShopType', 'ItemModifier'];
 
-/** Stock entry is either a ref { link, Number, PriceModifier, ItemType, CostOverride? } or ref+bonus { link, Bonus, ... } or full item. */
+/** Stock entry is a ref by link { link, ... } or by share ref { fileCode, id, ... }, or full item. */
 function isRefEntry(entry) {
-    return entry && typeof entry.link === 'string';
+    return entry && (typeof entry.link === 'string' || (entry.fileCode != null && entry.id != null));
+}
+
+function getRefForEntry(entry) {
+    if (entry.link) return getItemByRef(entry.link);
+    if (entry.fileCode != null && entry.id != null) return getRefByShareRef(entry.fileCode, entry.id);
+    return null;
 }
 
 /** Resolve a stock entry to an item-like object for display and trueCost (Name, Cost, PriceModifier, ItemType, Number, Link, Bonus?). */
 function resolveEntry(entry) {
     if (!entry) return null;
     if (isRefEntry(entry)) {
-        const ref = getItemByRef(entry.link);
+        const ref = getRefForEntry(entry);
         if (!ref || !ref.raw) return null;
         const base = ref.raw;
+        const link = entry.link || (entry.fileCode != null && entry.id != null ? getLinkByShareRef(entry.fileCode, entry.id) : null);
+        if (!link) return null;
         const baseCost = entry.CostOverride != null ? entry.CostOverride : base.Cost;
         const bonus = entry.Bonus != null ? (typeof entry.Bonus === 'string' ? parseInt(entry.Bonus, 10) : entry.Bonus) : null;
         const name = bonus != null && !isNaN(bonus) ? `${base.Name} +${bonus}` : base.Name;
@@ -27,7 +36,7 @@ function resolveEntry(entry) {
             PriceModifier: entry.PriceModifier ?? 0,
             ItemType: entry.ItemType,
             Number: entry.Number ?? 1,
-            Link: entry.link,
+            Link: link,
             ...(bonus != null && !isNaN(bonus) ? { Bonus: bonus } : {}),
         };
     }
@@ -379,14 +388,25 @@ class Shop {
             const r = resolveEntry(entry);
             this.setGold(this.Gold - (r ? this.trueCost(r, true) * savedNumber : 0));
         } else if (fullLink) {
-            const newEntry = {
-                link: fullLink,
-                Number: savedNumber,
-                PriceModifier: 0,
-                ItemType: itemType,
-                CostOverride: savedCost,
-                userAdded: true,
-            };
+            const shareRef = getShareFileCodeAndId(fullLink);
+            const newEntry = shareRef
+                ? {
+                    fileCode: shareRef.fileCode,
+                    id: shareRef.id,
+                    Number: savedNumber,
+                    PriceModifier: 0,
+                    ItemType: itemType,
+                    CostOverride: savedCost,
+                    userAdded: true,
+                }
+                : {
+                    link: fullLink,
+                    Number: savedNumber,
+                    PriceModifier: 0,
+                    ItemType: itemType,
+                    CostOverride: savedCost,
+                    userAdded: true,
+                };
             this.Stock.push(newEntry);
             const r = resolveEntry(newEntry);
             this.setGold(this.Gold - (r ? this.trueCost(r, true) * savedNumber : 0));

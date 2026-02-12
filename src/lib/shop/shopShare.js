@@ -1,16 +1,20 @@
 import { encodeShopPayloadToBase64Url, decodeShopPayloadFromBase64Url } from './shopParamsCodec';
 import { generateShop } from './generateShop';
 import Shop from './shop';
+import { getLinkByShareRef, getShareFileCodeAndId } from './shareRef';
 import { getItemByRef, getEffectIdBySlug, shopTypes } from '../utils';
 
 const SPECIFIC_TABLES = ['Specific Weapon', 'Specific Armor', 'Specific Shield'];
 
 /**
- * Resolve the display link for a stock entry. Handles ref entries (entry.link) and full entries
- * (Specific Weapon/Armor/Shield or magic items with BaseItemType + Link array).
+ * Resolve the display link for a stock entry. Handles ref by link, ref by (fileCode, id), and full entries.
  */
 function resolveStockEntryLink(entry) {
   if (entry.isCustom) return null;
+  if (entry.fileCode != null && entry.id != null) {
+    const link = getLinkByShareRef(entry.fileCode, entry.id);
+    if (link) return link;
+  }
   if (entry.link && typeof entry.link === 'string') {
     if (getItemByRef(entry.link)) return entry.link;
     const slug = entry.link.split('/').pop() || entry.link;
@@ -106,13 +110,21 @@ export function compressShopForShare(serializedShop) {
       type: e.ItemType ?? 'Custom',
     }));
   const refItems = (serializedShop.Stock || [])
-    .filter(e => e && e.link && e.userAdded)
-    .map(e => ({
-      link: e.link,
-      number: Math.max(1, Math.min(99, (e.Number | 0) || 1)),
-      price: parseFloat(e.CostOverride ?? e.Cost) || 0,
-      type: e.ItemType ?? 'Good',
-    }));
+    .filter(e => e && e.userAdded && ((e.fileCode != null && e.id != null) || e.link))
+    .map(e => {
+      const fileCodeAndId = e.fileCode != null && e.id != null
+        ? { fileCode: e.fileCode, id: e.id }
+        : getShareFileCodeAndId(e.link);
+      if (!fileCodeAndId) return null;
+      return {
+        fileCode: fileCodeAndId.fileCode,
+        id: fileCodeAndId.id,
+        number: Math.max(1, Math.min(99, (e.Number | 0) || 1)),
+        price: parseFloat(e.CostOverride ?? e.Cost) || 0,
+        type: e.ItemType ?? 'Good',
+      };
+    })
+    .filter(Boolean);
   const payload = encodeShopPayloadToBase64Url(params, customItems, refItems);
   return { ok: true, payload };
 }
@@ -141,8 +153,10 @@ export function parseSharedShop(encodedString) {
     });
   }
   for (const r of refItems) {
+    const link = getLinkByShareRef(r.fileCode, r.id);
+    if (!link) continue;
     serialized.Stock.push({
-      link: r.link,
+      link,
       Number: r.number,
       PriceModifier: 0,
       ItemType: r.type ?? 'Good',

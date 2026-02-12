@@ -13,7 +13,7 @@ const PRICE_CENTS_MAX = 0xFFFFFFFF;
 
 /** @typedef {{ seed: number; shopTypeIndex: number; level: number; cityLevel: number; playerLevel: number; reputation?: number; }} ShopParams */
 /** @typedef {{ name: string; number: number; price: number; type?: string; }} CustomItem */
-/** @typedef {{ link: string; number: number; price: number; type?: string; }} RefItem */
+/** @typedef {{ fileCode: string; id: number; number: number; price: number; type?: string; }} RefItem */
 
 /** Item type string -> number for custom items in QR payload. Order is fixed; do not change. */
 const CUSTOM_ITEM_TYPE_LIST = [
@@ -171,11 +171,12 @@ function utf8ToString(bytes) {
   return String.fromCharCode(...a);
 }
 
-const MAX_LINK_BYTES = 255;
+/** Ref item: 1 byte fileCode (ASCII) + 2 bytes id BE + 1 number + 4 price + 1 typeNum = 9 bytes. */
+const REF_ITEM_BYTES = 9;
 
 /**
  * Encode full payload: params + custom count + custom items + ref count + ref items.
- * Ref item: 1 byte linkLen, link UTF-8, 1 byte number, 4 bytes price cents BE, 1 byte typeNum.
+ * Ref item: 1 byte fileCode (char code), 2 bytes id BE, 1 number, 4 price cents BE, 1 typeNum.
  * @param {ShopParams} params
  * @param {CustomItem[]} customItems
  * @param {RefItem[]} refItems
@@ -198,19 +199,7 @@ export function encodeShopPayload(params, customItems = [], refItems = []) {
     size += 1 + nameBytes.length + 1 + 1 + 4;
   }
   const refCount = Math.min(255, refItems.length);
-  size += 1;
-  const refBytes = [];
-  for (let k = 0; k < refCount; k++) {
-    const item = refItems[k];
-    const link = (item.link != null ? String(item.link) : '').trim();
-    let linkBytes = stringToUtf8(link);
-    if (linkBytes.length > MAX_LINK_BYTES) linkBytes = linkBytes.subarray(0, MAX_LINK_BYTES);
-    const typeNum = customItemTypeToNum(item.type);
-    const num = Math.max(1, Math.min(99, (item.number | 0) || 1));
-    const price = Math.max(0, Math.min(PRICE_CENTS_MAX, Math.round((Number(item.price) || 0) * 100)));
-    refBytes.push({ linkLen: linkBytes.length, linkBytes, typeNum, number: num, priceCents: price });
-    size += 1 + linkBytes.length + 1 + 4 + 1;
-  }
+  size += 1 + refCount * REF_ITEM_BYTES;
   const out = new Uint8Array(size);
   let off = 0;
   out.set(head, off);
@@ -228,16 +217,22 @@ export function encodeShopPayload(params, customItems = [], refItems = []) {
     out[off++] = t.priceCents & 0xff;
   }
   out[off++] = refCount;
-  for (const t of refBytes) {
-    out[off++] = t.linkLen;
-    out.set(t.linkBytes, off);
-    off += t.linkLen;
-    out[off++] = t.number;
-    out[off++] = (t.priceCents >>> 24) & 0xff;
-    out[off++] = (t.priceCents >>> 16) & 0xff;
-    out[off++] = (t.priceCents >>> 8) & 0xff;
-    out[off++] = t.priceCents & 0xff;
-    out[off++] = t.typeNum & 0xff;
+  for (let k = 0; k < refCount; k++) {
+    const item = refItems[k];
+    const fileCode = (item.fileCode != null ? String(item.fileCode) : '')[0] || 'i';
+    const id = Math.max(0, Math.min(0xFFFF, (item.id | 0) >>> 0));
+    const num = Math.max(1, Math.min(99, (item.number | 0) || 1));
+    const priceCents = Math.max(0, Math.min(PRICE_CENTS_MAX, Math.round((Number(item.price) || 0) * 100)));
+    const typeNum = customItemTypeToNum(item.type);
+    out[off++] = fileCode.charCodeAt(0) & 0xff;
+    out[off++] = (id >>> 8) & 0xff;
+    out[off++] = id & 0xff;
+    out[off++] = num;
+    out[off++] = (priceCents >>> 24) & 0xff;
+    out[off++] = (priceCents >>> 16) & 0xff;
+    out[off++] = (priceCents >>> 8) & 0xff;
+    out[off++] = priceCents & 0xff;
+    out[off++] = typeNum & 0xff;
   }
   return out;
 }
@@ -277,17 +272,17 @@ export function decodeShopPayload(bytes) {
   }
   if (bytes.length >= off + 1) {
     const refCount = bytes[off++] & 0xff;
-    for (let k = 0; k < refCount && off + 7 <= bytes.length; k++) {
-      const linkLen = bytes[off++] & 0xff;
-      if (off + linkLen + 6 > bytes.length) break;
-      const linkBytes = bytes.subarray(off, off + linkLen);
-      off += linkLen;
+    for (let k = 0; k < refCount && off + REF_ITEM_BYTES <= bytes.length; k++) {
+      const fileCode = String.fromCharCode(bytes[off++] & 0xff);
+      const id = ((bytes[off] << 8) | bytes[off + 1]) & 0xFFFF;
+      off += 2;
       const number = Math.max(1, Math.min(99, bytes[off++] || 1));
       const priceCents = ((bytes[off] << 24) | (bytes[off + 1] << 16) | (bytes[off + 2] << 8) | bytes[off + 3]) >>> 0;
       off += 4;
       const typeNum = bytes[off++] & 0xff;
       refItems.push({
-        link: utf8ToString(linkBytes),
+        fileCode,
+        id,
         number,
         price: priceCents / 100,
         type: numToCustomItemType(typeNum),
