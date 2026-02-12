@@ -274,10 +274,6 @@ tr.add-item td.action-size .item-number-button {
   cursor: pointer;
 }
 
-.rest-box-full {
-  height: 100%;
-}
-
 .time-div-row {
   display: flex;
   justify-content: space-around;

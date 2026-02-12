@@ -95,6 +95,11 @@
   width: 99%;
 }
 
+.rest-box-full {
+  height: 100%;
+  width: fit-content;
+}
+
 .margin-top {
   margin-top: 0.6rem;
 }
@@ -167,10 +172,6 @@ tr {
 
   .card-width-spellbook {
     width: 92%;
-  }
-
-  .card-side-div {
-    width: 97%;
   }
 
   .spell-slot-div {

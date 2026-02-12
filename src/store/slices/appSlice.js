@@ -3,9 +3,9 @@ import * as db from '../../lib/storage';
 import { getConditionByLink, getEffectByLink, getFeatByLink, getItemByLink, getItemByRef, getSkillByLink, getSpellByLink, isMobile } from '../../lib/utils';
 import { applyColors } from '../../lib/colorUtils';
 
-const DEFAULT_BLUE = '#2fa6a1';
-const DEFAULT_BLUE_T = '#2a9591b3';
-const DEFAULT_BLUE_T2 = '#2a959143';
+const DEFAULT_BLUE = '#238f8b';
+const DEFAULT_BLUE_T = '#238f8bb3';
+const DEFAULT_BLUE_T2 = '#238f8b43';
 
 export const DEFAULTS = {
   blue: DEFAULT_BLUE,

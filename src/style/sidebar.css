@@ -293,7 +293,7 @@ p {
 
 .col-btn-sm-max {
   width: var(--btn-width-sm);
-  max-width: calc(var(--btn-width-sm) * 1.4);
+  max-width: calc(var(--btn-width-sm) * 1.7);
   padding-right: 0;
   box-sizing: border-box;
 }

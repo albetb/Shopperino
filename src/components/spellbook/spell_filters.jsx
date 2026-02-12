@@ -8,40 +8,43 @@ export default function SpellFilters({ filters, dispatch }) {
         return null;
     }
 
-    return (
-        <div className="filter-box">
+    return (   
+        <>
             {name && (
-                <div className="card-side-div card-expand-div card-expand-full">
-                    <button
-                        className="close-button no-margin-left"
-                        onClick={() => dispatch(setSearchSpellName(''))}
-                    >
-                        <span className="material-symbols-outlined filter-icon-white">
-                            close_small
-                        </span>
-                    </button>
-                    <p className="filter-icon-white">
-                        Filter by name: <b>{name}</b>
-                    </p>
+                <div className="filter-box">
+                    <div className="card-side-div card-expand-div card-expand-full rest-box-full">
+                        <button
+                            className="close-button no-margin-left"
+                            onClick={() => dispatch(setSearchSpellName(''))}
+                            >
+                            <span className="material-symbols-outlined filter-icon-white">
+                                close_small
+                            </span>
+                        </button>
+                        <p className="filter-icon-white">
+                            Filter by name: <b>{name}</b>
+                        </p>
+                    </div>
                 </div>
             )}
-
             {school && (
-                <div className="card-side-div card-expand-div card-expand-full">
-                    <button
-                        className="close-button no-margin-left"
-                        onClick={() => dispatch(setSearchSpellSchool(''))}
-                    >
-                        <span className="material-symbols-outlined filter-icon-white">
-                            close_small
-                        </span>
-                    </button>
-                    <p className="filter-icon-white">
-                        Filter by school: <b>{school}</b>
-                    </p>
+                <div className="filter-box">
+                    <div className="card-side-div card-expand-div card-expand-full rest-box-full">
+                        <button
+                            className="close-button no-margin-left"
+                            onClick={() => dispatch(setSearchSpellSchool(''))}
+                            >
+                            <span className="material-symbols-outlined filter-icon-white">
+                                close_small
+                            </span>
+                        </button>
+                        <p className="filter-icon-white">
+                            Filter by school: <b>{school}</b>
+                        </p>
+                    </div>
                 </div>
             )}
-        </div>
+        </>
     );
 }
 

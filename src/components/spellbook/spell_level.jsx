@@ -293,7 +293,8 @@ export default function SpellLevelCard({
                     )}
                   </td>
 
-                  {!(page === 1 && isMobile()) && (
+                  {/* Mobile: hide school column for all classes except Wizard */}
+                  {(!isMobile() || inst.Class === 'Wizard') && (
                     <td className={firstClass + schoolClass(item.School) + ' col-30'}>
                       {item.School.split(' ')[0]}
                     </td>

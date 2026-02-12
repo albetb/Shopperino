@@ -8,13 +8,13 @@ const LS_KEY = 'app_main_color';
 // 9 hard-coded theme colors
 const PALETTE = [
   '#238f8b', // cooler, deeper teal (less milky)
-  '#3f97e6', // crisper blue, less babyish
-  '#e8886f', // coral pulled cooler + slightly muted
-  '#6fb889', // greener, less minty pastel
-  '#8f63e6', // cooler purple, less lilac
-  '#e6c84f', // cooler yellow, less buttery
-  '#35bfae', // cleaner aqua, less pale
-  '#cc6fa6', // cooler mauve, reduced pink softness
+  '#10B981', // 
+  '#34D399', // 
+  '#3F51B5', // 
+  '#2563EB', // 
+  '#38BDF8', // 
+  '#FF6B6B', // 
+  '#FAAE2D', // 
   '#585658ff', // dark mode
 ];
 

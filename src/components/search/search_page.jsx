@@ -338,8 +338,8 @@ export default function SearchPage() {
           )}
 
           {searchType && query.trim() && (
-            <div className="filter-box filter-box-margin">
-              <div className="card-side-div card-expand-div card-expand-full">
+            <div className="filter-box filter-box-margin ">
+              <div className="card-side-div card-expand-div card-expand-full rest-box-full">
                 <button
                   className="close-button no-margin-left"
                   onClick={() => setQuery('')}
