@@ -84,6 +84,10 @@ class Shop {
         this.ShopType = data.ShopType;
         this.ItemModifier = { ...data.ItemModifier };
         if (data.Seed != null) this.Seed = data.Seed;
+        if (data.GenLevel != null) this.GenLevel = data.GenLevel;
+        if (data.GenCityLevel != null) this.GenCityLevel = data.GenCityLevel;
+        if (data.GenPlayerLevel != null) this.GenPlayerLevel = data.GenPlayerLevel;
+        if (data.GenShopType != null) this.GenShopType = data.GenShopType;
 
         return this;
     }
@@ -98,6 +102,10 @@ class Shop {
         }
 
         this.sortByCost();
+        this.GenLevel = this.Level;
+        this.GenCityLevel = this.CityLevel;
+        this.GenPlayerLevel = this.PlayerLevel;
+        this.GenShopType = this.ShopType;
         while (this.getInventoryValue() > this.Gold * 0.85 && this.Stock.length > 1) {
             this.Stock.pop();
         }
@@ -426,6 +434,10 @@ class Shop {
             ItemModifier: this.ItemModifier,
         };
         if (this.Seed != null) out.Seed = this.Seed;
+        if (this.GenLevel != null) out.GenLevel = this.GenLevel;
+        if (this.GenCityLevel != null) out.GenCityLevel = this.GenCityLevel;
+        if (this.GenPlayerLevel != null) out.GenPlayerLevel = this.GenPlayerLevel;
+        if (this.GenShopType != null) out.GenShopType = this.GenShopType;
         return out;
     }
 }

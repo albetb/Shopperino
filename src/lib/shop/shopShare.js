@@ -87,13 +87,15 @@ export function compressShopForShare(serializedShop) {
   const seed = serializedShop.Seed;
   if (seed == null) return { ok: false, error: 'Regenerate the shop to share it (seed is required).' };
   const types = shopTypes();
-  const shopTypeIndex = types.indexOf(serializedShop.ShopType);
+  const shopTypeForPayload = serializedShop.GenShopType ?? serializedShop.ShopType;
+  const shopTypeIndex = types.indexOf(shopTypeForPayload);
   const params = {
     seed: (seed >>> 0),
     shopTypeIndex: shopTypeIndex >= 0 ? shopTypeIndex : 0,
-    level: Math.max(0, Math.min(10, serializedShop.Level ?? 0)),
-    cityLevel: Math.max(0, Math.min(5, serializedShop.CityLevel ?? 0)),
-    playerLevel: Math.max(1, Math.min(99, serializedShop.PlayerLevel ?? 1)),
+    level: Math.max(0, Math.min(10, serializedShop.GenLevel ?? serializedShop.Level ?? 0)),
+    cityLevel: Math.max(0, Math.min(5, serializedShop.GenCityLevel ?? serializedShop.CityLevel ?? 0)),
+    playerLevel: Math.max(1, Math.min(99, serializedShop.GenPlayerLevel ?? serializedShop.PlayerLevel ?? 1)),
+    reputation: Math.max(-10, Math.min(10, serializedShop.Reputation ?? 0)),
   };
   const customItems = (serializedShop.Stock || [])
     .filter(e => e && e.isCustom)
@@ -120,6 +122,7 @@ export function parseSharedShop(encodedString) {
   const { params, customItems } = decoded;
   const serialized = generateShop(params.seed, params);
   if (!serialized) return { ok: false, error: 'Could not generate shop' };
+  serialized.Reputation = Math.max(-10, Math.min(10, params.reputation ?? 0));
   for (const c of customItems) {
     serialized.Stock.push({
       isCustom: true,

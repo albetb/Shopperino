@@ -4,12 +4,14 @@
  * Lossless; name truncated to 255 UTF-8 bytes, number 1-99, price stored as integer cents.
  */
 
-const VERSION = 1;
+const VERSION = 2;
+const PARAMS_BYTES_V1 = 7;
+const PARAMS_BYTES_V2 = 8;
 const BASE64URL_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
 const MAX_NAME_BYTES = 255;
 const PRICE_CENTS_MAX = 0xFFFFFFFF;
 
-/** @typedef {{ seed: number; shopTypeIndex: number; level: number; cityLevel: number; playerLevel: number; }} ShopParams */
+/** @typedef {{ seed: number; shopTypeIndex: number; level: number; cityLevel: number; playerLevel: number; reputation?: number; }} ShopParams */
 /** @typedef {{ name: string; number: number; price: number; type?: string; }} CustomItem */
 
 /** Item type string -> number for custom items in QR payload. Order is fixed; do not change. */
@@ -30,9 +32,8 @@ function numToCustomItemType(n) {
 }
 
 /**
- * Encode params to a minimal byte array. Seed is 32-bit.
- * Ranges: shopTypeIndex 0..15 (4b), level 0..15 (4b), cityLevel 0..7 (3b), playerLevel 1..127 (7b), seed 32b.
- * Total: 4+4+3+7+32 = 50 bits. We use 7 bytes (56 bits), 6 bits reserved.
+ * Encode params to a minimal byte array. Seed is 32-bit. Reputation -10..10 in byte 8.
+ * Bytes 0-6: as before. Byte 7: reputation + 10 (0..20).
  * @param {ShopParams} params
  * @returns {Uint8Array}
  */
@@ -42,8 +43,10 @@ export function encodeShopParams(params) {
   const cityLevel = Math.max(0, Math.min(7, params.cityLevel | 0));
   const playerLevel = Math.max(1, Math.min(127, params.playerLevel | 0));
   const seed = (params.seed >>> 0);
+  const reputation = Math.max(-10, Math.min(10, params.reputation ?? 0));
+  const repByte = Math.max(0, Math.min(20, reputation + 10));
 
-  const b = new Uint8Array(7);
+  const b = new Uint8Array(8);
   b[0] = (VERSION << 4) | (shopTypeIndex & 0x0f);
   b[1] = (level << 4) | (cityLevel & 0x07);
   b[2] = (playerLevel & 0x7f);
@@ -51,26 +54,29 @@ export function encodeShopParams(params) {
   b[4] = (seed >>> 16) & 0xff;
   b[5] = (seed >>> 8) & 0xff;
   b[6] = seed & 0xff;
+  b[7] = repByte & 0xff;
   return b;
 }
 
 /**
  * Decode byte array to ShopParams. Returns null if invalid or wrong version.
+ * Bytes 0-6: params. Byte 7 optional: reputation (0..20) -> -10..10.
  * @param {Uint8Array} bytes
  * @returns {ShopParams | null}
  */
 export function decodeShopParams(bytes) {
   if (!bytes || bytes.length < 7) return null;
   const v = (bytes[0] >>> 4) & 0x0f;
-  if (v !== VERSION) return null;
+  if (v !== 1 && v !== 2) return null;
 
   const shopTypeIndex = bytes[0] & 0x0f;
   const level = (bytes[1] >>> 4) & 0x0f;
   const cityLevel = bytes[1] & 0x07;
   const playerLevel = Math.max(1, bytes[2] & 0x7f);
   const seed = (((bytes[3] << 24) | (bytes[4] << 16) | (bytes[5] << 8) | bytes[6]) >>> 0);
+  const reputation = (v === 2 && bytes.length >= 8) ? (bytes[7] & 0xff) - 10 : 0;
 
-  return { seed, shopTypeIndex, level, cityLevel, playerLevel };
+  return { seed, shopTypeIndex, level, cityLevel, playerLevel, reputation };
 }
 
 /**
@@ -173,7 +179,7 @@ function utf8ToString(bytes) {
 export function encodeShopPayload(params, customItems = []) {
   const head = encodeShopParams(params);
   const count = Math.min(255, customItems.length);
-  let size = 7 + 1;
+  let size = head.length + 1;
   const itemBytes = [];
   for (let k = 0; k < count; k++) {
     const item = customItems[k];
@@ -188,8 +194,8 @@ export function encodeShopPayload(params, customItems = []) {
   }
   const out = new Uint8Array(size);
   out.set(head, 0);
-  out[7] = count;
-  let off = 8;
+  out[head.length] = count;
+  let off = head.length + 1;
   for (const t of itemBytes) {
     out[off++] = t.nameLen;
     out.set(t.nameBytes, off);
@@ -205,18 +211,21 @@ export function encodeShopPayload(params, customItems = []) {
 }
 
 /**
- * Decode full payload. Supports 7-byte (params only) or 8+ (params + custom).
+ * Decode full payload. Supports 7-byte (params only, no reputation), 8-byte (params + reputation), or 9+ (params + custom count + items).
  * @param {Uint8Array} bytes
  * @returns {{ params: ShopParams, customItems: CustomItem[] } | null}
  */
 export function decodeShopPayload(bytes) {
   if (!bytes || bytes.length < 7) return null;
-  const params = decodeShopParams(bytes.subarray(0, 7));
+  const v = (bytes[0] >>> 4) & 0x0f;
+  const paramsLen = (v === 2 && bytes.length >= 8) ? PARAMS_BYTES_V2 : PARAMS_BYTES_V1;
+  const params = decodeShopParams(bytes.subarray(0, paramsLen));
   if (!params) return null;
   const customItems = [];
-  if (bytes.length >= 8) {
-    const count = bytes[7] & 0xff;
-    let off = 8;
+  const customStart = paramsLen + 1;
+  if (bytes.length >= customStart) {
+    const count = bytes[paramsLen] & 0xff;
+    let off = customStart;
     for (let k = 0; k < count && off + 7 <= bytes.length; k++) {
       const nameLen = bytes[off++] & 0xff;
       if (off + nameLen + 6 > bytes.length) break;
