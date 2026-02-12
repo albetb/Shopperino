@@ -97,11 +97,13 @@ export default function ShopInventory() {
       <div className="header-container">
         <div className="label-container">
           <h2>{shopLabel()}</h2>
-          <div className="space-left">
             {isViewOnly ? (
-              <h4 className="view-only-italic">(view only)</h4>
+              <div className="space-left">
+                <h4 className="view-only-italic">(view only)</h4>
+              </div>
             ) : (
-              <h4>{cityLabel()}</h4>
+              <></>
+              // <h4>{cityLabel()}</h4>
             )}
           </div>
         </div>
@@ -119,7 +121,6 @@ export default function ShopInventory() {
             <h4><b>Gold: {formatNumber(gold)}</b></h4>
           </div>
         )}
-      </div>
 
       {isViewOnly && !hasItems && <p className="empty-state-message">No items in this shop.</p>}
       {!isViewOnly && !hasItems && (
