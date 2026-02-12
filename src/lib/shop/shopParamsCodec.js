@@ -13,6 +13,7 @@ const PRICE_CENTS_MAX = 0xFFFFFFFF;
 
 /** @typedef {{ seed: number; shopTypeIndex: number; level: number; cityLevel: number; playerLevel: number; reputation?: number; }} ShopParams */
 /** @typedef {{ name: string; number: number; price: number; type?: string; }} CustomItem */
+/** @typedef {{ link: string; number: number; price: number; type?: string; }} RefItem */
 
 /** Item type string -> number for custom items in QR payload. Order is fixed; do not change. */
 const CUSTOM_ITEM_TYPE_LIST = [
@@ -170,18 +171,22 @@ function utf8ToString(bytes) {
   return String.fromCharCode(...a);
 }
 
+const MAX_LINK_BYTES = 255;
+
 /**
- * Encode full payload: 7 bytes params + 1 byte custom count + [per custom: 1 byte nameLen, name UTF-8, 1 byte typeNum, 1 byte number, 4 bytes price cents BE].
+ * Encode full payload: params + custom count + custom items + ref count + ref items.
+ * Ref item: 1 byte linkLen, link UTF-8, 1 byte number, 4 bytes price cents BE, 1 byte typeNum.
  * @param {ShopParams} params
  * @param {CustomItem[]} customItems
+ * @param {RefItem[]} refItems
  * @returns {Uint8Array}
  */
-export function encodeShopPayload(params, customItems = []) {
+export function encodeShopPayload(params, customItems = [], refItems = []) {
   const head = encodeShopParams(params);
-  const count = Math.min(255, customItems.length);
+  const customCount = Math.min(255, customItems.length);
   let size = head.length + 1;
-  const itemBytes = [];
-  for (let k = 0; k < count; k++) {
+  const customBytes = [];
+  for (let k = 0; k < customCount; k++) {
     const item = customItems[k];
     const name = (item.name != null ? String(item.name) : '').trim() || 'Custom';
     let nameBytes = stringToUtf8(name);
@@ -189,14 +194,29 @@ export function encodeShopPayload(params, customItems = []) {
     const typeNum = customItemTypeToNum(item.type);
     const num = Math.max(1, Math.min(99, (item.number | 0) || 1));
     const price = Math.max(0, Math.min(PRICE_CENTS_MAX, Math.round((Number(item.price) || 0) * 100)));
-    itemBytes.push({ nameLen: nameBytes.length, nameBytes, typeNum, number: num, priceCents: price });
+    customBytes.push({ nameLen: nameBytes.length, nameBytes, typeNum, number: num, priceCents: price });
     size += 1 + nameBytes.length + 1 + 1 + 4;
   }
+  const refCount = Math.min(255, refItems.length);
+  size += 1;
+  const refBytes = [];
+  for (let k = 0; k < refCount; k++) {
+    const item = refItems[k];
+    const link = (item.link != null ? String(item.link) : '').trim();
+    let linkBytes = stringToUtf8(link);
+    if (linkBytes.length > MAX_LINK_BYTES) linkBytes = linkBytes.subarray(0, MAX_LINK_BYTES);
+    const typeNum = customItemTypeToNum(item.type);
+    const num = Math.max(1, Math.min(99, (item.number | 0) || 1));
+    const price = Math.max(0, Math.min(PRICE_CENTS_MAX, Math.round((Number(item.price) || 0) * 100)));
+    refBytes.push({ linkLen: linkBytes.length, linkBytes, typeNum, number: num, priceCents: price });
+    size += 1 + linkBytes.length + 1 + 4 + 1;
+  }
   const out = new Uint8Array(size);
-  out.set(head, 0);
-  out[head.length] = count;
-  let off = head.length + 1;
-  for (const t of itemBytes) {
+  let off = 0;
+  out.set(head, off);
+  off += head.length;
+  out[off++] = customCount;
+  for (const t of customBytes) {
     out[off++] = t.nameLen;
     out.set(t.nameBytes, off);
     off += t.nameLen;
@@ -207,13 +227,25 @@ export function encodeShopPayload(params, customItems = []) {
     out[off++] = (t.priceCents >>> 8) & 0xff;
     out[off++] = t.priceCents & 0xff;
   }
+  out[off++] = refCount;
+  for (const t of refBytes) {
+    out[off++] = t.linkLen;
+    out.set(t.linkBytes, off);
+    off += t.linkLen;
+    out[off++] = t.number;
+    out[off++] = (t.priceCents >>> 24) & 0xff;
+    out[off++] = (t.priceCents >>> 16) & 0xff;
+    out[off++] = (t.priceCents >>> 8) & 0xff;
+    out[off++] = t.priceCents & 0xff;
+    out[off++] = t.typeNum & 0xff;
+  }
   return out;
 }
 
 /**
- * Decode full payload. Supports 7-byte (params only, no reputation), 8-byte (params + reputation), or 9+ (params + custom count + items).
+ * Decode full payload. Returns params, customItems, and refItems (user-added items with link).
  * @param {Uint8Array} bytes
- * @returns {{ params: ShopParams, customItems: CustomItem[] } | null}
+ * @returns {{ params: ShopParams, customItems: CustomItem[], refItems: RefItem[] } | null}
  */
 export function decodeShopPayload(bytes) {
   if (!bytes || bytes.length < 7) return null;
@@ -222,11 +254,11 @@ export function decodeShopPayload(bytes) {
   const params = decodeShopParams(bytes.subarray(0, paramsLen));
   if (!params) return null;
   const customItems = [];
-  const customStart = paramsLen + 1;
-  if (bytes.length >= customStart) {
-    const count = bytes[paramsLen] & 0xff;
-    let off = customStart;
-    for (let k = 0; k < count && off + 7 <= bytes.length; k++) {
+  const refItems = [];
+  let off = paramsLen + 1;
+  if (bytes.length >= off) {
+    const customCount = bytes[paramsLen] & 0xff;
+    for (let k = 0; k < customCount && off + 7 <= bytes.length; k++) {
       const nameLen = bytes[off++] & 0xff;
       if (off + nameLen + 6 > bytes.length) break;
       const nameBytes = bytes.subarray(off, off + nameLen);
@@ -243,14 +275,33 @@ export function decodeShopPayload(bytes) {
       });
     }
   }
-  return { params, customItems };
+  if (bytes.length >= off + 1) {
+    const refCount = bytes[off++] & 0xff;
+    for (let k = 0; k < refCount && off + 7 <= bytes.length; k++) {
+      const linkLen = bytes[off++] & 0xff;
+      if (off + linkLen + 6 > bytes.length) break;
+      const linkBytes = bytes.subarray(off, off + linkLen);
+      off += linkLen;
+      const number = Math.max(1, Math.min(99, bytes[off++] || 1));
+      const priceCents = ((bytes[off] << 24) | (bytes[off + 1] << 16) | (bytes[off + 2] << 8) | bytes[off + 3]) >>> 0;
+      off += 4;
+      const typeNum = bytes[off++] & 0xff;
+      refItems.push({
+        link: utf8ToString(linkBytes),
+        number,
+        price: priceCents / 100,
+        type: numToCustomItemType(typeNum),
+      });
+    }
+  }
+  return { params, customItems, refItems };
 }
 
 /**
  * Encode params and optional custom items to a single base64url string.
  */
-export function encodeShopPayloadToBase64Url(params, customItems = []) {
-  const bytes = encodeShopPayload(params, customItems);
+export function encodeShopPayloadToBase64Url(params, customItems = [], refItems = []) {
+  const bytes = encodeShopPayload(params, customItems, refItems);
   let s = '';
   for (let i = 0; i < bytes.length; i += 3) {
     const a = bytes[i];

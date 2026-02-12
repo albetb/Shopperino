@@ -385,6 +385,7 @@ class Shop {
                 PriceModifier: 0,
                 ItemType: itemType,
                 CostOverride: savedCost,
+                userAdded: true,
             };
             this.Stock.push(newEntry);
             const r = resolveEntry(newEntry);

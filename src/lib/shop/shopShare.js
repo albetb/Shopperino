@@ -105,7 +105,15 @@ export function compressShopForShare(serializedShop) {
       price: parseFloat(e.Cost) || 0,
       type: e.ItemType ?? 'Custom',
     }));
-  const payload = encodeShopPayloadToBase64Url(params, customItems);
+  const refItems = (serializedShop.Stock || [])
+    .filter(e => e && e.link && e.userAdded)
+    .map(e => ({
+      link: e.link,
+      number: Math.max(1, Math.min(99, (e.Number | 0) || 1)),
+      price: parseFloat(e.CostOverride ?? e.Cost) || 0,
+      type: e.ItemType ?? 'Good',
+    }));
+  const payload = encodeShopPayloadToBase64Url(params, customItems, refItems);
   return { ok: true, payload };
 }
 
@@ -119,7 +127,7 @@ export function parseSharedShop(encodedString) {
   }
   const decoded = decodeShopPayloadFromBase64Url(encodedString.trim());
   if (!decoded) return { ok: false, error: 'Invalid or corrupted data' };
-  const { params, customItems } = decoded;
+  const { params, customItems, refItems = [] } = decoded;
   const serialized = generateShop(params.seed, params);
   if (!serialized) return { ok: false, error: 'Could not generate shop' };
   serialized.Reputation = Math.max(-10, Math.min(10, params.reputation ?? 0));
@@ -130,6 +138,16 @@ export function parseSharedShop(encodedString) {
       Number: c.number,
       Cost: c.price,
       ItemType: c.type ?? 'Custom',
+    });
+  }
+  for (const r of refItems) {
+    serialized.Stock.push({
+      link: r.link,
+      Number: r.number,
+      PriceModifier: 0,
+      ItemType: r.type ?? 'Good',
+      CostOverride: r.price,
+      userAdded: true,
     });
   }
   const shop = serializedShopToSharedFormat(serialized);
