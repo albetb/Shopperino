@@ -14,7 +14,7 @@ export default function MainPage() {
     <div className="main-page">
       <h1>Welcome to Shopperino!</h1>
 
-      <p className="main-intro">A collection of tools for Dungeons and Dragons 3.5</p>
+      <p className="main-intro">A collection of tools for Dungeons & Dragons 3.5</p>
 
       <div className="master-player-toggle margin-v-1">
         <span className={isMasterMode ? 'master-player-label active' : 'master-player-label'} onClick={() => dispatch(setMasterMode(true))}>Master</span>
@@ -35,12 +35,6 @@ export default function MainPage() {
       </div>
       )}
 
-      <div className="card" onClick={handleSpellbookClick}>
-        <p className="card-title-shadow"><b>Spellbook</b></p>
-        <span className="material-symbols-outlined card-icon-dark">menu_book</span>
-        <p className="text-center">A spellbook that lets players organize and track their learned spells.</p>
-      </div>
-
       {isMasterMode && (
       <div className="card" onClick={handleLootClick}>
         <p className="card-title-shadow"><b>Loot generator</b></p>
@@ -48,6 +42,12 @@ export default function MainPage() {
         <p className="text-center">Generates randomized loot tailored to the player’s level, including gold, goods, and magic items.</p>
       </div>
       )}
+
+      <div className="card" onClick={handleSpellbookClick}>
+        <p className="card-title-shadow"><b>Spellbook</b></p>
+        <span className="material-symbols-outlined card-icon-dark">menu_book</span>
+        <p className="text-center">A spellbook that lets players organize and track their learned spells.</p>
+      </div>
 
       <p className="main-intro">
         If you encounter any bugs or inaccurate descriptions, please report them on our{" "}

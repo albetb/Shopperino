@@ -248,7 +248,7 @@ export default function SpellLevelCard({
                           >
                             <span className='material-symbols-outlined'>remove</span>
                           </button>
-                          <label className='level-text'>
+                          <label className='level-text' style={{margin: "0 8px 0 8px"}}>
                             {inst.Spells.find(x => x.Link === item.Link)?.Prepared || 0}
                           </label>
                           <button
@@ -294,7 +294,7 @@ export default function SpellLevelCard({
                   </td>
 
                   {/* Mobile: hide school column for all classes except Wizard */}
-                  {(!isMobile() || inst.Class === 'Wizard') && (
+                  {(!isMobile() || (inst.Class === 'Wizard' && page === 0)) && (
                     <td className={firstClass + schoolClass(item.School) + ' col-30'}>
                       {item.School.split(' ')[0]}
                     </td>
