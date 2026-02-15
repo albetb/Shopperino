@@ -246,13 +246,13 @@ export function encodeShopPayload(params, customItems = [], refItems = [], soldI
     const row = soldItems[k];
     const fileCode = (row.fileCode != null ? String(row.fileCode) : '')[0] || 'i';
     const id = Math.max(0, Math.min(0xFFFF, (row.id | 0) >>> 0));
-    const numberSold = Math.max(0, Math.min(0xFFFF, (row.numberSold | 0) >>> 0));
+    const delta = Math.max(-32768, Math.min(32767, (row.numberSold | 0) | 0));
     const bonus = Math.max(0, Math.min(255, (row.bonus != null ? row.bonus : 0) | 0));
     out[off++] = fileCode.charCodeAt(0) & 0xff;
     out[off++] = (id >>> 8) & 0xff;
     out[off++] = id & 0xff;
-    out[off++] = (numberSold >>> 8) & 0xff;
-    out[off++] = numberSold & 0xff;
+    out[off++] = (delta >> 8) & 0xff;
+    out[off++] = delta & 0xff;
     out[off++] = bonus & 0xff;
   }
   const gold = Math.max(0, Math.min(PRICE_CENTS_MAX, (goldCents | 0) >>> 0));
@@ -323,13 +323,14 @@ export function decodeShopPayload(bytes) {
       const fileCode = String.fromCharCode(bytes[off++] & 0xff);
       const id = ((bytes[off] << 8) | bytes[off + 1]) & 0xFFFF;
       off += 2;
-      const numberSold = ((bytes[off] << 8) | bytes[off + 1]) & 0xFFFF;
+      let delta = ((bytes[off] << 8) | bytes[off + 1]) & 0xFFFF;
+      if (delta >= 32768) delta -= 65536;
       off += 2;
       const bonus = bytes[off++] & 0xff;
       soldItems.push({
         fileCode,
         id,
-        numberSold,
+        numberSold: delta,
         ...(bonus > 0 ? { bonus } : {}),
       });
     }

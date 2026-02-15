@@ -152,6 +152,12 @@ class Shop {
             // Threshold gold is derived from Gen* (same as template at first generation): deterministic, no need to persist
             this.Gold = this.baseGold(this.GenPlayerLevel, this.GenLevel);
             this.generateInventory(rng);
+            for (const entry of this.Stock) {
+                if (entry.link && (entry.fileCode == null || entry.id == null)) {
+                    const sr = getShareFileCodeAndId(entry.link);
+                    if (sr) { entry.fileCode = sr.fileCode; entry.id = sr.id; }
+                }
+            }
             this.Level = savedLevel;
             this.CityLevel = savedCityLevel;
             this.PlayerLevel = savedPlayerLevel;
@@ -170,28 +176,44 @@ class Shop {
         return this;
     }
 
-    /** Apply persisted sold counts: reduce generated Stock entries by sold amounts, remove if Number <= 0. Sold items: [fileCode, id, numberSold, bonus?]. */
+    /** Apply persisted delta: positive = sold (reduce/remove), negative = added (increase). Sold items: [fileCode, id, delta, bonus?]. */
     applySold(soldList) {
         if (!Array.isArray(soldList)) return;
         for (const row of soldList) {
-            const fileCode = row[0];
-            const id = row[1];
-            const numberSold = Math.max(0, (row[2] | 0) || 0);
-            const bonus = row.length >= 4 ? row[3] : null;
-            if (numberSold <= 0) continue;
-            let remaining = numberSold;
-            for (let i = this.Stock.length - 1; i >= 0 && remaining > 0; i--) {
-                const entry = this.Stock[i];
-                if (entry.userAdded || !isRefEntry(entry)) continue;
-                const ref = getEntryRef(entry);
-                if (!ref || ref.fileCode !== fileCode || ref.id !== id) continue;
-                const entryBonus = entry.Bonus != null ? entry.Bonus : null;
-                if (entryBonus !== bonus) continue;
-                const n = entry.Number || 1;
-                const deduct = Math.min(remaining, n);
-                entry.Number = Math.max(0, n - deduct);
-                remaining -= deduct;
-                if (entry.Number <= 0) this.Stock.splice(i, 1);
+            if (!Array.isArray(row) || row.length < 3) continue;
+            const fileCodeStr = row[0] != null ? String(row[0]) : null;
+            const idNum = Number(row[1]);
+            if (fileCodeStr == null || Number.isNaN(idNum)) continue;
+            const delta = Number(row[2]);
+            const bonus = row.length >= 4 && row[3] != null ? row[3] : null;
+            if (delta === 0) continue;
+            if (delta > 0) {
+                let remaining = delta;
+                for (let i = this.Stock.length - 1; i >= 0 && remaining > 0; i--) {
+                    const entry = this.Stock[i];
+                    if (entry.userAdded || !isRefEntry(entry)) continue;
+                    const ref = getEntryRef(entry);
+                    if (!ref || String(ref.fileCode) !== fileCodeStr || Number(ref.id) !== idNum) continue;
+                    const entryBonus = entry.Bonus != null ? entry.Bonus : null;
+                    if (entryBonus !== bonus) continue;
+                    const n = entry.Number || 1;
+                    const deduct = Math.min(remaining, n);
+                    entry.Number = Math.max(0, n - deduct);
+                    remaining -= deduct;
+                    if (entry.Number <= 0) this.Stock.splice(i, 1);
+                }
+            } else {
+                const addQty = Math.min(99, Math.max(0, -delta));
+                for (let i = 0; i < this.Stock.length; i++) {
+                    const entry = this.Stock[i];
+                    if (entry.userAdded || !isRefEntry(entry)) continue;
+                    const ref = getEntryRef(entry);
+                    if (!ref || String(ref.fileCode) !== fileCodeStr || Number(ref.id) !== idNum) continue;
+                    const entryBonus = entry.Bonus != null ? entry.Bonus : null;
+                    if (entryBonus !== bonus) continue;
+                    entry.Number = Math.min(99, (entry.Number || 1) + addQty);
+                    break;
+                }
             }
         }
         this.sortByType();
@@ -552,6 +574,25 @@ class Shop {
             entry.Number = (entry.Number || 0) + savedNumber;
             const r = resolveEntry(entry);
             this.setGold(this.Gold - (r ? this.trueCost(r, true) * savedNumber : 0));
+            // Persist "added" to generated ref: use Sold with negative count (so refresh restores quantity)
+            if (isRefEntry(entry) && !entry.userAdded) {
+                const ref = getEntryRef(entry);
+                if (ref) {
+                    const prev = Array.isArray(this.Sold) ? this.Sold : [];
+                    const bonus = entry.Bonus != null ? entry.Bonus : null;
+                    const existingIdx = prev.findIndex(s => Array.isArray(s) && s.length >= 3 && String(s[0]) === String(ref.fileCode) && Number(s[1]) === Number(ref.id) && (s[3] ?? null) === bonus);
+                    let next;
+                    if (existingIdx >= 0) {
+                        const e = prev[existingIdx];
+                        next = [...prev];
+                        const prevDelta = Number(e[2]);
+                        next[existingIdx] = [e[0], e[1], (Number.isNaN(prevDelta) ? 0 : prevDelta) - savedNumber, e.length >= 4 ? e[3] : null];
+                    } else {
+                        next = [...prev, [ref.fileCode, ref.id, -savedNumber, bonus]];
+                    }
+                    this.Sold = next;
+                }
+            }
         } else if (fullLink) {
             const shareRef = getShareFileCodeAndId(fullLink);
             const newEntry = shareRef

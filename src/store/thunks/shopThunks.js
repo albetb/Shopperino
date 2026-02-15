@@ -88,15 +88,12 @@ export const updateShop = ([method, ...args]) => (dispatch, getState) => {
   if (app.sw == null || app.sw < 0 || !app.w?.length) return;
   let w = state.world?.world ?? db.getWorldByIndex(app, app.sw);
   if (!w) return;
-  if (w !== state.world?.world) {
-    const c = w.Cities?.[w.SelectedCityIndex];
-    if (c?.Shops?.[c.SelectedShopIndex] != null) c.Shops[c.SelectedShopIndex] = shop;
-  }
+  const c = w.Cities?.[w.SelectedCityIndex];
+  if (c?.Shops?.length) c.Shops[c.SelectedShopIndex] = shop;
   const newApp = { ...app, w: app.w.map((wt, wi) => (wi === app.sw ? db.worldToTuple(w) : wt)) };
   db.saveApp(newApp);
   dispatch(setPersist(newApp));
   dispatch(setWorld(w));
-  const c = w.Cities?.[w.SelectedCityIndex];
   if (c) dispatch(setCity(c));
   dispatch(setShop(shop));
 };

@@ -144,7 +144,7 @@ export function compressShopForShare(serializedShop) {
     id: row[1],
     numberSold: (row[2] | 0) || 0,
     ...(row.length >= 4 && row[3] != null ? { bonus: row[3] } : {}),
-  })).filter(s => s.numberSold > 0);
+  })).filter(s => s.numberSold !== 0);
   const rawGold = typeof serializedShop.Gold === 'number' ? unscaleGold(serializedShop.Gold) : (Number(serializedShop.Gold) || 0);
   const goldCents = Math.max(0, Math.round(rawGold * 100));
   const payload = encodeShopPayloadToBase64Url(params, customItems, refItems, soldItems, goldCents);
@@ -160,31 +160,45 @@ function getStockEntryRef(entry) {
 }
 
 /**
- * Apply sold list to serialized Stock (same semantics as Shop.applySold): reduce generated ref entries, remove if Number <= 0.
+ * Apply delta list to serialized Stock (same as Shop.applySold): positive = sold (deduct/remove), negative = added (increase).
  * @param {object[]} stock - serialized Stock array (mutated)
- * @param {{ fileCode: string; id: number; numberSold: number; bonus?: number }[]} soldItems
+ * @param {{ fileCode: string; id: number; numberSold: number; bonus?: number }[]} soldItems - numberSold is delta (signed)
  */
 function applySoldToStock(stock, soldItems) {
   if (!Array.isArray(stock) || !Array.isArray(soldItems)) return;
   for (const row of soldItems) {
     const fileCode = row.fileCode;
     const id = row.id;
-    const numberSold = Math.max(0, (row.numberSold | 0) || 0);
+    const delta = (row.numberSold | 0) || 0;
     const bonus = row.bonus != null ? row.bonus : null;
-    if (numberSold <= 0) continue;
-    let remaining = numberSold;
-    for (let i = stock.length - 1; i >= 0 && remaining > 0; i--) {
-      const entry = stock[i];
-      if (entry.userAdded || entry.isCustom) continue;
-      const ref = getStockEntryRef(entry);
-      if (!ref || ref.fileCode !== fileCode || ref.id !== id) continue;
-      const entryBonus = entry.Bonus != null ? entry.Bonus : null;
-      if (entryBonus !== bonus) continue;
-      const n = entry.Number || 1;
-      const deduct = Math.min(remaining, n);
-      entry.Number = Math.max(0, n - deduct);
-      remaining -= deduct;
-      if (entry.Number <= 0) stock.splice(i, 1);
+    if (delta === 0) continue;
+    if (delta > 0) {
+      let remaining = delta;
+      for (let i = stock.length - 1; i >= 0 && remaining > 0; i--) {
+        const entry = stock[i];
+        if (entry.userAdded || entry.isCustom) continue;
+        const ref = getStockEntryRef(entry);
+        if (!ref || ref.fileCode !== fileCode || ref.id !== id) continue;
+        const entryBonus = entry.Bonus != null ? entry.Bonus : null;
+        if (entryBonus !== bonus) continue;
+        const n = entry.Number || 1;
+        const deduct = Math.min(remaining, n);
+        entry.Number = Math.max(0, n - deduct);
+        remaining -= deduct;
+        if (entry.Number <= 0) stock.splice(i, 1);
+      }
+    } else {
+      const addQty = Math.min(99, -delta);
+      for (let i = 0; i < stock.length; i++) {
+        const entry = stock[i];
+        if (entry.userAdded || entry.isCustom) continue;
+        const ref = getStockEntryRef(entry);
+        if (!ref || ref.fileCode !== fileCode || ref.id !== id) continue;
+        const entryBonus = entry.Bonus != null ? entry.Bonus : null;
+        if (entryBonus !== bonus) continue;
+        entry.Number = Math.min(99, (entry.Number || 1) + addQty);
+        break;
+      }
     }
   }
 }

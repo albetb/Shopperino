@@ -183,8 +183,10 @@ export function shopToTuple(shop) {
   const arr = [];
   for (const k of SHOP_TUPLE_KEYS) {
     if (k === 'UserAdditions') arr.push(data.UserAdditions ?? []);
-    else if (k === 'Sold') arr.push(Array.isArray(data.Sold) ? data.Sold : []);
-    else arr.push(data[k]);
+    else if (k === 'Sold') {
+      const sold = Array.isArray(data.Sold) ? data.Sold : [];
+      arr.push(sold.map(row => Array.isArray(row) ? [...row] : row));
+    } else arr.push(data[k]);
   }
   return arr;
 }
