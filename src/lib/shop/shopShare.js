@@ -39,11 +39,18 @@ function resolveStockEntryLink(entry) {
 }
 
 /**
- * Convert serialized shop (from generateShop, which includes Stock) to shared format { name, gold, stock } for display.
+ * Convert serialized shop to shared format { name, gold, stock } for display.
+ * When usePrebuiltStock is true, Stock and Gold are used as-is (no load/regeneration). Use for parseSharedShop output.
+ * When false, load(serialized) is used (regenerates from Seed, applies UserAdditions/Sold). Use for normal serialized from app.
  */
-function serializedShopToSharedFormat(serialized) {
+function serializedShopToSharedFormat(serialized, usePrebuiltStock = false) {
   if (!serialized || !Array.isArray(serialized.Stock)) return { name: '', gold: 0, stock: [] };
-  const s = new Shop().load(serialized);
+  const s = usePrebuiltStock ? new Shop() : new Shop().load(serialized);
+  if (usePrebuiltStock) {
+    s.Stock = serialized.Stock;
+    s.Name = serialized.Name ?? '';
+    s.Gold = typeof serialized.Gold === 'number' ? serialized.Gold : (Number(serialized.Gold) || 0);
+  }
   const inv = s.getInventory();
   const stock = [];
   for (let i = 0; i < serialized.Stock.length; i++) {
@@ -220,8 +227,8 @@ export function parseSharedShop(encodedString) {
     });
   }
   applySoldToStock(serialized.Stock, soldItems);
-  if (goldCents > 0) serialized.Gold = goldCents / 100;
-  const shop = serializedShopToSharedFormat(serialized);
+  serialized.Gold = goldCents > 0 ? goldCents / 100 : (typeof serialized.Gold === 'number' ? unscaleGold(serialized.Gold) : (Number(serialized.Gold) || 0));
+  const shop = serializedShopToSharedFormat(serialized, true);
   return {
     ok: true,
     shop: {
