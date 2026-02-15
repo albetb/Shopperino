@@ -4,7 +4,7 @@ import Shop from 'lib/shop';
 import { sharedStockToDisplayItems } from 'lib/shop';
 import { formatNumber, getEffectById } from 'lib/utils';
 import { addCardByLink, clearSharedShop } from 'store/slices/appSlice';
-import { updateShop } from 'store/slices/shopSlice';
+import { updateShop } from 'store/thunks/shopThunks';
 import useLongPress from 'components/hooks/useLongPress';
 import { useSortedItems } from './hooks/useSortedItems';
 import { useShopLabels } from './hooks/useShopLabels';
@@ -35,7 +35,7 @@ export default function ShopInventory() {
   const isViewOnly = !!sharedShop;
   const items = isViewOnly
     ? (Array.isArray(sharedShop.stock) ? sharedStockToDisplayItems(sharedShop.stock) : [])
-    : (rawShop ? new Shop().load(rawShop).getInventory() : []);
+    : (rawShop?.getInventory?.() ?? []);
   const shopName = isViewOnly ? (sharedShop.name ?? 'Shared shop') : (rawShop?.Name || '');
   const gold = isViewOnly ? (Number(sharedShop.gold) || 0) : (rawShop?.Gold ?? 0);
   const cityFromRedux = useSelector((state) => state.city.city?.Name) || '';

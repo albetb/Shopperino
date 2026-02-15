@@ -1,71 +1,124 @@
+import { createPrng } from '../../lib/prng';
 import City from '../../lib/city';
 import Shop from '../../lib/shop';
 import * as db from '../../lib/storage';
 import { cap, serialize } from '../../lib/utils';
 import { setCity } from '../slices/citySlice';
 import { setShop, setShopGenerated } from '../slices/shopSlice';
+import { setWorld, setWorldsList, setSelectedWorldIndex } from '../slices/worldSlice';
+import { setPersist } from '../slices/persistSlice';
 
 export const onNewShop = (nameRaw) => (dispatch, getState) => {
+  const app = getState().persist;
+  const w = db.getWorldByIndex(app, app.sw);
+  const c = w?.Cities?.[w.SelectedCityIndex];
+  if (!c) return;
   const name = cap(nameRaw);
-  const { city } = getState().city;
-  const { world } = getState().world;
-
-  if (!city || name.trim().length === 0) return;
-  if (city.Shops.some(w => w.Name === name)) { // If name already present select that item
-    const found = city.Shops.find(w => w.Name === name)
-    const c = new City().load(city);
-    c.selectShop(found.Id);
-
-    const s = db.getShop(found.Id);
-    dispatch(setShop(s));
+  if (!name || name.trim().length === 0) return;
+  if (c.Shops.some(s => s.Name === name)) {
+    const idx = c.Shops.findIndex(s => s.Name === name);
+    c.selectShopByIndex(idx);
+    const newApp = db.updateWorldAt(app, app.sw, w);
+    db.saveApp(newApp);
+    dispatch(setPersist(newApp));
+    dispatch(setWorld(w));
     dispatch(setCity(c));
+    dispatch(setShop(c.Shops[c.SelectedShopIndex]));
     return;
-  };
+  }
 
-  const s = new Shop(name, city.Level, world.Level);
-
-  const c = new City().load(city);
-  c.addShop(s.Id, s.Name);
-
+  c.addShop(name, c.Level, w.Level);
+  const newApp = db.updateWorldAt(app, app.sw, w);
+  db.saveApp(newApp);
+  dispatch(setPersist(newApp));
+  dispatch(setWorld(w));
   dispatch(setCity(c));
-  dispatch(setShop(s));
+  dispatch(setShop(c.Shops[c.SelectedShopIndex]));
 };
 
 export const onSelectShop = (name) => (dispatch, getState) => {
-  const { city } = getState().city;
-  if (!city) return;
+  const app = getState().persist;
+  const w = db.getWorldByIndex(app, app.sw);
+  const c = w?.Cities?.[w.SelectedCityIndex];
+  if (!c) return;
 
-  const shopMeta = city.Shops.find(s => s.Name === name);
-  if (!shopMeta) return;
-
-  const c = new City().load(city);
-  c.selectShop(shopMeta.Id);
-
+  const idx = c.Shops.findIndex(s => s.Name === name);
+  if (idx < 0) return;
+  c.selectShopByIndex(idx);
+  const newApp = db.updateWorldAt(app, app.sw, w);
+  db.saveApp(newApp);
+  dispatch(setPersist(newApp));
+  dispatch(setWorld(w));
   dispatch(setCity(c));
-  dispatch(setShop(db.getShop(shopMeta.Id)));
+  dispatch(setShop(c.Shops[c.SelectedShopIndex]));
 };
 
 export const onDeleteShop = () => (dispatch, getState) => {
-  const { city } = getState().city;
-  const { shop } = getState().shop;
-  const { selectedWorld } = getState().world;
-  if (!city || !shop) return;
+  const state = getState();
+  const app = state.persist;
+  if (app.sw == null || app.sw < 0 || !app.w?.length) return;
+  const w = state.world?.world ?? db.getWorldByIndex(app, app.sw);
+  const c = state.city?.city ?? w?.Cities?.[w.SelectedCityIndex];
+  const shop = state.shop.shop;
+  if (!w || !c || !shop) return;
 
-  db.deleteShop(shop.Id);
-
-  const c = new City().load(city);
-  const nextMeta = c.Shops.find(s => s.Id !== shop.Id);
-  c.selectShop(nextMeta?.Id);
-  c.deleteShop(shop.Id);
-
+  const shopIdx = c.Shops.findIndex(s => s.Name === shop.Name);
+  if (shopIdx < 0) return;
+  c.deleteShopByIndex(shopIdx);
+  const newApp = { ...app, w: app.w.map((wt, wi) => (wi === app.sw ? db.worldToTuple(w) : wt)) };
+  db.saveApp(newApp);
+  dispatch(setPersist(newApp));
+  dispatch(setWorld(w));
   dispatch(setCity(c));
-  dispatch(setShop(nextMeta ? db.getShop(nextMeta.Id) : null));
+  const nextS = c.Shops?.[c.SelectedShopIndex];
+  dispatch(setShop(nextS ?? null));
 
-  const w = db.getWorld(selectedWorld.Id);
-  const hasInventory = w.Cities.some(c2 =>
-    db.getCity(c2.Id).Shops.some(s2 =>
-      (db.getShop(s2.Id).getInventory() || []).length > 0
-    )
-  );
+  const hasInventory = w.Cities?.some(c2 =>
+    c2.Shops?.some(s2 => (s2.getInventory?.() || []).length > 0)
+  ) ?? false;
+  dispatch(setShopGenerated(serialize(hasInventory)));
+};
+
+export const updateShop = ([method, ...args]) => (dispatch, getState) => {
+  const state = getState();
+  const shop = state.shop.shop;
+  if (!shop) return;
+  shop[method](...args);
+  const app = state.persist;
+  if (app.sw == null || app.sw < 0 || !app.w?.length) return;
+  let w = state.world?.world ?? db.getWorldByIndex(app, app.sw);
+  if (!w) return;
+  if (w !== state.world?.world) {
+    const c = w.Cities?.[w.SelectedCityIndex];
+    if (c?.Shops?.[c.SelectedShopIndex] != null) c.Shops[c.SelectedShopIndex] = shop;
+  }
+  const newApp = { ...app, w: app.w.map((wt, wi) => (wi === app.sw ? db.worldToTuple(w) : wt)) };
+  db.saveApp(newApp);
+  dispatch(setPersist(newApp));
+  dispatch(setWorld(w));
+  const c = w.Cities?.[w.SelectedCityIndex];
+  if (c) dispatch(setCity(c));
+  dispatch(setShop(shop));
+};
+
+export const onCreateShop = () => (dispatch, getState) => {
+  const app = getState().persist;
+  const w = db.getWorldByIndex(app, app.sw);
+  const c = w?.Cities?.[w.SelectedCityIndex];
+  const shop = c?.Shops?.[c.SelectedShopIndex];
+  if (!shop) return;
+  shop.template();
+  const seed = (Math.random() * 0x100000000) >>> 0;
+  shop.Seed = seed;
+  shop.generateInventory(createPrng(seed));
+  const newApp = db.updateShopAt(app, app.sw, w.SelectedCityIndex, c.SelectedShopIndex, shop);
+  db.saveApp(newApp);
+  dispatch(setPersist(newApp));
+  dispatch(setWorld(w));
+  dispatch(setCity(c));
+  dispatch(setShop(shop));
+  const hasInventory = w.Cities?.some(c2 =>
+    c2.Shops?.some(s2 => (s2.getInventory?.() || []).length > 0)
+  ) ?? false;
   dispatch(setShopGenerated(serialize(hasInventory)));
 };

@@ -1,10 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
-import * as db from '../../lib/storage';
-import { serialize } from '../../lib/utils';
 
 const initialState = {
-  worlds: [],            // array of { Id, Name }
-  selectedWorld: null,   // { Id, Name }
+  worlds: [],             // [{ name, level }]
+  selectedWorldIndex: null,
+  selectedWorld: null,    // { Name } for UI compat
   world: null,
 };
 
@@ -12,31 +11,20 @@ export const worldSlice = createSlice({
   name: 'world',
   initialState,
   reducers: {
-
-    setWorlds(state, action) {
-      db.setWorlds(action.payload);
-      state.worlds = action.payload;
+    setWorldsList(state, action) {
+      state.worlds = action.payload ?? [];
     },
-    setSelectedWorld(state, action) {
-      db.setSelectedWorld(action.payload);
-      state.selectedWorld = action.payload;
+    setSelectedWorldIndex(state, action) {
+      state.selectedWorldIndex = action.payload;
+      const i = action.payload;
+      state.selectedWorld = (state.worlds[i] != null) ? { Name: state.worlds[i].name } : null;
     },
-    setWorld: {
-      reducer(state, action) {
-        db.setWorld(action.payload);
-        state.world = action.payload;
-      },
-      prepare(worldInstance) {
-        return { payload: serialize(worldInstance) };
-      }
-    }
+    setWorld(state, action) {
+      state.world = action.payload;
+    },
   },
 });
 
-export const {
-  setWorlds,
-  setSelectedWorld,
-  setWorld
-} = worldSlice.actions;
+export const { setWorldsList, setSelectedWorldIndex, setWorld } = worldSlice.actions;
 
 export default worldSlice.reducer;

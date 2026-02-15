@@ -4,141 +4,152 @@ import { cap, serialize } from '../../lib/utils';
 import World from '../../lib/world';
 import { setCity } from '../slices/citySlice';
 import { setShop, setShopGenerated } from '../slices/shopSlice';
-import { setSelectedWorld, setWorld, setWorlds } from '../slices/worldSlice';
+import { setWorldsList, setSelectedWorldIndex, setWorld } from '../slices/worldSlice';
+import { setPersist } from '../slices/persistSlice';
 
-/** Name and level of the default city created with each world when city card is hidden. */
 const DEFAULT_CITY_NAME = 'Village';
 const DEFAULT_CITY_LEVEL = 0;
 
 function ensureWorldHasDefaultCity(w) {
   if (w.Cities.length > 0) return w;
-  const c = new City(DEFAULT_CITY_NAME, w.Level);
+  w.addCity(DEFAULT_CITY_NAME, w.Level);
+  const c = w.Cities[w.Cities.length - 1];
   c.Level = DEFAULT_CITY_LEVEL;
-  w.addCity(c.Id, c.Name);
-  db.setCity(c.serialize());
   return w;
+}
+
+function hydrateFromApp(dispatch, app) {
+  const worlds = db.getWorldsList(app);
+  dispatch(setWorldsList(worlds));
+  if (app.sw != null && app.sw >= 0 && app.w?.[app.sw]) {
+    dispatch(setSelectedWorldIndex(app.sw));
+    const w = db.getWorldByIndex(app, app.sw);
+    dispatch(setWorld(w ?? null));
+    const c = w?.Cities?.[w.SelectedCityIndex];
+    dispatch(setCity(c ?? null));
+    const s = c?.Shops?.[c.SelectedShopIndex];
+    dispatch(setShop(s ?? null));
+    const hasInventory = w?.Cities?.some(c2 =>
+      c2.Shops?.some(s2 => (s2.getInventory?.() || []).length > 0)
+    ) ?? false;
+    dispatch(setShopGenerated(serialize(hasInventory)));
+  }
 }
 
 export const onNewWorld = (nameRaw) => (dispatch, getState) => {
   const name = cap(nameRaw);
-  const { worlds } = getState().world;
+  const app = getState().persist;
+  const worlds = db.getWorldsList(app);
   if (!name || name.trim().length === 0) return;
-  if (worlds.some(w => w.Name === name)) { // If name already present select that item
-    const found = worlds.find(w => w.Name === name)
-    const w = db.getWorld(found.Id);
-    dispatch(setWorld(w));
-    dispatch(setSelectedWorld(found));
+  const foundIdx = worlds.findIndex(w => (w.name ?? w.Name) === name);
+  if (foundIdx >= 0) {
+    const newApp = { ...app, sw: foundIdx };
+    dispatch(setPersist(newApp));
+    hydrateFromApp(dispatch, newApp);
     return;
   }
 
   const w = new World(name);
-  const entry = { Id: w.Id, Name: w.Name };
-
-  // Create default city (level 0 = village) and assign all shops to it; city card is hidden in UI
+  w.Level = 1;
   const wWithCity = ensureWorldHasDefaultCity(w);
-  const defaultCity = db.getCity(wWithCity.SelectedCity.Id);
-
-  const newWorlds = [...worlds, entry];
-
-  dispatch(setWorld(wWithCity));
-  dispatch(setWorlds(newWorlds));
-  dispatch(setSelectedWorld(entry));
-  dispatch(setCity(defaultCity));
-  dispatch(setShop(null));
-
-  const dbW = db.getWorld(wWithCity.Id);
-  const hasInventory = dbW.Cities.some(c =>
-    db.getCity(c.Id).Shops.some(s => (db.getShop(s.Id).getInventory() || []).length > 0)
-  );
-  dispatch(setShopGenerated(serialize(hasInventory)));
+  const newWorlds = [...(app.w || []), db.worldToTuple(wWithCity)];
+  const newApp = { ...app, w: newWorlds, sw: newWorlds.length - 1 };
+  db.saveApp(newApp);
+  dispatch(setPersist(newApp));
+  hydrateFromApp(dispatch, newApp);
 };
 
 export const onSelectWorld = (name) => (dispatch, getState) => {
-  const { worlds } = getState().world;
-  const entry = worlds.find(w => w.Name === name);
-  if (!entry) return;
+  const app = getState().persist;
+  const worlds = db.getWorldsList(app);
+  const foundIdx = worlds.findIndex(w => (w.name ?? w.Name) === name);
+  if (foundIdx < 0) return;
 
-  dispatch(setSelectedWorld(entry));
-
-  let w = db.getWorld(entry.Id);
-  // Migration: ensure world has default city (e.g. when city card is hidden)
+  const newApp = { ...app, sw: foundIdx };
+  dispatch(setPersist(newApp));
+  let w = db.getWorldByIndex(newApp, foundIdx);
   w = ensureWorldHasDefaultCity(w);
+  dispatch(setWorldsList(db.getWorldsList(newApp)));
+  dispatch(setSelectedWorldIndex(foundIdx));
   dispatch(setWorld(w));
-
-  const cDb = w.SelectedCity?.Id ? db.getCity(w.SelectedCity.Id) : null;
-  dispatch(setCity(cDb));
-
-  const shop = cDb?.SelectedShop != null ? db.getShop(cDb.SelectedShop.Id) : null;
-  dispatch(setShop(shop ? shop : null));
-
-  const hasInventory = w.Cities.some(c =>
-    db.getCity(c.Id).Shops.some(s => (db.getShop(s.Id).getInventory() || []).length > 0)
-  );
+  const c = w?.Cities?.[w.SelectedCityIndex];
+  dispatch(setCity(c ?? null));
+  const s = c?.Shops?.[c.SelectedShopIndex];
+  dispatch(setShop(s ?? null));
+  const hasInventory = w?.Cities?.some(c2 =>
+    c2.Shops?.some(s2 => (s2.getInventory?.() || []).length > 0)
+  ) ?? false;
   dispatch(setShopGenerated(serialize(hasInventory)));
 };
 
 export const onPlayerLevelChange = (level) => (dispatch, getState) => {
-  const { world } = getState().world;
-  if (!world) return;
+  const state = getState();
+  const app = state.persist;
+  if (app.sw == null || app.sw < 0 || !app.w?.length) return;
+  const w = state.world?.world ?? db.getWorldByIndex(app, app.sw);
+  if (!w) return;
 
-  const w = new World().load(world);
   w.setPlayerLevel(level);
+  const newApp = { ...app, w: app.w.map((wt, wi) => (wi === app.sw ? db.worldToTuple(w) : wt)) };
+  db.saveApp(newApp);
+  dispatch(setPersist(newApp));
   dispatch(setWorld(w));
-
-  const c = db.getCity(w.SelectedCity.Id);
-  dispatch(setCity(c));
-
-  const shop = c?.SelectedShop != null ? db.getShop(c.SelectedShop.Id) : null;
-  dispatch(setShop(shop ? shop : null));
+  const c = w.Cities?.[w.SelectedCityIndex];
+  if (c) dispatch(setCity(c));
+  dispatch(setShop(c?.Shops?.[c.SelectedShopIndex] ?? null));
 };
 
 export const onDeleteWorld = () => (dispatch, getState) => {
-  const { selectedWorld, worlds } = getState().world;
-  if (!selectedWorld) return;
+  const app = getState().persist;
+  if (app.sw == null || app.sw < 0 || !app.w?.length) return;
 
-  const old = selectedWorld;
-  const oldDb = db.getWorld(old.Id);
+  const newW = app.w.filter((_, i) => i !== app.sw);
+  const newSw = newW.length === 0 ? null : Math.min(app.sw, newW.length - 1);
+  const newApp = { ...app, w: newW, sw: newSw };
+  db.saveApp(newApp);
+  dispatch(setPersist(newApp));
 
-  oldDb.Cities.forEach(c => {
-    db.getCity(c.Id).Shops.forEach(s => db.deleteShop(s.Id));
-    db.deleteCity(c.Id);
-  });
-  db.deleteWorld(old.Id);
-
-  const updatedWorlds = worlds.filter(w => w.Id !== old.Id);
-  const next = updatedWorlds[0] || null;
-
-  dispatch(setWorlds(updatedWorlds));
-  dispatch(setSelectedWorld(next));
-
-  if (next) {
-    const w = db.getWorld(next.Id);
+  if (newSw != null) {
+    const w = db.getWorldByIndex(newApp, newSw);
+    dispatch(setWorldsList(db.getWorldsList(newApp)));
+    dispatch(setSelectedWorldIndex(newSw));
     dispatch(setWorld(w));
-    const c = db.getCity(w.SelectedCity.Id);
-    dispatch(setCity(c));
-    dispatch(setShop(db.getShop(c.SelectedShop.Id)));
+    const c = w?.Cities?.[w.SelectedCityIndex];
+    dispatch(setCity(c ?? null));
+    dispatch(setShop(c?.Shops?.[c.SelectedShopIndex] ?? null));
   } else {
+    dispatch(setWorldsList([]));
+    dispatch(setSelectedWorldIndex(null));
     dispatch(setWorld(null));
     dispatch(setCity(null));
     dispatch(setShop(null));
   }
+  const hasInventory = newSw != null && (() => {
+    const w2 = db.getWorldByIndex(newApp, newSw);
+    return w2?.Cities?.some(c2 => c2.Shops?.some(s2 => (s2.getInventory?.() || []).length > 0)) ?? false;
+  })();
+  dispatch(setShopGenerated(serialize(hasInventory)));
 };
 
 export const onWaitTime = ([days, hours]) => (dispatch, getState) => {
-  const { selectedWorld } = getState().world;
+  const app = getState().persist;
   const { shop } = getState().shop;
-  if (!selectedWorld) return;
+  if (app.sw == null) return;
 
-  const w = db.getWorld(selectedWorld.Id);
-  w.Cities.forEach(cMeta => {
-    const c = db.getCity(cMeta.Id);
-    c.Shops.forEach(sMeta => {
-      const s = db.getShop(sMeta.Id);
+  const w = db.getWorldByIndex(app, app.sw);
+  if (!w) return;
+  w.Cities.forEach(c => {
+    c.Shops.forEach(s => {
       s.passingTime(days, hours);
-      db.setShop(s);
-      if (s.Id === shop?.Id) {
-        dispatch(setShop(s));
-      }
     });
   });
+  const newApp = db.updateWorldAt(app, app.sw, w);
+  db.saveApp(newApp);
+  dispatch(setPersist(newApp));
+  dispatch(setWorld(w));
+  const c = w.Cities?.[w.SelectedCityIndex];
+  dispatch(setCity(c ?? null));
+  const s = c?.Shops?.[c.SelectedShopIndex];
+  dispatch(setShop(s ?? null));
+  if (s === shop) dispatch(setShop(s));
 };

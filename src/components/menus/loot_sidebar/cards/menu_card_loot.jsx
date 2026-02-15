@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { onDeleteLoot, onNewLoot, onSelectLoot } from '../../../../store/thunks/lootThunks';
+import { unixToDisplay } from '../../../../lib/storageFormat';
 import '../../../../style/menu_cards.css';
 import LevelComponent from '../../../common/level_component';
 import { isMobile } from '../../../../lib/utils';
@@ -40,8 +41,8 @@ export default function MenuCardLoot() {
     }
   }, [loot]);
 
-  const handleSelectLoot = (l) => {
-    dispatch(onSelectLoot(l));
+  const handleSelectLoot = (index) => {
+    dispatch(onSelectLoot(Number(index)));
     if (isMobile()) {
       dispatch(setIsLootSidebarCollapsed(true));
     }
@@ -59,13 +60,18 @@ export default function MenuCardLoot() {
       <div className="card-side-div">
         <select
           className="modern-dropdown small-longer"
-          value={selectedLoot ? selectedLoot.Id : ''}
+          value={selectedLoot != null ? String(selectedLoot.Id) : ''}
           onChange={e => handleSelectLoot(e.target.value)}
           disabled={loots.length === 0}
         >
           <option value="" disabled>Select Loot</option>
-          {loots.map(l => (
-            <option key={l.Id} value={l.Id}>{l.Name}</option>
+          {loots
+            .map((l, i) => ({ item: l, originalIndex: i }))
+            .reverse()
+            .map(({ item, originalIndex }) => (
+              <option key={originalIndex} value={originalIndex}>
+                {typeof item.timestamp === 'number' ? unixToDisplay(item.timestamp) : (item.timestamp ?? '')}
+              </option>
           ))}
         </select>
         <button

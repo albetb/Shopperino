@@ -3,13 +3,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { compressShopForShare } from 'lib/shop';
 import { isMobile, order, shopTypes } from '../../../../lib/utils';
 import {
-  onCreateShop,
-  updateShop
-} from '../../../../store/slices/shopSlice';
-import {
   onDeleteShop,
   onNewShop,
-  onSelectShop
+  onSelectShop,
+  updateShop,
+  onCreateShop,
 } from '../../../../store/thunks/shopThunks';
 import CreateComponent from '../../../common/create_component';
 import LevelComponent from '../../../common/level_component';
@@ -25,8 +23,13 @@ export default function MenuCardShop() {
   const [sharePayload, setSharePayload] = useState(null);
 
   // Redux state
-  const shops = useSelector(state => state.city.city?.Shops.map(s => s.Name) || []);
-  const selectedName = useSelector(state => state.city.city?.SelectedShop?.Name);
+  const shops = useSelector(state => state.city?.city?.Shops?.map(s => s.Name) || []);
+  const selectedName = useSelector(state => {
+    const c = state.city?.city;
+    if (!c?.Shops?.length) return null;
+    const i = c.SelectedShopIndex ?? 0;
+    return c.Shops[i]?.Name ?? null;
+  });
   const saved = order(shops, selectedName);
   const rawShop = useSelector(state => state.shop.shop);
   const shopGenerated = useSelector(state => state.shop.shopGenerated);
@@ -54,7 +57,7 @@ export default function MenuCardShop() {
   };
 
   const handleShare = () => {
-    const result = compressShopForShare(rawShop);
+    const result = compressShopForShare(rawShop?.serialize?.() ?? rawShop);
     if (!result.ok) {
       alert(result.error);
       return;

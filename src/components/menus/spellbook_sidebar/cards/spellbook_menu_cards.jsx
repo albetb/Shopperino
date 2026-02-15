@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import * as db from '../../../../lib/storage';
+import { setPersist } from '../../../../store/slices/persistSlice';
 import MenuCardPlayer from './menu_card_player';
 import MenuCardSearch from './menu_card_search';
 import '../../../../style/menu_cards.css';
 
 export default function SpellbookMenuCards() {
+  const dispatch = useDispatch();
+  const persist = useSelector(state => state.persist);
   const [cardStates, setCardStates] = useState([
     { id: 1, collapsed: false },
     { id: 2, collapsed: false }
@@ -17,24 +20,24 @@ export default function SpellbookMenuCards() {
   const playerLevel = spellbook?.Level ?? 1;
   const playerClass = spellbook?.Class ?? "";
 
-  // Initialize collapse state from db
-  useEffect(() => {
-    setCardCollapsed(1, db.getIsPlayerCollapsed());
-    setCardCollapsed(2, db.getIsSearchCollapsed());
-  }, []);
-
   const setCardCollapsed = (cardId, collapsed) => {
     setCardStates(states => states.map(s =>
       s.id === cardId ? { ...s, collapsed } : s
     ));
   };
 
+  useEffect(() => {
+    if (!persist) return;
+    setCardCollapsed(1, db.getIsPlayerCollapsed(persist));
+    setCardCollapsed(2, db.getIsSearchCollapsed(persist));
+  }, [persist]);
+
   const toggleCard = (cardId) => {
     setCardStates(states => states.map(s => {
       if (s.id === cardId) {
         const newState = !s.collapsed;
-        if (cardId === 1) db.setIsPlayerCollapsed(newState);
-        if (cardId === 2) db.setIsSearchCollapsed(newState);
+        if (persist && cardId === 1) dispatch(setPersist(db.setAppUIFlag(persist, db.UI_FLAG.pc, newState)));
+        if (persist && cardId === 2) dispatch(setPersist(db.setAppUIFlag(persist, db.UI_FLAG.src, newState)));
         return { ...s, collapsed: newState };
       }
       return s;
@@ -42,7 +45,7 @@ export default function SpellbookMenuCards() {
   };
 
   const cards = [
-    { id: 1, title: 'Spellbook', saved: spellbooks?.map(w => w.Name), selected: selectedSpellbook, level: playerLevel, _class: playerClass },
+    { id: 1, title: 'Spellbook', saved: spellbooks?.map(w => w.name ?? w.Name), selected: selectedSpellbook, level: playerLevel, _class: playerClass },
     { id: 2, title: 'Filter', saved: null, selected: null, level: null, class: null }
   ];
 

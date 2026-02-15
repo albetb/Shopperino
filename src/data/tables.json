@@ -3,6 +3,15 @@
     "i": "items",
     "s": "scrolls"
   },
+  "Enums": {
+    "Classes": ["Sorcerer", "Wizard", "Cleric", "Druid", "Bard", "Ranger", "Paladin"],
+    "MoralAlignments": ["Good", "Neutral", "Evil"],
+    "EthicalAlignments": ["Lawful", "Neutral", "Chaotic"],
+    "Domains": ["Air", "Animal", "Chaos", "Death", "Destruction", "Earth", "Evil", "Fire", "Good", "Healing", "Knowledge", "Law", "Luck", "Magic", "Plant", "Protection", "Strength", "Sun", "Travel", "Trickery", "War", "Water"],
+    "SpellSchools": ["Abjuration", "Conjuration", "Divination", "Enchantment", "Evocation", "Illusion", "Necromancy", "Transmutation", "Universal"],
+    "ShopTypes": ["None", "Druid Merchant", "Blacksmith", "Writer", "Mage Merchant", "Magic Blacksmith", "Wanderer", "Merchant of the Slums", "Bazar Vendor", "Holy Merchant", "Alchemist"],
+    "CustomItemTypes": ["Good", "Weapon", "Armor", "Ammo", "Shield", "Magic Weapon", "Magic Armor", "Potion", "Ring", "Rod", "Staff", "Wand", "Wondrous Item", "Scroll"]
+  },
   "Shop Types": [
     {
       "Name": "None",

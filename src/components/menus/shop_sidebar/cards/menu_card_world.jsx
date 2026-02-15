@@ -62,15 +62,16 @@ export default function MenuCardWorld() {
   };
 
   // Props for common components
+  const worldNames = (worlds || []).map(w => w.name ?? w.Name);
   const createProps = {
-    saved: order(worlds.map(w => w.Name), selected),
+    saved: order(worldNames, selected),
     tabName: 'world',
     onNew: onCreate,
     setIsVisible: toggleNew
   };
 
   const selectProps = {
-    saved: order(worlds.map(w => w.Name), selected),
+    saved: order(worldNames, selected),
     tabName: 'world',
     setIsVisible: toggleNew,
     onSelect,

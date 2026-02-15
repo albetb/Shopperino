@@ -1,104 +1,52 @@
-import * as db from '../storage';
-import { newGuid } from '../utils';
-
-const REQUIRED_KEYS = ['Id', 'Name', 'Level', 'SelectedCity', 'Cities'];
+import City from '../city';
 
 class World {
   constructor(name = '') {
-    this.Id = newGuid();
     this.Name = name;
     this.Level = 1;
-    this.SelectedCity = { Id: null, Name: null };
+    this.SelectedCityIndex = 0;
     this.Cities = [];
   }
 
-  load(data) {
-    if (
-      data === null ||
-      !REQUIRED_KEYS.every(key => Object.prototype.hasOwnProperty.call(data, key))
-    ) {
-      return null;
-    }
-
-    this.Id = data.Id;
-    this.Name = data.Name;
-    this.Level = data.Level;
-
-    // Clone nested objects/arrays to ensure they're extensible
-    this.SelectedCity = {
-      Id: data.SelectedCity.Id,
-      Name: data.SelectedCity.Name,
-    };
-    this.Cities = data.Cities.map(city => ({
-      Id: city.Id,
-      Name: city.Name,
-    }));
-
-    return this;
-  }
-
-  addCity(id, name) {
-    if (this.cityIdExist(id) || this.cityNameExist(name)) {
-      return;
-    }
-
-    // Safe to push now, as this.Cities is a fresh array
-    this.Cities.push({ Id: id, Name: name });
-    this.SelectedCity = { Id: id, Name: name };
+  addCity(name, playerLevel = 1) {
+    if (this.cityNameExist(name)) return;
+    const c = new City(name, playerLevel);
+    c.Level = 0;
+    this.Cities.push(c);
+    this.SelectedCityIndex = this.Cities.length - 1;
   }
 
   cityNameExist(name) {
-    return this.Cities.some(city => city.Name === name);
+    return this.Cities.some(c => c.Name === name);
   }
 
-  cityIdExist(id) {
-    return this.Cities.some(city => city.Id === id);
+  getCityName(index) {
+    return this.Cities[index]?.Name ?? null;
   }
 
-  getCityName(id) {
-    return this.Cities.find(city => city.Id === id)?.Name;
+  getCityIndex(name) {
+    const i = this.Cities.findIndex(c => c.Name === name);
+    return i >= 0 ? i : null;
   }
 
-  getCityId(name) {
-    return this.Cities.find(city => city.Name === name)?.Id;
+  selectCityByIndex(index) {
+    if (index >= 0 && index < this.Cities.length) this.SelectedCityIndex = index;
   }
 
-  selectCity(value) {
-    let city = this.Cities.find(city => city.Name === value) ||
-      this.Cities.find(city => city.Id === value);
-    this.SelectedCity = { Id: city?.Id, Name: city?.Name };
+  selectCityByName(name) {
+    const i = this.getCityIndex(name);
+    if (i != null) this.SelectedCityIndex = i;
   }
 
-  deleteCity(value) {
-    this.Cities = this.Cities.filter(
-      city => city.Id !== value && city.Name !== value
-    );
+  deleteCityByIndex(index) {
+    if (index < 0 || index >= this.Cities.length) return;
+    this.Cities.splice(index, 1);
+    if (this.SelectedCityIndex >= this.Cities.length) this.SelectedCityIndex = Math.max(0, this.Cities.length - 1);
   }
 
   setPlayerLevel(lv) {
     this.Level = Math.max(1, Math.min(40, parseInt(lv, 10)));
-
-    this.Cities.forEach(shop => {
-      const cityDb = db.getCity(shop.Id);
-      cityDb.setPlayerLevel(lv);
-      db.setCity(cityDb);
-    });
-  }
-
-  serialize() {
-    return {
-      Id: this.Id,
-      Name: this.Name,
-      Level: this.Level,
-      SelectedCity: {
-        Id: this.SelectedCity.Id,
-        Name: this.SelectedCity.Name,
-      },
-      Cities: this.Cities.map(city => ({
-        Id: city.Id,
-        Name: city.Name,
-      })),
-    };
+    this.Cities.forEach(c => c.setPlayerLevel(lv));
   }
 }
 

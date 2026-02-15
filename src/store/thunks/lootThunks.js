@@ -1,36 +1,44 @@
 import Loot from '../../lib/loot';
 import * as db from '../../lib/storage';
-import { resetLoot, setLoot, setLoots, setSelectedLoot } from '../slices/lootSlice';
+import { resetLoot, setLoot, setLootsList, setSelectedLootIndex } from '../slices/lootSlice';
+import { setPersist } from '../slices/persistSlice';
 
 export const onNewLoot = (level, goldMod, goodsMod, itemsMod) => (dispatch, getState) => {
-  const { loots } = getState().loot;
+  const app = getState().persist;
   const l = new Loot(level, goldMod, goodsMod, itemsMod);
-  const entry = { Id: l.Id, Name: l.Timestamp };
-  dispatch(setLoots([...loots, entry]));
+  const newL = [...(app.l || []), db.lootToTuple(l)];
+  const newApp = { ...app, l: newL, sl: newL.length - 1 };
+  db.saveApp(newApp);
+  dispatch(setPersist(newApp));
+  dispatch(setLootsList(db.getLootsList(newApp)));
+  dispatch(setSelectedLootIndex(newApp.sl));
   dispatch(setLoot(l));
-  dispatch(setSelectedLoot(entry));
 };
 
-export const onSelectLoot = id => (dispatch, getState) => {
-  const { loots } = getState().loot;
-  const entry = loots.find(sb => sb.Id === id);
-  if (!entry) return;
-  const l = db.getLoot(entry.Id);
+export const onSelectLoot = (index) => (dispatch, getState) => {
+  const app = getState().persist;
+  if (index == null || index < 0 || !app.l?.[index]) return;
+  const l = db.getLootByIndex(app, index);
+  const newApp = { ...app, sl: index };
+  db.saveApp(newApp);
+  dispatch(setPersist(newApp));
+  dispatch(setSelectedLootIndex(index));
   dispatch(setLoot(l));
-  dispatch(setSelectedLoot(entry));
 };
 
 export const onDeleteLoot = () => (dispatch, getState) => {
-  const { loots, selectedLoot } = getState().loot;
-  if (!selectedLoot) return;
-  db.deleteLoot(selectedLoot.Id);
-  const updated = loots.filter(sb => sb.Id !== selectedLoot.Id);
-  const next = updated[0] || null;
-  dispatch(setLoots(updated));
-  dispatch(setSelectedLoot(next));
-  if (next) {
-    const l = db.getLoot(next.Id);
-    dispatch(setLoot(l));
+  const app = getState().persist;
+  if (app.sl == null || app.sl < 0 || !app.l?.length) return;
+
+  const newL = app.l.filter((_, i) => i !== app.sl);
+  const newSl = newL.length === 0 ? null : Math.min(app.sl, newL.length - 1);
+  const newApp = { ...app, l: newL, sl: newSl };
+  db.saveApp(newApp);
+  dispatch(setPersist(newApp));
+  dispatch(setLootsList(db.getLootsList(newApp)));
+  dispatch(setSelectedLootIndex(newSl));
+  if (newSl != null) {
+    dispatch(setLoot(db.getLootByIndex(newApp, newSl)));
   } else {
     dispatch(resetLoot());
   }

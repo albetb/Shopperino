@@ -2,10 +2,12 @@ import { newRandomItem, itemRefLink } from '../item';
 import { computeTrueCost } from './shopPricing';
 import { passingTime as runPassingTime } from './shopSimulation';
 import { getLinkByShareRef, getRefByShareRef, getShareFileCodeAndId } from './shareRef';
-import { cap, getItemByRef, loadFile, newGuid, shopTypes } from '../utils';
+import { createPrng } from '../prng';
+import { cap, getItemByRef, loadFile, shopTypes } from '../utils';
+import { scaleGold, unscaleGold, scalePercent, unscalePercent, strToEnum, enumToStr } from '../storageFormat';
 
 const BASE_ARCANE_CHANCE = 0.7;
-const REQUIRED_KEYS = ['Id', 'Name', 'Level', 'CityLevel', 'PlayerLevel', 'Reputation', 'Stock', 'Gold', 'Time', 'ArcaneChance', 'ShopType', 'ItemModifier'];
+const REQUIRED_KEYS = ['Name', 'Level', 'CityLevel', 'PlayerLevel', 'Reputation', 'Gold', 'Time', 'ArcaneChance', 'ShopType'];
 
 /** Stock entry is a ref by link { link, ... } or by share ref { fileCode, id, ... }, or full item. */
 function isRefEntry(entry) {
@@ -16,6 +18,32 @@ function getRefForEntry(entry) {
     if (entry.link) return getItemByRef(entry.link);
     if (entry.fileCode != null && entry.id != null) return getRefByShareRef(entry.fileCode, entry.id);
     return null;
+}
+
+/** Derive item type from link for display when entry doesn't persist ItemType (e.g. "items/Weapon/slug" -> "Weapon", "scrolls/Arcane/slug" -> "Scroll"). */
+function itemTypeFromLink(link) {
+    if (!link || typeof link !== 'string') return '';
+    const parts = link.split('/').map(p => p.trim()).filter(Boolean);
+    if (parts[0] === 'scrolls') return 'Scroll';
+    if (parts[0] === 'items' && parts.length >= 2) return parts[1];
+    return '';
+}
+
+/** Get (fileCode, id) for a stock entry (generated or user-added by ref). Returns null if not shareable. */
+function getEntryRef(entry) {
+    if (!entry) return null;
+    if (entry.fileCode != null && entry.id != null) return { fileCode: entry.fileCode, id: entry.id };
+    const link = entry.link || (entry.fileCode != null && entry.id != null ? getLinkByShareRef(entry.fileCode, entry.id) : null);
+    if (!link) return null;
+    return getShareFileCodeAndId(link);
+}
+
+/** Deterministic sort key for a stock entry so same items always sort in the same order (for identical cost/name/type). */
+function entrySortKey(entry) {
+    if (!entry) return '';
+    if (entry.link) return 'L:' + entry.link + '|' + (entry.Bonus ?? '') + '|' + (entry.CostOverride ?? '');
+    if (entry.fileCode != null && entry.id != null) return 'F:' + entry.fileCode + '|' + entry.id + '|' + (entry.Bonus ?? '') + '|' + (entry.CostOverride ?? '');
+    return 'C:' + (entry.Name ?? '') + '|' + (entry.ItemType ?? '') + '|' + (entry.Cost ?? '');
 }
 
 /** Resolve a stock entry to an item-like object for display and trueCost (Name, Cost, PriceModifier, ItemType, Number, Link, Bonus?). */
@@ -30,11 +58,12 @@ function resolveEntry(entry) {
         const baseCost = entry.CostOverride != null ? entry.CostOverride : base.Cost;
         const bonus = entry.Bonus != null ? (typeof entry.Bonus === 'string' ? parseInt(entry.Bonus, 10) : entry.Bonus) : null;
         const name = bonus != null && !isNaN(bonus) ? `${base.Name} +${bonus}` : base.Name;
+        const itemType = entry.ItemType != null && entry.ItemType !== '' ? entry.ItemType : itemTypeFromLink(link);
         return {
             Name: name,
             Cost: baseCost,
             PriceModifier: entry.PriceModifier ?? 0,
-            ItemType: entry.ItemType,
+            ItemType: itemType,
             Number: entry.Number ?? 1,
             Link: link,
             ...(bonus != null && !isNaN(bonus) ? { Bonus: bonus } : {}),
@@ -48,7 +77,6 @@ class Shop {
     //#region ctor
 
     constructor(name = '', cityLevel = 0, playerLevel = 1) {
-        this.Id = newGuid();
         this.Name = name;
         this.setGold(0);
         this.setShopLevel(0);
@@ -61,6 +89,17 @@ class Shop {
         this.template();
     }
 
+    /** Set ItemModifier and ArcaneChance from tables.json by ShopType. Call after load or when ShopType changes. */
+    applyItemModifierFromTables() {
+        const tables = loadFile('tables');
+        const shop = tables['Shop Types'] && tables['Shop Types'].find(type => type.Name === (this.ShopType ?? 'None'));
+        if (!shop) return;
+        this.ItemModifier = { ...(shop.Modifier || {}) };
+        this.ItemModifier.Ammo = (this.ItemModifier.Weapon ?? 0) * 0.6;
+        this.ItemModifier.Shield = (this.ItemModifier.Armor ?? 0) * 0.4;
+        this.ArcaneChance = shop['Arcane Chance'] ?? BASE_ARCANE_CHANCE;
+    }
+
     template() {
         const tables = loadFile('tables');
         const shop = tables['Shop Types'].find(type => type.Name === (this.ShopType ?? 'None'));
@@ -68,10 +107,7 @@ class Shop {
         this.ShopType = shop.Name;
         this.Level = Math.max(this.Level, shop['Min level']);
         this.setGold(this.baseGold(this.PlayerLevel, this.Level));
-        this.ItemModifier = { ...shop.Modifier };
-        this.ArcaneChance = shop['Arcane Chance'] ?? BASE_ARCANE_CHANCE;
-        this.ItemModifier.Ammo = (this.ItemModifier.Weapon ?? 0) * 0.6;
-        this.ItemModifier.Shield = (this.ItemModifier.Armor ?? 0) * 0.4;
+        this.applyItemModifierFromTables();
     }
 
     load(data) {
@@ -80,30 +116,151 @@ class Shop {
             return null;
         }
 
-        this.Id = data.Id;
         this.Name = data.Name;
         this.Level = data.Level;
         this.CityLevel = data.CityLevel;
         this.PlayerLevel = data.PlayerLevel;
         this.Reputation = data.Reputation;
-        this.Stock = data.Stock;
-        this.Gold = data.Gold;
+        this.Gold = typeof data.Gold === 'number' ? unscaleGold(data.Gold) : (Number(data.Gold) || 0);
         this.Time = data.Time;
-        this.ArcaneChance = data.ArcaneChance;
-        this.ShopType = data.ShopType;
-        this.ItemModifier = { ...data.ItemModifier };
+        this.ArcaneChance = typeof data.ArcaneChance === 'number' ? unscalePercent(data.ArcaneChance) : (Number(data.ArcaneChance) || BASE_ARCANE_CHANCE);
+        this.ShopType = typeof data.ShopType === 'number' ? enumToStr('ShopTypes', data.ShopType) : (data.ShopType || 'None');
+        this.applyItemModifierFromTables();
         if (data.Seed != null) this.Seed = data.Seed;
         if (data.GenLevel != null) this.GenLevel = data.GenLevel;
         if (data.GenCityLevel != null) this.GenCityLevel = data.GenCityLevel;
         if (data.GenPlayerLevel != null) this.GenPlayerLevel = data.GenPlayerLevel;
-        if (data.GenShopType != null) this.GenShopType = data.GenShopType;
+        if (data.GenShopType != null) this.GenShopType = typeof data.GenShopType === 'number' ? enumToStr('ShopTypes', data.GenShopType) : data.GenShopType;
+
+        if (this.Seed != null) {
+            this.Stock = [];
+            const rng = createPrng(this.Seed >>> 0);
+            // Use saved Gen* so regeneration is identical every time; fallback to current Level/type if missing (e.g. old save)
+            if (this.GenLevel == null) this.GenLevel = this.Level;
+            if (this.GenCityLevel == null) this.GenCityLevel = this.CityLevel;
+            if (this.GenPlayerLevel == null) this.GenPlayerLevel = this.PlayerLevel;
+            if (this.GenShopType == null) this.GenShopType = this.ShopType;
+            const savedLevel = this.Level;
+            const savedCityLevel = this.CityLevel;
+            const savedPlayerLevel = this.PlayerLevel;
+            const savedShopType = this.ShopType;
+            this.Level = this.GenLevel;
+            this.CityLevel = this.GenCityLevel;
+            this.PlayerLevel = this.GenPlayerLevel;
+            this.ShopType = this.GenShopType;
+            this.applyItemModifierFromTables();
+            // Threshold gold is derived from Gen* (same as template at first generation): deterministic, no need to persist
+            this.Gold = this.baseGold(this.GenPlayerLevel, this.GenLevel);
+            this.generateInventory(rng);
+            this.Level = savedLevel;
+            this.CityLevel = savedCityLevel;
+            this.PlayerLevel = savedPlayerLevel;
+            this.ShopType = savedShopType;
+            this.applyItemModifierFromTables();
+            this.Gold = typeof data.Gold === 'number' ? unscaleGold(data.Gold) : (Number(data.Gold) || 0);
+            this.applyUserAdditions(data.UserAdditions || []);
+            this.applySold(data.Sold || []);
+            // Restore Sold so future sells append to full history (otherwise only the latest sale would persist after refresh)
+            const loadedSold = data.Sold;
+            this.Sold = Array.isArray(loadedSold) && loadedSold.length ? loadedSold.map(row => [...row]) : [];
+        } else {
+            this.Stock = [];
+        }
 
         return this;
     }
 
+    /** Apply persisted sold counts: reduce generated Stock entries by sold amounts, remove if Number <= 0. Sold items: [fileCode, id, numberSold, bonus?]. */
+    applySold(soldList) {
+        if (!Array.isArray(soldList)) return;
+        for (const row of soldList) {
+            const fileCode = row[0];
+            const id = row[1];
+            const numberSold = Math.max(0, (row[2] | 0) || 0);
+            const bonus = row.length >= 4 ? row[3] : null;
+            if (numberSold <= 0) continue;
+            let remaining = numberSold;
+            for (let i = this.Stock.length - 1; i >= 0 && remaining > 0; i--) {
+                const entry = this.Stock[i];
+                if (entry.userAdded || !isRefEntry(entry)) continue;
+                const ref = getEntryRef(entry);
+                if (!ref || ref.fileCode !== fileCode || ref.id !== id) continue;
+                const entryBonus = entry.Bonus != null ? entry.Bonus : null;
+                if (entryBonus !== bonus) continue;
+                const n = entry.Number || 1;
+                const deduct = Math.min(remaining, n);
+                entry.Number = Math.max(0, n - deduct);
+                remaining -= deduct;
+                if (entry.Number <= 0) this.Stock.splice(i, 1);
+            }
+        }
+        this.sortByType();
+    }
+
+    /** Apply persisted user-added items (ref or custom) onto current Stock. */
+    applyUserAdditions(userAdditions) {
+        if (!Array.isArray(userAdditions)) return;
+        for (const u of userAdditions) {
+            if (Array.isArray(u)) {
+                if (u[0] === 1 && u.length >= 5) {
+                    const typeStr = enumToStr('CustomItemTypes', u[2]);
+                    this.Stock.push({
+                        isCustom: true,
+                        Name: String(u[1] ?? 'Custom'),
+                        ItemType: typeStr || 'Good',
+                        Cost: unscaleGold(u[3]),
+                        Number: Math.max(1, Math.min(99, (u[4] | 0) || 1)),
+                        PriceModifier: 0,
+                    });
+                } else if (u[0] === 0 && u.length >= 4) {
+                    const fileCode = u[1];
+                    const id = u[2];
+                    const link = getLinkByShareRef(fileCode, id);
+                    if (!link) continue;
+                    this.Stock.push({
+                        fileCode,
+                        id,
+                        Number: Math.max(1, Math.min(99, (u[3] | 0) || 1)),
+                        PriceModifier: 0,
+                        CostOverride: u[4] != null ? unscaleGold(u[4]) : undefined,
+                        Bonus: u[5] != null ? u[5] : undefined,
+                        userAdded: true,
+                    });
+                }
+            } else if (u && u.custom) {
+                this.Stock.push({
+                    isCustom: true,
+                    Name: u.N ?? 'Custom',
+                    ItemType: u.T ?? 'Good',
+                    Cost: typeof u.C === 'number' ? u.C : parseFloat(u.C) || 0,
+                    Number: Math.max(1, Math.min(99, (u.n | 0) || 1)),
+                    PriceModifier: 0,
+                });
+            } else if (u && (u.f != null || u.fileCode != null) && (u.i != null || u.id != null)) {
+                const fileCode = u.f ?? u.fileCode;
+                const id = u.i ?? u.id;
+                const link = getLinkByShareRef(fileCode, id);
+                if (!link) continue;
+                this.Stock.push({
+                    fileCode,
+                    id,
+                    Number: Math.max(1, Math.min(99, (u.n | 0) || 1)),
+                    PriceModifier: 0,
+                    ItemType: u.T ?? 'Good',
+                    CostOverride: u.c != null ? u.c : undefined,
+                    Bonus: u.b != null ? u.b : undefined,
+                    userAdded: true,
+                });
+            }
+        }
+        this.sortByType();
+    }
+
     generateInventory(rng = null) {
         this.Stock = [];
-        for (const key in this.ItemModifier) {
+        this.Sold = [];
+        const modifierKeys = Object.keys(this.ItemModifier || {}).sort();
+        for (const key of modifierKeys) {
             for (let i = 0; i < this.modItemNumber(key, rng); i++) {
                 const newItem = newRandomItem(key, this.Level, this.PlayerLevel, this.ArcaneChance, null, rng);
                 this.addItem(newItem, key, rng);
@@ -115,11 +272,13 @@ class Shop {
         this.GenCityLevel = this.CityLevel;
         this.GenPlayerLevel = this.PlayerLevel;
         this.GenShopType = this.ShopType;
-        while (this.getInventoryValue() > this.Gold * 0.85 && this.Stock.length > 1) {
+        // Threshold = this.Gold at entry (template gold on first run, baseGold(Gen*) on load); trim and final gold both deterministic from seed + Gen*
+        const thresholdGold = this.Gold;
+        while (this.getInventoryValue() > thresholdGold * 0.85 && this.Stock.length > 1) {
             this.Stock.pop();
         }
         const goldNoise = rng ? Math.floor(rng.nextFloat() * 200) : Math.random() * 200;
-        this.setGold(Math.max(this.Gold - this.getInventoryValue(), goldNoise));
+        this.setGold(Math.max(thresholdGold - this.getInventoryValue(), goldNoise));
         this.sortByType();
     }
 
@@ -231,7 +390,7 @@ class Shop {
     getInventory() {
         return this.Stock.map(entry => {
             const resolved = resolveEntry(entry);
-            if (!resolved) return null;
+            if (!resolved || (resolved.Number || 0) <= 0) return null;
             return {
                 ...resolved,
                 Cost: this.trueCost(resolved, true),
@@ -256,7 +415,13 @@ class Shop {
         this.Stock.sort((a, b) => {
             const ra = resolveEntry(a);
             const rb = resolveEntry(b);
-            return this.trueCost(ra, false) - this.trueCost(rb, false);
+            const costDiff = this.trueCost(ra, false) - this.trueCost(rb, false);
+            if (costDiff !== 0) return costDiff;
+            const nameCmp = (ra?.Name || '').localeCompare(rb?.Name || '');
+            if (nameCmp !== 0) return nameCmp;
+            const typeCmp = (a?.ItemType || '').localeCompare(b?.ItemType || '');
+            if (typeCmp !== 0) return typeCmp;
+            return entrySortKey(a).localeCompare(entrySortKey(b));
         });
     }
 
@@ -429,37 +594,88 @@ class Shop {
     sell(itemName, itemType, num = 1) {
         const itemIndex = this.Stock.findIndex(entry => {
             const r = resolveEntry(entry);
-            return r && r.Name === cap(itemName) && entry.ItemType === itemType;
+            const type = entry.ItemType != null && entry.ItemType !== '' ? entry.ItemType : (r && itemTypeFromLink(r.Link));
+            return r && r.Name === cap(itemName) && type === itemType;
         });
         if (itemIndex === -1) return;
 
         const entry = this.Stock[itemIndex];
         const r = resolveEntry(entry);
+        const soldNum = Math.min(num, entry.Number || 1);
         entry.Number = Math.max(0, (entry.Number || 1) - num);
-        this.setGold(this.Gold + (r ? this.trueCost(r, false) * num : 0));
+        this.setGold(this.Gold + (r ? this.trueCost(r, false) * soldNum : 0));
+        // Persist sold count for generated items (ref entries that are not user-added) so refresh shows correct stock.
+        // Use a mutable copy: Sold may be frozen (e.g. from Redux/persist), so never mutate in place.
+        if (soldNum > 0 && isRefEntry(entry) && !entry.userAdded) {
+            const ref = getEntryRef(entry);
+            if (ref) {
+                const prev = Array.isArray(this.Sold) ? this.Sold : [];
+                const bonus = entry.Bonus != null ? entry.Bonus : undefined;
+                const existingIdx = prev.findIndex(s => s[0] === ref.fileCode && s[1] === ref.id && (s[3] ?? null) === (bonus ?? null));
+                let next;
+                if (existingIdx >= 0) {
+                    const e = prev[existingIdx];
+                    next = [...prev];
+                    next[existingIdx] = [e[0], e[1], (e[2] || 0) + soldNum, e[3]];
+                } else {
+                    next = [...prev, [ref.fileCode, ref.id, soldNum, bonus]];
+                }
+                this.Sold = next;
+            }
+        }
     }
 
     serialize() {
+        const st = strToEnum('ShopTypes', this.ShopType) >= 0 ? strToEnum('ShopTypes', this.ShopType) : 0;
         const out = {
-            Id: this.Id,
             Name: this.Name,
             Level: this.Level,
             CityLevel: this.CityLevel,
             PlayerLevel: this.PlayerLevel,
             Reputation: this.Reputation,
-            Stock: this.Stock,
-            Gold: this.Gold,
+            Gold: scaleGold(this.Gold),
             Time: this.Time,
-            ArcaneChance: this.ArcaneChance,
-            ShopType: this.ShopType,
-            ItemModifier: this.ItemModifier,
+            ArcaneChance: scalePercent(this.ArcaneChance),
+            ShopType: st,
         };
         if (this.Seed != null) out.Seed = this.Seed;
         if (this.GenLevel != null) out.GenLevel = this.GenLevel;
         if (this.GenCityLevel != null) out.GenCityLevel = this.GenCityLevel;
         if (this.GenPlayerLevel != null) out.GenPlayerLevel = this.GenPlayerLevel;
-        if (this.GenShopType != null) out.GenShopType = this.GenShopType;
+        if (this.GenShopType != null) out.GenShopType = strToEnum('ShopTypes', this.GenShopType) >= 0 ? strToEnum('ShopTypes', this.GenShopType) : st;
+        out.UserAdditions = this.serializeUserAdditions();
+        out.Sold = this.Sold && this.Sold.length ? this.Sold : [];
         return out;
+    }
+
+    /** Persist sold generated items: [fileCode, id, numberSold, bonus?]. */
+    serializeSold() {
+        return Array.isArray(this.Sold) ? this.Sold : [];
+    }
+
+    /** Minimal persistence format for user-added items only. [0, fileCode, id, n, c?, b?] or [1, name, typeEnum, costScaled, qty]. */
+    serializeUserAdditions() {
+        const list = [];
+        for (const entry of this.Stock) {
+            if (entry.isCustom) {
+                const typeEnum = strToEnum('CustomItemTypes', entry.ItemType ?? 'Good') >= 0 ? strToEnum('CustomItemTypes', entry.ItemType ?? 'Good') : 0;
+                list.push([1, entry.Name ?? 'Custom', typeEnum, scaleGold(typeof entry.Cost === 'number' ? entry.Cost : parseFloat(entry.Cost) || 0), Math.max(1, (entry.Number | 0) || 1)]);
+            } else if (entry.userAdded && (entry.fileCode != null && entry.id != null)) {
+                const row = [0, entry.fileCode, entry.id, Math.max(1, (entry.Number | 0) || 1)];
+                if (entry.CostOverride != null) row.push(scaleGold(entry.CostOverride));
+                if (entry.Bonus != null) row.push(entry.Bonus);
+                list.push(row);
+            } else if (entry.userAdded && entry.link) {
+                const ref = getShareFileCodeAndId(entry.link);
+                if (ref) {
+                    const row = [0, ref.fileCode, ref.id, Math.max(1, (entry.Number | 0) || 1)];
+                    if (entry.CostOverride != null) row.push(scaleGold(entry.CostOverride));
+                    if (entry.Bonus != null) row.push(entry.Bonus);
+                    list.push(row);
+                }
+            }
+        }
+        return list;
     }
 }
 

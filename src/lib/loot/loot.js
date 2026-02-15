@@ -1,20 +1,20 @@
 import { newArmor, newShield, newWeapon, randomMagicItem } from '../item';
-import { loadFile, newGuid } from '../utils';
+import { createPrng } from '../prng';
+import { loadFile } from '../utils';
+import { scaleMod, unscaleMod, timestampToUnix } from '../storageFormat';
 
-const REQUIRED_KEYS = ['Id', 'Level', 'GoldMod', 'GoodsMod', 'ItemsMod', 'Gold', 'Goods', 'Items', 'Timestamp', 'ClassicGen'];
+const REQUIRED_KEYS = ['Level', 'GoldMod', 'GoodsMod', 'ItemsMod', 'Seed', 'Timestamp', 'ClassicGen'];
 
 class Loot {
-    constructor(level = 1, goldMod = 1, goodsMod = 1, itemsMod = 1, classicGen = true) {
-        this.Id = newGuid();
+    constructor(level = 1, goldMod = 1, goodsMod = 1, itemsMod = 1, classicGen = true, seed = null) {
         this.Level = level;
         this.GoldMod = goldMod;
         this.GoodsMod = goodsMod;
         this.ItemsMod = itemsMod;
-        this.Gold = this.generateGold();
-        this.Goods = this.generateGoods();
-        this.Items = this.generateItems();
-        this.Timestamp = this.generateTimestamp();
-        this.ClassicGen = classicGen;
+        this.Seed = (seed != null && typeof seed === 'number') ? (seed >>> 0) : ((Math.random() * 0x100000000) >>> 0);
+        this.Timestamp = Math.floor(Date.now() / 1000);
+        this.ClassicGen = !!classicGen;
+        this.regenerate();
     }
 
     load(data) {
@@ -23,37 +23,39 @@ class Loot {
             return this;
         }
 
-        this.Id = data.Id;
+        // Data from another Loot instance (e.g. Redux state) has unscaled mods; do not unscale
+        const fromInstance = typeof data.serialize === 'function';
         this.Level = data.Level;
-        this.GoldMod = data.GoldMod;
-        this.GoodsMod = data.GoodsMod;
-        this.ItemsMod = data.ItemsMod;
-        this.Gold = data.Gold;
-        this.Goods = data.Goods;
-        this.Items = data.Items;
-        this.Timestamp = data.Timestamp;
+        this.GoldMod = fromInstance ? data.GoldMod : (typeof data.GoldMod === 'number' ? unscaleMod(data.GoldMod) : (Number(data.GoldMod) || 1));
+        this.GoodsMod = fromInstance ? data.GoodsMod : (typeof data.GoodsMod === 'number' ? unscaleMod(data.GoodsMod) : (Number(data.GoodsMod) || 1));
+        this.ItemsMod = fromInstance ? data.ItemsMod : (typeof data.ItemsMod === 'number' ? unscaleMod(data.ItemsMod) : (Number(data.ItemsMod) || 1));
+        this.Seed = data.Seed >>> 0;
+        this.Timestamp = typeof data.Timestamp === 'number' ? data.Timestamp : timestampToUnix(data.Timestamp);
         this.ClassicGen = data.ClassicGen;
+        this.regenerate();
         return this;
     }
 
-    generateTimestamp() {
-        const now = new Date();
-        const pad = n => n.toString().padStart(2, '0');
-        const yyyy = now.getFullYear().toString().substring(2);
-        const MM = pad(now.getMonth() + 1);
-        const dd = pad(now.getDate());
-        const hh = pad(now.getHours());
-        const mm = pad(now.getMinutes());
-        const ss = pad(now.getSeconds());
-        return `${yyyy}/${MM}/${dd} ${hh}:${mm}:${ss}`;
+    regenerate() {
+        this._rng = createPrng(this.Seed);
+        this.Gold = this.generateGold();
+        this.Goods = this.generateGoods();
+        this.Items = this.generateItems();
     }
 
+    /** Unix timestamp (seconds). For display use unixToDisplay from storageFormat. */
+
     rollDice(times, sides) {
+        const rng = this._rng;
         let total = 0;
         for (let i = 0; i < times; i++) {
-            total += Math.floor(Math.random() * sides) + 1;
+            total += Math.floor((rng ? rng.nextFloat() : Math.random()) * sides) + 1;
         }
         return total;
+    }
+
+    _rand() {
+        return this._rng ? this._rng.nextFloat() : Math.random();
     }
 
     generateGold() {
@@ -87,7 +89,7 @@ class Loot {
         };
 
         const lootOptions = table[Math.min(this.Level, 20)];
-        const d100 = Math.floor(Math.random() * 100) + 1;
+        const d100 = Math.floor(this._rand() * 100) + 1;
 
         for (let option of lootOptions) {
             const [min, max] = option.range;
@@ -127,7 +129,7 @@ class Loot {
         };
 
         const lootOptions = table[Math.min(this.Level, 20)];
-        const d100 = Math.floor(Math.random() * 100) + 1;
+        const d100 = Math.floor(this._rand() * 100) + 1;
 
         for (let option of lootOptions) {
             const [min, max] = option.range;
@@ -174,7 +176,7 @@ class Loot {
             { range: [91, 99], cost: () => this.rollDice(4, 4) * 100 },
             { range: [100, 100], cost: () => this.rollDice(2, 4) * 1000 }
         ];
-        const d100 = Math.floor(Math.random() * 100) + 1;
+        const d100 = Math.floor(this._rand() * 100) + 1;
         let tier;
         for (let i = 0; i < rolls.length; i++) {
             const { range } = rolls[i];
@@ -184,7 +186,7 @@ class Loot {
             }
         }
         if (!pools[tier]) return { Name: "A strange bug", Cost: 4.04 };
-        const name = pools[tier][Math.floor(Math.random() * pools[tier].length)];
+        const name = pools[tier][Math.floor(this._rand() * pools[tier].length)];
         const cost = rolls[tier].cost();
         return { Name: name, Cost: cost };
     }
@@ -352,9 +354,9 @@ class Loot {
             { range: [100, 100], cost: () => this.rollDice(2, 6) * 1000 }
         ];
 
-        const d100 = Math.floor(Math.random() * 100) + 1;
+        const d100 = Math.floor(this._rand() * 100) + 1;
         let idx = tiers.findIndex(t => d100 >= t.range[0] && d100 <= t.range[1]);
-        const name = pools[idx][Math.floor(Math.random() * pools[idx].length)];
+        const name = pools[idx][Math.floor(this._rand() * pools[idx].length)];
         const cost = tiers[idx].cost();
 
         return { Name: name, Cost: cost };
@@ -384,7 +386,7 @@ class Loot {
             20: [{ range: [3, 38], type: 'gems', count: () => this.rollDice(4, 10) }, { range: [39, 100], type: 'art', count: () => this.rollDice(7, 6) }]
         };
         const entries = table[Math.min(this.Level, 20)];
-        const roll = Math.floor(Math.random() * 100) + 1;
+        const roll = Math.floor(this._rand() * 100) + 1;
         for (let { range, type, count } of entries) {
             if (roll >= range[0] && roll <= range[1]) {
                 let n = count();
@@ -425,7 +427,7 @@ class Loot {
         };
 
         const entries = table[lvl];
-        const d100 = Math.floor(Math.random() * 100) + 1;
+        const d100 = Math.floor(this._rand() * 100) + 1;
         const items = [];
 
         for (let { range, type, count } of entries) {
@@ -434,9 +436,9 @@ class Loot {
                 n = Math.round(n * this.ItemsMod);
                 for (let i = 0; i < n; i++) {
                     if (type === 'mundane') items.push(this.generateMundane());
-                    if (type === 'minor') items.push(randomMagicItem(0, this.Level, 'Minor'));
-                    if (type === 'medium') items.push(randomMagicItem(0, this.Level, 'Medium'));
-                    if (type === 'major') items.push(randomMagicItem(0, this.Level, 'Major'));
+                    if (type === 'minor') items.push(randomMagicItem(0, this.Level, 'Minor', this._rng));
+                    if (type === 'medium') items.push(randomMagicItem(0, this.Level, 'Medium', this._rng));
+                    if (type === 'major') items.push(randomMagicItem(0, this.Level, 'Major', this._rng));
                 }
                 break;
             }
@@ -445,7 +447,7 @@ class Loot {
         if (this.Level > 20) {
             const extraMajors = this.Level - 20;
             for (let i = 0; i < extraMajors; i++) {
-                items.push(randomMagicItem(0, this.Level, 'Major'));
+                items.push(randomMagicItem(0, this.Level, 'Major', this._rng));
             }
         }
 
@@ -456,9 +458,7 @@ class Loot {
     }
 
     generateMundane() {
-        function randomInt(min, max) {
-            return Math.floor(Math.random() * (max - min + 1)) + min;
-        }
+        const randomInt = (min, max) => Math.floor(this._rand() * (max - min + 1)) + min;
 
         const d100 = randomInt(1, 100);
 
@@ -491,7 +491,7 @@ class Loot {
         if (d100 <= 50) {
             const sub = randomInt(1, 100);
             if (sub <= 80) {
-                return { ...newArmor(0, this.Level), Quantity: 1 };
+                return { ...newArmor(0, this.Level, this._rng), Quantity: 1 };
             } else if (sub <= 90) {
                 let link;
                 if (randomInt(1, 100) <= 50) {
@@ -501,12 +501,12 @@ class Loot {
                 }
                 return { ...loadFile("items")["Specific Shield"].find(x => x.Link === link), Quantity: 1 };
             } else {
-                return { ...newShield(0, this.Level), Quantity: 1 };
+                return { ...newShield(0, this.Level, this._rng), Quantity: 1 };
             }
         }
 
         if (d100 <= 83) {
-            return { ...newWeapon(0, this.Level), Quantity: 1 };
+            return { ...newWeapon(0, this.Level, this._rng), Quantity: 1 };
         }
 
         const sub = randomInt(1, 100);
@@ -557,14 +557,11 @@ class Loot {
 
     serialize() {
         return {
-            Id: this.Id,
             Level: this.Level,
-            GoldMod: this.GoldMod,
-            GoodsMod: this.GoodsMod,
-            ItemsMod: this.ItemsMod,
-            Gold: this.Gold,
-            Goods: this.Goods,
-            Items: this.Items,
+            GoldMod: scaleMod(this.GoldMod),
+            GoodsMod: scaleMod(this.GoodsMod),
+            ItemsMod: scaleMod(this.ItemsMod),
+            Seed: this.Seed,
             Timestamp: this.Timestamp,
             ClassicGen: this.ClassicGen
         };

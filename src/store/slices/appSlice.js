@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit';
-import * as db from '../../lib/storage';
 import { getConditionByLink, getEffectByLink, getFeatByLink, getItemByLink, getItemByRef, getSkillByLink, getSpellByLink, isMobile } from '../../lib/utils';
 import { applyColors } from '../../lib/colorUtils';
 
@@ -29,22 +28,18 @@ export const appSlice = createSlice({
   reducers: {
     toggleSidebar(state) {
       state.sidebarCollapsed = !state.sidebarCollapsed;
-      db.setIsShopSidebarCollapsed(state.sidebarCollapsed);
     },
 
     toggleInfoSidebar(state) {
       state.infoSidebarCollapsed = !state.infoSidebarCollapsed;
-      db.setIsInfoSidebarCollapsed(state.infoSidebarCollapsed);
     },
 
     setSidebarCollapsed(state, action) {
       state.sidebarCollapsed = !!action.payload;
-      db.setIsShopSidebarCollapsed(state.sidebarCollapsed);
     },
 
     setInfoSidebarCollapsed(state, action) {
       state.infoSidebarCollapsed = !!action.payload;
-      db.setIsInfoSidebarCollapsed(state.infoSidebarCollapsed);
     },
 
     addCardByLink(state, action) {
@@ -163,18 +158,15 @@ export const appSlice = createSlice({
 
     setStateCurrentTab(state, action) {
       state.currentTab = action.payload;
-      db.setCurrentTab(action.payload);
     },
 
     setMainColor(state, action) {
       state.mainColor = action.payload; // expect a hex like '#1a2b3c'
-      db.setMainColor(action.payload);
       applyColors(action.payload);
     },
 
     resetMainColor(state) {
       state.mainColor = null;
-      db.setMainColor(null);
       applyColors(null);
     },
 
@@ -188,7 +180,6 @@ export const appSlice = createSlice({
 
     setMasterMode(state, action) {
       state.isMasterMode = !!action.payload;
-      db.setIsMasterMode(state.isMasterMode);
     }
   }
 });

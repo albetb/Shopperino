@@ -45,11 +45,11 @@ export default function SpellLevelCard({
       const spell = inst.getAllSpells().find(x => x.Link === link);
       let lvl = parseInt(spell.Level.split(`${classKeyMap[inst.Class]} `)[1].split(',')[0], 10);
       const totalUsed = inst.getLearnedSpells().filter(x => x.Level.includes(`${classKeyMap[inst.Class]} ${lvl}`))
-        .map(x => inst.Spells.find(y => y.Link === x.Link).Used)
+        .map(x => inst.getSpellPreparedUsed(x.Link).Used || 0)
         .reduce((a, b) => a + b, 0);
       return Math.max(0, spellsPerDay[lvl] - totalUsed);
     }
-    const { Prepared = 0, Used = 0 } = inst.Spells.find(x => x.Link === link) || {};
+    const { Prepared = 0, Used = 0 } = inst.getSpellPreparedUsed(link);
     return Math.max(0, Prepared - Used);
   };
 
@@ -88,11 +88,11 @@ export default function SpellLevelCard({
         }, {});
         const spellsFor = preparedList[lvl] || [];
         let totalPrep = spellsFor
-          .map(x => parseInt(inst.Spells.find(y => y.Link === x.Link).Prepared, 10))
+          .map(x => (inst.getSpellPreparedUsed(x.Link).Prepared || 0))
           .reduce((a, b) => a + b, 0);
         let totalPrepSpec = spellsFor
-          .filter(x => x.School.toLowerCase().includes(inst.Specialized.toLowerCase()))
-          .map(x => parseInt(inst.Spells.find(y => y.Link === x.Link).Prepared, 10))
+          .filter(x => x.School.toLowerCase().includes((inst.Specialized || '').toLowerCase()))
+          .map(x => (inst.getSpellPreparedUsed(x.Link).Prepared || 0))
           .reduce((a, b) => a + b, 0);
 
         let mageSpec = "";
@@ -242,14 +242,14 @@ export default function SpellLevelCard({
                       <div className='card-side-div'>
                         <div className='spell-slot-div'>
                           <button
-                            className={`smaller flat-button ${(inst.Spells.find(x => x.Link === item.Link)?.Prepared || 0) === 0 ? 'opacity-50' : ''}`}
+                            className={`smaller flat-button ${inst.getSpellPreparedUsed(item.Link).Prepared === 0 ? 'opacity-50' : ''}`}
                             onClick={() => dispatch(onUnprepareSpell(item.Link))}
-                            disabled={(inst.Spells.find(x => x.Link === item.Link)?.Prepared || 0) === 0}
+                            disabled={inst.getSpellPreparedUsed(item.Link).Prepared === 0}
                           >
                             <span className='material-symbols-outlined'>remove</span>
                           </button>
                           <label className='level-text' style={{margin: "0 8px 0 8px"}}>
-                            {inst.Spells.find(x => x.Link === item.Link)?.Prepared || 0}
+                            {inst.getSpellPreparedUsed(item.Link).Prepared}
                           </label>
                           <button
                             className='smaller flat-button'

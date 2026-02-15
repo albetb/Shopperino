@@ -4,88 +4,87 @@ import { cap } from '../../lib/utils';
 import World from '../../lib/world';
 import { setCity } from '../slices/citySlice';
 import { setShop } from '../slices/shopSlice';
-import { setWorld } from '../slices/worldSlice';
+import { setWorld, setWorldsList, setSelectedWorldIndex } from '../slices/worldSlice';
+import { setPersist } from '../slices/persistSlice';
 
 export const onNewCity = (nameRaw) => (dispatch, getState) => {
-  const state = getState();
+  const app = getState().persist;
+  const w = db.getWorldByIndex(app, app.sw);
+  if (!w) return;
   const name = cap(nameRaw);
-  const { world } = state.world;
-
-  if (!world || name.trim().length === 0) return;
-  if (world.Cities.some(w => w.Name === name)) { // If name already present select that item
-    const found = world.Cities.find(w => w.Name === name)
-    const w = new World().load(world);
-    w.selectCity(found.Id);
-
-    const c = db.getCity(found.Id);
-    dispatch(setCity(c));
+  if (!name || name.trim().length === 0) return;
+  if (w.Cities.some(c => c.Name === name)) {
+    const idx = w.Cities.findIndex(c => c.Name === name);
+    w.selectCityByIndex(idx);
+    const newApp = db.updateWorldAt(app, app.sw, w);
+    db.saveApp(newApp);
+    dispatch(setPersist(newApp));
     dispatch(setWorld(w));
+    dispatch(setCity(w.Cities[w.SelectedCityIndex]));
+    dispatch(setShop(null));
     return;
-  };
+  }
 
-  const c = new City(name, world.Level);
-
-  const w = new World().load(world);
-  w.addCity(c.Id, c.Name);
-
+  w.addCity(name, w.Level);
+  const newApp = db.updateWorldAt(app, app.sw, w);
+  db.saveApp(newApp);
+  dispatch(setPersist(newApp));
+  dispatch(setWorldsList(db.getWorldsList(newApp)));
+  dispatch(setSelectedWorldIndex(app.sw));
   dispatch(setWorld(w));
-  dispatch(setCity(c));
+  dispatch(setCity(w.Cities[w.SelectedCityIndex]));
   dispatch(setShop(null));
 };
 
 export const onSelectCity = (name) => (dispatch, getState) => {
-  const { world } = getState().world;
-  if (!world) return;
+  const app = getState().persist;
+  const w = db.getWorldByIndex(app, app.sw);
+  if (!w) return;
 
-  const cityMeta = world.Cities.find(c => c.Name === name);
-  if (!cityMeta) return;
-
-  const w = new World().load(world);
-  w.selectCity(cityMeta.Id);
-
-  const c = db.getCity(cityMeta.Id);
-  const shop = db.getShop(c.SelectedShop.Id);
-
+  const idx = w.Cities.findIndex(c => c.Name === name);
+  if (idx < 0) return;
+  w.selectCityByIndex(idx);
+  const newApp = db.updateWorldAt(app, app.sw, w);
+  db.saveApp(newApp);
+  dispatch(setPersist(newApp));
   dispatch(setWorld(w));
+  const c = w.Cities[w.SelectedCityIndex];
   dispatch(setCity(c));
-  dispatch(setShop(shop));
+  dispatch(setShop(c?.Shops?.[c.SelectedShopIndex] ?? null));
 };
 
 export const onCityLevelChange = (level) => (dispatch, getState) => {
-  const { city } = getState().city;
-  if (!city) return;
+  const app = getState().persist;
+  const w = db.getWorldByIndex(app, app.sw);
+  if (!w) return;
+  const c = w.Cities?.[w.SelectedCityIndex];
+  if (!c) return;
 
-  const c = new City().load(city);
   c.setCityLevel(level);
-
-  const shop = db.getShop(c.SelectedShop.Id);
+  const newApp = db.updateWorldAt(app, app.sw, w);
+  db.saveApp(newApp);
+  dispatch(setPersist(newApp));
+  dispatch(setWorld(w));
   dispatch(setCity(c));
-  dispatch(setShop(shop));
+  dispatch(setShop(c.Shops?.[c.SelectedShopIndex] ?? null));
 };
 
 export const onDeleteCity = () => (dispatch, getState) => {
-  const { world } = getState().world;
-  const { city } = getState().city;
-  if (!world || !city) return;
+  const app = getState().persist;
+  const w = db.getWorldByIndex(app, app.sw);
+  const c = getState().city.city;
+  if (!w || !c) return;
 
-  const oldDb = db.getCity(city.Id);
-  oldDb.Shops.forEach(s => db.deleteShop(s.Id));
-  db.deleteCity(city.Id);
-
-  const w = new World().load(world);
-  const nextCityMeta = w.Cities.find(c => c.Id !== city.Id);
-  w.selectCity(nextCityMeta?.Id);
-  w.deleteCity(city.Id);
-
+  const cityIdx = w.Cities.findIndex(city => city.Name === c.Name);
+  if (cityIdx < 0) return;
+  w.deleteCityByIndex(cityIdx);
+  const newApp = db.updateWorldAt(app, app.sw, w);
+  db.saveApp(newApp);
+  dispatch(setPersist(newApp));
+  dispatch(setWorldsList(db.getWorldsList(newApp)));
+  dispatch(setSelectedWorldIndex(app.sw));
   dispatch(setWorld(w));
-
-  if (nextCityMeta) {
-    const c = db.getCity(nextCityMeta.Id);
-    const shop = db.getShop(c.SelectedShop.Id);
-    dispatch(setCity(c));
-    dispatch(setShop(shop));
-  } else {
-    dispatch(setCity(null));
-    dispatch(setShop(null));
-  }
+  const nextC = w.Cities?.[w.SelectedCityIndex];
+  dispatch(setCity(nextC ?? null));
+  dispatch(setShop(nextC?.Shops?.[nextC.SelectedShopIndex] ?? null));
 };

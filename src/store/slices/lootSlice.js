@@ -1,53 +1,39 @@
 import { createSlice } from '@reduxjs/toolkit';
-import * as db from '../../lib/storage';
-import { serialize } from '../../lib/utils';
 
 const initialState = {
-  loots: [],
-  selectedLoot: null,
+  loots: [],           // [{ timestamp }]
+  selectedLoot: null,  // { Id: index, Name: timestamp } for UI compat
   loot: null,
-  isLootSidebarCollapsed: false
+  isLootSidebarCollapsed: false,
 };
 
 export const lootSlice = createSlice({
   name: 'loot',
   initialState,
   reducers: {
-    setLoots(state, action) {
-      db.setLoots(action.payload);
-      state.loots = action.payload;
+    setLootsList(state, action) {
+      state.loots = action.payload ?? [];
     },
-    setSelectedLoot(state, action) {
-      db.setSelectedLoot(action.payload);
-      state.selectedLoot = action.payload;
+    setSelectedLootIndex(state, action) {
+      const i = action.payload;
+      state.selectedLoot = (state.loots[i] != null) ? { Id: i, Name: state.loots[i].timestamp } : null;
     },
-    setLoot: {
-      reducer(state, action) {
-        if (action.payload?.Id) {
-          db.setLoot(action.payload);
-          state.loot = action.payload;
-        }
-      },
-      prepare(lootInstance) {
-        return { payload: serialize(lootInstance) };
-      }
+    setLoot(state, action) {
+      state.loot = action.payload;
     },
     resetLoot(state) {
-      db.setSelectedLoot(null);
       state.selectedLoot = null;
-      db.setLoot(null);
       state.loot = null;
     },
     setIsLootSidebarCollapsed(state, action) {
-      db.setIsLootSidebarCollapsed(action.payload);
       state.isLootSidebarCollapsed = action.payload;
-    }
-  }
+    },
+  },
 });
 
 export const {
-  setLoots,
-  setSelectedLoot,
+  setLootsList,
+  setSelectedLootIndex,
   setLoot,
   resetLoot,
   setIsLootSidebarCollapsed,

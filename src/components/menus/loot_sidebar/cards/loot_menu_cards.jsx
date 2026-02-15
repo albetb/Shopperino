@@ -1,17 +1,17 @@
 import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import * as db from '../../../../lib/storage';
+import { setPersist } from '../../../../store/slices/persistSlice';
 import { isMobile, trimLine } from '../../../../lib/utils';
 import '../../../../style/menu_cards.css';
 import MenuCardLoot from './menu_card_loot';
 
 export default function LootMenuCards() {
+  const dispatch = useDispatch();
+  const persist = useSelector(state => state.persist);
   const [cardStates, setCardStates] = useState([
     { id: 1, collapsed: false }
   ]);
-
-  useEffect(() => {
-    setCardCollapsed(1, db.getIsLootCollapsed());
-  }, []);
 
   const setCardCollapsed = (cardId, collapsed) => {
     setCardStates(states => states.map(s =>
@@ -19,11 +19,16 @@ export default function LootMenuCards() {
     ));
   };
 
+  useEffect(() => {
+    if (!persist) return;
+    setCardCollapsed(1, db.getIsLootCollapsed(persist));
+  }, [persist]);
+
   const toggleCard = (cardId) => {
     setCardStates(states => states.map(s => {
       if (s.id === cardId) {
         const newState = !s.collapsed;
-        if (cardId === 1) db.setIsLootCollapsed(newState);
+        if (cardId === 1 && persist) dispatch(setPersist(db.setAppUIFlag(persist, db.UI_FLAG.lc, newState)));
         return { ...s, collapsed: newState };
       }
       return s;

@@ -13,7 +13,7 @@ import Shop from './shop';
  *
  * @param {number} seed - 32-bit unsigned seed
  * @param {{ shopTypeIndex: number, level: number, cityLevel: number, playerLevel: number, name?: string }} params
- * @returns {object|null} - Serialized shop (Id, Name, Level, CityLevel, PlayerLevel, Reputation, Stock, Gold, Time, ArcaneChance, ShopType, ItemModifier) or null if invalid
+ * @returns {object|null} - Serialized shop (Id, Name, Level, CityLevel, PlayerLevel, Reputation, Stock, Gold, Time, ArcaneChance, ShopType, plus ItemModifier from tables) or null if invalid
  */
 export function generateShop(seed, params) {
   const tables = loadFile('tables');
@@ -36,5 +36,7 @@ export function generateShop(seed, params) {
   shop.Name = (params.name != null && String(params.name).trim() !== '') ? String(params.name).trim() : shopTypeName;
   shop.generateInventory(prng);
 
-  return shop.serialize();
+  const out = shop.serialize();
+  out.Stock = shop.Stock;
+  return out;
 }

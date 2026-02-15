@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Loot from '../../lib/loot';
+import { unixToDisplay } from '../../lib/storageFormat';
 import { formatNumber, isMobile, trimLine } from '../../lib/utils';
 import { addCardByLink } from '../../store/slices/appSlice';
 import '../../style/shop_inventory.css';
@@ -31,7 +32,10 @@ export default function LootInventory() {
   const dispatch = useDispatch();
   const rawLoot = useSelector(state => state.loot.loot);
   const lootInst = rawLoot ? new Loot().load(rawLoot) : null;
-  const lootName = rawLoot?.Timestamp || '';
+  const lootName =
+    typeof rawLoot?.Timestamp === 'number'
+      ? unixToDisplay(rawLoot.Timestamp)
+      : (rawLoot?.Timestamp != null ? String(rawLoot.Timestamp) : '');
   const gold = rawLoot?.Gold ?? 0;
   const goodsObj = lootInst?.Goods || {};
   const goodsList = goodsObj.gems || goodsObj.art || [];

@@ -1,7 +1,36 @@
-import { loadFile, newGuid } from '../utils';
+import { loadFile } from '../utils';
+import { strToEnum, enumToStr } from '../storageFormat';
 
 const ALL_SPELLS = loadFile("spells");
-const REQUIRED_KEYS = ['Id', 'Name', 'Class', 'Level', 'Characteristic', 'Spells',
+
+/** Lookup spell by numeric id from spells.json. */
+function getSpellById(id) {
+    if (id == null || typeof id !== 'number') return null;
+    return ALL_SPELLS.find(s => s.id === id) || null;
+}
+
+/** Resolve spell link to numeric id. */
+function getSpellIdByLink(link) {
+    if (!link) return -1;
+    const s = ALL_SPELLS.find(x => x.Link === link);
+    return s != null && typeof s.id === 'number' ? s.id : -1;
+}
+
+/** Normalize Spells to [[id, prepared, used], ...]. Accepts legacy {Link, Prepared, Used} on load. */
+function normalizeSpells(raw) {
+    if (!Array.isArray(raw)) return [];
+    return raw.map(slot => {
+        if (Array.isArray(slot) && slot.length >= 3)
+            return [Number(slot[0]), Number(slot[1]) || 0, Number(slot[2]) || 0];
+        if (slot && typeof slot === 'object' && slot.Link != null) {
+            const id = getSpellIdByLink(slot.Link);
+            if (id >= 0) return [id, Number(slot.Prepared) || 0, Number(slot.Used) || 0];
+        }
+        return null;
+    }).filter(Boolean);
+}
+
+const REQUIRED_KEYS = ['Name', 'Class', 'Level', 'Characteristic', 'Spells',
     'MoralAlignment', 'EthicalAlignment', 'Domain1', 'Domain2', 'UsedDomainSpells',
     'Specialized', 'Forbidden1', 'Forbidden2'];
 export const CLASSES = ["Sorcerer", "Wizard", "Cleric", "Druid", "Bard", "Ranger", "Paladin"];
@@ -37,7 +66,6 @@ export const MORALALIGNMENTS = ["Good", "Neutral", "Evil"];
 class Spellbook {
 
     constructor(name = '') {
-        this.Id = newGuid();
         this.Name = name;
         this.Class = "";
         this.Level = 1;
@@ -61,16 +89,15 @@ class Spellbook {
             return this;
         }
 
-        this.Id = data.Id;
         this.Name = data.Name;
-        this.Class = data.Class;
+        this.Class = typeof data.Class === 'number' ? enumToStr('Classes', data.Class) : (data.Class || '');
         this.Level = data.Level;
         this.Characteristic = data.Characteristic;
-        this.Spells = data.Spells;
-        this.MoralAlignment = data.MoralAlignment;
-        this.EthicalAlignment = data.EthicalAlignment;
-        this.Domain1 = data.Domain1;
-        this.Domain2 = data.Domain2;
+        this.Spells = normalizeSpells(data.Spells);
+        this.MoralAlignment = typeof data.MoralAlignment === 'number' ? enumToStr('MoralAlignments', data.MoralAlignment) : (data.MoralAlignment || 'Neutral');
+        this.EthicalAlignment = typeof data.EthicalAlignment === 'number' ? enumToStr('EthicalAlignments', data.EthicalAlignment) : (data.EthicalAlignment || 'Neutral');
+        this.Domain1 = typeof data.Domain1 === 'number' ? enumToStr('Domains', data.Domain1) : (data.Domain1 || '');
+        this.Domain2 = typeof data.Domain2 === 'number' ? enumToStr('Domains', data.Domain2) : (data.Domain2 || '');
         this.UsedDomainSpells = data.UsedDomainSpells;
         const raw = data.PreparedDomainSpells ?? {};
         this.PreparedDomainSpells = Object.fromEntries(
@@ -79,9 +106,9 @@ class Spellbook {
                 Array.isArray(val) ? val : (val && val.Link ? [val] : [])
             ])
         );
-        this.Specialized = data.Specialized;
-        this.Forbidden1 = data.Forbidden1;
-        this.Forbidden2 = data.Forbidden2;
+        this.Specialized = typeof data.Specialized === 'number' ? enumToStr('SpellSchools', data.Specialized) : (data.Specialized || '');
+        this.Forbidden1 = typeof data.Forbidden1 === 'number' ? enumToStr('SpellSchools', data.Forbidden1) : (data.Forbidden1 || '');
+        this.Forbidden2 = typeof data.Forbidden2 === 'number' ? enumToStr('SpellSchools', data.Forbidden2) : (data.Forbidden2 || '');
 
         return this;
     }
@@ -89,12 +116,7 @@ class Spellbook {
     setClass(_class) {
         if (CLASSES.includes(_class))
             this.Class = _class;
-        if (_class === "Wizard") { // add all level 0 spells to known
-            const level_0_spells = this.getAllSpells({ level: 0 });
-            level_0_spells.forEach(spell => {
-                this.learnSpell(spell.Link);
-            });
-        }
+        // Wizard: do not add level 0 spells to storage; they are treated as known in UI only
     }
 
     setLevel(level) {
@@ -154,73 +176,60 @@ class Spellbook {
     }
 
     learnSpell(spell_link) {
-        const existing = this.Spells.find(s => s.Link === spell_link);
-        if (!existing) {
-            this.Spells = [
-                ...this.Spells,
-                { Link: spell_link, Prepared: 0, Used: 0 }
-            ];
-        }
+        const id = getSpellIdByLink(spell_link);
+        if (id < 0) return;
+        if (this.Spells.some(s => s[0] === id)) return;
+        this.Spells = [...this.Spells, [id, 0, 0]];
     }
 
     unlearnSpell(spell_link) {
-        const existing = this.Spells.find(s => s.Link === spell_link);
-
-        const spell = ALL_SPELLS.find(x => x.Link === spell_link);
-
-        if (existing && !(this.Class === "Wizard" && spell.Level.includes("Sor/Wiz 0"))) {
-            this.Spells = this.Spells.filter(s => s.Link !== spell_link);
-        }
+        const id = getSpellIdByLink(spell_link);
+        const spell = getSpellById(id);
+        const existing = this.Spells.find(s => s[0] === id);
+        if (existing && spell && !(this.Class === "Wizard" && spell.Level.includes("Sor/Wiz 0")))
+            this.Spells = this.Spells.filter(s => s[0] !== id);
     }
 
     learnUnlearnSpell(spell_link) {
-        const existing = this.Spells.find(s => s.Link === spell_link);
-        if (existing) {
-            this.unlearnSpell(spell_link);
-        } else {
-            this.learnSpell(spell_link);
-        }
+        const id = getSpellIdByLink(spell_link);
+        const existing = this.Spells.find(s => s[0] === id);
+        if (existing) this.unlearnSpell(spell_link);
+        else this.learnSpell(spell_link);
     }
 
     prepareSpell(spell_link) {
-        // ensure the spell exists
-        if (!this.Spells.some(s => s.Link === spell_link)) {
-            this.Spells = [
-                ...this.Spells,
-                { Link: spell_link, Prepared: 1, Used: 0 }
-            ];
+        const id = getSpellIdByLink(spell_link);
+        if (id < 0) return;
+        const slot = this.Spells.find(s => s[0] === id);
+        if (!slot) {
+            this.Spells = [...this.Spells, [id, 1, 0]];
             return;
         }
-        // bump Prepared immutably
         this.Spells = this.Spells.map(s =>
-            s.Link === spell_link
-                ? { ...s, Prepared: (s.Prepared || 0) + 1 }
-                : s
+            s[0] === id ? [id, (s[1] || 0) + 1, s[2] || 0] : s
         );
     }
 
     unprepareSpell(spell_link) {
+        const id = getSpellIdByLink(spell_link);
+        const removeWhenZero = ["Cleric", "Druid", "Bard", "Paladin"].includes(this.Class);
         this.Spells = this.Spells.map(s =>
-            s.Link === spell_link
-                ? { ...s, Prepared: Math.max(0, (s.Prepared || 0) - 1) }
-                : s
+            s[0] === id ? [s[0], Math.max(0, (s[1] || 0) - 1), s[2] || 0] : s
         );
+        if (removeWhenZero)
+            this.Spells = this.Spells.filter(s => (s[1] || 0) > 0);
     }
 
     useSpell(spell_link) {
-        // ensure the spell exists
-        if (!this.Spells.some(s => s.Link === spell_link)) {
-            this.Spells = [
-                ...this.Spells,
-                { Link: spell_link, Prepared: 0, Used: 1 }
-            ];
+        const id = getSpellIdByLink(spell_link);
+        if (id < 0) return;
+        const slot = this.Spells.find(s => s[0] === id);
+        if (!slot) {
+            this.Spells = [...this.Spells, [id, 0, 1]];
             return;
         }
-        // bump Prepared immutably
         this.Spells = this.Spells.map(s =>
-            s.Link === spell_link
-                ? { ...s, Used: (s.Used || 0) + 1 }
-                : s
+            s[0] === id ? [s[0], s[1] || 0, (s[2] || 0) + 1] : s
         );
     }
 
@@ -271,7 +280,7 @@ class Spellbook {
     }
 
     refreshSpell() {
-        this.Spells = this.Spells.map(s => ({ ...s, Used: 0 }));
+        this.Spells = this.Spells.map(s => [s[0], s[1] || 0, 0]);
         this.refreshDomainSpell();
     }
 
@@ -396,15 +405,39 @@ class Spellbook {
         return this._getSpells(ALL_SPELLS, { name, school, level });
     }
 
+    /** For Wizard: all Sor/Wiz level 0 spells (not stored; shown as known/prepared in UI). */
+    getWizardLevel0Spells() {
+        if (this.Class !== "Wizard") return [];
+        return this.getAllSpells({ level: 0 });
+    }
+
     getLearnedSpells({ name, school, level } = {}) {
-        const spells = this.Spells.map(x => ALL_SPELLS.find(y => y.Link === x.Link));
-        return this._getSpells(spells, { name, school, level });
+        const fromStorage = this.Spells.map(s => getSpellById(s[0])).filter(Boolean);
+        if (this.Class === "Wizard") {
+            const level0Ordered = this.getWizardLevel0Spells();
+            const rest = fromStorage.filter(sp => !sp.Level.includes("Sor/Wiz 0"));
+            return this._getSpells([...level0Ordered, ...rest], { name, school, level });
+        }
+        return this._getSpells(fromStorage, { name, school, level });
     }
 
     getPreparedSpells({ name, school, level } = {}) {
-        const spells = this.Spells.filter(x => x.Prepared > 0)
-            .map(x => ALL_SPELLS.find(y => y.Link === x.Link));
-        return this._getSpells(spells, { name, school, level });
+        const withPrepared = this.Spells.filter(s => (s[1] || 0) > 0).map(s => getSpellById(s[0])).filter(Boolean);
+        if (this.Class === "Wizard") {
+            const level0Canonical = this.getWizardLevel0Spells();
+            const level0Ids = new Set(level0Canonical.map(s => s.id));
+            const level0Prepared = level0Canonical.filter(s => withPrepared.some(p => p.id === s.id));
+            const otherPrepared = withPrepared.filter(s => !level0Ids.has(s.id));
+            return this._getSpells([...level0Prepared, ...otherPrepared], { name, school, level });
+        }
+        return this._getSpells(withPrepared, { name, school, level });
+    }
+
+    /** Prepared/Used for a spell link; for Wizard level 0 not in storage returns { Prepared: 0, Used: 0 }. */
+    getSpellPreparedUsed(link) {
+        const id = getSpellIdByLink(link);
+        const slot = this.Spells.find(s => s[0] === id);
+        return slot ? { Prepared: slot[1] || 0, Used: slot[2] || 0 } : { Prepared: 0, Used: 0 };
     }
 
     getDomainSpells({ name, school, level } = {}) {
@@ -434,9 +467,8 @@ class Spellbook {
     }
 
     getHasUsedSpells() {
-        const filtered = this.getLearnedSpells().map(x => x.Link);
-        return this.Spells
-            .filter(x => x.Used > 0 && filtered.includes(x.Link)).length > 0
+        const learnedIds = new Set(this.getLearnedSpells().map(x => x.id));
+        return this.Spells.some(s => (s[2] || 0) > 0 && learnedIds.has(s[0]))
             || this.getHasUsedDomainSpells();
     }
 
@@ -538,21 +570,20 @@ class Spellbook {
 
     serialize() {
         return {
-            Id: this.Id,
             Name: this.Name,
-            Class: this.Class,
+            Class: strToEnum('Classes', this.Class) >= 0 ? strToEnum('Classes', this.Class) : -1,
             Level: this.Level,
             Characteristic: this.Characteristic,
             Spells: this.Spells,
-            MoralAlignment: this.MoralAlignment,
-            EthicalAlignment: this.EthicalAlignment,
-            Domain1: this.Domain1,
-            Domain2: this.Domain2,
+            MoralAlignment: strToEnum('MoralAlignments', this.MoralAlignment) >= 0 ? strToEnum('MoralAlignments', this.MoralAlignment) : 0,
+            EthicalAlignment: strToEnum('EthicalAlignments', this.EthicalAlignment) >= 0 ? strToEnum('EthicalAlignments', this.EthicalAlignment) : 0,
+            Domain1: strToEnum('Domains', this.Domain1) >= 0 ? strToEnum('Domains', this.Domain1) : -1,
+            Domain2: strToEnum('Domains', this.Domain2) >= 0 ? strToEnum('Domains', this.Domain2) : -1,
             UsedDomainSpells: this.UsedDomainSpells,
             PreparedDomainSpells: this.PreparedDomainSpells,
-            Specialized: this.Specialized,
-            Forbidden1: this.Forbidden1,
-            Forbidden2: this.Forbidden2
+            Specialized: strToEnum('SpellSchools', this.Specialized) >= 0 ? strToEnum('SpellSchools', this.Specialized) : -1,
+            Forbidden1: strToEnum('SpellSchools', this.Forbidden1) >= 0 ? strToEnum('SpellSchools', this.Forbidden1) : -1,
+            Forbidden2: strToEnum('SpellSchools', this.Forbidden2) >= 0 ? strToEnum('SpellSchools', this.Forbidden2) : -1
         };
     }
 }

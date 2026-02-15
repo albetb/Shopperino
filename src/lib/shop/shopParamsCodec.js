@@ -174,15 +174,20 @@ function utf8ToString(bytes) {
 /** Ref item: 1 byte fileCode (ASCII) + 2 bytes id BE + 1 number + 4 price + 1 typeNum = 9 bytes. */
 const REF_ITEM_BYTES = 9;
 
+/** Sold item: 1 byte fileCode + 2 bytes id BE + 2 bytes numberSold BE + 1 byte bonus (0 = none). */
+const SOLD_ITEM_BYTES = 6;
+const GOLD_CENTS_BYTES = 4;
+
 /**
- * Encode full payload: params + custom count + custom items + ref count + ref items.
- * Ref item: 1 byte fileCode (char code), 2 bytes id BE, 1 number, 4 price cents BE, 1 typeNum.
+ * Encode full payload: params + custom count + custom items + ref count + ref items + sold count + sold items + gold cents.
  * @param {ShopParams} params
  * @param {CustomItem[]} customItems
  * @param {RefItem[]} refItems
+ * @param {{ fileCode: string; id: number; numberSold: number; bonus?: number }[]} [soldItems]
+ * @param {number} [goldCents] - gold in cents (0 = use generated)
  * @returns {Uint8Array}
  */
-export function encodeShopPayload(params, customItems = [], refItems = []) {
+export function encodeShopPayload(params, customItems = [], refItems = [], soldItems = [], goldCents = 0) {
   const head = encodeShopParams(params);
   const customCount = Math.min(255, customItems.length);
   let size = head.length + 1;
@@ -200,6 +205,8 @@ export function encodeShopPayload(params, customItems = [], refItems = []) {
   }
   const refCount = Math.min(255, refItems.length);
   size += 1 + refCount * REF_ITEM_BYTES;
+  const soldCount = Math.min(255, (soldItems && soldItems.length) || 0);
+  size += 1 + soldCount * SOLD_ITEM_BYTES + GOLD_CENTS_BYTES;
   const out = new Uint8Array(size);
   let off = 0;
   out.set(head, off);
@@ -234,13 +241,32 @@ export function encodeShopPayload(params, customItems = [], refItems = []) {
     out[off++] = priceCents & 0xff;
     out[off++] = typeNum & 0xff;
   }
+  out[off++] = soldCount;
+  for (let k = 0; k < soldCount; k++) {
+    const row = soldItems[k];
+    const fileCode = (row.fileCode != null ? String(row.fileCode) : '')[0] || 'i';
+    const id = Math.max(0, Math.min(0xFFFF, (row.id | 0) >>> 0));
+    const numberSold = Math.max(0, Math.min(0xFFFF, (row.numberSold | 0) >>> 0));
+    const bonus = Math.max(0, Math.min(255, (row.bonus != null ? row.bonus : 0) | 0));
+    out[off++] = fileCode.charCodeAt(0) & 0xff;
+    out[off++] = (id >>> 8) & 0xff;
+    out[off++] = id & 0xff;
+    out[off++] = (numberSold >>> 8) & 0xff;
+    out[off++] = numberSold & 0xff;
+    out[off++] = bonus & 0xff;
+  }
+  const gold = Math.max(0, Math.min(PRICE_CENTS_MAX, (goldCents | 0) >>> 0));
+  out[off++] = (gold >>> 24) & 0xff;
+  out[off++] = (gold >>> 16) & 0xff;
+  out[off++] = (gold >>> 8) & 0xff;
+  out[off++] = gold & 0xff;
   return out;
 }
 
 /**
- * Decode full payload. Returns params, customItems, and refItems (user-added items with link).
+ * Decode full payload. Returns params, customItems, refItems, soldItems, goldCents (0 = use generated).
  * @param {Uint8Array} bytes
- * @returns {{ params: ShopParams, customItems: CustomItem[], refItems: RefItem[] } | null}
+ * @returns {{ params: ShopParams, customItems: CustomItem[], refItems: RefItem[], soldItems: { fileCode: string; id: number; numberSold: number; bonus?: number }[], goldCents: number } | null}
  */
 export function decodeShopPayload(bytes) {
   if (!bytes || bytes.length < 7) return null;
@@ -289,14 +315,41 @@ export function decodeShopPayload(bytes) {
       });
     }
   }
-  return { params, customItems, refItems };
+  const soldItems = [];
+  let goldCents = 0;
+  if (bytes.length >= off + 1 + GOLD_CENTS_BYTES) {
+    const soldCount = bytes[off++] & 0xff;
+    for (let k = 0; k < soldCount && off + SOLD_ITEM_BYTES <= bytes.length; k++) {
+      const fileCode = String.fromCharCode(bytes[off++] & 0xff);
+      const id = ((bytes[off] << 8) | bytes[off + 1]) & 0xFFFF;
+      off += 2;
+      const numberSold = ((bytes[off] << 8) | bytes[off + 1]) & 0xFFFF;
+      off += 2;
+      const bonus = bytes[off++] & 0xff;
+      soldItems.push({
+        fileCode,
+        id,
+        numberSold,
+        ...(bonus > 0 ? { bonus } : {}),
+      });
+    }
+    if (off + GOLD_CENTS_BYTES <= bytes.length) {
+      goldCents = ((bytes[off] << 24) | (bytes[off + 1] << 16) | (bytes[off + 2] << 8) | bytes[off + 3]) >>> 0;
+    }
+  }
+  return { params, customItems, refItems, soldItems, goldCents };
 }
 
 /**
- * Encode params and optional custom items to a single base64url string.
+ * Encode params, custom items, ref items, sold items, and gold to a single base64url string.
+ * @param {ShopParams} params
+ * @param {CustomItem[]} [customItems]
+ * @param {RefItem[]} [refItems]
+ * @param {{ fileCode: string; id: number; numberSold: number; bonus?: number }[]} [soldItems]
+ * @param {number} [goldCents]
  */
-export function encodeShopPayloadToBase64Url(params, customItems = [], refItems = []) {
-  const bytes = encodeShopPayload(params, customItems, refItems);
+export function encodeShopPayloadToBase64Url(params, customItems = [], refItems = [], soldItems = [], goldCents = 0) {
+  const bytes = encodeShopPayload(params, customItems, refItems, soldItems, goldCents);
   let s = '';
   for (let i = 0; i < bytes.length; i += 3) {
     const a = bytes[i];

@@ -20,36 +20,28 @@ import {
   setInfoSidebarCollapsed
 } from './store/slices/appSlice';
 import {
-  setCity
-} from './store/slices/citySlice';
-import {
-  setIsLootSidebarCollapsed,
-  setLoot,
-  setLoots,
-  setSelectedLoot
-} from './store/slices/lootSlice';
-import {
-  setShop,
-  setShopGenerated
-} from './store/slices/shopSlice';
-import {
+  setSpellbookPage,
+  setSpellbooksList,
+  setSelectedSpellbookIndex,
+  setSpellbook,
+  setIsSpellTableCollapsed,
+  setIsSpellbookSidebarCollapsed,
   setIsClassDescriptionCollapsed,
   setIsDomainDescriptionCollapsed,
-  setIsSpellbookSidebarCollapsed,
-  setIsSpellTableCollapsed,
   setSearchSpellName,
   setSearchSpellSchool,
-  setSelectedSpellbook,
-  setSpellbook,
-  setSpellbookPage,
-  setSpellbooks,
-  setShowShortDescriptions
+  setShowShortDescriptions,
 } from './store/slices/spellbookSlice';
 import {
-  setSelectedWorld,
-  setWorld,
-  setWorlds
-} from './store/slices/worldSlice';
+  setLootsList,
+  setSelectedLootIndex,
+  setLoot,
+  setIsLootSidebarCollapsed,
+} from './store/slices/lootSlice';
+import { setShop, setShopGenerated } from './store/slices/shopSlice';
+import { setCity } from './store/slices/citySlice';
+import { setWorldsList, setSelectedWorldIndex, setWorld } from './store/slices/worldSlice';
+import { setPersist } from './store/slices/persistSlice';
 import './style/App.css';
 import './style/buttons.css';
 import LootInventory from './components/loot/loot_inventory';
@@ -58,76 +50,64 @@ export default function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // Initialize localStorage/db
     db.validateDb();
+    const app = db.loadApp();
+    dispatch(setPersist(app));
 
-    const worldsDb = db.getWorlds();
-    const selW = db.getSelectedWorld();
-    const w = db.getWorld(selW?.Id);
-    const c = db.getCity(w?.SelectedCity?.Id);
-    const s = db.getShop(c?.SelectedShop?.Id);
-    const ct = db.getCurrentTab();
-    const sbs = db.getSpellbooks();
-    const ssb = db.getSelectedSpellbook();
-    const sb = db.getSpellbook(ssb?.Id);
-    const ie = db.getSpellbookPage();
-    const stc = db.getIsSpellTableCollapsed();
-    const ssc = db.getIsSpellbookSidebarCollapsed();
-    const cdc = db.getIsClassDescriptionCollapsed();
-    const ddc = db.getIsDomainDescriptionCollapsed();
-    const ssn = db.getSearchSpellName();
-    const sss = db.getSearchSpellSchool();
-    const ssd = db.getShowShortDescriptions();
-    const ls = db.getLoots();
-    const sl = db.getSelectedLoot();
-    const l = db.getLoot(sl?.Id);
-    const lsc = db.getIsLootSidebarCollapsed();
-    const sbc = db.getIsShopSidebarCollapsed();
-    const ibc = db.getIsInfoSidebarCollapsed();
-    const mc = db.getMainColor();
-    const isMaster = db.getIsMasterMode();
-
-    // Populate Redux (shared shop is never persisted — clear so hamburger state is correct after refresh)
     dispatch(clearSharedShop());
-    dispatch(setMasterMode(isMaster));
-    dispatch(setSidebarCollapsed(sbc));
-    dispatch(setInfoSidebarCollapsed(ibc));
-    dispatch(setWorlds(worldsDb));
-    dispatch(setSelectedWorld(selW));
-    if (w) dispatch(setWorld(w));
-    if (c) dispatch(setCity(c));
-    if (s) dispatch(setShop(s));
-    dispatch(setStateCurrentTab(ct));
-    dispatch(setSpellbooks(sbs));
-    dispatch(setSelectedSpellbook(ssb));
-    if (sb) dispatch(setSpellbook(sb));
-    dispatch(setSpellbookPage(ie));
-    dispatch(setIsSpellTableCollapsed(stc));
-    dispatch(setIsSpellbookSidebarCollapsed(ssc));
-    dispatch(setIsClassDescriptionCollapsed(cdc));
-    dispatch(setIsDomainDescriptionCollapsed(ddc));
-    dispatch(setSearchSpellName(ssn));
-    dispatch(setSearchSpellSchool(sss));
-    dispatch(setShowShortDescriptions(ssd));
-    if (l) dispatch(setLoot(l));
-    dispatch(setSelectedLoot(sl));
-    dispatch(setLoots(ls));
-    dispatch(setIsLootSidebarCollapsed(lsc));
-    dispatch(setMainColor(mc));
+    dispatch(setMasterMode(db.getIsMasterMode(app)));
+    dispatch(setSidebarCollapsed(db.getIsShopSidebarCollapsed(app)));
+    dispatch(setInfoSidebarCollapsed(db.getIsInfoSidebarCollapsed(app)));
+    dispatch(setStateCurrentTab(db.getCurrentTab(app)));
+    dispatch(setMainColor(db.getMainColor(app)));
 
-    // Compute shopGenerated flag
-    const generated = w?.Cities?.some(ci =>
-      db.getCity(ci.Id).Shops.some(sh =>
-        (db.getShop(sh.Id).getInventory() || []).length > 0
-      )
+    const worlds = db.getWorldsList(app);
+    dispatch(setWorldsList(worlds));
+    if (app.sw != null && app.sw >= 0 && app.w?.[app.sw]) {
+      dispatch(setSelectedWorldIndex(app.sw));
+      const w = db.getWorldByIndex(app, app.sw);
+      if (w) {
+        dispatch(setWorld(w));
+        const c = w.Cities?.[w.SelectedCityIndex];
+        dispatch(setCity(c ?? null));
+        const s = c?.Shops?.[c.SelectedShopIndex];
+        dispatch(setShop(s ?? null));
+      }
+    }
+
+    dispatch(setSpellbooksList(db.getSpellbooksList(app)));
+    if (app.ssb != null && app.ssb >= 0 && app.sb && app.sb[app.ssb]) {
+      dispatch(setSelectedSpellbookIndex(app.ssb));
+      const sb = db.getSpellbookByIndex(app, app.ssb);
+      if (sb) dispatch(setSpellbook(sb));
+    }
+    dispatch(setSpellbookPage(db.getSpellbookPage(app)));
+    dispatch(setIsSpellTableCollapsed(db.getIsSpellTableCollapsed(app)));
+    dispatch(setIsSpellbookSidebarCollapsed(db.getIsSpellbookSidebarCollapsed(app)));
+    dispatch(setIsClassDescriptionCollapsed(db.getIsClassDescriptionCollapsed(app)));
+    dispatch(setIsDomainDescriptionCollapsed(db.getIsDomainDescriptionCollapsed(app)));
+    dispatch(setSearchSpellName(db.getSearchSpellName(app)));
+    dispatch(setSearchSpellSchool(db.getSearchSpellSchool(app)));
+    dispatch(setShowShortDescriptions(db.getShowShortDescriptions(app)));
+
+    dispatch(setLootsList(db.getLootsList(app)));
+    if (app.sl != null && app.sl >= 0 && app.l && app.l[app.sl]) {
+      dispatch(setSelectedLootIndex(app.sl));
+      const l = db.getLootByIndex(app, app.sl);
+      if (l) dispatch(setLoot(l));
+    }
+    dispatch(setIsLootSidebarCollapsed(db.getIsLootSidebarCollapsed(app)));
+
+    const w = db.getWorldByIndex(app, app.sw);
+    const hasInventory = w?.Cities?.some(c =>
+      c.Shops?.some(s => (s.getInventory?.() || []).length > 0)
     ) ?? false;
-    dispatch(setShopGenerated(serialize(generated)));
+    dispatch(setShopGenerated(serialize(hasInventory)));
   }, [dispatch]);
 
-  const currentTab = useSelector(state => state.app.currentTab);
+  const currentTab = useSelector(state => state.persist?.ct ?? state.app?.currentTab ?? 0);
   const sharedShop = useSelector(state => state.app.sharedShop);
 
-  // When user leaves the shop tab, clear shared shop so content is lost
   useEffect(() => {
     if (currentTab !== 1 && sharedShop) {
       dispatch(clearSharedShop());
@@ -140,7 +120,6 @@ export default function App() {
     </header>
   </>;
 
-  // Mini shop (read-only, no left sidebar) when viewing a scanned shared shop
   const shopper = sharedShop ? (
     <header className="app-header">
       <ShopInventory />

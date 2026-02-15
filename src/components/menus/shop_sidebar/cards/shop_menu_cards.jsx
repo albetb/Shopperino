@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import * as db from '../../../../lib/storage';
+import { setPersist } from '../../../../store/slices/persistSlice';
 import { isMobile, trimLine } from '../../../../lib/utils';
 import MenuCardCity from './menu_card_city';
 import MenuCardShop from './menu_card_shop';
@@ -11,30 +12,26 @@ import '../../../../style/menu_cards.css';
 const SHOW_CITY_CARD = false;
 
 export default function ShopMenuCards() {
+  const dispatch = useDispatch();
   const [cardStates, setCardStates] = useState([
     { id: 1, collapsed: false },
     { id: 2, collapsed: false },
     { id: 3, collapsed: false }
   ]);
 
-  const worlds = useSelector(state => state.world.worlds.map(w => w.Name));
+  const worlds = useSelector(state => (state.world.worlds || []).map(w => w.name ?? w.Name));
   const selectedWorld = useSelector(state => state.world.selectedWorld?.Name);
   const playerLevel = useSelector(state => state.world.world?.Level) ?? 1;
 
-  const cities = useSelector(state => state.world.world?.Cities.map(c => c.Name) || []);
+  const cities = useSelector(state => state.world.world?.Cities?.map(c => c.Name) || []);
   const selectedCity = useSelector(state => state.city.city?.Name);
   const cityLevel = useSelector(state => state.city.city?.Level) ?? 1;
 
-  const shops = useSelector(state => state.city.city?.Shops.map(s => s.Name) || []);
+  const shops = useSelector(state => state.city.city?.Shops?.map(s => s.Name) || []);
   const selectedShop = useSelector(state => state.shop.shop?.Name);
   const shopLevel = useSelector(state => state.shop.shop?.Level) ?? 0;
 
-  // Initialize collapse state from db
-  useEffect(() => {
-    setCardCollapsed(1, db.getIsWorldCollapsed());
-    setCardCollapsed(2, db.getIsCityCollapsed());
-    setCardCollapsed(3, db.getIsShopCollapsed());
-  }, []);
+  const persist = useSelector(state => state.persist);
 
   const setCardCollapsed = (cardId, collapsed) => {
     setCardStates(states => states.map(s =>
@@ -42,13 +39,20 @@ export default function ShopMenuCards() {
     ));
   };
 
+  useEffect(() => {
+    if (!persist) return;
+    setCardCollapsed(1, db.getIsWorldCollapsed(persist));
+    setCardCollapsed(2, db.getIsCityCollapsed(persist));
+    setCardCollapsed(3, db.getIsShopCollapsed(persist));
+  }, [persist]);
+
   const toggleCard = (cardId) => {
     setCardStates(states => states.map(s => {
       if (s.id === cardId) {
         const newState = !s.collapsed;
-        if (cardId === 1) db.setIsWorldCollapsed(newState);
-        if (cardId === 2) db.setIsCityCollapsed(newState);
-        if (cardId === 3) db.setIsShopCollapsed(newState);
+        if (persist && cardId === 1) dispatch(setPersist(db.setAppUIFlag(persist, db.UI_FLAG.wc, newState)));
+        if (persist && cardId === 2) dispatch(setPersist(db.setAppUIFlag(persist, db.UI_FLAG.cc, newState)));
+        if (persist && cardId === 3) dispatch(setPersist(db.setAppUIFlag(persist, db.UI_FLAG.sc, newState)));
         return { ...s, collapsed: newState };
       }
       return s;

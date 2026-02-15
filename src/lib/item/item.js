@@ -48,15 +48,15 @@ function newRandomItem(itemType, shopLevel, partyLevel, arcaneChance = 0.7, qual
     return itemGenerators[itemType]();
 }
 
-function randomMagicItem(shopLevel, partyLevel, quality = null) {
-    quality = quality ?? itemQuality(shopLevel, partyLevel);
+function randomMagicItem(shopLevel, partyLevel, quality = null, rng = null) {
+    quality = quality ?? itemQuality(shopLevel, partyLevel, rng);
     const itemTable = itemChoice('Random Magic Item Chance', {
         quality: quality,
         file: 'tables'
-    });
+    }, rng);
     const itemTypeName = itemTable.Name;
 
-    return newRandomItem(itemTypeName, shopLevel, partyLevel, quality);
+    return newRandomItem(itemTypeName, shopLevel, partyLevel, 0.7, quality, rng);
 }
 
 function getItem(itemName, itemType) {

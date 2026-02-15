@@ -64,15 +64,17 @@ export function getConditionByLink(link) {
   }
 }
 
-/** Optional rng: { nextFloat() } for deterministic choice. */
+/** Optional rng: { nextFloat() } for deterministic choice. Always returns an index in [0, weights.length - 1]. */
 export function weightedRandom(weights, rng) {
+  if (!weights || weights.length === 0) return 0;
   const totalWeight = weights.reduce((acc, val) => acc + val, 0);
-  const randomNum = rng ? rng.nextFloat() * totalWeight : Math.random() * totalWeight;
+  const randomNum = totalWeight <= 0 ? 0 : (rng ? rng.nextFloat() : Math.random()) * totalWeight;
   let sum = 0;
   for (let i = 0; i < weights.length; i++) {
     sum += weights[i];
-    if (randomNum <= sum) return i;
+    if (randomNum < sum) return i;
   }
+  return weights.length - 1;
 }
 
 export function cap(string) {

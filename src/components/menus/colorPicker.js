@@ -2,8 +2,7 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { setMainColor, selectMainColor } from '../../store/slices/appSlice';
 import { applyColors } from '../../lib/colorUtils';
-
-const LS_KEY = 'app_main_color';
+import { getMainColor } from '../../lib/storage';
 
 // 9 hard-coded theme colors
 const PALETTE = [
@@ -27,39 +26,32 @@ export default function ColorPicker() {
 
   // selected holds the current hex string (always from PALETTE)
   const [selected, setSelected] = useState(() => {
-    const persisted = localStorage.getItem(LS_KEY);
     if (storeMain) return storeMain;
+    const persisted = getMainColor();
     if (persisted) return persisted;
     return PALETTE[0];
   });
 
   const [isOpen, setIsOpen] = useState(false);
 
-  // Sync redux / css on mount and whenever `selected` changes externally
+  // Sync redux / css on mount
   useEffect(() => {
-    // If redux has no color yet, set it to selected (persisted/default)
     if (!storeMain) {
       dispatch(setMainColor(selected));
-    } else if (storeMain && storeMain !== selected) {
-      // If redux color exists and differs, prefer redux
+    } else if (storeMain !== selected) {
       setSelected(storeMain);
       applyColors(storeMain);
-      localStorage.setItem(LS_KEY, storeMain);
       return;
     }
-
     applyColors(selected);
-    localStorage.setItem(LS_KEY, selected);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // run once on mount
 
-  // When user chooses a color from palette
+  // When user chooses a color from palette (Redux action persists via storage.js)
   const onSelectColor = useCallback((hex) => {
     setSelected(hex);
     dispatch(setMainColor(hex));
-    localStorage.setItem(LS_KEY, hex);
     applyColors(hex);
-    //setIsOpen(false);
   }, [dispatch]);
 
   // Toggle popup
