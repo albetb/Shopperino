@@ -54,6 +54,7 @@ export default function SpellLevelCard({
   };
 
   const learned = inst.getLearnedSpells();
+  const learnedLinks = new Set(learned.map(x => x.Link));
   const spellLength = learned.length;
 
   const learnedByLevel = learned.reduce((acc, sp) => {
@@ -227,11 +228,11 @@ export default function SpellLevelCard({
                   {page === 0 && (
                     <td className={`${firstClass} col-btn-sm`}>
                       <button
-                        className={`flat-button smaller ${inst.getLearnedSpells().map(x => x.Link).includes(item.Link) ? 'opacity-50' : ''}`}
+                        className={`flat-button smaller ${learnedLinks.has(item.Link) ? 'opacity-50' : ''}`}
                         onClick={() => dispatch(onLearnUnlearnSpell(item.Link))}
                       >
                         <span className="material-symbols-outlined">
-                          {inst.getLearnedSpells().map(x => x.Link).includes(item.Link) ? 'bookmark_remove' : 'bookmark_add'}
+                          {learnedLinks.has(item.Link) ? 'bookmark_remove' : 'bookmark_add'}
                         </span>
                       </button>
                     </td>
