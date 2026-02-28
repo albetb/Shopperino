@@ -64,6 +64,8 @@ export function getDefaultApp() {
     sb: [],
     sl: null,
     l: [],
+    pss: null,
+    psc: [],
     ct: 0,
     mc: null,
     uiFlags: DEFAULT_UI_FLAGS,
@@ -293,6 +295,13 @@ export function updateLootAt(app, index, loot) {
   return { ...app, l };
 }
 
+export function updatePlayerAt(app, index, serializedCharacter) {
+  if (!app || !Array.isArray(app.psc) || index < 0 || index >= app.psc.length) return app;
+  const psc = [...app.psc];
+  psc[index] = serializedCharacter && typeof serializedCharacter === 'object' ? { ...serializedCharacter } : app.psc[index];
+  return { ...app, psc };
+}
+
 //#endregion
 
 //#region Load / Save
@@ -345,6 +354,12 @@ export function getSpellbookByIndex(app, i) {
 export function getLootByIndex(app, i) {
   if (!app || !Array.isArray(app.l) || i == null || i < 0 || i >= app.l.length) return null;
   return lootFromTuple(app.l[i]);
+}
+
+/** Return serialized character at index (plain object). For Player instance use storage.getPlayerByIndex. */
+export function getPlayerSheetCharacterAt(app, i) {
+  if (!app || !Array.isArray(app.psc) || i == null || i < 0 || i >= app.psc.length) return null;
+  return app.psc[i] || null;
 }
 
 //#endregion

@@ -303,8 +303,8 @@ class Spellbook {
         return 10 + this.getCharBonus() + spell_level;
     }
 
-    getClassDescription() {
-        return loadFile("tables")["Class description"][this.Class] ?? "";
+    getSpellcastingDescription() {
+        return loadFile("tables")["Spellcasting description"][this.Class] ?? "";
     }
 
     getDomainDescription() {

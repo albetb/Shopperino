@@ -139,6 +139,12 @@ table {
   text-align: center;
 }
 
+.text-left {
+  text-align: left;
+  width: 96%;
+  padding: 0rem 0.5rem 0rem 0.5rem;
+}
+
 .text-muted {
   color: var(--white2);
 }
@@ -243,4 +249,101 @@ table {
 
 .card-icon-dark {
   color: var(--black);
+}
+
+/* Player sheet: center race cards in main content */
+.player-sheet-race-cards {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+/* Player sheet: class cards (same layout as race cards) */
+.player-sheet-class-cards {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+/* Mobile: keep race/class cards same width as spellbook cards (viewport-based so width doesn't change when sidebar opens/closes) */
+@media (max-width: 768px) {
+  .player-sheet-race-cards .card-width-spellbook,
+  .player-sheet-class-cards .card-width-spellbook {
+    width: 92vw;
+    max-width: 100%;
+  }
+}
+
+/* Stat bar row: Label | bar | value */
+.player-sheet-stat-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: auto;
+  margin: 0rem 0.35rem 0.35rem 0.35rem;
+}
+.player-sheet-stat-bar-label {
+  min-width: 4.5rem;
+  text-align: left;
+  font-size: 0.9rem;
+  color: var(--black);
+}
+.player-sheet-stat-bar-track {
+  flex: 1;
+  min-width: 0;
+  height: 0.75rem;
+  background: var(--grey-t2);
+  border-radius: 1.25rem;
+  overflow: hidden;
+}
+.player-sheet-stat-bar-fill {
+  height: 100%;
+  background: var(--main);
+  border-radius: 1.25rem;
+  transition: width 0.2s ease;
+}
+.player-sheet-stat-bar-value {
+  min-width: 3.5rem;
+  text-align: right;
+  font-size: 0.85rem;
+  color: var(--black);
+}
+
+.player-sheet-class-bars {
+  width: 100%;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--grey-t2);
+}
+
+/* Saves in a separate box at the bottom of the bars, with shorter bars */
+.player-sheet-class-bars-saves {
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  border: 1px solid var(--grey-t2);
+  border-radius: 0.5rem;
+  background: var(--grey-t2);
+}
+.player-sheet-class-bars-saves .player-sheet-stat-bar.short .player-sheet-stat-bar-track {
+  max-width: auto;
+}
+.player-sheet-class-bars-saves .player-sheet-stat-bar {
+  margin-bottom: 0.25rem;
+}
+.player-sheet-class-bars-saves .player-sheet-stat-bar:last-child {
+  margin-bottom: 0;
+}
+
+.player-sheet-class-features {
+  width: 100%;
+}
+.player-sheet-class-feature {
+  margin: 0.25rem 0;
+  font-size: 0.85rem;
 }

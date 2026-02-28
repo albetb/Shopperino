@@ -4,10 +4,12 @@ import tables from '../data/tables.json';
 import spells from '../data/spells.json';
 import featsData from '../data/feats.json';
 import skillsData from '../data/skills.json';
+import racesData from '../data/races.json';
+import classesData from '../data/classes.json';
 
 /**
  * Load a data file by name. Returns the parsed content or null.
- * Supported: 'items' | 'scrolls' | 'tables' | 'spells' | 'feats' | 'skills'
+ * Supported: 'items' | 'scrolls' | 'tables' | 'spells' | 'feats' | 'skills' | 'races' | 'classes'
  */
 export function loadFile(fileName) {
   try {
@@ -24,6 +26,10 @@ export function loadFile(fileName) {
         return featsData?.Feats || [];
       case 'skills':
         return skillsData?.Skills || [];
+      case 'races':
+        return racesData?.races ?? {};
+      case 'classes':
+        return classesData?.classes ?? {};
       default:
         return null;
     }

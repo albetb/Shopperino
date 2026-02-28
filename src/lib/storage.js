@@ -2,6 +2,7 @@
  * Single-root, index-based persistence. All data under key "app".
  * No entity IDs; identity = array index.
  */
+import Player from './player';
 import * as appState from './appState';
 
 // Re-export appState so consumers can use db.loadApp, db.saveApp, etc.
@@ -13,6 +14,7 @@ export const getCityByIndex = appState.getCityByIndex;
 export const getShopByIndex = appState.getShopByIndex;
 export const getSpellbookByIndex = appState.getSpellbookByIndex;
 export const getLootByIndex = appState.getLootByIndex;
+export const getPlayerSheetCharacterAt = appState.getPlayerSheetCharacterAt;
 export const worldToTuple = appState.worldToTuple;
 export const worldFromTuple = appState.worldFromTuple;
 export const cityToTuple = appState.cityToTuple;
@@ -27,6 +29,7 @@ export const updateWorldAt = appState.updateWorldAt;
 export const updateShopAt = appState.updateShopAt;
 export const updateSpellbookAt = appState.updateSpellbookAt;
 export const updateLootAt = appState.updateLootAt;
+export const updatePlayerAt = appState.updatePlayerAt;
 export const getUIFlag = appState.getUIFlag;
 export const UI_FLAG = appState.UI_FLAG;
 export const stcBitmaskToArray = appState.stcBitmaskToArray;
@@ -50,6 +53,19 @@ export function getWorldsList(app) {
 export function getSpellbooksList(app) {
   if (!app || !Array.isArray(app.sb)) return [];
   return app.sb.map(t => ({ name: t[0] }));
+}
+
+export function getPlayerSheetCharactersList(app) {
+  if (!app || !Array.isArray(app.psc)) return [];
+  return app.psc.map(c => ({ name: c?.name ?? '' }));
+}
+
+export function getPlayerByIndex(app, i) {
+  const raw = appState.getPlayerSheetCharacterAt(app, i);
+  if (!raw || typeof raw !== 'object') return null;
+  const p = new Player();
+  p.load(raw);
+  return p;
 }
 
 export function getLootsList(app) {

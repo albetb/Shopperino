@@ -32,6 +32,10 @@ export default function TopMenu() {
         dispatch(setStateCurrentTab(4));
         setMobileMenuOpen(false);
     };
+    const handlePlayerSheetClick = () => {
+        dispatch(setStateCurrentTab(5));
+        setMobileMenuOpen(false);
+    };
 
     const handleUploadClick = () => {
         document.getElementById('upload').click();
@@ -172,9 +176,20 @@ export default function TopMenu() {
             <span className="material-symbols-outlined">search</span>
         </button>
 
+    const playerSheetButton =
+        <button
+            className={`modern-dropdown ${buttonDimension} ${currentTab === 5 ? "opacity-50" : ""}`}
+            onClick={handlePlayerSheetClick}
+            title="Player sheet"
+            disabled={currentTab === 5}
+        >
+            <span className="material-symbols-outlined">badge</span>
+        </button>
+
     const buttons = (
         <>
             {searchButton}
+            {playerSheetButton}
             {isMasterMode && shopButton}
             {isMasterMode && lootButton}
             {spellbookButton}
@@ -186,6 +201,10 @@ export default function TopMenu() {
             <div className="menu-side-by-side">
                 <p className="menu-item-text">Search</p>
                 {searchButton}
+            </div>
+            <div className="menu-side-by-side">
+                <p className="menu-item-text">Player sheet</p>
+                {playerSheetButton}
             </div>
             {isMasterMode && (
             <div className="menu-side-by-side">

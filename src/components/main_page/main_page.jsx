@@ -9,6 +9,7 @@ export default function MainPage() {
   const handleSpellbookClick = () => dispatch(setStateCurrentTab(2));
   const handleLootClick = () => dispatch(setStateCurrentTab(3));
   const handleSearchClick = () => dispatch(setStateCurrentTab(4));
+  const handlePlayerSheetClick = () => dispatch(setStateCurrentTab(5));
 
   return (
     <div className="main-page">
@@ -42,6 +43,12 @@ export default function MainPage() {
         <p className="text-center">Generates randomized loot tailored to the player’s level, including gold, goods, and magic items.</p>
       </div>
       )}
+
+      <div className="card" onClick={handlePlayerSheetClick}>
+        <p className="card-title-shadow"><b>Player sheet</b></p>
+        <span className="material-symbols-outlined card-icon-dark">badge</span>
+        <p className="text-center">A mostly automatic D&D 3.5 character sheet with override-friendly fields.</p>
+      </div>
 
       <div className="card" onClick={handleSpellbookClick}>
         <p className="card-title-shadow"><b>Spellbook</b></p>

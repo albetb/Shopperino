@@ -42,7 +42,7 @@ export default function useSpellbookData() {
     const preparedDomain = inst.getPreparedDomainSpells({ name: nameFilter, school: schoolFilter });
     const spellsPerDay = inst.getSpellsPerDay();
     const charBonus = inst.getCharBonus();
-    const classDesc = inst.getClassDescription();
+    const classDesc = inst.getSpellcastingDescription();
     const domainDesc = inst.getDomainDescription();
 
     let spells =

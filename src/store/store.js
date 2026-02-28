@@ -6,6 +6,7 @@ import shopReducer from './slices/shopSlice';
 import worldReducer from './slices/worldSlice';
 import spellbookReducer from './slices/spellbookSlice';
 import lootReducer from './slices/lootSlice';
+import playerSheetReducer from './slices/playerSheetSlice';
 import { persistSyncMiddleware } from './persistSyncMiddleware';
 
 const store = configureStore({
@@ -16,7 +17,8 @@ const store = configureStore({
     city: cityReducer,
     shop: shopReducer,
     spellbook: spellbookReducer,
-    loot: lootReducer
+    loot: lootReducer,
+    playerSheet: playerSheetReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(persistSyncMiddleware),
