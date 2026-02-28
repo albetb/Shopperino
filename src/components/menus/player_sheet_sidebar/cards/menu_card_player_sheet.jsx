@@ -50,12 +50,10 @@ export default function MenuCardPlayerSheet() {
 
   const handleRaceSelect = (value) => {
     dispatch(onSetCharacterRace(value));
-    if (isMobile()) dispatch(setIsPlayerSheetSidebarCollapsed(true));
   };
 
   const handleClassSelect = (value) => {
     dispatch(onSetCharacterClass(value));
-    if (isMobile()) dispatch(setIsPlayerSheetSidebarCollapsed(true));
   };
 
   const handleLevelChange = (lvl) => {

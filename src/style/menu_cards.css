@@ -104,6 +104,36 @@
   margin-top: 0.6rem;
 }
 
+/* Ability scores card (player sheet) */
+.ability-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.ability-row-display .ability-label {
+  min-width: 2.2rem;
+  margin-right: 0.2rem;
+}
+
+.ability-total {
+  font-weight: 600;
+  min-width: 1.5rem;
+  margin-right: 0.15rem;
+}
+
+.ability-mod {
+  font-size: 0.85em;
+  color: var(--dark-grey);
+  margin-right: 0.5rem;
+}
+
+.ability-actions {
+  display: flex;
+  gap: 0.25rem;
+}
+
 .levels-div,
 .spell-slot-div,
 .spell-slot-div2 {
@@ -224,8 +254,8 @@ tr {
   display: block;
 }
 
-.hidden-canvas {
-  display: none;
+.modal-error-margin {
+  margin-bottom: 0.75rem;
 }
 
 /* Share shop QR modal */

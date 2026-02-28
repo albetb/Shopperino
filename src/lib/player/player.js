@@ -135,12 +135,27 @@ class Player {
   }
 
   /**
-   * Total ability score = base + bonus.
+   * Racial ability modifier from race data (abilityModifiers in races.json).
+   * Returns 0 if no race or no modifier defined.
+   * @param {string} abilityKey - One of 'str','dex','con','int','wis','cha'
+   * @returns {number}
+   */
+  getRaceAbilityModifier(abilityKey) {
+    if (!this.race || !ABILITY_KEYS.includes(abilityKey)) return 0;
+    const races = loadFile('races');
+    const mods = races?.[this.race]?.abilityModifiers;
+    if (mods == null || typeof mods !== 'object') return 0;
+    const value = mods[abilityKey];
+    return Number.isFinite(value) ? value : 0;
+  }
+
+  /**
+   * Total ability score = base + bonus + race modifier (from race's abilityModifiers).
    * @param {string} abilityKey - One of 'str','dex','con','int','wis','cha'
    * @returns {number}
    */
   getAbilityTotal(abilityKey) {
-    return this.getAbilityBase(abilityKey) + this.getAbilityBonus(abilityKey);
+    return this.getAbilityBase(abilityKey) + this.getAbilityBonus(abilityKey) + this.getRaceAbilityModifier(abilityKey);
   }
 
   /**

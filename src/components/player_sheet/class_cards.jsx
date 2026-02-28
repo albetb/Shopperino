@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { loadFile, isMobile } from '../../lib/utils';
 import { getClassData } from '../../lib/player';
 import { onSetCharacterClass } from '../../store/thunks/playerSheetThunks';
-import { setIsPlayerSheetSidebarCollapsed, setPlayerSheetMainView } from '../../store/slices/playerSheetSlice';
+import { setIsPlayerSheetSidebarCollapsed } from '../../store/slices/playerSheetSlice';
 import StatBar from './stat_bar';
 import '../../style/menu_cards.css';
 
@@ -116,7 +116,6 @@ export default function ClassCards() {
 
   const handleSelect = (name) => {
     dispatch(onSetCharacterClass(name));
-    dispatch(setPlayerSheetMainView('none'));
     if (isMobile()) {
       dispatch(setIsPlayerSheetSidebarCollapsed(true));
     }

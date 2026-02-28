@@ -43,6 +43,14 @@
   border: 1px solid var(--white2);
 }
 
+.modern-button:disabled,
+.levels-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: var(--grey-t2);
+  box-shadow: none;
+}
+
 .item-number-button,
 .modern-input,
 .add-item-button,

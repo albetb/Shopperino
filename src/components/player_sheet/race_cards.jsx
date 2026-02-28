@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { isMobile } from '../../lib/utils';
 import { onSetCharacterRace } from '../../store/thunks/playerSheetThunks';
-import { setIsPlayerSheetSidebarCollapsed, setPlayerSheetMainView } from '../../store/slices/playerSheetSlice';
+import { setIsPlayerSheetSidebarCollapsed } from '../../store/slices/playerSheetSlice';
 import '../../style/menu_cards.css';
 
 const RACE_INFO = {
@@ -121,7 +121,6 @@ export default function RaceCards() {
 
   const handleSelect = (name) => {
     dispatch(onSetCharacterRace(name));
-    dispatch(setPlayerSheetMainView('none'));
     if (isMobile()) {
       dispatch(setIsPlayerSheetSidebarCollapsed(true));
     }
