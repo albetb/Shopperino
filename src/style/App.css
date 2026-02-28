@@ -272,13 +272,6 @@ table {
 }
 
 /* Mobile: keep race/class cards same width as spellbook cards (viewport-based so width doesn't change when sidebar opens/closes) */
-@media (max-width: 768px) {
-  .player-sheet-race-cards .card-width-spellbook,
-  .player-sheet-class-cards .card-width-spellbook {
-    width: 92vw;
-    max-width: 100%;
-  }
-}
 
 /* Stat bar row: Label | bar | value */
 .player-sheet-stat-bar {
@@ -346,4 +339,69 @@ table {
 .player-sheet-class-feature {
   margin: 0.25rem 0;
   font-size: 0.85rem;
+}
+
+/* Note editor (main content) */
+.player-sheet-note-editor {
+  width: calc(var(--btn-width-sm) * 18.5);
+  max-width: calc(var(--btn-width-sm) * 18.5);
+  padding: 1rem;
+  box-sizing: border-box;
+}
+.player-sheet-note-title {
+  margin: 0 0 0.75rem 0;
+  font-size: 1.25rem;
+  color: var(--dark-grey);
+}
+.player-sheet-note-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.75rem;
+  width: 95%;
+}
+.player-sheet-note-modified {
+  margin: 0;
+  font-style: italic;
+  color: var(--dark-grey);
+  flex: 1;
+  min-width: 0;
+}
+.player-sheet-note-textarea {
+  width: 100%;
+  min-height: 25rem;
+  padding: 0.75rem;
+  font-size: 1rem;
+  font-family: inherit;
+  border: 1px solid var(--white2);
+  border-radius: 0.58rem;
+  box-shadow: 0 0 0 2px var(--main-t);
+  background-color: var(--grey-t2);
+  color: var(--dark-grey);
+  resize: vertical;
+  box-sizing: border-box;
+}
+.player-sheet-note-textarea:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--main-t);
+}
+@media (max-width: 768px) {
+  .player-sheet-race-cards .card-width-spellbook,
+  .player-sheet-class-cards .card-width-spellbook {
+    width: 95vw;
+    max-width: 95vw;
+  }
+
+  .player-sheet-note-editor {
+    width: 95vw;
+    max-width: 95vw;
+    height: 78vh;
+  }
+  .player-sheet-note-textarea {
+    width: 100%;
+    min-height: 84%;
+    height: 84%;
+    max-height: 84%;
+  }
 }

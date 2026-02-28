@@ -2,9 +2,11 @@ import { useSelector } from 'react-redux';
 import '../../style/shop_inventory.css';
 import RaceCards from './race_cards';
 import ClassCards from './class_cards';
+import NoteEditor from './note_editor';
 
 export default function PlayerSheetPage() {
   const mainView = useSelector(state => state.playerSheet.mainView ?? 'none');
+  const playerName = useSelector(state => state.playerSheet.player.name ?? '');
 
   const defaultContent = (
     <div className="card">
@@ -14,12 +16,20 @@ export default function PlayerSheetPage() {
     </div>
   );
 
-  const content = mainView === 'race' ? <RaceCards /> : mainView === 'class' ? <ClassCards /> : defaultContent;
+  const content =
+    mainView === 'race' ? <RaceCards /> :
+    mainView === 'class' ? <ClassCards /> :
+    mainView === 'note' ? <NoteEditor /> :
+    defaultContent;
+  const text =
+    mainView === 'race' ? "Races" :
+    mainView === 'class' ? "Classes" :
+    mainView === 'note' ? "Notes" :
+    defaultContent;
 
   return (
     <div className="player-sheet-page">
-      <h1>Player sheet</h1>
-      <p className="main-intro">D&D 3.5 character sheet (work in progress).</p>
+      <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--white)', textAlign: 'center' }}>{text}</p>
       {content}
     </div>
   );

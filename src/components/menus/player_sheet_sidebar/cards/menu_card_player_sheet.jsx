@@ -33,12 +33,10 @@ export default function MenuCardPlayerSheet() {
 
   const handleCreate = (name) => {
     dispatch(onCreateCharacter(name));
-    if (isMobile()) dispatch(setIsPlayerSheetSidebarCollapsed(true));
   };
 
   const handleSelect = (name) => {
     dispatch(onSelectCharacter(name));
-    if (isMobile()) dispatch(setIsPlayerSheetSidebarCollapsed(true));
   };
 
   const handleDelete = () => dispatch(onDeleteCharacter());

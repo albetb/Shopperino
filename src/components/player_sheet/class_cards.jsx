@@ -29,16 +29,16 @@ function getAttackBar(baseAttack) {
 
 function getWeaponBar(className) {
   let filled = 1;
-  let value = 'low';
+  let value = 'Low';
   if (WEAPON_HIGH.includes(className)) {
     filled = 3;
-    value = 'high';
+    value = 'High';
   } else if (WEAPON_MID.includes(className)) {
     filled = 2;
-    value = 'mid';
+    value = 'Mid';
   } else if (WEAPON_LOW.includes(className)) {
     filled = 1;
-    value = 'low';
+    value = 'Low';
   }
   return { filled, max: 3, value };
 }
@@ -52,7 +52,7 @@ function getArmorBar(armorProficiency) {
 
 function getSaveBar(save) {
   const filled = save === 'high' ? 2 : 1;
-  return { filled, max: 2, value: save === 'high' ? 'high' : 'low' };
+  return { filled, max: 2, value: save === 'high' ? 'High' : 'Low' };
 }
 
 function getAbilitiesBar(skillPointsPerLevel) {
@@ -62,11 +62,11 @@ function getAbilitiesBar(skillPointsPerLevel) {
 }
 
 function getSpellsBar(className, hasSpells) {
-  if (!hasSpells) return { filled: 0, max: 3, value: 'no' };
-  if (SPELLS_HIGH.includes(className)) return { filled: 3, max: 3, value: 'high' };
-  if (SPELLS_MID.includes(className)) return { filled: 2, max: 3, value: 'mid' };
-  if (SPELLS_LOW.includes(className)) return { filled: 1, max: 3, value: 'low' };
-  return { filled: 0, max: 3, value: 'no' };
+  if (!hasSpells) return { filled: 0, max: 3, value: 'No' };
+  if (SPELLS_HIGH.includes(className)) return { filled: 3, max: 3, value: 'High' };
+  if (SPELLS_MID.includes(className)) return { filled: 2, max: 3, value: 'Mid' };
+  if (SPELLS_LOW.includes(className)) return { filled: 1, max: 3, value: 'Low' };
+  return { filled: 0, max: 3, value: 'No' };
 }
 
 function getClassStats(className, data) {

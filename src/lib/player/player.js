@@ -43,6 +43,8 @@ class Player {
     this.class = '';
     this.level = 1;
     this.abilities = defaultAbilities();
+    this.notes = {};
+    this.selectedNoteName = '';
   }
 
   /**
@@ -70,6 +72,22 @@ class Player {
       });
     }
 
+    if (data.notes && typeof data.notes === 'object') {
+      this.notes = {};
+      Object.keys(data.notes).forEach((noteName) => {
+        const n = data.notes[noteName];
+        if (n && typeof n === 'object' && typeof noteName === 'string' && noteName.trim() !== '') {
+          this.notes[noteName] = {
+            text: typeof n.text === 'string' ? n.text : '',
+            updatedAt: Number.isFinite(n.updatedAt) ? n.updatedAt : Date.now(),
+          };
+        }
+      });
+    }
+    if (typeof data.selectedNoteName === 'string') {
+      this.selectedNoteName = this.notes[data.selectedNoteName] != null ? data.selectedNoteName : '';
+    }
+
     return this;
   }
 
@@ -83,6 +101,8 @@ class Player {
       class: this.class,
       level: this.level,
       abilities: { ...this.abilities },
+      notes: { ...this.notes },
+      selectedNoteName: this.selectedNoteName,
     };
   }
 
@@ -217,6 +237,57 @@ class Player {
   setAbilityBonus(abilityKey, value) {
     if (!ABILITY_KEYS.includes(abilityKey)) return;
     this.abilities[abilityKey].bonus = clamp(value, 0, 99);
+  }
+
+  // —— Notes ——
+  getNoteNames() {
+    return Object.keys(this.notes || {}).sort();
+  }
+
+  getSelectedNoteName() {
+    return typeof this.selectedNoteName === 'string' ? this.selectedNoteName : '';
+  }
+
+  getNote(name) {
+    const n = (this.notes || {})[name];
+    if (!n || typeof n !== 'object') return { text: '', updatedAt: Date.now() };
+    return {
+      text: typeof n.text === 'string' ? n.text : '',
+      updatedAt: Number.isFinite(n.updatedAt) ? n.updatedAt : Date.now(),
+    };
+  }
+
+  addNote(name) {
+    const trimmed = (name || '').trim();
+    if (!trimmed) return;
+    if (!this.notes) this.notes = {};
+    const now = Date.now();
+    this.notes[trimmed] = { text: '', updatedAt: now };
+    this.selectedNoteName = trimmed;
+  }
+
+  setSelectedNoteName(name) {
+    const trimmed = (name || '').trim();
+    if (trimmed === '' || (this.notes && this.notes[trimmed] != null)) {
+      this.selectedNoteName = trimmed;
+    }
+  }
+
+  updateNoteContent(name, text) {
+    if (!this.notes || this.notes[name] == null) return;
+    this.notes[name] = {
+      text: typeof text === 'string' ? text : '',
+      updatedAt: Date.now(),
+    };
+  }
+
+  deleteNote(name) {
+    if (!this.notes) return;
+    delete this.notes[name];
+    if (this.selectedNoteName === name) {
+      const names = this.getNoteNames();
+      this.selectedNoteName = names.length > 0 ? names[0] : '';
+    }
   }
 }
 

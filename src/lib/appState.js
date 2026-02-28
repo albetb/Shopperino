@@ -15,7 +15,7 @@ const ROOT_KEY = 'app';
 //#region UI bitmask
 // uiFlags: one integer, each bit = one boolean. stc: one integer, bits 0-9 = spell table level collapsed.
 export const UI_FLAG = {
-  mm: 0, sbc: 1, ibc: 2, wc: 3, cc: 4, sc: 5, pc: 6, src: 7, sbsbc: 8, cdc: 9, ddc: 10, ssd: 11, lsc: 12, lc: 13,
+  mm: 0, sbc: 1, ibc: 2, wc: 3, cc: 4, sc: 5, pc: 6, src: 7, sbsbc: 8, cdc: 9, ddc: 10, ssd: 11, lsc: 12, lc: 13, psbc: 14,
 };
 const DEFAULT_UI_FLAGS = (1 << UI_FLAG.cdc) | (1 << UI_FLAG.ssd); // cdc and ssd default true
 
@@ -73,6 +73,8 @@ export function getDefaultApp() {
     sp: 0,
     ssn: '',
     sss: '',
+    psv: 'none', // player sheet main view: 'none' | 'race' | 'class' | 'note'
+    pscards: {}, // player sheet sidebar card collapsed: { identity?, abilityScores?, Combat?, ... } true = collapsed
   };
 }
 
@@ -122,10 +124,11 @@ export function expandApp(raw) {
   if (raw.ssd !== undefined) uiFlags = setUIFlagValue(uiFlags, UI_FLAG.ssd, raw.ssd !== false);
   if (raw.lsc !== undefined) uiFlags = setUIFlagValue(uiFlags, UI_FLAG.lsc, !!raw.lsc);
   if (raw.lc !== undefined) uiFlags = setUIFlagValue(uiFlags, UI_FLAG.lc, !!raw.lc);
+  if (raw.psbc !== undefined) uiFlags = setUIFlagValue(uiFlags, UI_FLAG.psbc, !!raw.psbc);
   if (Array.isArray(raw.stc) && raw.stc.length >= 10) stc = stcArrayToBitmask(raw.stc);
   const out = { ...def };
   for (const k of Object.keys(raw)) {
-    if (k === 'mm' || k === 'sbc' || k === 'ibc' || k === 'wc' || k === 'cc' || k === 'sc' || k === 'pc' || k === 'src' || k === 'sbsbc' || k === 'cdc' || k === 'ddc' || k === 'ssd' || k === 'lsc' || k === 'lc' || k === 'stc') continue;
+    if (k === 'mm' || k === 'sbc' || k === 'ibc' || k === 'wc' || k === 'cc' || k === 'sc' || k === 'pc' || k === 'src' || k === 'sbsbc' || k === 'cdc' || k === 'ddc' || k === 'ssd' || k === 'lsc' || k === 'lc' || k === 'psbc' || k === 'stc') continue;
     if (raw[k] !== undefined) out[k] = raw[k];
   }
   out.v = raw.v ?? CURRENT_VERSION;

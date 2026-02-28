@@ -1,12 +1,19 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+const PLAYER_SHEET_CARD_KEYS = ['identity', 'abilityScores', 'Combat', 'Skills', 'Inventory', 'Details', 'Notes'];
+
+function defaultCardCollapsed() {
+  return Object.fromEntries(PLAYER_SHEET_CARD_KEYS.map(k => [k, false]));
+}
+
 const initialState = {
   characters: [],
   selectedCharacterIndex: null,
   selectedCharacter: null,  // { name } for UI compat
   player: null,
   isPlayerSheetSidebarCollapsed: false,
-  mainView: 'none', // 'none' | 'race' | 'class'
+  mainView: 'none', // 'none' | 'race' | 'class' | 'note'
+  cardCollapsed: defaultCardCollapsed(),
 };
 
 export const playerSheetSlice = createSlice({
@@ -30,6 +37,20 @@ export const playerSheetSlice = createSlice({
     setPlayerSheetMainView(state, action) {
       state.mainView = action.payload || 'none';
     },
+    setPlayerSheetCardCollapsed(state, action) {
+      const { key, value } = action.payload || {};
+      if (key && PLAYER_SHEET_CARD_KEYS.includes(key)) {
+        state.cardCollapsed[key] = !!value;
+      }
+    },
+    setPlayerSheetCardsCollapsed(state, action) {
+      const obj = action.payload;
+      if (obj && typeof obj === 'object') {
+        PLAYER_SHEET_CARD_KEYS.forEach(k => {
+          if (obj[k] !== undefined) state.cardCollapsed[k] = !!obj[k];
+        });
+      }
+    },
   },
 });
 
@@ -39,6 +60,8 @@ export const {
   setPlayer,
   setIsPlayerSheetSidebarCollapsed,
   setPlayerSheetMainView,
+  setPlayerSheetCardCollapsed,
+  setPlayerSheetCardsCollapsed,
 } = playerSheetSlice.actions;
 
 export default playerSheetSlice.reducer;

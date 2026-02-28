@@ -141,9 +141,9 @@ export default function MenuCardAbilityScores() {
               <button type="button" className="levels-button small" onClick={() => startEditBonus(key)} title="Edit bonus" aria-label="Edit bonus">
                 <span className="material-symbols-outlined">add_circle</span>
               </button>
-              <button type="button" className="levels-button small" title="Roll (to be implemented)" aria-label="Roll dice">
+              {/* <button type="button" className="levels-button small" title="Roll (to be implemented)" aria-label="Roll dice">
                 <span className="material-symbols-outlined">casino</span>
-              </button>
+              </button> */}
             </div>
           </div>
         );

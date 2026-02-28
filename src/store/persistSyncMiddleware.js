@@ -27,6 +27,9 @@ const PREF_ACTIONS = [
   'spellbook/setShowShortDescriptions',
   'spellbook/setSearchSpellName',
   'spellbook/setSearchSpellSchool',
+  'playerSheet/setIsPlayerSheetSidebarCollapsed',
+  'playerSheet/setPlayerSheetMainView',
+  'playerSheet/setPlayerSheetCardCollapsed',
 ];
 
 export function persistSyncMiddleware(store) {
@@ -84,6 +87,15 @@ export function persistSyncMiddleware(store) {
         break;
       case 'spellbook/setSearchSpellSchool':
         nextPersist = { ...nextPersist, sss: action.payload ?? '' };
+        break;
+      case 'playerSheet/setIsPlayerSheetSidebarCollapsed':
+        nextPersist = db.setAppUIFlag(nextPersist, db.UI_FLAG.psbc, !!action.payload);
+        break;
+      case 'playerSheet/setPlayerSheetMainView':
+        nextPersist = { ...nextPersist, psv: action.payload === 'race' || action.payload === 'class' || action.payload === 'note' ? action.payload : 'none' };
+        break;
+      case 'playerSheet/setPlayerSheetCardCollapsed':
+        nextPersist = { ...nextPersist, pscards: state.playerSheet.cardCollapsed };
         break;
       default:
         return result;

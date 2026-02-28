@@ -143,6 +143,47 @@ export const onSetAbilityBonus = (abilityKey, value) => (dispatch, getState) => 
   persistPlayer(dispatch, getState, p);
 };
 
+export const onCreateNote = (nameRaw) => (dispatch, getState) => {
+  const name = cap(nameRaw);
+  if (!name.trim()) return;
+  const app = getState().persist;
+  if (app.pss == null || app.pss < 0 || !app.psc?.[app.pss]) return;
+  const p = db.getPlayerByIndex(app, app.pss);
+  if (!p) return;
+  if (p.notes && p.notes[name.trim()] != null) return;
+  p.addNote(name);
+  persistPlayer(dispatch, getState, p);
+};
+
+export const onSelectNote = (name) => (dispatch, getState) => {
+  const app = getState().persist;
+  if (app.pss == null || app.pss < 0 || !app.psc?.[app.pss]) return;
+  const p = db.getPlayerByIndex(app, app.pss);
+  if (!p) return;
+  p.setSelectedNoteName(name || '');
+  persistPlayer(dispatch, getState, p);
+};
+
+export const onUpdateNoteContent = (noteName, text) => (dispatch, getState) => {
+  const app = getState().persist;
+  if (app.pss == null || app.pss < 0 || !app.psc?.[app.pss]) return;
+  const p = db.getPlayerByIndex(app, app.pss);
+  if (!p) return;
+  p.updateNoteContent(noteName, text);
+  persistPlayer(dispatch, getState, p);
+};
+
+export const onDeleteNote = () => (dispatch, getState) => {
+  const app = getState().persist;
+  if (app.pss == null || app.pss < 0 || !app.psc?.[app.pss]) return;
+  const p = db.getPlayerByIndex(app, app.pss);
+  if (!p) return;
+  const name = p.getSelectedNoteName();
+  if (!name) return;
+  p.deleteNote(name);
+  persistPlayer(dispatch, getState, p);
+};
+
 export { hydratePlayerSheet };
 
 export const hydratePlayerSheetThunk = (app) => (dispatch) => {
