@@ -135,7 +135,7 @@ export default function SkillsPage() {
           <div className="card-content">
             <div className="player-sheet-skills-header">
               <p className="player-sheet-skills-used">
-                Skill points used: {usedPoints}/{totalPoints}
+                Used: {usedPoints}/{totalPoints}
               </p>
               <button
                 type="button"
@@ -218,7 +218,7 @@ export default function SkillsPage() {
                                   <td className="player-sheet-skills-td-armor" />
                                   <td className="player-sheet-skills-td-name player-sheet-skills-td-knowledge-sub">
                                     <SpellLink link={link}>
-                                      <span className="player-sheet-skill-knowledge-sub">- {sub.charAt(0).toUpperCase() + sub.slice(1)}</span>
+                                      <span className="player-sheet-skill-knowledge-sub">{sub.charAt(0).toUpperCase() + sub.slice(1)}</span>
                                     </SpellLink>
                                   </td>
                                   <td className="player-sheet-skills-td-ability">
@@ -306,7 +306,7 @@ export default function SkillsPage() {
                                 >
                                   <td className="player-sheet-skills-td-name player-sheet-skills-td-knowledge-sub">
                                     <SpellLink link={link}>
-                                      <span className="player-sheet-skill-knowledge-sub">- {sub.charAt(0).toUpperCase() + sub.slice(1)}</span>
+                                      <span className="player-sheet-skill-knowledge-sub">{sub.charAt(0).toUpperCase() + sub.slice(1)}</span>
                                     </SpellLink>
                                   </td>
                                   <td className="player-sheet-skills-td-ranks">
