@@ -111,7 +111,9 @@ export default function App() {
       dispatch(setPlayer(null));
     }
     dispatch(setIsPlayerSheetSidebarCollapsed(db.getIsPlayerSheetSidebarCollapsed(app)));
-    dispatch(setPlayerSheetMainView(db.getPlayerSheetMainView(app)));
+    const psv = db.getPlayerSheetMainView(app);
+    // Never restore to spellbook on load so selecting/loading a character doesn't show the spellbook
+    dispatch(setPlayerSheetMainView(psv === 'playerSpells' ? 'none' : psv));
     dispatch(setPlayerSheetCardsCollapsed(db.getPlayerSheetCardsCollapsed(app)));
 
     const w = db.getWorldByIndex(app, app.sw);

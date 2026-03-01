@@ -1,6 +1,9 @@
 import Player from '../../lib/player';
+import Spellbook from '../../lib/spellbook';
 import * as db from '../../lib/storage';
 import { cap } from '../../lib/utils';
+import { getDefaultAlignmentForClass, druidMoralToEthical, druidEthicalToMoral } from '../../lib/alignment';
+import { playerToSpellbookData } from '../../lib/player/playerSpellbookAdapter';
 import {
   setCharactersList,
   setSelectedCharacterIndex,
@@ -28,7 +31,25 @@ function persistPlayer(dispatch, getState, playerInstance) {
   const newApp = db.updatePlayerAt(app, idx, serialized);
   db.saveApp(newApp);
   dispatch(setPersist(newApp));
-  dispatch(setPlayer(playerInstance));
+  // Dispatch a fresh player instance so Redux state reference changes and UI (e.g. spellbook) re-renders
+  const freshPlayer = db.getPlayerByIndex(newApp, idx);
+  dispatch(setPlayer(freshPlayer));
+}
+
+function withPlayerSpellbook(getState, fn) {
+  const player = getState().playerSheet?.player;
+  if (!player) return;
+  const data = playerToSpellbookData(player);
+  if (!data) return;
+  const s = new Spellbook().load(data);
+  fn(s);
+  player.spells = s.Spells.slice();
+  player.usedDomainSpells = s.UsedDomainSpells.slice();
+  player.preparedDomainSpells = { ...s.PreparedDomainSpells };
+  Object.keys(player.preparedDomainSpells).forEach((k) => {
+    const arr = s.PreparedDomainSpells[k];
+    player.preparedDomainSpells[k] = Array.isArray(arr) ? arr.slice() : [];
+  });
 }
 
 export const onCreateCharacter = (nameRaw) => (dispatch, getState) => {
@@ -113,6 +134,9 @@ export const onSetCharacterClass = (_class) => (dispatch, getState) => {
   const p = db.getPlayerByIndex(app, app.pss);
   if (!p) return;
   p.setClass(_class);
+  const { moral, ethical } = getDefaultAlignmentForClass(_class);
+  p.moralAlignment = moral;
+  p.ethicalAlignment = ethical;
   persistPlayer(dispatch, getState, p);
 };
 
@@ -182,6 +206,118 @@ export const onDeleteNote = () => (dispatch, getState) => {
   if (!name) return;
   p.deleteNote(name);
   persistPlayer(dispatch, getState, p);
+};
+
+export const onAddBonusLanguage = (lang) => (dispatch, getState) => {
+  const app = getState().persist;
+  if (app.pss == null || app.pss < 0 || !app.psc?.[app.pss]) return;
+  const p = db.getPlayerByIndex(app, app.pss);
+  if (!p) return;
+  p.addBonusLanguage(lang);
+  persistPlayer(dispatch, getState, p);
+};
+
+export const onRemoveBonusLanguage = (lang) => (dispatch, getState) => {
+  const app = getState().persist;
+  if (app.pss == null || app.pss < 0 || !app.psc?.[app.pss]) return;
+  const p = db.getPlayerByIndex(app, app.pss);
+  if (!p) return;
+  p.removeBonusLanguage(lang);
+  persistPlayer(dispatch, getState, p);
+};
+
+const SPELL_OPTION_KEYS = ['domain1', 'domain2', 'specialized', 'forbidden1', 'forbidden2', 'moralAlignment', 'ethicalAlignment'];
+
+export const onSetPlayerSpellOption = (key, value) => (dispatch, getState) => {
+  if (!SPELL_OPTION_KEYS.includes(key)) return;
+  const app = getState().persist;
+  if (app.pss == null || app.pss < 0 || !app.psc?.[app.pss]) return;
+  const p = db.getPlayerByIndex(app, app.pss);
+  if (!p) return;
+  if (typeof value !== 'string') return;
+  p[key] = value;
+  // Druid: if one axis is non-neutral, the other becomes Neutral
+  if (p.getClass() === 'Druid') {
+    if (key === 'moralAlignment') {
+      const other = druidMoralToEthical(value);
+      if (other != null) p.ethicalAlignment = other;
+    } else if (key === 'ethicalAlignment') {
+      const other = druidEthicalToMoral(value);
+      if (other != null) p.moralAlignment = other;
+    }
+  }
+  persistPlayer(dispatch, getState, p);
+};
+
+export const onPlayerLearnSpell = (spell_link) => (dispatch, getState) => {
+  withPlayerSpellbook(getState, (s) => s.learnSpell(spell_link));
+  const player = getState().playerSheet?.player;
+  if (player) persistPlayer(dispatch, getState, player);
+};
+
+export const onPlayerUnlearnSpell = (spell_link) => (dispatch, getState) => {
+  withPlayerSpellbook(getState, (s) => s.unlearnSpell(spell_link));
+  const player = getState().playerSheet?.player;
+  if (player) persistPlayer(dispatch, getState, player);
+};
+
+export const onPlayerLearnUnlearnSpell = (spell_link) => (dispatch, getState) => {
+  withPlayerSpellbook(getState, (s) => s.learnUnlearnSpell(spell_link));
+  const player = getState().playerSheet?.player;
+  if (player) persistPlayer(dispatch, getState, player);
+};
+
+export const onPlayerPrepareSpell = (spell_link) => (dispatch, getState) => {
+  withPlayerSpellbook(getState, (s) => s.prepareSpell(spell_link));
+  const player = getState().playerSheet?.player;
+  if (player) persistPlayer(dispatch, getState, player);
+};
+
+export const onPlayerUnprepareSpell = (spell_link) => (dispatch, getState) => {
+  withPlayerSpellbook(getState, (s) => s.unprepareSpell(spell_link));
+  const player = getState().playerSheet?.player;
+  if (player) persistPlayer(dispatch, getState, player);
+};
+
+export const onPlayerUseSpell = (spell_link) => (dispatch, getState) => {
+  withPlayerSpellbook(getState, (s) => s.useSpell(spell_link));
+  const player = getState().playerSheet?.player;
+  if (player) persistPlayer(dispatch, getState, player);
+};
+
+export const onPlayerUseGnomeSpell = (link) => (dispatch, getState) => {
+  const app = getState().persist;
+  if (app.pss == null || app.pss < 0 || !app.psc?.[app.pss]) return;
+  const p = db.getPlayerByIndex(app, app.pss);
+  if (!p || p.getRace?.() !== 'Gnome') return;
+  p.useGnomeSpell(link);
+  persistPlayer(dispatch, getState, p);
+};
+
+export const onPlayerRefreshSpell = () => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (player) player.resetGnomeSpellUses();
+  withPlayerSpellbook(getState, (s) => s.refreshSpell());
+  const playerAfter = getState().playerSheet?.player;
+  if (playerAfter) persistPlayer(dispatch, getState, playerAfter);
+};
+
+export const onPlayerPrepareDomainSpell = (level, spell_link) => (dispatch, getState) => {
+  withPlayerSpellbook(getState, (s) => s.prepareDomainSpell(level, spell_link));
+  const player = getState().playerSheet?.player;
+  if (player) persistPlayer(dispatch, getState, player);
+};
+
+export const onPlayerUnprepareDomainSpell = (level, spell_link) => (dispatch, getState) => {
+  withPlayerSpellbook(getState, (s) => s.unprepareDomainSpell(level, spell_link));
+  const player = getState().playerSheet?.player;
+  if (player) persistPlayer(dispatch, getState, player);
+};
+
+export const onPlayerUseDomainSpell = (spell_link) => (dispatch, getState) => {
+  withPlayerSpellbook(getState, (s) => s.useDomainSpell(spell_link));
+  const player = getState().playerSheet?.player;
+  if (player) persistPlayer(dispatch, getState, player);
 };
 
 export { hydratePlayerSheet };

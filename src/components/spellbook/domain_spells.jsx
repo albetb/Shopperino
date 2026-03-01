@@ -1,9 +1,8 @@
 import PropTypes from 'prop-types';
 import { isMobile } from '../../lib/utils';
 import { addCardByLink } from '../../store/slices/appSlice';
-import { onUseDomainSpell } from '../../store/thunks/spellbookThunks';
 
-export default function DomainSpells({ preparedByLevel, preparedLevels, dispatch, showShortDescriptions }) {
+export default function DomainSpells({ preparedByLevel, preparedLevels, onUseDomainSpell, dispatch, showShortDescriptions }) {
     if (!preparedLevels || preparedLevels.length === 0) return null;
 
     return (
@@ -30,7 +29,7 @@ export default function DomainSpells({ preparedByLevel, preparedLevels, dispatch
                                                 <div className='spell-slot-div2'>
                                                     <button
                                                         className={`flat-button smaller ${remaining <= 0 ? 'opacity-50' : ''}`}
-                                                        onClick={() => dispatch(onUseDomainSpell(item.Link))}
+                                                        onClick={() => (onUseDomainSpell ? onUseDomainSpell(item.Link) : undefined)}
                                                         disabled={remaining <= 0}
                                                     >
                                                         <span className='material-symbols-outlined'>wand_stars</span>
@@ -75,6 +74,7 @@ DomainSpells.propTypes = {
         Used: PropTypes.number.isRequired
     }))).isRequired,
     preparedLevels: PropTypes.arrayOf(PropTypes.number).isRequired,
-    dispatch: PropTypes.func.isRequired,
+    onUseDomainSpell: PropTypes.func,
+    dispatch: PropTypes.func,
     showShortDescriptions: PropTypes.bool.isRequired,
 };

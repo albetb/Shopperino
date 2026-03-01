@@ -46,7 +46,7 @@
 .modern-button:disabled,
 .levels-button:disabled {
   opacity: 0.5;
-  cursor: not-allowed;
+  cursor: default;
   background-color: var(--grey-t2);
   box-shadow: none;
 }

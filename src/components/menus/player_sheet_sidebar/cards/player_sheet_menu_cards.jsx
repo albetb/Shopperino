@@ -1,13 +1,14 @@
 import { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { ABILITY_KEYS } from '../../../../lib/player';
+import { ABILITY_KEYS, getClassData } from '../../../../lib/player';
 import { setPlayerSheetCardCollapsed } from '../../../../store/slices/playerSheetSlice';
 import '../../../../style/menu_cards.css';
 import MenuCardPlayerSheet from './menu_card_player_sheet';
 import MenuCardAbilityScores from './menu_card_ability_scores';
 import MenuCardNotes from './menu_card_notes';
-
-const PLACEHOLDER_CARD_TITLES = ['Combat', 'Skills', 'Inventory', 'Details'];
+import MenuCardCombat from './menu_card_combat';
+import MenuCardSpells from './menu_card_spells';
+import MenuCardCharacter from './menu_card_character';
 
 export default function PlayerSheetMenuCards() {
   const dispatch = useDispatch();
@@ -30,13 +31,43 @@ export default function PlayerSheetMenuCards() {
   }, [player]);
 
   const hasRaceAndClass = !!(player?.getRace?.() && player?.getClass?.());
+  const isGnome = player?.getRace?.() === 'Gnome';
 
   const abilityScoresTitle = useMemo(() => {
-    if (!player) return 'Ability scores';
+    if (!player) return 'Ability';
     const allDefault = ABILITY_KEYS.every(
       (key) => player.getAbilityBase(key) === 10 && player.getAbilityBonus(key) === 0
     );
-    return allDefault ? '[!] Ability scores' : 'Ability scores';
+    return allDefault ? '[!] Ability' : 'Ability';
+  }, [player]);
+
+  const combatTitle = useMemo(() => {
+    if (!player) return 'Combat';
+    const current = player.getCurrentHp();
+    const max = player.getMaxLife();
+    return `Combat - ${current}/${max} hp`;
+  }, [player]);
+
+  const showSpellsCard = useMemo(() => {
+    if (!player) return false;
+    const race = player.getRace?.();
+    const _class = player.getClass();
+    const level = player.getLevel();
+    const data = getClassData(_class);
+    if (race === 'Gnome') return true;
+    if (!data || !data.hasSpells) return false;
+    if (['Ranger', 'Paladin'].includes(_class) && level < 4) return false;
+    return true;
+  }, [player]);
+
+  const characterTitle = useMemo(() => {
+    if (!player) return 'Character';
+    const skillUsed = player.getUsedSkillPoints();
+    const skillTotal = player.getTotalSkillPoints();
+    const featUsed = player.getFeatPointsUsed();
+    const featMax = player.getFeatPointsMax();
+    const showAlert = skillUsed < skillTotal || featUsed < featMax;
+    return showAlert ? '[!] Character' : 'Character';
   }, [player]);
 
   return (
@@ -75,26 +106,64 @@ export default function PlayerSheetMenuCards() {
             )}
           </div>
 
-          {PLACEHOLDER_CARD_TITLES.map(cardTitle => (
-            <div key={cardTitle} className={`card ${isCollapsed(cardTitle) ? 'collapsed' : ''}`}>
+          <div className={`card ${isCollapsed('Combat') ? 'collapsed' : ''}`}>
+            <div
+              className="card-side-div card-expand-div"
+              onClick={() => toggleCard('Combat')}
+            >
+              <h3 className="card-title">{combatTitle}</h3>
+              <button type="button" className="collapse-button">
+                <span className="material-symbols-outlined">
+                  {isCollapsed('Combat') ? 'expand_more' : 'expand_less'}
+                </span>
+              </button>
+            </div>
+            {!isCollapsed('Combat') && (
+              <div className="card-content">
+                <MenuCardCombat />
+              </div>
+            )}
+          </div>
+
+          {((hasRaceAndClass && showSpellsCard) || isGnome) && (
+            <div className={`card ${isCollapsed('Spells') ? 'collapsed' : ''}`}>
               <div
                 className="card-side-div card-expand-div"
-                onClick={() => toggleCard(cardTitle)}
+                onClick={() => toggleCard('Spells')}
               >
-                <h3 className="card-title">{cardTitle}</h3>
+                <h3 className="card-title">Spells</h3>
                 <button type="button" className="collapse-button">
                   <span className="material-symbols-outlined">
-                    {isCollapsed(cardTitle) ? 'expand_more' : 'expand_less'}
+                    {isCollapsed('Spells') ? 'expand_more' : 'expand_less'}
                   </span>
                 </button>
               </div>
-              {!isCollapsed(cardTitle) && (
+              {!isCollapsed('Spells') && (
                 <div className="card-content">
-                  <p className="modal-body-muted">To be populated later.</p>
+                  <MenuCardSpells />
                 </div>
               )}
             </div>
-          ))}
+          )}
+
+          <div className={`card ${isCollapsed('Character') ? 'collapsed' : ''}`}>
+            <div
+              className="card-side-div card-expand-div"
+              onClick={() => toggleCard('Character')}
+            >
+              <h3 className="card-title">{characterTitle}</h3>
+              <button type="button" className="collapse-button">
+                <span className="material-symbols-outlined">
+                  {isCollapsed('Character') ? 'expand_more' : 'expand_less'}
+                </span>
+              </button>
+            </div>
+            {!isCollapsed('Character') && (
+              <div className="card-content">
+                <MenuCardCharacter />
+              </div>
+            )}
+          </div>
 
           <div className={`card ${isCollapsed('Notes') ? 'collapsed' : ''}`}>
             <div
@@ -115,6 +184,27 @@ export default function PlayerSheetMenuCards() {
             )}
           </div>
         </>
+      )}
+
+      {isGnome && !hasRaceAndClass && (
+        <div className={`card ${isCollapsed('Spells') ? 'collapsed' : ''}`}>
+          <div
+            className="card-side-div card-expand-div"
+            onClick={() => toggleCard('Spells')}
+          >
+            <h3 className="card-title">Spells</h3>
+            <button type="button" className="collapse-button">
+              <span className="material-symbols-outlined">
+                {isCollapsed('Spells') ? 'expand_more' : 'expand_less'}
+              </span>
+            </button>
+          </div>
+          {!isCollapsed('Spells') && (
+            <div className="card-content">
+              <MenuCardSpells />
+            </div>
+          )}
+        </div>
       )}
     </div>
   );

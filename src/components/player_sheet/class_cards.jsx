@@ -100,6 +100,8 @@ function renderFeature(text, index) {
   );
 }
 
+export { getClassStats, renderFeature };
+
 export default function ClassCards() {
   const dispatch = useDispatch();
   const player = useSelector(state => state.playerSheet.player);
@@ -151,7 +153,7 @@ export default function ClassCards() {
                     <StatBar label="Abilities" {...stats.abilities} />
                     <StatBar label="Spells" {...stats.spells} />
                     <div className="player-sheet-class-bars-saves">
-                      <StatBar label="Fort" {...stats.fort} className="short" />
+                      <StatBar label="Fortitude" {...stats.fort} className="short" />
                       <StatBar label="Reflex" {...stats.reflex} className="short" />
                       <StatBar label="Will" {...stats.will} className="short" />
                     </div>

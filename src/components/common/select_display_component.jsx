@@ -10,20 +10,22 @@ import '../../style/menu_cards.css';
  * @param {string} value - Current selected value (controlled)
  * @param {function(string): void} onSelect - Called when selection changes (dropdown or card Select)
  * @param {function(): void} onOpenDisplay - Called when magnifying glass is clicked; parent shows cards in main area
+ * @param {boolean} [disableOpenButton] - When true, the magnifying glass is disabled (e.g. when that page is already open)
  */
 const SelectDisplayComponent = ({
   label,
   options = [],
   value,
   onSelect,
-  onOpenDisplay
+  onOpenDisplay,
+  disableOpenButton = false
 }) => {
   const handleDropdownChange = (event) => {
     onSelect(event.target.value);
   };
 
   const handleMagnifyingGlassClick = () => {
-    onOpenDisplay?.();
+    if (!disableOpenButton) onOpenDisplay?.();
   };
 
   return (
@@ -44,8 +46,9 @@ const SelectDisplayComponent = ({
       <button
         type="button"
         title="View details"
-        className="levels-button small"
+        className={`levels-button small${disableOpenButton ? ' opacity-50' : ''}`}
         onClick={handleMagnifyingGlassClick}
+        disabled={disableOpenButton}
       >
         <span className="material-symbols-outlined">search</span>
       </button>

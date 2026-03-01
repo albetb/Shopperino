@@ -45,6 +45,7 @@ export default function MenuCardPlayerSheet() {
   const race = player?.getRace?.() ?? '';
   const _class = player?.getClass?.() ?? '';
   const level = player?.getLevel?.() ?? 1;
+  const mainView = useSelector(state => state.playerSheet.mainView ?? 'none');
 
   const handleRaceSelect = (value) => {
     dispatch(onSetCharacterRace(value));
@@ -93,6 +94,7 @@ export default function MenuCardPlayerSheet() {
                   dispatch(setIsPlayerSheetSidebarCollapsed(true));
                 }
               }}
+              disableOpenButton={mainView === 'race'}
             />
           )}
 
@@ -108,6 +110,7 @@ export default function MenuCardPlayerSheet() {
                   dispatch(setIsPlayerSheetSidebarCollapsed(true));
                 }
               }}
+              disableOpenButton={mainView === 'class'}
             />
           )}
 

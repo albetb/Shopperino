@@ -36,6 +36,41 @@ function defaultAbilities() {
   );
 }
 
+/** Hit dice string to max value (e.g. "d8" -> 8). Used for base life minimum. */
+function hitDiceToMax(hd) {
+  if (!hd || typeof hd !== 'string') return 4;
+  const n = parseInt(hd.replace(/^d/i, ''), 10);
+  return Number.isFinite(n) ? n : 4;
+}
+
+/** Resolve spell link to numeric id from spells.json (same as Spellbook). */
+function getSpellIdByLink(link) {
+  if (!link) return -1;
+  const spells = loadFile('spells');
+  if (!Array.isArray(spells)) return -1;
+  const s = spells.find((x) => x && x.Link === link);
+  return s != null && typeof s.id === 'number' ? s.id : -1;
+}
+
+/** Normalize spells to [[id, prepared, used], ...]. Accepts legacy {Link, Prepared, Used}. */
+function normalizePlayerSpells(raw) {
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .map((slot) => {
+      if (Array.isArray(slot) && slot.length >= 3) {
+        return [Number(slot[0]), Number(slot[1]) || 0, Number(slot[2]) || 0];
+      }
+      if (slot && typeof slot === 'object' && slot.Link != null) {
+        const id = getSpellIdByLink(slot.Link);
+        if (id >= 0) {
+          return [id, Number(slot.Prepared) || 0, Number(slot.Used) || 0];
+        }
+      }
+      return null;
+    })
+    .filter(Boolean);
+}
+
 class Player {
   constructor() {
     this.name = '';
@@ -45,6 +80,24 @@ class Player {
     this.abilities = defaultAbilities();
     this.notes = {};
     this.selectedNoteName = '';
+    this.maxLife = 10;
+    this.healthModifier = 0;
+    this.damage = 0;
+    this.skills = {};
+    this.gold = 0;
+    this.featsUsed = 0;
+    this.bonusLanguagesLearned = [];
+    this.domain1 = '';
+    this.domain2 = '';
+    this.specialized = '';
+    this.forbidden1 = '';
+    this.forbidden2 = '';
+    this.moralAlignment = 'Neutral';
+    this.ethicalAlignment = 'Neutral';
+    this.spells = [];
+    this.usedDomainSpells = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    this.preparedDomainSpells = {};
+    this.gnomeSpellUses = {}; // { [spellLink]: 0|1 } per-day uses for gnome racial spells
   }
 
   /**
@@ -88,6 +141,77 @@ class Player {
       this.selectedNoteName = this.notes[data.selectedNoteName] != null ? data.selectedNoteName : '';
     }
 
+    if (Number.isFinite(data.maxLife)) this.maxLife = Math.max(this.getBaseLifeMin(), data.maxLife);
+    if (Number.isFinite(data.healthModifier)) this.healthModifier = data.healthModifier;
+    if (Number.isFinite(data.damage)) this.damage = Math.max(0, data.damage);
+
+    if (data.skills && typeof data.skills === 'object') {
+      this.skills = {};
+      Object.keys(data.skills).forEach((skillName) => {
+        const s = data.skills[skillName];
+        if (s && typeof s === 'object' && typeof skillName === 'string' && skillName.trim() !== '') {
+          this.skills[skillName] = {
+            ranks: Math.max(0, Number(s.ranks) || 0),
+            bonus: Number(s.bonus) || 0,
+          };
+        }
+      });
+    }
+
+    if (Number.isFinite(data.gold)) this.gold = Math.max(0, Number(Number(data.gold).toFixed(2)));
+
+    if (Number.isFinite(data.featsUsed)) this.featsUsed = Math.max(0, Math.floor(data.featsUsed));
+
+    if (Array.isArray(data.bonusLanguagesLearned)) {
+      this.bonusLanguagesLearned = data.bonusLanguagesLearned
+        .filter((l) => typeof l === 'string' && l.trim() !== '')
+        .map((l) => l.trim());
+    }
+
+    if (typeof data.domain1 === 'string') this.domain1 = data.domain1;
+    if (typeof data.domain2 === 'string') this.domain2 = data.domain2;
+    if (typeof data.specialized === 'string') this.specialized = data.specialized;
+    if (typeof data.forbidden1 === 'string') this.forbidden1 = data.forbidden1;
+    if (typeof data.forbidden2 === 'string') this.forbidden2 = data.forbidden2;
+    if (typeof data.moralAlignment === 'string') this.moralAlignment = data.moralAlignment;
+    if (typeof data.ethicalAlignment === 'string') this.ethicalAlignment = data.ethicalAlignment;
+
+    if (Array.isArray(data.spells)) {
+      this.spells = normalizePlayerSpells(data.spells);
+    }
+    if (Array.isArray(data.usedDomainSpells) && data.usedDomainSpells.length >= 10) {
+      this.usedDomainSpells = data.usedDomainSpells.slice(0, 10).map((n) => Math.max(0, Number(n) || 0));
+    }
+    if (data.preparedDomainSpells && typeof data.preparedDomainSpells === 'object') {
+      this.preparedDomainSpells = Object.fromEntries(
+        Object.entries(data.preparedDomainSpells).map(([lvl, val]) => {
+          const levelNum = Number(lvl);
+          if (!Number.isFinite(levelNum)) return [lvl, []];
+          const arr = Array.isArray(val) ? val : (val && val.Link ? [val] : []);
+          const normalized = arr.map((slot) => {
+            if (slot && typeof slot === 'object' && slot.Link != null) {
+              return {
+                Link: String(slot.Link),
+                Prepared: Math.max(0, Number(slot.Prepared) || 0),
+                Used: Math.max(0, Number(slot.Used) || 0),
+              };
+            }
+            return null;
+          }).filter(Boolean);
+          return [levelNum, normalized];
+        })
+      );
+    }
+
+    if (data.gnomeSpellUses && typeof data.gnomeSpellUses === 'object') {
+      this.gnomeSpellUses = {};
+      Object.entries(data.gnomeSpellUses).forEach(([link, n]) => {
+        if (typeof link === 'string' && link.trim() !== '' && Number.isFinite(n)) {
+          this.gnomeSpellUses[link] = Math.min(1, Math.max(0, Math.floor(n)));
+        }
+      });
+    }
+
     return this;
   }
 
@@ -103,6 +227,32 @@ class Player {
       abilities: { ...this.abilities },
       notes: { ...this.notes },
       selectedNoteName: this.selectedNoteName,
+      maxLife: this.maxLife,
+      healthModifier: this.healthModifier,
+      damage: this.damage,
+      skills: { ...this.skills },
+      gold: Number(Number(this.gold).toFixed(2)),
+      featsUsed: Math.max(0, Math.floor(this.featsUsed)),
+      bonusLanguagesLearned: [...(this.bonusLanguagesLearned || [])],
+      domain1: this.domain1 || '',
+      domain2: this.domain2 || '',
+      specialized: this.specialized || '',
+      forbidden1: this.forbidden1 || '',
+      forbidden2: this.forbidden2 || '',
+      moralAlignment: this.moralAlignment || 'Neutral',
+      ethicalAlignment: this.ethicalAlignment || 'Neutral',
+      spells: Array.isArray(this.spells) ? this.spells.map((s) => [...s]) : [],
+      usedDomainSpells: Array.isArray(this.usedDomainSpells) ? [...this.usedDomainSpells] : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      preparedDomainSpells:
+        this.preparedDomainSpells && typeof this.preparedDomainSpells === 'object'
+          ? Object.fromEntries(
+              Object.entries(this.preparedDomainSpells).map(([k, v]) => [
+                k,
+                Array.isArray(v) ? v.map((slot) => ({ ...slot })) : [],
+              ])
+            )
+          : {},
+      gnomeSpellUses: this.gnomeSpellUses && typeof this.gnomeSpellUses === 'object' ? { ...this.gnomeSpellUses } : {},
     };
   }
 
@@ -212,6 +362,24 @@ class Player {
     return this.getModifier('cha');
   }
 
+  /** Gnome racial spell uses this day. Returns { [spellLink]: 0|1 }. */
+  getGnomeSpellUses() {
+    return this.gnomeSpellUses && typeof this.gnomeSpellUses === 'object' ? { ...this.gnomeSpellUses } : {};
+  }
+
+  /** Mark one use of a gnome racial spell (1/day). */
+  useGnomeSpell(link) {
+    if (typeof link !== 'string' || link.trim() === '') return;
+    if (!this.gnomeSpellUses || typeof this.gnomeSpellUses !== 'object') this.gnomeSpellUses = {};
+    const current = this.gnomeSpellUses[link] ?? 0;
+    this.gnomeSpellUses[link] = Math.min(1, current + 1);
+  }
+
+  /** Reset all gnome spell uses (e.g. after long rest). */
+  resetGnomeSpellUses() {
+    this.gnomeSpellUses = {};
+  }
+
   // —— Setters (for UI / Redux updates) ——
   setName(name) {
     this.name = typeof name === 'string' ? name : '';
@@ -223,6 +391,7 @@ class Player {
 
   setClass(_class) {
     this.class = typeof _class === 'string' ? _class : '';
+    this.maxLife = Math.max(this.getBaseLifeMin(), this.maxLife);
   }
 
   setLevel(level) {
@@ -289,6 +458,257 @@ class Player {
       this.selectedNoteName = names.length > 0 ? names[0] : '';
     }
   }
+
+  // —— Combat / HP ——
+  /**
+   * Minimum base life = class hit dice max (e.g. d8 -> 8).
+   */
+  getBaseLifeMin() {
+    const data = getClassData(this.class);
+    return hitDiceToMax(data?.hitDice);
+  }
+
+  /**
+   * Total max HP = base life + bonus modifier + (Con modifier × level).
+   * Con modifier can be negative, so total can be reduced.
+   */
+  getMaxLife() {
+    const base = Number(this.maxLife) || 0;
+    const bonus = Number(this.healthModifier) || 0;
+    const conBonus = this.getConMod() * this.getLevel();
+    return base + bonus + conBonus;
+  }
+
+  getCurrentHp() {
+    return Math.max(0, this.getMaxLife() - (Number(this.damage) || 0));
+  }
+
+  getDamage() {
+    return Number(this.damage) || 0;
+  }
+
+  setMaxLife(value) {
+    const n = Number(value);
+    if (!Number.isFinite(n)) return;
+    this.maxLife = Math.max(this.getBaseLifeMin(), n);
+  }
+
+  setHealthModifier(value) {
+    this.healthModifier = Number(value) || 0;
+  }
+
+  setDamage(value) {
+    this.damage = Math.max(0, Number(value) || 0);
+  }
+
+  /**
+   * Base land speed (feet). From race; Barbarian +10; Monk +10 at 3, +20 at 6, +30 at 9, +40 at 12, +50 at 15, +60 at 18.
+   */
+  getBaseSpeed() {
+    const races = loadFile('races');
+    const base = Number(races?.[this.race]?.landSpeed) || 30;
+    const data = getClassData(this.class);
+    if (!data) return base;
+    if (this.class === 'Barbarian') return base + 10;
+    if (this.class === 'Monk') {
+      const level = this.getLevel();
+      const monkBonus = 10 * Math.min(6, Math.floor(level / 3));
+      return base + monkBonus;
+    }
+    return base;
+  }
+
+  /**
+   * Initiative modifier = Dexterity modifier.
+   */
+  getInitiativeModifier() {
+    return this.getDexMod();
+  }
+
+  /**
+   * Armor class = 10 + Dex modifier. Monk adds Wis bonus (min 0) and +1 at 5, +2 at 10, +3 at 15, +4 at 20.
+   */
+  getArmorClass() {
+    let ac = 10 + this.getDexMod();
+    if (this.class === 'Monk') {
+      ac += Math.max(0, this.getWisMod());
+      const level = this.getLevel();
+      if (level >= 20) ac += 4;
+      else if (level >= 15) ac += 3;
+      else if (level >= 10) ac += 2;
+      else if (level >= 5) ac += 1;
+    }
+    return ac;
+  }
+
+  /**
+   * Save base: high = 2 + floor(Level/2), low = floor(Level/3). Then add ability modifier.
+   */
+  getFortitudeSave() {
+    const data = getClassData(this.class);
+    const level = this.getLevel();
+    const base = (data?.fortSave === 'high') ? (2 + Math.floor(level / 2)) : Math.floor(level / 3);
+    return base + this.getConMod();
+  }
+
+  getReflexSave() {
+    const data = getClassData(this.class);
+    const level = this.getLevel();
+    const base = (data?.reflexSave === 'high') ? (2 + Math.floor(level / 2)) : Math.floor(level / 3);
+    return base + this.getDexMod();
+  }
+
+  getWillSave() {
+    const data = getClassData(this.class);
+    const level = this.getLevel();
+    const base = (data?.willSave === 'high') ? (2 + Math.floor(level / 2)) : Math.floor(level / 3);
+    return base + this.getWisMod();
+  }
+
+  getGold() {
+    return Math.max(0, Number(this.gold) || 0);
+  }
+
+  setGold(value) {
+    const n = Math.max(0, Number(value) || 0);
+    this.gold = Number(n.toFixed(2));
+  }
+
+  /**
+   * Total weight of inventory. For now returns 0; will be derived later.
+   */
+  getInventoryWeight() {
+    return 0;
+  }
+
+  /**
+   * Max feat points = 1 + (1 if Human) + floor(level / 3).
+   */
+  getFeatPointsMax() {
+    const level = this.getLevel();
+    return 1 + (this.race === 'Human' ? 1 : 0) + Math.floor(level / 3);
+  }
+
+  getFeatPointsUsed() {
+    return Math.max(0, Math.floor(Number(this.featsUsed) || 0));
+  }
+
+  setFeatPointsUsed(value) {
+    this.featsUsed = Math.max(0, Math.floor(Number(value) || 0));
+  }
+
+  // —— Skills ——
+  /**
+   * All skill names from skills.json (from loadFile).
+   */
+  getSkillNames() {
+    const list = loadFile('skills');
+    if (!Array.isArray(list)) return [];
+    return list.map((s) => (s && s.Name ? String(s.Name) : '')).filter(Boolean);
+  }
+
+  getSkillRanks(skillName) {
+    const s = (this.skills || {})[skillName];
+    return s && typeof s.ranks === 'number' ? Math.max(0, s.ranks) : 0;
+  }
+
+  getSkillBonus(skillName) {
+    const s = (this.skills || {})[skillName];
+    return s && typeof s.bonus === 'number' ? s.bonus : 0;
+  }
+
+  setSkillRanks(skillName, value) {
+    if (!skillName || typeof skillName !== 'string') return;
+    if (!this.skills) this.skills = {};
+    if (this.skills[skillName] == null) this.skills[skillName] = { ranks: 0, bonus: 0 };
+    this.skills[skillName].ranks = Math.max(0, Number(value) || 0);
+  }
+
+  setSkillBonus(skillName, value) {
+    if (!skillName || typeof skillName !== 'string') return;
+    if (!this.skills) this.skills = {};
+    if (this.skills[skillName] == null) this.skills[skillName] = { ranks: 0, bonus: 0 };
+    this.skills[skillName].bonus = Number(value) || 0;
+  }
+
+  /**
+   * Total skill points to distribute = (skillPointsPerLevel + Int mod + 1 if Human) * (level + 3).
+   */
+  getTotalSkillPoints() {
+    const data = getClassData(this.class);
+    const perLevel = (data?.skillPointsPerLevel ?? 0) + this.getIntMod() + (this.race === 'Human' ? 1 : 0);
+    const level = this.getLevel();
+    return Math.max(0, perLevel * (level + 3));
+  }
+
+  /**
+   * Skill points used = sum of all skill ranks.
+   */
+  getUsedSkillPoints() {
+    const names = this.getSkillNames();
+    return names.reduce((sum, name) => sum + this.getSkillRanks(name), 0);
+  }
+
+  // —— Languages ——
+  /** Automatic languages from race; Druid also gets Druidic. */
+  getAutomaticLanguages() {
+    const raceData = getRaceData(this.race);
+    const list = Array.isArray(raceData?.automaticLanguages)
+      ? [...raceData.automaticLanguages]
+      : [];
+    if (this.class === 'Druid' && !list.includes('Druidic')) list.push('Druidic');
+    return list;
+  }
+
+  /** Bonus languages the player has learned (non-automatic). */
+  getBonusLanguagesLearned() {
+    return Array.isArray(this.bonusLanguagesLearned) ? [...this.bonusLanguagesLearned] : [];
+  }
+
+  /** Max number of bonus (non-automatic) languages from Int modifier. */
+  getMaxBonusLanguages() {
+    return Math.max(0, this.getIntMod());
+  }
+
+  /**
+   * Options for the bonus language dropdown: race bonusLanguages + class extras,
+   * excluding already known (automatic + learned). Returns sorted array.
+   */
+  getBonusLanguagesOptions() {
+    const known = new Set([...this.getAutomaticLanguages(), ...this.getBonusLanguagesLearned()]);
+    const raceData = getRaceData(this.race);
+    let options = [];
+    const bl = raceData?.bonusLanguages;
+    if (Array.isArray(bl)) {
+      options = [...bl];
+    } else if (typeof bl === 'string' && bl.toLowerCase().includes('any')) {
+      options = getAllBonusLanguageNames();
+    }
+    if (this.class === 'Cleric') {
+      ['Celestial', 'Abyssal', 'Infernal'].forEach((l) => { if (!options.includes(l)) options.push(l); });
+    }
+    if (this.class === 'Druid') {
+      if (!options.includes('Sylvan')) options.push('Sylvan');
+    }
+    if (this.class === 'Wizard') {
+      if (!options.includes('Draconic')) options.push('Draconic');
+    }
+    options = [...new Set(options)];
+    return options.filter((l) => !known.has(l)).sort((a, b) => a.localeCompare(b));
+  }
+
+  addBonusLanguage(lang) {
+    const trimmed = (lang || '').trim();
+    if (!trimmed) return;
+    if (!this.bonusLanguagesLearned) this.bonusLanguagesLearned = [];
+    if (this.bonusLanguagesLearned.includes(trimmed)) return;
+    this.bonusLanguagesLearned.push(trimmed);
+  }
+
+  removeBonusLanguage(lang) {
+    if (!this.bonusLanguagesLearned) return;
+    this.bonusLanguagesLearned = this.bonusLanguagesLearned.filter((l) => l !== lang);
+  }
 }
 
 /**
@@ -314,6 +734,21 @@ export function getClassData(className) {
   if (!className || typeof className !== 'string') return null;
   const classes = loadFile('classes');
   return classes?.[className] ?? null;
+}
+
+/** All language names used as bonus options when race says "Any". Excludes secret (Druidic). */
+export function getAllBonusLanguageNames() {
+  const races = loadFile('races');
+  const set = new Set(['Abyssal', 'Celestial', 'Draconic', 'Dwarven', 'Elven', 'Giant', 'Gnoll', 'Gnome', 'Goblin', 'Halfling', 'Infernal', 'Orc', 'Sylvan', 'Terran', 'Undercommon']);
+  if (races && typeof races === 'object') {
+    Object.values(races).forEach((r) => {
+      if (Array.isArray(r.automaticLanguages)) r.automaticLanguages.forEach((l) => set.add(l));
+      if (Array.isArray(r.bonusLanguages)) r.bonusLanguages.forEach((l) => set.add(l));
+    });
+  }
+  set.delete('Common');
+  set.delete('Druidic');
+  return [...set].sort((a, b) => a.localeCompare(b));
 }
 
 export { ABILITY_KEYS, RACE_SIZE_FALLBACK as RACE_SIZE };

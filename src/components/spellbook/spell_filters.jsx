@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
-import { setSearchSpellName, setSearchSpellSchool } from '../../store/slices/spellbookSlice';
 
-export default function SpellFilters({ filters, dispatch }) {
+export default function SpellFilters({ filters, onClearSearchName, onClearSearchSchool }) {
     const { name, school } = filters;
 
     if (!name && !school) {
@@ -10,12 +9,12 @@ export default function SpellFilters({ filters, dispatch }) {
 
     return (   
         <>
-            {name && (
+            {name && onClearSearchName && (
                 <div className="filter-box">
                     <div className="card-side-div card-expand-div card-expand-full rest-box-full">
                         <button
                             className="close-button no-margin-left"
-                            onClick={() => dispatch(setSearchSpellName(''))}
+                            onClick={() => onClearSearchName('')}
                             >
                             <span className="material-symbols-outlined filter-icon-white">
                                 close_small
@@ -27,12 +26,12 @@ export default function SpellFilters({ filters, dispatch }) {
                     </div>
                 </div>
             )}
-            {school && (
+            {school && onClearSearchSchool && (
                 <div className="filter-box">
                     <div className="card-side-div card-expand-div card-expand-full rest-box-full">
                         <button
                             className="close-button no-margin-left"
-                            onClick={() => dispatch(setSearchSpellSchool(''))}
+                            onClick={() => onClearSearchSchool('')}
                             >
                             <span className="material-symbols-outlined filter-icon-white">
                                 close_small
@@ -53,5 +52,6 @@ SpellFilters.propTypes = {
         name: PropTypes.string,
         school: PropTypes.string,
     }).isRequired,
-    dispatch: PropTypes.func.isRequired,
+    onClearSearchName: PropTypes.func,
+    onClearSearchSchool: PropTypes.func,
 };

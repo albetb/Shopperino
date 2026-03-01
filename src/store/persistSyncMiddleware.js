@@ -92,7 +92,7 @@ export function persistSyncMiddleware(store) {
         nextPersist = db.setAppUIFlag(nextPersist, db.UI_FLAG.psbc, !!action.payload);
         break;
       case 'playerSheet/setPlayerSheetMainView':
-        nextPersist = { ...nextPersist, psv: action.payload === 'race' || action.payload === 'class' || action.payload === 'note' ? action.payload : 'none' };
+        nextPersist = { ...nextPersist, psv: ['race', 'class', 'note', 'combat', 'playerSpells', 'skills', 'inventory', 'feats', 'features'].includes(action.payload) ? action.payload : 'none' };
         break;
       case 'playerSheet/setPlayerSheetCardCollapsed':
         nextPersist = { ...nextPersist, pscards: state.playerSheet.cardCollapsed };

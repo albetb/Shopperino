@@ -360,11 +360,6 @@ tr.add-item td.action-size .item-number-button {
   overflow-wrap: break-word;
 }
 
-.button-link:hover {
-  color: var(--white2);
-  text-decoration: underline;
-}
-
 .class-desc {
   width: 95%;
 }

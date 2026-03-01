@@ -21,19 +21,19 @@
         },
         {
           "name": "Extra feat at 1st level",
-          "description": "1 extra feat at 1st level, because humans are quick to master specialized tasks and varied in their talents."
+          "description": "1 extra feat at 1st level, because humans are quick to master specialized tasks and varied in their feats."
         },
         {
           "name": "Extra skill points",
           "description": "4 extra skill points at 1st level and 1 extra skill point at each additional level, since humans are versatile and capable."
         },
         {
-          "name": "Automatic and bonus languages",
-          "description": "Automatic Language: Common. Bonus Languages: Any (other than secret languages, such as Druidic). Humans mingle with all kinds of other folk and thus can learn any language found in an area."
+          "name": "Automatic languages",
+          "description": "Common. Bonus Languages: Any (other than secret languages, such as Druidic). Humans mingle with all kinds of other folk and thus can learn any language found in an area."
         },
         {
           "name": "Favored Class",
-          "description": "Favored Class: Any. When determining whether a multiclass human takes an experience point penalty, his or her highest-level class does not count."
+          "description": "Any. When determining whether a multiclass human takes an experience point penalty, his or her highest-level class does not count."
         }
       ]
     },
@@ -67,7 +67,7 @@
         },
         {
           "name": "Medium",
-          "description": "Medium: As Medium creatures, dwarves have no special bonuses or penalties due to their size."
+          "description": "As Medium creatures, dwarves have no special bonuses or penalties due to their size."
         },
         {
           "name": "Dwarf base land speed",
@@ -75,19 +75,19 @@
         },
         {
           "name": "Darkvision",
-          "description": "Darkvision: Dwarves can see in the dark up to 60 feet. Darkvision is black and white only, but it is otherwise like normal sight, and dwarves can function just fine with no light at all."
+          "description": "Dwarves can see in the dark up to 60 feet. Darkvision is black and white only, but it is otherwise like normal sight, and dwarves can function just fine with no light at all."
         },
         {
           "name": "Stonecunning",
-          "description": "Stonecunning: This ability grants a dwarf a +2 racial bonus on Search checks to notice unusual stonework, such as sliding walls, stonework traps, new construction (even when built to match the old), unsafe stone surfaces, shaky stone ceilings, and the like. Something that isn't stone but that is disguised as stone also counts as unusual stonework. A dwarf who merely comes within 10 feet of unusual stonework can make a Search check as if he were actively searching, and a dwarf can use the Search skill to find stonework traps as a rogue can. A dwarf can also intuit depth, sensing his approximate depth underground as naturally as a human can sense which way is up. Dwarves have a sixth sense about stonework, an innate ability that they get plenty of opportunity to practice and hone in their underground homes."
+          "description": "This ability grants a dwarf a +2 racial bonus on Search checks to notice unusual stonework, such as sliding walls, stonework traps, new construction (even when built to match the old), unsafe stone surfaces, shaky stone ceilings, and the like. Something that isn't stone but that is disguised as stone also counts as unusual stonework. A dwarf who merely comes within 10 feet of unusual stonework can make a Search check as if he were actively searching, and a dwarf can use the Search skill to find stonework traps as a rogue can. A dwarf can also intuit depth, sensing his approximate depth underground as naturally as a human can sense which way is up. Dwarves have a sixth sense about stonework, an innate ability that they get plenty of opportunity to practice and hone in their underground homes."
         },
         {
           "name": "Weapon Familiarity",
-          "description": "Weapon Familiarity: Dwarves may treat dwarven waraxes and dwarven urgroshes as martial weapons, rather than exotic weapons."
+          "description": "Dwarves may treat dwarven waraxes and dwarven urgroshes as martial weapons, rather than exotic weapons."
         },
         {
           "name": "Stability",
-          "description": "Stability: A dwarf gains a +4 bonus on ability checks made to resist being bull rushed or tripped when standing on the ground (but not when climbing, flying, riding, or otherwise not standing firmly on the ground)."
+          "description": "A dwarf gains a +4 bonus on ability checks made to resist being bull rushed or tripped when standing on the ground (but not when climbing, flying, riding, or otherwise not standing firmly on the ground)."
         },
         {
           "name": "Saving throws against poison",
@@ -114,12 +114,12 @@
           "description": "+2 racial bonus on Craft checks that are related to stone or metal: Dwarves are especially capable with stonework and metalwork."
         },
         {
-          "name": "Automatic and bonus languages",
-          "description": "Automatic Languages: Common and Dwarven. Bonus Languages: Giant, Gnome, Goblin, Orc, Terran, and Undercommon. Dwarves are familiar with the languages of their enemies and of their subterranean allies."
+          "name": "Automatic languages",
+          "description": "Common and Dwarven. Bonus Languages: Giant, Gnome, Goblin, Orc, Terran, and Undercommon. Dwarves are familiar with the languages of their enemies and of their subterranean allies."
         },
         {
           "name": "Favored Class",
-          "description": "Favored Class: Fighter. A multiclass dwarf's fighter class does not count when determining whether he takes an experience point penalty for multiclassing. Dwarven culture extols the virtues of battle, and the vocation comes easily to dwarves."
+          "description": "Fighter. A multiclass dwarf's fighter class does not count when determining whether he takes an experience point penalty for multiclassing. Dwarven culture extols the virtues of battle, and the vocation comes easily to dwarves."
         }
       ]
     },
@@ -147,7 +147,7 @@
         },
         {
           "name": "Medium",
-          "description": "Medium: As Medium creatures, elves have no special bonuses or penalties due to their size."
+          "description": "As Medium creatures, elves have no special bonuses or penalties due to their size."
         },
         {
           "name": "Elf base land speed",
@@ -159,23 +159,23 @@
         },
         {
           "name": "Low-Light Vision",
-          "description": "Low-Light Vision: An elf can see twice as far as a human in starlight, moonlight, torchlight, and similar conditions of poor illumination. She retains the ability to distinguish color and detail under these conditions."
+          "description": "An elf can see twice as far as a human in starlight, moonlight, torchlight, and similar conditions of poor illumination. She retains the ability to distinguish color and detail under these conditions."
         },
         {
           "name": "Weapon Proficiency",
-          "description": "Weapon Proficiency: Elves receive the Martial Weapon Proficiency feats for the longsword, rapier, longbow (including composite longbow), and shortbow (including composite shortbow) as bonus feats. Elves esteem the arts of swordplay and archery, so all elves are familiar with these weapons."
+          "description": "Elves receive the Martial Weapon Proficiency feats for the longsword, rapier, longbow (including composite longbow), and shortbow (including composite shortbow) as bonus feats. Elves esteem the arts of swordplay and archery, so all elves are familiar with these weapons."
         },
         {
           "name": "Listen, Search, and Spot",
           "description": "+2 racial bonus on Listen, Search, and Spot checks. An elf who merely passes within 5 feet of a secret or concealed door is entitled to a Search check to notice it as if she were actively looking for it. An elf's senses are so keen that she practically has a sixth sense about hidden portals."
         },
         {
-          "name": "Automatic and bonus languages",
-          "description": "Automatic Languages: Common and Elven. Bonus Languages: Draconic, Gnoll, Gnome, Goblin, Orc, and Sylvan. Elves commonly know the languages of their enemies and of their friends, as well as Draconic, the language commonly found in ancient tomes of secret knowledge."
+          "name": "Automatic languages",
+          "description": "Common and Elven. Bonus Languages: Draconic, Gnoll, Gnome, Goblin, Orc, and Sylvan. Elves commonly know the languages of their enemies and of their friends, as well as Draconic, the language commonly found in ancient tomes of secret knowledge."
         },
         {
           "name": "Favored Class",
-          "description": "Favored Class: Wizard. A multiclass elf's wizard class does not count when determining whether she takes an experience point penalty for multiclassing. Wizardry comes naturally to elves - indeed, they sometimes claim to have invented it, and fighter/wizards are especially common among them."
+          "description": "Wizard. A multiclass elf's wizard class does not count when determining whether she takes an experience point penalty for multiclassing. Wizardry comes naturally to elves - indeed, they sometimes claim to have invented it, and fighter/wizards are especially common among them."
         }
       ]
     },
@@ -208,7 +208,7 @@
         },
         {
           "name": "Small",
-          "description": "Small: As a Small creature, a gnome gains a +1 size bonus to Armor Class, a +1 size bonus on attack rolls, and a +4 size bonus on Hide checks, but he uses smaller weapons than humans use, and his lifting and carrying limits are three-quarters of those of a Medium character."
+          "description": "As a Small creature, a gnome gains a +1 size bonus to Armor Class, a +1 size bonus on attack rolls, and a +4 size bonus on Hide checks, but he uses smaller weapons than humans use, and his lifting and carrying limits are three-quarters of those of a Medium character."
         },
         {
           "name": "Gnome base land speed",
@@ -216,11 +216,11 @@
         },
         {
           "name": "Low-Light Vision",
-          "description": "Low-Light Vision: A gnome can see twice as far as a human in starlight, moonlight, torchlight, and similar conditions of poor illumination. He retains the ability to distinguish color and detail under these conditions."
+          "description": "A gnome can see twice as far as a human in starlight, moonlight, torchlight, and similar conditions of poor illumination. He retains the ability to distinguish color and detail under these conditions."
         },
         {
           "name": "Weapon Familiarity",
-          "description": "Weapon Familiarity: Gnomes may treat gnome hooked hammers as martial weapons rather than exotic weapons."
+          "description": "Gnomes may treat gnome hooked hammers as martial weapons rather than exotic weapons."
         },
         {
           "name": "Saving throws against illusions",
@@ -247,16 +247,16 @@
           "description": "+2 racial bonus on Craft (alchemy) checks: A gnome's sensitive nose allows him to monitor alchemical processes by smell."
         },
         {
-          "name": "Automatic and bonus languages",
-          "description": "Automatic Languages: Common and Gnome. Bonus Languages: Draconic, Dwarven, Elven, Giant, Goblin, and Orc. Gnomes deal more with elves and dwarves than elves and dwarves deal with one another, and they learn the languages of their enemies (kobolds, giants, goblins, and orcs) as well. In addition, a gnome can speak with a burrowing mammal (a badger, fox, rabbit, or the like, see below). This ability is innate to gnomes. See the speak with animals spell description."
+          "name": "Automatic languages",
+          "description": "Common and Gnome. Bonus Languages: Draconic, Dwarven, Elven, Giant, Goblin, and Orc. Gnomes deal more with elves and dwarves than elves and dwarves deal with one another, and they learn the languages of their enemies (kobolds, giants, goblins, and orcs) as well. In addition, a gnome can speak with a burrowing mammal (a badger, fox, rabbit, or the like, see below). This ability is innate to gnomes. See the speak with animals spell description."
         },
         {
           "name": "Spell-Like Abilities",
-          "description": "Spell-Like Abilities: 1/day—speak with animals (burrowing mammal only, duration 1 minute). A gnome with a Charisma score of at least 10 also has the following spell-like abilities: 1/day—dancing lights, ghost sound, prestidigitation. Caster level 1st; save DC 10 + gnome's Cha modifier + spell level."
+          "description": "1/day—speak with animals (burrowing mammal only, duration 1 minute). A gnome with a Charisma score of at least 10 also has the following spell-like abilities: 1/day—dancing lights, ghost sound, prestidigitation. Caster level 1st; save DC 10 + gnome's Cha modifier + spell level."
         },
         {
           "name": "Favored Class",
-          "description": "Favored Class: Bard. A multiclass gnome's bard class does not count when determining whether he takes an experience point penalty."
+          "description": "Bard. A multiclass gnome's bard class does not count when determining whether he takes an experience point penalty."
         }
       ]
     },
@@ -281,7 +281,7 @@
       "traits": [
         {
           "name": "Medium",
-          "description": "Medium: As Medium creatures, half-elves have no special bonuses or penalties due to their size."
+          "description": "As Medium creatures, half-elves have no special bonuses or penalties due to their size."
         },
         {
           "name": "Half-elf base land speed",
@@ -293,7 +293,7 @@
         },
         {
           "name": "Low-Light Vision",
-          "description": "Low-Light Vision: A half-elf can see twice as far as a human in starlight, moonlight, torchlight, and similar conditions of poor illumination. She retains the ability to distinguish color and detail under these conditions."
+          "description": "A half-elf can see twice as far as a human in starlight, moonlight, torchlight, and similar conditions of poor illumination. She retains the ability to distinguish color and detail under these conditions."
         },
         {
           "name": "Listen, Search, and Spot",
@@ -305,15 +305,15 @@
         },
         {
           "name": "Elven Blood",
-          "description": "Elven Blood: For all effects related to race, a half-elf is considered an elf. Half-elves, for example, are just as vulnerable to special effects that affect elves as their elf ancestors are, and they can use magic items that are only usable by elves."
+          "description": "For all effects related to race, a half-elf is considered an elf. Half-elves, for example, are just as vulnerable to special effects that affect elves as their elf ancestors are, and they can use magic items that are only usable by elves."
         },
         {
-          "name": "Automatic and bonus languages",
-          "description": "Automatic Languages: Common and Elven. Bonus Languages: Any (other than secret languages, such as Druidic). Half-elves have all the versatility and broad (if shallow) experience that humans have."
+          "name": "Automatic languages",
+          "description": "Common and Elven. Bonus Languages: Any (other than secret languages, such as Druidic). Half-elves have all the versatility and broad (if shallow) experience that humans have."
         },
         {
           "name": "Favored Class",
-          "description": "Favored Class: Any. When determining whether a multiclass half-elf takes an experience point penalty, her highest-level class does not count."
+          "description": "Any. When determining whether a multiclass half-elf takes an experience point penalty, her highest-level class does not count."
         }
       ]
     },
@@ -331,7 +331,7 @@
         },
         {
           "name": "Medium",
-          "description": "Medium: As Medium creatures, half-orcs have no special bonuses or penalties due to their size."
+          "description": "As Medium creatures, half-orcs have no special bonuses or penalties due to their size."
         },
         {
           "name": "Half-orc base land speed",
@@ -339,19 +339,19 @@
         },
         {
           "name": "Darkvision",
-          "description": "Darkvision: Half-orcs (and orcs) can see in the dark up to 60 feet. Darkvision is black and white only, but it is otherwise like normal sight, and half-orcs can function just fine with no light at all."
+          "description": "Half-orcs (and orcs) can see in the dark up to 60 feet. Darkvision is black and white only, but it is otherwise like normal sight, and half-orcs can function just fine with no light at all."
         },
         {
           "name": "Orc Blood",
-          "description": "Orc Blood: For all effects related to race, a half-orc is considered an orc. Half-orcs, for example, are just as vulnerable to special effects that affect orcs as their orc ancestors are, and they can use magic items that are only usable by orcs."
+          "description": "For all effects related to race, a half-orc is considered an orc. Half-orcs, for example, are just as vulnerable to special effects that affect orcs as their orc ancestors are, and they can use magic items that are only usable by orcs."
         },
         {
-          "name": "Automatic and bonus languages",
-          "description": "Automatic Languages: Common and Orc. Bonus Languages: Draconic, Giant, Gnoll, Goblin, and Abyssal. Smart half-orcs (who are rare) may know the languages of their allies or rivals."
+          "name": "Automatic languages",
+          "description": "Common and Orc. Bonus Languages: Draconic, Giant, Gnoll, Goblin, and Abyssal. Smart half-orcs (who are rare) may know the languages of their allies or rivals."
         },
         {
           "name": "Favored Class",
-          "description": "Favored Class: Barbarian. A multiclass half-orc's barbarian class does not count when determining whether he takes an experience point penalty. Ferocity runs in a half-orc's veins."
+          "description": "Barbarian. A multiclass half-orc's barbarian class does not count when determining whether he takes an experience point penalty. Ferocity runs in a half-orc's veins."
         }
       ]
     },
@@ -382,7 +382,7 @@
         },
         {
           "name": "Small",
-          "description": "Small: As a Small creature, a halfling gains a +1 size bonus to Armor Class, a +1 size bonus on attack rolls, and a +4 size bonus on Hide checks, but she uses smaller weapons than humans use, and her lifting and carrying limits are three-quarters of those of a Medium character."
+          "description": "As a Small creature, a halfling gains a +1 size bonus to Armor Class, a +1 size bonus on attack rolls, and a +4 size bonus on Hide checks, but she uses smaller weapons than humans use, and her lifting and carrying limits are three-quarters of those of a Medium character."
         },
         {
           "name": "Halfling base land speed",
@@ -409,12 +409,12 @@
           "description": "+2 racial bonus on Listen checks: Halflings have keen ears."
         },
         {
-          "name": "Automatic and bonus languages",
-          "description": "Automatic Languages: Common and Halfling. Bonus Languages: Dwarven, Elven, Gnome, Goblin, and Orc. Smart halflings learn the languages of their friends and enemies."
+          "name": "Automatic languages",
+          "description": "Common and Halfling. Bonus Languages: Dwarven, Elven, Gnome, Goblin, and Orc. Smart halflings learn the languages of their friends and enemies."
         },
         {
           "name": "Favored Class",
-          "description": "Favored Class: Rogue. A multiclass halfling's rogue class does not count when determining whether she takes an experience point penalty for multiclassing. Halflings have long had to rely on stealth, wit, and skill, and the vocation of rogue comes naturally to them."
+          "description": "Rogue. A multiclass halfling's rogue class does not count when determining whether she takes an experience point penalty for multiclassing. Halflings have long had to rely on stealth, wit, and skill, and the vocation of rogue comes naturally to them."
         }
       ]
     }

@@ -95,13 +95,14 @@ export function getShowShortDescriptions(app) { return appState.getUIFlag(app, a
 export function getIsLootSidebarCollapsed(app) { return appState.getUIFlag(app, appState.UI_FLAG.lsc); }
 export function getIsLootCollapsed(app) { return appState.getUIFlag(app, appState.UI_FLAG.lc); }
 export function getIsPlayerSheetSidebarCollapsed(app) { return appState.getUIFlag(app, appState.UI_FLAG.psbc); }
-export function getPlayerSheetMainView(app) { return app?.psv === 'race' || app?.psv === 'class' || app?.psv === 'note' ? app.psv : 'none'; }
+export function getPlayerSheetMainView(app) { return app?.psv === 'race' || app?.psv === 'class' || app?.psv === 'note' || app?.psv === 'combat' || app?.psv === 'playerSpells' || app?.psv === 'skills' || app?.psv === 'inventory' || app?.psv === 'feats' || app?.psv === 'features' ? app.psv : 'none'; }
 
-const PLAYER_SHEET_CARD_KEYS = ['identity', 'abilityScores', 'Combat', 'Skills', 'Inventory', 'Details', 'Notes'];
+const PLAYER_SHEET_CARD_KEYS = ['identity', 'abilityScores', 'Combat', 'Character', 'Notes'];
 export function getPlayerSheetCardsCollapsed(app) {
   const raw = app?.pscards && typeof app.pscards === 'object' ? app.pscards : {};
   const out = {};
   PLAYER_SHEET_CARD_KEYS.forEach(k => { out[k] = !!raw[k]; });
+  if (raw.Character === undefined && raw.Details !== undefined) out.Character = !!raw.Details;
   return out;
 }
 

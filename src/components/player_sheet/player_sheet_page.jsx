@@ -3,15 +3,20 @@ import '../../style/shop_inventory.css';
 import RaceCards from './race_cards';
 import ClassCards from './class_cards';
 import NoteEditor from './note_editor';
+import CombatPage from './combat_page';
+import PlayerSpellsPage from './player_spells_page';
+import SkillsPage from './skills_page';
+import InventoryPage from './inventory_page';
+import FeatsPage from './feats_page';
+import FeaturesPage from './features_page';
 
 export default function PlayerSheetPage() {
   const mainView = useSelector(state => state.playerSheet.mainView ?? 'none');
-  const playerName = useSelector(state => state.playerSheet.player.name ?? '');
 
   const defaultContent = (
-    <div className="card">
+    <div className="card card-width-spellbook">
       <p className="text-center">
-        Use the sidebar to create/select a character, then open Race or Class cards with the magnifying glass.
+        Select a character from the lateral sidebar, then open the pages using menu buttons.
       </p>
     </div>
   );
@@ -20,12 +25,24 @@ export default function PlayerSheetPage() {
     mainView === 'race' ? <RaceCards /> :
     mainView === 'class' ? <ClassCards /> :
     mainView === 'note' ? <NoteEditor /> :
+    mainView === 'combat' ? <CombatPage /> :
+    mainView === 'playerSpells' ? <PlayerSpellsPage /> :
+    mainView === 'skills' ? <SkillsPage /> :
+    mainView === 'inventory' ? <InventoryPage /> :
+    mainView === 'feats' ? <FeatsPage /> :
+    mainView === 'features' ? <FeaturesPage /> :
     defaultContent;
   const text =
-    mainView === 'race' ? "Races" :
-    mainView === 'class' ? "Classes" :
-    mainView === 'note' ? "Notes" :
-    defaultContent;
+    mainView === 'race' ? 'Races' :
+    mainView === 'class' ? 'Classes' :
+    mainView === 'note' ? 'Notes' :
+    mainView === 'combat' ? 'Combat' :
+    mainView === 'playerSpells' ? 'Spells' :
+    mainView === 'skills' ? 'Skills' :
+    mainView === 'inventory' ? 'Inventory' :
+    mainView === 'feats' ? 'Feats' :
+    mainView === 'features' ? 'Features' :
+    'Player sheet';
 
   return (
     <div className="player-sheet-page">

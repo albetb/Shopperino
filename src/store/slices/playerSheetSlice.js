@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const PLAYER_SHEET_CARD_KEYS = ['identity', 'abilityScores', 'Combat', 'Skills', 'Inventory', 'Details', 'Notes'];
+const PLAYER_SHEET_CARD_KEYS = ['identity', 'abilityScores', 'Combat', 'Spells', 'Character', 'Notes'];
 
 function defaultCardCollapsed() {
   return Object.fromEntries(PLAYER_SHEET_CARD_KEYS.map(k => [k, false]));
@@ -14,6 +14,13 @@ const initialState = {
   isPlayerSheetSidebarCollapsed: false,
   mainView: 'none', // 'none' | 'race' | 'class' | 'note'
   cardCollapsed: defaultCardCollapsed(),
+  playerSpellbookPage: 0,
+  playerSpellbookLevelCollapsed: [false, false, false, false, false, false, false, false, false, false],
+  playerSpellbookClassDescCollapsed: true,
+  playerSpellbookDomainDescCollapsed: false,
+  playerSpellbookSearchName: '',
+  playerSpellbookSearchSchool: '',
+  playerSpellbookShowShortDescriptions: true,
 };
 
 export const playerSheetSlice = createSlice({
@@ -51,6 +58,29 @@ export const playerSheetSlice = createSlice({
         });
       }
     },
+    setPlayerSpellbookPage(state, action) {
+      const p = action.payload;
+      if (typeof p === 'number' && p >= 0 && p <= 2) state.playerSpellbookPage = p;
+    },
+    setPlayerSpellbookLevelCollapsed(state, action) {
+      const arr = action.payload;
+      if (Array.isArray(arr) && arr.length >= 10) state.playerSpellbookLevelCollapsed = arr.slice(0, 10);
+    },
+    setPlayerSpellbookClassDescCollapsed(state, action) {
+      state.playerSpellbookClassDescCollapsed = !!action.payload;
+    },
+    setPlayerSpellbookDomainDescCollapsed(state, action) {
+      state.playerSpellbookDomainDescCollapsed = !!action.payload;
+    },
+    setPlayerSpellbookSearchName(state, action) {
+      state.playerSpellbookSearchName = typeof action.payload === 'string' ? action.payload : '';
+    },
+    setPlayerSpellbookSearchSchool(state, action) {
+      state.playerSpellbookSearchSchool = typeof action.payload === 'string' ? action.payload : '';
+    },
+    setPlayerSpellbookShowShortDescriptions(state, action) {
+      state.playerSpellbookShowShortDescriptions = !!action.payload;
+    },
   },
 });
 
@@ -62,6 +92,13 @@ export const {
   setPlayerSheetMainView,
   setPlayerSheetCardCollapsed,
   setPlayerSheetCardsCollapsed,
+  setPlayerSpellbookPage,
+  setPlayerSpellbookLevelCollapsed,
+  setPlayerSpellbookClassDescCollapsed,
+  setPlayerSpellbookDomainDescCollapsed,
+  setPlayerSpellbookSearchName,
+  setPlayerSpellbookSearchSchool,
+  setPlayerSpellbookShowShortDescriptions,
 } = playerSheetSlice.actions;
 
 export default playerSheetSlice.reducer;

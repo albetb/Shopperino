@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import { isMobile, trimLine } from '../../lib/utils';
 import { addCardByLink } from '../../store/slices/appSlice';
-import { onLearnUnlearnSpell, onPrepareDomainSpell, onPrepareSpell, onUnprepareDomainSpell, onUnprepareSpell, onUseSpell } from '../../store/thunks/spellbookThunks';
 import SpontaneousSpells from './spontaneous_spells';
 import DomainSpells from './domain_spells';
 
@@ -27,6 +26,7 @@ export default function SpellLevelCard({
   inst,
   spellsPerDay,
   charBonus,
+  actions,
   dispatch,
   showShortDescriptions
 }) {
@@ -169,7 +169,7 @@ export default function SpellLevelCard({
                       <div className="spell-slot-div">
                         <button
                           className={`smaller flat-button ${prepCount === 0 ? 'opacity-50' : ''}`}
-                          onClick={() => dispatch(onUnprepareDomainSpell(level, item.Link))}
+                          onClick={() => actions?.onUnprepareDomainSpell?.(level, item.Link)}
                           disabled={prepCount === 0}
                         >
                           <span className="material-symbols-outlined">remove</span>
@@ -177,7 +177,7 @@ export default function SpellLevelCard({
                         <label className="level-text">{prepCount}</label>
                         <button
                           className="smaller flat-button"
-                          onClick={() => dispatch(onPrepareDomainSpell(level, item.Link))}
+                          onClick={() => actions?.onPrepareDomainSpell?.(level, item.Link)}
                         >
                           <span className="material-symbols-outlined">add</span>
                         </button>
@@ -213,6 +213,7 @@ export default function SpellLevelCard({
         <DomainSpells
           preparedByLevel={{ [level]: preparedDomainSpells }}
           preparedLevels={[level]}
+          onUseDomainSpell={actions?.onUseDomainSpell}
           dispatch={dispatch}
           showShortDescriptions={showShortDescriptions}
         />
@@ -229,7 +230,7 @@ export default function SpellLevelCard({
                     <td className={`${firstClass} col-btn-sm`}>
                       <button
                         className={`flat-button smaller ${learnedLinks.has(item.Link) ? 'opacity-50' : ''}`}
-                        onClick={() => dispatch(onLearnUnlearnSpell(item.Link))}
+                        onClick={() => actions?.onLearnUnlearnSpell?.(item.Link)}
                       >
                         <span className="material-symbols-outlined">
                           {learnedLinks.has(item.Link) ? 'bookmark_remove' : 'bookmark_add'}
@@ -244,7 +245,7 @@ export default function SpellLevelCard({
                         <div className='spell-slot-div'>
                           <button
                             className={`smaller flat-button ${inst.getSpellPreparedUsed(item.Link).Prepared === 0 ? 'opacity-50' : ''}`}
-                            onClick={() => dispatch(onUnprepareSpell(item.Link))}
+                            onClick={() => actions?.onUnprepareSpell?.(item.Link)}
                             disabled={inst.getSpellPreparedUsed(item.Link).Prepared === 0}
                           >
                             <span className='material-symbols-outlined'>remove</span>
@@ -254,7 +255,7 @@ export default function SpellLevelCard({
                           </label>
                           <button
                             className='smaller flat-button'
-                            onClick={() => dispatch(onPrepareSpell(item.Link))}
+                            onClick={() => actions?.onPrepareSpell?.(item.Link)}
                           >
                             <span className='material-symbols-outlined'>add</span>
                           </button>
@@ -269,7 +270,7 @@ export default function SpellLevelCard({
                         <div className='spell-slot-div2'>
                           <button
                             className={`flat-button smaller ${getRemaining(item.Link) <= 0 ? 'opacity-50' : ''}`}
-                            onClick={() => dispatch(onUseSpell(item.Link))}
+                            onClick={() => actions?.onUseSpell?.(item.Link)}
                             disabled={getRemaining(item.Link) <= 0}
                           >
                             <span className='material-symbols-outlined'>wand_stars</span>
@@ -331,6 +332,15 @@ SpellLevelCard.propTypes = {
   inst: PropTypes.object.isRequired,
   spellsPerDay: PropTypes.arrayOf(PropTypes.number).isRequired,
   charBonus: PropTypes.number.isRequired,
+  actions: PropTypes.shape({
+    onLearnUnlearnSpell: PropTypes.func,
+    onPrepareSpell: PropTypes.func,
+    onUnprepareSpell: PropTypes.func,
+    onUseSpell: PropTypes.func,
+    onPrepareDomainSpell: PropTypes.func,
+    onUnprepareDomainSpell: PropTypes.func,
+    onUseDomainSpell: PropTypes.func,
+  }),
   dispatch: PropTypes.func.isRequired,
   showShortDescriptions: PropTypes.bool.isRequired
 };

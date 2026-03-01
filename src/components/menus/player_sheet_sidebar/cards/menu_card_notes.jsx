@@ -15,6 +15,7 @@ export default function MenuCardNotes() {
   const dispatch = useDispatch();
   const [isNewVisible, setIsNewVisible] = useState(false);
   const player = useSelector(state => state.playerSheet.player);
+  const mainView = useSelector(state => state.playerSheet.mainView ?? 'none');
 
   const noteNames = useMemo(() => player?.getNoteNames() ?? [], [player]);
   const selectedNoteName = player?.getSelectedNoteName() ?? '';
@@ -22,6 +23,7 @@ export default function MenuCardNotes() {
     () => order([...noteNames], selectedNoteName),
     [noteNames, selectedNoteName]
   );
+  const isNoteActive = mainView === 'note';
 
   const handleCreate = (name) => {
     dispatch(onCreateNote(name));
@@ -75,8 +77,9 @@ export default function MenuCardNotes() {
             <div className="card-side-div margin-top buttons-row-center">
               <button
                 type="button"
-                className="modern-button small-middle-long2"
+                className={`modern-button small-middle-long2${isNoteActive ? ' opacity-50' : ''}`}
                 onClick={handleOpenNote}
+                disabled={isNoteActive}
                 title="Open note"
               >
                 <span className="material-symbols-outlined">note_stack</span>

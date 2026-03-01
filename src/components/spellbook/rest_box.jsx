@@ -1,11 +1,10 @@
 import PropTypes from 'prop-types';
-import { onRefreshSpell } from '../../store/thunks/spellbookThunks';
 
-export default function RestBox({ page, hasUsedSpells, dispatch }) {
+export default function RestBox({ page, hasUsedSpells, onRefreshSpell }) {
     if (page !== 2) return null;
 
     const handleRest = () => {
-        if (hasUsedSpells) dispatch(onRefreshSpell());
+        if (hasUsedSpells && onRefreshSpell) onRefreshSpell();
     };
 
     return (
@@ -28,5 +27,5 @@ export default function RestBox({ page, hasUsedSpells, dispatch }) {
 RestBox.propTypes = {
     page: PropTypes.number.isRequired,
     hasUsedSpells: PropTypes.bool.isRequired,
-    dispatch: PropTypes.func.isRequired,
+    onRefreshSpell: PropTypes.func,
 };
