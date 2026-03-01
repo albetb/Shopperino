@@ -32,7 +32,10 @@ export function getSkillByLink(link) {
     const skills = loadFile('skills');
     if (!Array.isArray(skills) || !link || typeof link !== 'string') return [];
     const normalized = link.toLowerCase().trim();
-    const skill = skills.find(s => slug(s.Name) === normalized);
+    let skill = skills.find(s => slug(s.Name) === normalized);
+    if (!skill && /^knowledge-/.test(normalized)) {
+      skill = skills.find(s => s && s.Name === 'Knowledge');
+    }
     if (!skill) return [];
     const charFull = (skill.Characteristic && CHARACTERISTIC_FULL[skill.Characteristic]) ? CHARACTERISTIC_FULL[skill.Characteristic] : (skill.Characteristic || '');
     const italicParts = [charFull, skill.Note].filter(Boolean);

@@ -383,6 +383,12 @@ table {
   font-size: 1.25rem;
 }
 
+.player-sheet-lang-extra-hint {
+  font-size: 0.85rem;
+  font-weight: normal;
+  opacity: 0.9;
+}
+
 .player-sheet-weapon-armor-table {
   width: 100%;
   border-collapse: collapse;
@@ -707,6 +713,13 @@ table {
   flex-direction: column;
   gap: 0.5rem;
   width: 88%;
+}
+
+.player-sheet-combat-spells-divider {
+  width: 92%;
+  margin: 0.6rem 0 0;
+  border: none;
+  border-top: 1px solid var(--black-t, rgba(0, 0, 0, 0.15));
 }
 
 .player-sheet-combat-stats-row {

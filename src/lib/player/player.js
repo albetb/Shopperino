@@ -598,13 +598,30 @@ class Player {
   }
 
   // —— Skills ——
+  /** Knowledge sub-skills from skills.json description (each has its own ranks/bonus). */
+  static KNOWLEDGE_SUBSKILLS = [
+    'arcana', 'architecture and engineering', 'dungeoneering', 'geography',
+    'history', 'local', 'nature', 'nobility and royalty', 'religion', 'the planes',
+  ];
+
   /**
-   * All skill names from skills.json (from loadFile).
+   * All skill names from skills.json. Expands "Knowledge" into Knowledge (X) sub-skills.
    */
   getSkillNames() {
     const list = loadFile('skills');
     if (!Array.isArray(list)) return [];
-    return list.map((s) => (s && s.Name ? String(s.Name) : '')).filter(Boolean);
+    const names = list.map((s) => (s && s.Name ? String(s.Name) : '')).filter(Boolean);
+    const result = [];
+    for (const n of names) {
+      if (n === 'Knowledge') {
+        for (const sub of Player.KNOWLEDGE_SUBSKILLS) {
+          result.push(`Knowledge (${sub})`);
+        }
+      } else {
+        result.push(n);
+      }
+    }
+    return result;
   }
 
   getSkillRanks(skillName) {
@@ -617,18 +634,55 @@ class Player {
     return s && typeof s.bonus === 'number' ? s.bonus : 0;
   }
 
+  /** Whether this skill is a class skill for the player's current class. */
+  isClassSkill(skillName) {
+    const list = getClassSkillsListFromString(getClassData(this.class)?.classSkills ?? '');
+    if (list.includes(skillName)) return true;
+    if (/^Knowledge\s*\(/.test(skillName) && list.some((s) => /Knowledge\s*\(all\s+skills/i.test(s))) {
+      return true;
+    }
+    return false;
+  }
+
+  /** Max ranks allowed for this skill (class: level+3; cross-class: (level+3)/2). */
+  getMaxSkillRanks(skillName) {
+    const level = this.getLevel();
+    const cap = level + 3;
+    return this.isClassSkill(skillName) ? cap : cap / 2;
+  }
+
+  /**
+   * Skill total for display and dice: ability modifier + floor(ranks) + bonus.
+   * Only the integer part of ranks is used.
+   */
+  getSkillTotal(skillName) {
+    const skills = loadFile('skills');
+    let skill = Array.isArray(skills) ? skills.find((s) => s && s.Name === skillName) : null;
+    if (!skill && /^Knowledge\s*\(/.test(skillName)) {
+      skill = Array.isArray(skills) ? skills.find((s) => s && s.Name === 'Knowledge') : null;
+    }
+    const char = skill?.Characteristic;
+    const key = char && { Str: 'str', Dex: 'dex', Con: 'con', Int: 'int', Wis: 'wis', Cha: 'cha' }[char];
+    const mod = key ? this.getModifier(key) : 0;
+    const ranks = Math.floor(this.getSkillRanks(skillName));
+    const bonus = this.getSkillBonus(skillName);
+    return mod + ranks + bonus;
+  }
+
   setSkillRanks(skillName, value) {
     if (!skillName || typeof skillName !== 'string') return;
     if (!this.skills) this.skills = {};
     if (this.skills[skillName] == null) this.skills[skillName] = { ranks: 0, bonus: 0 };
-    this.skills[skillName].ranks = Math.max(0, Number(value) || 0);
+    const num = Number(value);
+    const max = this.getMaxSkillRanks(skillName);
+    this.skills[skillName].ranks = clamp(Number.isNaN(num) ? 0 : num, 0, max);
   }
 
   setSkillBonus(skillName, value) {
     if (!skillName || typeof skillName !== 'string') return;
     if (!this.skills) this.skills = {};
     if (this.skills[skillName] == null) this.skills[skillName] = { ranks: 0, bonus: 0 };
-    this.skills[skillName].bonus = Number(value) || 0;
+    this.skills[skillName].bonus = clamp(Number(value) || 0, 0, 99);
   }
 
   /**
@@ -642,11 +696,23 @@ class Player {
   }
 
   /**
-   * Skill points used = sum of all skill ranks.
+   * Skill points used = class skills contribute ranks; cross-class contribute ranks * 2.
+   * Extra bonus languages (beyond Int mod) cost 2 SP each, or 1 SP if Speak Language is a class skill.
    */
   getUsedSkillPoints() {
     const names = this.getSkillNames();
-    return names.reduce((sum, name) => sum + this.getSkillRanks(name), 0);
+    let sum = names.reduce((acc, name) => {
+      const ranks = this.getSkillRanks(name);
+      return acc + (this.isClassSkill(name) ? ranks : ranks * 2);
+    }, 0);
+    const learnedBonus = this.getBonusLanguagesLearned();
+    const maxBonus = this.getMaxBonusLanguages();
+    if (learnedBonus.length > maxBonus) {
+      const extra = learnedBonus.length - maxBonus;
+      const costPerExtra = this.isClassSkill('Speak Language') ? 1 : 2;
+      sum += extra * costPerExtra;
+    }
+    return sum;
   }
 
   // —— Languages ——
@@ -722,6 +788,27 @@ export function getRaceData(raceName) {
   if (!raceName || typeof raceName !== 'string') return null;
   const races = loadFile('races');
   return races?.[raceName] ?? null;
+}
+
+/**
+ * Parse classSkills string from classes.json into an array of skill names.
+ * Handles "Name (Abi), Name (Abi), and Name (Abi)." and names with parentheses e.g. "Knowledge (arcana) (Int)".
+ * @param {string} classSkillsStr - The classSkills string from class data
+ * @returns {string[]} Skill names (trimmed)
+ */
+export function getClassSkillsListFromString(classSkillsStr) {
+  if (!classSkillsStr || typeof classSkillsStr !== 'string') return [];
+  const abilitySuffix = /\s+\((?:Str|Dex|Con|Int|Wis|Cha)\)\s*\.?\s*$/i;
+  const nASuffix = /\s+\(n\/a\)\s*\.?\s*$/i;
+  const parts = classSkillsStr.split(/\s*,\s*|\s+and\s+/i).map((s) => s.trim()).filter(Boolean);
+  return parts.map((part) => {
+    let p = part;
+    const abMatch = p.match(abilitySuffix);
+    if (abMatch) p = p.slice(0, -abMatch[0].length).trim();
+    const naMatch = p.match(nASuffix);
+    if (naMatch) p = p.slice(0, -naMatch[0].length).trim();
+    return p;
+  }).filter(Boolean);
 }
 
 /**

@@ -113,8 +113,10 @@
 }
 
 .ability-row-display .ability-label {
+  width: 2.2rem;
   min-width: 2.2rem;
   margin-right: 0.2rem;
+  flex-shrink: 0;
 }
 
 .ability-total {
@@ -132,6 +134,57 @@
 .ability-actions {
   display: flex;
   gap: 0.25rem;
+}
+
+.ability-expanded-block {
+  width: 92%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-top: 0.6rem;
+}
+
+.ability-expanded-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  width: 100%;
+}
+
+.ability-expanded-label {
+  width: 3rem;
+  min-width: 3rem;
+  margin: 0 0.35rem 0 0;
+  font-weight: inherit;
+  flex-shrink: 0;
+  text-align: left;
+}
+
+.ability-expanded-label-bonus {
+  font-style: italic;
+}
+
+.ability-expanded-filler {
+  flex: 1;
+  min-width: 0;
+}
+
+.ability-expanded-row .levels-div {
+  flex-shrink: 0;
+  width: calc(var(--btn-width-sm) * 3.2);
+  min-width: calc(var(--btn-width-sm) * 3.2);
+}
+
+.ability-expanded-row .levels-button.small:last-of-type,
+.ability-expanded-spacer {
+  flex-shrink: 0;
+}
+
+.ability-expanded-spacer {
+  display: inline-block;
+  width: var(--btn-width-sm);
+  min-width: var(--btn-width-sm);
+  height: var(--btn-height-sm);
 }
 
 .levels-div,
@@ -304,4 +357,184 @@ tr {
     min-height: unset;
     height: auto;
   }
+}
+
+/* —— Skills page —— */
+.player-sheet-skills-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  width: 80%;
+}
+
+.player-sheet-skills-used {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.player-sheet-skills-table-wrap {
+  overflow-x: auto;
+  width: 92%;
+}
+
+.player-sheet-skills-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  table-layout: fixed;
+}
+
+.player-sheet-skills-th {
+  text-align: left;
+  padding: 0.35rem 0.5rem;
+  border-bottom: 1px solid var(--main-t2, #333);
+  cursor: pointer;
+  user-select: none;
+}
+
+.player-sheet-skills-th-dice {
+  cursor: default;
+  text-align: center;
+  width: 2.5rem;
+  min-width: 2.5rem;
+  max-width: 2.5rem;
+}
+
+.player-sheet-skills-th-armor {
+  width: 2.2rem;
+  text-align: center;
+}
+
+.player-sheet-skills-armor-icon {
+  font-size: 1.1rem;
+  opacity: 0.6;
+}
+
+.player-sheet-skills-td-armor {
+  width: 2.2rem;
+  text-align: center;
+  padding: 0.25rem 0.5rem;
+  border-bottom: 1px solid var(--main-t2, #333);
+}
+
+.player-sheet-skills-armor-penalty {
+  font-size: 1rem;
+  opacity: 0.8;
+}
+
+.player-sheet-skills-armor-x2 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+.player-sheet-skills-td-name {
+  padding: 0.25rem 0.5rem;
+  border-bottom: 1px solid var(--main-t2, #333);
+}
+
+
+.player-sheet-skills-th-ability,
+.player-sheet-skills-td-ability {
+  width: 4.5rem;
+}
+.player-sheet-skills-td-ability {
+  padding: 0.25rem 0.5rem;
+  border-bottom: 1px solid var(--main-t2, #333);
+}
+
+.player-sheet-skills-th-value,
+.player-sheet-skills-td-value {
+  width: 3.5rem;
+}
+.player-sheet-skills-td-value {
+  padding: 0.25rem 0.5rem;
+  border-bottom: 1px solid var(--main-t2, #333);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.player-sheet-skills-td-dice {
+  padding: 0.25rem 0.5rem;
+  border-bottom: 1px solid var(--main-t2, #333);
+  width: 2.5rem;
+  min-width: 2.5rem;
+  max-width: 2.5rem;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.player-sheet-skills-row-class {
+  background-color: var(--grey-t2, rgba(0, 0, 0, 0.15));
+}
+
+.player-sheet-skill-name-bold {
+  font-weight: bold;
+}
+
+.player-sheet-skills-edit .player-sheet-skills-table .levels-div {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.2rem;
+  min-width: 6.5rem;
+}
+
+.player-sheet-skills-edit .player-sheet-skills-table .level-frame {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  min-width: 2rem;
+}
+
+.player-sheet-skills-edit .player-sheet-skills-th-ranks,
+.player-sheet-skills-edit .player-sheet-skills-td-ranks,
+.player-sheet-skills-edit .player-sheet-skills-th-bonus,
+.player-sheet-skills-edit .player-sheet-skills-td-bonus {
+  width: 8rem;
+  max-width: 8rem;
+}
+
+.player-sheet-skills-edit .player-sheet-skills-th-name,
+.player-sheet-skills-edit .player-sheet-skills-td-name {
+  width: auto;
+}
+
+.player-sheet-skills-td-ranks,
+.player-sheet-skills-td-bonus {
+  padding: 0.25rem 0.5rem;
+  border-bottom: 1px solid var(--main-t2, #333);
+  vertical-align: middle;
+}
+
+.player-sheet-skills-ranks-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.player-sheet-skills-ranks-max {
+  font-size: 0.85rem;
+  opacity: 0.85;
+  font-style: italic;
+}
+
+/* Knowledge skill: header row (no buttons/numbers) + indented sub-skills */
+.player-sheet-skills-row-knowledge-header td {
+  border-bottom: 1px solid var(--main-t2, #333);
+  font-weight: 600;
+  padding: 0.25rem 0.5rem;
+}
+.player-sheet-skills-row-knowledge-header .player-sheet-skill-knowledge-header {
+  font-style: normal;
+}
+.player-sheet-skills-td-knowledge-sub {
+  padding-left: 1.5rem;
+}
+.player-sheet-skill-knowledge-sub {
+  font-style: italic;
 }

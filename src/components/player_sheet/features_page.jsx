@@ -27,6 +27,10 @@ export default function FeaturesPage() {
   const allLangs = useMemo(() => [...autoLangs, ...learnedBonus], [autoLangs, learnedBonus]);
   const maxBonus = useMemo(() => player?.getMaxBonusLanguages?.() ?? 0, [player]);
   const bonusOptions = useMemo(() => player?.getBonusLanguagesOptions?.() ?? [], [player]);
+  const extraLangCost = useMemo(() => {
+    if (learnedBonus.length < maxBonus) return 0;
+    return player?.isClassSkill?.('Speak Language') ? 1 : 2;
+  }, [player, learnedBonus.length, maxBonus]);
 
   const classData = useMemo(
     () => getClassData(player?.getClass?.() ?? player?.class ?? ''),
@@ -163,6 +167,11 @@ export default function FeaturesPage() {
         <div className="card-side-div card-expand-div" onClick={() => toggleCard('languages')}>
           <h3 className="card-title">
             Languages - {learnedBonus.length}/{maxBonus}
+            {learnedBonus.length > maxBonus && (
+              <span className="player-sheet-lang-extra-hint" title="Extra languages cost skill points">
+                {' '}(+{(learnedBonus.length - maxBonus) * extraLangCost} SP)
+              </span>
+            )}
           </h3>
           <button type="button" className="collapse-button">
             <span className="material-symbols-outlined">

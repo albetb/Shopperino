@@ -167,6 +167,24 @@ export const onSetAbilityBonus = (abilityKey, value) => (dispatch, getState) => 
   persistPlayer(dispatch, getState, p);
 };
 
+export const onSetSkillRanks = (skillName, value) => (dispatch, getState) => {
+  const app = getState().persist;
+  if (app.pss == null || app.pss < 0 || !app.psc?.[app.pss]) return;
+  const p = db.getPlayerByIndex(app, app.pss);
+  if (!p) return;
+  p.setSkillRanks(skillName, value);
+  persistPlayer(dispatch, getState, p);
+};
+
+export const onSetSkillBonus = (skillName, value) => (dispatch, getState) => {
+  const app = getState().persist;
+  if (app.pss == null || app.pss < 0 || !app.psc?.[app.pss]) return;
+  const p = db.getPlayerByIndex(app, app.pss);
+  if (!p) return;
+  p.setSkillBonus(skillName, value);
+  persistPlayer(dispatch, getState, p);
+};
+
 export const onCreateNote = (nameRaw) => (dispatch, getState) => {
   const name = cap(nameRaw);
   if (!name.trim()) return;
