@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { ABILITY_KEYS } from '../../../../lib/player';
 import { onSetAbilityBase, onSetAbilityBonus } from '../../../../store/thunks/playerSheetThunks';
@@ -30,112 +31,210 @@ function formatModifier(mod) {
   return `${mod}`;
 }
 
-export default function MenuCardAbilityScores() {
+export default function MenuCardAbilityScores({ isCollapsed, onToggleCollapse }) {
   const dispatch = useDispatch();
   const player = useSelector((state) => state.playerSheet.player);
 
-  const [expandedKey, setExpandedKey] = useState(null);
-  const [tempBase, setTempBase] = useState(DEFAULT_BASE);
-  const [tempBonus, setTempBonus] = useState(0);
+  const [editMode, setEditMode] = useState(null); // null | 'base' | 'bonus'
+  const [tempValues, setTempValues] = useState({});
 
-  const expand = (key) => {
-    const base = player?.getAbilityBase?.(key) ?? DEFAULT_BASE;
-    const bonus = player?.getAbilityBonus?.(key) ?? 0;
-    setExpandedKey(key);
-    setTempBase(base);
-    setTempBonus(bonus);
+  const enterEditBase = () => {
+    setTempValues(
+      Object.fromEntries(
+        ABILITY_KEYS.map((key) => [key, player?.getAbilityBase?.(key) ?? DEFAULT_BASE])
+      )
+    );
+    setEditMode('base');
   };
 
-  const collapse = () => {
-    setExpandedKey(null);
+  const enterEditBonus = () => {
+    setTempValues(
+      Object.fromEntries(
+        ABILITY_KEYS.map((key) => [key, player?.getAbilityBonus?.(key) ?? 0])
+      )
+    );
+    setEditMode('bonus');
   };
 
-  const save = () => {
-    if (expandedKey) {
-      dispatch(onSetAbilityBase(expandedKey, clamp(tempBase, MIN_BASE, MAX_BASE)));
-      dispatch(onSetAbilityBonus(expandedKey, clamp(tempBonus, MIN_BONUS, MAX_BONUS)));
-    }
-    collapse();
+  const exitEdit = () => {
+    setEditMode(null);
+    setTempValues({});
   };
 
-  const decrementBase = () => setTempBase((v) => clamp(v - 1, MIN_BASE, MAX_BASE));
-  const incrementBase = () => setTempBase((v) => clamp(v + 1, MIN_BASE, MAX_BASE));
-  const decrementBonus = () => setTempBonus((v) => clamp(v - 1, MIN_BONUS, MAX_BONUS));
-  const incrementBonus = () => setTempBonus((v) => clamp(v + 1, MIN_BONUS, MAX_BONUS));
+  const saveBase = () => {
+    ABILITY_KEYS.forEach((key) => {
+      dispatch(onSetAbilityBase(key, clamp(tempValues[key] ?? DEFAULT_BASE, MIN_BASE, MAX_BASE)));
+    });
+    exitEdit();
+  };
+
+  const saveBonus = () => {
+    ABILITY_KEYS.forEach((key) => {
+      dispatch(onSetAbilityBonus(key, clamp(tempValues[key] ?? 0, MIN_BONUS, MAX_BONUS)));
+    });
+    exitEdit();
+  };
+
+  const updateTemp = (key, delta) => {
+    const min = editMode === 'base' ? MIN_BASE : MIN_BONUS;
+    const max = editMode === 'base' ? MAX_BASE : MAX_BONUS;
+    setTempValues((prev) => ({
+      ...prev,
+      [key]: clamp((prev[key] ?? 0) + delta, min, max),
+    }));
+  };
+
+  const allDefault = player && ABILITY_KEYS.every(
+    (key) => player.getAbilityBase(key) === 10 && player.getAbilityBonus(key) === 0
+  );
+  const displayTitle = allDefault ? '[!] Ability' : 'Ability';
 
   if (!player) {
     return (
-      <p className="modal-body-muted">Select a character to edit ability scores.</p>
+      <div className={`card ${isCollapsed ? 'collapsed' : ''}`}>
+        <div className="card-side-div card-expand-div" onClick={onToggleCollapse}>
+          <h3 className="card-title">Ability</h3>
+          <button type="button" className="collapse-button">
+            <span className="material-symbols-outlined">
+              {isCollapsed ? 'expand_more' : 'expand_less'}
+            </span>
+          </button>
+        </div>
+        {!isCollapsed && (
+          <div className="card-content">
+            <p className="modal-body-muted">Select a character to edit ability scores.</p>
+          </div>
+        )}
+      </div>
     );
   }
 
-  return (
+  const titleContent = editMode ? (
     <>
-      {ABILITY_KEYS.map((key) => {
-        const isExpanded = expandedKey === key;
-        const total = player.getAbilityTotal(key);
-        const mod = player.getModifier(key);
-
-        if (isExpanded) {
-          return (
-            <div key={key} className="ability-expanded-block">
-              <div className="ability-expanded-row">
-                <label className="ability-expanded-label">{ABILITY_LABELS[key]}</label>
-                <span className="ability-expanded-filler" aria-hidden="true" />
-                <div className="levels-div">
-                  <button type="button" className="levels-button small" onClick={decrementBase} aria-label="Decrease base">
-                    <span className="material-symbols-outlined">remove</span>
-                  </button>
-                  <div className="level-frame">
-                    <label className="level-text">{tempBase}</label>
-                  </div>
-                  <button type="button" className="levels-button small" onClick={incrementBase} aria-label="Increase base">
-                    <span className="material-symbols-outlined">add</span>
-                  </button>
-                </div>
-                <span className="ability-expanded-filler" aria-hidden="true" />
-                <button type="button" className="levels-button small" onClick={save} aria-label="Save" title="Save">
-                  <span className="material-symbols-outlined">check</span>
-                </button>
-              </div>
-              <div className="ability-expanded-row">
-                <label className="ability-expanded-label ability-expanded-label-bonus">Bonus</label>
-                <span className="ability-expanded-filler" aria-hidden="true" />
-                <div className="levels-div">
-                  <button type="button" className="levels-button small" onClick={decrementBonus} aria-label="Decrease bonus">
-                    <span className="material-symbols-outlined">remove</span>
-                  </button>
-                  <div className="level-frame">
-                    <label className="level-text">{tempBonus}</label>
-                  </div>
-                  <button type="button" className="levels-button small" onClick={incrementBonus} aria-label="Increase bonus">
-                    <span className="material-symbols-outlined">add</span>
-                  </button>
-                </div>
-                <span className="ability-expanded-filler" aria-hidden="true" />
-                <span className="ability-expanded-spacer" aria-hidden="true" />
-              </div>
-            </div>
-          );
-        }
-
-        return (
-          <div key={key} className="card-side-div margin-top ability-row ability-row-display">
-            <label className="modern-label ability-label">{ABILITY_LABELS[key]}</label>
-            <span className="ability-total">{total}</span>
-            <sup className="ability-mod">{formatModifier(mod)}</sup>
-            <button
-              type="button"
-              className="levels-button small"
-              onClick={() => expand(key)}
-              title={`Edit ${ABILITY_LABELS[key]}`}
-              aria-label={`Edit ${ABILITY_LABELS[key]}`}
-            >
-              <span className="material-symbols-outlined">edit</span>
-            </button>
-          </div>
-        );
-      })}
+      <button
+        type="button"
+        className="ability-title-save"
+        onClick={editMode === 'base' ? saveBase : saveBonus}
+        title="Save"
+        aria-label="Save"
+      >
+        <span className="material-symbols-outlined">check</span>
+      </button>
+      <h3 className="card-title">
+        {editMode === 'base' ? 'Editing base scores' : 'Editing bonuses'}
+      </h3>
+    </>
+  ) : (
+    <>
+      <span
+        className="ability-title-icon"
+        onClick={(e) => { e.stopPropagation(); if (isCollapsed) onToggleCollapse(); enterEditBase(); }}
+        title="Edit base ability scores"
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => { if (e.key === 'Enter') { if (isCollapsed) onToggleCollapse(); enterEditBase(); } }}
+        aria-label="Edit base ability scores"
+      >
+        <span className="material-symbols-outlined">edit</span>
+      </span>
+      <span
+        className="ability-title-icon"
+        onClick={(e) => { e.stopPropagation(); if (isCollapsed) onToggleCollapse(); enterEditBonus(); }}
+        title="Edit ability bonuses"
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => { if (e.key === 'Enter') { if (isCollapsed) onToggleCollapse(); enterEditBonus(); } }}
+        aria-label="Edit ability bonuses"
+      >
+        <span className="material-symbols-outlined">add</span>
+      </span>
+      <h3 className="card-title">{displayTitle}</h3>
     </>
   );
+
+  return (
+    <div className={`card ${isCollapsed ? 'collapsed' : ''}`}>
+      <div className="card-side-div card-expand-div" onClick={!editMode ? onToggleCollapse : undefined}>
+        <div className="ability-card-title-row">
+          {titleContent}
+        </div>
+        <button type="button" className="collapse-button" onClick={(e) => { e.stopPropagation(); onToggleCollapse(); }}>
+          <span className="material-symbols-outlined">
+            {isCollapsed ? 'expand_more' : 'expand_less'}
+          </span>
+        </button>
+      </div>
+
+      {!isCollapsed && (
+        <div className="card-content">
+          {editMode ? (
+            <div className="ability-edit-rows">
+              {ABILITY_KEYS.map((key) => (
+                <div key={key} className="ability-edit-row">
+                  <label className="ability-edit-row-label">{ABILITY_LABELS[key]}</label>
+                  <div className="ability-edit-row-controls">
+                    <button
+                      type="button"
+                      className="levels-button small"
+                      onClick={() => updateTemp(key, -1)}
+                      aria-label={`Decrease ${ABILITY_LABELS[key]}`}
+                    >
+                      <span className="material-symbols-outlined">remove</span>
+                    </button>
+                    <div className="level-frame">
+                      <span className="level-text">{tempValues[key] ?? 0}</span>
+                    </div>
+                    <button
+                      type="button"
+                      className="levels-button small"
+                      onClick={() => updateTemp(key, 1)}
+                      aria-label={`Increase ${ABILITY_LABELS[key]}`}
+                    >
+                      <span className="material-symbols-outlined">add</span>
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <>
+              <div className="ability-grid ability-grid-labels">
+                {ABILITY_KEYS.map((key) => (
+                  <div key={key} className="ability-grid-cell ability-label-cell">
+                    {ABILITY_LABELS[key]}
+                  </div>
+                ))}
+              </div>
+              <div className="ability-grid ability-grid-scores">
+                {ABILITY_KEYS.map((key) => {
+                  const total = player.getAbilityTotal(key);
+                  const mod = player.getModifier(key);
+                  return (
+                    <div key={key} className="ability-grid-cell ability-score-cell">
+                      {total}
+                      <sup>{formatModifier(mod)}</sup>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="ability-grid ability-grid-dice">
+                {ABILITY_KEYS.map((key) => (
+                  <div key={key} className="ability-grid-cell ability-dice-cell">
+                    <button type="button" className="ability-dice-button" disabled aria-label={`Roll ${ABILITY_LABELS[key]}`}>
+                      <span className="material-symbols-outlined">casino</span>
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+      )}
+    </div>
+  );
 }
+
+MenuCardAbilityScores.propTypes = {
+  isCollapsed: PropTypes.bool.isRequired,
+  onToggleCollapse: PropTypes.func.isRequired,
+};

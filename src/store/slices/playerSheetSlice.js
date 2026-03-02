@@ -18,6 +18,7 @@ const initialState = {
   playerSpellbookLevelCollapsed: [false, false, false, false, false, false, false, false, false, false],
   playerSpellbookClassDescCollapsed: true,
   playerSpellbookDomainDescCollapsed: false,
+  playerSpellbookWizardSchoolsCollapsed: true,
   playerSpellbookSearchName: '',
   playerSpellbookSearchSchool: '',
   playerSpellbookShowShortDescriptions: true,
@@ -72,6 +73,9 @@ export const playerSheetSlice = createSlice({
     setPlayerSpellbookDomainDescCollapsed(state, action) {
       state.playerSpellbookDomainDescCollapsed = !!action.payload;
     },
+    setPlayerSpellbookWizardSchoolsCollapsed(state, action) {
+      state.playerSpellbookWizardSchoolsCollapsed = !!action.payload;
+    },
     setPlayerSpellbookSearchName(state, action) {
       state.playerSpellbookSearchName = typeof action.payload === 'string' ? action.payload : '';
     },
@@ -96,6 +100,7 @@ export const {
   setPlayerSpellbookLevelCollapsed,
   setPlayerSpellbookClassDescCollapsed,
   setPlayerSpellbookDomainDescCollapsed,
+  setPlayerSpellbookWizardSchoolsCollapsed,
   setPlayerSpellbookSearchName,
   setPlayerSpellbookSearchSchool,
   setPlayerSpellbookShowShortDescriptions,

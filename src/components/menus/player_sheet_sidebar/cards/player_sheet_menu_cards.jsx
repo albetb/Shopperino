@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { ABILITY_KEYS } from '../../../../lib/player';
 import { setPlayerSheetCardCollapsed } from '../../../../store/slices/playerSheetSlice';
 import '../../../../style/menu_cards.css';
 import MenuCardPlayerSheet from './menu_card_player_sheet';
@@ -30,14 +29,6 @@ export default function PlayerSheetMenuCards() {
   }, [player]);
 
   const hasRaceAndClass = !!(player?.getRace?.() && player?.getClass?.());
-
-  const abilityScoresTitle = useMemo(() => {
-    if (!player) return 'Ability';
-    const allDefault = ABILITY_KEYS.every(
-      (key) => player.getAbilityBase(key) === 10 && player.getAbilityBonus(key) === 0
-    );
-    return allDefault ? '[!] Ability' : 'Ability';
-  }, [player]);
 
   const combatTitle = useMemo(() => {
     if (!player) return 'Combat';
@@ -76,21 +67,10 @@ export default function PlayerSheetMenuCards() {
 
       {hasRaceAndClass && (
         <>
-          <div className={`card ${isCollapsed('abilityScores') ? 'collapsed' : ''}`}>
-            <div className="card-side-div card-expand-div" onClick={() => toggleCard('abilityScores')}>
-              <h3 className="card-title">{abilityScoresTitle}</h3>
-              <button className="collapse-button" type="button">
-                <span className="material-symbols-outlined">
-                  {isCollapsed('abilityScores') ? 'expand_more' : 'expand_less'}
-                </span>
-              </button>
-            </div>
-            {!isCollapsed('abilityScores') && (
-              <div className="card-content">
-                <MenuCardAbilityScores />
-              </div>
-            )}
-          </div>
+          <MenuCardAbilityScores
+            isCollapsed={isCollapsed('abilityScores')}
+            onToggleCollapse={() => toggleCard('abilityScores')}
+          />
 
           <div className={`card ${isCollapsed('Combat') ? 'collapsed' : ''}`}>
             <div

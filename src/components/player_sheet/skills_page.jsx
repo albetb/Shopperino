@@ -236,7 +236,7 @@ export default function SkillsPage() {
                                   </td>
                                   <td className="player-sheet-skills-td-value">{total}</td>
                                   <td className="player-sheet-skills-td-dice">
-                                    <button type="button" className="levels-button small" aria-label="Roll" title="Roll (not implemented)">
+                                    <button type="button" className="ability-dice-button" disabled aria-label="Roll">
                                       <span className="material-symbols-outlined">casino</span>
                                     </button>
                                   </td>
@@ -272,7 +272,7 @@ export default function SkillsPage() {
                           </td>
                           <td className="player-sheet-skills-td-value">{total}</td>
                           <td className="player-sheet-skills-td-dice">
-                            <button type="button" className="levels-button small" aria-label="Roll" title="Roll (not implemented)">
+                            <button type="button" className="ability-dice-button" disabled aria-label="Roll">
                               <span className="material-symbols-outlined">casino</span>
                             </button>
                           </td>

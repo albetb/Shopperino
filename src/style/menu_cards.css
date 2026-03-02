@@ -105,6 +105,140 @@
 }
 
 /* Ability scores card (player sheet) */
+.ability-card-title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.ability-title-icon {
+  display: inline-flex;
+  cursor: pointer;
+  padding: 0.15rem;
+  margin-left: 2px;
+  color: var(--dark-grey);
+}
+
+.ability-title-icon:hover {
+  color: var(--main-t);
+}
+
+.ability-title-save {
+  display: inline-flex;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.15rem;
+  margin-left: 2px;
+  color: var(--dark-grey);
+}
+
+.ability-title-save:hover {
+  color: var(--main-t);
+}
+
+.ability-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.2rem 0.4rem;
+  width: 100%;
+  margin-top: 0.35rem;
+}
+
+.ability-grid:first-of-type {
+  margin-top: 0;
+}
+
+.ability-grid-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.ability-label-cell {
+  font-weight: 500;
+  font-size: 0.9em;
+  color: var(--dark-grey);
+}
+
+.ability-score-cell {
+  font-weight: 600;
+}
+
+.ability-score-cell sup {
+  font-size: 0.75em;
+  font-weight: 400;
+  color: var(--dark-grey);
+  margin-left: 0.1em;
+}
+
+.ability-dice-cell {
+  padding: 0.1rem 0;
+}
+
+.ability-dice-button {
+  background: transparent;
+  border: none;
+  cursor: default;
+  padding: 0.2rem;
+  color: var(--dark-grey);
+  opacity: 0.7;
+}
+
+.ability-dice-button:not(:disabled):hover {
+  cursor: pointer;
+  color: var(--main-t);
+}
+
+.ability-edit-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-top: 0.35rem;
+  width: 92%;
+}
+
+.ability-edit-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem;
+  width: 100%;
+}
+
+.ability-edit-row-label {
+  width: 3rem;
+  min-width: 3rem;
+  flex-shrink: 0;
+  font-weight: inherit;
+  margin: 0;
+}
+
+.ability-edit-row-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  width: 60%;
+  max-width: 60%;
+  flex-shrink: 0;
+}
+
+.ability-edit-row-controls .levels-button.small {
+  flex-shrink: 0;
+}
+
+.ability-edit-row-controls .level-frame {
+  flex: 1 1 0;
+  min-width: 1.5rem;
+  max-width: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .ability-row {
   display: flex;
   align-items: center;

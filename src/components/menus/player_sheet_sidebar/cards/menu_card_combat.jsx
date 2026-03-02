@@ -1,10 +1,6 @@
-import { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setPlayerSheetMainView, setIsPlayerSheetSidebarCollapsed } from '../../../../store/slices/playerSheetSlice';
 import { setPlayerSpellbookPage, setPlayerSpellbookClassDescCollapsed, setPlayerSpellbookLevelCollapsed } from '../../../../store/slices/playerSheetSlice';
-import { onSetPlayerSpellOption } from '../../../../store/thunks/playerSheetThunks';
-import Spellbook from '../../../../lib/spellbook';
-import { playerToSpellbookData } from '../../../../lib/player/playerSpellbookAdapter';
 import { getClassData } from '../../../../lib/player';
 import { isMobile } from '../../../../lib/utils';
 import '../../../../style/menu_cards.css';
@@ -38,24 +34,6 @@ export default function MenuCardCombat() {
   const playerClass = player?.getClass?.() ?? '';
   const showSpellsContent = race === 'Gnome' || hasSpellcastingClass(player);
 
-  const spellbookInstance = useMemo(() => {
-    const data = playerToSpellbookData(player);
-    if (!data) return null;
-    return new Spellbook().load(data);
-  }, [player]);
-
-  const possibleDomain1 = spellbookInstance?.getPossibleDomain1?.() ?? [];
-  const possibleDomain2 = spellbookInstance?.getPossibleDomain2?.() ?? [];
-  const possibleSpecialized = spellbookInstance?.getPossibleSpecialized?.() ?? [];
-  const possibleForbidden1 = spellbookInstance?.getPossibleForbidden1?.() ?? [];
-  const possibleForbidden2 = spellbookInstance?.getPossibleForbidden2?.() ?? [];
-
-  const domain1 = player?.domain1 ?? '';
-  const domain2 = player?.domain2 ?? '';
-  const specialized = player?.specialized ?? '';
-  const forbidden1 = player?.forbidden1 ?? '';
-  const forbidden2 = player?.forbidden2 ?? '';
-
   const openSpells = () => {
     dispatch(setPlayerSheetMainView('playerSpells'));
     if (isMobile()) dispatch(setIsPlayerSheetSidebarCollapsed(true));
@@ -78,10 +56,6 @@ export default function MenuCardCombat() {
     dispatch(setPlayerSpellbookLevelCollapsed([false, false, false, false, false, false, false, false, false, false]));
     dispatch(setPlayerSheetMainView('playerSpells'));
     if (isMobile()) dispatch(setIsPlayerSheetSidebarCollapsed(true));
-  };
-
-  const setOption = (key, value) => {
-    dispatch(onSetPlayerSpellOption(key, value));
   };
 
   return (
@@ -139,81 +113,6 @@ export default function MenuCardCombat() {
       {showSpellsContent && (
         <>
           <hr className="player-sheet-combat-spells-divider" />
-          {playerClass === 'Cleric' && (
-            <>
-              <div className="card-side-div margin-top">
-                <label className="modern-label">Domains:</label>
-                <select
-                  className="modern-dropdown small-long"
-                  value={domain1}
-                  onChange={(e) => setOption('domain1', e.target.value)}
-                >
-                  <option value="">-</option>
-                  {possibleDomain1.map((d) => (
-                    <option key={d} value={d}>{d}</option>
-                  ))}
-                </select>
-              </div>
-              <div className="card-side-div margin-top">
-                <label className="modern-label"></label>
-                <select
-                  className="modern-dropdown small-long"
-                  value={domain2}
-                  onChange={(e) => setOption('domain2', e.target.value)}
-                >
-                  <option value="">-</option>
-                  {possibleDomain2.map((d) => (
-                    <option key={d} value={d}>{d}</option>
-                  ))}
-                </select>
-              </div>
-            </>
-          )}
-          {playerClass === 'Wizard' && (
-            <>
-              <div className="card-side-div margin-top">
-                <label className="modern-label">Specialized:</label>
-                <select
-                  className="modern-dropdown small-long"
-                  value={specialized}
-                  onChange={(e) => setOption('specialized', e.target.value)}
-                >
-                  <option value="">-</option>
-                  {possibleSpecialized.map((s) => (
-                    <option key={s} value={s}>{s}</option>
-                  ))}
-                </select>
-              </div>
-              <div className="card-side-div margin-top">
-                <label className="modern-label">Forbidden:</label>
-                <select
-                  className="modern-dropdown small-long"
-                  value={forbidden1}
-                  onChange={(e) => setOption('forbidden1', e.target.value)}
-                >
-                  <option value="">-</option>
-                  {possibleForbidden1.map((s) => (
-                    <option key={s} value={s}>{s}</option>
-                  ))}
-                </select>
-              </div>
-              {specialized !== 'Divination' && (
-                <div className="card-side-div margin-top">
-                  <label className="modern-label"></label>
-                  <select
-                    className="modern-dropdown small-long"
-                    value={forbidden2}
-                    onChange={(e) => setOption('forbidden2', e.target.value)}
-                  >
-                    <option value="">-</option>
-                    {possibleForbidden2.map((s) => (
-                      <option key={s} value={s}>{s}</option>
-                    ))}
-                  </select>
-                </div>
-              )}
-            </>
-          )}
           {showSpellbookButton && (
             <div className="card-side-div margin-top buttons-row">
               {!isGnomeOnly && isLearnVisible && (
@@ -224,7 +123,7 @@ export default function MenuCardCombat() {
                   disabled={isLearnActive}
                   title="Learn"
                 >
-                  <span className="material-symbols-outlined">document_search</span>
+                  <span className="material-symbols-outlined">bookmark_add</span>
                 </button>
               )}
               {!isGnomeOnly && isPrepareVisible && (
@@ -235,7 +134,7 @@ export default function MenuCardCombat() {
                   disabled={isPrepareActive}
                   title="Prepare"
                 >
-                  <span className="material-symbols-outlined">fact_check</span>
+                  <span className="material-symbols-outlined">menu_book</span>
                 </button>
               )}
               <button
@@ -245,7 +144,7 @@ export default function MenuCardCombat() {
                 disabled={isSpellbookActive}
                 title="Open spellbook"
               >
-                <span className="material-symbols-outlined">menu_book</span>
+                <span className="material-symbols-outlined">wand_stars</span>
               </button>
             </div>
           )}

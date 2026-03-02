@@ -4,6 +4,7 @@ import SpellFilters from './spell_filters';
 import RestBox from './rest_box';
 import ClassDescriptionCard from './class_description';
 import DomainDescriptionCard from './domain_description';
+import WizardSchoolsCard from './wizard_schools_card';
 import SpellLevelCard from './spell_level';
 import GnomeSpellsCard from '../player_sheet/gnome_spells_card';
 import useSpellbookData from './hooks/use_spellbook_data';
@@ -21,6 +22,7 @@ import {
   setPlayerSpellbookLevelCollapsed,
   setPlayerSpellbookClassDescCollapsed,
   setPlayerSpellbookDomainDescCollapsed,
+  setPlayerSpellbookWizardSchoolsCollapsed,
   setPlayerSpellbookSearchName,
   setPlayerSpellbookSearchSchool,
 } from '../../store/slices/playerSheetSlice';
@@ -43,6 +45,7 @@ import {
   onPlayerPrepareDomainSpell,
   onPlayerUnprepareDomainSpell,
   onPlayerUseDomainSpell,
+  onSetPlayerSpellOption,
 } from '../../store/thunks/playerSheetThunks';
 import '../../style/shop_inventory.css';
 
@@ -111,6 +114,8 @@ export default function SpellbookTable({ source = 'app' }) {
   const setDomainDescCollapsed = isApp
     ? (v) => dispatch(setIsDomainDescriptionCollapsed(v))
     : (v) => dispatch(setPlayerSpellbookDomainDescCollapsed(v));
+  const wizardSchoolsCollapsed = useSelector(s => s.playerSheet.playerSpellbookWizardSchoolsCollapsed ?? true);
+  const setWizardSchoolsCollapsed = (v) => dispatch(setPlayerSpellbookWizardSchoolsCollapsed(v));
   const setSearchName = isApp
     ? (v) => dispatch(setSearchSpellName(v))
     : (v) => dispatch(setPlayerSpellbookSearchName(v));
@@ -169,13 +174,28 @@ export default function SpellbookTable({ source = 'app' }) {
         toggle={() => setClassDescCollapsed(!isCollapsed.classDesc)}
       />
 
-      {spellbook?.Class === 'Cleric'
-        && (spellbook?.Domain1 || spellbook?.Domain2)
-        && <DomainDescriptionCard
+      {spellbook?.Class === 'Cleric' && (
+        (!isApp || spellbook?.Domain1 || spellbook?.Domain2) &&
+        <DomainDescriptionCard
           description={domainDesc}
           collapsed={isCollapsed.domainDesc}
           toggle={() => setDomainDescCollapsed(!isCollapsed.domainDesc)}
-        />}
+          showDomainDropdowns={!isApp}
+          inst={!isApp ? inst : null}
+          player={!isApp ? player : null}
+          setOption={!isApp ? (key, value) => dispatch(onSetPlayerSpellOption(key, value)) : undefined}
+        />
+      )}
+
+      {!isApp && spellbook?.Class === 'Wizard' && (
+        <WizardSchoolsCard
+          inst={inst}
+          player={player}
+          setOption={(key, value) => dispatch(onSetPlayerSpellOption(key, value))}
+          collapsed={wizardSchoolsCollapsed}
+          toggle={() => setWizardSchoolsCollapsed(!wizardSchoolsCollapsed)}
+        />
+      )}
 
       {!isApp && page === 2 && player?.getRace?.() === 'Gnome' && <GnomeSpellsCard />}
 
