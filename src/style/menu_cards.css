@@ -369,9 +369,27 @@ tr {
   width: 80%;
 }
 
+.player-sheet-skills-header-edit {
+  justify-content: flex-end;
+}
+
 .player-sheet-skills-used {
   margin: 0;
   font-size: 1rem;
+}
+
+/* Edit mode: fixed box on the page showing Used x/y (whole page scrolls, box stays fixed) */
+.player-sheet-skills-used-fixed {
+  position: fixed;
+  top: 10.5rem;
+  left: 45%;
+  z-index: 10;
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+  background: var(--white-t, rgba(255, 255, 255, 0.98));
+  border: 1px solid var(--main-t2, #333);
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .player-sheet-skills-table-wrap {
@@ -400,6 +418,11 @@ tr {
   width: 2.5rem;
   min-width: 2.5rem;
   max-width: 2.5rem;
+}
+
+/* Short column labels: hidden on desktop, shown on mobile */
+.player-sheet-skills-th-label-short {
+  display: none;
 }
 
 .player-sheet-skills-th-armor {
@@ -545,9 +568,11 @@ tr {
     width: 99%;
   }
 
-  /* Hide title row only on main (view) table; keep it on edit table */
-  .player-sheet-skills-table-wrap:not(.player-sheet-skills-edit) .player-sheet-skills-table thead {
-    display: none;
+  /* Fixed Used box: below sidebar so hidden when sidebar is open */
+  .player-sheet-skills-used-fixed {
+    z-index: 100;
+    top: 10.5rem;
+    left: 7%;
   }
 
   /* Main table: slightly smaller font */
@@ -555,7 +580,7 @@ tr {
     font-size: 0.88rem;
   }
 
-  /* Main table: dice buttons use same small size as edit buttons */
+  /* Main table: dice buttons use same size as edit table on mobile */
   .player-sheet-skills-table-wrap:not(.player-sheet-skills-edit) .player-sheet-skills-table .levels-button.small {
     min-width: 1.625rem !important;
     width: 1.625rem !important;
@@ -573,6 +598,16 @@ tr {
     max-width: 0.4rem;
   }
 
+  /* View table: short column titles on mobile (Ability → Ab., Value → #) */
+  .player-sheet-skills-table-wrap:not(.player-sheet-skills-edit) .player-sheet-skills-th-ability .player-sheet-skills-th-label-long,
+  .player-sheet-skills-table-wrap:not(.player-sheet-skills-edit) .player-sheet-skills-th-value .player-sheet-skills-th-label-long {
+    display: none;
+  }
+  .player-sheet-skills-table-wrap:not(.player-sheet-skills-edit) .player-sheet-skills-th-ability .player-sheet-skills-th-label-short,
+  .player-sheet-skills-table-wrap:not(.player-sheet-skills-edit) .player-sheet-skills-th-value .player-sheet-skills-th-label-short {
+    display: inline;
+  }
+
   .player-sheet-skills-th-ability,
   .player-sheet-skills-td-ability {
     width: 1.5rem;
@@ -581,53 +616,49 @@ tr {
   }
 
   /* Edit table: show title row (Name | Ranks | Bonus) */
-  /* Edit table: value controls minimal width, name column fills */
+  /* Edit table: Ranks/Bonus columns fit content, Name column takes the rest */
   .player-sheet-skills-edit .player-sheet-skills-table {
     font-size: 0.82rem;
+    table-layout: auto;
   }
 
   .player-sheet-skills-edit .player-sheet-skills-th-name,
   .player-sheet-skills-edit .player-sheet-skills-td-name {
-    width: 1%;
+    width: 100%;
     min-width: 0;
+    max-width: 100px;
   }
 
   .player-sheet-skills-edit .player-sheet-skills-th-ranks,
   .player-sheet-skills-edit .player-sheet-skills-td-ranks,
   .player-sheet-skills-edit .player-sheet-skills-th-bonus,
   .player-sheet-skills-edit .player-sheet-skills-td-bonus {
-    width: 3.2rem;
-    min-width: 3.2rem;
-    max-width: 3.2rem;
-    padding-left: 0.2rem;
-    padding-right: 0.2rem;
+    width: 1%;
+    white-space: nowrap;
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
   }
 
-  /* Compact +/- buttons and value box so name column gets more space */
+  /* Let Ranks/Bonus cells size to their content (no fixed width); levels-div only as wide as needed */
+  .player-sheet-skills-edit .player-sheet-skills-table .levels-div {
+    min-width: 0;
+    width: max-content;
+  }
+
+  /* Edit table: keep the +/- buttons at this size (do not change) */
   .player-sheet-skills-edit .player-sheet-skills-table .levels-button.small {
     min-width: 1.625rem !important;
     width: 1.625rem !important;
     height: 1.625rem !important;
     padding: 0;
   }
-
   .player-sheet-skills-edit .player-sheet-skills-table .levels-button.small .material-symbols-outlined {
     font-size: 1.1rem;
   }
-
-  .player-sheet-skills-edit .player-sheet-skills-table .levels-div {
-    min-width: 2.75rem;
-    gap: 0.1rem;
+  .player-sheet-skills-th-value, .player-sheet-skills-td-value {
+    text-align: center;
   }
-
-  .player-sheet-skills-edit .player-sheet-skills-table .level-frame {
-    min-width: 1.15rem;
-    max-width: 1.25rem;
-    height: 1.15rem;
-  }
-
-  .player-sheet-skills-edit .player-sheet-skills-table .level-text {
-    font-size: 0.78rem;
-    line-height: 1.15rem;
+  .player-sheet-skills-th-dice {
+    text-align: left;
   }
 }

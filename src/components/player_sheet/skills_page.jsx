@@ -133,10 +133,12 @@ export default function SkillsPage() {
         </div>
         {!collapsed && (
           <div className="card-content">
-            <div className="player-sheet-skills-header">
-              <p className="player-sheet-skills-used">
-                Used: {usedPoints}/{totalPoints}
-              </p>
+            <div className={`player-sheet-skills-header ${isEditing ? 'player-sheet-skills-header-edit' : ''}`}>
+              {!isEditing && (
+                <p className="player-sheet-skills-used">
+                  Used: {usedPoints}/{totalPoints}
+                </p>
+              )}
               <button
                 type="button"
                 className="levels-button small-middle"
@@ -147,6 +149,12 @@ export default function SkillsPage() {
                 <span className="material-symbols-outlined">{isEditing ? 'check' : 'edit'}</span>
               </button>
             </div>
+
+            {isEditing && (
+              <div className="player-sheet-skills-used-fixed" aria-live="polite">
+                Used: {usedPoints}/{totalPoints}
+              </div>
+            )}
 
             {!isEditing ? (
               <div className="player-sheet-skills-table-wrap">
@@ -178,7 +186,8 @@ export default function SkillsPage() {
                         tabIndex={0}
                         onKeyDown={(e) => e.key === 'Enter' && handleSort('ability')}
                       >
-                        Ability
+                        <span className="player-sheet-skills-th-label-long">Ability</span>
+                        <span className="player-sheet-skills-th-label-short">Ab.</span>
                       </th>
                       <th
                         className="player-sheet-skills-th player-sheet-skills-th-value"
@@ -187,7 +196,8 @@ export default function SkillsPage() {
                         tabIndex={0}
                         onKeyDown={(e) => e.key === 'Enter' && handleSort('value')}
                       >
-                        Value
+                        <span className="player-sheet-skills-th-label-long">Value</span>
+                        <span className="player-sheet-skills-th-label-short">#</span>
                       </th>
                       <th className="player-sheet-skills-th player-sheet-skills-th-dice">
                         <span className="material-symbols-outlined" aria-hidden>casino</span>
