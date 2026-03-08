@@ -7,7 +7,7 @@ import { getAllowedEthics, getAllowedMorals } from '../../lib/alignment';
 import { getClassStats, renderFeature } from './class_cards';
 import StatBar from './stat_bar';
 import '../../style/menu_cards.css';
-import '../../style/App.css';
+import '../../style/player_sheet.css';
 
 const FEATURE_CARD_KEYS = ['alignment', 'languages', 'weaponArmor', 'racialTraits', 'classTraits'];
 

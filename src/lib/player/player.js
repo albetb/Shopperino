@@ -7,6 +7,7 @@
  */
 
 import { loadFile } from '../loadFile';
+import { getItemByRef } from '../utils';
 
 const ABILITY_KEYS = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
 
@@ -98,6 +99,12 @@ class Player {
     this.usedDomainSpells = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     this.preparedDomainSpells = {};
     this.gnomeSpellUses = {}; // { [spellLink]: 0|1 } per-day uses for gnome racial spells
+    this.equipment = {}; // { lh1, rh1, lh2, rh2, set1, set2, armor, other1, other2, other3, other4 }
+    this.speedBonus = 0;
+    this.initiativeBonus = 0;
+    this.fortBonus = 0;
+    this.reflexBonus = 0;
+    this.willBonus = 0;
   }
 
   /**
@@ -212,6 +219,30 @@ class Player {
       });
     }
 
+    if (data.equipment && typeof data.equipment === 'object') {
+      this.equipment = { ...data.equipment };
+    }
+
+    if (typeof data.speedBonus === 'number') {
+      this.speedBonus = data.speedBonus;
+    }
+
+    if (typeof data.initiativeBonus === 'number') {
+      this.initiativeBonus = data.initiativeBonus;
+    }
+
+    if (typeof data.fortBonus === 'number') {
+      this.fortBonus = data.fortBonus;
+    }
+
+    if (typeof data.reflexBonus === 'number') {
+      this.reflexBonus = data.reflexBonus;
+    }
+
+    if (typeof data.willBonus === 'number') {
+      this.willBonus = data.willBonus;
+    }
+
     return this;
   }
 
@@ -253,6 +284,12 @@ class Player {
             )
           : {},
       gnomeSpellUses: this.gnomeSpellUses && typeof this.gnomeSpellUses === 'object' ? { ...this.gnomeSpellUses } : {},
+      equipment: this.equipment && typeof this.equipment === 'object' ? { ...this.equipment } : {},
+      speedBonus: typeof this.speedBonus === 'number' ? this.speedBonus : 0,
+      initiativeBonus: typeof this.initiativeBonus === 'number' ? this.initiativeBonus : 0,
+      fortBonus: typeof this.fortBonus === 'number' ? this.fortBonus : 0,
+      reflexBonus: typeof this.reflexBonus === 'number' ? this.reflexBonus : 0,
+      willBonus: typeof this.willBonus === 'number' ? this.willBonus : 0,
     };
   }
 
@@ -271,6 +308,10 @@ class Player {
 
   getLevel() {
     return this.level;
+  }
+
+  getEquipment() {
+    return this.equipment || {};
   }
 
   /**
@@ -519,6 +560,52 @@ class Player {
   }
 
   /**
+   * Total speed = base speed + speedBonus.
+   */
+  getTotalSpeed() {
+    return this.getBaseSpeed() + Number(this.speedBonus || 0);
+  }
+
+  /**
+   * Get armor speed reduction info. Returns { hasReduction, originalSpeed, reducedSpeed }.
+   * Dwarves ignore armor speed reduction. Monk/Barbarian bonuses are preserved on top of reduced speed.
+   */
+  getArmorSpeedInfo() {
+    const armor = this.getEquippedArmorRaw();
+    const races = loadFile('races');
+    const raceLandSpeed = Number(races?.[this.race]?.landSpeed) || 30;
+
+    // Dwarves ignore armor speed reduction
+    if (this.race === 'Dwarf') {
+      return { hasReduction: false, originalSpeed: this.getTotalSpeed(), reducedSpeed: this.getTotalSpeed() };
+    }
+
+    if (!armor) {
+      return { hasReduction: false, originalSpeed: this.getTotalSpeed(), reducedSpeed: this.getTotalSpeed() };
+    }
+
+    const key = raceLandSpeed === 20 ? 'Speed (20ft)' : 'Speed (30ft)';
+    const armorSpeedStr = armor[key];
+    if (!armorSpeedStr) {
+      return { hasReduction: false, originalSpeed: this.getTotalSpeed(), reducedSpeed: this.getTotalSpeed() };
+    }
+
+    const armorSpeed = parseInt(armorSpeedStr, 10);
+    if (isNaN(armorSpeed) || armorSpeed >= raceLandSpeed) {
+      return { hasReduction: false, originalSpeed: this.getTotalSpeed(), reducedSpeed: this.getTotalSpeed() };
+    }
+
+    // Reduction applies to base race speed; class bonuses and speedBonus are added on top
+    const classBonus = this.getBaseSpeed() - raceLandSpeed;
+    const reducedTotal = armorSpeed + classBonus + Number(this.speedBonus || 0);
+    return {
+      hasReduction: true,
+      originalSpeed: this.getTotalSpeed(),
+      reducedSpeed: reducedTotal,
+    };
+  }
+
+  /**
    * Initiative modifier = Dexterity modifier.
    */
   getInitiativeModifier() {
@@ -526,10 +613,92 @@ class Player {
   }
 
   /**
-   * Armor class = 10 + Dex modifier. Monk adds Wis bonus (min 0) and +1 at 5, +2 at 10, +3 at 15, +4 at 20.
+   * Get equipped armor item's raw data, or null if no armor equipped.
+   */
+  getEquippedArmorRaw() {
+    const entry = this.equipment?.armor;
+    if (!entry?.link) return null;
+    return getItemByRef(entry.link)?.raw || null;
+  }
+
+  /**
+   * Armor bonus from equipped armor, parsed from "Armor/Shield Bonus" field.
+   */
+  getArmorBonus() {
+    const armor = this.getEquippedArmorRaw();
+    if (!armor) return 0;
+    const val = armor['Armor/Shield Bonus'];
+    if (val === undefined || val === null) return 0;
+    return parseInt(String(val).replace('+', ''), 10) || 0;
+  }
+
+  /**
+   * Maximum DEX bonus allowed by equipped armor. Returns Infinity if no cap.
+   */
+  getMaxDexBonus() {
+    const armor = this.getEquippedArmorRaw();
+    if (!armor) return Infinity;
+    const val = armor['Maximum Dex Bonus'];
+    if (val === undefined || val === null || val === '—') return Infinity;
+    const parsed = parseInt(String(val).replace('+', ''), 10);
+    return isNaN(parsed) ? Infinity : parsed;
+  }
+
+  /**
+   * Armor check penalty from equipped armor. Returns 0 if no penalty or no armor.
+   */
+  getArmorCheckPenalty() {
+    const armor = this.getEquippedArmorRaw();
+    if (!armor) return 0;
+    const val = armor['Armor Check Penalty'];
+    if (!val || val === '—') return 0;
+    return Math.abs(parseInt(String(val), 10)) || 0;
+  }
+
+  /**
+   * DEX modifier capped by armor's Maximum Dex Bonus. Used for AC calculations.
+   */
+  getEffectiveDexMod() {
+    return Math.min(this.getDexMod(), this.getMaxDexBonus());
+  }
+
+  /**
+   * Armor class = 10 + Dex modifier (capped by armor) + armor bonus. Monk adds Wis bonus (min 0) and +1 at 5, +2 at 10, +3 at 15, +4 at 20.
    */
   getArmorClass() {
-    let ac = 10 + this.getDexMod();
+    let ac = 10 + this.getEffectiveDexMod() + this.getArmorBonus();
+    if (this.class === 'Monk') {
+      ac += Math.max(0, this.getWisMod());
+      const level = this.getLevel();
+      if (level >= 20) ac += 4;
+      else if (level >= 15) ac += 3;
+      else if (level >= 10) ac += 2;
+      else if (level >= 5) ac += 1;
+    }
+    return ac;
+  }
+
+  /**
+   * Touch AC (ignores armor bonus): 10 + Dex modifier (capped by armor).
+   */
+  getContactAC() {
+    let ac = 10 + this.getEffectiveDexMod();
+    if (this.class === 'Monk') {
+      ac += Math.max(0, this.getWisMod());
+      const level = this.getLevel();
+      if (level >= 20) ac += 4;
+      else if (level >= 15) ac += 3;
+      else if (level >= 10) ac += 2;
+      else if (level >= 5) ac += 1;
+    }
+    return ac;
+  }
+
+  /**
+   * Flat-footed AC (ignores DEX, uses armor): 10 + armor bonus. Monk still gets Wis bonus.
+   */
+  getFlatFootedAC() {
+    let ac = 10 + this.getArmorBonus();
     if (this.class === 'Monk') {
       ac += Math.max(0, this.getWisMod());
       const level = this.getLevel();
@@ -563,6 +732,22 @@ class Player {
     const level = this.getLevel();
     const base = (data?.willSave === 'high') ? (2 + Math.floor(level / 2)) : Math.floor(level / 3);
     return base + this.getWisMod();
+  }
+
+  getTotalFortitudeSave() {
+    return this.getFortitudeSave() + Number(this.fortBonus || 0);
+  }
+
+  getTotalReflexSave() {
+    return this.getReflexSave() + Number(this.reflexBonus || 0);
+  }
+
+  getTotalWillSave() {
+    return this.getWillSave() + Number(this.willBonus || 0);
+  }
+
+  getTotalInitiative() {
+    return this.getInitiativeModifier() + Number(this.initiativeBonus || 0);
   }
 
   getGold() {
@@ -653,7 +838,8 @@ class Player {
 
   /**
    * Skill total for display and dice: ability modifier + floor(ranks) + bonus.
-   * Only the integer part of ranks is used.
+   * Only the integer part of ranks is used. Applies armor check penalty if ArmorPenalty: true.
+   * Swim skill gets double the penalty.
    */
   getSkillTotal(skillName) {
     const skills = loadFile('skills');
@@ -666,7 +852,16 @@ class Player {
     const mod = key ? this.getModifier(key) : 0;
     const ranks = Math.floor(this.getSkillRanks(skillName));
     const bonus = this.getSkillBonus(skillName);
-    return mod + ranks + bonus;
+    let result = mod + ranks + bonus;
+
+    // Apply armor check penalty if skill has ArmorPenalty flag
+    const penalty = this.getArmorCheckPenalty();
+    if (penalty > 0 && skill?.ArmorPenalty) {
+      const multiplier = skillName === 'Swim' ? 2 : 1;
+      result -= penalty * multiplier;
+    }
+
+    return result;
   }
 
   setSkillRanks(skillName, value) {

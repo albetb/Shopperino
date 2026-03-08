@@ -1,7 +1,5 @@
-import City from '../../lib/city';
 import * as db from '../../lib/storage';
 import { cap } from '../../lib/utils';
-import World from '../../lib/world';
 import { setCity } from '../slices/citySlice';
 import { setShop } from '../slices/shopSlice';
 import { setWorld, setWorldsList, setSelectedWorldIndex } from '../slices/worldSlice';

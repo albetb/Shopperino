@@ -119,8 +119,6 @@ export function setAppSTCBit(app, index, value) {
 
 //#region save storage (download/upload still use single key)
 
-const ROOT_KEY = 'app';
-
 export const downloadLocalStorage = () => {
   const app = appState.loadApp();
   const blob = new Blob([JSON.stringify(app, null, 2)], { type: 'application/json' });

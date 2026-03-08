@@ -166,13 +166,15 @@
 
 .ability-score-cell {
   font-weight: 600;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
 }
 
-.ability-score-cell sup {
+.ability-modifier {
   font-size: 0.75em;
   font-weight: 400;
   color: var(--dark-grey);
-  margin-left: 0.1em;
 }
 
 .ability-dice-cell {

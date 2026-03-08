@@ -1,11 +1,9 @@
 import { createPrng } from '../../lib/prng';
-import City from '../../lib/city';
-import Shop from '../../lib/shop';
 import * as db from '../../lib/storage';
 import { cap, serialize } from '../../lib/utils';
 import { setCity } from '../slices/citySlice';
 import { setShop, setShopGenerated } from '../slices/shopSlice';
-import { setWorld, setWorldsList, setSelectedWorldIndex } from '../slices/worldSlice';
+import { setWorld } from '../slices/worldSlice';
 import { setPersist } from '../slices/persistSlice';
 
 export const onNewShop = (nameRaw) => (dispatch, getState) => {

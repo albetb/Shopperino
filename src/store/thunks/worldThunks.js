@@ -1,4 +1,3 @@
-import City from '../../lib/city';
 import * as db from '../../lib/storage';
 import { cap, serialize } from '../../lib/utils';
 import World from '../../lib/world';

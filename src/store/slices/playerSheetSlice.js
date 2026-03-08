@@ -14,6 +14,7 @@ const initialState = {
   isPlayerSheetSidebarCollapsed: false,
   mainView: 'none', // 'none' | 'race' | 'class' | 'note'
   cardCollapsed: defaultCardCollapsed(),
+  combatPageCardsCollapsed: { player: false, combat: false, items: false },
   playerSpellbookPage: 0,
   playerSpellbookLevelCollapsed: [false, false, false, false, false, false, false, false, false, false],
   playerSpellbookClassDescCollapsed: true,
@@ -59,6 +60,12 @@ export const playerSheetSlice = createSlice({
         });
       }
     },
+    setCombatPageCardCollapsed(state, action) {
+      const { key, value } = action.payload || {};
+      if (key && (key === 'player' || key === 'combat' || key === 'items')) {
+        state.combatPageCardsCollapsed[key] = !!value;
+      }
+    },
     setPlayerSpellbookPage(state, action) {
       const p = action.payload;
       if (typeof p === 'number' && p >= 0 && p <= 2) state.playerSpellbookPage = p;
@@ -96,6 +103,7 @@ export const {
   setPlayerSheetMainView,
   setPlayerSheetCardCollapsed,
   setPlayerSheetCardsCollapsed,
+  setCombatPageCardCollapsed,
   setPlayerSpellbookPage,
   setPlayerSpellbookLevelCollapsed,
   setPlayerSpellbookClassDescCollapsed,

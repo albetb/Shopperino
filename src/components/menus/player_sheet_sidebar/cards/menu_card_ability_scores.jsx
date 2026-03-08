@@ -211,8 +211,8 @@ export default function MenuCardAbilityScores({ isCollapsed, onToggleCollapse })
                   const mod = player.getModifier(key);
                   return (
                     <div key={key} className="ability-grid-cell ability-score-cell">
-                      {total}
-                      <sup>{formatModifier(mod)}</sup>
+                      <div>{total}</div>
+                      <div className="ability-modifier">{formatModifier(mod)}</div>
                     </div>
                   );
                 })}

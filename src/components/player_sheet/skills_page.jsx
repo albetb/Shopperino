@@ -6,7 +6,7 @@ import { slug } from '../../lib/slugUtils';
 import { onSetSkillRanks, onSetSkillBonus } from '../../store/thunks/playerSheetThunks';
 import SpellLink from '../common/spell_link';
 import '../../style/menu_cards.css';
-import '../../style/App.css';
+import '../../style/player_sheet.css';
 
 const ABILITY_ORDER = ['Str', 'Dex', 'Con', 'Int', 'Wis', 'Cha'];
 const KNOWLEDGE_SUBSKILLS = Player.KNOWLEDGE_SUBSKILLS;

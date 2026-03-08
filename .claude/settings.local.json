@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run build)",
+      "Bash(node -e \":*)",
+      "Bash(npx eslint src --max-warnings 0)",
+      "Bash(grep -l \"ps-bottom-nav\\\\|player.*sheet\" /c/Users/albet/Desktop/Shopperino/src/style/*.css)",
+      "Bash(grep -n \"ps-\" /c/Users/albet/Desktop/Shopperino/src/style/*.css)"
+    ]
+  }
+}

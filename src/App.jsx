@@ -6,8 +6,9 @@ import LootSidebar from './components/menus/loot_sidebar/loot_sidebar';
 import ShopSidebar from './components/menus/shop_sidebar/shop_sidebar';
 import SpellbookSidebar from './components/menus/spellbook_sidebar/spellbook_sidebar';
 import PlayerSheetSidebar from './components/menus/player_sheet_sidebar/player_sheet_sidebar';
+import PlayerSheetBottomNav from './components/player_sheet/PlayerSheetBottomNav';
 import TopMenu from './components/menus/top_menu';
-import { ShopInventory } from 'components/shop';
+import { ShopInventory } from './components/shop';
 import SpellbookTable from './components/spellbook/spellbook_table';
 import SearchPage from './components/search/search_page';
 import PlayerSheetPage from './components/player_sheet/player_sheet_page';
@@ -174,6 +175,7 @@ export default function App() {
     <header className="app-header">
       <PlayerSheetPage />
     </header>
+    <PlayerSheetBottomNav />
   </>;
 
   const tabPages = {

@@ -138,3 +138,102 @@ export function newGuid() {
 export function serialize(obj) {
   return obj && typeof obj.serialize === 'function' ? obj.serialize() : obj;
 }
+
+/**
+ * Get weapon type details (melee, ranged, two-handed, etc.)
+ * @param {Object} weaponItem - The weapon data from items.json
+ * @returns {Object} { isMelee, isRanged, isTwoHanded, isCompositeRanged }
+ */
+export function getWeaponType(weaponItem) {
+  if (!weaponItem) return { isMelee: false, isRanged: false, isTwoHanded: false, isCompositeRanged: false };
+
+  const subtype = (weaponItem.Subtype || '').toLowerCase();
+  const isMelee = subtype.includes('melee');
+  const isRanged = subtype.includes('ranged');
+  const isTwoHanded = subtype.includes('two-handed');
+  const isCompositeRanged = isRanged && (weaponItem.Name || '').toLowerCase().includes('composite');
+
+  return { isMelee, isRanged, isTwoHanded, isCompositeRanged };
+}
+
+/**
+ * Get the material symbol icon for a weapon (melee or ranged)
+ * @param {Object} weaponItem - The weapon data
+ * @returns {string} Material symbol name
+ */
+export function getWeaponIcon(weaponItem) {
+  const { isRanged } = getWeaponType(weaponItem);
+  return isRanged ? 'straight' : 'swords'; // straight arrow for ranged, swords for melee
+}
+
+/**
+ * Calculate weapon attack bonus
+ * @param {Player} player - The player object
+ * @param {Object} weaponData - { itemData: equipment item, weaponItem: weapon from items.json }
+ * @returns {number} The attack bonus
+ */
+export function calculateWeaponAttackBonus(player, weaponData) {
+  if (!player || !weaponData) return 0;
+
+  const { weaponItem } = weaponData;
+  const weaponType = getWeaponType(weaponItem);
+  const bab = player.getBaseAttackBonus?.() ?? 0;
+
+  // Determine ability modifier (STR for melee, DEX for ranged)
+  const abilityMod = weaponType.isRanged ? (player.getDexMod?.() ?? 0) : (player.getStrMod?.() ?? 0);
+
+  // Weapon bonus: perfect weapons give +1 attack
+  const weaponBonus = (weaponItem.isPerfect || weaponItem.Name?.toLowerCase().includes('perfect')) ? 1 : 0;
+
+  return bab + abilityMod + weaponBonus;
+}
+
+/**
+ * Calculate weapon damage string with bonuses
+ * @param {Player} player - The player object
+ * @param {Object} weaponData - { itemData: equipment item, weaponItem: weapon from items.json }
+ * @returns {string} The damage string (e.g., "1d8+2")
+ */
+export function calculateWeaponDamage(player, weaponData) {
+  if (!player || !weaponData) return '0';
+
+  const { weaponItem, isTwoHanded } = weaponData;
+  const weaponType = getWeaponType(weaponItem);
+
+  // Get the base damage for medium creatures (or small if player is small)
+  const size = player.getSize?.() ?? 'Medium';
+  const baseDamage = size === 'Small' ? (weaponItem['Dmg (S)'] || '1d4') : (weaponItem['Dmg (M)'] || '1d6');
+
+  // Calculate damage bonus
+  let damageBonus = 0;
+
+  if (weaponType.isMelee) {
+    const strMod = player.getStrMod?.() ?? 0;
+    if (isTwoHanded) {
+      // Two-handed weapons get 1.5x STR modifier (rounded down)
+      damageBonus = Math.floor(strMod * 1.5);
+    } else {
+      // One-handed weapons get full STR modifier
+      damageBonus = strMod;
+    }
+  } else if (weaponType.isCompositeRanged) {
+    // Composite ranged weapons (composite bow) can add STR modifier
+    const strMod = player.getStrMod?.() ?? 0;
+    damageBonus = Math.max(0, strMod); // Only positive bonuses for composite
+  }
+
+  // Perfect weapons give +1 damage bonus (except perfect ranged non-composite, which give 0)
+  const isPerfect = weaponItem.isPerfect || (weaponItem.Name?.toLowerCase().includes('perfect'));
+  if (isPerfect && (weaponType.isMelee || weaponType.isCompositeRanged)) {
+    damageBonus += 1;
+  }
+
+  // Format the damage string
+  if (damageBonus === 0) {
+    return baseDamage;
+  } else if (damageBonus > 0) {
+    return `${baseDamage}+${damageBonus}`;
+  } else {
+    return `${baseDamage}${damageBonus}`; // negative already includes the minus sign
+  }
+}

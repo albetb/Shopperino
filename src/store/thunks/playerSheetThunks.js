@@ -338,6 +338,114 @@ export const onPlayerUseDomainSpell = (spell_link) => (dispatch, getState) => {
   if (player) persistPlayer(dispatch, getState, player);
 };
 
+// HP and health
+export const onAdjustCurrentHp = (delta) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player) return;
+  const currentHp = player.getCurrentHp?.() ?? 0;
+  const newHp = Math.max(0, currentHp + delta);
+  player.healthModifier = newHp - (player.maxLife ?? 10);
+  persistPlayer(dispatch, getState, player);
+};
+
+export const onSetMaxLife = (value) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player) return;
+  player.maxLife = Math.max(1, Math.floor(Number(value) || 10));
+  persistPlayer(dispatch, getState, player);
+};
+
+// Combat bonuses
+export const onSetSpeedBonus = (value) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player) return;
+  player.speedBonus = Math.max(0, Math.min(99, Math.floor(Number(value) || 0)));
+  persistPlayer(dispatch, getState, player);
+};
+
+export const onSetInitiativeBonus = (value) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player) return;
+  player.initiativeBonus = Math.max(-99, Math.min(99, Math.floor(Number(value) || 0)));
+  persistPlayer(dispatch, getState, player);
+};
+
+export const onSetFortBonus = (value) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player) return;
+  player.fortBonus = Math.max(-99, Math.min(99, Math.floor(Number(value) || 0)));
+  persistPlayer(dispatch, getState, player);
+};
+
+export const onSetReflexBonus = (value) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player) return;
+  player.reflexBonus = Math.max(-99, Math.min(99, Math.floor(Number(value) || 0)));
+  persistPlayer(dispatch, getState, player);
+};
+
+export const onSetWillBonus = (value) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player) return;
+  player.willBonus = Math.max(-99, Math.min(99, Math.floor(Number(value) || 0)));
+  persistPlayer(dispatch, getState, player);
+};
+
+// Feats
+export const onAddFeat = (featName) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player || !featName) return;
+  if (!player.feats) player.feats = [];
+  player.feats.push(String(featName).trim());
+  persistPlayer(dispatch, getState, player);
+};
+
+export const onRemoveFeatAt = (index) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player || !Array.isArray(player.feats)) return;
+  if (index < 0 || index >= player.feats.length) return;
+  player.feats.splice(index, 1);
+  persistPlayer(dispatch, getState, player);
+};
+
+// Inventory
+export const onAddInventoryItem = (name, type, number, link) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player) return;
+  player.addInventoryItem(name, type, number, link);
+  persistPlayer(dispatch, getState, player);
+};
+
+export const onRemoveInventoryItem = (name, type, number) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player) return;
+  player.removeInventoryItem(name, type, number);
+  persistPlayer(dispatch, getState, player);
+};
+
+// Equipment
+export const onEquipItem = (slot, itemData) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player) return;
+  player.equipItem(slot, itemData);
+  persistPlayer(dispatch, getState, player);
+};
+
+export const onUnequipSlot = (slot) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player) return;
+  player.unequipSlot(slot);
+  persistPlayer(dispatch, getState, player);
+};
+
+// Gold
+export const onAdjustPlayerGold = (delta) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player) return;
+  player.adjustGold(delta);
+  persistPlayer(dispatch, getState, player);
+};
+
 export { hydratePlayerSheet };
 
 export const hydratePlayerSheetThunk = (app) => (dispatch) => {
