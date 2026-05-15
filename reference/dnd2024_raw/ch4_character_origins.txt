@@ -1,0 +1,409 @@
+CHAPTER 4
+-I1 ARACTER ORIGINS
+szc:;/ .
+
+HI S CHAPTER DESCRIBES THE TWO
+components of an adventurer's origin: background and species. Together, these elements suggest your character's early experience and family origin before taking up the adventuring life and learning the capabilities of a class (described in
+chapter 3).
+ORIGI N COMPONENTS
+Each part of your character's origin reflects facets of your character, their life, and the circumstances that started them on the path to adventure.
+If you choose a background or a species from an older book, see the sidebar "Backgrounds and Species from Older Books" in chapter 2 for how to use them with the options here.
+C HA RACTER BACKGROUNDS
+Your character's background is a collection of characteristics that represent the place and occupation that were most formative before your character embarked on a life of adventure.
+Each background includes a brief narrative of what your character's past might have been like. Alter the details of this narrative however you like.
+PARTS O F A B ACK GROUND
+A background includes the following parts. Ability Scores. A background lists three of your
+character's ability scores. Increase one by 2 and another one by 1, or increase all three by 1. None of these increases can raise a score above 20.
+Feat. A background gives you r character a specifi ed Origin fe at (described in chapter 5).
+Skill Proficiencies. A background gives your character proficiency in two specified skills.
+Tool Proficiency. Each background gives a character proficiency with one tool- either a specific tool or one chosen fr om the Artisan's Tools category. Tools are detailed in chapter 6.
+Equipment. Each background offers a choice between a package of equipment and 50 GP.
+CHAR ACTER S PECIES
+When you choose your character's species, you determine whet her your character is a human or a member of a fa ntastical species, such as dragonborn or gnome.
+
+The peoples of the D&D multiverse hail from different worlds and include many kinds of sapient life forms. A player character's species is the set of game traits that an adventurer gains from being one of those life forms.
+Some species can trace their origin to a single world, plane of existence, or god, while other species first appeared in multiple realms at once. Whatever a species' genesis, its members have spread across the multiverse and contribute to many differ-
+ent cultures. Members of most species live for about 80 years,
+with exceptions noted in the text about the species in this chapter. Regardless of life span, members of all species reach physical maturity at about the same age. Your character can be any age that isn't beyond their species' normal life span.
+
+PARTS OF A SPEC I ES
+A species includes the following parts. Creature 'Iype. A character's species determines
+the character's creature type, which is described in the rules glossary. Every species in this chapter is Humanoid; playable non-Humanoid species appear in other D&D books.
+Size. Your character's species determines the character's size. Individuals within a species cover a wide range of heights, and some species include such diversity of size that you can choose whether your character is Small or Medium.
+Speed. Your character's species determines the character's Speed.
+Special Traits. Each species gives a character special traits-unique characteristics based on the species' physiology or magical nature. When you choose a species, your character gets all the special traits listed for it. Some traits involve making a choice from a handful of options.
+
+BACKGROUND DESCRIPTIONS
+Sixteen backgrounds are presented in this section in alphabetical order:
+
+Acolyte Artisan Charlatan Crimi n?. ! Enterta.,ner Farmer
+
+Guard Gu ide Hermit M~ rr. h:mt. Nub(c Sage
+
+Sailor Scribe Soldier Wnyfa rer
+
+CHAPTER 4 I CHAR ACTER OR IGINS
+
+177
+
+Ability Scores: Intelligence, Wisdom, Charisma Feat: Magic Initiate (Cleric) (see chapter 5) Skill Proficiencies: Insight and Religion Tool Proficiency: Calligrapher's Supplies Equipment: Choose A or B: (A) Calligrapher's Sup-
+plies, Book (prayers), Holy Symbol, Parchment (10 sheets), Robe, 8 GP; or (B) 50 GP
+
+You devoted yourself to service in a temple, either nestled in a town or secluded in a sacred grove. There you performed rites in honor of a god or pantheon. You served under a priest and studied re ligion. Thanks to your priest's instruction and your own devotion, you also learned how to channel a modicum of divine power in service to your place of worship and the people who prayed there.
+
+Ability Scores: Strength, Dexterity, Intelligence Feat: Crafter (see chapter 5) Skill Proficiencies: Investigation and Persuasion
+Tool Proficiency: Choose one kind ofArtisan's Tools (see chapter 6)
+Equipment: Choose A or B: (A) Artisan's Tools (same
+as above), 2 Pouches, Traveler's Clothes, 32 GP; or (B) SO GP
+
+You began mopping floors and scrubbing counters in an artisan's workshop for a few coppers per day as soon as you were strong enough to carry a bucket. When you were old enough t·o ap prentice,
+you learned to create basic crafts or :-1 ,ur own, as
+well as how to sweet-talk the occasit , , ;_;i demanding customer. Your trade has also giv n .'/·,u ., keen eye for detail.
+
+Ability Scores: Dexterity, Constitution , Charisma Feat: Skilled (see chapter 5) Skill Proficiencies: Deception and Sleight of Hand Tool Proficiency: Forgery Kit Equipment: Choose A or 8: (A) Forgery Kit , Costume,
+Fine Clothes, 15 GP; or (B) 50 GP
+
+Once you were old enough to order an ale, you soon had a favorite stool in every tavern within ten miles of where you were born. As you traveled the circuit
+from public house to watering hole, you learned to prey on unfortunates who were in the market for
+a comforting lie or two-perhaps a sham potion or forged ancestry records.
+
+Ability Scores: Dexte rity, Constitution, Intelligence Feat: Alert (see chapter 5) Skill Proficiencies: Sleight of Hand and Stealth Tool Proficiency: Th ieves' Tools Equipment: Ch oose A or B: (A) 2 Daggers, Thieves'
+Tools, Crowba r, 2 Pouches , Traveler's Clothes, 16 GP; or (8) 50 GP
+
+You eked out a living in dark alleyways, cutting purses or burgling shops. Perhaps you were part of a small gang of like-minded wrongdoers who looked out for each other. Or maybe you were a lone wolf, fending for yourself against the local thieves' guild
+and more fearsome lawbreakers.
+
+Ability Scores: Strength, Dexterity, Charisma Feat: Musician (see chapter 5) Skill Proficiencies: Acrobatics and Performance Tool Proficiency: Choose one kind of Musical Instrument
+(see chapter 6) Equipment: Choose A or B: (A) Musical Instrument
+(same as above) , 2 Costumes , Mirror, Perfume, Traveler's Clothes, ll GP; or (B) 50 GP
+
+You spent much of your youth following roving fairs and carnivals, p e rforming odd jobs fo r mus icians and acrobats in exchange for lessons. You m ay have learned how to walk a tightrop e, how to play a lute in a distinct style, or how to recite poetry with impeccable di c tion . To this d ay, you thrive on a p plause and long for the stage.
+
+Ability Scores: Strength, Constitution, Wisdom Feat: Tough (see chapter 5) Skill Proficiencies: Animal Handling and Nature Tool Proficiency: Carpenter's Tools Equipment: Choose A or B: (A) Sickle, Carpenter's
+Tools, Healer's Kit, Iron Pot, Shovel, Traveler's Clothes , 30 GP; or (8) 50 GP
+
+You grew up close to the land. Years tending animals and cultivating the earth rewarded you with patience and good health. You have a keen appreciation for nature's bounty alongside a healthy respect for nature's wrath.
+
+~
+Ability Scores: Strength , Intellige nce, Wisdom Feat: Ale r t (s ee chapte r 5) Skill Proficiencies: Athletics and Perception
+Tool Proficiency: Choose on e kind of Gaming Set (see chapter 6)
+Equipment: Choose A or B: (A) Spear, Light Crossbow,
+20 Bo lts, Gaming Set (sa m e as above) , Hooded Lantern , Manacles, Quive r, Trave ler ' s Clothes, 12 GP; o r (B) 50 GP
+
+Your feet ache when you remember the countless hours you spent at your post in the tower. You were trained to keep one eye looking outside the wall, watching for marauders sweeping from the nearby forest, and your other eye looking inside the wall, searching for cutpurses and troublemakers.
+
+Ability Scores: Dexterity, Constitution, Wisdom Feat: M agi c Initi ate (Dru id) (see chapter 5) Skill Proficienci es: Stealth and Survival Tool Proficiency: Cartographer's Tools Equipment : Cho ose A or 8: (A) Shortbow, 20 Arrows,
+Cartographer 's To ols, Bedroll, Quiver, Tent, Traveler' s Cloth es , 3 GP; or (B) SO GP
+
+You came of age outdoors, far from settled lands. Your home was anywhere you chose to spread your bedroll. There are wonders in the wildernessstrange monsters, pristine forests and streams, overgrown ruins of great halls once trod by giantsand you learned to fend for yourself as you explored them. From time to time, you guided friendly nature priests who instructed you in the fundamentals of channeling the magic of the w ild.
+
+Ability Scores: Constitution , Wisdom, Charisma Feat: Healer (see chapter 5) Skill Proficiencies: Medicine and Religion Tool Proficiency: Herbalism Kit Equipment: Choose A or B: (A) Quarterstaff, Herbalism
+Kit, Bedroll, Book (philosophy), Lamp, O il (3 flasks), Traveler's Clothes, 16 GP; or (B) 50 GP
+
+You spent your early years secluded in a hut or monastery located well beyond the outskirts of the nearest settlement. In those days, your only companions were the creatures of the forest and those who would occasionally visit to bring news of the outside world and suppl ies. The solitude allowed you to spend many hours pondering the mysteries of creation.
+
+Ability Scores: Constitution, Intelligence, Charisma Feat: Lucky (see chapter 5) Skill Proficiencies: Animal Handling and Persuasion Tool Proficiency: Navigator's Tools Equipment: Choose A or B: (A) Navigator's Tools , 2
+Pouches, Traveler's Clothes , 22 GP; or (B) 50 GP
+
+You were apprenticed to a trader, caravan master, or shopkeeper, learning the fundamentals of commerce. You traveled broadly, and you earned a living by buying and selling the raw materials artisans need to practice their craft or fini shed works from such crafters. You might have transpvr ted goods from one place to another (by shi p, v,ago n, or cara-
+\)
+van) or bought them from traveling 1··;,ders and sold them in your own shop.
+
+Ability Scores: Strength, Intell igence, Charisma Feat: Skilled (see chapter 5) Skill Proficiencies: History and Persuasion Tool Proficiency: Choose on e kind ofGaming Set (see
+chapter 6) Equipment: Choose A or B: (A) Gam ing Set (same as
+above) , Fine Clot hes , Perfu me , 29 GP; or (B) 50 GP
+
+You were raised in a castle, surrounded by wealth, power, and privilege. Your family of minor aristocrats ensured that you received a first-class education, some of which you appreciated and some of which you resented. Your time in the castle, especially the many hours you spent observing your family at court, also taught you a great deal about leadership.
+
+Ability Scores: Cons titution , Intelligence, Wisdom Feat: Magic Ini tiate (Wizard) (see chapter 5) Skill Proficie ncies: Arcana and History Tool Proficie ncy: Call igrapher's Supplies Equipment : Ch oose A or B: (A) Quarterstaff, Callig-
+raphe r's SL pplies , Book (h istory) , Parchment (8 sheets), Rob ._ , 8 GP; or (B) 50 GP
+
+You spent your formative years traveling between manors and monasteries, performing various odd jobs and services in exchange for access to their libraries. You whiled away many a long evening studying books and scrolls, learning the lore of the multiverse-even the rudiments of magic-and your mind yearns for more.
+
+Ability Scores: Strength, Dexterity, Wisdom Feat: Tavern Brawler (see chapter 5) Skill Proficiencies: Acrobatics and Perception Tool Proficiency: Navigator's Tools Equipment: Choose A or B: (A) Dagger, Navigator's
+Tools , Rope, Traveler's Clothes, 20 GP; or (B) SO GP
+
+You lived as a seafarer, wind at your back and decks swaying beneath your feet. You've perched on barstools in more ports of call than you can remember, faced mighty storms, and swapped stories with folk who live beneath the waves.
+0
+
+Ability Scores: Dexterity, Intelligence, Wisdom Feat: Skilled (see chapter 5) Skill Proficiencies: Investigation and Perception Tool Proficiency: Calligrapher's Supplies Equipment: Choose A or 8: (A) Call igrapher's Supplies,
+Fine Clothes, Lamp, Oil (3 flasks), Parchment (12 sheets), 23 GP; or (8) SO GP
+
+You spent formative years in a scriptorium, a monastery dedicated to the preservation of knowledge, or a government agency, where you learned to w rite with a clear hand and produce finely written texts. Perhaps you scribed government documents or copied tomes of literature. You might have some skill as a writer of poetry, narrative , or scholarly research. Above all, you have a careful attenti on to detail, helping you avoid introducing mist.:,l.._._,., t o the documents you copy and create.
+
+r = = =~bility Scores: Strength, Dexterity, Constitution Feat: Savage Attacker (see chapter 5) Skill Proficiencies: Athletics and Intimidat ion Tool Proficiency: Choose one kind of Gaming Set (see chapter 6) Equipment: Choose A or B: (A) Spear, Shortbow, 20 Ar rows, Gaming Set (same as above), Healer's Kit , Quiver, Travele r' s Clothes , 14 GP; or (B) SO GP
+
+You began training for war as soon as you reached adulthood and carry precious few memories of life before you took up arms. Battle is in your blood. Sometimes you catch yourself reflexively performing the basic fighting exercises you learned first. Eventually, you put that training to use on the battlefield, protecting the realm by waging war.
+
+Ability Scores: Dexterity, Wisdom , Charisma Feat: Luc ky (see chapter 5) Skill Proficiencies: Ins ight and Stealth Tool Proficiency: Thieves' Tools Equipment: Choose A or B: (A) 2 Daggers, Thieves'
+Tools, Gaming Set (any), Bedroll , 2 Pouches, Traveler's Clothes, 16 GP; or (8) 50 GP
+
+You grew up on the streets surrounded by similarly ill-fated castoffs, a few of them friends and a few of them rivals. You slept where you could and did odd jobs for food. At times, when the hunger became unbearable, you resorted to theft. Still, you never lost your pride and never abandoned hope. Fate is not yet finished with you.
+
+SPECIES DESCRIPTIONS
+Ten species are presented in this section in alphabetical order: Aasimar, Dragonborn, Dwarf, Elf, Gnome, Goliath, Halfling, Human, Ore, and Tiefling.
+A.ASIMAR
+Aasimar (pronounced AH-sih-mar) are mortals who carry a spark of the Upper Planes within their souls. Whether descended from an angelic being or infused with celestial power, they can fan that spark to bring light, healing, and heavenly fury.
+Aasimar can arise among any population of mortals. They resemble their parents, but they live for up to 160 years and have features that hint at their celestial heritage, such as metallic freckles , luminous eyes, a halo, or the skin color of an angel (silver, opalescent green, or coppery red). These features start subtle and become obvious when the aasimar learns to reveal their full celestial nature.
+AASIMAR TRAITS
+Creature Type: Humanoid Size: Medium (about 4- 7 feet tall) or Small (about 2-4
+feet tall), chosen when you select this species Speed: 30 feet
+As an Aasimar, you have these special traits. Celestial Resistance. You have Resistance to Ne-
+crotic damage and Radiant damage. Darkvision. You have Darkvision with a range of
+60 feet. Healing Hands. As a Magic action, you touch a
+creature and roll a number of d4s equal to your Proficiency Bonus. The creature regains a number of Hit Points equal to the total rolled. Once you use this trait, you can't use it again until you finish a Long Rest.
+
+Light Bearer. You know th e Lig ht ca n tr ip . '~ !1arisma is your spellcasting a bili t y for it .
+Celestial Revelation. Wh en yo u reac h c h:cHac ter level 3, you can tra nsform as a Bonus Acti on usi ng one of the options below (cho ose t h e option eac h time you transform). The tra nsfo rm a ti o n lasts for 1 minute or until yo u end it (n o act io n required). Once you tran sform , you ca n't do so aga in un t il you finish a Long Rest.
+Once on each of your turns before the transformation ends, you ca n dea l extra da m age to one target when you deal damage to it with an attack or a spell. The extra da mage equ a ls your Pro ficienc y Bonus, and the extra dam age's typ e is eith er Necrotic for Necrotic Shroud or Radiant fo r Heave nly Wings and Inner Radi a nc e.
+Here are the transformation options:
+Heavenly Wings. Two spectral wings sprout from your back temporarily. Until th e transformation ends, you have a Fly Speed equ a l to your Speed .
+Inner Radiance. Searing light temporarily radiates from your eyes and mouth. For the duration , you shed Bright Light in a 10-foot radius and Dim Light for an additional 10 feet, and at the end of each of your turns, each creature within 10 feet of you takes Radiant damage equal to your Proficiency Bonus.
+Necrotic Shroud. Your eyes briefly become pools of darkness, and flightless wings sprout from your back temporarily. Creatures other than your allies within 10 feet of you must succeed on a Charisma saving throw (DC 8 plus your Charisma modifier and Proficiency Bonus) or have the Frightened condition until the end of your next turn.
+
+TRh
+
+CHAPTER 4 I CHARACTER OR IGINS
+
+DRAGONBORN
+The ancestors of dragonborn hatched from the eggs of chromatic and metallic dragons. One story holds that these eggs were blessed by the dragon gods Baha mut and Tiamat, who wanted to populate the multiverse with people created in their image. Another story claims that dragons created the first dragonborn without the gods' blessings. Whatever their origin, dragonborn have made homes for themselves on the Material Plane.
+Dragonborn look like wingless, bipedal dragonsscaly, bright-eyed, and thick-boned with horns on their heads-and their coloration and other features are reminiscent of their draconic ancestors.
+
+DRAGONBORN TRAITS
+Creature Type: Humanoid Size: Medium (about 5-7 feet tall) Speed: 30 feet
+As a Dragonborn, you have these special traits. Draconic Ancestry. Your lineage stems from a
+dragon progenitor. Choose the kind of dragon from the Draconic Ancestors table. Your choice affects yo ur Brea th Wea pon and Damage Resistance traits as well as you r appearance.
+
+DRACONIC AN CESTORS
+Dragon Damage Type Black Acid Bl ue Li f; ht ni ng Brass Fi rr: Bronze 1.ig, .ning Coppe r Ac;·,
+
+Dragon Damage Type Gold Fire Green Poison Red Fire Silver Cold White Cold
+
+Breath Weapon. When you take the Attack action on your turn, you can replace one of your attacks with an exhalation of magical energy in either a 15-foot Cone or a 30-foot Line that is 5 feet wide (choose the shape each time). Each creature in that area must make a Dexterity saving throw (DC 8 plus your Constitution modifier and Proficiency Bonus). On a failed save, a creature takes ldl0 damage of the type determined by your Draconic Ancestry trait. On a successful save, a creature takes half as much damage. This damage increases by ldlO when you reach character levels S (2d10), 11 {3d10), and 17 (4d10).
+You can use this Breath Weapon a number of times equal to your Proficiency Bonus, and you regain all expended uses when you finish a Long Rest.
+Damage Resistance. You have Resistance to the damage type determined by your Draconic Ancestry trait.
+Darkvision. You have Darkvision with a range of 60 feet.
+Draconic Flight. When you reach character level 5, you can channel draconic magic to give yourself temporary flight. As a Bonus Action, you sprout spectral wings on your back that last for 10 minutes or until you retract the wings (no action required) or have the Incapacitated condition. During that time, you have a Fly Speed equal to your Speed. Your wings appear to be made of the same energy as your Breath Weapon. Once you use this trait, you can't use it again until you finish a Long Rest.
+
+CHAPTER 4 I CHARACTER ORIG INS
+
+187
+
+DWARF
+Dwarves were raised from the earth in the elder days by a deity of the forge. Called by various names on different worlds-Morad in, Reorx, and others-that god gave dwarves an affinity for stone and metal and for living underground. The god also made them resilient like the mountains, with a life span of about 350 years.
+Squat and often bearded, the original dwarves carved cities and strongholds into mountainsides and under the earth. Their oldest legends tell of conflicts with the monsters of mountaintops and the Underdark, whether those monsters were towering giants or subterranean horrors. Inspired by those tales, dwarves of any culture often sing of valorous deeds-especially of the little overcoming the mighty.
+On some worlds in the multiverse, the first settlements of dwarves were built in hills or mountains, and the families who trace their ancestry to those settlements call themselves hill dwarves or mountain dwarves, respectively. The Greyhawk and Dragonlance settings have such communities.
+
+DWARF TRAITS
+Creature Type: Humanoid
+Size: Medium (about 4-5 feet tall)
+Speed: 30 feet
+As a Dwarf, you have these special traits. Darkvision. You have Darkvision with a range of
+120 feet. Dwarven Resilience. You have Resistance to Poison
+damage. You also have Advantage on saving throws you make to avoid or end the Poisoned condition.
+Dwarven Toughness. Your Hit Point maximum increases by 1, and it increases by 1 again whenever you gain a level.
+Stonecunning. As a Bonus Action , you gain Tremorsense with a range of 60 feet for 10 minutes. You must be on a stone surface or touching a stone surface to use this Tremorsense. The stone can be natural or worked.
+You can use this Bonus Action a number of times equal to your Proficiency Bonus, and you regain all expended uses when you fini sh a Lonb Rest.
+
+188
+
+CHAPTER 4 I CHARACTER O RIGI NS
+
+ELF
+Created by the god Corellon, the first elves could change their forms at will. They lost this ability when Corellon cursed them for plotting with the deity Lolth, who tried and failed to usurp Corellon's dominion . When Lolth was cast into the Abyss, most elves renounced her and earned Corellon's forgiveness, but that which Corellon had taken from them was lost forever.
+No longer able to shape-shift at will, the elves retreated to the Feywild, where their sorrow was deepened by that plane's influence. Over time, curiosity led many of them to explore other planes of existence, including worlds in the Material Plane.
+Elves have pointed ears and lack facial and body hair. They live for around 750 years, and they don't sleep but instead enter a trance when they need to rest. In that state, they remain aware of their surroundings while immersing themselves in memories
+and meditations. An environment subtly transforms elves after
+they inhabit it fo r a millennium or more, and it grants them certain kinds of magic. Drow, high elves, and wood elves are examples of elves who have been transfo rmed thus.
+
+DROW
+Drow typically dwell in the Underdark and have been shaped by it. Some drow individuals and societies avoid the Underdark altogether yet carry its magic. In the Eberron setting, for example, drow dwell in rainforests and cyclopean ruins on the continent of Xen'drik.
+HIGH ELVES
+High elves have been infused with the magic of crossings between the FeY'vild and the Material Plane. On some worlds, high elves refer to themselves by other names. For example, they call themselves sun or moon elves in the Forgotten Realms setting, Silvanesti and Qualinesti in the Dragonlance setting, and Aereni in the Eberron setting.
+Woon ELVES
+Wood elves carry the magic of primeval forests within themselves. They are known by many other names, including wild elves, green elves, and forest elves. Grugach are reclusive wood elves of the Greyhawk setting, while the Kagonesti and the Tairnadal are wood elves of the Dragonlance and Eberron settings, respectively.
+
+CHAPTER 4 I CHARACTER ORIGINS
+
+189
+
+ELF TRAITS
+Creature Type: Humanoid Size: Medium (about 5-6 feet tall) Speed: 30 feet
+As an Elf, you have these special traits. Darkvision. You have Darkvision with a range of
+60 feet. Elven Lineage. You are part of a lineage that
+grants you supernatural abilities. Choose a lineage from the Elven Lineages table. You gain the level 1 benefit of that lineage.
+When you reach character levels 3 and S, you learn a higher-level spell, as shown on the table. You always have that spell prepared. You can cast it
+
+once without a spell slot, and you regain the ability to cast it in that way when you finish a Long Rest. You can also cast the spell using any spell slots you have of the appropriate level.
+Intelligence, Wisdom, or Charisma is your spellcasting ability for the spells you cast with this trait (choose the ability when you select the lineage).
+Fey Ancestry. You have Advantage on saving throws you make to avoid or end the Charmed condition.
+Keen Senses. You have proficiency in the Insight, Perception, or Survival skill.
+Trance. You don't need to sleep, and magic can't put you to sleep. You can finish a Long Rest in 4 hours if you spend those hours in a trancelike meditation, during which you retain consciousness.
+
+ELVEN LINEAGES
+
+Lineage Level 1
+
+Drow
+
+The range of your Darkvision increases to 120 feet.
+You also know the Dancing Lights cantrip.
+
+High Elf
+
+You know the Prestidigitation cantrip. Whenever you
+fin ish a Long Rest, you can replace that cantrip with a different cantrip from the Wizard spell list.
+
+Wood Elf Your Speed increases to 35 feet. You also know the
+Druidcraft cantrip.
+
+Level 3
+Faerie Fire Detect Magic
+Longstrider
+
+Level 5
+Darkness Mi:;iv Step
+Pu s: :,;i:hout Trace
+
+J90
+
+C HAPTER 4 I CHARACTER ORIG I NS
+
+GNOME
+Gnomes are magical folk created by gods of invention, illusions, and life underground. The earliest gnomes were seldom seen by other folk due to the gnomes' secretive nature and their propensity for living in forests and burrows. What they lacked in size, they made up for in cleverness. They confounded predators with traps and labyrinthine tunnels. They also learned magic from gods like Gari Glittergold, Baervan Wildwanderer, and Baravar Cloakshadow, who visited them in disguise. That magic eventually created the lineages of forest gnomes and rock gnomes.
+Gnomes are petite folk with big eyes and pointed ears, who live around 425 years. Many gnomes like the feeling of a roof over their head, even if that "roof" is nothing more than a hat.
+G NO ME T RAITS
+Creature Type: Humanoid Size: Small (about 3-4 feet tall) Speed: 30 feet
+As a Gnome, you have these special traits. Darkvision. You have Darkvision with a range of
+60 feet. Gnomish Cunning. You have Advantage on Intelli-
+gence, Wi sde n, , a nd Charisma saving th rows. Gnomish Lineage. You are part of a lineage that
+gra nts you upe rnatural abilities. Choose one of the followi ng o _)tions; whichever one you choose,
+
+Intelligence, Wisdom, or Charisma is your spellcasting ability for the spells you cast with this trait (choose the ability when you select the lineage):
+Forest Gnome. You know the Minor Illusion cantrip. You also always have the Speak with Animals spell prepared. You can cast it without a spell slot a number of times equal to your Proficiency Bonus, and you regain all expended uses when you finish a Long Rest. You can also use any spell slots you have to cast the spell.
+Rock Gnome. You know the Mending and Prestidigitation cantrips. In addition, you can spend 10 minutes casting Prestidigitation to create a Tiny clockwork device (AC 5, 1 HP}, such as a toy, fire starter, or music box. When you create the device, you determine its function by choosing one effect from Prestidigitation; the device produces that effect whenever you or another creature takes a Bonus Action to activate it with a touch. If the chosen effect has options within it, you choose one of those options for the device when you create it. For example, if you choose the spell's ignite-extinguish effect, you determine whether the device ignites or extinguishes fire; the device doesn't do both. You can have three such devices in existence at a time, and each falls apart 8 hours after its creation or when you dismantle it with a touch as a Utilize action.
+
+CHAPTE R 4 I CHA RACTER OR IG I NS
+
+191
+
+GOLIATH
+Towering over most folk, goliaths are distant descendants of giants. Each goliath bears the favors of the first giants-favors that manifest in various supernatural boons, including the ability to quickly grow and temporarily approach the height of goliaths' gigantic kin.
+Goliaths have physical characteristics that are reminiscent of the giants in their family lines. For example, some goliaths look like stone giants, while others resemble fire giants. Whatever giants they count as kin, goliaths have forged their own path in the multiverse-unencumbered by the internecine conflicts that have ravaged giantkind for ages-and seek heights above those reached by their ancestors.
+GOLIAT H TRAITS Creature Type: Hum an oid Size: Med ium (about 7-8 feet tall) Speed: 35 feet
+As a Goliath, you have these special traits. Giant Ancestry. You are descended from Giants.
+Choose one of the following benefits- a supernatural boon from your ancestry; you can use the chosen benefit a number of times equal to your Proficiency Bonus, and you regain all expended uses when you fin ish a Long Rest:
+Cloud's Jaunt (Cloud Giant). As a Bonus Action, you magically teleport up to 30 feet to an unoccupied space you can see.
+
+Fire's Burn (Fire Giant). When you hit a target with an attack roll and deal damage to it, you can also deal ldlO Fire damage to that target.
+Frost's ChiJI (Frost Giant). When you hit a target with an attack roll and deal damage to it, you can also deal ld6 Cold damage to that target and reduce its Speed by 10 feet until the start of your next turn.
+Hill's Tumble (Hill Giant). When you hit a Large or smaller creature with an attack roll and deal damage to it, you can give that target the Prone condition.
+Stone's Endurance (Stone Giant). When you take damage, you can take a Reaction to roll 1dl2. Add your Constitution modifier to the number rolled and reduce the damage by that total.
+Storm's Thunder (Storm Giant). When you take damage from a creature w ithin 60 feet of you, you can take a Reac tion to deal ld8 Thunder damage to that creatu re.
+Large Form. Star ting at ch aracter level 5, you can change your size to Large as a Bonus Action if you're in a big enough space. This tra nsfo r mation lasts for 10 minutes or until you end it (no action required). For that duration , you have Advantage on Strength checks, and you r Speed increases by 10 feet. Once you use this trait, you can't use it again until you finish a Long Rest.
+Powerful Build. You have Advantage on any saving throw you ma ke to end t he Gra p-)lcd condition. You also count as one size larger whe1 determining your carrying ca pacity.
+
+192
+
+CHAPTER 4 I CHARACTER ORIGINS
+
+HALFLING
+Cherished and guided by gods who value life, home, and hearth, halflings gravitate toward bucolic havens where family and community help shape their lives. That said, many halflings possess a brave and adventurous spirit that leads them on journeys of discovery, affording them the chance to explore a bigger world and make new friends along the way. Their size- similar to that of a human child-helps them pass through crowds unnoticed and slip through tight spaces.
+Anyone who has spent time around halflings, particularly halfling adventurers, has likely witnessed the storied "luck of the halflings" in action. When a halfling is in mortal danger, an unseen force seems to intervene on the halfling's behalf. Many halflings believe in the power of luck, and they attribute their unusual gift to one or more of their benevolent gods, including Yondalla, Brandobaris, and Charmalaine. The same gift might contribute to their robust life spans (about 150 years).
+Halfling communities come in all varieties. For every sequestered shire tucked away in an unspoiled part of the world, there's a crime syndicate like the Boromar Clan in the Eberron setting or a territorial mob of halflings like those in the Dark Sun setting.
+
+Halflings who prefer to live underground are sometimes called strongheart halflings or stouts. Nomadic halflings, as well as those who live among humans and other tall folk, are sometimes called lightfoot halflings or tallfellows.
+HALFLING TRAITS Creature Type: Humanoid Size: Small (about 2-3 feet tall)
+Speed: 30 feet
+As a Halfling, you have these special traits. Brave. You have Advantage on saving throws you
+make to avoid or end the Frightened condition. Hal.fling Nimbleness. You can move through the
+space of any creature that is a size larger than you, but you can't stop in the same space.
+Luck. When you roll a 1 on the d2O of a D2O Test, you can reroll the die, and you must use the new roll.
+Naturally Stealthy. You can take the Hide action even when you are obscured only by a creature that is at least one size larger than you.
+
+CHAPT ER 4- I C H ARACT ER ORIGINS
+
+193
+
+HUMAN
+Found throughout the multiverse, humans are as varied as they are numerous, and they endeavor to achieve as much as they can in the years they are given. Their ambition and resourcefulness are commended, respected, and feared on many worlds.
+Humans are as diverse in appearance as the people of Earth, and they have many gods. Scholars dispute the origin of humanity, but one of the earliest known human gatherings is said to have occurred in Sigil, the torus-shaped city at the center of the multiverse and the place where the Common language was born. From there, humans could have spread to every part of the multiverse, bringing the City of Doors' cosmopolitanism with them.
+
+HUMAN TRAITS
+Creature Type: Humanoid Size: Medium (about 4-7 feet tall) or Small (about 2-4
+feet tall), chosen when you select this species Speed: 30 feet
+As a Human, you have these special traits. Resourceful. You gain Heroic Inspiration when-
+ever you finish a Long Rest. Skillful. You gain proficiency in one skill of your
+choice. Versatile. You gain an Origin feat of your choice
+(see chapter S). Skilled is recommended.
+
+CHAPTER 4 I CHARACTER ORIGINS
+
+[
+
+ORC
+Ores trace their creation to Gruumsh, a powerful god who roamed t he wide open spaces of the Material Plane. Gruumsh equipped his children with gifts to help them wander great plains, vast caverns, and churning seas and to face the monsters that lurk there. Even when they turn their devotion to other gods, ores retain Gruumsh's gifts: endurance, determination, and the ability to see in darkness.
+Ores are, on average, tall and broad. They have gray skin, ears that are sharply pointed, and prominent lower canines that resemble small tusks. Ore youths on some worlds are told about their ancestors' great travels and travails. Inspired by those tales, many of those ores wonder when Gruumsh will call on them to match the heroic deeds of old and if they w ill prove worthy of his favor. Other ores are happy to leave old tales in the past and find their own way.
+
+0RC TRAITS
+Creature Type: Humanoid Size: Medium (about 6-7 feet tall) Speed: 30 feet
+As an Ore, you have these special traits. Adrenaline Rush. You can take the Dash action as
+a Bonus Action. When you do so, you gain a number of Temporary Hit Points equal to your Proficiency Bonus.
+You can use this trait a number of times equal to your Proficiency Bonus, and you regain all expended uses when you finish a Short or Long Rest.
+Darkvision. You have Darkvision with a range of 120 feet.
+Relentless Endurance. When you are reduced to 0
+Hit Points but not killed outright, you can drop to 1 Hit Point instead. Once you use this trait, you can't do so again until you finish a Long Rest.
+
+CHAPTER 4 I CH RACTER ORIGINS
+
+195
+
+lN FE RN/\L T1EF L ING
+TIEFLING
+Tieflings are either born in the Lower Planes or have fiendish ancestors who originated there. A tiefling (pronounced TEE-fling) is linked by blood to a devil, a demon, or some other Fiend. This connection to the Lower Planes is the tiefling's fiendish legacy, which comes with the promise of power yet has no effect on the tiefling's moral outlook.
+A tiefling chooses whether to embrace or lament their fiendish legacy. The three legacies are described below.
+ABYSSAL
+The entropy of the Abyss, the chaos of Pandemonium, and the despair of Carceri call to tieflings who have the abyssal legacy. Horns, fur, tusks, and peculiar scents are common physical features of such tieflings, most of whom have the blood of demons coursing through their veins.
+CHT HONIC
+Tieflings who have the chthonic legacy feel not only the tug of Carceri but also the greed of Gehenna and the gloom of Hades. Some of these tieflings look cadaverous. Others possess the unearthly beauty of a succubus, or they have physical features in common with a night hag, a yugoloth, or some other Neutral Evil fiendi sh ancestor.
+INFE RNA L
+The infernal legacy connects tieflings not only to Gehenna but also the Nine Hells and the raging battlefields of Acheron . Ho rns, s pioes, tails, golden eyes, and a fa int odor of sul fur or smoke are common physical featu res of such tiefl i, gs, most of whom trace their ancestry to de-,.,i:·..
+
+TIEFLING TRAITS
+Creature Type: Humanoid Size: Medium (about 4-7 feet tall) or Small (about
+3-4 feet tall), chosen when you select this species Speed: 30 feet
+As a Tiefling, you have the following special traits. Darkvision. You have Darkvision with a range of
+60 feet. Fiendish Legacy. You are the recipient of a legacy
+that grants you supernatural abilities. Choose a legacy from the Fiendish Legacies table. You gain the level 1 benefit of the chosen legacy.
+
+When you reach character levels 3 and 5, you learn a higher-level spell, as shown on the table. You always have that spell prepared. You can cast it once without a spell slot, and you regain the ability to cast it in that way when you finish a Long Rest. You can also cast the spell using any spell slots you have of the appropriate level.
+Intelligence, Wisdom, or Charisma is your spellcasting ability for the spells you cast with this trait (choose the ability when you select the legacy).
+Otherworldly Presence. You know the Thaumaturgy cantrip. When you cast it with this trait, the spell uses the same spellcasting ability you use for your Fiendish Legacy trait.
+
+FIENDISH LEGACIES
+
+Legacy
+
+Levell
+
+Abyssal
+
+You have Resistance to Poison damage.
+You also know the Poison Spray cantrip.
+
+Chthonic Yo u have Resistance to Necrotic damage.
+You also know the Chill Touch cantrip.
+
+Infernal
+
+You have Resistance to Fire damage.
+You also know the Fire Bolt cantrip.
+
+Level3 Ray ofSickness
+False Life
+Hellish Rebuke
+
+Levels Hold Person
+Ray of Enfeeblement
+
+

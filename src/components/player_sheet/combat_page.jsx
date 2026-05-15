@@ -323,6 +323,15 @@ export default function CombatPage() {
                     <span className="material-symbols-outlined">{editMaxLife ? 'check' : 'edit'}</span>
                   </button>
                 </div>
+                <div className="combat-page-hp-controls">
+                  <button
+                    type="button"
+                    className="combat-page-icon-btn minus-btn"
+                    {...longPressMinus}
+                    aria-label="Decrease HP"
+                  >
+                    <span className="material-symbols-outlined">remove</span>
+                  </button>
                 <div className="combat-page-hp-label-wrap">
                   <span
                     className={`combat-page-hp-feedback ${hpFeedback ? 'visible' : ''}`}
@@ -335,15 +344,6 @@ export default function CombatPage() {
                     {hpFeedback?.text ?? '\u00A0'}
                   </span>
                 </div>
-                <div className="combat-page-hp-controls">
-                  <button
-                    type="button"
-                    className="combat-page-icon-btn minus-btn"
-                    {...longPressMinus}
-                    aria-label="Decrease HP"
-                  >
-                    <span className="material-symbols-outlined">remove</span>
-                  </button>
                   <button
                     type="button"
                     className="combat-page-icon-btn"
@@ -522,8 +522,6 @@ export default function CombatPage() {
               <span className="combat-page-stat-label">Base attack bonus</span>
               <span className="combat-page-stat-value">{formatBaseAttackBonus(bab)}</span>
             </div>
-
-            <hr className="combat-page-divider" />
 
             <div className="combat-page-attacks">
               {equippedWeapons.length === 0 ? (

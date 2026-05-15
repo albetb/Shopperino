@@ -3,12 +3,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addCardByLink } from '../../store/slices/appSlice';
 import { setCombatPageCardCollapsed } from '../../store/slices/playerSheetSlice';
 import {
+  onAddInventoryItem,
   onRemoveInventoryItem,
   onEquipItem,
   onUnequipSlot,
 } from '../../store/thunks/playerSheetThunks';
 import { getEquipType } from '../../lib/equipType';
+import { loadFile } from '../../lib/utils';
+import AddItemFormInventory from './inventory/AddItemFormInventory';
 import InventoryItemRow from './inventory/InventoryItemRow';
+import InventoryTableHeader from './inventory/InventoryTableHeader';
 import InventoryOptionsPopup from './inventory/InventoryOptionsPopup';
 import EquipmentCard from './inventory/EquipmentCard';
 import '../../style/menu_cards.css';
@@ -23,9 +27,21 @@ export default function InventoryPage() {
   );
 
   const [popupState, setPopupState] = useState(null);
+  const [showAddItemForm, setShowAddItemForm] = useState(false);
+  const [sortColumn, setSortColumn] = useState('name');
+  const [sortDesc, setSortDesc] = useState(false);
 
   const inventory = useMemo(() => player?.getInventory?.() ?? [], [player]);
   const equipment = useMemo(() => player?.getEquipment?.() ?? {}, [player]);
+  const allItems = useMemo(() => {
+    try {
+      const itemsData = loadFile('items');
+      const itemTypes = ['Good', 'Ammo', 'Weapon', 'Specific Weapon', 'Armor', 'Specific Armor', 'Shield', 'Specific Shield', 'Potion', 'Ring', 'Rod', 'Staff', 'Wand', 'Wondrous Item'];
+      return itemTypes.flatMap(type => itemsData[type] || []);
+    } catch {
+      return [];
+    }
+  }, []);
 
   const getEffectById = useCallback(
     (effectId) => {
@@ -87,6 +103,19 @@ export default function InventoryPage() {
     dispatch(addCardByLink({ links, bonus }));
   };
 
+  const handleAddItem = (itemName, itemType, number, link) => {
+    dispatch(onAddInventoryItem(itemName, itemType, number, link));
+  };
+
+  const handleSort = (column) => {
+    if (sortColumn === column) {
+      setSortDesc(!sortDesc);
+    } else {
+      setSortColumn(column);
+      setSortDesc(false);
+    }
+  };
+
   return (
     <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
       <EquipmentCard
@@ -108,32 +137,43 @@ export default function InventoryPage() {
 
       <div className="card card-width-spellbook">
         <h2 className="player-sheet-note-title">Inventory Items</h2>
-        {inventory.length === 0 ? (
-          <p className="modal-body-muted text-center">No items in inventory</p>
-        ) : (
-          <table className="inventory-table">
-            <thead>
+        <table className="inventory-table">
+          <InventoryTableHeader sortColumn={sortColumn} sortDesc={sortDesc} onSort={handleSort} />
+          <tbody>
+            {inventory.length === 0 && (
               <tr>
-                <th className="align-right">Qty</th>
-                <th>Name</th>
-                <th>Type</th>
-                <th className="col-action" />
+                <td colSpan="4" className="modal-body-muted text-center">No items in inventory</td>
               </tr>
-            </thead>
-            <tbody>
-              {inventory.map((item, idx) => (
-                <InventoryItemRow
-                  key={idx}
-                  item={item}
-                  idx={idx}
-                  onOptionsClick={handleOptionsClick}
-                  onOpenCard={handleOpenCard}
-                  getEffectById={getEffectById}
-                />
-              ))}
-            </tbody>
-          </table>
-        )}
+            )}
+            {inventory.map((item, idx) => (
+              <InventoryItemRow
+                key={idx}
+                item={item}
+                idx={idx}
+                onOptionsClick={handleOptionsClick}
+                onOpenCard={handleOpenCard}
+                getEffectById={getEffectById}
+              />
+            ))}
+            {showAddItemForm && (
+              <AddItemFormInventory
+                onAddItem={handleAddItem}
+                items={allItems}
+                setShowAddItemForm={setShowAddItemForm}
+              />
+            )}
+          </tbody>
+        </table>
+        <div style={{ display: 'flex', justifyContent: 'center', padding: '0.7rem' }}>
+          <button
+            type="button"
+            className="modern-button small-middle-long2"
+            onClick={() => setShowAddItemForm(!showAddItemForm)}
+            title={showAddItemForm ? 'Cancel' : 'Add item'}
+          >
+            <span className="material-symbols-outlined">{showAddItemForm ? 'close' : 'add_shopping_cart'}</span>
+          </button>
+        </div>
       </div>
 
       {popupState && (

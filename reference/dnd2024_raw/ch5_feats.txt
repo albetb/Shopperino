@@ -1,0 +1,611 @@
+CHAPTER 5
+FEATS
+-- ---- _ : _ ~ - -
+
+HIS CHAPTER OFFERS A COLLECT ION OF
+feats , which are special features not tied to a ch aracter class- A feat represents a talent or ac·na-paarbeialitoiefse.xIpt eermtibseodtiheasttgriavm.esm. agc, h~axrpaecnt·eenr csep,ecainadl abilities beyond what a clas_s provides. The sections below explam the parts of a feat and list a variety of feat options separated into
+categories. Your background gives you a feat, and at certain
+levels, your class gives you the Ability Score Improvement feat or the choice of another feat for which you qualify.
+By whatever means you acquire a feat, you can take it only once unless its description says
+otherwise.
+FEAT DESCRIPTIONS
+This chapter's feats are organized by categoryOrigin, General, Fighting Style, or Epic Boon-and alphabetized in each category. All the feats are listed alphabetically in the Feat List table. If a feat can be taken more than once, an asterisk appears after its name in that table.
+PARTS OF A FEAT
+The description of a feat contains the following parts, which are presented after the feat's name.
+Category. A feat is a member of a category, which is noted in the feat. If you're instructed to choose a feat from a specific category, such as the Origin category, that category must appear under the feat's name. If you're instructed to choose a feat and no category is specified, you can choose from any category.
+Prerequisite. To take a feat, you must meet any prerequisite in its description unless a feature allows you to take the feat without the prerequisite. If a prerequisite includes a class, you must have at least 1 level in that class to take the feat.
+Benefit. The benefits of a feat are detailed after any prerequisites are listed. If you have a feat, you gain its benefits.
+Repeatable. A feat can be taken only once unless its description states otherwise in a "Repeatable"
+· subsection.
+rJ
+
+FEAT LIST Feat
+Ability Score Improvement* Actor Alert Archery Athlete Blind Fighting Boon of Combat Prowess Boon of Dimensional Travel Boon of Energy Resistance Boon of Fate Boon of Fortitude Boon of Irresistible Offense Boon of Recovery Boon of Skill Boon of Speed Boon of Spell Recall Boon of the Night Spirit Boon ofTruesight Charger Chef Crafter Crossbow Expert Crusher Defense Defensive Duelist Dual Wielder Dueling Durable Elemental Adept*
+Fey-Touched
+Grappler Great Weapon Fighting Great Weapon Master Healer
+
+Category General General Origin Fighting Style General Fighting Style Epic Boon Epic Boon Epic Boon Epic Boon Epic Boon Epic Boon Epic Boon Epic Boon Epic Boon Epic Boon Epic Boon Epic Boon General General Origin General General Fighting Style General General Fighting Style General General General General Fighting Style General Origin
+
+CH APTER 5 I FEATS
+
+IQQ
+
+Feat Heavily Armored Heavy Armor Master Inspiring Leader Interception Keen Mind Lightly Armored Lucky Mage Slayer Magic Initiate* Martial Weapon Training Medium Armor Master Moderately Arm ored Mounted Combatant Musician Observant Piercer Poisoner Polearm Master Protection Resilient Ritual Caster Savage Attacker Sentinel Shadow-Touched Sharpshooter Shield Master Sk illed * Ski ll Expert Skulker Slasher Speedy Spell Sniper
+
+Category General General General Fighting Style General General Origin General O rigin General General General General Origin General Gen eral General General Fighting Style General General O rigin General General General General Origin General General General G e n e ra l General
+
+Feat Tavern Brawler Telekinetic Telepathic Thrown Weapon Fight ing Tough Two-Weapon Fighting Unarmed Fighting War Caster Weapon Master
+*Thi s feat can be ta ken mo re than o nce .
+
+Catego ry O r igin General Gene ral Figh ting Styl e Orig in Fighting Style Figh ti ng Style General General
+
+ORIGIN FEATS These feats are in the Origin category.
+
+A LERT
+Origin Feat
+You gain the following benefits. Initiative Proficiency. When you roll Initiative,
+you can add your Proficiency Bonus to the roll. Initiative Swap. Immediately after you roll Initia-
+tive, you can swap your Initiative with the Initiative of one willing ally in the same combat. You can't make this swap if you or the ally has the Incapacitated condition.
+
+CRAFTER
+Origin Feat
+You gain the following benefits. Tool Proficiency. You gain proficiency wi t h three
+different A r tisa n's Tools of y our choice from the Fast Crafting table.
+Discount. Whenever you buy a nonmagical item, you r eceive a 20 percent discount on it.
+Fast Crafting. When you finish a Long Rest, you can craft one piece of gear from the Fast Crafting table, provided you have the Artisan's Tools associated with that item and have proficiency w ith those tool s. The item lasts until you fini sh another Long Rest , at which point t he item fa lls apart.
+
+?nn
+
+CH APTER 5 I FEATS
+
+FAST CRAFT N G
+Artisan's Tools Carpenter's Tools Leatherworke r's Too ls Mason's Tools Potter's Too ls Smith's Tool s
+Tinker's Tools Weaver's Too ls Woodcarver's Tools
+
+Crafted Gear
+Ladder, Torch Case, Po uch Block and Tackle Jug, Lamp Ball Bearings, Bucket, Caltrops, Grappling Hook, Iron Pot
+Bell , Shovel , Tinder Box Basket, Rope , Net, Te nt Club, Greatclub, Quarterstaff
+
+HEALER
+Origin Feat
+You gain the following benefits. Battle Medic. If you have a Healer's Kit, you can
+expend one use of it and tend to a creature within 5 feet of yourself as a Utilize action. That creature can expend one of its Hit Point Dice, and you then roll that die. The creature regains a number of Hit Points equal to the roll plus your Proficiency Bonus.
+Healing Rerolls. Whenever you roll a die to determine the number of Hit Points you restore with a spell or with this feat's Battle Medic benefit, you can reroll the die if it rolls a 1, and you must use the new roll.
+L UCKY
+Origin Feat
+You gain the following benefits. Luck Points. You have a number of Luck Points
+equal to your Proficiency Bonus and can spend the points on the benefits below. You regain your expended Luck Points when you finish a Long Rest.
+Advantage. When you roll a d20 for a D20 Test, you can spend 1 Luck Point to give yourself Advantage on the roll.
+Disadvantage. When a creature rolls a d20 for an attack roll against you, you can spend 1 Luck Point to impose Disadvantage on that roll.
+MAGIC INITI ATE
+Origin Feat
+You gain the foll owing benefits. Two Cantrips. Yl) u lea rn two cantrips of your
+choice from th e Cler ic, Dr uid, or Wizard spell list. Intelligence, W id om , or Charisma is your spellcasting ability for th is feat's spells (choose when you select this feat).
+
+Level 1Spell. Choose a level 1spell from the same list you selected for this feat's cantrips. You always have that spell prepared. You can cast it once without a spell slot, and you regain the ability to cast it in that way when you finish a Long Rest. You can also cast the spell using any spell slots you have.
+Spell Change. Whenever you gain a new level, you can replace one of the spells you chose for this feat with a different spell of the same level from the chosen spell list.
+Repeatable. You can take this feat more than once, but you must choose a different spell list each time.
+MUSICIAN
+Origin Feat
+You gain the following benefits. Instrument Training. You gain proficiency with
+three Musical Instruments of your choice. Encouraging Song. As you finish a Short or Long
+Rest, you can play a song on a Musical Instrument with which you have proficiency and give Heroic Inspiration to allies who hear the song. The number of allies you can affect in this way equals your Proficiency Bonus.
+SAVAGE ATTACKER
+Origin Feat
+You've trained to deal particularly damaging strikes. Once per turn when you hit a target with a weapon, you can roll the weapon's damage dice twice and use either roll against the target.
+SKILLED
+Origin Feat
+You gain proficiency in any combination of three skills or tools of your choice.
+Repeatable. You can take this feat more than once.
+
+CHAPTER 5 I FE AT S
+
+201
+
+TAVERN BRAWLER
+Origin Feat You gain the following benefits.
+Enhanced Unarmed Strike. When you hit with your Unarmed Strike and deal damage, you can deal Bludgeoning damage equal to ld4 plus your Strength modifier instead of the normal damage of an Unarmed Strike.
+Damage Rerolls. Whenever you roll a damage die for your Unarmed Strike, you can reroll the die if it rolls a 1, and you must use the new roll.
+Improvised Weaponry. You have proficiency with improvised weapons.
+Push. When you hit a creature with an Unarmed Strike as part of the Attack action on your turn, you can deal damage to the target and also push it 5 feet away from you. You can use this benefit only once per turn.
+TOUGH Origin Feat
+Your Hit Point maximum increases by an amount equal to twice your character level when you gain this feat. Whenever you gain a character level thereafter, your Hit Point maximum increases by an additional 2 Hit Points.
+GENERAL FEATS
+These feats are in the General category.
+
+ATHLETE
+General Feat (Pre,·equisite: Level 4+, Strength 0 1· Dexterity 13+)
+You gain the following benefits. Ability Score Increase. Increase your Strength or
+Dexterity score by 1, to a maximum of 20. Climb Speed. You gain a Climb Speed equal to your
+Speed. Hop Up. When you have the Prone condition, you
+can right yourself with only 5 feet of movement. Jumping. You can make a running Long or High
+Jump after moving only 5 feet.
+CHARGER
+General Feat (Prerequisite: Level 4+, Strength or Dexterity 13+)
+You gain the following benefits. Ability Score Increase. Increase your Strength or
+Dexterity score by 1, to a maximum of 20. Improved Dash. When you take the Dash action,
+your Speed increases by 10 feet for that action. Charge Attack. If you move at least 10 feet in a
+straight line toward a target immediately before hitting it with a melee attack roll as part of the Attack action, choose one of the following effects: gain a ld8 bonus to the attack's damage roll, or push the target up to 10 feet away if it is no more than one size larger than you. You can use this benefit only once on each of your turns.
+
+ABILITY SCORE IMPROVEMENT
+General Feat (Prerequisite: Level 4+)
+Increase one ability score of your choice by 2, or increase two ability scores of your choice by 1. This feat can't increase an ability score above 20.
+Repeatable. You can take this feat more than once.
+ACTOR
+General Feat (Prerequisite:Level 4+, Charisma 13+)
+You gain the following benefits. Ability Score Increase. Increase your Charisma
+score by 1, to a maximum of 20. Impersonation. While you're disguised as a real or
+fictional person, you have Advantage on Charisma (Deception or Performance) checks to convince others that you are that person.
+Mimicry. You can mimic the sounds of other creatures, including speech. A creature that hears the mimicry must succeed on a Wisdom (Insight) check to determine the effect is faked (DC 8 plus your Charisma modifier and Proficiency Bonus).
+
+CHEF
+General Feat (Prerequisite: Level 4+)
+You gain the following benefits. Ability Score Increase. Increase your Constitution
+or Wisdom score by 1, to a maximum of 20. Cook's Utensils. You gain proficiency with Cook's
+Utensils if you don't already have it. Replenishing Meal. As par t of a Short Rest, you
+can cook special food if you have ingredients and Cook's Utensils on hand. You can prepare enough of this food for a number of creatures equal to 4 plus your Proficiency Bonus. At the end of the Short Rest, any creature who eats the fo od and spends one or more Hit Dice to regain Hit Points regains an extra ld8 Hit Points.
+Bolstering Treats. With 1 hou r of work or when you finish a Long Rest, you ca n cook a number of treats equal to your Proficiency Bon us if you have ingredients and Cook's Utensils on k nd. These special treats last 8 hours after he[ng :Y,aJ e. A creature can use a Bonus Action to eat om' o! :. hose t reats to gain a number of Tem porary t i1 P~,;n ts equal to your Proficiency Bonus.
+
+2 02
+
+CHAPTER 5 I FE AT S
+
+CROSSBOW E XPERT
+General Feat (Prerequisite: Level 4+, Dexterity 13+)
+You gain th e fo llowing benefits. Ability Sco1"e Increase. Increase your Dexterity
+score by 1, to a maximum of 20. Ignore Loading. You ignore the Loading property
+of the Hand Crossbow, Heavy Crossbow, and Light Crossbow (a ll called crossbows elsewhere in this feat). If you're holding one of them, you can load a piece of ammunition into it even if you lack a free hand.
+Firing in Melee. Being within 5 feet of an enemy doesn't impose Disadvantage on your attack rolls with crossbows.
+Dual Wielding. When you make the extra attack of the Light property, you can add your ability modifier to the damage of the extra attack if that attack is with a crossbow that has the Light property and you aren't already adding that modifier to the damage.
+CRUSHER
+General Feat (Prerequisite: Level 4+)
+You gain the following benefits. Ability Score Increase. Increase your Strength or
+Constitution score by 1, to a maximum of 20. Push. Once per turn, when you hit a creature with
+an attack that deals Bludgeoning damage, you can move it 5 feet to an unoccupied space if the target is no more than one size larger than you.
+Enhanced Critical. When you score a Critical Hit that deals Bludgeoning damage to a creature, attack rolls against that creature have Advantage until the start of your next turn.
+DEF ENSIVE DUELIST
+General Feat (Prerequisite: Level 4+, Dexterity 13+)
+You gain the following benefits. Ability Score Increase. Increase your Dexterity
+score by 1, to a maximum of 20. Parry. If you're holding a Finesse weapon and
+another creature hits you with a melee attack, you can take a Reaction to add your Proficiency Bonus to your Armor Class, potentially causing the attack to miss you. You gain this bonus to your AC against me lee attacks until the start of your next turn.
+
+DUAL WIELDER
+General Feat (Prerequisite: Level 4+, Strength or Dexterity 13+)
+You gain the following benefits. Ability Score Increase. Increase your Strength or
+Dexterity score by 1, to a maximum of 20. Enhanced Dual Wielding. When you take the At-
+tack action on your turn and attack with a weapon that has the Light property, you can make one extra attack as a Bonus Action later on the same turn with a different weapon, which must be a Melee weapon that lacks the Two-Handed property. You don't add your ability modifier to the extra attack's damage unless that modifier is negative.
+Quick Draw. You can draw or stow two weapons that lack the Two-Handed property when you would normally be able to draw or stow only one.
+DURABLE
+General Feat (Prerequisite: Level 4+)
+You gain the following benefits. Ability Score Increase. Increase your Constitution
+score by 1, to a maximum of 20. Defy Death. You have Advantage on Death Saving
+Throws. Speedy Recovery. As a Bonus Action, you can ex-
+pend one of your Hit Point Dice, roll the die, and regain a number of Hit Points equal to the roll.
+ELEMENTAL ADEPT
+General Feat (Prerequisite: Level 4+, Spellcasting or Pact Magic Feature)
+You gain the following benefits. Ability Score Increase. Increase your Intelligence,
+Wisdom, or Charisma score by 1. to a maximum of
+20. Energy Mastery. Choose one of the following dam-
+age types: Acid, Cold, Fire, Lightning, or Thunder. Spells you cast ignore Resistance to damage of the chosen type. In addition, when you roll damage for a spell you cast that deals damage of that type, you can treat any 1on a damage die as a 2.
+Repeatable. You can take this feat more than once, but you must choose a different damage type each time for Energy Mastery.
+
+CHA PTER 5 I FEATS
+
+203
+
+FEY-TOUCHED
+General Feat (Prerequisite: Level 4+)
+Your exposure to the Feywild's magic grants you the following benefits.
+Ability Score Increase. Increase your Intelligence, Wisdom, or Charisma score by 1, to a maximum of 20.
+Fey Magic. Choose one level 1spell from the Divination or Enchantment school of magic. You always have that spell and the Misty Step spell prepared. You can cast each of these spells without expending a spell slot. Once you cast either spell in this way, you can't cast that spell in this way again until you finish a Long Rest. You can also cast these spells using spell slots you have of the appropriate level. The spells' spelkasting ability is the ability increased by this feat.
+GRAPPLER
+General Feat (Prerequisite: Level 4+, Strength or Dexterity 13+)
+You gain the following benefits. Ability Score Increase. Increase your Strength or
+Dexterity score by 1, to a maximum of 20. Punch and Grab. When you hit a creature with an
+Unarmed Strike as part of the Attack action on your turn, you can use both the Damage and the Grapple option. You can use this benefit only once per turn.
+Attack Advantage. You have Advantage on attack rolls against a creature Grappled by you.
+Fast Wrestler. Your Speed isn't halved when you move a creature Grappled by you if the creature is your size or smaller.
+GREAT WEAPON MASTER
+General Feat (Prerequisite: Level 4+, Strength 13+)
+You gain the following benefits. Ability Score Increase. Increase your Strength
+score by 1, to a maximum of 20. Heavy Weapon Mastery. When you hit a creature
+with a weapon that has the Heavy property as part of the Attack action on your turn, you can cause the weapon to deal extra damage to the target. The extra damage equals your Proficiency Bonus.
+Hew. Immediately after you score a Critical Hit with a Melee weapon or reduce a creature to OHit Points with one, you can make one attack with the same weapon as a Bonus Action.
+
+HEAVILY ARMORED
+General Feat (Prerequisite: Level 4+, Medium Armor Training)
+You gain the following benefits. Ability Score Increase. Increase your Constitution
+or Strength score by 1, to a maximum of 20. Armor Training. You gain training with Heavy
+armor.
+H EAVY ARMOR MASTER
+General Feat (Prerequisite: Level 4+, Heavy Armor Training)
+You gain the following benefits. Ability Score Increase. Increase your Constitution
+or Strength score by 1, to a maximum of 20. Damage Reduction. When you're hit by an attack
+while you're wearing Heavy armor, any Bludgeoning, Piercing, and Slashing damage dealt to you by that attack is reduced by an amount equal to your Proficiency Bonus.
+INSPIRING LEADER
+General Feat (Prerequisite: Level 4+, Wisdom or Charisma 13+)
+You gain the following benefits. Ability Score Increase. Increase your Wisdom or
+Charisma score by 1, to a maximu m of 20. Bolstering Performance. When you finish a Short
+or Long Rest, you can give an inspiring performance: a speech, song, or dance. When you do so, choose up to six allies (which can include yourself) within 30 feet of yourself who witness t he performance. The chosen creat ures each gain Temporary Hit Points equal to your ch aracter level plus the modifier of the ability yo u increa :;cd with this feat.
+
+204
+
+CHAPTER 5 I FEATS
+
+KEEN Mr N D
+General Fea t (Pre requisite: Level 4+, Intelligence 13+)
+You gain t he foll owing benefits. Ability Score Increase. Increase your Intelligence
+score by 1, to a maximum of 20. Lore Knowledge. Choose one of the following
+skills: Arcana , History, Investigation, Nature, or Religion. If you lack proficiency in the chosen skill, you gain proficiency in it, and if you already have proficiency in it, you gain Expertise in it.
+Quick Study. You can take the Study action as a
+Bonus Action.
+
+Dexterous Wearer. While you're wearing Medium armor, you can add 3, rather than 2, to your AC if you have a Dexterity score of 16 or higher.
+MODERATELY ARMORED
+General Feat (Prerequisite: Level 4+, Light Armor Training)
+You gain the following benefits. Abili~y Score Increase. Increase your Strength or
+Dexterity score by 1, to a maximum of 20. Armor Training. You gain training with Medium
+armor.
+
+LIGHTLY ARMORED
+General Feat (Prerequisite: Level 4+) You gain the following benefits.
+Ability Score Increase. Increase your Strength or Dexterity score by 1, to a maximum of 20.
+Armor Training. You gain training with Light armor and Shields.
+MAGE SLAYER
+General Feat (Prerequisite: Level 4+) You gain the following benefits.
+Ability Score Increase. Increase your Strength or Dexterity score by 1, to a maximum of 20.
+Concentration Breaker. When you damage a creature that is concentrating, it has Disadvantage on the saving throw it makes to maintain Concentration.
+Guarded Mind. If you fail an Intelligence, a Wisdom , or a Charisma saving throw, you can cause yourself to succeed instead. Once you use this benefit, you can't use it again until you finish a Short or Long Rest.
+MARTIAL WEAPON TRA INING
+General Fea t (Prerequisite: Level 4+) You gain t he follow ing benefits.
+Ability Score Increase. Increase your Strength or Dexterity score by 1, to a maximum of 20.
+Weapon Proficiency. You gain proficiency with Martial weapons.
+MEDIU M AR MOR MASTER
+General Feat (Prereq uisite: Level 4+, Medium Armor Training)
+You gain the followi ng benefits. Ability Score In crease. Increase your Strength or
+Dexterity sco1·~ by l , to a maximum of 20.
+
+MOUNTED COMBATA NT
+General Feat (Prerequisite:Level 4+)
+You gain the following benefits. Ability Score Increase. Increase your Strength,
+Dexterity, or Wisdom score by 1, to a maximum of 20.
+Mounted Strike. While mounted, you have Advantage on attack rolls against any unmounted creature within 5 feet of your mount that is at least one size smaller than the mount.
+Leap Aside. If your mount is subjected to an effect that allows it to make a Dexterity saving throw to take only half damage, it instead takes no damage if it succeeds on the saving throw and only half damage if it fails. For your mount to gain this benefit, you must be riding it, and neither of you can have the Incapacitated condition.
+Veer. While mounted, you can force an attack that hits your mount to hit you instead if you don't have the Incapacitated condition.
+OBSERVANT
+General Feat (Prerequisite: Level 4+, Intelligence or Wisdom 13+)
+You gain the following benefits. Ability Score Increase. Increase your Intelligence
+or Wisdom score by 1, to a maximum of 20. Keen Observer. Choose one of the following skills:
+Insight, Investigation, or Perception. If you lack pro-
+ficiency with the chosen skill, you gain proficiency in it, and if you already have proficiency in it, you gain Expertise in it.
+Quick Search. You can take the Search action as a Bonus Action.
+
+CH \PTE R 5 I FEATS
+
+20~
+
+PIERCER
+General Feat (Prerequisite: Level 4+)
+You gain the following benefits. Ability Score Increase. Increase your Strength or
+Dexterity by 1, to a maximum of 20. Puncture. Once per turn, when you hit a creature
+with an attack that deals Piercing damage, you can reroll one of the attack's damage dice, and you must use the new roll.
+Enhanced Critical. When you score a Critical Hit that deals Piercing damage to a creature, you can roll one additional damage die when determining the extra Piercing damage the target takes.
+POISONER General Feat (Prerequisite: Level 4+)
+You gain the following benefits. Ability Score Increase. Increase your Dexterity or
+Intelligence score by 1, to a maximum of 20. Potent Poison. When you make a damage roll that
+deals Poison damage, it ignores Resistance to Poison damage.
+Brew Poison. You gain proficiency with the Poisoner's Kit. With 1 hour of work using such a kit and expending 50 GP worth of materials, you can create a number of poison doses equal to your Proficiency Bonus. As a Bonus Action, you can apply a poison dose to a weapon or piece of ammunition. Once applied, the poison retains its potency for 1 minute or until you hit with the poisoned item, whichever is shorter. When a creature takes damage from the poisoned item, that creature must succeed on a Constitution saving throw (DC 8 plus the modifier of the ability increased by this feat and your Proficiency Bonus) or take 2d8 Poison damage and have the Poisoned condition until the end of your next turn.
+
+POLEARM MASTER
+General Feat (Prerequisite: Level 4 +, Strength or Dexterity 13+)
+You gain the following benefits . Ability Score Increase. Increase you r Dexterity or
+Strength score by 1, to a maximum of 20. Pole Strike. Immediately after you take the Attack
+action and attack with a Quarterstaff, a Spear, or a weapon that has the Heavy and Reach properties, you can use a Bonus Action to make a melee attack with the opposite end of the weapon. The weapon deals Bludgeoning damage, and the weapon's damage die for this attack is a d4.
+Reactive Strike. While you're holding a Quarterstaff, a Spear, or a weapon that has the Heavy and Reach properties, you can take a Reaction to make one melee attack against a creature that enters the reach you have with that weapon.
+RESILIENT General Feat (Prerequisite: Level 4 +)
+You gain the following benefits. Ability Score Increase. Choose one ability in which
+you lack saving throw proficiency. Increase the chosen ability score by 1, to a maximum of 20.
+Saving Throw Proficiency. You gain saving throw proficiency with the chosen ability.
+RITUAL CASTER General Feat (Prerequisite: Level 4+; Intelligence, Wisdom, or Charisma 13+)
+You gain the following benefits. Ability Score Increase. Increase your Intelligence,
+Wisdom, or Charisma score by 1, to a maximum of 20.
+Ritual Spells. Choose a number of level 1 spells equal to your Proficiency Bonus that have the Ritual tag. You always have those spells prepared, and you can cast them with any spell slots you have. The
+
+spells' spelk .,st ing abi lity is the abi~ity increase~ b this feat . \ Vhe never your Profi cie ncy Bonus mc:eases the reafter, you can add an additional level 1spell with the Ri tua l tag to the spells always preared wit h th is feature. p Quiel< Ritual. Wi th th is benefit, you can cast a
+Ritual spell t hat you h ave prepared using its regular casting time rather t ha n the extended time for a Ritual. Doing so doesn't requ ire a spell slot. Once you cast the spell in th is way, you can't use th is benefit
+again until you fini sh a Long Rest .
+
+SENTINEL
+General Feat (Prerequisite: Level 4+, Strength or Dexterity 13+) You gain the following benefits.
+Ability Score Increase. Increase your Strength or Dexterity score by 1, to a maximum of 20.
+Guardian. Immediately after a creature within 5 feet of you takes the Disengage action or hits a target other than you with an attack, you can make an Opportunity Attack against that creature.
+Halt. When you hit a creature with an Opportunity Attack, the creature's Speed becomes O for the rest of the current turn.
+S H ADOW-TOUCHED
+General Feat (Prerequisite: Level 4+)
+Your exposure to the Shadowfell's magic grants you the following benefits.
+Ability Score Increase. Increase your Intelligence, Wisdom, or Charisma score by 1, to a maximum of 20.
+Shadow Magic. Choose one level 1 spell from the Illusion or Necromancy school of magic. You always have that spell and the Invisibility spell prepared. You can cast each of these spells without expending a spell slot. Once you cast either spell in this way, you can't cast that spell in this way again until you finish a Long Rest. You can also cast these spells using spell slots you have of the appropriate level. The spells' spellcasting ability is the ability increased by th is fe at.
+S HARPSH OOTER
+General Feat (Prereq uisite: Level 4+, Dexterity 13+)
+You gain t he follow ing benefits. Ability Score Increase. Increase your Dexterity
+score by 1, to a maximum of 20. Bypass Cover. Your ranged attacks with weapons
+ignore Half C,w cr a nd Three-Quarters Cover.
+
+Firing in Melee. Being within 5 feet of an enemy doesn't impose Disadvantage on your attack rolls with Ranged weapons.
+Long Shots. Attacking at long range doesn't impose Disadvantage on your attack rolls with Ranged weapons.
+SHIELD MASTER
+General Feat (Prerequisite: Level 4+, Shield Training)
+You gain the following benefits. Ability Score Increase. Increase your Strength
+score by 1, to a maximum of 20. Shield Bash. If you attack a creature within 5 feet
+of you as part of the Attack action and hit with a Melee weapon, you can immediately bash the target with your Shield if it's equipped, forcing the target to make a Strength saving throw (DC 8 plus your Strength modifier and Proficiency Bonus). On a failed save, you either push the target 5 feet from you or cause it to have the Prone condition {your choice). You can use this benefit only once on each of your turns.
+Interpose Shield. If you're subjected to an effect that allows you to make a Dexterity saving throw to take only half damage, you can take a Reaction to take no damage if you succeed on the saving throw and are holding a Shield.
+SKILL EXPERT
+General Feat (Prerequisite: Level 4+)
+You gain the following benefits. Ability Score Increase. Increase one ability score of
+your choice by 1, to a maximum of 20. Skill Proficiency. You gain proficiency in one skill
+of your choice. Expertise. Choose one skill in which you have pro-
+ficiency but lack Expertise. You gain Expertise with that skill.
+
+CHAPTER 5 I FEATS
+
+207
+
+SKULKER
+General Feat (Prerequisite: Level 4+, Dexterity 13+)
+You gain the following benefits. Ability Score Increase. Increase your Dexterity
+score by 1, to a maximum of 20. Blindsight. You have Blindsight with a range of 10
+feet. Fog of War. You exploit the distractions of battle,
+gaining Advantage on any Dexterity (Stealth) check you make as part of the Hide action during combat.
+Sniper. If you make an attack roll while hidden and the roll misses, making the attack roll doesn't reveal your location.
+SLASHER General Feat (Prerequisite: Level 4+)
+You gain the following benefits. Ability Score Increase. Increase your Strength or
+Dexterity score by 1, to a maximum of 20. Hamstring. Once per turn when you hit a creature
+with an attack that deals Slashing damage, you can reduce the Speed of that creature by 10 feet until the start of your next turn.
+Enhanced Critical. When you score a Critical Hit that deals Slashing damage to a creature, it has Disadvantage on attack rolls until the start of your next turn.
+SPEEDY General Feat (Prerequisite: Level 4+, Dexterity or Constitution 13+)
+You gain the following benefits. Ability Score Increase. Increase your Dexterity or
+Constitution score by 1, to a maximum of 20. Speed Increase. Your Speed increases by 10 feet. Dash over Difficult Terrain. When you take the
+Dash action on your turn, Difficult Terrain doesn't cost you extra movement for the rest of that turn.
+Agile Movement. Oppor tunit y Attacks have Disadvantage against you.
+
+SPELL SNIPER General Feat (Prereqt1isite: Level 4 +, Sp ellcast-ing or Pact Magic Feature)
+You gain the following benefi ts. Ability Score Increase. Increase your ln tclligence,
+Wisdom, or Charisma score by 1, to a max imum of 20.
+Bypass Cover. Your attack rolls for spells ignore Half Cover and Three-Quarters Cover.
+Casting in Melee. Being within 5 feet of an enemy doesn't impose Disadvantage on your attack rolls with spells.
+Increased Range. When you cast a spell that has a range of at least 10 feet and requires you to make an attack roll, you can increase the spell's range by 60 feet.
+T ELEKIN ETIC General Feat (Prerequisite: Level 4+)
+You gain the following benefits. Ability Score Increase. Increase your Intelligence,
+Wisdom, or Charisma score by 1, to a maximum of 20.
+Minor Telekinesis. You learn the Mage Hand spell. You can cast it without Verbal or Somatic components, you can make the spectral hand Invisible, and its range increases by 30 feet when you cast it. The spell's spelkasting ability is the ability increased by this feat.
+Telekinetic Shove. As a Bonus Action, you can telekinetically shove one creature you can see within 30 fee t of yourself. When you do so, the target must succeed on a Strength saving throw (DC 8 plus the ability modifier of the score increased by this feat and your Proficiency Bonus) or be moved 5 feet toward or away from you.
+TELEPATH IC General Fea t (Prerequisite: Level 4+)
+You gain the follow ing benefits. Ability Score Increase. Increase your Intelligence,
+Wisdom , or Charisma score by 1, to a maximum of 20.
+Telepathic Utterance. You can speak telepathically to any creat ure you can see w ith in 6 0 feet of yourself. Your telepathic utterances are in a la nguage you know, and the creature understa nds you only if it knows that language. Your communication doesn't give t he cre at ure the ability lo respond to you telepat hically.
+
+208
+
+CH A PTER 5 I FEATS
+
+Detect Th oughts. You always have the Detect Tlioughts spell prepared. You can cast it without a spell slot or spell components, and you must finish a Long Rest before you can cast it in this way again. You can al so cast it using spell slots you have of the appropriate level. Your spellcasting ability for the spell is the ability increased by this feat.
+WAR CASTER
+General Feat (Prerequisite: Level 4+, Spellcasting or Pact Magic Feature) You gain the following benefits.
+Ability Score Increase. Increase your Intelligence, Wisdom, or Charisma score by 1, to a maximum of 20.
+Concentration. You have Advantage on Constitution saving throws that you make to maintain Concentration.
+Reactive Spell. When a creature provokes an Opportunity Attack from you by leaving your reach, you can take a Reaction to cast a spell at the creature rather than making an Opportunity Attack. The spell must have a casting time of one action and must target only that creature.
+Somatic Components. You can perform the Somatic components of spells even when you have weapons or a Shield in one or both hands.
+WEAPON MASTER
+General Feat (Prerequisite: Level 4+)
+You gain the following benefits. Ability Score Increase. Increase your Strength or
+Dexterity score by 1, to a maximum of 20. Mastery Property. Your training with weapons al-
+lows you to use the mastery property of one kind of Simple or Martial weapon of your choice, provided you have proficiency with it. Whenever you finish a Long Rest, you can change the kind of weapon to another eligible kind.
+FIGHTING STYLE FEATS
+These feats are in the Fighting Style category.
+
+DEFENSE
+Fighting Style Feat (Prerequisite: Fighting Style Feature) While you're wearing Light, Medium, or Heavy armor, you gain a +1 bonus to Armor Class.
+~ - - -- - - - - -
+DUELING
+Fighting Style Feat (Prerequisite: Fighting Style Feature) When you're holding a Melee weapon in one hand and no other weapons, you gain a +2 bonus to damage rolls with that weapon.
+;::::==
+GREAT WEAPON FIGHTING
+Fighting Style Feat (Prerequisite: Fighting Style Feature) When you roll damage for an attack you make with a Melee weapon that you are holding with two hands, you can treat any 1 or 2 on a damage die as a 3. The weapon must have the Two-Handed or Versatile property to gain this benefit.
+INTERCEPTION
+Fighting Style Feat (Prerequisite: Fighting Style Feature) When a creature you can see hits another creature within 5 feet of you with an attack roll, you can take a Reaction to reduce the damage dealt to the target by ldl0 plus your Proficiency Bonus. You must be holding a Shield or a Simple or Martial weapon to use this Reaction.
+PROTECTION
+Fighting Style Feat (Prerequisite: Fighting Style Feature)
+When a creature you can see attacks a target other than you that is within 5 feet of you, you can take a Reaction to interpose your Shield if you're holding one. You impose Disadvantage on the triggering attack roll and all other attack rolls against the tar-
+get until the start of your next turn if you remain
+within 5 feet of the target.
+
+ARCHERY
+Fighting Style Feat (Prerequisite: Fighting Style Feature)
+You gain a +2 bonus to attack rolls you make with Ranged weapons.
+
+BLIND Fw : ,·n N G
+., Fighting Style Feat (Prerequisite: Fighting Style Feature)
+J
+You have Blindsight with a range of 10 feet.
+
+THROWN WEAPON FIGHTING Fighting Style Feat (Prerequisite: Fighting Style Feature)
+When you hit with a ranged attack roll using a weapon that has the Thrown property, you gain a +2 bonus to the damage roll.
+Two-WEAPON FIGHTING Fighting Style Feat (Prerequisite: Fighting Style Feature)
+When you make an extra attack as a result of using a weapon that has the Light property, you can add your ability modifier to the damage of that attack if you aren't already adding it to the damage.
+---- .--
+UNARMED FIGHTING Fighting Style Feat (Prerequisite: Fighting Style Feature)
+When you hit with your Unarmed Strike and deal damage, you can deal Bludgeoning damage equal to 1d6 plus your Strength modifier instead of the normal damage of an Unarmed Strike. If you aren't holding any weapons or a Shield when you make the attack roll, the d6 becomes a d8.
+At the start of each of your turns, you can deal ld4 Bludgeoning damage to one creature Grappled by you.
+EPIC BOON FEATS
+These feats are in the Epic Boon category.
+- -- - - - - -- - -
+BOON OF COMBAT PROWESS
+Epic Boon Feat (Prerequisite: Level 19+)
+You gain the following benefits. Ability Score Increase. Increase one ability score of
+your choice by 1, to a maximum of 30. Peerless Aim. When you miss with an attack roll,
+you can hit instead. Once you use this benefit, you can't use it again until the start of your next turn.
+- - - - - - - - -- --.,----
+BOON OF DIMENSIONAL TRAVEL
+Epic Boon Feat (Prerequisite: Level 19+)
+You gain the following benefits. Ability Score Increase. Increase one ability score of
+your choice by 1, to a maximum of 30. Blink Steps. Immediately after you take the Attack
+action or the Magic action, you can teleport up to 30 feet to an unoccupied space you can see.
+
+BOON OF ENERGY RESIST A N C E
+Epic Boon Feat (Prerequisite: Level 19+)
+You gain the following benefits . Ability Score Increase. Increase one abil ity score of
+your choice by 1, to a maximum of 30. Energy Resistances. You ga in Resist a nce to two
+of the following damage t y pes o f yo ur choice: Acid Cold, Fire, Lightning, Necrotic, Poison , Ps ychic, ' Radiant, or Thunder. Wheneve r you fini sh a Long Rest, you can change your choices.
+Energy Redirection. When you take damage of one of the types chosen for the Energy Resistances benefit, you can take a Re action to direc t damage of the same type toward another cr eature you can see within 60 feet of yourself that isn't behind Total Cover. If you do so, that creature must succeed on a Dexterity saving throw (DC 8 plus your Constitution modifier and Proficiency Bonus) or take damage equal to 2d12 plus your Constitution modifier.
+' -·
+BOON OF FATE
+Epic Boon Feat (Prerequisite: Level 19+)
+You gain the following benefits. Ability Score Increase. Increase one ability score of
+your choice by 1, to a maximum of 30. Improve Fate. When you or another creature
+within 60 feet of you succeeds on or fails a D20 Test, you can roll 2d4 and apply the total rolled as a bonus or penalty to the d20 roll. Once you use this benefit, you can't use it again until you roll Initiative or finish a Short or Long Res~.
+BOON OF FORTITUDE
+Epic Boon Feat (Prerequisite: Level 19+)
+You gain the following benefits. Ability Score Increase. Increase one ability score of
+your choice by 1, to a maximum of 30. Fortified Health. Your Hit Point maximum in-
+creases by 40. In addition, whenever you regain Hit Points, you can regain additional Hit Points equal to your Constitution modifier. Once you've regained these additional Hit Points, you can't do so again until the start of your next turn.
+
+2JO
+
+CB APTER 5 I FEATS
+
+BOON O F ) RRES I STinLE OFFENSE
+Epic Boon Fea t (Prerequisite: Level 19+)
+You gain th e follo w ing benefits. Ability Scor·e In crease. Increase your Strength or
+Dexterity score by 1, to a maximum of 30. Overcome Defenses. The Bludgeoning, Piercing,
+and Slashing dam age you deal always ignores
+Resistance. Overwhelming Strike. When you roll a 20 on the
+d20 for an attack roll, you can deal extra damage to the target equal to the ability score increased by this feat. The extra damage's type is the same as the attack's type.
+
+BOON O F R EC O VERY
+Epic Boon Feat (Prerequisite: Level 19+)
+You gain the following benefits. Ability Score Increase. Increase one ability score of
+your choice by 1, to a maximum of 30. Last Stand. When you would be reduced to 0
+Hit Points, you can drop to 1 Hit Point instead and regain a number of Hit Points equal to half your Hit Point maximum. Once you use this benefit, you can't use it again until you finish a Long Rest.
+Recover Vitality. You have a pool of ten dlOs. As a Bonus Action, you can expend dice from the pool, roll those dice, and regain a number of Hit Points equal to the roll's total. You regain all the expended dice when you finish a Long Rest.
+B OON O F S KILL
+Epic Boon Feat (Prerequisite: Level 19+)
+You gain the following benefits. Ability Score Increase. Increase one ability score of
+your choice by 1, to a maximum of 30. All-Around Adept. You gain proficiency in all
+skills. Expertise. Choose one skill in which you lack Ex-
+pertise. You ga in Expertise in that skill.
+BOO N O F S P EED
+Epic Boon Feat (Pre requisite: Level 19+)
+You gain the foll owing benefits. Ability Score In crease. Increase one ability score of
+your choice by 1, to a maximum of 30. Escape At·tist. As a Bonus Action, you can take
+the Disengage c1 c tion , w hich also ends the Grappled cond ition on you.
+Quickn ess. Yo ur Speed increases by 30 feet.
+
+BOON OF SPELL RECALL
+Epic Boon Feat (Prerequisite: Level 19+, Spellcasting Feature)
+You gain the following benefits. Ability Score Increase. Increase your Intelligence,
+Wisdom, or Charisma score by 1, to a maximum of 30.
+Free Casting. Whenever you cast a spell with a level 1-4 spell slot, roll ld4. If the number you roll is the same as the slot's level, the slot isn't expended.
+BOON OF THE NIGHT SPIRIT
+Epic Boon Feat (Prerequisite: Level 19+)
+You gain the following benefits. Ability Score Increase. Increase one ability score of
+your choice by 1, to a maximum of 30. Merge with Shadows. While within Dim Light or
+Darkness, you can give yourself the Invisible condition as a Bonus Action. The condition ends on you immediately after you take an action, a Bonus Action, or a Reaction.
+Shadowy Form. While within Dim Light or Darkness, you have Resistance to all damage except Psychic and Radiant.
+BOON OF TRUESIGHT
+Epic Boon Feat (Prerequisite: Level 19+)
+You gain the following benefits. Ability Score Increase. Increase one ability score of
+your choice by 1, to a maximum of 30.
+'Iruesight. You have Truesight with a range of 60
+feet.
+
+C H A PTE R 5 I FEATS
+
+2ll
+
+-j CHAPTER 6
+EQUIPMENT
+
+HE RIGHT EQUIPMENT CAN MAKE THE
+difference between success and failure for adventurers. This chapter provides rules and prices for weapons, armor, and other kinds of equipment that characters might purchase or find . The DM lets you know if a shop has an item for sale and whether it's available at the listed price.
+
+COINS
+Characters often find coins on their adventures and can spend those coins in shops, inns, and other businesses. Coins come in different denominations based on the relative worth of their material. The Coin Values table lists coins and how much they're worth relative to the Gold Piece, which is the game's main coin. For example, 100 Copper Pieces are worth 1 Gold Piece.
+A coin weighs about a third of an ounce, so fifty coins weigh a pound.
+
+COIN VALUES
+Coin Copper Piece (CP) Silver Piece (SP) Electrum Piece (EP) Gold Piece (GP) Platinum Piece (PP)
+
+Value in GP 1/100 1/10 1/2
+10
+
+WEAPONS
+The Weapons table in this section shows the game's main weapons. The table lists the cost and weight of each weapon, as well as the following details:
+Category. Every weapon falls into a category: Simple or Martial. Weapon proficiencies are usually tied to one of these categories. For example, you might have proficiency with Simple weapons.
+Melee or Ranged. A weapon is classified as either Melee or Ra nged. A Melee weapon is used to attack a target within 5 feet, whereas a Ranged weapon is used to attack at a greater distance.
+
+SELLIN C EQUIPMENT
+Equ ipment fetc hes half its cost when sold. In contras t, trade goods and valuables-like gems and art objec ts- retai n their full value in the marketplace. Th e Dungeon Master's Guide has prices for magic item s.
+
+Damage. The table lists the amount of damage a weapon deals when an attacker hits with it as well as the type of that damage.
+Properties. Any properties a weapon has are listed in the Properties column. Each property is defined in the "Properties" section.
+Mastery. Each weapon has a mastery property, which is defined in the "Mastery Properties" section later in this chapter. To use that property, you must have a feature that lets you use it.
+WEAPON PROFICIENCY
+Anyone can wield a weapon, but you must have proficiency with it to add your Proficiency Bonus to an attack roll you make with it. A player character's features can provide weapon proficiencies. A monster is proficient with any weapon in its stat block.
+PROPERTIES
+Here are definitions of the properties in the Properties column of the Weapons table.
+AMMUNITION
+You can use a weapon that has the Ammunition property to make a ranged attack only if you have ammunition to fire from it. The type of ammunition required is specified with the weapon's range. Each attack expends one piece of ammunition. Drawing the ammunition is part of the attack (you need a free hand to load a one-handed weapon). After a fight, you can spend 1 minute to recover half the ammunition (round down) you used in the fight; the rest is lost.
+FINESSE
+When making an attack with a Finesse weapon, use your choice of your Strength or Dexterity modifier for the attack and damage rolls. You must use the same modifier for both rolls.
+HEAVY
+You have Disadvantage on attack rolls with a Heavy weapon if it's a Melee weapon and your Strength score isn't at least 13 or if it's a Ranged weapon and your Dexterity score isn't at least 13.
+LIGHT When you take the Attack action on your turn and attack with a Light weapon, you can make one extra attack as a Bonus Action later on the same turn. That extra attack must be made with a different
+
+CH APTER 6 I EQUIP MENT
+
+~13
+
+IMPROVISED WEAPONS
+If you use an object-such as a table leg, frying pan, or bottle-as a makeshift weapon, see "Im· provised Weapons" in the rules glossary. Also see those rules if you wield a weapon in an unusual way, such as using a Ranged weapon to make a melee attack.
+Light weapon, and you don't add your ability mod· if1er to the extra attack's damage unless that modi· fier is negative. For example, you can attack with a Shortsword in one hand and a Dagger in the other using the Attack action and a Bonus Action, but you don't add your Strength or Dexterity modifier to the damage roll of the Bonus Action unless that modifier is negative.
+LOADING
+You can fire only one piece of ammunition from a Loading weapon when you use an action, a Bonus Action, or a Reaction to fire it, regardless of the number of attacks you can normally make.
+RANGE
+A Range weapon has a range in parentheses after the Ammunition or Thrown property. The range lists two numbers. The first is the weapon's normal range in feet, and the second is the weapon's long range. When attacking a target beyond normal range, you have Disadvantage on the attack roll. You can't attack a target beyond the long range.
+REACH
+A Reach weapon adds 5 feet to your reach when you attack with it, as well as when determining your reach for Opportunity Attacks with it.
+THROWN
+If a weapon has the Thrown property, you can
+throw the weapon to make a ranged attack, and
+you can draw that weapon as part of the attack. If
+the weapon is a Melee weapon, use the same ability modifier for the attack and damage rolls that you use for a melee attack with that weapon.
+Two - HANDED
+A Two-Handed weapon requires two hands when you attack with it.
+VERSATILE A Versatile weapon can be used with one or two hands. A damage value in parentheses appears with the property. The weapon deals that damage when used with two hands to make a melee attack.
+
+MASTERY PROPERTIE S
+Each weapon has a mastery pro perty, whi ch is usable only by a character who h as a featu r e, s uch as Weapon Mastery, that unlocks t h e property fo r the character. The prope r ties a r e defined below.
+CLEAVE
+If you hit a creature with a melee attack roll using this weapon, you can make a melee attack roll with the weapon against a second creature within 5 feet of the first that is also with in your reach. On a hit, the second creatu re takes the weapon's da mage, but don't add your ability modifier to that damage unless that modifier is negative. You can make this extra attack only once per turn.
+GRAZE
+If your attack roll with this weapon misses a creature, you can deal damage to that creature equal to the ability modifier you used to make the attack roll. This damage is the same type dealt by the weapon, and the damage can be increased only by increasing the ability modifier.
+NICK
+When you make the extra attack of the Light prop· erty, you can make it as part of the Attack action instead of as a Bonus Action . You can make this extra attack only once per turn.
+PUSH
+If you hit a creature with this weapon, you can push the creature up to 10 feet straight away from yourself if it is Large or smaller.
+SAP
+If you hit a creature with this weapon, that creature
+has Disadvantage on its next attack roll before the start of your next turn.
+SLOW
+If you hit a creature with this weapon and deal
+damage to it, you can reduce its Speed by 10 feet un-
+til the start of your next turn. If the creature is hit
+more than once by weapons that have this property, the Speed reduction doesn't exceed 10 feet.
+TOPPLE If you hit a creature with this weapon, you can force the creature to make a Constitution saving throw (DC 8 plus the abili t y modifier used to make the attack roll and your Proficienc y Bonus). On a failed save, the creature has the P, one condition.
+VEX
+If you hit a creature with t his ver,pon a nd deal
+damage to the creature, you h ave Ad ·1:rntage on your next attack roll aga inst t ha! crc.:· t ure before the end of your next turn.
+
+CH APT ER 6 I EQUI PME NT
+
+

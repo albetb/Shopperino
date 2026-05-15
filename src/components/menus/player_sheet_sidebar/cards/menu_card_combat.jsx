@@ -72,28 +72,40 @@ export default function MenuCardCombat() {
         <div className="player-sheet-combat-stats-row">
           <div className="player-sheet-combat-stat-cell">
             <span className="material-symbols-outlined" title="Base speed">directions_walk</span>
-            <span>{player?.getBaseSpeed?.() ?? 30} ft.</span>
           </div>
           <div className="player-sheet-combat-stat-cell">
             <span className="material-symbols-outlined" title="Initiative">schedule</span>
-            <span>+{player?.getInitiativeModifier?.() ?? 0}</span>
           </div>
           <div className="player-sheet-combat-stat-cell">
             <span className="material-symbols-outlined" title="Armor class">shield</span>
-            <span>{player?.getArmorClass?.() ?? 10}</span>
+          </div>
+          <div className="player-sheet-combat-stat-cell">
+            <span className="player-sheet-combat-save-label">F</span>
+          </div>
+          <div className="player-sheet-combat-stat-cell">
+            <span className="player-sheet-combat-save-label">R</span>
+          </div>
+          <div className="player-sheet-combat-stat-cell">
+            <span className="player-sheet-combat-save-label">W</span>
           </div>
         </div>
         <div className="player-sheet-combat-stats-row">
           <div className="player-sheet-combat-stat-cell">
-            <span className="player-sheet-combat-save-label">F</span>
+            <span>{player?.getBaseSpeed?.() ?? 30}</span>
+          </div>
+          <div className="player-sheet-combat-stat-cell">
+            <span>+{player?.getInitiativeModifier?.() ?? 0}</span>
+          </div>
+          <div className="player-sheet-combat-stat-cell">
+            <span>{player?.getArmorClass?.() ?? 10}</span>
+          </div>
+          <div className="player-sheet-combat-stat-cell">
             <span>+{player?.getFortitudeSave?.() ?? 0}</span>
           </div>
           <div className="player-sheet-combat-stat-cell">
-            <span className="player-sheet-combat-save-label">R</span>
             <span>+{player?.getReflexSave?.() ?? 0}</span>
           </div>
           <div className="player-sheet-combat-stat-cell">
-            <span className="player-sheet-combat-save-label">W</span>
             <span>+{player?.getWillSave?.() ?? 0}</span>
           </div>
         </div>

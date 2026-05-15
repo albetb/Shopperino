@@ -105,6 +105,7 @@ class Player {
     this.fortBonus = 0;
     this.reflexBonus = 0;
     this.willBonus = 0;
+    this.inventory = []; // Array of { Name, ItemType, Number, Link, effectIds }
   }
 
   /**
@@ -223,6 +224,19 @@ class Player {
       this.equipment = { ...data.equipment };
     }
 
+    if (Array.isArray(data.inventory)) {
+      this.inventory = data.inventory.map((item) => {
+        if (!item || typeof item !== 'object') return null;
+        return {
+          Name: typeof item.Name === 'string' ? item.Name : '',
+          ItemType: typeof item.ItemType === 'string' ? item.ItemType : '',
+          Number: Math.max(0, Number(item.Number) || 0),
+          Link: typeof item.Link === 'string' ? item.Link : '',
+          effectIds: Array.isArray(item.effectIds) ? item.effectIds : [],
+        };
+      }).filter(Boolean);
+    }
+
     if (typeof data.speedBonus === 'number') {
       this.speedBonus = data.speedBonus;
     }
@@ -285,6 +299,7 @@ class Player {
           : {},
       gnomeSpellUses: this.gnomeSpellUses && typeof this.gnomeSpellUses === 'object' ? { ...this.gnomeSpellUses } : {},
       equipment: this.equipment && typeof this.equipment === 'object' ? { ...this.equipment } : {},
+      inventory: Array.isArray(this.inventory) ? this.inventory.map((item) => ({ ...item })) : [],
       speedBonus: typeof this.speedBonus === 'number' ? this.speedBonus : 0,
       initiativeBonus: typeof this.initiativeBonus === 'number' ? this.initiativeBonus : 0,
       fortBonus: typeof this.fortBonus === 'number' ? this.fortBonus : 0,
@@ -969,6 +984,69 @@ class Player {
   removeBonusLanguage(lang) {
     if (!this.bonusLanguagesLearned) return;
     this.bonusLanguagesLearned = this.bonusLanguagesLearned.filter((l) => l !== lang);
+  }
+
+  // —— Inventory ——
+  getInventory() {
+    return Array.isArray(this.inventory) ? this.inventory : [];
+  }
+
+  addInventoryItem(name, type, number, link = '') {
+    if (!name || !type) return;
+    if (!Array.isArray(this.inventory)) this.inventory = [];
+
+    const existingItem = this.inventory.find((item) => item.Name === name && item.ItemType === type);
+
+    if (existingItem) {
+      existingItem.Number = Math.max(0, (existingItem.Number || 0) + Math.max(1, Math.floor(number)));
+    } else {
+      this.inventory.push({
+        Name: name,
+        ItemType: type,
+        Number: Math.max(1, Math.floor(number)),
+        Link: link || '',
+        effectIds: [],
+      });
+    }
+  }
+
+  removeInventoryItem(name, type, number) {
+    if (!Array.isArray(this.inventory)) return;
+
+    const idx = this.inventory.findIndex((item) => item.Name === name && item.ItemType === type);
+    if (idx === -1) return;
+
+    const item = this.inventory[idx];
+    item.Number = Math.max(0, (item.Number || 0) - Math.max(1, Math.floor(number)));
+
+    if (item.Number <= 0) {
+      this.inventory.splice(idx, 1);
+    }
+  }
+
+  // —— Equipment ——
+  getEquipment() {
+    return this.equipment && typeof this.equipment === 'object' ? this.equipment : {};
+  }
+
+  equipItem(slot, itemData) {
+    if (!slot || !itemData) return;
+    if (!this.equipment || typeof this.equipment !== 'object') {
+      this.equipment = {};
+    }
+    this.equipment[slot] = itemData;
+  }
+
+  unequipSlot(slot) {
+    if (!slot || !this.equipment) return;
+    delete this.equipment[slot];
+  }
+
+  // —— Gold ——
+  adjustGold(delta) {
+    const current = Math.max(0, Number(this.gold) || 0);
+    const adjusted = current + Number(delta || 0);
+    this.setGold(adjusted);
   }
 }
 

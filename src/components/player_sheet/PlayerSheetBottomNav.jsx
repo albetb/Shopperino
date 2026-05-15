@@ -101,15 +101,16 @@ export default function PlayerSheetBottomNav() {
   }, [showSpellOptions, showSkillsOptions]);
 
   const btn = (view, icon, title) => (
-    <button
-      key={view}
-      type="button"
-      className={`ps-bottom-nav-btn${mainView === view ? ' ps-bottom-nav-btn--active' : ''}`}
-      onClick={() => navigate(view)}
-      title={title}
-    >
-      <span className="material-symbols-outlined">{icon}</span>
-    </button>
+    <div key={view} style={{ position: 'relative', flex: 1, height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <button
+        type="button"
+        className={`ps-bottom-nav-btn${mainView === view ? ' ps-bottom-nav-btn--active' : ''}`}
+        onClick={() => navigate(view)}
+        title={title}
+      >
+        <span className="material-symbols-outlined">{icon}</span>
+      </button>
+    </div>
   );
 
   const skillsBtn = (

@@ -471,7 +471,7 @@
 
 .player-sheet-combat-stats-row {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
   gap: 0.5rem;
   align-items: center;
   width: 100%;
@@ -533,17 +533,13 @@
   color: var(--white2);
   font-size: 1.5rem;
   transition: background-color 0.15s, color 0.15s;
-}
-
-.ps-bottom-nav-btn:active,
-.ps-bottom-nav-btn:hover {
-  background-color: var(--main-t2);
-  color: var(--white);
+  user-select: none;
 }
 
 .ps-bottom-nav-btn--active {
-  background-color: var(--main-t);
+  background-color: var(--main);
   color: var(--white);
+  height: 100%;
 }
 
 .ps-spell-options-popup,
@@ -586,9 +582,257 @@
   }
 }
 
+/* Combat page styles */
+.combat-page-stat-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 98%;
+}
+
+.combat-page-stat-row-edit {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.combat-page-edit-col {
+  flex-shrink: 0;
+  width: 2.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.combat-page-icon-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.35rem;
+  color: var(--dark-grey);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.combat-page-icon-btn:hover:not(:disabled) {
+  color: var(--main-t);
+}
+
+.combat-page-icon-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.combat-page-stat-label {
+  flex: 1;
+  min-width: 0;
+  font-weight: 500;
+  text-align: left;
+  color: var(--black);
+}
+
+.combat-page-stat-value {
+  font-weight: 600;
+  min-width: 3rem;
+  text-align: right;
+  color: var(--dark-grey);
+}
+
+.combat-page-edit-controls-wrap {
+  flex-shrink: 0;
+}
+
+.combat-page-edit-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.combat-page-row-spaced {
+  gap: 0.75rem !important;
+}
+
+.combat-page-hp-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.combat-page-hp-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.combat-page-hp-label {
+  min-width: 4rem;
+  text-align: right;
+  font-weight: 600;
+  width: fit-content;
+  color: var(--dark-grey);
+  margin-right: 0.2rem;
+}
+
+.combat-page-hp-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.combat-page-hp-edit-max {
+  flex-shrink: 0;
+}
+
+.combat-page-hp-label-wrap {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.combat-page-hp-feedback {
+  min-height: 1.2rem;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  font-weight: 600;
+}
+
+.combat-page-hp-feedback.visible {
+  opacity: 1;
+}
+
+.combat-page-hp-controls {
+  display: flex;
+  gap: 0.2rem;
+  flex-shrink: 0;
+}
+
+.combat-page-divider {
+  width: 100%;
+  border: none;
+  border-top: 1px solid var(--main-t2, #333);
+  margin: 0.5rem 0;
+}
+
+.combat-page-divider-thin {
+  width: 100%;
+  border: none;
+  border-top: 1px solid var(--main-t2, #333);
+  margin: 0.35rem 0;
+}
+
+.combat-page-ac-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 0.5rem;
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+
+.combat-page-ac-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  padding: 0.5rem;
+  border: 1px solid var(--main-t2, #333);
+  border-radius: 0.35rem;
+  background-color: var(--grey-t2, rgba(0, 0, 0, 0.1));
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between
+}
+
+.combat-page-ac-total {
+  border: 2px solid var(--main-t, #666);
+  font-weight: 600;
+  color: var(--black);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between
+}
+
+.combat-page-ac-label {
+  font-size: 0.85rem;
+  color: var(--dark-grey);
+}
+
+.combat-page-ac-value {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--dark-grey);
+}
+
+.combat-page-no-weapon {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--dark-grey);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between
+}
+
+.combat-page-attacks {
+  font-size: 1.1rem;
+  color: var(--dark-grey);
+  width: 100%;
+  margin-top: 0.3rem;
+}
+
+.combat-page-weapon-line {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid var(--main-t2, #333);
+}
+
+.combat-page-weapon-line:last-child {
+  border-bottom: none;
+}
+
+.combat-page-weapon-line-full {
+  width: 100%;
+}
+
+.combat-page-weapon-icon {
+  font-size: 1.1rem;
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+.combat-page-weapon-name {
+  flex: 1;
+  min-width: 0;
+}
+
+.combat-page-weapon-attack {
+  min-width: 3rem;
+  text-align: center;
+  font-weight: 600;
+}
+
+.combat-page-weapon-damage {
+  min-width: 3rem;
+  text-align: left;
+}
+
+.combat-page-max-life-controls {
+  min-width: 6.5rem;
+}
+
 @media (max-width: 768px) {
   .ps-bottom-nav {
     display: flex;
+  }
+
+  .player-sheet-page {
+    padding-bottom: 3.5rem;
   }
 
   .player-sheet-race-cards .card-width-spellbook,
