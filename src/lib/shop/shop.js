@@ -223,54 +223,29 @@ class Shop {
     applyUserAdditions(userAdditions) {
         if (!Array.isArray(userAdditions)) return;
         for (const u of userAdditions) {
-            if (Array.isArray(u)) {
-                if (u[0] === 1 && u.length >= 5) {
-                    const typeStr = enumToStr('CustomItemTypes', u[2]);
-                    this.Stock.push({
-                        isCustom: true,
-                        Name: String(u[1] ?? 'Custom'),
-                        ItemType: typeStr || 'Good',
-                        Cost: unscaleGold(u[3]),
-                        Number: Math.max(1, Math.min(99, (u[4] | 0) || 1)),
-                        PriceModifier: 0,
-                    });
-                } else if (u[0] === 0 && u.length >= 4) {
-                    const fileCode = u[1];
-                    const id = u[2];
-                    const link = getLinkByShareRef(fileCode, id);
-                    if (!link) continue;
-                    this.Stock.push({
-                        fileCode,
-                        id,
-                        Number: Math.max(1, Math.min(99, (u[3] | 0) || 1)),
-                        PriceModifier: 0,
-                        CostOverride: u[4] != null ? unscaleGold(u[4]) : undefined,
-                        Bonus: u[5] != null ? u[5] : undefined,
-                        userAdded: true,
-                    });
-                }
-            } else if (u && u.custom) {
+            if (!Array.isArray(u)) continue;
+            if (u[0] === 1 && u.length >= 5) {
+                const typeStr = enumToStr('CustomItemTypes', u[2]);
                 this.Stock.push({
                     isCustom: true,
-                    Name: u.N ?? 'Custom',
-                    ItemType: u.T ?? 'Good',
-                    Cost: typeof u.C === 'number' ? u.C : parseFloat(u.C) || 0,
-                    Number: Math.max(1, Math.min(99, (u.n | 0) || 1)),
+                    Name: String(u[1] ?? 'Custom'),
+                    ItemType: typeStr || 'Good',
+                    Cost: unscaleGold(u[3]),
+                    Number: Math.max(1, Math.min(99, (u[4] | 0) || 1)),
                     PriceModifier: 0,
                 });
-            } else if (u && (u.f != null || u.fileCode != null) && (u.i != null || u.id != null)) {
-                const fileCode = u.f ?? u.fileCode;
-                const id = u.i ?? u.id;
+            } else if (u[0] === 0 && u.length >= 4) {
+                const fileCode = u[1];
+                const id = u[2];
                 const link = getLinkByShareRef(fileCode, id);
                 if (!link) continue;
                 this.Stock.push({
                     fileCode,
                     id,
-                    Number: Math.max(1, Math.min(99, (u.n | 0) || 1)),
+                    Number: Math.max(1, Math.min(99, (u[3] | 0) || 1)),
                     PriceModifier: 0,
-                    ItemType: u.T ?? 'Good',
-                    CostOverride: u.c != null ? u.c : undefined,
-                    Bonus: u.b != null ? u.b : undefined,
+                    CostOverride: u[4] != null ? unscaleGold(u[4]) : undefined,
+                    Bonus: u[5] != null ? u[5] : undefined,
                     userAdded: true,
                 });
             }

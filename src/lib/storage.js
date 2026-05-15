@@ -15,16 +15,16 @@ export const getShopByIndex = appState.getShopByIndex;
 export const getSpellbookByIndex = appState.getSpellbookByIndex;
 export const getLootByIndex = appState.getLootByIndex;
 export const getPlayerSheetCharacterAt = appState.getPlayerSheetCharacterAt;
-export const worldToTuple = appState.worldToTuple;
-export const worldFromTuple = appState.worldFromTuple;
-export const cityToTuple = appState.cityToTuple;
-export const cityFromTuple = appState.cityFromTuple;
-export const shopToTuple = appState.shopToTuple;
-export const shopFromTuple = appState.shopFromTuple;
-export const spellbookToTuple = appState.spellbookToTuple;
-export const spellbookFromTuple = appState.spellbookFromTuple;
-export const lootToTuple = appState.lootToTuple;
-export const lootFromTuple = appState.lootFromTuple;
+export const worldToData = appState.worldToData;
+export const worldFromData = appState.worldFromData;
+export const cityToData = appState.cityToData;
+export const cityFromData = appState.cityFromData;
+export const shopToData = appState.shopToData;
+export const shopFromData = appState.shopFromData;
+export const spellbookToData = appState.spellbookToData;
+export const spellbookFromData = appState.spellbookFromData;
+export const lootToData = appState.lootToData;
+export const lootFromData = appState.lootFromData;
 export const updateWorldAt = appState.updateWorldAt;
 export const updateShopAt = appState.updateShopAt;
 export const updateSpellbookAt = appState.updateSpellbookAt;
@@ -47,12 +47,12 @@ export function validateDb() {
 // Convenience: get list entries for sidebars (no class instances)
 export function getWorldsList(app) {
   if (!app || !Array.isArray(app.w)) return [];
-  return app.w.map(t => ({ name: t[0], level: t[1] }));
+  return app.w.map(d => ({ name: d?.Name ?? '', level: d?.Level ?? 1 }));
 }
 
 export function getSpellbooksList(app) {
   if (!app || !Array.isArray(app.sb)) return [];
-  return app.sb.map(t => ({ name: t[0] }));
+  return app.sb.map(d => ({ name: d?.Name ?? '' }));
 }
 
 export function getPlayerSheetCharactersList(app) {
@@ -70,7 +70,7 @@ export function getPlayerByIndex(app, i) {
 
 export function getLootsList(app) {
   if (!app || !Array.isArray(app.l)) return [];
-  return app.l.map(t => ({ timestamp: t[5] }));
+  return app.l.map(d => ({ timestamp: d?.Timestamp ?? 0 }));
 }
 
 // Prefs: read from app (uiFlags bitmask, stc bitmask)

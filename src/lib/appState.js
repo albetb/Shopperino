@@ -9,7 +9,7 @@ import Shop from './shop';
 import Spellbook from './spellbook';
 import Loot from './loot';
 
-const CURRENT_VERSION = 260210;
+const CURRENT_VERSION = 260515;
 const ROOT_KEY = 'app';
 
 //#region UI bitmask
@@ -104,162 +104,95 @@ export function compactApp(app) {
   return out;
 }
 
-/** Merge raw with defaults. Migrate legacy boolean keys into uiFlags/stc. */
+/** Merge raw with defaults. */
 export function expandApp(raw) {
   if (!raw || typeof raw !== 'object') return getDefaultApp();
   const def = getDefaultApp();
-  let uiFlags = raw.uiFlags !== undefined ? (raw.uiFlags | 0) : DEFAULT_UI_FLAGS;
-  let stc = raw.stc !== undefined ? (raw.stc | 0) : 0;
-  if (raw.mm !== undefined) uiFlags = setUIFlagValue(uiFlags, UI_FLAG.mm, !!raw.mm);
-  if (raw.sbc !== undefined) uiFlags = setUIFlagValue(uiFlags, UI_FLAG.sbc, !!raw.sbc);
-  if (raw.ibc !== undefined) uiFlags = setUIFlagValue(uiFlags, UI_FLAG.ibc, !!raw.ibc);
-  if (raw.wc !== undefined) uiFlags = setUIFlagValue(uiFlags, UI_FLAG.wc, !!raw.wc);
-  if (raw.cc !== undefined) uiFlags = setUIFlagValue(uiFlags, UI_FLAG.cc, !!raw.cc);
-  if (raw.sc !== undefined) uiFlags = setUIFlagValue(uiFlags, UI_FLAG.sc, !!raw.sc);
-  if (raw.pc !== undefined) uiFlags = setUIFlagValue(uiFlags, UI_FLAG.pc, !!raw.pc);
-  if (raw.src !== undefined) uiFlags = setUIFlagValue(uiFlags, UI_FLAG.src, !!raw.src);
-  if (raw.sbsbc !== undefined) uiFlags = setUIFlagValue(uiFlags, UI_FLAG.sbsbc, !!raw.sbsbc);
-  if (raw.cdc !== undefined) uiFlags = setUIFlagValue(uiFlags, UI_FLAG.cdc, raw.cdc !== false);
-  if (raw.ddc !== undefined) uiFlags = setUIFlagValue(uiFlags, UI_FLAG.ddc, !!raw.ddc);
-  if (raw.ssd !== undefined) uiFlags = setUIFlagValue(uiFlags, UI_FLAG.ssd, raw.ssd !== false);
-  if (raw.lsc !== undefined) uiFlags = setUIFlagValue(uiFlags, UI_FLAG.lsc, !!raw.lsc);
-  if (raw.lc !== undefined) uiFlags = setUIFlagValue(uiFlags, UI_FLAG.lc, !!raw.lc);
-  if (raw.psbc !== undefined) uiFlags = setUIFlagValue(uiFlags, UI_FLAG.psbc, !!raw.psbc);
-  if (Array.isArray(raw.stc) && raw.stc.length >= 10) stc = stcArrayToBitmask(raw.stc);
   const out = { ...def };
   for (const k of Object.keys(raw)) {
-    if (k === 'mm' || k === 'sbc' || k === 'ibc' || k === 'wc' || k === 'cc' || k === 'sc' || k === 'pc' || k === 'src' || k === 'sbsbc' || k === 'cdc' || k === 'ddc' || k === 'ssd' || k === 'lsc' || k === 'lc' || k === 'psbc' || k === 'stc') continue;
     if (raw[k] !== undefined) out[k] = raw[k];
   }
   out.v = raw.v ?? CURRENT_VERSION;
-  out.uiFlags = uiFlags;
-  out.stc = stc;
+  out.uiFlags = raw.uiFlags !== undefined ? (raw.uiFlags | 0) : DEFAULT_UI_FLAGS;
+  out.stc = raw.stc !== undefined ? (raw.stc | 0) : 0;
   return out;
 }
 
 //#endregion
 
-//#region World tuple: [name, level, selectedCityIndex, cities]
-export function worldToTuple(world) {
-  const cities = (world.Cities || []).map(c => cityToTuple(c));
+//#region World data
+export function worldToData(world) {
+  const Cities = (world.Cities || []).map(c => cityToData(c));
   const sel = world.SelectedCityIndex != null ? world.SelectedCityIndex : 0;
-  const safeSel = cities.length ? Math.max(0, Math.min(sel, cities.length - 1)) : 0;
-  return [world.Name || '', world.Level ?? 1, safeSel, cities];
+  const SelectedCityIndex = Cities.length ? Math.max(0, Math.min(sel, Cities.length - 1)) : 0;
+  return { Name: world.Name || '', Level: world.Level ?? 1, SelectedCityIndex, Cities };
 }
 
-export function worldFromTuple(t) {
-  if (!Array.isArray(t) || t.length < 4) return null;
+export function worldFromData(d) {
+  if (!d || typeof d !== 'object') return null;
   const w = new World();
-  w.Name = t[0] ?? '';
-  w.Level = t[1] ?? 1;
-  w.SelectedCityIndex = Math.max(0, t[2] | 0);
-  w.Cities = (t[3] || []).map(ct => cityFromTuple(ct));
+  w.Name = d.Name ?? '';
+  w.Level = d.Level ?? 1;
+  w.SelectedCityIndex = Math.max(0, d.SelectedCityIndex | 0);
+  w.Cities = (d.Cities || []).map(cd => cityFromData(cd));
   return w;
 }
 
 //#endregion
 
-//#region City tuple: [name, level, playerLevel, selectedShopIndex, shops]
-export function cityToTuple(city) {
-  const shops = (city.Shops || []).map(s => shopToTuple(s));
+//#region City data
+export function cityToData(city) {
+  const Shops = (city.Shops || []).map(s => shopToData(s));
   const sel = city.SelectedShopIndex != null ? city.SelectedShopIndex : 0;
-  const safeSel = shops.length ? Math.max(0, Math.min(sel, shops.length - 1)) : 0;
-  return [city.Name || '', city.Level ?? 0, city.PlayerLevel ?? 1, safeSel, shops];
+  const SelectedShopIndex = Shops.length ? Math.max(0, Math.min(sel, Shops.length - 1)) : 0;
+  return { Name: city.Name || '', Level: city.Level ?? 0, PlayerLevel: city.PlayerLevel ?? 1, SelectedShopIndex, Shops };
 }
 
-export function cityFromTuple(t) {
-  if (!Array.isArray(t) || t.length < 5) return null;
+export function cityFromData(d) {
+  if (!d || typeof d !== 'object') return null;
   const c = new City();
-  c.Name = t[0] ?? '';
-  c.Level = t[1] ?? 0;
-  c.PlayerLevel = t[2] ?? 1;
-  c.SelectedShopIndex = Math.max(0, t[3] | 0);
-  c.Shops = (t[4] || []).map(st => shopFromTuple(st));
+  c.Name = d.Name ?? '';
+  c.Level = d.Level ?? 0;
+  c.PlayerLevel = d.PlayerLevel ?? 1;
+  c.SelectedShopIndex = Math.max(0, d.SelectedShopIndex | 0);
+  c.Shops = (d.Shops || []).map(sd => shopFromData(sd));
   return c;
 }
 
 //#endregion
 
-//#region Shop tuple: [name, level, cityLevel, playerLevel, rep, gold, time, arcaneChance, shopType, seed?, genLevel?, genCityLevel?, genPlayerLevel?, genShopType?, userAdditions, sold?]
-const SHOP_TUPLE_KEYS = ['Name', 'Level', 'CityLevel', 'PlayerLevel', 'Reputation', 'Gold', 'Time', 'ArcaneChance', 'ShopType', 'Seed', 'GenLevel', 'GenCityLevel', 'GenPlayerLevel', 'GenShopType', 'UserAdditions', 'Sold'];
-
-export function shopToTuple(shop) {
-  const data = typeof shop.serialize === 'function' ? shop.serialize() : shop;
-  const arr = [];
-  for (const k of SHOP_TUPLE_KEYS) {
-    if (k === 'UserAdditions') arr.push(data.UserAdditions ?? []);
-    else if (k === 'Sold') {
-      const sold = Array.isArray(data.Sold) ? data.Sold : [];
-      arr.push(sold.map(row => Array.isArray(row) ? [...row] : row));
-    } else arr.push(data[k]);
-  }
-  return arr;
+//#region Shop data — delegates to Shop.serialize / Shop.load
+export function shopToData(shop) {
+  return typeof shop.serialize === 'function' ? shop.serialize() : shop;
 }
 
-export function shopFromTuple(t) {
-  if (!Array.isArray(t) || t.length < 9) return null;
-  const data = {
-    Id: '',
-    Name: t[0],
-    Level: t[1],
-    CityLevel: t[2],
-    PlayerLevel: t[3],
-    Reputation: t[4],
-    Gold: t[5],
-    Time: t[6],
-    ArcaneChance: t[7],
-    ShopType: t[8],
-  };
-  if (t[9] != null) data.Seed = t[9];
-  if (t[10] != null) data.GenLevel = t[10];
-  if (t[11] != null) data.GenCityLevel = t[11];
-  if (t[12] != null) data.GenPlayerLevel = t[12];
-  if (t[13] != null) data.GenShopType = t[13];
-  data.UserAdditions = Array.isArray(t[14]) ? t[14] : [];
-  data.Sold = t.length > 15 && Array.isArray(t[15]) ? t[15] : [];
-  const s = new Shop();
-  return s.load(data);
+export function shopFromData(d) {
+  if (!d || typeof d !== 'object') return null;
+  return new Shop().load(d);
 }
 
 //#endregion
 
-//#region Spellbook tuple: [name, class, level, characteristic, spells, moralAlign, ethicalAlign, domain1, domain2, usedDomainSpells, preparedDomainSpells, specialized, forbidden1, forbidden2]
-const SB_TUPLE_KEYS = ['Name', 'Class', 'Level', 'Characteristic', 'Spells', 'MoralAlignment', 'EthicalAlignment', 'Domain1', 'Domain2', 'UsedDomainSpells', 'PreparedDomainSpells', 'Specialized', 'Forbidden1', 'Forbidden2'];
-
-export function spellbookToTuple(sb) {
-  const data = typeof sb.serialize === 'function' ? sb.serialize() : sb;
-  return SB_TUPLE_KEYS.map(k => data[k]);
+//#region Spellbook data — delegates to Spellbook.serialize / Spellbook.load
+export function spellbookToData(sb) {
+  return typeof sb.serialize === 'function' ? sb.serialize() : sb;
 }
 
-export function spellbookFromTuple(t) {
-  if (!Array.isArray(t) || t.length < 14) return null;
-  const data = {};
-  SB_TUPLE_KEYS.forEach((k, i) => { data[k] = t[i]; });
-  const s = new Spellbook();
-  return s.load(data);
+export function spellbookFromData(d) {
+  if (!d || typeof d !== 'object') return null;
+  return new Spellbook().load(d);
 }
 
 //#endregion
 
-//#region Loot tuple: [level, goldMod, goodsMod, itemsMod, seed, timestamp, classicGen]
-export function lootToTuple(loot) {
-  const data = typeof loot.serialize === 'function' ? loot.serialize() : loot;
-  return [data.Level, data.GoldMod, data.GoodsMod, data.ItemsMod, data.Seed, data.Timestamp, data.ClassicGen];
+//#region Loot data — delegates to Loot.serialize / Loot.load
+export function lootToData(loot) {
+  return typeof loot.serialize === 'function' ? loot.serialize() : loot;
 }
 
-export function lootFromTuple(t) {
-  if (!Array.isArray(t) || t.length < 7) return null;
-  const data = {
-    Level: t[0],
-    GoldMod: t[1],
-    GoodsMod: t[2],
-    ItemsMod: t[3],
-    Seed: t[4],
-    Timestamp: t[5],
-    ClassicGen: t[6],
-  };
-  const l = new Loot();
-  return l.load(data);
+export function lootFromData(d) {
+  if (!d || typeof d !== 'object') return null;
+  return new Loot().load(d);
 }
 
 //#endregion
@@ -268,33 +201,33 @@ export function lootFromTuple(t) {
 
 export function updateWorldAt(app, worldIndex, world) {
   const w = [...(app.w || [])];
-  w[worldIndex] = worldToTuple(world);
+  w[worldIndex] = worldToData(world);
   return { ...app, w };
 }
 
 export function updateShopAt(app, worldIndex, cityIndex, shopIndex, shop) {
-  const w = (app.w || []).map((wt, wi) => {
-    if (wi !== worldIndex) return wt;
-    const cities = (wt[3] || []).map((ct, ci) => {
-      if (ci !== cityIndex) return ct;
-      const shops = [...(ct[4] || [])];
-      shops[shopIndex] = shopToTuple(shop);
-      return [ct[0], ct[1], ct[2], ct[3], shops];
+  const w = (app.w || []).map((wd, wi) => {
+    if (wi !== worldIndex) return wd;
+    const Cities = (wd.Cities || []).map((cd, ci) => {
+      if (ci !== cityIndex) return cd;
+      const Shops = [...(cd.Shops || [])];
+      Shops[shopIndex] = shopToData(shop);
+      return { ...cd, Shops };
     });
-    return [wt[0], wt[1], wt[2], cities];
+    return { ...wd, Cities };
   });
   return { ...app, w };
 }
 
 export function updateSpellbookAt(app, index, spellbook) {
   const sb = [...(app.sb || [])];
-  sb[index] = spellbookToTuple(spellbook);
+  sb[index] = spellbookToData(spellbook);
   return { ...app, sb };
 }
 
 export function updateLootAt(app, index, loot) {
   const l = [...(app.l || [])];
-  l[index] = lootToTuple(loot);
+  l[index] = lootToData(loot);
   return { ...app, l };
 }
 
@@ -330,11 +263,11 @@ export function saveApp(app) {
 
 //#endregion
 
-//#region Index-based accessors (return class instances from tuples)
+//#region Index-based accessors (return class instances from persisted data)
 
 export function getWorldByIndex(app, i) {
   if (!app || !Array.isArray(app.w) || i == null || i < 0 || i >= app.w.length) return null;
-  return worldFromTuple(app.w[i]);
+  return worldFromData(app.w[i]);
 }
 
 export function getCityByIndex(app, worldIndex, cityIndex) {
@@ -351,12 +284,12 @@ export function getShopByIndex(app, worldIndex, cityIndex, shopIndex) {
 
 export function getSpellbookByIndex(app, i) {
   if (!app || !Array.isArray(app.sb) || i == null || i < 0 || i >= app.sb.length) return null;
-  return spellbookFromTuple(app.sb[i]);
+  return spellbookFromData(app.sb[i]);
 }
 
 export function getLootByIndex(app, i) {
   if (!app || !Array.isArray(app.l) || i == null || i < 0 || i >= app.l.length) return null;
-  return lootFromTuple(app.l[i]);
+  return lootFromData(app.l[i]);
 }
 
 /** Return serialized character at index (plain object). For Player instance use storage.getPlayerByIndex. */

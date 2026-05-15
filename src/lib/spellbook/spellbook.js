@@ -16,16 +16,12 @@ function getSpellIdByLink(link) {
     return s != null && typeof s.id === 'number' ? s.id : -1;
 }
 
-/** Normalize Spells to [[id, prepared, used], ...]. Accepts legacy {Link, Prepared, Used} on load. */
+/** Normalize Spells to [[id, prepared, used], ...]. */
 function normalizeSpells(raw) {
     if (!Array.isArray(raw)) return [];
     return raw.map(slot => {
         if (Array.isArray(slot) && slot.length >= 3)
             return [Number(slot[0]), Number(slot[1]) || 0, Number(slot[2]) || 0];
-        if (slot && typeof slot === 'object' && slot.Link != null) {
-            const id = getSpellIdByLink(slot.Link);
-            if (id >= 0) return [id, Number(slot.Prepared) || 0, Number(slot.Used) || 0];
-        }
         return null;
     }).filter(Boolean);
 }
@@ -101,10 +97,7 @@ class Spellbook {
         this.UsedDomainSpells = data.UsedDomainSpells;
         const raw = data.PreparedDomainSpells ?? {};
         this.PreparedDomainSpells = Object.fromEntries(
-            Object.entries(raw).map(([lvl, val]) => [
-                lvl,
-                Array.isArray(val) ? val : (val && val.Link ? [val] : [])
-            ])
+            Object.entries(raw).map(([lvl, val]) => [lvl, Array.isArray(val) ? val : []])
         );
         this.Specialized = typeof data.Specialized === 'number' ? enumToStr('SpellSchools', data.Specialized) : (data.Specialized || '');
         this.Forbidden1 = typeof data.Forbidden1 === 'number' ? enumToStr('SpellSchools', data.Forbidden1) : (data.Forbidden1 || '');

@@ -63,7 +63,7 @@ export const onDeleteShop = () => (dispatch, getState) => {
   const shopIdx = c.Shops.findIndex(s => s.Name === shop.Name);
   if (shopIdx < 0) return;
   c.deleteShopByIndex(shopIdx);
-  const newApp = { ...app, w: app.w.map((wt, wi) => (wi === app.sw ? db.worldToTuple(w) : wt)) };
+  const newApp = { ...app, w: app.w.map((wd, wi) => (wi === app.sw ? db.worldToData(w) : wd)) };
   db.saveApp(newApp);
   dispatch(setPersist(newApp));
   dispatch(setWorld(w));
@@ -88,7 +88,7 @@ export const updateShop = ([method, ...args]) => (dispatch, getState) => {
   if (!w) return;
   const c = w.Cities?.[w.SelectedCityIndex];
   if (c?.Shops?.length) c.Shops[c.SelectedShopIndex] = shop;
-  const newApp = { ...app, w: app.w.map((wt, wi) => (wi === app.sw ? db.worldToTuple(w) : wt)) };
+  const newApp = { ...app, w: app.w.map((wd, wi) => (wi === app.sw ? db.worldToData(w) : wd)) };
   db.saveApp(newApp);
   dispatch(setPersist(newApp));
   dispatch(setWorld(w));

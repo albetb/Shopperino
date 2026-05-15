@@ -51,7 +51,7 @@ export const onNewWorld = (nameRaw) => (dispatch, getState) => {
   const w = new World(name);
   w.Level = 1;
   const wWithCity = ensureWorldHasDefaultCity(w);
-  const newWorlds = [...(app.w || []), db.worldToTuple(wWithCity)];
+  const newWorlds = [...(app.w || []), db.worldToData(wWithCity)];
   const newApp = { ...app, w: newWorlds, sw: newWorlds.length - 1 };
   db.saveApp(newApp);
   dispatch(setPersist(newApp));
@@ -89,7 +89,7 @@ export const onPlayerLevelChange = (level) => (dispatch, getState) => {
   if (!w) return;
 
   w.setPlayerLevel(level);
-  const newApp = { ...app, w: app.w.map((wt, wi) => (wi === app.sw ? db.worldToTuple(w) : wt)) };
+  const newApp = { ...app, w: app.w.map((wd, wi) => (wi === app.sw ? db.worldToData(w) : wd)) };
   db.saveApp(newApp);
   dispatch(setPersist(newApp));
   dispatch(setWorld(w));

@@ -44,28 +44,13 @@ function hitDiceToMax(hd) {
   return Number.isFinite(n) ? n : 4;
 }
 
-/** Resolve spell link to numeric id from spells.json (same as Spellbook). */
-function getSpellIdByLink(link) {
-  if (!link) return -1;
-  const spells = loadFile('spells');
-  if (!Array.isArray(spells)) return -1;
-  const s = spells.find((x) => x && x.Link === link);
-  return s != null && typeof s.id === 'number' ? s.id : -1;
-}
-
-/** Normalize spells to [[id, prepared, used], ...]. Accepts legacy {Link, Prepared, Used}. */
+/** Normalize spells to [[id, prepared, used], ...]. */
 function normalizePlayerSpells(raw) {
   if (!Array.isArray(raw)) return [];
   return raw
     .map((slot) => {
       if (Array.isArray(slot) && slot.length >= 3) {
         return [Number(slot[0]), Number(slot[1]) || 0, Number(slot[2]) || 0];
-      }
-      if (slot && typeof slot === 'object' && slot.Link != null) {
-        const id = getSpellIdByLink(slot.Link);
-        if (id >= 0) {
-          return [id, Number(slot.Prepared) || 0, Number(slot.Used) || 0];
-        }
       }
       return null;
     })
@@ -195,7 +180,7 @@ class Player {
         Object.entries(data.preparedDomainSpells).map(([lvl, val]) => {
           const levelNum = Number(lvl);
           if (!Number.isFinite(levelNum)) return [lvl, []];
-          const arr = Array.isArray(val) ? val : (val && val.Link ? [val] : []);
+          const arr = Array.isArray(val) ? val : [];
           const normalized = arr.map((slot) => {
             if (slot && typeof slot === 'object' && slot.Link != null) {
               return {

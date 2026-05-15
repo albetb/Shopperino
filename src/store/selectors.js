@@ -53,7 +53,7 @@ export function selectSpellbook(state) {
 export function selectSpellbooksList(state) {
   const p = selectPersist(state);
   if (!p || !Array.isArray(p.sb)) return [];
-  return (p.sb || []).map(t => ({ name: t[0] }));
+  return (p.sb || []).map(d => ({ name: d?.Name ?? '' }));
 }
 
 export function selectLootIndex(state) {
@@ -70,5 +70,5 @@ export function selectLoot(state) {
 export function selectLootsList(state) {
   const p = selectPersist(state);
   if (!p || !Array.isArray(p.l)) return [];
-  return (p.l || []).map(t => ({ timestamp: t[5] }));
+  return (p.l || []).map(d => ({ timestamp: d?.Timestamp ?? 0 }));
 }

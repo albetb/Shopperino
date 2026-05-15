@@ -6,7 +6,7 @@ import { setPersist } from '../slices/persistSlice';
 export const onNewLoot = (level, goldMod, goodsMod, itemsMod) => (dispatch, getState) => {
   const app = getState().persist;
   const l = new Loot(level, goldMod, goodsMod, itemsMod);
-  const newL = [...(app.l || []), db.lootToTuple(l)];
+  const newL = [...(app.l || []), db.lootToData(l)];
   const newApp = { ...app, l: newL, sl: newL.length - 1 };
   db.saveApp(newApp);
   dispatch(setPersist(newApp));

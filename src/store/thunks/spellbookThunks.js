@@ -48,7 +48,7 @@ export const onNewSpellbook = nameRaw => (dispatch, getState) => {
     return;
   }
   const s = new Spellbook(name);
-  const newSb = [...(app.sb || []), db.spellbookToTuple(s)];
+  const newSb = [...(app.sb || []), db.spellbookToData(s)];
   const newApp = { ...app, sb: newSb, ssb: newSb.length - 1 };
   db.saveApp(newApp);
   dispatch(setPersist(newApp));
