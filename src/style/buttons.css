@@ -1,13 +1,19 @@
 :root {
-  --btn-height-sm: 2rem;
-  --btn-height-md: 2.4rem;
-  --btn-height-lg: 3.1rem;
+  --btn-height-sm: 2.25rem;   /* 36px — secondary tap target */
+  --btn-height-md: 2.75rem;   /* 44px — primary tap target  */
+  --btn-height-lg: 3.25rem;
 
-  --btn-width-sm: 2.6rem;
-  --btn-width-md: 3.883rem;
-  --btn-width-lg: 5.015rem;
+  --btn-width-sm: 2.75rem;
+  --btn-width-md: 4rem;
+  --btn-width-lg: 5.25rem;
 }
 
+/* ============================================================
+   Legacy button + form-control classes, restyled to match the
+   new design system. Anything using these classes (sidebar
+   cards, dropdowns, generators, steppers) now sits cleanly on
+   the dark / parchment surfaces and tracks --accent.
+   ============================================================ */
 .saving-button,
 .item-number-button,
 .add-item-button,
@@ -21,118 +27,214 @@
   justify-content: center;
   cursor: pointer;
   user-select: none;
-  font-size: 1rem;
-  color: var(--dark-grey);
-  border-radius: 0.58rem;
-
-  height: var(--btn-height-md);
-  width: var(--btn-width-md);
-  user-select: none;
   -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
+  font: 500 var(--font-size-sm)/1 var(--font-ui);
+  color: var(--ink);
+  border-radius: var(--radius-md);
+  height: var(--btn-height-sm);
+  min-width: var(--btn-width-sm);
+  padding: 0 var(--space-3);
+  background: var(--surface-2);
+  border: 1px solid var(--border-soft);
+  box-shadow: none;
+  transition: background var(--t-fast) var(--ease),
+              border-color var(--t-fast) var(--ease),
+              color var(--t-fast) var(--ease);
 }
 
-.saving-button,
-.modern-button,
-.levels-button,
-.modern-dropdown {
-  box-shadow: 2px 2px 1.5px 0px var(--main-t2),
-    inset -2px -2px 5px 0px var(--white-t);
-  background-color: var(--white);
-  border: 1px solid var(--white2);
+.saving-button:hover,
+.item-number-button:hover,
+.add-item-button:hover,
+.modern-button:hover,
+.levels-button:hover,
+.flat-button:hover {
+  background: var(--surface-3);
+  border-color: var(--border);
+  color: var(--accent);
+}
+
+.modern-dropdown:hover {
+  border-color: var(--border);
+}
+
+.modern-dropdown,
+.modern-input {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--ink);
+  padding: 0 var(--space-8) 0 var(--space-3);
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+/* native select caret -> small chevron via SVG mask */
+select.modern-dropdown {
+  background-image: linear-gradient(45deg, transparent 50%, var(--ink-muted) 50%),
+                    linear-gradient(135deg, var(--ink-muted) 50%, transparent 50%);
+  background-position: calc(100% - 1rem) center, calc(100% - 0.6rem) center;
+  background-size: 0.4rem 0.4rem, 0.4rem 0.4rem;
+  background-repeat: no-repeat;
+}
+.modern-dropdown:focus,
+.modern-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.modern-dropdown option {
+  background: var(--bg-elev);
+  color: var(--ink);
+}
+
+/* Primary / accent buttons used for "Generate", "Add", etc. */
+.modern-button.primary,
+.saving-button {
+  background: var(--accent);
+  color: var(--accent-fg);
+  border-color: var(--accent-strong);
+  box-shadow: 0 0 0 1px var(--accent-ring), 0 8px 24px -10px var(--accent-glow);
+}
+.modern-button.primary:hover,
+.saving-button:hover {
+  background: var(--accent-strong);
+  color: var(--accent-fg);
 }
 
 .modern-button:disabled,
-.levels-button:disabled {
-  opacity: 0.5;
-  cursor: default;
-  background-color: var(--grey-t2);
+.levels-button:disabled,
+.saving-button:disabled,
+.flat-button:disabled,
+.item-number-button:disabled,
+.add-item-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  background: var(--surface-1);
+  border-color: var(--border-soft);
+  color: var(--ink-faint);
   box-shadow: none;
 }
 
-.item-number-button,
-.modern-input,
-.add-item-button,
-.flat-button {
-  box-shadow: 0px 0px 0px 2px var(--main-t);
-  background-color: var(--grey-t2);
-  border: none;
+.modern-dropdown:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  background: var(--surface-1);
+  color: var(--ink-faint);
 }
 
-/* Size modifiers */
+/* Steppers / level frames inside the legacy cards */
+.levels-div {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  background: var(--surface-1);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-pill);
+  padding: 0.15rem;
+}
+.levels-div .levels-button {
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-pill);
+  width: var(--btn-height-sm);
+  min-width: var(--btn-height-sm);
+  height: var(--btn-height-sm);
+  padding: 0;
+  color: var(--ink);
+}
+.levels-div .levels-button:hover {
+  background: var(--surface-3);
+  color: var(--accent);
+}
+.level-frame {
+  min-width: 2.25rem;
+  text-align: center;
+  font: 600 var(--font-size-sm)/1 var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+/* Size modifiers (preserve old class names so existing markup keeps working) */
 .smaller {
   height: calc(var(--btn-height-sm) * 0.8) !important;
-  width: calc(var(--btn-width-sm) * 0.8) !important;
+  min-width: calc(var(--btn-width-sm) * 0.8) !important;
+  width: auto !important;
 }
-
 .small {
   height: var(--btn-height-sm) !important;
-  width: var(--btn-width-sm) !important;
+  min-width: var(--btn-width-sm) !important;
+  width: auto !important;
 }
-
 .small-short {
   height: var(--btn-height-sm) !important;
-  width: calc(var(--btn-width-sm) / 2) !important;
+  min-width: calc(var(--btn-width-sm) / 1.6) !important;
+  width: auto !important;
 }
-
 .small-middle {
   height: var(--btn-height-sm) !important;
-  width: calc(var(--btn-width-sm) * 1.7) !important;
+  min-width: calc(var(--btn-width-sm) * 1.7) !important;
+  width: auto !important;
 }
-
 .small-middle-long3 {
   height: var(--btn-height-sm) !important;
-  width: calc(var(--btn-width-sm) * 2) !important;
+  min-width: calc(var(--btn-width-sm) * 2.2) !important;
+  width: auto !important;
 }
-
 .small-middle-long2 {
   height: var(--btn-height-sm) !important;
-  width: calc(var(--btn-width-sm) * 3.1) !important;
+  min-width: calc(var(--btn-width-sm) * 3) !important;
+  width: 100% !important;
 }
-
 .small-long {
   height: var(--btn-height-sm) !important;
-  width: calc(var(--btn-width-sm) * 3.2) !important;
+  min-width: calc(var(--btn-width-sm) * 3) !important;
+  width: 100% !important;
 }
-
 .small-longer {
   height: var(--btn-height-sm) !important;
-  width: calc(var(--btn-width-sm) * 4) !important;
+  min-width: calc(var(--btn-width-sm) * 4) !important;
+  width: 100% !important;
 }
-
 .medium {
   height: var(--btn-height-md) !important;
-  width: var(--btn-width-md) !important;
+  min-width: var(--btn-width-md) !important;
+  width: auto !important;
 }
-
 .medium-short {
   height: var(--btn-height-md) !important;
-  width: var(--btn-width-sm) !important;
+  min-width: var(--btn-width-sm) !important;
+  width: auto !important;
 }
-
 .medium-long {
   height: var(--btn-height-md) !important;
-  width: calc(var(--btn-width-md) * 2.5) !important;
+  min-width: calc(var(--btn-width-md) * 2.5) !important;
+  width: 100% !important;
 }
-
 .large {
   height: var(--btn-height-lg) !important;
-  width: var(--btn-width-lg) !important;
+  min-width: var(--btn-width-lg) !important;
+  width: auto !important;
 }
-
 .full {
   width: 100% !important;
   max-width: none !important;
 }
 
-@media (max-width: 768px) {
-  :root {
-    --btn-width-sm: 13vw;
-  }
+/* Active / pressed state for tabs styled as buttons */
+.modern-button.active,
+.modern-button[aria-pressed="true"],
+.levels-button.active {
+  background: var(--accent-soft);
+  border-color: var(--accent-muted);
+  color: var(--accent);
+}
 
-  .small-long {
-    height: var(--btn-height-sm) !important;
-    width: calc(var(--btn-width-sm) * 3.3) !important;
-  }
+/* Material symbol inside legacy buttons should inherit color */
+.modern-button .material-symbols-outlined,
+.levels-button .material-symbols-outlined,
+.saving-button .material-symbols-outlined,
+.item-number-button .material-symbols-outlined,
+.add-item-button .material-symbols-outlined,
+.flat-button .material-symbols-outlined {
+  font-size: 1.125rem;
+  color: inherit;
 }

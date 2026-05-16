@@ -5,37 +5,33 @@
   width: calc(var(--btn-width-sm) * 7.4);
   top: var(--menu-height);
   height: calc(100vh - var(--menu-height));
-  background-color: var(--main);
+  background-color: var(--bg-elev);
+  color: var(--ink);
   z-index: 900;
   overflow-y: auto;
   scrollbar-width: thin;
   flex-direction: column;
   align-items: center;
-
+  border-right: 1px solid var(--border-soft);
+  padding-top: var(--space-2);
 }
 
 .sidebar {
-  box-shadow: 2px 0px 5px 1px var(--main-t);
+  box-shadow: var(--shadow-2);
   left: 0;
 }
 
 .info-sidebar {
-  box-shadow: -2px 0px 5px 1px var(--main-t);
+  box-shadow: var(--shadow-2);
   right: 0;
+  border-right: 0;
+  border-left: 1px solid var(--border-soft);
 }
 
+/* Legacy .top-menu class no longer used (new sh-topbar replaced it).
+   Kept here only as a no-op safety net for anything we may have missed. */
 .top-menu {
-  position: fixed;
-  z-index: 1000;
-  display: flex;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: var(--menu-height);
-  background-color: var(--main);
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 0.4rem;
+  display: none;
 }
 
 .top-logo {
@@ -91,10 +87,28 @@
   padding-left: 2vw;
 }
 
+/* Collapsed state: the sidebar shrinks to wrap just the toggle button.
+   No background, no border, no shadow — only the toggle stays visible
+   as a floating tab against the page background. */
 .sidebar.collapsed,
 .info-sidebar.collapsed {
-  width: 2.6rem;
+  width: auto;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+  overflow: visible;
+  pointer-events: none;     /* let clicks pass through the empty strip */
 }
+
+.sidebar.collapsed .toggle-button,
+.info-sidebar.collapsed .info-toggle-button {
+  pointer-events: auto;     /* re-enable on the button itself */
+  margin: var(--space-4) var(--space-4) 0 var(--space-3);
+}
+
+.sidebar.collapsed .toggle-button { align-self: flex-start; }
+.info-sidebar.collapsed .info-toggle-button { align-self: flex-end; }
 
 .hidden {
   visibility: hidden;
@@ -102,25 +116,30 @@
 
 .toggle-button,
 .info-toggle-button {
-  color: var(--white);
+  color: var(--ink);
   cursor: pointer;
-  background-color: transparent;
-  border: transparent;
-  box-shadow: none;
-  width: 3rem;
-  height: 3rem;
-  position: absolute;
+  background-color: var(--surface-2);
+  border: 1px solid var(--border-soft);
+  box-shadow: var(--shadow-1);
+  border-radius: var(--radius-md);
+  width: 2.25rem;
+  height: 2.25rem;
+  flex-shrink: 0;
+  display: inline-grid;
+  place-items: center;
+  margin: var(--space-4) var(--space-2) 0;
+  align-self: flex-end;
+  position: relative;
+  z-index: 2;
+}
+.toggle-button:hover,
+.info-toggle-button:hover {
+  color: var(--accent);
+  background: var(--surface-3);
+  border-color: var(--accent-muted);
 }
 
-.toggle-button {
-  right: 0;
-  top: 0;
-}
-
-.info-toggle-button {
-  left: 0;
-  top: 0;
-}
+.info-toggle-button { align-self: flex-start; }
 
 .saving-button {
   margin-top: 0.51rem;
@@ -146,13 +165,13 @@
 }
 
 span.info-card {
-  color: var(--black);
+  color: var(--ink);
   font-size: medium;
   text-align: left;
 }
 
 p {
-  color: var(--black);
+  color: var(--ink);
   font-size: medium;
   text-align: justify;
 }
@@ -315,13 +334,13 @@ p {
 }
 
 .spell-table-cell-name {
-  color: var(--black);
+  color: var(--ink);
 }
 
 .spell-table-cell-desc {
   margin-top: 0.15rem;
   font-size: 0.85em;
-  color: var(--dark-grey);
+  color: var(--ink-muted);
   text-align: left;
 }
 
@@ -334,7 +353,7 @@ p {
 /* When a search results table is inside a card, use black text like spellbook tables */
 .card .search-results-table th,
 .card .search-results-table td {
-  color: var(--black);
+  color: var(--ink);
 }
 
 /* Search tables: default text/link colors */
@@ -343,15 +362,15 @@ p {
 }
 
 .card .search-results-table p {
-  color: var(--black);
+  color: var(--ink);
 }
 
 .card .search-results-table .button-link {
-  color: var(--black);
+  color: var(--ink);
 }
 
 .card .search-results-table .button-link:hover {
-  color: var(--black);
+  color: var(--ink);
 }
 
 /* Wrapper used around feat links + punctuation in search table; allow normal wrapping */
@@ -402,7 +421,7 @@ p {
   .search-spell-short-desc {
     margin-top: 0.15rem;
     font-size: 0.8em;
-    color: var(--black);
+    color: var(--ink);
   }
 
   .sidebar,

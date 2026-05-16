@@ -9,6 +9,8 @@ import {
   setMainColor,
   resetMainColor,
   setMasterMode,
+  setTheme,
+  setAccent,
 } from './slices/appSlice';
 
 const PREF_ACTIONS = [
@@ -20,6 +22,8 @@ const PREF_ACTIONS = [
   setMainColor.type,
   resetMainColor.type,
   setMasterMode.type,
+  setTheme.type,
+  setAccent.type,
   'spellbook/setIsSpellTableCollapsed',
   'spellbook/setIsClassDescriptionCollapsed',
   'spellbook/setIsDomainDescriptionCollapsed',
@@ -65,6 +69,12 @@ export function persistSyncMiddleware(store) {
         break;
       case setMasterMode.type:
         nextPersist = db.setAppUIFlag(nextPersist, db.UI_FLAG.mm, !!action.payload);
+        break;
+      case setTheme.type:
+        nextPersist = { ...nextPersist, th: action.payload === 'light' ? 'light' : 'dark' };
+        break;
+      case setAccent.type:
+        nextPersist = { ...nextPersist, ac: typeof action.payload === 'string' && action.payload ? action.payload : 'crimson' };
         break;
       case 'spellbook/setIsSpellTableCollapsed':
         if (Array.isArray(action.payload) && action.payload.length >= 10)

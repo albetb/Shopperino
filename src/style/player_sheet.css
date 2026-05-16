@@ -53,7 +53,7 @@
 }
 
 .player-sheet-alignment-label {
-  color: #000;
+  color: var(--ink);
   font-weight: inherit;
   margin: 0;
 }
@@ -178,7 +178,7 @@
   list-style: none;
   padding: 0;
   margin: 0;
-  color: #000;
+  color: var(--ink);
   text-align: left;
   width: 95%;
 }
@@ -187,7 +187,7 @@
   margin-bottom: 0.75rem;
   font-size: 0.9rem;
   line-height: 1.4;
-  color: #000;
+  color: var(--ink);
   text-align: left;
 }
 
@@ -213,7 +213,7 @@
   min-width: 4.5rem;
   text-align: left;
   font-size: 0.9rem;
-  color: var(--black);
+  color: var(--ink);
 }
 .player-sheet-stat-bar-track {
   flex: 1;
@@ -233,7 +233,7 @@
   min-width: 3.5rem;
   text-align: right;
   font-size: 0.85rem;
-  color: var(--black);
+  color: var(--ink);
 }
 
 .player-sheet-class-bars {
@@ -279,7 +279,7 @@
 .player-sheet-note-title {
   margin: 0 0 0.75rem 0;
   font-size: 1.25rem;
-  color: var(--dark-grey);
+  color: var(--ink-muted);
 }
 .player-sheet-note-meta {
   display: flex;
@@ -292,7 +292,7 @@
 .player-sheet-note-modified {
   margin: 0;
   font-style: italic;
-  color: var(--dark-grey);
+  color: var(--ink-muted);
   flex: 1;
   min-width: 0;
 }
@@ -306,7 +306,7 @@
   border-radius: 0.58rem;
   box-shadow: 0 0 0 2px var(--main-t);
   background-color: var(--grey-t2);
-  color: var(--dark-grey);
+  color: var(--ink-muted);
   resize: vertical;
   box-sizing: border-box;
 }
@@ -318,7 +318,7 @@
 .player-sheet-skills-points-used {
   margin: 0.5rem 0 0 0;
   font-style: italic;
-  color: var(--dark-grey);
+  color: var(--ink-muted);
   font-size: 0.9rem;
 }
 
@@ -514,7 +514,7 @@
   left: 0;
   right: 0;
   height: 3.5rem;
-  background-color: var(--dark-grey);
+  background-color: var(--ink-muted);
   border-top: 1px solid var(--main-t);
   display: flex;
   flex-direction: row;
@@ -548,7 +548,7 @@
   bottom: 3.5rem;
   display: flex;
   flex-direction: column;
-  background-color: var(--dark-grey);
+  background-color: var(--ink-muted);
   border: 1px solid var(--main-t);
   border-radius: 0.5rem;
   box-shadow: 0 -2px 8px var(--main-t);
@@ -609,7 +609,7 @@
   border: none;
   cursor: pointer;
   padding: 0.35rem;
-  color: var(--dark-grey);
+  color: var(--ink-muted);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -629,14 +629,14 @@
   min-width: 0;
   font-weight: 500;
   text-align: left;
-  color: var(--black);
+  color: var(--ink);
 }
 
 .combat-page-stat-value {
   font-weight: 600;
   min-width: 3rem;
   text-align: right;
-  color: var(--dark-grey);
+  color: var(--ink-muted);
 }
 
 .combat-page-edit-controls-wrap {
@@ -672,7 +672,7 @@
   text-align: right;
   font-weight: 600;
   width: fit-content;
-  color: var(--dark-grey);
+  color: var(--ink-muted);
   margin-right: 0.2rem;
 }
 
@@ -750,7 +750,7 @@
 .combat-page-ac-total {
   border: 2px solid var(--main-t, #666);
   font-weight: 600;
-  color: var(--black);
+  color: var(--ink);
   display: flex;
   flex-direction: column;
   justify-content: space-between
@@ -758,19 +758,19 @@
 
 .combat-page-ac-label {
   font-size: 0.85rem;
-  color: var(--dark-grey);
+  color: var(--ink-muted);
 }
 
 .combat-page-ac-value {
   font-weight: 600;
   font-size: 1.1rem;
-  color: var(--dark-grey);
+  color: var(--ink-muted);
 }
 
 .combat-page-no-weapon {
   margin: 0;
   font-size: 0.9rem;
-  color: var(--dark-grey);
+  color: var(--ink-muted);
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -779,7 +779,7 @@
 
 .combat-page-attacks {
   font-size: 1.1rem;
-  color: var(--dark-grey);
+  color: var(--ink-muted);
   width: 100%;
   margin-top: 0.3rem;
 }

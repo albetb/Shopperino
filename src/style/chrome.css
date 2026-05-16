@@ -1,0 +1,202 @@
+/* ============================================================
+   SHOPPERINO — TOP CHROME (top bar, tabs, mode toggle, accent picker)
+   All rules reference tokens in tokens.css.
+   ============================================================ */
+
+/* --- TOP BAR ------------------------------------------------- */
+.sh-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  background: var(--bg-elev);
+  border-bottom: 1px solid var(--border-soft);
+  height: 4.25rem;
+  flex-shrink: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+.sh-topbar-brand {
+  display: flex; align-items: center; gap: var(--space-2);
+  font-family: var(--font-display);
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  flex: 1;
+  min-width: 0;
+  color: var(--ink);
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  text-align: left;
+}
+.sh-topbar-brand img,
+.sh-topbar-brand .sh-brand-logo {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: var(--radius-sm);
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.sh-topbar-brand .sh-brand-word {
+  font-family: var(--font-display);
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sh-topbar-actions { display: flex; gap: var(--space-2); align-items: center; }
+
+/* --- TABS (desktop visible tab bar) ------------------------- */
+.sh-tabs {
+  display: flex;
+  gap: var(--space-1);
+  align-items: center;
+}
+.sh-tab {
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  display: inline-flex; align-items: center; gap: var(--space-2);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--ink-muted);
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  min-height: var(--tap-target-sm);
+}
+.sh-tab .material-symbols-outlined,
+.sh-tab .mi { font-size: 1.125rem; }
+.sh-tab:hover { color: var(--ink); background: var(--surface-1); }
+.sh-tab[aria-current="page"],
+.sh-tab.is-active {
+  color: var(--ink);
+  background: var(--accent-soft);
+  border-color: var(--accent-muted);
+  box-shadow: inset 0 -2px 0 0 var(--accent);
+}
+.sh-tab:disabled { opacity: 0.5; cursor: default; }
+
+/* --- MODE TOGGLE (Master / Player, Dark / Light) ------------ */
+.sh-mode-toggle {
+  display: inline-flex;
+  padding: 0.1875rem;
+  background: var(--surface-1);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-pill);
+  gap: 0;
+}
+.sh-mode-toggle button {
+  font: 600 var(--font-size-xs)/1 var(--font-ui);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-pill);
+  border: 0;
+  background: transparent;
+  color: var(--ink-muted);
+  cursor: pointer;
+  min-height: var(--tap-target-sm);
+}
+.sh-mode-toggle button[aria-pressed="true"] {
+  background: var(--accent);
+  color: var(--accent-fg);
+  box-shadow: 0 0 0 1px var(--accent-ring), 0 0 14px -2px var(--accent-glow);
+}
+
+/* --- ACCENT DOT (top-bar trigger) --------------------------- */
+.sh-accent-dot {
+  display: inline-block;
+  width: 1rem; height: 1rem;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 2px var(--bg-elev), 0 0 0 3px var(--border-strong);
+}
+
+/* --- ACCENT PICKER POPOVER (desktop) ------------------------ */
+.sh-accent-popover-anchor {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  z-index: 1100;
+}
+.sh-accent-popover {
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-3);
+  padding: var(--space-3);
+  width: 19rem;
+}
+
+/* --- HUE SWATCH GRID (used by sheet + popover) -------------- */
+.sh-accent-grid {
+  display: grid; grid-template-columns: repeat(6, 1fr); gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+.sh-hue {
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  position: relative;
+  cursor: pointer;
+  padding: 0;
+  background: var(--surface-1);
+  min-height: var(--tap-target-sm);
+}
+.sh-hue.is-active {
+  border-color: var(--ink);
+  box-shadow: 0 0 0 2px var(--bg-elev), 0 0 0 4px var(--accent);
+}
+.sh-hue::after {
+  content: "";
+  position: absolute; inset: 4px;
+  border-radius: 50%;
+  background: var(--swatch);
+}
+
+/* --- DRAWER (mobile sidebar slide-in) ----------------------- */
+.sh-drawer-scrim {
+  position: fixed; inset: 0;
+  background: oklch(0 0 0 / 0.55);
+  z-index: 1100;
+  animation: sh-fade-in var(--t-base) var(--ease);
+}
+.sh-drawer {
+  position: fixed;
+  left: 0; top: 0; bottom: 0;
+  width: min(86vw, 21rem);
+  background: var(--bg-elev);
+  border-right: 1px solid var(--border);
+  box-shadow: var(--shadow-3);
+  z-index: 1101;
+  display: flex; flex-direction: column;
+  animation: sh-slide-in var(--t-slow) var(--ease);
+}
+@keyframes sh-slide-in { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+.sh-drawer-head {
+  display: flex; align-items: center; gap: var(--space-2);
+  padding: var(--space-4);
+  border-bottom: 1px solid var(--border-soft);
+}
+.sh-drawer-head .ttl { font-family: var(--font-display); font-size: var(--font-size-xl); font-weight: 600; flex: 1; }
+.sh-drawer-body { padding: var(--space-3); overflow: auto; flex: 1; padding-bottom: max(var(--space-5), env(safe-area-inset-bottom, 0)); }
+
+/* --- PERSISTENT DESKTOP SIDEBAR ----------------------------- */
+@media (min-width: 1024px) {
+  .sh-sidebar-persistent {
+    position: relative;
+    width: 18rem;
+    flex-shrink: 0;
+    background: var(--bg-elev);
+    border-right: 1px solid var(--border-soft);
+    padding: var(--space-4);
+    overflow-y: auto;
+    height: calc(100vh - 3.75rem);
+  }
+}

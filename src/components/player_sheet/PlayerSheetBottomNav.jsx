@@ -1,8 +1,9 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setPlayerSheetMainView, setIsPlayerSheetSidebarCollapsed, setPlayerSpellbookPage } from '../../store/slices/playerSheetSlice';
 import { getClassData } from '../../lib/player';
 import useLongPress from '../hooks/useLongPress';
+import Icon from '../common/Icon';
 
 function hasSpellcastingClass(player) {
   if (!player) return false;
@@ -14,16 +15,24 @@ function hasSpellcastingClass(player) {
   return true;
 }
 
+const ITEMS = [
+  { id: 'combat',       icon: 'swords',       label: 'Combat'    },
+  { id: 'inventory',    icon: 'backpack',     label: 'Inventory' },
+  { id: 'skills',       icon: 'person_play',  label: 'Skills'    },
+  { id: 'feats',        icon: 'auto_awesome', label: 'Feats'     },
+  { id: 'features',     icon: 'extension',    label: 'Features'  },
+  { id: 'playerSpells', icon: 'wand_stars',   label: 'Spells'    },
+  { id: 'note',         icon: 'edit_note',    label: 'Notes'     },
+];
+
 export default function PlayerSheetBottomNav() {
   const dispatch = useDispatch();
   const player = useSelector(state => state.playerSheet.player);
   const mainView = useSelector(state => state.playerSheet.mainView ?? 'none');
+
   const [showSpellOptions, setShowSpellOptions] = useState(false);
-  const [showSkillsOptions, setShowSkillsOptions] = useState(false);
   const spellPopupRef = useRef(null);
   const spellBtnRef = useRef(null);
-  const skillsPopupRef = useRef(null);
-  const skillsBtnRef = useRef(null);
 
   const race = player?.getRace?.() ?? '';
   const _class = player?.getClass?.() ?? '';
@@ -31,166 +40,85 @@ export default function PlayerSheetBottomNav() {
   const isLearnVisible = ['Sorcerer', 'Wizard', 'Bard'].includes(_class);
   const isPrepareVisible = ['Wizard', 'Cleric', 'Druid', 'Ranger', 'Paladin'].includes(_class);
 
-  const navigate = (view) => {
+  const navigate = view => {
     dispatch(setPlayerSheetMainView(view));
     dispatch(setIsPlayerSheetSidebarCollapsed(true));
     setShowSpellOptions(false);
-    setShowSkillsOptions(false);
   };
 
-  const handleSpellLongPress = useCallback(() => {
-    setShowSpellOptions(true);
-  }, []);
-
+  const handleSpellLongPress = useCallback(() => setShowSpellOptions(true), []);
   const handleSpellClick = useCallback(() => {
     dispatch(setPlayerSpellbookPage(2));
     navigate('playerSpells');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
-
   const spellLongPress = useLongPress(handleSpellLongPress, handleSpellClick);
 
-  const handlePrepareSpell = () => {
-    dispatch(setPlayerSpellbookPage(1));
-    navigate('playerSpells');
-  };
+  const handlePrepareSpell = () => { dispatch(setPlayerSpellbookPage(1)); navigate('playerSpells'); };
+  const handleLearnSpell   = () => { dispatch(setPlayerSpellbookPage(0)); navigate('playerSpells'); };
 
-  const handleLearnSpell = () => {
-    dispatch(setPlayerSpellbookPage(0));
-    navigate('playerSpells');
-  };
-
-  const handleSkillsLongPress = useCallback(() => {
-    setShowSkillsOptions(true);
-  }, []);
-
-  const handleSkillsClick = useCallback(() => {
-    navigate('skills');
-  }, [dispatch]);
-
-  const skillsLongPress = useLongPress(handleSkillsLongPress, handleSkillsClick);
-
-  // Close popups when clicking outside
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        spellPopupRef.current &&
-        !spellPopupRef.current.contains(event.target) &&
-        spellBtnRef.current &&
-        !spellBtnRef.current.contains(event.target)
-      ) {
-        setShowSpellOptions(false);
-      }
-      if (
-        skillsPopupRef.current &&
-        !skillsPopupRef.current.contains(event.target) &&
-        skillsBtnRef.current &&
-        !skillsBtnRef.current.contains(event.target)
-      ) {
-        setShowSkillsOptions(false);
-      }
+    if (!showSpellOptions) return undefined;
+    const onDown = ev => {
+      if (spellPopupRef.current?.contains(ev.target)) return;
+      if (spellBtnRef.current?.contains(ev.target)) return;
+      setShowSpellOptions(false);
     };
+    document.addEventListener('mousedown', onDown);
+    document.addEventListener('touchstart', onDown);
+    return () => {
+      document.removeEventListener('mousedown', onDown);
+      document.removeEventListener('touchstart', onDown);
+    };
+  }, [showSpellOptions]);
 
-    if (showSpellOptions || showSkillsOptions) {
-      document.addEventListener('mousedown', handleClickOutside);
-      document.addEventListener('touchstart', handleClickOutside);
-      return () => {
-        document.removeEventListener('mousedown', handleClickOutside);
-        document.removeEventListener('touchstart', handleClickOutside);
-      };
-    }
-  }, [showSpellOptions, showSkillsOptions]);
-
-  const btn = (view, icon, title) => (
-    <div key={view} style={{ position: 'relative', flex: 1, height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <button
-        type="button"
-        className={`ps-bottom-nav-btn${mainView === view ? ' ps-bottom-nav-btn--active' : ''}`}
-        onClick={() => navigate(view)}
-        title={title}
-      >
-        <span className="material-symbols-outlined">{icon}</span>
-      </button>
-    </div>
-  );
-
-  const skillsBtn = (
-    <div key="skillsBtn" style={{ position: 'relative', flex: 1, height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <button
-        ref={skillsBtnRef}
-        type="button"
-        className={`ps-bottom-nav-btn${mainView === 'skills' ? ' ps-bottom-nav-btn--active' : ''}`}
-        title="Skills"
-        {...skillsLongPress}
-      >
-        <span className="material-symbols-outlined">person_play</span>
-      </button>
-      {showSkillsOptions && (
-        <div className="ps-skills-options-popup" ref={skillsPopupRef}>
-          <button
-            type="button"
-            className="ps-skills-option-btn"
-            onClick={() => navigate('feats')}
-            title="Feats"
-          >
-            <span className="material-symbols-outlined">auto_awesome</span>
-          </button>
-          <button
-            type="button"
-            className="ps-skills-option-btn"
-            onClick={() => navigate('features')}
-            title="Features"
-          >
-            <span className="material-symbols-outlined">extension</span>
-          </button>
-        </div>
-      )}
-    </div>
-  );
-
-  const spellBtn = showSpells ? (
-    <div key="spellBtn" style={{ position: 'relative', flex: 1, height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <button
-        ref={spellBtnRef}
-        type="button"
-        className={`ps-bottom-nav-btn${mainView === 'playerSpells' ? ' ps-bottom-nav-btn--active' : ''}`}
-        title="Spells"
-        {...spellLongPress}
-      >
-        <span className="material-symbols-outlined">wand_stars</span>
-      </button>
-      {showSpellOptions && (
-        <div className="ps-spell-options-popup" ref={spellPopupRef}>
-          {isPrepareVisible && (
-            <button
-              type="button"
-              className="ps-spell-option-btn"
-              onClick={handlePrepareSpell}
-              title="Prepare Spell"
-            >
-              <span className="material-symbols-outlined">menu_book</span>
-            </button>
-          )}
-          {isLearnVisible && (
-            <button
-              type="button"
-              className="ps-spell-option-btn"
-              onClick={handleLearnSpell}
-              title="Learn Spell"
-            >
-              <span className="material-symbols-outlined">bookmark_add</span>
-            </button>
-          )}
-        </div>
-      )}
-    </div>
-  ) : null;
+  const items = ITEMS.filter(it => it.id !== 'playerSpells' || showSpells);
 
   return (
-    <nav className="ps-bottom-nav">
-      {btn('combat', 'swords', 'Combat')}
-      {spellBtn}
-      {btn('inventory', 'backpack', 'Inventory')}
-      {skillsBtn}
+    <nav className="sh-bnav" aria-label="Player sheet sections">
+      {items.map(it => {
+        if (it.id === 'playerSpells') {
+          return (
+            <button
+              key={it.id}
+              ref={spellBtnRef}
+              type="button"
+              className="sh-bnav-item"
+              aria-current={mainView === 'playerSpells' ? 'page' : undefined}
+              {...spellLongPress}
+            >
+              <Icon name={it.icon} />
+              <span>{it.label}</span>
+              {showSpellOptions && (
+                <div className="sh-bnav-popout" ref={spellPopupRef}>
+                  {isPrepareVisible && (
+                    <button type="button" className="sh-bnav-popout-btn" onClick={handlePrepareSpell} title="Prepare Spell">
+                      <Icon name="menu_book" />
+                    </button>
+                  )}
+                  {isLearnVisible && (
+                    <button type="button" className="sh-bnav-popout-btn" onClick={handleLearnSpell} title="Learn Spell">
+                      <Icon name="bookmark_add" />
+                    </button>
+                  )}
+                </div>
+              )}
+            </button>
+          );
+        }
+        return (
+          <button
+            key={it.id}
+            type="button"
+            className="sh-bnav-item"
+            aria-current={mainView === it.id ? 'page' : undefined}
+            onClick={() => navigate(it.id)}
+          >
+            <Icon name={it.icon} />
+            <span>{it.label}</span>
+          </button>
+        );
+      })}
     </nav>
   );
 }

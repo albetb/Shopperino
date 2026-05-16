@@ -9,7 +9,7 @@ import Shop from './shop';
 import Spellbook from './spellbook';
 import Loot from './loot';
 
-const CURRENT_VERSION = 260515;
+const CURRENT_VERSION = 260516;
 const ROOT_KEY = 'app';
 
 //#region UI bitmask
@@ -75,6 +75,8 @@ export function getDefaultApp() {
     sss: '',
     psv: 'none', // player sheet main view: 'none' | 'race' | 'class' | 'note'
     pscards: {}, // player sheet sidebar card collapsed: { identity?, abilityScores?, Combat?, ... } true = collapsed
+    th: 'dark',     // theme: 'dark' | 'light' (omitted when default)
+    ac: 'crimson',  // accent hue name (omitted when default)
   };
 }
 

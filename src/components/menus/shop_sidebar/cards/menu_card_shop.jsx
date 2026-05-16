@@ -118,9 +118,9 @@ export default function MenuCardShop() {
           />
 
           <div className="card-side-div margin-top">
-            <label className="modern-label">Shop Type:</label>
+            <label className="modern-label">Shop Type</label>
             <select
-              className="modern-dropdown small-long"
+              className="modern-dropdown small-middle"
               value={shopType}
               onChange={handleTypeChange}
             >
@@ -134,9 +134,10 @@ export default function MenuCardShop() {
 
           <div className="card-side-div margin-top buttons-row buttons-row-around">
             <button
-              className={`modern-button ${shopGenerated ? 'small-middle-long2' : 'small-long'}`}
+              className="modern-button small-middle-long3"
               onClick={handleGenerate}
               disabled={!canGenerate}
+              style={{ flex: 1 }}
             >
               <b>Generate</b>
             </button>

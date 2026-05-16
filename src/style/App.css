@@ -1,17 +1,45 @@
+@import "./tokens.css";
+@import "./atoms.css";
+@import "./chrome.css";
+/* legacy-token compatibility — alias old hard-coded design vars to new tokens
+   so legacy components blend with the new theme without per-file rewrites. */
+:root,
+.theme-dark,
+.theme-light {
+  --white:     var(--ink);
+  --white2:    var(--ink-muted);
+  --white-t:   var(--surface-1);
+  --dark-grey: var(--surface-2);
+  --black:     var(--bg);
+  --grey-t:    var(--surface-3);
+  --grey-t2:   var(--surface-1);
+  --black-t:   color-mix(in oklch, var(--bg) 70%, transparent);
+}
+
 :root {
-  --menu-height: calc(var(--btn-height-sm) * 1.6);
+  /* Top bar height — must match .sh-topbar height in chrome.css so content
+     reserves the right amount of space below the fixed top bar. */
+  --menu-height: 4.25rem;
 
   --white: #f9f9f9;
   --white2: #c0c0c0;
   --dark-grey: #333333;
   --black: #0d0d0d;
-  --main: #238f8b;
   --white-t: #c0c0c0cc;
   --grey-t: #444a577e;
   --grey-t2: #55575b19;
   --black-t: #0d0d0d1a;
-  --main-t: #238f8bb3;
-  --main-t2: #238f8b43;
+}
+
+/* Legacy --main alias → new --accent system. Existing components
+   that reference --main / --main-t / --main-t2 keep working while
+   the redesign migrates them to direct token references. */
+:root,
+.theme-dark,
+.theme-light {
+  --main:    var(--accent);
+  --main-t:  var(--accent-muted);
+  --main-t2: var(--accent-soft);
 }
 
 .app {
@@ -31,13 +59,13 @@
 }
 
 .app-header {
-  background-color: var(--dark-grey);
+  background-color: var(--bg);
   height: calc(100vh - var(--menu-height));
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-size: medium;
-  color: var(--white);
+  font-size: var(--font-size-sm);
+  color: var(--ink);
   flex: 1;
   overflow: auto;
 }
@@ -48,14 +76,13 @@
 
 body {
   margin: 0;
-  font-family: 'Verdana', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  background-color: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-ui);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* Firefox */
   scrollbar-width: thin;
-  scrollbar-color: var(--main) var(--dark-grey);
+  scrollbar-color: var(--accent) var(--surface-1);
 }
 
 code {
@@ -248,5 +275,5 @@ table {
 }
 
 .card-icon-dark {
-  color: var(--black);
+  color: var(--ink);
 }

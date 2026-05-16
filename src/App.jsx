@@ -20,7 +20,11 @@ import {
   clearSharedShop,
   setMasterMode,
   setSidebarCollapsed,
-  setInfoSidebarCollapsed
+  setInfoSidebarCollapsed,
+  setTheme,
+  setAccent,
+  selectTheme,
+  selectAccent
 } from './store/slices/appSlice';
 import {
   setSpellbookPage,
@@ -64,6 +68,8 @@ export default function App() {
     dispatch(setInfoSidebarCollapsed(db.getIsInfoSidebarCollapsed(app)));
     dispatch(setStateCurrentTab(db.getCurrentTab(app)));
     dispatch(setMainColor(db.getMainColor(app)));
+    dispatch(setTheme(db.getTheme(app)));
+    dispatch(setAccent(db.getAccent(app)));
 
     const worlds = db.getWorldsList(app);
     dispatch(setWorldsList(worlds));
@@ -126,6 +132,15 @@ export default function App() {
 
   const currentTab = useSelector(state => state.persist?.ct ?? state.app?.currentTab ?? 0);
   const sharedShop = useSelector(state => state.app.sharedShop);
+  const theme = useSelector(selectTheme);
+  const accent = useSelector(selectAccent);
+
+  useEffect(() => {
+    const cls = document.body.className.split(/\s+/).filter(c => c && !c.startsWith('theme-') && !c.startsWith('accent-'));
+    cls.push(`theme-${theme}`);
+    cls.push(`accent-${accent}`);
+    document.body.className = cls.join(' ');
+  }, [theme, accent]);
 
   useEffect(() => {
     if (currentTab !== 1 && sharedShop) {

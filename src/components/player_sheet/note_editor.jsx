@@ -1,7 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { onUpdateNoteContent } from '../../store/thunks/playerSheetThunks';
-import '../../style/menu_cards.css';
+import Card from '../common/Card';
+import Filigree from '../common/Filigree';
+import Pill from '../common/Pill';
+import Button from '../common/Button';
+import EmptyState from '../common/EmptyState';
+
+const IDLE_SAVE_MS = 2000;
 
 function formatLastModified(timestamp) {
   if (!Number.isFinite(timestamp)) return '—';
@@ -17,54 +23,82 @@ function formatLastModified(timestamp) {
 export default function NoteEditor() {
   const dispatch = useDispatch();
   const player = useSelector(state => state.playerSheet.player);
-  const noteName = player?.getSelectedNoteName() ?? '';
-  const note = noteName ? player?.getNote(noteName) : null;
+  const noteName = player?.getSelectedNoteName?.() ?? '';
+  const note = noteName ? player?.getNote?.(noteName) : null;
 
   const [localText, setLocalText] = useState(note?.text ?? '');
+  const idleTimer = useRef(null);
 
   useEffect(() => {
     setLocalText(note?.text ?? '');
   }, [noteName, note?.text]);
 
-  const handleSave = () => {
+  const handleSave = (textOverride) => {
     if (!noteName) return;
-    dispatch(onUpdateNoteContent(noteName, localText));
+    const text = typeof textOverride === 'string' ? textOverride : localText;
+    dispatch(onUpdateNoteContent(noteName, text));
+  };
+
+  const handleChange = e => {
+    const next = e.target.value;
+    setLocalText(next);
+    if (idleTimer.current) clearTimeout(idleTimer.current);
+    idleTimer.current = setTimeout(() => handleSave(next), IDLE_SAVE_MS);
+  };
+
+  const handleBlur = () => {
+    if (idleTimer.current) { clearTimeout(idleTimer.current); idleTimer.current = null; }
+    if (noteName && localText !== (note?.text ?? '')) handleSave();
   };
 
   if (!noteName || !note) {
     return (
-      <div className="card">
-        <p className="text-center modal-body-muted">Select a note from the sidebar.</p>
+      <div className="sh-stack" style={{ padding: 'var(--space-4)' }}>
+        <EmptyState icon="edit_note" title="No note selected" hint="Pick or create one from the sidebar." />
       </div>
     );
   }
 
-  const lastModified = formatLastModified(note.updatedAt);
   const savedText = note?.text ?? '';
   const isUnchanged = localText === savedText;
+  const lastModified = formatLastModified(note.updatedAt);
 
   return (
-    <div className="card player-sheet-note-editor">
-      <h2 className="player-sheet-note-title">{noteName}</h2>
-      <div className="player-sheet-note-meta">
-        <p className="player-sheet-note-modified">
-          <em>{lastModified}</em>
-        </p>
-        <button
-          type="button"
-          className="modern-button small-middle"
-          onClick={handleSave}
-          disabled={isUnchanged}
-        >
-          <span className="material-symbols-outlined">save</span>
-        </button>
+    <div className="sh-stack" style={{ padding: 'var(--space-4)', paddingBottom: 'var(--space-12)' }}>
+      <div className="sh-row-h sh-spread">
+        <div>
+          <Filigree>Note</Filigree>
+          <div className="sh-display" style={{ fontSize: 'var(--font-size-2xl)' }}>{noteName}</div>
+        </div>
+        <Pill tone="ghost">Local only</Pill>
       </div>
-      <textarea
-        className="player-sheet-note-textarea"
-        value={localText}
-        onChange={(e) => setLocalText(e.target.value)}
-        placeholder="Write your note here..."
-      />
+
+      <Card padding>
+        <div className="sh-stack">
+          <textarea
+            className="sh-textarea"
+            value={localText}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            placeholder="Write your note here…"
+            style={{ minHeight: '11rem' }}
+          />
+          <div className="sh-row-h sh-spread">
+            <span className="sh-mono sh-faint" style={{ fontSize: 'var(--font-size-2xs)' }}>
+              edited {lastModified}
+            </span>
+            <Button
+              variant="primary"
+              size="sm"
+              icon="save"
+              disabled={isUnchanged}
+              onClick={() => handleSave()}
+            >
+              Save
+            </Button>
+          </div>
+        </div>
+      </Card>
     </div>
   );
 }

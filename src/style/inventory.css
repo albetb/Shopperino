@@ -1,0 +1,47 @@
+/* ============================================================
+   SHOPPERINO — Inventory page rules.
+   Sits on top of the legacy InventoryItemRow / EquipmentCard
+   styles until those get fully migrated.
+   ============================================================ */
+
+.sh-inv-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 0;
+  font-family: var(--font-ui);
+  font-size: var(--font-size-sm);
+}
+
+.sh-inv-table thead .sh-inv-head-row {
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+}
+.sh-inv-table .sh-inv-th {
+  font-size: var(--font-size-2xs);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  text-align: left;
+  padding: var(--space-2) var(--space-3);
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+}
+.sh-inv-table .sh-inv-th.is-active { color: var(--accent); }
+.sh-inv-table .sh-inv-th--num { width: 3rem; text-align: right; }
+.sh-inv-table .sh-inv-th--name { min-width: 8rem; }
+.sh-inv-table .sh-inv-th--type { width: 6rem; }
+.sh-inv-table .sh-inv-th--action { width: 2.5rem; }
+
+.sh-inv-table .sh-sort-arrow {
+  color: var(--accent);
+  font-family: var(--font-mono);
+  margin-left: 0.25rem;
+}
+
+.sh-inv-table tbody tr {
+  border-bottom: 1px solid var(--border-soft);
+}
+.sh-inv-table tbody tr:last-child { border-bottom: 0; }
+.sh-inv-table tbody tr:hover { background: var(--surface-2); }
+.sh-inv-table tbody td { padding: var(--space-2) var(--space-3); vertical-align: middle; }

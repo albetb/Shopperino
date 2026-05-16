@@ -69,7 +69,7 @@ export default function ShopMenuCards() {
   const formatTitle = ({ id, title, saved, selected, level }) => {
     if (saved.length === 0) return title;
     const displayName = trimLine(selected || saved[0], trimLength);
-    return `${title} - ${displayName} - Lv: ${level}`;
+    return `${title} - ${displayName} - Lv ${level}`;
   };
 
   return (

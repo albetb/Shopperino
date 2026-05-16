@@ -3,6 +3,25 @@
 .spellbook-table {
   width: calc(var(--btn-width-sm) * 20);
   margin-bottom: 0.3em;
+  margin-top: var(--space-4);
+}
+
+/* Add Item button: match the table width so they line up. */
+.add-item-button.medium-long {
+  width: calc(var(--btn-width-sm) * 20) !important;
+  min-width: 0 !important;
+}
+
+/* Shop tab content: breathing room below the fixed top bar. */
+.app-header > .header-container,
+.app-header > h2:first-child,
+.app-header > .shop-page,
+.app-header > .shop-content {
+  margin-top: var(--space-5);
+}
+/* Generic fallback: any first content element directly under app-header gets a top margin. */
+.app-header > *:first-child {
+  margin-top: var(--space-5);
 }
 
 .shop-table.shop-table-empty {

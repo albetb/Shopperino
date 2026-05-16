@@ -1,0 +1,96 @@
+/* ============================================================
+   SHOPPERINO — Skills page rules.
+   ============================================================ */
+
+.sh-skill-list { display: flex; flex-direction: column; }
+
+.sh-skill-group-head {
+  display: flex; align-items: center; gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+  border-top: 1px solid var(--border-soft);
+  font-family: var(--font-display);
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+}
+.sh-skill-group-head .material-symbols-outlined,
+.sh-skill-group-head .mi { font-size: 1.125rem; color: var(--ink-faint); }
+
+.sh-skill-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border-soft);
+  min-height: var(--tap-target);
+}
+.sh-skill-row:last-child { border-bottom: 0; }
+
+.sh-skill-dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  border: 1.5px solid var(--border-strong);
+  background: transparent;
+  flex-shrink: 0;
+}
+.sh-skill-dot.is-class {
+  background: var(--accent);
+  border-color: var(--accent-strong);
+}
+
+.sh-skill-name-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  min-width: 0;
+}
+.sh-skill-name {
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  color: var(--ink);
+}
+.sh-skill-name--trained { font-style: italic; }
+.sh-skill-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  font-size: var(--font-size-2xs);
+  color: var(--ink-muted);
+}
+
+.sh-skill-total {
+  font-weight: 700;
+  font-size: var(--font-size-lg);
+  color: var(--ink);
+  min-width: 2.5rem;
+  text-align: right;
+}
+
+.sh-skill-edit-col {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.sh-skill-edit-col .sh-eyebrow { display: none; }
+
+@media (min-width: 540px) {
+  .sh-skill-row {
+    grid-template-columns: auto 1fr auto auto;
+  }
+  .sh-skill-edit-col .sh-eyebrow { display: inline; }
+}
+
+.sh-skill-row.is-overlimit {
+  background: linear-gradient(90deg, var(--warn-bg), transparent 30%);
+  position: relative;
+}
+.sh-skill-row.is-overlimit::before {
+  content: "";
+  position: absolute; left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: var(--warn);
+}

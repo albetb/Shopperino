@@ -1,34 +1,13 @@
-
-const ALPHA_B3 = 'b3';
-const ALPHA_43 = '43';
-
-// call this with a hex string (e.g. '#2fa6a1') or null to restore defaults
-export function applyColors(mainHex) {
+// Neutered: --main/--main-t/--main-t2 are now aliased to --accent/--accent-muted/--accent-soft
+// in src/style/App.css. Theming is driven by body.theme-* + body.accent-* classes, set by
+// App.jsx from Redux state. This function only clears any legacy inline overrides that may
+// have been written by older builds. The hex/darken/alpha helpers below remain exported for
+// any incidental callers; new code should use the accent token system instead.
+export function applyColors(_mainHex) {
   const root = document.documentElement.style;
-
-  if (!mainHex) {
-    // Remove overrides so stylesheet default variables remain active
-    root.removeProperty('--main');
-    root.removeProperty('--main-t');
-    root.removeProperty('--main-t2');
-    // If you want to explicitly set them to defaults instead of removing:
-    // root.setProperty('--blue', DEFAULTS.blue);
-    // root.setProperty('--blue-t', DEFAULTS.blueT);
-    // root.setProperty('--blue-t2', DEFAULTS.blueT2);
-    return;
-  }
-
-  // Compute a darker base
-  const darkBase = darkenHex(mainHex, 10) || mainHex; // 10% darker fallback to original
-
-  // Create 8-digit hex with alpha suffixes 'b3' and '43'
-  const mainT = hexWithAlpha(darkBase, ALPHA_B3);
-  const mainT2 = hexWithAlpha(darkBase, ALPHA_43);
-
-  // Apply to :root
-  root.setProperty('--main', mainHex);
-  root.setProperty('--main-t', mainT);
-  root.setProperty('--main-t2', mainT2);
+  root.removeProperty('--main');
+  root.removeProperty('--main-t');
+  root.removeProperty('--main-t2');
 }
 
 

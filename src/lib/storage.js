@@ -76,6 +76,8 @@ export function getLootsList(app) {
 // Prefs: read from app (uiFlags bitmask, stc bitmask)
 export function getCurrentTab(app) { return app?.ct ?? 0; }
 export function getMainColor(app) { return app?.mc ?? null; }
+export function getTheme(app) { return app?.th === 'light' ? 'light' : 'dark'; }
+export function getAccent(app) { return (typeof app?.ac === 'string' && app.ac) ? app.ac : 'crimson'; }
 export function getIsMasterMode(app) { return appState.getUIFlag(app, appState.UI_FLAG.mm); }
 export function getIsShopSidebarCollapsed(app) { return appState.getUIFlag(app, appState.UI_FLAG.sbc); }
 export function getIsInfoSidebarCollapsed(app) { return appState.getUIFlag(app, appState.UI_FLAG.ibc); }

@@ -34,7 +34,10 @@
       "Read(//c/Users/albet/AppData/Local/Temp/**)",
       "Bash(pdftoppm -f 5 -l 8 -png -r 200 \"/c/Users/albet/Downloads/_OceanofPDF.com_Dungeons_and_Dragons_Players_Handbook_2024_-_Wizards_of_the_Coast.pdf\" /tmp/dnd_toc)",
       "Bash(ls /tmp/dnd_toc*)",
-      "Bash(pdftoppm -f 3 -l 4 -png -r 200 \"/c/Users/albet/Downloads/_OceanofPDF.com_Dungeons_and_Dragons_Players_Handbook_2024_-_Wizards_of_the_Coast.pdf\" /tmp/dnd_toc2)"
+      "Bash(pdftoppm -f 3 -l 4 -png -r 200 \"/c/Users/albet/Downloads/_OceanofPDF.com_Dungeons_and_Dragons_Players_Handbook_2024_-_Wizards_of_the_Coast.pdf\" /tmp/dnd_toc2)",
+      "Bash(python \"C:/Users/albet/Downloads/Vivipedia_2/Vivipedia/plugins/swarm-dev/skills/executor/references/state-tool.py\" summary obsidian-vault/plans/shopperino_redesign_implementation_plan-state.json)",
+      "Bash(python \"C:/Users/albet/Downloads/Vivipedia_2/Vivipedia/plugins/swarm-dev/skills/executor/references/state-tool.py\" set obsidian-vault/plans/shopperino_redesign_implementation_plan-state.json step_1_status \"DONE\")",
+      "Bash(python \"C:/Users/albet/Downloads/Vivipedia_2/Vivipedia/plugins/swarm-dev/skills/executor/references/state-tool.py\" set obsidian-vault/plans/shopperino_redesign_implementation_plan-state.json step_1_done_date \"2026-05-16\")"
     ]
   }
 }

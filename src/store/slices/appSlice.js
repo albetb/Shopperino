@@ -20,6 +20,8 @@ const initialState = {
   mainColor: null,
   sharedShop: null, // { name, gold, stock } when viewing a scanned shop (read-only)
   isMasterMode: false, // false = Player (hide Shop/Loot), true = Master (show all)
+  theme: 'dark',      // 'dark' | 'light' — drives body.theme-* class
+  accent: 'crimson',  // accent hue name — drives body.accent-* class
 };
 
 export const appSlice = createSlice({
@@ -180,7 +182,17 @@ export const appSlice = createSlice({
 
     setMasterMode(state, action) {
       state.isMasterMode = !!action.payload;
-    }
+    },
+
+    setTheme(state, action) {
+      const v = action.payload;
+      state.theme = (v === 'light' || v === 'dark') ? v : 'dark';
+    },
+
+    setAccent(state, action) {
+      const v = action.payload;
+      state.accent = typeof v === 'string' && v ? v : 'crimson';
+    },
   }
 });
 
@@ -203,6 +215,8 @@ function composeNameWithEffect(name, effect) {
 }
 
 export const selectMainColor = state => state.app.mainColor;
+export const selectTheme = state => state.app.theme ?? 'dark';
+export const selectAccent = state => state.app.accent ?? 'crimson';
 
 export const {
   toggleSidebar,
@@ -217,7 +231,9 @@ export const {
   resetMainColor,
   setSharedShop,
   clearSharedShop,
-  setMasterMode
+  setMasterMode,
+  setTheme,
+  setAccent
 } = appSlice.actions;
 
 export default appSlice.reducer;

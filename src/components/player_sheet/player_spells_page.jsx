@@ -1,9 +1,8 @@
 import SpellbookTable from '../spellbook/spellbook_table';
-import '../../style/menu_cards.css';
 
 export default function PlayerSpellsPage() {
   return (
-    <div style={{ width: '100%vw', display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}>
+    <div className="sh-stack" style={{ width: '100%', padding: 'var(--space-4)', paddingBottom: 'var(--space-12)' }}>
       <SpellbookTable source="player" />
     </div>
   );

@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addCardByLink } from '../../store/slices/appSlice';
 import { setCombatPageCardCollapsed } from '../../store/slices/playerSheetSlice';
@@ -15,15 +15,19 @@ import InventoryItemRow from './inventory/InventoryItemRow';
 import InventoryTableHeader from './inventory/InventoryTableHeader';
 import InventoryOptionsPopup from './inventory/InventoryOptionsPopup';
 import EquipmentCard from './inventory/EquipmentCard';
-import '../../style/menu_cards.css';
-import '../../style/player_sheet.css';
-import '../../style/shop_inventory.css';
+import Card from '../common/Card';
+import Filigree from '../common/Filigree';
+import Pill from '../common/Pill';
+import Button from '../common/Button';
+import EmptyState from '../common/EmptyState';
+import IconButton from '../common/IconButton';
+import '../../style/inventory.css';
 
 export default function InventoryPage() {
   const dispatch = useDispatch();
-  const player = useSelector((state) => state.playerSheet?.player);
+  const player = useSelector(state => state.playerSheet?.player);
   const combatPageCardsCollapsed = useSelector(
-    (state) => state.playerSheet?.combatPageCardsCollapsed ?? { player: false, combat: false, items: false }
+    state => state.playerSheet?.combatPageCardsCollapsed ?? { player: false, combat: false, items: false }
   );
 
   const [popupState, setPopupState] = useState(null);
@@ -44,10 +48,7 @@ export default function InventoryPage() {
   }, []);
 
   const getEffectById = useCallback(
-    (effectId) => {
-      const item = inventory.find((inv) => inv.effectId === effectId);
-      return item;
-    },
+    effectId => inventory.find(inv => inv.effectId === effectId),
     [inventory]
   );
 
@@ -55,38 +56,29 @@ export default function InventoryPage() {
     const equipType = getEquipType({ ItemType: itemType, Link: itemLink });
     const rect = e.currentTarget.getBoundingClientRect();
     setPopupState({
-      itemName,
-      itemType,
-      itemNumber,
-      itemLink,
-      equipType,
+      itemName, itemType, itemNumber, itemLink, equipType,
       position: { x: rect.right, y: rect.bottom },
     });
   };
 
-  const handleEquipItem = (slot) => {
+  const handleEquipItem = slot => {
     if (!popupState) return;
     const itemData = {
       name: popupState.itemName,
       link: popupState.itemLink,
       twoHanded: popupState.equipType === 'two-hand',
     };
-
     if (slot.startsWith('set')) {
-      // Two-handed weapon - set both hands
       const setNum = slot === 'set1' ? '1' : '2';
-      const lhSlot = `lh${setNum}`;
-      const rhSlot = `rh${setNum}`;
-      dispatch(onEquipItem(lhSlot, { ...itemData, twoHanded: true }));
-      dispatch(onEquipItem(rhSlot, { ...itemData, twoHanded: true }));
+      dispatch(onEquipItem(`lh${setNum}`, { ...itemData, twoHanded: true }));
+      dispatch(onEquipItem(`rh${setNum}`, { ...itemData, twoHanded: true }));
     } else {
       dispatch(onEquipItem(slot, itemData));
     }
   };
 
-  const handleUnequipSlot = (slot) => {
+  const handleUnequipSlot = slot => {
     if (slot.startsWith('set')) {
-      // Two-handed weapon - clear both hands
       const setNum = slot === 'set1' ? '1' : '2';
       dispatch(onUnequipSlot(`lh${setNum}`));
       dispatch(onUnequipSlot(`rh${setNum}`));
@@ -95,54 +87,68 @@ export default function InventoryPage() {
     }
   };
 
-  const handleRemoveItem = (itemName, itemType, number) => {
-    dispatch(onRemoveInventoryItem(itemName, itemType, number));
+  const handleRemoveItem = (itemName, itemType, number) => dispatch(onRemoveInventoryItem(itemName, itemType, number));
+  const handleOpenCard = (links, bonus) => dispatch(addCardByLink({ links, bonus }));
+  const handleAddItem = (itemName, itemType, number, link) => dispatch(onAddInventoryItem(itemName, itemType, number, link));
+
+  const handleSort = column => {
+    if (sortColumn === column) setSortDesc(v => !v);
+    else { setSortColumn(column); setSortDesc(false); }
   };
 
-  const handleOpenCard = (links, bonus) => {
-    dispatch(addCardByLink({ links, bonus }));
-  };
+  if (!player) {
+    return (
+      <div className="sh-stack" style={{ padding: 'var(--space-4)' }}>
+        <EmptyState icon="backpack" title="No character selected" hint="Pick or create one from the sidebar." />
+      </div>
+    );
+  }
 
-  const handleAddItem = (itemName, itemType, number, link) => {
-    dispatch(onAddInventoryItem(itemName, itemType, number, link));
-  };
-
-  const handleSort = (column) => {
-    if (sortColumn === column) {
-      setSortDesc(!sortDesc);
-    } else {
-      setSortColumn(column);
-      setSortDesc(false);
-    }
-  };
+  const itemCount = inventory.reduce((sum, it) => sum + (Number(it?.number) || 1), 0);
 
   return (
-    <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+    <div className="sh-stack" style={{ padding: 'var(--space-4)', paddingBottom: 'var(--space-12)' }}>
+      <div className="sh-row-h sh-spread">
+        <div>
+          <Filigree>Inventory</Filigree>
+          <div className="sh-display" style={{ fontSize: 'var(--font-size-2xl)' }}>Carry & equip</div>
+        </div>
+        <Pill tone="accent">{itemCount} items</Pill>
+      </div>
+
       <EquipmentCard
         equipment={equipment}
         equipmentCollapsed={combatPageCardsCollapsed.items}
-        setEquipmentCollapsed={(setter) => {
+        setEquipmentCollapsed={setter => {
           const newState = typeof setter === 'function' ? setter(combatPageCardsCollapsed.items) : setter;
-          dispatch(
-            setCombatPageCardCollapsed({
-              ...combatPageCardsCollapsed,
-              items: newState,
-            })
-          );
+          dispatch(setCombatPageCardCollapsed({ ...combatPageCardsCollapsed, items: newState }));
         }}
         onUnequip={handleUnequipSlot}
         onOpenCard={handleOpenCard}
         player={player}
       />
 
-      <div className="card card-width-spellbook">
-        <h2 className="player-sheet-note-title">Inventory Items</h2>
-        <table className="inventory-table">
+      <Card
+        eyebrow="Inventory items"
+        title={`${inventory.length} entries`}
+        padding={false}
+        action={
+          <IconButton
+            ghost size="sm"
+            icon={showAddItemForm ? 'close' : 'add'}
+            onClick={() => setShowAddItemForm(v => !v)}
+            aria-label={showAddItemForm ? 'Cancel adding item' : 'Add item'}
+          />
+        }
+      >
+        <table className="sh-inv-table">
           <InventoryTableHeader sortColumn={sortColumn} sortDesc={sortDesc} onSort={handleSort} />
           <tbody>
-            {inventory.length === 0 && (
+            {inventory.length === 0 && !showAddItemForm && (
               <tr>
-                <td colSpan="4" className="modal-body-muted text-center">No items in inventory</td>
+                <td colSpan={4}>
+                  <EmptyState icon="inbox" title="No items yet" hint="Tap + above to add something." />
+                </td>
               </tr>
             )}
             {inventory.map((item, idx) => (
@@ -164,17 +170,17 @@ export default function InventoryPage() {
             )}
           </tbody>
         </table>
-        <div style={{ display: 'flex', justifyContent: 'center', padding: '0.7rem' }}>
-          <button
-            type="button"
-            className="modern-button small-middle-long2"
-            onClick={() => setShowAddItemForm(!showAddItemForm)}
-            title={showAddItemForm ? 'Cancel' : 'Add item'}
+        <div style={{ padding: 'var(--space-3) var(--space-4)' }}>
+          <Button
+            block
+            variant={showAddItemForm ? 'ghost' : 'primary'}
+            icon={showAddItemForm ? 'close' : 'add_shopping_cart'}
+            onClick={() => setShowAddItemForm(v => !v)}
           >
-            <span className="material-symbols-outlined">{showAddItemForm ? 'close' : 'add_shopping_cart'}</span>
-          </button>
+            {showAddItemForm ? 'Cancel' : 'Add item'}
+          </Button>
         </div>
-      </div>
+      </Card>
 
       {popupState && (
         <InventoryOptionsPopup

@@ -1,66 +1,64 @@
 import { useDispatch, useSelector } from 'react-redux';
-import '../../style/shop_inventory.css';
-import { setStateCurrentTab, setMasterMode } from '../../store/slices/appSlice';
+import { setMasterMode, setStateCurrentTab } from '../../store/slices/appSlice';
+import Filigree from '../common/Filigree';
+import Pill from '../common/Pill';
+import Icon from '../common/Icon';
+
+const TILES = [
+  { id: 4, icon: 'search',        title: 'Search',          desc: 'Browse spells, items, feats and skills in one place.', masterOnly: false },
+  { id: 5, icon: 'badge',         title: 'Player sheet',    desc: 'A mostly automatic D&D 3.5 character sheet.',          masterOnly: false, primary: true },
+  { id: 2, icon: 'auto_stories',  title: 'Spellbook',       desc: 'Organize and track learned spells.',                   masterOnly: false },
+  { id: 1, icon: 'shopping_cart', title: 'Shop generator',  desc: 'Randomized shops scaled to the player level.',         masterOnly: true  },
+  { id: 3, icon: 'paid',          title: 'Loot generator',  desc: 'Randomized loot scaled to the player level.',          masterOnly: true  },
+];
+
 export default function MainPage() {
   const dispatch = useDispatch();
   const isMasterMode = useSelector(state => state.app.isMasterMode);
 
-  const handleShopClick = () => dispatch(setStateCurrentTab(1));
-  const handleSpellbookClick = () => dispatch(setStateCurrentTab(2));
-  const handleLootClick = () => dispatch(setStateCurrentTab(3));
-  const handleSearchClick = () => dispatch(setStateCurrentTab(4));
-  const handlePlayerSheetClick = () => dispatch(setStateCurrentTab(5));
+  const tiles = TILES.filter(t => !t.masterOnly || isMasterMode);
 
   return (
-    <div className="main-page">
-      <h1>Welcome to Shopperino!</h1>
-
-      <p className="main-intro">A collection of tools for Dungeons & Dragons 3.5</p>
-
-      <div className="master-player-toggle margin-v-1">
-        <span className={isMasterMode ? 'master-player-label active' : 'master-player-label'} onClick={() => dispatch(setMasterMode(true))}>Master</span>
-        <span className={!isMasterMode ? 'master-player-label active' : 'master-player-label'} onClick={() => dispatch(setMasterMode(false))}>Player</span>
+    <div className="sh-stack sh-home" style={{ padding: 'var(--space-5) 0 var(--space-12)', width: '94%', maxWidth: '54rem', margin: '0 auto' }}>
+      <div className="sh-home-hero">
+        <Filigree>{isMasterMode ? 'Welcome back, dungeon master' : 'Welcome back, adventurer'}</Filigree>
+        <h1 className="sh-display" style={{ fontSize: 'var(--font-size-3xl)', margin: 'var(--space-1) 0' }}>
+          Shopperino
+        </h1>
+        <p className="sh-faint sh-home-tagline" style={{ fontSize: 'var(--font-size-sm)' }}>
+          A collection of tools for D&amp;D 3.5
+        </p>
       </div>
 
-      <div className="card" onClick={handleSearchClick}>
-        <p className="card-title-shadow"><b>Search</b></p>
-        <span className="material-symbols-outlined card-icon-dark">search</span>
-        <p className="text-center">Search and browse spells, items, feats and skills in one place.</p>
+      <div className="sh-mode-toggle sh-home-toggle" role="group" aria-label="Master / Player mode">
+        <button type="button" aria-pressed={isMasterMode}  onClick={() => dispatch(setMasterMode(true))}>Master</button>
+        <button type="button" aria-pressed={!isMasterMode} onClick={() => dispatch(setMasterMode(false))}>Player</button>
       </div>
 
-      {isMasterMode && (
-      <div className="card" onClick={handleShopClick}>
-        <p className="card-title-shadow"><b>Shop generator</b></p>
-        <span className="material-symbols-outlined card-icon-dark">shopping_cart</span>
-        <p className="text-center">Generates randomized shops whose inventory dynamically scales to the player’s level.</p>
-      </div>
-      )}
-
-      {isMasterMode && (
-      <div className="card" onClick={handleLootClick}>
-        <p className="card-title-shadow"><b>Loot generator</b></p>
-        <span className="material-symbols-outlined card-icon-dark">money_bag</span>
-        <p className="text-center">Generates randomized loot tailored to the player’s level, including gold, goods, and magic items.</p>
-      </div>
-      )}
-
-      <div className="card" onClick={handlePlayerSheetClick}>
-        <p className="card-title-shadow"><b>Player sheet</b></p>
-        <span className="material-symbols-outlined card-icon-dark">badge</span>
-        <p className="text-center">A mostly automatic D&D 3.5 character sheet with override-friendly fields.</p>
+      <div className="sh-home-grid">
+        {tiles.map(t => (
+          <button
+            key={t.id}
+            type="button"
+            className={`sh-tile ${t.primary ? 'sh-tile--master' : ''}`}
+            onClick={() => dispatch(setStateCurrentTab(t.id))}
+          >
+            <Icon name={t.icon} />
+            <span className="t-name">{t.title}</span>
+            <span className="t-desc">{t.desc}</span>
+            {t.masterOnly && <Pill tone="accent" className="sh-tile-tag">Master</Pill>}
+          </button>
+        ))}
       </div>
 
-      <div className="card" onClick={handleSpellbookClick}>
-        <p className="card-title-shadow"><b>Spellbook</b></p>
-        <span className="material-symbols-outlined card-icon-dark">menu_book</span>
-        <p className="text-center">A spellbook that lets players organize and track their learned spells.</p>
-      </div>
-
-      <p className="main-intro">
-        If you encounter any bugs or inaccurate descriptions, please report them on our{" "}
-        <a href="https://github.com/albetb/Shopperino/issues" target="_blank" rel="noopener noreferrer" className="main-intro-link">
-          GitHub issues page
-        </a>.
+      <p className="sh-faint" style={{ fontSize: 'var(--font-size-xs)', textAlign: 'center', marginTop: 'var(--space-6)' }}>
+        Bugs or inaccurate descriptions?{' '}
+        <a
+          href="https://github.com/albetb/Shopperino/issues"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ color: 'var(--accent)' }}
+        >Open an issue on GitHub.</a>
       </p>
     </div>
   );

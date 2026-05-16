@@ -81,6 +81,14 @@ Items and spells are accessed by a `link` string like `"items/Weapon/longsword"`
 
 Components should compute and display values automatically following official D&D 3.5 rules (modifiers, BAB, saves, spell slots, skill points, etc.). However, limits are **never enforced** — a player can assign more spells, skill points, or anything else than the rules allow. When a value exceeds what the rules permit, it must be **visually indicated** (e.g. highlighted, colored differently) so the user is aware, but the input must still be accepted.
 
+### D&D knowledge sources
+
+Rule mechanics live in [obsidian-vault/dnd-rules/](obsidian-vault/dnd-rules/) as condensed topic markdown files (e.g. `combat.md`, `magic.md`, `skills.md`). Enumerable data (spells, feats, items, classes, races, skills) lives in [src/data/](src/data/) as JSON.
+
+Before writing or modifying code that touches a D&D rule, **read [obsidian-vault/dnd-rules/INDEX.md](obsidian-vault/dnd-rules/INDEX.md) first** to find the relevant topic file, then read that file. INDEX.md maps topics to files and to the related `src/data/*.json` sources. The rule notes carry the mechanics; the JSON carries the values — don't confuse the two and don't rederive a rule from memory if a topic file exists for it.
+
+The notes are built by the `dnd-rules-extract` skill. Their auto-generated section in INDEX.md is refreshed by a PostToolUse hook on every write into the rules folder.
+
 ### Layout Pattern
 
 Each tab renders as `<Sidebar /> + <main content />` inside `App.jsx`. Sidebars contain collapsible cards with controls; the main area shows the primary content (table, sheet, etc.). The sidebar for the active tab is always present except for the shared-shop view.

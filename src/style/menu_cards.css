@@ -2,16 +2,20 @@
   width: 96%;
   display: flex;
   flex-direction: column;
-  position: absolute;
-  top: 3.5rem;
+  gap: var(--space-4);
+  position: relative;
+  margin-top: var(--space-3);
+  padding-bottom: var(--space-6);
 }
 
 .card {
   width: 100%;
-  background-color: var(--white-t);
-  box-shadow: 3px 4px 5px var(--main-t);
-  margin-bottom: 0.6rem;
-  border-radius: 0.8rem;
+  background-color: var(--surface-1);
+  color: var(--ink);
+  box-shadow: var(--shadow-1);
+  border: 1px solid var(--border-soft);
+  margin-bottom: 0;
+  border-radius: var(--radius-lg);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -73,6 +77,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: var(--space-2);
 }
 
 .buttons-row-center {
@@ -118,7 +123,7 @@
   cursor: pointer;
   padding: 0.15rem;
   margin-left: 2px;
-  color: var(--dark-grey);
+  color: var(--ink-muted);
 }
 
 .ability-title-icon:hover {
@@ -132,7 +137,7 @@
   cursor: pointer;
   padding: 0.15rem;
   margin-left: 2px;
-  color: var(--dark-grey);
+  color: var(--ink-muted);
 }
 
 .ability-title-save:hover {
@@ -161,7 +166,7 @@
 .ability-label-cell {
   font-weight: 500;
   font-size: 0.9em;
-  color: var(--dark-grey);
+  color: var(--ink-muted);
 }
 
 .ability-score-cell {
@@ -174,7 +179,7 @@
 .ability-modifier {
   font-size: 0.75em;
   font-weight: 400;
-  color: var(--dark-grey);
+  color: var(--ink-muted);
 }
 
 .ability-dice-cell {
@@ -186,7 +191,7 @@
   border: none;
   cursor: default;
   padding: 0.2rem;
-  color: var(--dark-grey);
+  color: var(--ink-muted);
   opacity: 0.7;
 }
 
@@ -263,7 +268,7 @@
 
 .ability-mod {
   font-size: 0.85em;
-  color: var(--dark-grey);
+  color: var(--ink-muted);
   margin-right: 0.5rem;
 }
 
@@ -364,7 +369,7 @@
 }
 
 h3 {
-  color: var(--dark-grey);
+  color: var(--ink-muted);
   font-size: medium;
 }
 
@@ -379,13 +384,12 @@ h3 {
 th,
 td,
 tr {
-  color: var(--black);
+  color: var(--ink);
   font-size: medium;
 }
 
 @media (max-width: 768px) {
   .cards {
-    top: 3.9rem;
     width: 92%;
   }
 
@@ -405,17 +409,17 @@ tr {
 /* Share shop / Scan modals: heading and body text (no inline styles) */
 .modal-heading {
   margin: 0 0 0.75rem 0;
-  color: var(--dark-grey);
+  color: var(--ink-muted);
 }
 
 .modal-body-muted {
   font-size: 0.85em;
-  color: var(--dark-grey);
+  color: var(--ink-muted);
   margin: 0 0 0.75rem 0;
 }
 
 .modal-error {
-  color: var(--dark-grey);
+  color: var(--ink-muted);
 }
 
 .modal-qr-img {
