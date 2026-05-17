@@ -3,3 +3,7 @@ build
 
 scripts
 docs
+
+obsidian-vault/plans/done
+
+.claude/settings.local.json
