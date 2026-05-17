@@ -100,7 +100,8 @@ export default function MenuCardCharacter() {
               type="button"
               className={`modern-button small-middle${mainView === row.mainView ? ' opacity-50' : ''}`}
               onClick={() => open(row.mainView)}
-              disabled={mainView === row.mainView}
+              /* Active row stays clickable — re-pressing closes the
+                 sidebar on mobile so the user can see the main content. */
               title={row.label}
             >
               <span className="material-symbols-outlined">{row.icon}</span>

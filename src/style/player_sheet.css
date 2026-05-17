@@ -846,17 +846,26 @@
   flex-shrink: 0;
 }
 
-/* Note view is the exception: the editor should fit *inside* the
-   visible app-header area (no outer scroll). Only the textarea inside
-   the card scrolls. Constrain the page to exactly app-header's height,
-   use border-box so the bottom-nav inset (mobile media query below)
-   eats INTO the height instead of extending past it. */
+/* Note view: anchor the page to an explicit viewport-derived height so
+   the outer container never has to scroll. Calculation: full viewport
+   height minus the top bar (--menu-height) minus the bottom nav
+   (4.25rem + safe-area on mobile). Using dvh handles mobile browser
+   chrome (URL bars) collapsing. */
 .player-sheet-page.player-sheet-page--note {
-  height: 100%;
+  height: calc(100dvh - var(--menu-height));
+  max-height: calc(100dvh - var(--menu-height));
   min-height: 0;
-  max-height: 100%;
   overflow: hidden;
   box-sizing: border-box;
+  /* Override the default mobile padding-bottom in the rule below since
+     we account for the bottom nav explicitly. */
+  padding-bottom: 0;
+}
+@media (max-width: 768px) {
+  .player-sheet-page.player-sheet-page--note {
+    height: calc(100dvh - var(--menu-height) - 4.25rem - env(safe-area-inset-bottom, 0));
+    max-height: calc(100dvh - var(--menu-height) - 4.25rem - env(safe-area-inset-bottom, 0));
+  }
 }
 
 /* Note editor: full available height, textarea flexes to fill so the
@@ -895,7 +904,11 @@
 .note-editor-textarea {
   flex: 1;
   width: 100%;
-  min-height: 0;
+  /* !important: .sh-textarea (atoms.css) sets min-height: 6rem with the
+     same specificity, and load order makes it win — that 6rem floor
+     pushes the card past the visible area and leaks a few pixels of
+     outer scroll. Force min-height: 0 so the flex chain can shrink. */
+  min-height: 0 !important;
   resize: none;
   /* Only the textarea scrolls — the outer page is fixed-height in the
      note view, so text past the visible area shows a textarea scrollbar
@@ -918,8 +931,13 @@
   .player-sheet-race-cards .card-width-spellbook,
   .player-sheet-class-cards .card-width-spellbook,
   .player-sheet-features-cards .card-width-spellbook {
-    width: 95vw;
-    max-width: 95vw;
+    /* Match the visual width of the other player-sheet pages where the
+       card is just <Card> (no width class) and stretches inside a
+       wrapper with var(--space-4) horizontal padding. Using 100% here
+       makes these cards span the same content area instead of the
+       narrower 92% the base class would give them. */
+    width: 100%;
+    max-width: 100%;
     /* Container already provides vertical gap; cancel the spellbook
        card's own margin-bottom so cards don't double-space. */
     margin-bottom: 0;

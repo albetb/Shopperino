@@ -3,6 +3,7 @@ import { setPlayerSheetMainView, setIsPlayerSheetSidebarCollapsed } from '../../
 import { setPlayerSpellbookPage, setPlayerSpellbookClassDescCollapsed, setPlayerSpellbookLevelCollapsed } from '../../../../store/slices/playerSheetSlice';
 import { getClassData } from '../../../../lib/player';
 import { isMobile } from '../../../../lib/utils';
+import Bar from '../../../common/Bar';
 import '../../../../style/menu_cards.css';
 
 function hasSpellcastingClass(player) {
@@ -22,7 +23,14 @@ export default function MenuCardCombat() {
 
   const maxHp = player?.getMaxLife() ?? 0;
   const currentHp = player?.getCurrentHp() ?? 0;
-  const hpPct = maxHp > 0 ? Math.min(100, Math.round((currentHp / maxHp) * 100)) : 0;
+  // Mirror the combat page bar: gradient HP variant when healthy, switch
+  // to a solid-red "dying" variant when currentHp <= 0 (full bar at 0 HP
+  // emptying to -10 HP). See combat_page.jsx for the same logic.
+  const isDying = currentHp <= 0;
+  const hpRatio = isDying
+    ? Math.max(0, Math.min(1, (currentHp + 10) / 10))
+    : (maxHp > 0 ? Math.max(0, Math.min(1, currentHp / maxHp)) : 0);
+  const hpBarVariant = isDying ? 'danger' : 'hp';
   const isCombatActive = mainView === 'combat';
 
   const openCombat = () => {
@@ -61,12 +69,7 @@ export default function MenuCardCombat() {
   return (
     <>
       <div className="player-sheet-combat-hp-bar card-side-div margin-top">
-        <div className="player-sheet-stat-bar-track player-sheet-hp-bar-track" role="presentation">
-          <div
-            className="player-sheet-hp-bar-fill"
-            style={{ width: `${hpPct}%` }}
-          />
-        </div>
+        <Bar value={hpRatio} variant={hpBarVariant} />
       </div>
       <div className="player-sheet-combat-stats card-side-div margin-top">
         <div className="player-sheet-combat-stats-row">
@@ -115,7 +118,8 @@ export default function MenuCardCombat() {
           type="button"
           className={`modern-button small-middle-long2${isCombatActive ? ' opacity-50' : ''}`}
           onClick={openCombat}
-          disabled={isCombatActive}
+          /* Keep visually faded via opacity-50 but stay clickable — clicking
+             again on the active page still closes the sidebar on mobile. */
           title="Combat"
         >
           <span className="material-symbols-outlined">swords</span>
@@ -132,7 +136,8 @@ export default function MenuCardCombat() {
                   type="button"
                   className={`${buttonClass}${isLearnActive ? ' opacity-50' : ''}`}
                   onClick={() => { setPage(0); openSpells(); }}
-                  disabled={isLearnActive}
+                  /* See note above the Combat button — active page stays
+                     clickable so it can close the sidebar on mobile. */
                   title="Learn"
                 >
                   <span className="material-symbols-outlined">bookmark_add</span>
@@ -143,7 +148,7 @@ export default function MenuCardCombat() {
                   type="button"
                   className={`${buttonClass}${isPrepareActive ? ' opacity-50' : ''}`}
                   onClick={() => { setPage(1); openSpells(); }}
-                  disabled={isPrepareActive}
+                  /* Same as combat / learn buttons — active stays clickable. */
                   title="Prepare"
                 >
                   <span className="material-symbols-outlined">menu_book</span>
@@ -153,7 +158,7 @@ export default function MenuCardCombat() {
                 type="button"
                 className={`${buttonClass}${isSpellbookActive ? ' opacity-50' : ''}`}
                 onClick={openSpellbook}
-                disabled={isSpellbookActive}
+                /* Same as the other sidebar nav buttons. */
                 title="Open spellbook"
               >
                 <span className="material-symbols-outlined">wand_stars</span>

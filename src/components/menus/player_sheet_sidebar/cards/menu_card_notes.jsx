@@ -79,7 +79,8 @@ export default function MenuCardNotes() {
                 type="button"
                 className={`modern-button small-middle-long2${isNoteActive ? ' opacity-50' : ''}`}
                 onClick={handleOpenNote}
-                disabled={isNoteActive}
+                /* Stays clickable while active so re-pressing closes the
+                   sidebar on mobile; visual fade comes from opacity-50. */
                 title="Open note"
               >
                 <span className="material-symbols-outlined">note_stack</span>
