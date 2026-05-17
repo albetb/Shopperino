@@ -49,7 +49,10 @@ export default function MenuCardCharacter() {
   const skillTotal = player?.getTotalSkillPoints?.() ?? 0;
   const skillUsed = player?.getUsedSkillPoints?.() ?? 0;
   const featMax = player?.getFeatPointsMax?.() ?? 1;
-  const featUsed = player?.getFeatPointsUsed?.() ?? 0;
+  // featUsed is the actual count of selected feats. featsUsed (the legacy
+  // numeric counter) tracked points spent but isn't kept in sync with the
+  // feats array, so prefer getFeats().length when available.
+  const featUsed = player?.getFeats?.().length ?? player?.getFeatPointsUsed?.() ?? 0;
   const gold = Math.floor(player?.getGold?.() ?? 0);
 
   const getRowLabel = (row) => {

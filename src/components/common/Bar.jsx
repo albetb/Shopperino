@@ -9,6 +9,7 @@ export default function Bar({ value, variant, className = '', style }) {
     effectiveVariant === 'xp' && 'sh-bar--xp',
     effectiveVariant === 'warn' && 'sh-bar--warn',
     effectiveVariant === 'accent' && 'sh-bar--accent',
+    effectiveVariant === 'danger' && 'sh-bar--danger',
     className,
   ].filter(Boolean).join(' ');
   return (

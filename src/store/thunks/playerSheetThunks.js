@@ -342,9 +342,19 @@ export const onPlayerUseDomainSpell = (spell_link) => (dispatch, getState) => {
 export const onAdjustCurrentHp = (delta) => (dispatch, getState) => {
   const player = getState().playerSheet?.player;
   if (!player) return;
-  const currentHp = player.getCurrentHp?.() ?? 0;
-  const newHp = Math.max(0, currentHp + delta);
-  player.healthModifier = newHp - (player.maxLife ?? 10);
+  // Adjust damage (the running total of HP lost), NOT healthModifier
+  // (which is a permanent max-HP modifier). +delta heals → less damage;
+  // -delta hurts → more damage.
+  // D&D 3.5: a character dies at -10 HP, so allow current HP down to -10
+  // (damage = maxHP + 10). Healing from negative HP is clamped to maxHP
+  // (damage >= 0).
+  const currentDamage = player.getDamage?.() ?? 0;
+  const maxHp = player.getMaxLife?.() ?? 0;
+  const minHp = -10;
+  // newHp = (maxHp - newDamage) ∈ [minHp, maxHp]
+  // → newDamage ∈ [0, maxHp - minHp]
+  const newDamage = Math.max(0, Math.min(maxHp - minHp, currentDamage - delta));
+  player.setDamage?.(newDamage);
   persistPlayer(dispatch, getState, player);
 };
 
@@ -352,6 +362,13 @@ export const onSetMaxLife = (value) => (dispatch, getState) => {
   const player = getState().playerSheet?.player;
   if (!player) return;
   player.maxLife = Math.max(1, Math.floor(Number(value) || 10));
+  persistPlayer(dispatch, getState, player);
+};
+
+export const onSetHealthModifier = (value) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player) return;
+  player.setHealthModifier?.(Math.floor(Number(value) || 0));
   persistPlayer(dispatch, getState, player);
 };
 

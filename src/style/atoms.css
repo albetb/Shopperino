@@ -125,6 +125,16 @@
   box-shadow: var(--shadow-1);
   overflow: hidden;
 }
+/* Opt-out for cards that host floating popovers (autocomplete suggestions,
+   inline menus) which need to escape the card's bounds. Pair this with a
+   `position: relative` on the card-body so absolute children still anchor
+   inside the card visually. */
+.sh-card.card-overflow-visible {
+  overflow: visible;
+}
+.sh-card.card-overflow-visible .sh-card-body {
+  overflow: visible;
+}
 .sh-card--accent {
   border-color: var(--accent-muted);
   box-shadow: var(--shadow-1), 0 0 0 1px var(--accent-soft) inset;
@@ -381,6 +391,7 @@
 .sh-bar--xp > span { background: linear-gradient(90deg, var(--accent), var(--accent-strong)); }
 .sh-bar--warn > span { background: var(--warn); }
 .sh-bar--accent > span { background: var(--accent); }
+.sh-bar--danger > span { background: var(--danger); }
 
 /* --- FILIGREE ------------------------------------------------ */
 .sh-filigree {

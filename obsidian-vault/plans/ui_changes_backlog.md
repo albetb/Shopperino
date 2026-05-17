@@ -16,6 +16,31 @@ Each item is one block:
 
 ---
 
+### UI consistency pass — unified card widths app-wide
+**Where:** All pages that render cards: Player Sheet ([combat_page.jsx](../../src/components/player_sheet/combat_page.jsx), [inventory_page.jsx](../../src/components/player_sheet/inventory_page.jsx), [skills_page.jsx](../../src/components/player_sheet/skills_page.jsx), [feats_page.jsx](../../src/components/player_sheet/feats_page.jsx), [features_page.jsx](../../src/components/player_sheet/features_page.jsx), [player_spells_page.jsx](../../src/components/player_sheet/player_spells_page.jsx), [race_cards.jsx](../../src/components/player_sheet/race_cards.jsx), [class_cards.jsx](../../src/components/player_sheet/class_cards.jsx), [note_editor.jsx](../../src/components/player_sheet/note_editor.jsx), [equipment_grid.css](../../src/style/equipment_grid.css)), Spellbook ([spell_level.jsx](../../src/components/spellbook/spell_level.jsx), [class_description.jsx](../../src/components/spellbook/class_description.jsx), [domain_description.jsx](../../src/components/spellbook/domain_description.jsx), [wizard_schools_card.jsx](../../src/components/spellbook/wizard_schools_card.jsx)), Search ([search_page.jsx](../../src/components/search/search_page.jsx)), all the sidebar cards (`.cards .card` inside [src/components/menus/](../../src/components/menus/)). Styles in [menu_cards.css](../../src/style/menu_cards.css) (`.card-width-spellbook`, `.cards`), [player_sheet.css](../../src/style/player_sheet.css) (race/class/features media-query overrides), [equipment_grid.css](../../src/style/equipment_grid.css).
+**Change:** Consolidate card widths into a single design token (e.g. `--card-width`, `--card-width-mobile`) defined in [tokens.css](../../src/style/tokens.css). Every card-using component reads from the token instead of hardcoding `calc(var(--btn-width-sm) * 20.4)`, `95vw`, `90%`, `99vw`, or whatever scattered value it's using today. One canonical width per breakpoint, app-wide. Same for vertical spacing between cards (`margin-bottom` on `.card-width-spellbook` is currently the only stacking spacing — verify it's right for sidebars too or split into two tokens).
+**Why:** Cards currently look subtly different across tabs — slightly different widths, different gutters, NoteEditor uses 90% while race/class use 95vw mobile / `calc(...)` desktop, sidebars use 96% of column. Walking from Player Sheet → Spellbook → Search → Shop the user notices the cards "shift" even though the data structure is the same. Single token fixes this and makes future width tweaks one-line changes.
+**Notes:**
+- Don't unify the sidebar cards with the main-content cards blindly — sidebars are intentionally narrower (they live in a 60% column). Likely needs two tokens: `--card-width-sidebar` and `--card-width-main`.
+- The `.card-width-spellbook` name is misleading once it's used outside the spellbook. After this pass, consider renaming the class to something neutral like `.sh-card-block` or just inlining the width via the token directly.
+- Watch out for the recent NoteEditor (`width: 90%` of `.player-sheet-page`) and the race/class media-query override (`95vw`) — those should both fold into the unified token.
+- After unification, do a visual diff pass across all six tabs at both mobile and desktop sizes to confirm nothing collapses or overflows.
+- Adjacent cleanup candidate: the bottom-spacing — race/class/features currently zero out the `margin-bottom` on `.card-width-spellbook` because they have their own container `gap`. With a unified token, decide once whether card spacing lives on the card or on the container, and stop double-stacking.
+
+---
+
+### Add Item in Player Sheet Inventory should be a modal
+**Where:** [inventory_page.jsx](../../src/components/player_sheet/inventory_page.jsx) — the `Inventory items` Card with its inline `<AddItemFormInventory>` row, [AddItemFormInventory.jsx](../../src/components/player_sheet/inventory/AddItemFormInventory.jsx), [InventoryTableHeader.jsx](../../src/components/player_sheet/inventory/InventoryTableHeader.jsx).
+**Change:** Move the add-item form out of the inventory table and into a centered `<Modal>` triggered by the `+` icon in the Inventory items card action area. The card's `+` button toggles `showAddItemForm`, which currently injects `<AddItemFormInventory>` as the last `<tr>` inside the table — replace that with opening a modal that hosts the form.
+**Why:** Same problem as the shop's inline add row: the form's inputs/selects get crammed into a narrow column, item-search results don't have room to breathe, and on mobile the form competes for width with the existing item rows. A modal gives full-width inputs and a proper search experience.
+**Notes:**
+- Reuse the [Modal](../../src/components/common/Modal.jsx) atom.
+- Keep the existing wiring: the modal's submit still calls `handleAddItem(name, type, number, link)` which dispatches `onAddInventoryItem`.
+- The `+` icon's pressed/expanded state can be dropped once it's just "open modal" instead of "toggle inline form".
+- This is a sibling task to the Shop's "Add Item should be a modal" entry below — when implementing, consider sharing a single `<AddItemModal>` if the field shape lines up.
+
+---
+
 ### Add Item in Shop should be a modal
 **Where:** Shop tab — main inventory view ([ShopInventory.jsx](../../src/components/shop/ShopInventory.jsx), [ShopTableBody.jsx](../../src/components/shop/ShopTableBody.jsx), [AddItemForm.jsx](../../src/components/shop/AddItemForm.jsx))
 **Change:** Replace the inline "add-row" approach (currently inserts an `<AddItemForm>` row inside the shop table) with a centered `<Modal>` triggered by the Add Item button.

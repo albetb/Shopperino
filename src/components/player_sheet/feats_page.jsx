@@ -14,6 +14,8 @@ import {
   onRemoveFeatAt,
 } from '../../store/thunks/playerSheetThunks';
 import FeatChoicePopover from './FeatChoicePopover';
+import { slug } from '../../lib/slugUtils';
+import SpellLink from '../common/spell_link';
 import Card from '../common/Card';
 import Pill from '../common/Pill';
 import Button from '../common/Button';
@@ -23,17 +25,15 @@ import EmptyState from '../common/EmptyState';
 import Switch from '../common/Switch';
 import Icon from '../common/Icon';
 
-function stripHtml(html) {
-  if (!html || typeof html !== 'string') return '';
-  return html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
-}
-
 export default function FeatsPage() {
   const dispatch = useDispatch();
   const player = useSelector(state => state.playerSheet?.player);
   const [isSelection, setIsSelection] = useState(false);
   const [filterPrereqs, setFilterPrereqs] = useState(false);
+  const [filterSuggested, setFilterSuggested] = useState(false);
   const [popoverState, setPopoverState] = useState(null);
+
+  const playerClass = player?.getClass?.() ?? '';
 
   const featsData = useMemo(() => loadFile('feats') || [], []);
   const featMap = useMemo(() => {
@@ -45,7 +45,10 @@ export default function FeatsPage() {
   const playerFeats = useMemo(() => player?.getFeats?.() ?? [], [player]);
   const count = playerFeats.length;
   const max = player?.getFeatPointsMax?.() ?? 1;
-  const canChoose = count < max;
+  // Per CLAUDE.md: rules are signaled, never enforced. The "Choose feat"
+  // button is always available; the warning pill below flags when the
+  // selection count is above the allotment.
+  const overCap = count > max;
 
   const isAllowedFeat = featName => {
     const baseName = getBaseFeatName(featName);
@@ -63,16 +66,29 @@ export default function FeatsPage() {
         const isRepeatable = REPEATABLE_NO_CHOICE.includes(baseName) || REPEATABLE_WITH_CHOICE[baseName];
         if (!isRepeatable && normalized.has(baseName.toLowerCase())) return false;
         if (filterPrereqs && !meetsPrerequisites(f, player)) return false;
+        if (filterSuggested && playerClass) {
+          const sc = Array.isArray(f.suggestedClass) ? f.suggestedClass : [];
+          if (!sc.includes(playerClass)) return false;
+        }
         return true;
       })
       .sort((a, b) => (a.Name || '').localeCompare(b.Name || ''));
-  }, [featsData, playerFeats, filterPrereqs, player]);
+  }, [featsData, playerFeats, filterPrereqs, filterSuggested, playerClass, player]);
 
-  const handleAddFeat = featName => {
+  const handleAddFeat = (featName, ev) => {
     const baseName = getBaseFeatName(featName);
     const choicesAvailable = getChoicesForFeat(baseName, playerFeats);
-    if (choicesAvailable.length > 0) setPopoverState({ feat: featName, choices: choicesAvailable });
-    else dispatch(onAddFeat(featName));
+    if (choicesAvailable.length > 0) {
+      // FeatChoicePopover only renders when given a position — capture the
+      // click target's rect so the popover anchors next to the "+" button.
+      const rect = ev?.currentTarget?.getBoundingClientRect?.();
+      const position = rect
+        ? { top: rect.bottom, left: rect.left }
+        : { top: window.innerHeight / 2, left: window.innerWidth / 2 };
+      setPopoverState({ feat: featName, choices: choicesAvailable, position });
+    } else {
+      dispatch(onAddFeat(featName));
+    }
   };
 
   const handleConfirmChoice = choice => {
@@ -85,9 +101,11 @@ export default function FeatsPage() {
 
   const handleRemove = index => dispatch(onRemoveFeatAt(index));
 
-  const handleFeatClick = feat => {
-    if (!canChoose && !isAllowedFeat(feat.Name)) return;
-    handleAddFeat(feat.Name);
+  const handleFeatClick = (feat, ev) => {
+    // Allow adding even when over cap (warning is shown in the header).
+    // Still respect non-repeatable feats — those shouldn't be picked twice.
+    if (!isAllowedFeat(feat.Name)) return;
+    handleAddFeat(feat.Name, ev);
   };
 
   if (!player) {
@@ -104,12 +122,15 @@ export default function FeatsPage() {
         <div>
           <Filigree>{count} of {max} selected</Filigree>
           <div className="sh-display" style={{ fontSize: 'var(--font-size-2xl)' }}>Feats</div>
+          {overCap && (
+            <div style={{ marginTop: 'var(--space-1)' }}>
+              <Pill tone="warn" icon="warning">Over cap ({count - max} extra)</Pill>
+            </div>
+          )}
         </div>
-        {canChoose && (
-          <Button variant="primary" icon="add" onClick={() => setIsSelection(v => !v)}>
-            {isSelection ? 'Close' : 'Choose feat'}
-          </Button>
-        )}
+        <Button variant="primary" icon="add" onClick={() => setIsSelection(v => !v)}>
+          {isSelection ? 'Close' : 'Choose feat'}
+        </Button>
       </div>
 
       {playerFeats.length === 0 ? (
@@ -118,13 +139,17 @@ export default function FeatsPage() {
         <div className="sh-stack">
           {playerFeats.map((displayFeat, idx) => {
             const feat = featMap[getBaseFeatName(displayFeat)];
-            const desc = feat?.Description ? stripHtml(feat.Description) : '';
+            // Selected feats show the curated one-liner (shortDescription),
+            // not the verbose HTML Description.
+            const desc = feat?.shortDescription || '';
             return (
               <Card key={`${displayFeat}-${idx}`} padding>
                 <div className="sh-row-h" style={{ gap: 'var(--space-3)', alignItems: 'flex-start' }}>
                   <Icon name="auto_awesome" className="sh-accent-text" />
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div className="sh-display" style={{ fontSize: 'var(--font-size-lg)' }}>{displayFeat}</div>
+                    <SpellLink link={`feats#${slug(getBaseFeatName(displayFeat))}`}>
+                      <span className="sh-display" style={{ fontSize: 'var(--font-size-lg)' }}>{displayFeat}</span>
+                    </SpellLink>
                     {desc && (
                       <div className="sh-faint" style={{
                         fontSize: 'var(--font-size-xs)',
@@ -150,13 +175,19 @@ export default function FeatsPage() {
         </div>
       )}
 
-      {isSelection && canChoose && (
+      {isSelection && (
         <Card eyebrow={`${availableFeats.length} available`} title="Choose a feat" padding>
           <div className="sh-stack">
             <label className="sh-row-h" style={{ gap: 'var(--space-2)', cursor: 'pointer' }}>
               <Switch checked={filterPrereqs} onChange={setFilterPrereqs} aria-label="Filter by prerequisites" />
               <span className="sh-label">Only show feats whose prerequisites I meet</span>
             </label>
+            {playerClass && (
+              <label className="sh-row-h" style={{ gap: 'var(--space-2)', cursor: 'pointer' }}>
+                <Switch checked={filterSuggested} onChange={setFilterSuggested} aria-label="Only suggested for class" />
+                <span className="sh-label">Only show feats suggested for {playerClass}</span>
+              </label>
+            )}
             {availableFeats.length === 0 ? (
               <EmptyState icon="filter_alt_off" title="Nothing matches" hint="Try unchecking the filter." />
             ) : (
@@ -168,25 +199,38 @@ export default function FeatsPage() {
                     && !REPEATABLE_NO_CHOICE.includes(baseName)
                     && !REPEATABLE_WITH_CHOICE[baseName];
                   const prereqOk = meetsPrerequisites(feat, player);
+                  const shortDesc = feat.shortDescription || '';
                   return (
-                    <div key={feat.Name} className="sh-row-h sh-spread" style={{
+                    <div key={feat.Name} style={{
+                      display: 'flex',
+                      flexDirection: 'column',
                       padding: 'var(--space-2) var(--space-3)',
                       borderRadius: 'var(--radius-sm)',
                       background: isDisabled ? 'transparent' : 'var(--surface-1)',
                       opacity: isDisabled ? 0.45 : 1,
+                      gap: '0.25rem',
                     }}>
-                      <span className="sh-row-h" style={{ gap: 'var(--space-2)', minWidth: 0, flex: 1 }}>
-                        <span className="sh-display" style={{ fontSize: 'var(--font-size-md)' }}>{feat.Name}</span>
-                        {!prereqOk && <Pill tone="warn" icon="warning">prereq</Pill>}
-                      </span>
-                      <IconButton
-                        ghost size="sm"
-                        icon="add"
-                        onClick={() => handleFeatClick(feat)}
-                        disabled={isDisabled}
-                        title={isDisabled ? 'Already selected' : 'Add feat'}
-                        aria-label="Add"
-                      />
+                      <div className="sh-row-h sh-spread" style={{ gap: 'var(--space-2)' }}>
+                        <span className="sh-row-h" style={{ gap: 'var(--space-2)', minWidth: 0, flex: 1 }}>
+                          <SpellLink link={`feats#${slug(getBaseFeatName(feat.Name))}`}>
+                            <span className="sh-display" style={{ fontSize: 'var(--font-size-md)' }}>{feat.Name}</span>
+                          </SpellLink>
+                          {!prereqOk && <Pill tone="warn" icon="warning">prereq</Pill>}
+                        </span>
+                        <IconButton
+                          ghost size="sm"
+                          icon="add"
+                          onClick={(ev) => handleFeatClick(feat, ev)}
+                          disabled={isDisabled}
+                          title={isDisabled ? 'Already selected' : 'Add feat'}
+                          aria-label="Add"
+                        />
+                      </div>
+                      {shortDesc && (
+                        <div className="sh-faint" style={{ fontSize: 'var(--font-size-xs)' }}>
+                          {shortDesc}
+                        </div>
+                      )}
                     </div>
                   );
                 })}

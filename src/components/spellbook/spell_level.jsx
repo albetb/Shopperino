@@ -219,10 +219,10 @@ export default function SpellLevelCard({
         />
       )}
 
-      {!collapsed && (
+      {!collapsed && spells && spells.length > 0 && (
         <table className="spellbook-table">
           <tbody>
-            {spells && spells.map((item, i) => {
+            {spells.map((item, i) => {
               const firstClass = i === 0 ? 'first' : '';
               return (
                 <tr key={i}>

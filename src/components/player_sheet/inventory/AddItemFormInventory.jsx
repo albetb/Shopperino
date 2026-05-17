@@ -79,28 +79,30 @@ export default function AddItemFormInventory({ onAddItem, items, setShowAddItemF
         />
       </td>
       <td className="name-size name-small no-border-top">
-        <input
-          type="text"
-          placeholder="Item name"
-          value={itemName}
-          onChange={(e) => setItemName(e.target.value)}
-          onFocus={() => setIsFocused(true)}
-          onBlur={handleNameBlur}
-          className="name-size modern-input add-item-height"
-        />
-        {shouldShowSuggestions && (
-          <ul className="suggestions">
-            {suggestions.map((suggestion, index) => (
-              <li
-                key={index}
-                onMouseDown={() => handleSuggestionClick(suggestion)}
-                className="suggestion-item"
-              >
-                {suggestion.Name}
-              </li>
-            ))}
-          </ul>
-        )}
+        <div className="suggestions-anchor">
+          <input
+            type="text"
+            placeholder="Item name"
+            value={itemName}
+            onChange={(e) => setItemName(e.target.value)}
+            onFocus={() => setIsFocused(true)}
+            onBlur={handleNameBlur}
+            className="name-size modern-input add-item-height"
+          />
+          {shouldShowSuggestions && (
+            <ul className="suggestions">
+              {suggestions.map((suggestion, index) => (
+                <li
+                  key={index}
+                  onMouseDown={() => handleSuggestionClick(suggestion)}
+                  className="suggestion-item"
+                >
+                  {suggestion.Name}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </td>
       <td className="type-size no-border-top">
         <select

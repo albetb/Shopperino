@@ -27,10 +27,12 @@ function CollapsibleCard({ eyebrow, title, action, open, onToggle, children }) {
   );
   return (
     <Card
+      className="card-width-spellbook"
       eyebrow={eyebrow}
       title={title}
       action={action ? <span className="sh-row-h" style={{ gap: 'var(--space-1)' }}>{action}{toggle}</span> : toggle}
       padding
+      onHeadClick={onToggle}
     >
       {open && children}
     </Card>
@@ -136,8 +138,19 @@ export default function FeaturesPage() {
   }
 
   return (
-    <div className="sh-stack" style={{ padding: 'var(--space-4)', paddingBottom: 'var(--space-12)' }}>
-      <div>
+    <div
+      className="player-sheet-features-cards"
+      style={{
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        padding: 'var(--space-4)',
+        paddingBottom: 'var(--space-12)',
+        boxSizing: 'border-box',
+      }}
+    >
+      <div style={{ marginTop: 'var(--space-3)', marginBottom: 'var(--space-4)', textAlign: 'center' }}>
         <Filigree>Class & race features</Filigree>
         <div className="sh-display" style={{ fontSize: 'var(--font-size-2xl)' }}>
           {className || 'Classless'} · {raceName || 'No race'}
@@ -151,15 +164,31 @@ export default function FeaturesPage() {
         onToggle={() => toggleCard('alignment')}
       >
         <div className="sh-stack">
-          <label className="sh-field">
-            <span className="sh-label">Ethics</span>
-            <select className="sh-select" value={currentEthical} onChange={e => setAlignment('ethicalAlignment', e.target.value)}>
+          <label
+            className="sh-field"
+            style={{ flexDirection: 'row', alignItems: 'center', gap: 'var(--space-2)' }}
+          >
+            <span className="sh-label" style={{ flex: '0 0 40%' }}>Ethics</span>
+            <select
+              className="sh-select"
+              style={{ flex: '0 0 60%' }}
+              value={currentEthical}
+              onChange={e => setAlignment('ethicalAlignment', e.target.value)}
+            >
               {allowedEthics.map(e => <option key={e} value={e}>{e}</option>)}
             </select>
           </label>
-          <label className="sh-field">
-            <span className="sh-label">Moral</span>
-            <select className="sh-select" value={currentMoral} onChange={e => setAlignment('moralAlignment', e.target.value)}>
+          <label
+            className="sh-field"
+            style={{ flexDirection: 'row', alignItems: 'center', gap: 'var(--space-2)' }}
+          >
+            <span className="sh-label" style={{ flex: '0 0 40%' }}>Moral</span>
+            <select
+              className="sh-select"
+              style={{ flex: '0 0 60%' }}
+              value={currentMoral}
+              onChange={e => setAlignment('moralAlignment', e.target.value)}
+            >
               {allowedMorals.map(m => <option key={m} value={m}>{m}</option>)}
             </select>
           </label>

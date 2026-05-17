@@ -84,6 +84,56 @@
   .sh-skill-edit-col .sh-eyebrow { display: inline; }
 }
 
+/* Edit-row layout: dot on the left, then a 2-line body.
+   Top line: skill name · ability (text only — no class/ACP labels).
+   Bottom line: ranks stepper + bonus stepper. */
+.sh-skill-row--edit {
+  grid-template-columns: auto 1fr;
+  align-items: start;
+  padding: var(--space-2) var(--space-4);
+}
+.sh-skill-edit-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+.sh-skill-edit-name-line {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+.sh-skill-edit-ability {
+  font-size: var(--font-size-xs);
+  color: var(--ink-muted);
+}
+.sh-skill-edit-steppers {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-4);
+}
+/* Compact stepper for edit rows — ~20% shorter than the default. */
+.sh-stepper.sh-stepper--sm button {
+  width: 1.8rem;
+  height: 1.8rem;
+}
+.sh-stepper.sh-stepper--sm .v {
+  min-width: 1.8rem;
+  font-size: var(--font-size-xs);
+}
+
+.sh-skill-row--head {
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+}
+.sh-skill-head-label {
+  /* Match the visual width of a compact stepper so the labels sit on
+     top of the steppers below. 1.8rem × 3 (− value +) ≈ 5.4rem. */
+  min-width: 5.4rem;
+  text-align: center;
+}
+
 .sh-skill-row.is-overlimit {
   background: linear-gradient(90deg, var(--warn-bg), transparent 30%);
   position: relative;

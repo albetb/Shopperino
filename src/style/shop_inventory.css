@@ -315,19 +315,32 @@ tr.add-item td.action-size .item-number-button {
   border-top: 0px;
 }
 
+/* Anchor for the suggestions popover — keeps `.suggestions` positioned
+   relative to the input cell (not the page or some far ancestor) so it
+   doesn't drift outside the card. */
+.suggestions-anchor {
+  position: relative;
+  width: 100%;
+}
+
 .suggestions {
   position: absolute;
-  top: 0.4rem;
+  /* Pop up directly above the input (bottom edge of suggestions = top of
+     input) using bottom: 100% instead of the old top: 0.4rem +
+     translateY(-100%) hack, which gave inconsistent placement. */
+  bottom: 100%;
   left: 0;
-  width: 99%;
+  width: 100%;
+  margin-bottom: 0.25rem;
   border: 1px solid var(--white);
   background-color: var(--dark-grey);
   color: var(--white);
-  max-height: 30rem;
+  /* Cap height so the list never spills above the card. Vertical scroll
+     handles long match lists. */
+  max-height: 12rem;
   overflow-y: auto;
-  margin: 0;
+  z-index: 50;
   padding: 0;
-  transform: translateY(-100%);
   border-radius: 0.9em;
   z-index: 1;
 }
@@ -346,17 +359,43 @@ tr.add-item td.action-size .item-number-button {
   position: absolute;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 12rem;
-  height: 6rem;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 14rem;
+  /* Height intentionally not set — the popup grows to fit its content
+     (e.g. 4 equip buttons in 2×2 vs no equip section at all). */
   border: 1px solid var(--white);
   background-color: var(--dark-grey);
   margin: 0;
-  padding: 0;
+  padding: 0.6rem;
+  gap: 0.5rem;
   border-radius: 0.9em;
   z-index: 1;
   box-shadow: 0 2px 10px var(--black-t);
+  box-sizing: border-box;
+}
+
+/* Equip-button section: 2 columns (so 1 row of 2 for set1/set2, or 2x2
+   for the 4 hand slots / 4 other slots). Cells take 1fr so the buttons
+   stretch evenly across the popup width. */
+.inventory-options-equip-row {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.4rem;
+  width: 100%;
+}
+.inventory-options-equip-row .inventory-equip-btn {
+  width: 100% !important;
+  min-width: 0 !important;
+  /* The default --border-soft is barely visible against the popup's
+     dark-grey background — use the stronger --border so the buttons
+     read as actual buttons. */
+  border: 1px solid var(--border) !important;
+}
+/* Same treatment for the slider-row level frame and the bottom action
+   buttons so they all look like they belong on the same surface. */
+.inventory-options-popup .item-number-button {
+  border: 1px solid var(--border) !important;
 }
 
 .width-90 {

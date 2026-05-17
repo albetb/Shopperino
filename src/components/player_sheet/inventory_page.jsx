@@ -41,14 +41,29 @@ export default function InventoryPage() {
     try {
       const itemsData = loadFile('items');
       const itemTypes = ['Good', 'Ammo', 'Weapon', 'Specific Weapon', 'Armor', 'Specific Armor', 'Shield', 'Specific Shield', 'Potion', 'Ring', 'Rod', 'Staff', 'Wand', 'Wondrous Item'];
-      return itemTypes.flatMap(type => itemsData[type] || []);
+      // items.json groups records under category keys but the item objects
+      // themselves don't carry ItemType. Attach it on flatten so the
+      // suggestion picker can set the right type dropdown and itemRefLink()
+      // can build a real "items/Type/slug" reference — without this the
+      // saved link is a bare slug and the row name isn't clickable later.
+      return itemTypes.flatMap(type =>
+        (itemsData[type] || []).map(item => ({ ...item, ItemType: type }))
+      );
     } catch {
       return [];
     }
   }, []);
 
+  // Inventory items don't carry their own `id`; `effectIds` stores indices
+  // into the same inventory array (the item that grants the linked effect).
+  // The previous lookup used a non-existent `inv.effectId` field, so it
+  // always missed and linked effects never rendered.
   const getEffectById = useCallback(
-    effectId => inventory.find(inv => inv.effectId === effectId),
+    effectId => {
+      const idx = Number(effectId);
+      if (!Number.isInteger(idx) || idx < 0 || idx >= inventory.length) return undefined;
+      return inventory[idx];
+    },
     [inventory]
   );
 
@@ -104,11 +119,24 @@ export default function InventoryPage() {
     );
   }
 
-  const itemCount = inventory.reduce((sum, it) => sum + (Number(it?.number) || 1), 0);
+  const itemCount = inventory.reduce((sum, it) => sum + (Number(it?.Number) || 1), 0);
 
   return (
-    <div className="sh-stack" style={{ padding: 'var(--space-4)', paddingBottom: 'var(--space-12)' }}>
-      <div className="sh-row-h sh-spread">
+    <div
+      style={{
+        width: '100%',
+        padding: 'var(--space-4)',
+        paddingBottom: 'var(--space-12)',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+      }}
+    >
+      {/* Title row uses the same .card-width-spellbook sizing as the cards
+          below so the "Carry & equip" line + items pill horizontally align
+          with the Equipment / Inventory cards (mobile 92%, desktop the
+          spellbook-card calc width). Margin-bottom comes with the class. */}
+      <div className="card-width-spellbook sh-row-h sh-spread" style={{ background: 'transparent', border: 0, boxShadow: 'none', marginBottom: 'var(--space-3)' }}>
         <div>
           <Filigree>Inventory</Filigree>
           <div className="sh-display" style={{ fontSize: 'var(--font-size-2xl)' }}>Carry & equip</div>
@@ -129,6 +157,7 @@ export default function InventoryPage() {
       />
 
       <Card
+        className="card-width-spellbook card-overflow-visible"
         eyebrow="Inventory items"
         title={`${inventory.length} entries`}
         padding={false}

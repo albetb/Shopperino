@@ -2,16 +2,28 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  /* Fill the card-content width so the row cells actually take 1fr each,
+     instead of shrinking to fit the boxes' natural width. */
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .equipment-row {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 12px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .equipment-row.full-width {
   grid-template-columns: 1fr;
+}
+
+.equipment-slot-box {
+  /* Ensure each slot grows to fill its grid cell. */
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .equipment-slot-box {

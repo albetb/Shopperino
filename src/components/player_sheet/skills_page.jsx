@@ -28,6 +28,7 @@ export default function SkillsPage() {
   const [isEditing, setIsEditing] = useState(false);
   const [sortBy, setSortBy] = useState(null);
   const [sortDesc, setSortDesc] = useState(false);
+  const [classOnly, setClassOnly] = useState(false);
 
   const rawSkills = useMemo(() => {
     const list = loadFile('skills');
@@ -74,6 +75,19 @@ export default function SkillsPage() {
     return arr;
   }, [rawSkills, sortBy, sortDesc, player]);
 
+  // Class-only filter: drop non-class skills; keep Knowledge in the list only
+  // if at least one of its sub-skills is a class skill.
+  const displayedSkills = useMemo(() => {
+    if (!classOnly) return sortedSkills;
+    return sortedSkills.filter(s => {
+      if (s.Name === 'Knowledge') {
+        return KNOWLEDGE_SUBSKILLS.some(sub => isClassSkill(knowledgeSkillName(sub)));
+      }
+      return isClassSkill(s.Name);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sortedSkills, classOnly, player]);
+
   if (!player) {
     return (
       <div className="sh-stack" style={{ padding: 'var(--space-4)' }}>
@@ -111,6 +125,46 @@ export default function SkillsPage() {
     const link = `skills#${slug(skill.Name)}`;
     const step = isClass ? 1 : 1; // Stepper integer steps; half-ranks handled by stepper step 1
     const ranksStep = isClass ? 1 : 1;
+    const meta = (
+      <span className="sh-skill-meta">
+        <span className="sh-mono sh-faint">{skill.Characteristic ?? '—'}</span>
+        {!isClass && <span className="sh-faint"> · cross-class</span>}
+        {skill.ArmorPenalty && (
+          <Pill tone="ghost" icon="shield">{skill.Name === 'Swim' ? 'ACP ×2' : 'ACP'}</Pill>
+        )}
+        {isOverLimit && <Pill tone="warn" icon="warning">over cap</Pill>}
+      </span>
+    );
+
+    if (isEditing) {
+      // Edit-mode layout:
+      //   Top line: skill name · ability (no class/cross-class/ACP labels)
+      //   Bottom line: ranks stepper + bonus stepper (compact size)
+      return (
+        <div
+          key={skill.Name}
+          className={`sh-skill-row sh-skill-row--edit ${isOverLimit ? 'is-overlimit' : ''}`}
+        >
+          <span className={`sh-skill-dot ${isClass ? 'is-class' : ''}`} aria-hidden="true" />
+          <div className="sh-skill-edit-body">
+            <div className="sh-skill-edit-name-line">
+              <SpellLink link={link}>
+                <span className={skill.TrainedOnly ? 'sh-skill-name sh-skill-name--trained' : 'sh-skill-name'}>
+                  {skill.Name}
+                </span>
+              </SpellLink>
+              <span className="sh-faint sh-skill-edit-ability">— {skill.Characteristic ?? '—'}</span>
+              {isOverLimit && <Pill tone="warn" icon="warning">over cap</Pill>}
+            </div>
+            <div className="sh-skill-edit-steppers">
+              <Stepper size="sm" value={ranks} min={0} max={maxRanks} step={ranksStep} onChange={v => setRanks(skill.Name, v)} />
+              <Stepper size="sm" value={bonus} min={0} max={99}        step={step}     onChange={v => setBonus(skill.Name, v)} />
+            </div>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div
         key={skill.Name}
@@ -123,52 +177,23 @@ export default function SkillsPage() {
               {skill.Name}
             </span>
           </SpellLink>
-          <span className="sh-skill-meta">
-            <span className="sh-mono sh-faint">{skill.Characteristic ?? '—'}</span>
-            {!isClass && <span className="sh-faint"> · cross-class</span>}
-            {skill.ArmorPenalty && (
-              <Pill tone="ghost" icon="shield">{skill.Name === 'Swim' ? 'ACP ×2' : 'ACP'}</Pill>
-            )}
-            {isOverLimit && <Pill tone="warn" icon="warning">over cap</Pill>}
-          </span>
+          {meta}
         </div>
-        {isEditing ? (
-          <>
-            <div className="sh-skill-edit-col">
-              <span className="sh-eyebrow">Ranks</span>
-              <Stepper value={ranks} min={0} max={maxRanks} step={ranksStep} onChange={v => setRanks(skill.Name, v)} />
-            </div>
-            <div className="sh-skill-edit-col">
-              <span className="sh-eyebrow">Bonus</span>
-              <Stepper value={bonus} min={0} max={99} step={step} onChange={v => setBonus(skill.Name, v)} />
-            </div>
-          </>
-        ) : (
-          <span className={`sh-skill-total sh-mono sh-num ${isOverLimit ? 'sh-warn-text' : ''}`}>
-            {total >= 0 ? `+${total}` : total}
-          </span>
-        )}
+        <span className={`sh-skill-total sh-mono sh-num ${isOverLimit ? 'sh-warn-text' : ''}`}>
+          {total >= 0 ? `+${total}` : total}
+        </span>
       </div>
     );
   };
 
   return (
-    <div className="sh-stack" style={{ padding: 'var(--space-4)', paddingBottom: 'var(--space-12)' }}>
+    <div className="sh-stack" style={{ width: '100%', padding: 'var(--space-4)', paddingBottom: 'var(--space-12)', boxSizing: 'border-box' }}>
       <div className="sh-row-h sh-spread">
         <div>
           <Filigree>Skills</Filigree>
           <div className="sh-display" style={{ fontSize: 'var(--font-size-2xl)' }}>Trained & natural</div>
         </div>
-        <div className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
-          <Pill tone={overCap ? 'warn' : 'accent'}>{usedPoints} / {totalPoints} ranks</Pill>
-          <IconButton
-            ghost size="sm"
-            icon={isEditing ? 'check' : 'edit'}
-            onClick={() => setIsEditing(v => !v)}
-            aria-label={isEditing ? 'Done editing' : 'Edit skills'}
-            title={isEditing ? 'Done' : 'Edit ranks & bonuses'}
-          />
-        </div>
+        <Pill tone={overCap ? 'warn' : 'accent'}>{usedPoints} / {totalPoints} ranks</Pill>
       </div>
 
       {overCap && (
@@ -178,26 +203,61 @@ export default function SkillsPage() {
         </div>
       )}
 
-      {!isEditing && (
-        <div className="sh-row-h" style={{ gap: 'var(--space-2)', flexWrap: 'wrap' }}>
-          <button type="button" className="sh-chip" onClick={() => handleSort('name')}    aria-pressed={sortBy === 'name'}>Sort by name</button>
-          <button type="button" className="sh-chip" onClick={() => handleSort('ability')} aria-pressed={sortBy === 'ability'}>Ability</button>
-          <button type="button" className="sh-chip" onClick={() => handleSort('value')}   aria-pressed={sortBy === 'value'}>Total</button>
-          <button type="button" className="sh-chip" onClick={() => handleSort('armor')}   aria-pressed={sortBy === 'armor'}>Armor penalty</button>
-        </div>
-      )}
+      <div className="sh-row-h" style={{ gap: 'var(--space-2)', flexWrap: 'wrap', alignItems: 'center' }}>
+        <IconButton
+          ghost size="sm"
+          icon={isEditing ? 'check' : 'edit'}
+          onClick={() => setIsEditing(v => !v)}
+          aria-label={isEditing ? 'Done editing' : 'Edit skills'}
+          title={isEditing ? 'Done' : 'Edit ranks & bonuses'}
+        />
+        {isEditing ? (
+          <button
+            type="button"
+            className="sh-chip"
+            onClick={() => setClassOnly(v => !v)}
+            aria-pressed={classOnly}
+            title="Show only skills that are class skills for this character"
+          >
+            {classOnly ? '✓ Only class skills' : 'Only class skills'}
+          </button>
+        ) : (
+          <>
+            <button type="button" className="sh-chip" onClick={() => handleSort('name')}    aria-pressed={sortBy === 'name'}>Sort by name</button>
+            <button type="button" className="sh-chip" onClick={() => handleSort('ability')} aria-pressed={sortBy === 'ability'}>Ability</button>
+            <button type="button" className="sh-chip" onClick={() => handleSort('value')}   aria-pressed={sortBy === 'value'}>Total</button>
+          </>
+        )}
+      </div>
 
       <Card padding={false}>
         <div className="sh-skill-list">
-          {sortedSkills.map(skill => {
+          {isEditing && (
+            <div className="sh-skill-row sh-skill-row--head">
+              <span className="sh-skill-dot" aria-hidden="true" style={{ visibility: 'hidden' }} />
+              <div className="sh-skill-edit-body">
+                <div className="sh-skill-edit-name-line">
+                  <span className="sh-eyebrow">Skill · ability</span>
+                </div>
+                <div className="sh-skill-edit-steppers">
+                  <span className="sh-eyebrow sh-skill-head-label">Ranks</span>
+                  <span className="sh-eyebrow sh-skill-head-label">Bonus</span>
+                </div>
+              </div>
+            </div>
+          )}
+          {displayedSkills.map(skill => {
             if (skill.Name === 'Knowledge') {
+              const subskills = classOnly
+                ? KNOWLEDGE_SUBSKILLS.filter(sub => isClassSkill(knowledgeSkillName(sub)))
+                : KNOWLEDGE_SUBSKILLS;
               return (
                 <Fragment key="Knowledge-group">
                   <div className="sh-skill-group-head">
                     <Icon name="auto_stories" />
                     <span>Knowledge ({knowledgeBase?.Characteristic ?? 'Int'})</span>
                   </div>
-                  {KNOWLEDGE_SUBSKILLS.map(sub => {
+                  {subskills.map(sub => {
                     const name = knowledgeSkillName(sub);
                     return renderSkillRow({
                       Name: name,

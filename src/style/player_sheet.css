@@ -846,6 +846,19 @@
   flex-shrink: 0;
 }
 
+/* Note view is the exception: the editor should fit *inside* the
+   visible app-header area (no outer scroll). Only the textarea inside
+   the card scrolls. Constrain the page to exactly app-header's height,
+   use border-box so the bottom-nav inset (mobile media query below)
+   eats INTO the height instead of extending past it. */
+.player-sheet-page.player-sheet-page--note {
+  height: 100%;
+  min-height: 0;
+  max-height: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
 /* Note editor: full available height, textarea flexes to fill so the
    whole component fits the screen with no inner scroll. */
 .note-editor-page {
@@ -884,6 +897,10 @@
   width: 100%;
   min-height: 0;
   resize: none;
+  /* Only the textarea scrolls — the outer page is fixed-height in the
+     note view, so text past the visible area shows a textarea scrollbar
+     instead of pushing the page itself. */
+  overflow-y: auto;
 }
 
 @media (max-width: 768px) {

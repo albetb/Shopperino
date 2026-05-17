@@ -45,7 +45,7 @@ export default function PlayerSheetPage() {
     'Player sheet';
 
   return (
-    <div className="player-sheet-page">
+    <div className={`player-sheet-page ${mainView === 'note' ? 'player-sheet-page--note' : ''}`}>
       {mainView !== 'note' && (
         <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--white)', textAlign: 'center' }}>{text}</p>
       )}

@@ -44,6 +44,46 @@ function hitDiceToMax(hd) {
   return Number.isFinite(n) ? n : 4;
 }
 
+/**
+ * Standard PHB unarmed strike damage by creature size. Per
+ * combat.md / class-features.md. Used for any non-Monk who throws
+ * a punch (or for Monks of unknown sizes).
+ */
+function defaultUnarmedDamage(size) {
+  switch (size) {
+    case 'Fine':       return '1';
+    case 'Diminutive': return '1';
+    case 'Tiny':       return '1';
+    case 'Small':      return '1d2';
+    case 'Medium':     return '1d3';
+    case 'Large':      return '1d4';
+    case 'Huge':       return '1d6';
+    case 'Gargantuan': return '1d8';
+    case 'Colossal':   return '2d6';
+    default:           return '1d3';
+  }
+}
+
+/**
+ * Monk unarmed strike damage by level + size (PHB Table: The Monk).
+ * Damage tier scales every few levels; size shifts the tier up or down.
+ */
+function monkUnarmedDamage(level, size) {
+  const tier =
+    level <= 3  ? 0 :
+    level <= 7  ? 1 :
+    level <= 11 ? 2 :
+    level <= 15 ? 3 :
+    level <= 19 ? 4 :
+                  5;
+  const tiers = {
+    Small:  ['1d4', '1d6', '1d8',  '1d10', '2d6', '2d8'],
+    Medium: ['1d6', '1d8', '1d10', '2d6',  '2d8', '2d10'],
+    Large:  ['1d8', '2d6', '2d8',  '3d6',  '3d8', '4d6'],
+  };
+  return (tiers[size] || tiers.Medium)[tier];
+}
+
 /** Normalize spells to [[id, prepared, used], ...]. */
 function normalizePlayerSpells(raw) {
   if (!Array.isArray(raw)) return [];
@@ -72,6 +112,7 @@ class Player {
     this.skills = {};
     this.gold = 0;
     this.featsUsed = 0;
+    this.feats = [];
     this.bonusLanguagesLearned = [];
     this.domain1 = '';
     this.domain2 = '';
@@ -154,6 +195,12 @@ class Player {
     if (Number.isFinite(data.gold)) this.gold = Math.max(0, Number(Number(data.gold).toFixed(2)));
 
     if (Number.isFinite(data.featsUsed)) this.featsUsed = Math.max(0, Math.floor(data.featsUsed));
+
+    if (Array.isArray(data.feats)) {
+      this.feats = data.feats
+        .filter((f) => typeof f === 'string' && f.trim() !== '')
+        .map((f) => f.trim());
+    }
 
     if (Array.isArray(data.bonusLanguagesLearned)) {
       this.bonusLanguagesLearned = data.bonusLanguagesLearned
@@ -263,6 +310,7 @@ class Player {
       skills: { ...this.skills },
       gold: Number(Number(this.gold).toFixed(2)),
       featsUsed: Math.max(0, Math.floor(this.featsUsed)),
+      feats: Array.isArray(this.feats) ? [...this.feats] : [],
       bonusLanguagesLearned: [...(this.bonusLanguagesLearned || [])],
       domain1: this.domain1 || '',
       domain2: this.domain2 || '',
@@ -503,10 +551,22 @@ class Player {
   // —— Combat / HP ——
   /**
    * Minimum base life = class hit dice max (e.g. d8 -> 8).
+   * Represents the guaranteed L1 contribution (max roll on the first HD).
    */
   getBaseLifeMin() {
     const data = getClassData(this.class);
     return hitDiceToMax(data?.hitDice);
+  }
+
+  /**
+   * Theoretical maximum base life: HD_max × level. This is what a character
+   * gets if they roll the maximum value on every hit die at every level.
+   * Used as a soft cap in the UI — exceeding it is allowed (UI must show
+   * a warning) per the "rules are not enforced, only signaled" policy.
+   */
+  getBaseLifeMax() {
+    const data = getClassData(this.class);
+    return hitDiceToMax(data?.hitDice) * this.getLevel();
   }
 
   /**
@@ -520,8 +580,14 @@ class Player {
     return base + bonus + conBonus;
   }
 
+  /**
+   * Current HP. Can go negative — in D&D 3.5 a character is dying from
+   * -1 to -9 and dead at -10. Floor is enforced upstream by the damage
+   * thunk (damage capped at maxHp + 10), so this method intentionally
+   * does NOT clamp at 0.
+   */
   getCurrentHp() {
-    return Math.max(0, this.getMaxLife() - (Number(this.damage) || 0));
+    return this.getMaxLife() - (Number(this.damage) || 0);
   }
 
   getDamage() {
@@ -610,6 +676,40 @@ class Player {
    */
   getInitiativeModifier() {
     return this.getDexMod();
+  }
+
+  /**
+   * Base Attack Bonus from the class's progression multiplier.
+   * classes.json stores it as a string like "x1" (Good), "x3/4" (Average),
+   * or "x1/2" (Poor). BAB = floor(level × multiplier).
+   * See dnd-rules/combat.md and dnd-rules/classes.md.
+   */
+  getBaseAttackBonus() {
+    const data = getClassData(this.class);
+    const raw = data?.baseAttack;
+    if (typeof raw !== 'string') return 0;
+    const cleaned = raw.replace(/^x/i, '').trim();
+    const parts = cleaned.split('/').map((n) => Number(n));
+    let multiplier = 0;
+    if (parts.length === 1 && Number.isFinite(parts[0])) {
+      multiplier = parts[0];
+    } else if (parts.length === 2 && Number.isFinite(parts[0]) && Number.isFinite(parts[1]) && parts[1] !== 0) {
+      multiplier = parts[0] / parts[1];
+    }
+    return Math.floor(this.getLevel() * multiplier);
+  }
+
+  /**
+   * Unarmed strike damage. Defaults to PHB size-based damage (Medium = 1d3).
+   * Monk uses the scaling table from class-features.md (1d6 at L1, ..., 2d10 at L20),
+   * shifted up/down for Large/Small.
+   */
+  getPunchDamage() {
+    const size = this.getSize() || 'Medium';
+    if (this.class === 'Monk') {
+      return monkUnarmedDamage(this.getLevel(), size);
+    }
+    return defaultUnarmedDamage(size);
   }
 
   /**
@@ -780,6 +880,37 @@ class Player {
 
   setFeatPointsUsed(value) {
     this.featsUsed = Math.max(0, Math.floor(Number(value) || 0));
+  }
+
+  /**
+   * Selected feats by display name (e.g. "Weapon Focus", "Skill Focus (Tumble)").
+   * Returned as a defensive copy so callers can't mutate the model state.
+   */
+  getFeats() {
+    return Array.isArray(this.feats) ? [...this.feats] : [];
+  }
+
+  /**
+   * Append a feat. Repeatable feats can appear multiple times; the model
+   * doesn't enforce uniqueness (the page already filters duplicates for
+   * non-repeatable feats).
+   */
+  addFeat(featName) {
+    if (typeof featName !== 'string') return;
+    const trimmed = featName.trim();
+    if (trimmed === '') return;
+    if (!Array.isArray(this.feats)) this.feats = [];
+    this.feats.push(trimmed);
+  }
+
+  /**
+   * Remove the feat at the given index (1:1 with the displayed list, so
+   * removing a repeated entry only removes that specific instance).
+   */
+  removeFeatAt(index) {
+    if (!Array.isArray(this.feats)) return;
+    if (typeof index !== 'number' || index < 0 || index >= this.feats.length) return;
+    this.feats.splice(index, 1);
   }
 
   // —— Skills ——
