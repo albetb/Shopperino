@@ -47,7 +47,7 @@ export default function LootMenuCards() {
   };
 
   return (
-    <div className="cards">
+    <div className="cards cards-aligned">
       {cards.map(card => {
         const state = cardStates.find(s => s.id === card.id);
         return (

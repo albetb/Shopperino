@@ -122,7 +122,7 @@ export default function MenuCardPlayer() {
       {saved.length > 0 && (
         <>
           <div className="card-side-div margin-top">
-            <label className="modern-label">Class:</label>
+            <label className="modern-label">Class</label>
             <select
               className="modern-dropdown small-long"
               value={playerClass}
@@ -144,7 +144,7 @@ export default function MenuCardPlayer() {
           {["Cleric", "Druid"].includes(playerClass) &&
             <>
               <div className="card-side-div margin-top">
-                <label className="modern-label">Moral:</label>
+                <label className="modern-label">Moral</label>
                 <select
                   className="modern-dropdown small-long"
                   value={moralAlign}
@@ -159,7 +159,7 @@ export default function MenuCardPlayer() {
               </div>
 
               <div className="card-side-div margin-top">
-                <label className="modern-label">Ethics:</label>
+                <label className="modern-label">Ethics</label>
                 <select
                   className="modern-dropdown small-long"
                   value={ethicalAlign}
@@ -177,7 +177,7 @@ export default function MenuCardPlayer() {
           {playerClass === "Cleric" &&
             <>
               <div className="card-side-div margin-top">
-                <label className="modern-label">Domains:</label>
+                <label className="modern-label">Domains</label>
                 <select
                   className="modern-dropdown small-long"
                   value={domain1}
@@ -212,7 +212,7 @@ export default function MenuCardPlayer() {
           {playerClass === "Wizard" &&
             <>
               <div className="card-side-div margin-top">
-                <label className="modern-label">Specialized:</label>
+                <label className="modern-label">Specialized</label>
                 <select
                   className="modern-dropdown small-long"
                   value={specialized}
@@ -228,7 +228,7 @@ export default function MenuCardPlayer() {
               </div>
 
               <div className="card-side-div margin-top">
-                <label className="modern-label">Forbidden:</label>
+                <label className="modern-label">Forbidden</label>
                 <select
                   className="modern-dropdown small-long"
                   value={forbidden1}

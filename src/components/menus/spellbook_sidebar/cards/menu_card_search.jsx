@@ -20,7 +20,7 @@ export default function MenuCardSearch() {
   return (
     <>
       <div className="card-side-div">
-        <label className="modern-label">Name:</label>
+        <label className="modern-label">Name</label>
         <input
           className='modern-dropdown small-longer padding-left'
           type='text'
@@ -31,7 +31,7 @@ export default function MenuCardSearch() {
       </div>
 
       <div className="card-side-div margin-top">
-        <label className="modern-label">School:</label>
+        <label className="modern-label">School</label>
         <select
           className="modern-dropdown small-long"
           value={searchSpellSchool}

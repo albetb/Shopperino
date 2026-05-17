@@ -42,6 +42,34 @@ Each item is one block:
 
 ---
 
+### Inline sidebar cards in main content on mobile — Search & Loot pages
+**Where:**
+- Loot: [App.jsx](../../src/App.jsx) (`loot` branch wires `<LootSidebar />` + `<LootInventory />`), [LootSidebar](../../src/components/menus/loot_sidebar/loot_sidebar.jsx), [LootMenuCards](../../src/components/menus/loot_sidebar/cards/loot_menu_cards.jsx), [LootInventory](../../src/components/loot/loot_inventory.jsx)
+- Search: [search_page.jsx](../../src/components/search/search_page.jsx) (sidebar is inlined inside the page itself, not via App.jsx)
+**Change:** On mobile, do **not** render the left sidebar for the Search and Loot pages. Instead, render the same menu cards as collapsible cards at the **top of the main content**, above the results / loot inventory. On desktop the layout stays exactly as it is today (sidebar on the left).
+**Why:** On phones the sidebar is overkill for these two pages — they're essentially "configure → view results" flows. Putting the controls inline at the top removes the open/close dance, frees horizontal space, and feels more like a normal mobile form-then-list page. The shop/spellbook/player-sheet pages keep their sidebar because they have richer multi-card configuration.
+**Notes:**
+- **Cards collapsible at the top.** The card(s) render expanded by default the first time, with the usual collapse chevron. State stays driven by the same `UI_FLAG.lc` / search-card-collapsed flags so collapsed state persists across the desktop/mobile split.
+- **Info sidebar (right) works as normal** — only the *left* sidebar moves inline. The info sidebar's mobile FAB and drawer stay untouched.
+- **Back button handler is only active when a menu is opened.** Since the cards live in normal scroll flow on mobile, there's no "open" state for the sidebar anymore — so `useBackButtonHandler` for the left sidebar should be skipped on mobile for these two pages. It still applies to any modal/scanner/etc. that opens above the cards.
+- Loot is the easy half: `LootMenuCards` is already a clean component → render it at the top of `LootInventory` when `isMobile()`. In `App.jsx`, skip `<LootSidebar />` on mobile.
+- Search is messier: the current sidebar markup is *inside* `search_page.jsx` and shares local state with the rest of the page. Extract that JSX into a small `SearchFiltersCards` component (or just gate the wrapping `.sidebar` div behind `!isMobile()` and render the same cards container inline at the top when mobile).
+- Confirm `cards-aligned` + the recent 60% width rule still look right when the cards live in the main content area (wider than the sidebar). May need to cap card width on mobile so it doesn't stretch full width like a banner.
+
+---
+
+### Spellbook table action buttons — notebook-tab styling
+**Where:** Spellbook tab — spell-level cards ([spell_level.jsx](../../src/components/spellbook/spell_level.jsx), the per-row `<td>` containing the bookmark / prepare / use buttons; styles in [sidebar.css](../../src/style/sidebar.css) under `.flat-button.smaller`, `.spell-slot-div`, `.spell-slot-div2`)
+**Change:** Rework the per-row action controls (Learn `bookmark_add` / `bookmark_remove`, Prepare `−` / `+` stepper, Use `wand_stars`) so they're noticeably narrower than today and visually feel like a small **tab clipped to the side of a notebook page** — e.g. an asymmetric rounded shape, slight inset shadow, accent edge, looking like it's tucked into the spell row rather than floating as a generic button.
+**Why:** Current buttons are plain pill shapes that eat horizontal space on mobile and don't match the parchment / notebook visual language of the app.
+**Notes:**
+- Keep the existing actions and disabled/opacity-50 states untouched — purely a visual rework.
+- Stepper rows (Prepare, Use) need to keep enough touch target for the `−` / `+` to stay comfortable on mobile (≥ `--tap-target-sm`).
+- Consider one shared notebook-tab atom in [src/components/common/](../../src/components/common/) so Learn / Prepare / Use all share the same look.
+- Reduce the fixed widths on `.spell-slot-div` (`calc(--btn-width-sm * 2.5)`) and `.spell-slot-div2` (`calc(--btn-width-sm * 1.6)`) as part of the rework — they're sized for the current button footprint.
+
+---
+
 ### Shop row layout more readable on mobile
 **Where:** Shop tab — inventory rows ([ShopItemRow.jsx](../../src/components/shop/ShopItemRow.jsx), [ShopTableHeader.jsx](../../src/components/shop/ShopTableHeader.jsx), `shop_inventory.css` mobile media query)
 **Change:** Redesign each shop row on mobile so it's easier to scan. Two options to pick from:

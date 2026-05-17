@@ -8,6 +8,21 @@
   padding-bottom: var(--space-6);
 }
 
+/* Sidebars opting in via .cards-aligned: every control (input/select/stepper)
+   inside a card-side-div renders at the same 60% width so the right edges
+   line up cleanly across rows.
+   box-sizing override is needed because <input> and <select> have different
+   intrinsic box models in some browsers, which made the inputs render
+   visibly wider than selects at the same declared width. */
+.cards-aligned .card-side-div > .modern-dropdown,
+.cards-aligned .card-side-div > .levels-div {
+  width: 60% !important;
+  min-width: 60% !important;
+  max-width: 60% !important;
+  flex: 0 0 60%;
+  box-sizing: border-box !important;
+}
+
 .card {
   width: 100%;
   background-color: var(--surface-1);
@@ -24,6 +39,7 @@
 
 .card-width-spellbook {
   width: calc(var(--btn-width-sm) * 20.4);
+  margin-bottom: var(--space-4);
 }
 
 .card.collapsed {

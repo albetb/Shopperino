@@ -350,6 +350,21 @@ p {
   color: var(--ink);
 }
 
+.spell-table-cell-name-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.spell-school-inline {
+  font-size: 0.85em;
+  color: var(--ink-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
 .spell-table-cell-desc {
   margin-top: 0.15rem;
   font-size: 0.85em;

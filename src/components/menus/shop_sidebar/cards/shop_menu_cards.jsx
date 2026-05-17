@@ -73,7 +73,7 @@ export default function ShopMenuCards() {
   };
 
   return (
-    <div className="cards">
+    <div className="cards cards-aligned">
       {cards.map(card => {
         const state = cardStates.find(s => s.id === card.id);
         if (card.id === 2 && worlds.length === 0) return null;

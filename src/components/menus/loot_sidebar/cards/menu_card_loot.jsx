@@ -4,6 +4,7 @@ import { onDeleteLoot, onNewLoot, onSelectLoot } from '../../../../store/thunks/
 import { unixToDisplay } from '../../../../lib/storageFormat';
 import '../../../../style/menu_cards.css';
 import LevelComponent from '../../../common/level_component';
+import OptionStepper from '../../../common/option_stepper';
 import { isMobile } from '../../../../lib/utils';
 import { setIsLootSidebarCollapsed } from '../../../../store/slices/lootSlice';
 
@@ -87,44 +88,9 @@ export default function MenuCardLoot() {
 
       <LevelComponent props={{ level, levelName: 'Encounter lv', onLevelChange: onSetLevel }} />
 
-      <div className="card-side-div margin-top">
-        <label className="modern-label">Gold:</label>
-        <select
-          className="modern-dropdown small-middle"
-          value={goldMod}
-          onChange={e => setGoldMod(parseFloat(e.target.value))}
-        >
-          {MODIFIER_OPTIONS.map(opt => (
-            <option key={opt.value} value={opt.value}>{opt.label}</option>
-          ))}
-        </select>
-      </div>
-
-      <div className="card-side-div margin-top">
-        <label className="modern-label">Goods:</label>
-        <select
-          className="modern-dropdown small-middle"
-          value={goodsMod}
-          onChange={e => setGoodsMod(parseFloat(e.target.value))}
-        >
-          {MODIFIER_OPTIONS.map(opt => (
-            <option key={opt.value} value={opt.value}>{opt.label}</option>
-          ))}
-        </select>
-      </div>
-
-      <div className="card-side-div margin-top">
-        <label className="modern-label">Item:</label>
-        <select
-          className="modern-dropdown small-middle"
-          value={itemsMod}
-          onChange={e => setItemsMod(parseFloat(e.target.value))}
-        >
-          {MODIFIER_OPTIONS.map(opt => (
-            <option key={opt.value} value={opt.value}>{opt.label}</option>
-          ))}
-        </select>
-      </div>
+      <OptionStepper props={{ value: goldMod,  options: MODIFIER_OPTIONS, name: 'Gold',  onChange: setGoldMod  }} />
+      <OptionStepper props={{ value: goodsMod, options: MODIFIER_OPTIONS, name: 'Goods', onChange: setGoodsMod }} />
+      <OptionStepper props={{ value: itemsMod, options: MODIFIER_OPTIONS, name: 'Item',  onChange: setItemsMod }} />
 
       <div className="card-side-div margin-top buttons-row-center">
         <button className="modern-button small-long" onClick={handleGenerate}>

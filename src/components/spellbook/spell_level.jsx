@@ -282,12 +282,21 @@ export default function SpellLevelCard({
                   )}
 
                   <td className={`${firstClass} col-auto`}>
-                    <button
-                      className={'button-link spell-table-cell-name' + schoolClass(item.School)}
-                      onClick={() => dispatch(addCardByLink({ links: item.Link, bonus: 0 }))}
-                    >
-                      {item.Name}
-                    </button>
+                    <div className="spell-table-cell-name-row">
+                      <button
+                        className={'button-link spell-table-cell-name' + schoolClass(item.School)}
+                        onClick={() => dispatch(addCardByLink({ links: item.Link, bonus: 0 }))}
+                      >
+                        {item.Name}
+                      </button>
+                      {/* Mobile wizard-learn: school inline with name so the
+                          description below spans the full row width. */}
+                      {isMobile() && inst.Class === 'Wizard' && page === 0 && (
+                        <span className={'spell-school-inline' + schoolClass(item.School)}>
+                          {item.School.split(' ')[0]}
+                        </span>
+                      )}
+                    </div>
                     {showShortDescriptions && item['Short Description'] && (
                       <div className="spell-table-cell-desc">
                         {item['Short Description']}
@@ -295,8 +304,9 @@ export default function SpellLevelCard({
                     )}
                   </td>
 
-                  {/* Mobile: hide school column for all classes except Wizard */}
-                  {(!isMobile() || (inst.Class === 'Wizard' && page === 0)) && (
+                  {/* Desktop only: school in its own column. Mobile renders it
+                      inline inside the name cell (above) when applicable. */}
+                  {!isMobile() && (
                     <td className={firstClass + schoolClass(item.School) + ' col-30'}>
                       {item.School.split(' ')[0]}
                     </td>
