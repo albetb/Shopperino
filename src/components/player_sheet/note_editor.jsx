@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { onUpdateNoteContent } from '../../store/thunks/playerSheetThunks';
 import Card from '../common/Card';
 import Filigree from '../common/Filigree';
-import Pill from '../common/Pill';
 import Button from '../common/Button';
 import EmptyState from '../common/EmptyState';
 
@@ -64,28 +63,35 @@ export default function NoteEditor() {
   const lastModified = formatLastModified(note.updatedAt);
 
   return (
-    <div className="sh-stack" style={{ padding: 'var(--space-4)', paddingBottom: 'var(--space-12)' }}>
-      <div className="sh-row-h sh-spread">
-        <div>
-          <Filigree>Note</Filigree>
-          <div className="sh-display" style={{ fontSize: 'var(--font-size-2xl)' }}>{noteName}</div>
-        </div>
-        <Pill tone="ghost">Local only</Pill>
+    <div className="sh-stack note-editor-page">
+      <div className="note-editor-header">
+        <Filigree>Note</Filigree>
+        <div className="sh-display" style={{ fontSize: 'var(--font-size-2xl)' }}>{noteName}</div>
       </div>
 
-      <Card padding>
-        <div className="sh-stack">
+      <Card padding className="note-editor-card">
+        <div className="sh-stack note-editor-card-stack">
           <textarea
-            className="sh-textarea"
+            className="sh-textarea note-editor-textarea"
             value={localText}
             onChange={handleChange}
             onBlur={handleBlur}
             placeholder="Write your note here…"
-            style={{ minHeight: '11rem' }}
           />
           <div className="sh-row-h sh-spread">
-            <span className="sh-mono sh-faint" style={{ fontSize: 'var(--font-size-2xs)' }}>
-              edited {lastModified}
+            <span
+              className="sh-mono sh-faint"
+              style={{
+                fontSize: 'var(--font-size-2xs)',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'flex-start',
+                textAlign: 'left',
+                lineHeight: 1.2,
+              }}
+            >
+              <span>edited</span>
+              <span>{lastModified}</span>
             </span>
             <Button
               variant="primary"

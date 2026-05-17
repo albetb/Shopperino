@@ -23,6 +23,27 @@
   box-sizing: border-box !important;
 }
 
+/* SelectComponent row: dropdown + new/delete buttons live inside a cluster
+   that fills the whole card-side-div. The dropdown flexes to take all
+   remaining space, while the compact icon buttons sit on the right edge —
+   which is the same right edge as the .levels-div / .modern-dropdown rows
+   below, so the row visually aligns without cramping the name. */
+.select-cluster {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+.select-cluster > .modern-dropdown {
+  flex: 1 1 auto;
+  min-width: 0 !important;
+  width: auto !important;
+  max-width: none !important;
+}
+.select-cluster > .levels-button {
+  flex-shrink: 0;
+}
+
 .card {
   width: 100%;
   background-color: var(--surface-1);
@@ -243,14 +264,35 @@
 .ability-edit-row-controls {
   display: flex;
   align-items: center;
-  gap: 0.2rem;
+  gap: var(--space-1);
   width: 60%;
   max-width: 60%;
   flex-shrink: 0;
+  /* Match the rounded pill chrome of .levels-div so the stepper visually
+     wraps as a single piece, like the Level component. */
+  background: var(--surface-1);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-pill);
+  padding: 0.15rem;
+  box-sizing: border-box;
 }
 
-.ability-edit-row-controls .levels-button.small {
+/* Match the bare, transparent stepper buttons used by .levels-div so
+   the ability-edit rows visually mirror LevelComponent. */
+.ability-edit-row-controls .levels-button {
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-pill);
+  width: var(--btn-height-sm);
+  min-width: var(--btn-height-sm);
+  height: var(--btn-height-sm);
+  padding: 0;
+  color: var(--ink);
   flex-shrink: 0;
+}
+.ability-edit-row-controls .levels-button:hover {
+  background: var(--surface-3);
+  color: var(--accent);
 }
 
 .ability-edit-row-controls .level-frame {

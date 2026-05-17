@@ -624,6 +624,13 @@ body.theme-light :focus-visible {
   padding-bottom: env(safe-area-inset-bottom, 0);
   z-index: 900;
 }
+/* When a lateral menu (left or right sidebar) is open, the bottom nav
+   sits behind it so the open sidebar covers it cleanly without the nav
+   showing through. */
+.sh-bnav.sh-bnav--hidden {
+  z-index: 700;
+  pointer-events: none;
+}
 .sh-bnav-item {
   flex: 1;
   display: flex;

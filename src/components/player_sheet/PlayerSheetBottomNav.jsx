@@ -25,10 +25,17 @@ const ITEMS = [
   { id: 'note',         icon: 'edit_note',    label: 'Notes'     },
 ];
 
+/** Ids that show in the bottom nav right now; the other entries in ITEMS
+ *  stay defined (still routable from elsewhere) but don't render here. */
+const VISIBLE_IDS = ['combat', 'inventory', 'skills', 'playerSpells'];
+
 export default function PlayerSheetBottomNav() {
   const dispatch = useDispatch();
   const player = useSelector(state => state.playerSheet.player);
   const mainView = useSelector(state => state.playerSheet.mainView ?? 'none');
+  const isLeftSidebarOpen  = useSelector(state => !state.playerSheet.isPlayerSheetSidebarCollapsed);
+  const isRightSidebarOpen = useSelector(state => !state.app.infoSidebarCollapsed);
+  const isAnySidebarOpen = isLeftSidebarOpen || isRightSidebarOpen;
 
   const [showSpellOptions, setShowSpellOptions] = useState(false);
   const spellPopupRef = useRef(null);
@@ -72,10 +79,16 @@ export default function PlayerSheetBottomNav() {
     };
   }, [showSpellOptions]);
 
-  const items = ITEMS.filter(it => it.id !== 'playerSpells' || showSpells);
+  const items = ITEMS
+    .filter(it => VISIBLE_IDS.includes(it.id))
+    .filter(it => it.id !== 'playerSpells' || showSpells);
 
   return (
-    <nav className="sh-bnav" aria-label="Player sheet sections">
+    <nav
+      className={`sh-bnav${isAnySidebarOpen ? ' sh-bnav--hidden' : ''}`}
+      aria-label="Player sheet sections"
+      aria-hidden={isAnySidebarOpen || undefined}
+    >
       {items.map(it => {
         if (it.id === 'playerSpells') {
           return (

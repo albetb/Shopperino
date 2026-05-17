@@ -246,12 +246,16 @@ tr.add-item td.action-size .item-number-button {
   align-self: center;
   align-items: center;
   justify-content: center;
-  padding: 1em;
+  padding: 0.75em 1.25em;
   box-shadow: 0 0 20px var(--black-t);
   border-radius: 0.8em;
   border: 2px solid var(--dark-grey);
-  height: 0.9em;
   margin-bottom: 8px;
+  /* Allow the box to grow to fit the gold / goods lines instead of
+     clipping them to a fixed 0.9em height. */
+  width: auto;
+  min-width: max-content;
+  max-width: 100%;
 }
 
 .filter-box-margin {

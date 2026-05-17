@@ -58,6 +58,21 @@ Each item is one block:
 
 ---
 
+### Merge ability base + bonus edit into a single panel
+**Where:** [menu_card_ability_scores.jsx](../../src/components/menus/player_sheet_sidebar/cards/menu_card_ability_scores.jsx); supporting styles in [menu_cards.css](../../src/style/menu_cards.css) (`.ability-edit-row`, `.ability-edit-row-controls`, `.ability-edit-row-label`).
+**Change:** Replace the two separate edit modes (`'base'` / `'bonus'`) with a single edit mode that shows **both** steppers per ability on the same row. Layout: `Str  [- 10 +]  [- 0 +]` per row, with a small column-header row above (e.g. `Base / Bonus`). One edit icon in the card title (instead of two), one save check that dispatches both `onSetAbilityBase` and `onSetAbilityBonus` per key.
+**Why:** Editing base and bonus are conceptually the same task ("tune this ability"). Two separate modes means two entries, two saves, and you can't see the bonus while tweaking the base. One panel cuts the trips in half and makes the relationship between the two numbers visible.
+**Notes:**
+- `editMode` collapses from `null | 'base' | 'bonus'` → `null | 'edit'` (or just a boolean). `tempValues` shape changes to `{ [key]: { base, bonus } }`.
+- `enterEdit` seeds `tempValues` with both `getAbilityBase` and `getAbilityBonus`.
+- `saveAll` dispatches both `onSetAbilityBase(key, …)` and `onSetAbilityBonus(key, …)` per key, then `exitEdit`.
+- Each row needs two `.ability-edit-row-controls` clusters side by side. Current rule is `width: 60%` per cluster — drop to roughly `flex: 1` each (or `~40%` per), with a small gap.
+- Header row above the steppers: `Ability | Base | Bonus`. Reuse `.ability-label-cell` styling.
+- Mobile width is the constraint: label + two pill steppers in a sidebar that's already 60% width of card. May need to shrink the `.level-frame` `min-width` or use `--btn-height-sm` buttons (already the case) so two steppers fit. Worth verifying in a narrow viewport.
+- Keep the existing `[!]` warning in the card title (all defaults) and the per-row clamp to `MIN_BASE/MAX_BASE` / `MIN_BONUS/MAX_BONUS`.
+
+---
+
 ### Spellbook table action buttons — notebook-tab styling
 **Where:** Spellbook tab — spell-level cards ([spell_level.jsx](../../src/components/spellbook/spell_level.jsx), the per-row `<td>` containing the bookmark / prepare / use buttons; styles in [sidebar.css](../../src/style/sidebar.css) under `.flat-button.smaller`, `.spell-slot-div`, `.spell-slot-div2`)
 **Change:** Rework the per-row action controls (Learn `bookmark_add` / `bookmark_remove`, Prepare `−` / `+` stepper, Use `wand_stars`) so they're noticeably narrower than today and visually feel like a small **tab clipped to the side of a notebook page** — e.g. an asymmetric rounded shape, slight inset shadow, accent edge, looking like it's tucked into the spell row rather than floating as a generic button.

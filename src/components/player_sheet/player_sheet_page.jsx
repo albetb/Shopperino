@@ -46,7 +46,9 @@ export default function PlayerSheetPage() {
 
   return (
     <div className="player-sheet-page">
-      <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--white)', textAlign: 'center' }}>{text}</p>
+      {mainView !== 'note' && (
+        <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--white)', textAlign: 'center' }}>{text}</p>
+      )}
       {content}
     </div>
   );

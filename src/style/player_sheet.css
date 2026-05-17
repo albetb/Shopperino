@@ -826,13 +826,76 @@
   min-width: 6.5rem;
 }
 
+/* Sized to the parent flex column so children that use a % width
+   (e.g. NoteEditor at 90%) get a real anchor. Without this the
+   container would shrink to fit its smallest child, making percentage
+   widths collapse to almost nothing.
+   min-height (not height): on pages with content taller than the
+   viewport, the box must grow with its content so padding-bottom adds
+   to the scroll height and the last item can clear the fixed bottom
+   nav. height: 100% would clip padding off the scroll length. */
+.player-sheet-page {
+  width: 100%;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* .app-header is a flex column with overflow: auto; without this,
+     the flex layout shrinks the page back to the container's height
+     and our padding-bottom never reaches the scroll length. */
+  flex-shrink: 0;
+}
+
+/* Note editor: full available height, textarea flexes to fill so the
+   whole component fits the screen with no inner scroll. */
+.note-editor-page {
+  width: 90%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-4);
+  padding-bottom: var(--space-12);
+  min-height: 0;
+}
+.note-editor-header {
+  text-align: center;
+  flex-shrink: 0;
+}
+.note-editor-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.note-editor-card .sh-card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.note-editor-card-stack {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.note-editor-textarea {
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  resize: none;
+}
+
 @media (max-width: 768px) {
   .ps-bottom-nav {
     display: flex;
   }
 
   .player-sheet-page {
-    padding-bottom: 3.5rem;
+    /* Reserve space for the fixed bottom nav (min-height 4.25rem +
+       safe-area inset) so the last item of any page can scroll above it
+       instead of being covered. */
+    padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0) + var(--space-3));
   }
 
   .player-sheet-race-cards .card-width-spellbook,
@@ -840,6 +903,9 @@
   .player-sheet-features-cards .card-width-spellbook {
     width: 95vw;
     max-width: 95vw;
+    /* Container already provides vertical gap; cancel the spellbook
+       card's own margin-bottom so cards don't double-space. */
+    margin-bottom: 0;
   }
 
   .player-sheet-note-editor {
