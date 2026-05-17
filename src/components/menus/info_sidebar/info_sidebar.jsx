@@ -54,7 +54,7 @@ export default function InfoSidebar() {
     <div className={`info-sidebar ${isCollapsed ? 'collapsed' : ''} ${sharedShopMobile ? 'info-sidebar-shared-mobile' : ''}`}>
       <button className="info-toggle-button" onClick={handleToggle}>
         <span className="material-symbols-outlined">
-          {isCollapsed ? 'manage_search' : 'arrow_forward_ios'}
+          {isCollapsed ? 'manage_search' : 'chevron_right'}
         </span>
       </button>
 

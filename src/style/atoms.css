@@ -423,7 +423,7 @@
 .sh-scrim {
   position: fixed; inset: 0;
   background: oklch(0 0 0 / 0.55);
-  z-index: 100;
+  z-index: 1100;
   animation: sh-fade-in var(--t-base) var(--ease);
 }
 @keyframes sh-fade-in { from { opacity: 0; } to { opacity: 1; } }
@@ -435,7 +435,7 @@
   border-top: 1px solid var(--border);
   border-radius: var(--radius-xl) var(--radius-xl) 0 0;
   box-shadow: var(--shadow-3);
-  z-index: 101;
+  z-index: 1101;
   padding: var(--space-3) var(--space-4) var(--space-5);
   max-height: 85vh;
   overflow: auto;
@@ -449,13 +449,26 @@
   border-radius: var(--radius-pill);
   margin: 0 auto var(--space-3);
 }
-.sh-sheet-head { display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-3); }
-.sh-sheet-head .ttl { font-family: var(--font-display); font-size: var(--font-size-xl); font-weight: 600; flex: 1; }
+.sh-sheet-head {
+  display: grid;
+  grid-template-columns: var(--tap-target-sm) 1fr var(--tap-target-sm);
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+.sh-sheet-head-spacer { display: block; width: var(--tap-target-sm); }
+.sh-sheet-head-text { text-align: center; min-width: 0; }
+.sh-sheet-head-text .ttl {
+  font-family: var(--font-display);
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  display: block;
+}
 
 /* --- MODAL --------------------------------------------------- */
 .sh-modal-scrim {
   position: fixed; inset: 0; background: oklch(0 0 0 / 0.55);
-  z-index: 110; display: grid; place-items: center; padding: var(--space-4);
+  z-index: 1110; display: grid; place-items: center; padding: var(--space-4);
   animation: sh-fade-in var(--t-base) var(--ease);
 }
 .sh-modal {
@@ -546,6 +559,10 @@ body.theme-light :focus-visible {
 @media (max-width: 768px) {
   .sh-home-hero { text-align: center; }
   .sh-home-toggle { align-self: center; }
+  /* Override the global "p { text-align: justify }" rule in sidebar.css
+     so the hero tagline tracks the hero's centered alignment on mobile. */
+  .sh-home-hero p,
+  .sh-home-tagline { text-align: center; }
 }
 
 /* --- HOME TILES --------------------------------------------- */

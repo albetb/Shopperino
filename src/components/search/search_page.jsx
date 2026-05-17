@@ -244,7 +244,7 @@ export default function SearchPage() {
       <div className={`sidebar ${sidebarCollapsed ? 'collapsed' : ''}`}>
         <button className="toggle-button" onClick={handleToggleSidebar}>
           <span className="material-symbols-outlined">
-            {sidebarCollapsed ? 'menu_open' : 'arrow_back_ios'}
+            {sidebarCollapsed ? 'menu_open' : 'chevron_left'}
           </span>
         </button>
 

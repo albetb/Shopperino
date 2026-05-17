@@ -16,7 +16,7 @@ export default function ShopSidebar() {
     <div className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>
       <button className="toggle-button" onClick={handleToggle}>
         <span className="material-symbols-outlined">
-          {isCollapsed ? 'menu_open' : 'arrow_back_ios'}
+          {isCollapsed ? 'menu_open' : 'chevron_left'}
         </span>
       </button>
 

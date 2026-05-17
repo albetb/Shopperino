@@ -25,7 +25,8 @@ export default function BottomSheet({ open, onClose, title, eyebrow, children })
         <div className="handle" aria-hidden="true" />
         {(title || eyebrow) && (
           <div className="sh-sheet-head">
-            <div style={{ flex: 1 }}>
+            <span className="sh-sheet-head-spacer" aria-hidden="true" />
+            <div className="sh-sheet-head-text">
               {eyebrow && <span className="sh-eyebrow" style={{ display: 'block' }}>{eyebrow}</span>}
               {title && <span className="ttl">{title}</span>}
             </div>

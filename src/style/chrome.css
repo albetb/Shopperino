@@ -36,15 +36,15 @@
 }
 .sh-topbar-brand img,
 .sh-topbar-brand .sh-brand-logo {
-  width: 1.75rem;
-  height: 1.75rem;
+  width: 2.25rem;
+  height: 2.25rem;
   border-radius: var(--radius-sm);
   object-fit: contain;
   flex-shrink: 0;
 }
 .sh-topbar-brand .sh-brand-word {
   font-family: var(--font-display);
-  font-size: var(--font-size-xl);
+  font-size: var(--font-size-2xl);
   font-weight: 600;
   white-space: nowrap;
   overflow: hidden;

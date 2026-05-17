@@ -60,7 +60,11 @@ export default function TopMenu() {
   };
 
   useEffect(() => {
-    if (!settingsOpen) return undefined;
+    // Desktop-only outside-click handler for the popover. On mobile the
+    // settings menu renders inside a <BottomSheet>, which has its own
+    // scrim/escape dismissal; running this handler there would close the
+    // sheet on every tap because the sheet lives outside settingsBoxRef.
+    if (!settingsOpen || mobile) return undefined;
     const onDown = ev => {
       if (settingsBoxRef.current?.contains(ev.target)) return;
       if (settingsBtnRef.current?.contains(ev.target)) return;
@@ -72,7 +76,7 @@ export default function TopMenu() {
       document.removeEventListener('mousedown', onDown);
       document.removeEventListener('touchstart', onDown);
     };
-  }, [settingsOpen]);
+  }, [settingsOpen, mobile]);
 
   const fileInput = (
     <input
@@ -90,8 +94,6 @@ export default function TopMenu() {
       <span className="sh-brand-word">Shopperino</span>
     </button>
   );
-
-  const accentDot = <ColorPicker />;
 
   const masterPlayerToggle = (
     <div className="sh-mode-toggle" role="group" aria-label="Master / Player mode">
@@ -113,6 +115,10 @@ export default function TopMenu() {
       {mobile && (
         <Button block variant="ghost" icon="qr_code_scanner" onClick={handleScanClick}>Scan shop QR</Button>
       )}
+      <div className="sh-row-h sh-spread" style={{ marginTop: 'var(--space-2)' }}>
+        <span className="sh-eyebrow">Accent &amp; theme</span>
+        <ColorPicker />
+      </div>
     </>
   );
 
@@ -157,10 +163,6 @@ export default function TopMenu() {
       <header className="sh-topbar" role="banner">
         {fileInput}
 
-        {showLeftMenu && (
-          <IconButton ghost icon="menu" aria-label="Open navigation" onClick={() => setNavOpen(true)} />
-        )}
-
         {brand}
 
         {!mobile && (
@@ -168,7 +170,6 @@ export default function TopMenu() {
             <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>{tabBar}</div>
             <div className="sh-topbar-actions">
               {masterPlayerToggle}
-              {accentDot}
               {settingsButton}
             </div>
           </>
@@ -176,7 +177,9 @@ export default function TopMenu() {
 
         {mobile && (
           <div className="sh-topbar-actions">
-            {accentDot}
+            {showLeftMenu && (
+              <IconButton ghost icon="menu" aria-label="Open navigation" onClick={() => setNavOpen(true)} />
+            )}
             {settingsButton}
           </div>
         )}

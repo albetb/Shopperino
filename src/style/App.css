@@ -18,7 +18,8 @@
 
 :root {
   /* Top bar height — must match .sh-topbar height in chrome.css so content
-     reserves the right amount of space below the fixed top bar. */
+     reserves the right amount of space below the fixed top bar.
+     On mobile this is reduced ~30% by a media query at the bottom of App.css. */
   --menu-height: 4.25rem;
 
   --white: #f9f9f9;
@@ -258,6 +259,32 @@ table {
     padding: 1%;
     padding-left: 3%;
     padding-right: 3%;
+  }
+}
+
+/* Compact top bar on mobile (~ -30% vs desktop). */
+@media (max-width: 768px) {
+  :root { --menu-height: 3rem; }
+
+  .sh-topbar {
+    height: 3rem;
+    padding: var(--space-1) var(--space-3);
+  }
+
+  .sh-topbar .sh-icon-btn {
+    width: 2.25rem;
+    height: 2.25rem;
+    font-size: 1rem;
+  }
+
+  .sh-topbar-brand .sh-brand-logo,
+  .sh-topbar-brand img {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .sh-topbar-brand .sh-brand-word {
+    font-size: var(--font-size-xl);
   }
 }
 

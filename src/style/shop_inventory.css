@@ -408,6 +408,12 @@ tr.add-item td.action-size .item-number-button {
     max-width: 96vw;
   }
 
+  /* Match the Add Item button to the mobile shop-table width. */
+  .add-item-button.medium-long {
+    width: 96vw !important;
+    max-width: 96vw !important;
+  }
+
   .spellbook-table {
     width: 96%;
   }
