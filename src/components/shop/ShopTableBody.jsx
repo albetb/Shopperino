@@ -1,16 +1,10 @@
 import { formatNumber } from 'lib/utils';
-import AddItemForm from './AddItemForm';
 import ShopItemRow from './ShopItemRow';
 
 export default function ShopTableBody({
   sortedItems,
-  items,
   isViewOnly,
-  showAddItemForm,
-  hasItems,
   deletingItems,
-  onAddItem,
-  setShowAddItemForm,
   onDeleteClick,
   longPressHandlers,
   onOpenCard,
@@ -32,13 +26,6 @@ export default function ShopTableBody({
           getEffectById={getEffectById}
         />
       ))}
-      {!isViewOnly && hasItems && showAddItemForm && (
-        <AddItemForm
-          onAddItem={onAddItem}
-          items={items}
-          setShowAddItemForm={setShowAddItemForm}
-        />
-      )}
     </tbody>
   );
 }

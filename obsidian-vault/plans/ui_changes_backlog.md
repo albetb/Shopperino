@@ -2,6 +2,26 @@
 
 > Effective UI/UX changes (not bug fixes) deferred until the current round of fixes settles. Each item below is a deliberate design or behavior change, not a regression fix. Work through this list **after** the active fix pass is done.
 
+## Difficulty ranking & open decisions
+
+Remaining items only (✓-done items omitted). Difficulty buckets approximate effort start-to-finish for a focused pass; "open decisions" lists the calls that need to be made before/while implementing.
+
+### 🟡 Medium (30–90 min)
+
+**Spellbook table action buttons — notebook-tab styling**
+- Open decisions: build a shared `NotebookTabButton` common atom (used by Learn / Prepare / Use), or restyle each in place? Target width — keep `--btn-width-sm * 2.5` or shrink (and to what)?
+
+**Merge ability base + bonus edit into a single panel**
+- Open decisions: column-header row (`Ability | Base | Bonus`) above the steppers, or small label inside each stepper cluster? Confirm two steppers + label still fit at narrowest mobile sidebar width before committing.
+
+### 🔴 Large / cross-cutting (half-day+)
+
+**UI consistency pass — unified card widths app-wide**
+- Open decisions: one token (`--card-width`) for everything, or two (`--card-width-main` + `--card-width-sidebar`) because sidebars are intentionally narrower? Rename `.card-width-spellbook` to a neutral name (e.g. `.sh-card-block`) as part of the pass, or leave the class name and just change the value? Card spacing — live on the card's `margin-bottom` or on the container's `gap`; pick one and stop double-stacking.
+
+---
+
+
 ## Format
 
 Each item is one block:
@@ -29,27 +49,15 @@ Each item is one block:
 
 ---
 
-### Add Item in Player Sheet Inventory should be a modal
-**Where:** [inventory_page.jsx](../../src/components/player_sheet/inventory_page.jsx) — the `Inventory items` Card with its inline `<AddItemFormInventory>` row, [AddItemFormInventory.jsx](../../src/components/player_sheet/inventory/AddItemFormInventory.jsx), [InventoryTableHeader.jsx](../../src/components/player_sheet/inventory/InventoryTableHeader.jsx).
-**Change:** Move the add-item form out of the inventory table and into a centered `<Modal>` triggered by the `+` icon in the Inventory items card action area. The card's `+` button toggles `showAddItemForm`, which currently injects `<AddItemFormInventory>` as the last `<tr>` inside the table — replace that with opening a modal that hosts the form.
-**Why:** Same problem as the shop's inline add row: the form's inputs/selects get crammed into a narrow column, item-search results don't have room to breathe, and on mobile the form competes for width with the existing item rows. A modal gives full-width inputs and a proper search experience.
-**Notes:**
-- Reuse the [Modal](../../src/components/common/Modal.jsx) atom.
-- Keep the existing wiring: the modal's submit still calls `handleAddItem(name, type, number, link)` which dispatches `onAddInventoryItem`.
-- The `+` icon's pressed/expanded state can be dropped once it's just "open modal" instead of "toggle inline form".
-- This is a sibling task to the Shop's "Add Item should be a modal" entry below — when implementing, consider sharing a single `<AddItemModal>` if the field shape lines up.
+### ✓ Add Item in Player Sheet Inventory should be a modal (done)
+**Where:** [inventory_page.jsx](../../src/components/player_sheet/inventory_page.jsx), [AddItemFormInventory.jsx](../../src/components/player_sheet/inventory/AddItemFormInventory.jsx).
+**Change applied:** `AddItemFormInventory` now renders inside `<Modal>` instead of as a table row. The Inventory items card's `+` action and footer "Add item" button both call `setShowAddItemForm(true)` to open the modal; submit dispatches `onAddInventoryItem` as before and closes the modal on success.
 
 ---
 
-### Add Item in Shop should be a modal
-**Where:** Shop tab — main inventory view ([ShopInventory.jsx](../../src/components/shop/ShopInventory.jsx), [ShopTableBody.jsx](../../src/components/shop/ShopTableBody.jsx), [AddItemForm.jsx](../../src/components/shop/AddItemForm.jsx))
-**Change:** Replace the inline "add-row" approach (currently inserts an `<AddItemForm>` row inside the shop table) with a centered `<Modal>` triggered by the Add Item button.
-**Why:** The current row is too narrow on mobile and the inputs/selects are cramped and hard to read. A modal gives the form proper breathing room and lets us use full-width inputs.
-**Notes:**
-- Reuse the existing `<Modal>` atom from [src/components/common/Modal.jsx](../../src/components/common/Modal.jsx).
-- Keep the existing thunk wiring (`updateShop(['buy', name, type, cost, number, link])`).
-- The Add Item button stays at the same width as the table; clicking it opens the modal instead of toggling `showAddItemForm` for the row.
-- The `tr.add-item` styles in `shop_inventory.css` can be removed once the row is gone.
+### ✓ Add Item in Shop should be a modal (done)
+**Where:** [ShopInventory.jsx](../../src/components/shop/ShopInventory.jsx), [ShopTableBody.jsx](../../src/components/shop/ShopTableBody.jsx), [AddItemForm.jsx](../../src/components/shop/AddItemForm.jsx).
+**Change applied:** `AddItemForm` now renders inside `<Modal>` with stacked Name / Type / Quantity / Cost fields. `ShopTableBody` no longer renders the inline form row (kept the `tr.add-item` styles in `shop_inventory.css` in case they're reused — they're orphaned but harmless). `ShopInventory` opens the modal from the existing Add Item button and dispatches `updateShop(['buy', …])` on submit.
 
 ---
 
@@ -67,19 +75,11 @@ Each item is one block:
 
 ---
 
-### Inline sidebar cards in main content on mobile — Search & Loot pages
-**Where:**
-- Loot: [App.jsx](../../src/App.jsx) (`loot` branch wires `<LootSidebar />` + `<LootInventory />`), [LootSidebar](../../src/components/menus/loot_sidebar/loot_sidebar.jsx), [LootMenuCards](../../src/components/menus/loot_sidebar/cards/loot_menu_cards.jsx), [LootInventory](../../src/components/loot/loot_inventory.jsx)
-- Search: [search_page.jsx](../../src/components/search/search_page.jsx) (sidebar is inlined inside the page itself, not via App.jsx)
-**Change:** On mobile, do **not** render the left sidebar for the Search and Loot pages. Instead, render the same menu cards as collapsible cards at the **top of the main content**, above the results / loot inventory. On desktop the layout stays exactly as it is today (sidebar on the left).
-**Why:** On phones the sidebar is overkill for these two pages — they're essentially "configure → view results" flows. Putting the controls inline at the top removes the open/close dance, frees horizontal space, and feels more like a normal mobile form-then-list page. The shop/spellbook/player-sheet pages keep their sidebar because they have richer multi-card configuration.
-**Notes:**
-- **Cards collapsible at the top.** The card(s) render expanded by default the first time, with the usual collapse chevron. State stays driven by the same `UI_FLAG.lc` / search-card-collapsed flags so collapsed state persists across the desktop/mobile split.
-- **Info sidebar (right) works as normal** — only the *left* sidebar moves inline. The info sidebar's mobile FAB and drawer stay untouched.
-- **Back button handler is only active when a menu is opened.** Since the cards live in normal scroll flow on mobile, there's no "open" state for the sidebar anymore — so `useBackButtonHandler` for the left sidebar should be skipped on mobile for these two pages. It still applies to any modal/scanner/etc. that opens above the cards.
-- Loot is the easy half: `LootMenuCards` is already a clean component → render it at the top of `LootInventory` when `isMobile()`. In `App.jsx`, skip `<LootSidebar />` on mobile.
-- Search is messier: the current sidebar markup is *inside* `search_page.jsx` and shares local state with the rest of the page. Extract that JSX into a small `SearchFiltersCards` component (or just gate the wrapping `.sidebar` div behind `!isMobile()` and render the same cards container inline at the top when mobile).
-- Confirm `cards-aligned` + the recent 60% width rule still look right when the cards live in the main content area (wider than the sidebar). May need to cap card width on mobile so it doesn't stretch full width like a banner.
+### ✓ Inline sidebar cards in main content on mobile — Search & Loot pages (done)
+**Where:** [LootSidebar](../../src/components/menus/loot_sidebar/loot_sidebar.jsx), [LootInventory](../../src/components/loot/loot_inventory.jsx), [search_page.jsx](../../src/components/search/search_page.jsx).
+**Change applied (Loot):** `LootSidebar` now early-returns `null` when `isMobile()` (toggle button and back-button handler both gated off in that branch); `LootInventory` renders `<LootMenuCards />` at the top of its output on mobile (covers both the empty-state hint and the populated-loot view).
+**Change applied (Search):** The existing `Search` card JSX is hoisted into a local `searchCard` constant. The `<div className="sidebar">` wrapper (toggle button + cards container) is gated behind `!isMobile()`. On mobile, the same `searchCard` is rendered inline inside `app-header` above the `.search-results` div, wrapped in `<div className="cards cards-aligned search-inline-cards">` so it picks up the standard card chrome. The card's existing `searchCardCollapsed` local state keeps its collapse behavior in both contexts.
+**Info sidebar (right):** untouched, still works as before.
 
 ---
 
@@ -110,14 +110,6 @@ Each item is one block:
 
 ---
 
-### Shop row layout more readable on mobile
-**Where:** Shop tab — inventory rows ([ShopItemRow.jsx](../../src/components/shop/ShopItemRow.jsx), [ShopTableHeader.jsx](../../src/components/shop/ShopTableHeader.jsx), `shop_inventory.css` mobile media query)
-**Change:** Redesign each shop row on mobile so it's easier to scan. Two options to pick from:
-- **Option A — drop the Type column on mobile.** Keep `#`, Name, Cost, sell button. Type can move into the item info card / search.
-- **Option B (Recommended) — stack each row into two lines.** Line 1: `#` + Name (large). Line 2: Type (muted) + Cost (mono) + sell button on the right.
-**Why:** The current 4-column row is cramped on mobile — Name truncates and Type/Cost sit in narrow strips that are hard to read. A two-line layout uses vertical space (which is plentiful on phones) instead of fighting for horizontal pixels.
-**Notes:**
-- Apply via mobile media query so desktop keeps the current single-row table layout.
-- The sell button should stay aligned to the right edge of line 2 with a clear tap target.
-- Preserve the existing long-press-to-sell interaction.
-- The header row's columns won't map 1:1 anymore on mobile — either hide it on mobile (the layout is self-explanatory) or replace with a sort-by chip strip above the list.
+### ✓ Shop row layout more readable on mobile (done — Option B)
+**Where:** [ShopItemRow.jsx](../../src/components/shop/ShopItemRow.jsx), [shop_inventory.css](../../src/style/shop_inventory.css) (mobile media query).
+**Change applied:** Option B (two-line stacked) under `max-width: 768px`. Each `<tr>` becomes a 3-column grid with areas `"num name name" / "type cost action"`. Per-cell classes added (`shop-cell shop-cell--num/name/type/cost/action`) so cells can be placed via `grid-area`. Name reads as the primary line (1rem, weight 600); Type is muted (smaller, faded); Cost is mono; the sell button sticks to the right edge of line 2 with the existing long-press handler intact. The table header (`thead`) is hidden on mobile — the row layout reads on its own.

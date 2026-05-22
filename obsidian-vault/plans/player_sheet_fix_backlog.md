@@ -64,11 +64,9 @@
 
 ---
 
-### Features page — `onSetPlayerSpellOption` misleadingly named
-**Where:** [features_page.jsx:114](../../src/components/player_sheet/features_page.jsx#L114), [playerSheetThunks.js:249](../../src/store/thunks/playerSheetThunks.js#L249)
-**Symptom:** Functional — alignment changes save — but the thunk name suggests "spell options" when it actually routes moral/ethical alignment.
-**Root cause:** Thunk was renamed/refactored at some point; the call site and thunk are mismatched in naming, not behaviour.
-**Fix:** Rename the thunk to `onSetPlayerAlignment` (or split into `onSetMoralAlignment` / `onSetEthicalAlignment`) and update call sites. Low priority — purely a clarity issue.
+### ✓ Features page — `onSetPlayerSpellOption` misleadingly named (done)
+**Where:** [features_page.jsx](../../src/components/player_sheet/features_page.jsx), [playerSheetThunks.js](../../src/store/thunks/playerSheetThunks.js)
+**Fix applied:** Split the original `onSetPlayerSpellOption` thunk into two: `onSetPlayerSpellOption(key, value)` now handles only `domain1` / `domain2` / `specialized` / `forbidden1` / `forbidden2` (still used by [spellbook_table.jsx](../../src/components/spellbook/spellbook_table.jsx)). A new `onSetPlayerAlignment(key, value)` handles `moralAlignment` / `ethicalAlignment` plus the Druid axis-linking rule. [features_page.jsx](../../src/components/player_sheet/features_page.jsx) was updated to dispatch the new alignment thunk.
 
 ---
 
@@ -122,16 +120,9 @@
 
 ## Still TODO
 
-### Skills edit mode — sticky used/total ranks pill
-**Where:** [skills_page.jsx](../../src/components/player_sheet/skills_page.jsx), the `<Pill tone={overCap ? 'warn' : 'accent'}>{usedPoints} / {totalPoints} ranks</Pill>` in the header row. Companion CSS likely in [skills.css](../../src/style/skills.css).
-**Change:** While editing (`isEditing === true`), the `usedPoints / totalPoints ranks` pill should detach from the header and stay pinned on screen as the user scrolls through the skill list — so they can always see how close they are to the cap without scrolling back up. In view mode it stays where it is today (inline in the title row).
-**Why:** The list of skills is long; in edit mode the user is repeatedly adjusting ranks and needs ongoing feedback on the remaining budget. Pinned visibility removes the back-and-forth scrolling.
-**Notes:**
-- Likely `position: sticky; top: var(--menu-height)` on the pill's container so it sticks just below the topbar. Alternative: render a second copy of the pill in edit mode, wrapped in a sticky container.
-- Or `position: fixed` with safe-area handling for mobile.
-- The pill must still flip to the `warn` tone (red) once `overCap` is true so the warning stays prominent while pinned.
-- Make sure it doesn't overlap the new "Skill · ability / Ranks / Bonus" header row at the top of the table — small top margin on the table, or have the sticky pill render outside the card.
-- On desktop, the sidebar already has space — could optionally render the pill in the sidebar instead. Decide which feels right after sticky is tried.
+### ✓ Skills edit mode — sticky used/total ranks pill (done)
+**Where:** [skills_page.jsx](../../src/components/player_sheet/skills_page.jsx), [skills.css](../../src/style/skills.css) (`.sh-skill-sticky-pill`).
+**Fix applied:** Renders a second `<Pill>` inside `.sh-skill-sticky-pill` only while editing. The container is `display: none` by default and switches to `position: fixed` + `bottom: calc(4.5rem + var(--space-2))` + `right: var(--space-3)` under `max-width: 768px` so it sits in the bottom-right of the viewport, just above the player-sheet bottom navbar on mobile. `pointer-events: none` keeps the pill from blocking taps. The pill still flips to `warn` tone when `overCap` is true.
 
 ---
 
@@ -153,7 +144,6 @@
 
 ---
 
-- **Misnamed `onSetPlayerSpellOption` thunk** — purely cosmetic; leave for a polish pass.
 - **Encumbrance / carrying capacity math** — `Player.getInventoryWeight()` returns 0 (stub). Need to sum item weights from items.json, then compare to Str-based capacity table from [equipment.md](../dnd-rules/equipment.md), with race size modifier from [races.md](../dnd-rules/races.md).
 - **Spell slots per day / bonus spells** — verify bonus slots from high ability mod, specialist Wizard +1, Cleric domain +1 per level (see [magic.md](../dnd-rules/magic.md)).
 - **Fighter bonus combat feats** — `getFeatPointsMax()` doesn't include Fighter's bonus combat feats (every even level). Either fold into getFeatPointsMax with class awareness, or split into "general feat slots" + "class bonus feat slots".
@@ -166,3 +156,28 @@
 4. **Polish** — rename the misnamed `onSetPlayerSpellOption` thunk, re-test the `[!]` feat alert end-to-end.
 
 When in doubt: read the relevant rules note first, then the corresponding `src/data/*.json`. Don't rederive a mechanic from memory if a topic file exists for it.
+
+---
+
+## Difficulty ranking & open decisions
+
+Remaining items only (✓-done items omitted). Difficulty buckets approximate effort start-to-finish for a focused pass; "open decisions" lists the calls that need to be made before/while implementing.
+
+### 🟡 Medium (30–90 min)
+
+**Fighter bonus combat feats**
+- Open decisions: fold Fighter bonus feats into a single `getFeatPointsMax()` total, or split into `generalFeatSlots` + `classBonusFeatSlots` (two budgets shown separately in the UI)?
+
+**Spell slots / bonus spells verification**
+- Open decisions: scope — verification only, or also implement specialist Wizard +1 and Cleric domain +1 per level if found missing?
+
+**Combat page — rework the header card**
+- Open decisions (biggest one in this file): drop the card entirely (and where does the character name go — into the page title?), or keep it and repurpose (portrait? conditions? xp? quick actions?). Need a concrete spec before any code lands.
+
+### 🟠 Harder (2+ hours)
+
+**Combat page — inline modifier edit per stat card**
+- Open decisions: does AC get an editable bonus (new `acBonus` field on the player model) or is it left read-only? Pencil button on each card vs chevron-toggle vs always-visible-but-collapsed edit row?
+
+**Encumbrance / carrying capacity math**
+- Open decisions: where to display in the UI — pill in the Inventory header? Color-coded (green / yellow / red for light / medium / heavy)? Do quadrupeds (×1.5) need to be supported even though no PC race is one — skip or include for completeness?

@@ -239,92 +239,101 @@ export default function SearchPage() {
     setDomainCollapsed(prev => ({ ...prev, [domain]: !prev[domain] }));
   };
 
-  return (
-    <>
-      <div className={`sidebar ${sidebarCollapsed ? 'collapsed' : ''}`}>
-        <button className="toggle-button" onClick={handleToggleSidebar}>
+  const searchCard = (
+    <div className="card">
+      <div
+        className="card-side-div card-expand-div"
+        onClick={() => setSearchCardCollapsed(prev => !prev)}
+      >
+        <h3 className="card-title">Search</h3>
+        <button className="collapse-button">
           <span className="material-symbols-outlined">
-            {sidebarCollapsed ? 'menu_open' : 'chevron_left'}
+            {searchCardCollapsed ? 'expand_more' : 'expand_less'}
           </span>
         </button>
-
-        {!sidebarCollapsed && (
-          <div className="cards">
-            <div className="card">
-              <div
-                className="card-side-div card-expand-div"
-                onClick={() => setSearchCardCollapsed(prev => !prev)}
-              >
-                <h3 className="card-title">Search</h3>
-                <button className="collapse-button">
-                  <span className="material-symbols-outlined">
-                    {searchCardCollapsed ? 'expand_more' : 'expand_less'}
-                  </span>
-                </button>
-              </div>
-              {!searchCardCollapsed && (
-              <div className="card-content">
-                <div className="card-side-div flex-gap-sm">
-                  <label className="modern-label label-min-width">Type:</label>
-                  <select
-                    className="modern-dropdown small-long flex-1"
-                    value={searchType}
-                    onChange={e => {
-                      const value = e.target.value;
-                      setSearchType(value);
-                      if (value !== 'Spells') {
-                        setSpellClassFilter('All');
-                      }
-                    }}
-                  >
-                    {TYPE_OPTIONS.map(opt => (
-                      <option key={opt || '-'} value={opt}>
-                        {opt || '-'}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {searchType === 'Spells' && (
-                  <div className="card-side-div margin-top flex-gap-sm">
-                    <label className="modern-label label-min-width">Class:</label>
-                    <select
-                      className="modern-dropdown small-long flex-1"
-                      value={spellClassFilter}
-                      onChange={e => {
-                        const value = e.target.value;
-                        setSpellClassFilter(value);
-                      }}
-                    >
-                      {SPELL_CLASS_OPTIONS.map(opt => (
-                        <option key={opt} value={opt}>
-                          {opt}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                )}
-
-                {searchType && (
-                  <div className="card-side-div margin-top flex-gap-sm">
-                    <label className="modern-label label-min-width">Contains:</label>
-                    <input
-                      className="modern-dropdown small-long padding-left flex-1"
-                      type="text"
-                      placeholder="Filter by name"
-                      value={query}
-                      onChange={e => setQuery(e.target.value)}
-                    />
-                  </div>
-                )}
-              </div>
-              )}
-            </div>
-          </div>
-        )}
       </div>
+      {!searchCardCollapsed && (
+        <div className="card-content">
+          <div className="card-side-div flex-gap-sm">
+            <label className="modern-label label-min-width">Type:</label>
+            <select
+              className="modern-dropdown small-long flex-1"
+              value={searchType}
+              onChange={e => {
+                const value = e.target.value;
+                setSearchType(value);
+                if (value !== 'Spells') {
+                  setSpellClassFilter('All');
+                }
+              }}
+            >
+              {TYPE_OPTIONS.map(opt => (
+                <option key={opt || '-'} value={opt}>
+                  {opt || '-'}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {searchType === 'Spells' && (
+            <div className="card-side-div margin-top flex-gap-sm">
+              <label className="modern-label label-min-width">Class:</label>
+              <select
+                className="modern-dropdown small-long flex-1"
+                value={spellClassFilter}
+                onChange={e => {
+                  const value = e.target.value;
+                  setSpellClassFilter(value);
+                }}
+              >
+                {SPELL_CLASS_OPTIONS.map(opt => (
+                  <option key={opt} value={opt}>
+                    {opt}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          {searchType && (
+            <div className="card-side-div margin-top flex-gap-sm">
+              <label className="modern-label label-min-width">Contains:</label>
+              <input
+                className="modern-dropdown small-long padding-left flex-1"
+                type="text"
+                placeholder="Filter by name"
+                value={query}
+                onChange={e => setQuery(e.target.value)}
+              />
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+
+  const mobile = isMobile();
+
+  return (
+    <>
+      {!mobile && (
+        <div className={`sidebar ${sidebarCollapsed ? 'collapsed' : ''}`}>
+          <button className="toggle-button" onClick={handleToggleSidebar}>
+            <span className="material-symbols-outlined">
+              {sidebarCollapsed ? 'menu_open' : 'chevron_left'}
+            </span>
+          </button>
+
+          {!sidebarCollapsed && (
+            <div className="cards">{searchCard}</div>
+          )}
+        </div>
+      )}
 
       <header className="app-header">
+        {mobile && (
+          <div className="cards cards-aligned search-inline-cards">{searchCard}</div>
+        )}
         <div className="search-results">
           {!searchType && (
             <p className="search-hint">

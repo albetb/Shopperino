@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { onAddBonusLanguage, onRemoveBonusLanguage } from '../../store/thunks/playerSheetThunks';
-import { onSetPlayerSpellOption } from '../../store/thunks/playerSheetThunks';
+import { onSetPlayerAlignment } from '../../store/thunks/playerSheetThunks';
 import { getClassData, getRaceData } from '../../lib/player';
 import { getAllowedEthics, getAllowedMorals } from '../../lib/alignment';
 import { getClassStats, renderFeature } from './class_cards';
@@ -113,7 +113,7 @@ export default function FeaturesPage() {
   const allowedEthics = useMemo(() => getAllowedEthics(className), [className]);
   const currentMoral = allowedMorals.includes(moralAlignment) ? moralAlignment : allowedMorals[0];
   const currentEthical = allowedEthics.includes(ethicalAlignment) ? ethicalAlignment : allowedEthics[0];
-  const setAlignment = (key, value) => dispatch(onSetPlayerSpellOption(key, value));
+  const setAlignment = (key, value) => dispatch(onSetPlayerAlignment(key, value));
   const alignmentTitle = currentMoral === 'Neutral' && currentEthical === 'Neutral'
     ? 'Neutral'
     : `${currentEthical} ${currentMoral}`;

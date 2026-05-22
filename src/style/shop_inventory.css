@@ -489,4 +489,56 @@ tr.add-item td.action-size .item-number-button {
   .suggestions {
     max-height: 18rem;
   }
+
+  /* Shop row, mobile two-line layout (Option B):
+       Line 1:  #  Name (large)
+       Line 2:  Type (muted) · Cost (mono) · sell button (right edge)
+     Each <tr> becomes a 3-column grid with two rows. Cells are placed via
+     grid-area; padding/borders moved off the <td>s onto the <tr> so the row
+     reads as one block instead of five stacked cells. */
+  .shop-table thead {
+    display: none;
+  }
+  .shop-table tbody tr.shop-row {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas:
+      "num  name  name"
+      "type cost  action";
+    column-gap: var(--space-3);
+    row-gap: 0.15rem;
+    align-items: center;
+    padding: 0.6rem 0.4rem;
+    border-top: 1px solid var(--grey-t);
+  }
+  .shop-table tbody tr.shop-row > td {
+    border-top: 0;
+    padding: 0;
+  }
+  .shop-cell--num    { grid-area: num;    font-size: 0.9em; }
+  .shop-cell--name {
+    grid-area: name;
+    font-size: 1rem;
+    color: var(--white);
+    min-width: 0;
+  }
+  .shop-cell--name .button-link {
+    font-size: 1rem;
+    font-weight: 600;
+  }
+  .shop-cell--type {
+    grid-area: type;
+    font-size: 0.75em;
+    color: var(--white2);
+    opacity: 0.75;
+  }
+  .shop-cell--cost {
+    grid-area: cost;
+    font-family: var(--font-mono, monospace);
+    font-size: 0.85em;
+  }
+  .shop-cell--action {
+    grid-area: action;
+    justify-self: end;
+  }
 }

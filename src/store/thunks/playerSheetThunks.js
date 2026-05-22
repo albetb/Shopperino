@@ -244,10 +244,22 @@ export const onRemoveBonusLanguage = (lang) => (dispatch, getState) => {
   persistPlayer(dispatch, getState, p);
 };
 
-const SPELL_OPTION_KEYS = ['domain1', 'domain2', 'specialized', 'forbidden1', 'forbidden2', 'moralAlignment', 'ethicalAlignment'];
+const SPELL_OPTION_KEYS = ['domain1', 'domain2', 'specialized', 'forbidden1', 'forbidden2'];
+const ALIGNMENT_KEYS = ['moralAlignment', 'ethicalAlignment'];
 
 export const onSetPlayerSpellOption = (key, value) => (dispatch, getState) => {
   if (!SPELL_OPTION_KEYS.includes(key)) return;
+  const app = getState().persist;
+  if (app.pss == null || app.pss < 0 || !app.psc?.[app.pss]) return;
+  const p = db.getPlayerByIndex(app, app.pss);
+  if (!p) return;
+  if (typeof value !== 'string') return;
+  p[key] = value;
+  persistPlayer(dispatch, getState, p);
+};
+
+export const onSetPlayerAlignment = (key, value) => (dispatch, getState) => {
+  if (!ALIGNMENT_KEYS.includes(key)) return;
   const app = getState().persist;
   if (app.pss == null || app.pss < 0 || !app.psc?.[app.pss]) return;
   const p = db.getPlayerByIndex(app, app.pss);

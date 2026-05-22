@@ -11,6 +11,7 @@ import { useShopLabels } from './hooks/useShopLabels';
 import DeletePopup from './DeletePopup';
 import ShopTableBody from './ShopTableBody';
 import ShopTableHeader from './ShopTableHeader';
+import AddItemForm from './AddItemForm';
 import 'style/shop_inventory.css';
 
 const LONGPRESS_TIME = 400;
@@ -128,18 +129,13 @@ export default function ShopInventory() {
       )}
 
       <table
-        className={`shop-table ${showAddItemForm ? 'shop-table-adding' : ''} ${hasItems ? '' : 'shop-table-empty'}`}
+        className={`shop-table ${hasItems ? '' : 'shop-table-empty'}`}
       >
         <ShopTableHeader sortColumn={sortColumn} sortDesc={sortDesc} onSort={handleSort} isViewOnly={isViewOnly} />
         <ShopTableBody
           sortedItems={sortedItems}
-          items={items}
           isViewOnly={isViewOnly}
-          showAddItemForm={showAddItemForm}
-          hasItems={hasItems}
           deletingItems={deletingItems}
-          onAddItem={handleAddItem}
-          setShowAddItemForm={setShowAddItemForm}
           onDeleteClick={handleDeleteItemClick}
           longPressHandlers={longPressEvent}
           onOpenCard={handleOpenCard}
@@ -147,10 +143,19 @@ export default function ShopInventory() {
         />
       </table>
 
-      {!isViewOnly && hasItems && !showAddItemForm && (
+      {!isViewOnly && hasItems && (
         <button className="add-item-button medium-long" onClick={() => setShowAddItemForm(true)}>
           Add Item
         </button>
+      )}
+
+      {!isViewOnly && (
+        <AddItemForm
+          open={showAddItemForm}
+          onAddItem={handleAddItem}
+          items={items}
+          onClose={() => setShowAddItemForm(false)}
+        />
       )}
 
       {popup.visible && (

@@ -4,6 +4,7 @@ import Loot from '../../lib/loot';
 import { unixToDisplay } from '../../lib/storageFormat';
 import { formatNumber, isMobile, trimLine } from '../../lib/utils';
 import { addCardByLink } from '../../store/slices/appSlice';
+import LootMenuCards from '../menus/loot_sidebar/cards/loot_menu_cards';
 import '../../style/shop_inventory.css';
 
 const GOODS_DISPLAY_CHUNK_SIZE = 10;
@@ -47,18 +48,26 @@ export default function LootInventory() {
     [goodsList]
   );
 
+  const timeLabel = () => trimLine(lootName, isMobile() ? 20 : 30);
+
+  // On mobile the left sidebar is suppressed in LootSidebar — render the
+  // same menu cards inline at the top of the main content instead.
+  const mobileMenu = isMobile() ? <LootMenuCards /> : null;
+
   if (!lootName) {
     return (
-      <p className="search-hint">
-        Select players level and generate a loot.
-      </p>
+      <>
+        {mobileMenu}
+        <p className="search-hint">
+          Select players level and generate a loot.
+        </p>
+      </>
     );
   }
 
-  const timeLabel = () => trimLine(lootName, isMobile() ? 20 : 30);
-
   return (
     <>
+      {mobileMenu}
       <div className="header-container">
         <div className="label-container">
           <h2>Generated at {timeLabel()}</h2>

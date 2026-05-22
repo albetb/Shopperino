@@ -29,9 +29,9 @@ export default function ShopItemRow({
   };
 
   return (
-    <tr className={isDeleting ? 'deleting' : ''}>
-      <td className="align-right td-muted">{item.Number}</td>
-      <td className="td-muted">
+    <tr className={`shop-row${isDeleting ? ' deleting' : ''}`}>
+      <td className="align-right td-muted shop-cell shop-cell--num">{item.Number}</td>
+      <td className="td-muted shop-cell shop-cell--name">
         {item.Link ? (
           <button type="button" className="button-link" onClick={handleNameClick}>
             {item.Name}
@@ -40,10 +40,10 @@ export default function ShopItemRow({
           item.Name
         )}
       </td>
-      <td className="td-muted">{abbrevType}</td>
-      <td className="td-muted">{formatNum(item.Cost)}</td>
+      <td className="td-muted shop-cell shop-cell--type">{abbrevType}</td>
+      <td className="td-muted shop-cell shop-cell--cost">{formatNum(item.Cost)}</td>
       {!isViewOnly && (
-        <td className="td-action">
+        <td className="td-action shop-cell shop-cell--action">
           <button
             className="flat-button smaller btn-cell-muted"
             onClick={(e) => onDeleteClick(e, item.Name, item.ItemType, item.Number)}

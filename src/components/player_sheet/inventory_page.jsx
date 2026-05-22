@@ -164,16 +164,16 @@ export default function InventoryPage() {
         action={
           <IconButton
             ghost size="sm"
-            icon={showAddItemForm ? 'close' : 'add'}
-            onClick={() => setShowAddItemForm(v => !v)}
-            aria-label={showAddItemForm ? 'Cancel adding item' : 'Add item'}
+            icon="add"
+            onClick={() => setShowAddItemForm(true)}
+            aria-label="Add item"
           />
         }
       >
         <table className="sh-inv-table">
           <InventoryTableHeader sortColumn={sortColumn} sortDesc={sortDesc} onSort={handleSort} />
           <tbody>
-            {inventory.length === 0 && !showAddItemForm && (
+            {inventory.length === 0 && (
               <tr>
                 <td colSpan={4}>
                   <EmptyState icon="inbox" title="No items yet" hint="Tap + above to add something." />
@@ -190,26 +190,26 @@ export default function InventoryPage() {
                 getEffectById={getEffectById}
               />
             ))}
-            {showAddItemForm && (
-              <AddItemFormInventory
-                onAddItem={handleAddItem}
-                items={allItems}
-                setShowAddItemForm={setShowAddItemForm}
-              />
-            )}
           </tbody>
         </table>
         <div style={{ padding: 'var(--space-3) var(--space-4)' }}>
           <Button
             block
-            variant={showAddItemForm ? 'ghost' : 'primary'}
-            icon={showAddItemForm ? 'close' : 'add_shopping_cart'}
-            onClick={() => setShowAddItemForm(v => !v)}
+            variant="primary"
+            icon="add_shopping_cart"
+            onClick={() => setShowAddItemForm(true)}
           >
-            {showAddItemForm ? 'Cancel' : 'Add item'}
+            Add item
           </Button>
         </div>
       </Card>
+
+      <AddItemFormInventory
+        open={showAddItemForm}
+        onAddItem={handleAddItem}
+        items={allItems}
+        onClose={() => setShowAddItemForm(false)}
+      />
 
       {popupState && (
         <InventoryOptionsPopup

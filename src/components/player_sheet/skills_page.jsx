@@ -246,6 +246,11 @@ export default function SkillsPage() {
               </div>
             </div>
           )}
+          {isEditing && (
+            <div className="sh-skill-sticky-pill">
+              <Pill tone={overCap ? 'warn' : 'accent'}>{usedPoints} / {totalPoints} ranks</Pill>
+            </div>
+          )}
           {displayedSkills.map(skill => {
             if (skill.Name === 'Knowledge') {
               const subskills = classOnly
