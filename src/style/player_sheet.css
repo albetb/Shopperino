@@ -885,7 +885,7 @@
 /* Note editor: full available height, textarea flexes to fill so the
    whole component fits the screen with no inner scroll. */
 .note-editor-page {
-  width: 90%;
+  width: 92%;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -942,19 +942,29 @@
     padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0) + var(--space-3));
   }
 
+  /* Race/class/features cards keep the .card-width-spellbook default
+     (92% on mobile). Container gap already provides vertical rhythm, so
+     cancel the per-card margin-bottom to avoid double-stacking. */
   .player-sheet-race-cards .card-width-spellbook,
   .player-sheet-class-cards .card-width-spellbook,
   .player-sheet-features-cards .card-width-spellbook {
-    /* Match the visual width of the other player-sheet pages where the
-       card is just <Card> (no width class) and stretches inside a
-       wrapper with var(--space-4) horizontal padding. Using 100% here
-       makes these cards span the same content area instead of the
-       narrower 92% the base class would give them. */
-    width: 100%;
-    max-width: 100%;
-    /* Container already provides vertical gap; cancel the spellbook
-       card's own margin-bottom so cards don't double-space. */
     margin-bottom: 0;
+  }
+
+  /* Combat page: cards (and StatPill rows) span 92% of the page on mobile
+     to match race/class/features/notes/inventory. The wrapper itself
+     must be width:100% — without that it would shrink to fit inside the
+     centered flex column of .player-sheet-page and the 92% below would
+     resolve against a too-small box. */
+  .combat-page-wrap {
+    width: 100%;
+    box-sizing: border-box;
+    align-items: center;
+  }
+  .combat-page-wrap > * {
+    width: 92%;
+    max-width: 92%;
+    box-sizing: border-box;
   }
 
   .player-sheet-note-editor {

@@ -15,6 +15,8 @@ import InventoryItemRow from './inventory/InventoryItemRow';
 import InventoryTableHeader from './inventory/InventoryTableHeader';
 import InventoryOptionsPopup from './inventory/InventoryOptionsPopup';
 import EquipmentCard from './inventory/EquipmentCard';
+import CarryingCapacityCard from './inventory/CarryingCapacityCard';
+import MoneyCard from './inventory/MoneyCard';
 import Card from '../common/Card';
 import Filigree from '../common/Filigree';
 import Pill from '../common/Pill';
@@ -123,9 +125,15 @@ export default function InventoryPage() {
 
   return (
     <div
+      className="inventory-page-wrap"
       style={{
         width: '100%',
-        padding: 'var(--space-4)',
+        /* boxSizing: padding adds to width 100% without this — that
+           extra space would overflow the viewport horizontally. */
+        boxSizing: 'border-box',
+        /* No horizontal padding: each card carries its own 4% side margin
+           via .card-width-spellbook (92% width centered). */
+        paddingTop: 'var(--space-4)',
         paddingBottom: 'var(--space-12)',
         display: 'flex',
         flexDirection: 'column',
@@ -144,17 +152,21 @@ export default function InventoryPage() {
         <Pill tone="accent">{itemCount} items</Pill>
       </div>
 
+      <MoneyCard player={player} />
+
       <EquipmentCard
         equipment={equipment}
         equipmentCollapsed={combatPageCardsCollapsed.items}
         setEquipmentCollapsed={setter => {
           const newState = typeof setter === 'function' ? setter(combatPageCardsCollapsed.items) : setter;
-          dispatch(setCombatPageCardCollapsed({ ...combatPageCardsCollapsed, items: newState }));
+          dispatch(setCombatPageCardCollapsed({ key: 'items', value: newState }));
         }}
         onUnequip={handleUnequipSlot}
         onOpenCard={handleOpenCard}
         player={player}
       />
+
+      <CarryingCapacityCard player={player} />
 
       <Card
         className="card-width-spellbook card-overflow-visible"

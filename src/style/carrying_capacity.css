@@ -1,0 +1,57 @@
+/* Carrying capacity card — compact 6-column table of load tiers. */
+
+.carry-table {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.carry-row {
+  display: grid;
+  grid-template-columns: 1.2fr 1.2fr 0.8fr 0.8fr 0.8fr 1fr;
+  gap: var(--space-2);
+  padding: 0.5rem 0.6rem;
+  font-size: var(--font-size-xs);
+  align-items: center;
+}
+
+.carry-row + .carry-row {
+  border-top: 1px solid var(--border-soft);
+}
+
+.carry-row--head {
+  background: var(--surface-1);
+  color: var(--ink-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: var(--font-size-2xs);
+}
+
+.carry-row--active {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.carry-row--active .carry-tier-label { font-weight: 700; }
+.carry-row--active .sh-mono { color: var(--accent); }
+
+.carry-tier-label {
+  font-family: var(--font-display);
+}
+
+.carry-lift {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px dashed var(--border-soft);
+  padding-top: var(--space-2);
+  gap: 0.25rem;
+}
+
+.carry-lift-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: var(--font-size-sm);
+}

@@ -1,0 +1,94 @@
+/* Player money card — gold / silver / copper row at the top of the
+   inventory page. Gold renders larger; clicking a value or its coin
+   turns the cell into a number input that auto-saves on blur. */
+
+.money-card .sh-card-body {
+  padding: var(--space-3) var(--space-4);
+}
+
+.money-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: var(--space-3);
+  flex-wrap: nowrap;
+}
+
+.money-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.money-value {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.15rem;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+.money-value:hover { color: var(--accent); }
+
+.money-cell .money-num {
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  line-height: 1;
+}
+.money-cell .money-unit {
+  font-size: var(--font-size-xs);
+  color: var(--ink-faint);
+  text-transform: lowercase;
+}
+
+.money-cell--primary .money-num {
+  font-size: var(--font-size-3xl);
+}
+.money-cell--primary .money-unit {
+  font-size: var(--font-size-sm);
+}
+
+.money-coin {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  line-height: 0;
+}
+
+.money-input {
+  width: 3.5rem;
+  height: var(--tap-target-sm, 2rem);
+  padding: 0 var(--space-2);
+  background: var(--bg);
+  color: var(--ink);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-sm, 6px);
+  font: 600 var(--font-size-lg) var(--font-display);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  outline: none;
+  box-sizing: border-box;
+  /* Hide native spinners — values are 0-9 or short, so they're noise. */
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+.money-input::-webkit-outer-spin-button,
+.money-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.money-cell--primary .money-input {
+  width: 5rem;
+  height: var(--tap-target);
+  font-size: var(--font-size-2xl);
+}

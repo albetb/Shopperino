@@ -420,6 +420,27 @@ export const onSetWillBonus = (value) => (dispatch, getState) => {
   persistPlayer(dispatch, getState, player);
 };
 
+export const onSetAcBonus = (value) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player) return;
+  player.acBonus = Math.max(-99, Math.min(99, Math.floor(Number(value) || 0)));
+  persistPlayer(dispatch, getState, player);
+};
+
+export const onSetAcTouchBonus = (value) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player) return;
+  player.acTouchBonus = Math.max(-99, Math.min(99, Math.floor(Number(value) || 0)));
+  persistPlayer(dispatch, getState, player);
+};
+
+export const onSetAcFlatBonus = (value) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player) return;
+  player.acFlatBonus = Math.max(-99, Math.min(99, Math.floor(Number(value) || 0)));
+  persistPlayer(dispatch, getState, player);
+};
+
 // Feats
 export const onAddFeat = (featName) => (dispatch, getState) => {
   const player = getState().playerSheet?.player;
@@ -472,6 +493,13 @@ export const onAdjustPlayerGold = (delta) => (dispatch, getState) => {
   const player = getState().playerSheet?.player;
   if (!player) return;
   player.adjustGold(delta);
+  persistPlayer(dispatch, getState, player);
+};
+
+export const onSetPlayerGold = (value) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player) return;
+  player.setGold(value);
   persistPlayer(dispatch, getState, player);
 };
 

@@ -74,7 +74,7 @@ export default function InventoryOptionsPopup({
   return (
     <div className="popup inventory-options-popup" style={popupStyle} ref={popupRef}>
       {equipButtons.length > 0 && (
-        <div className="inventory-options-equip-row">
+        <div className={`inventory-options-equip-row ${equipButtons.length === 1 ? 'inventory-options-equip-row--single' : ''}`}>
           {equipButtons.map(({ slot, icon }) => (
             <button
               key={slot}

@@ -204,10 +204,26 @@
   padding: 0 var(--space-3);
   font: 500 var(--font-size-sm)/1 var(--font-ui);
   outline: none;
+  box-sizing: border-box;
 }
 .sh-input:focus,
 .sh-select:focus,
 .sh-textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+/* Reset native select chrome so the chevron + padding match the input.
+   The chevron is drawn via background-image so the control reads as one
+   piece with .sh-input instead of a slightly wider browser-styled box. */
+.sh-select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%),
+                    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: calc(100% - 18px) 50%, calc(100% - 12px) 50%;
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+  padding-right: var(--space-5, 1.5rem);
+}
+.sh-select::-ms-expand { display: none; }
 .sh-textarea { height: auto; padding: var(--space-3); resize: vertical; min-height: 6rem; line-height: var(--line-snug); }
 .sh-search {
   display: flex; align-items: center; gap: var(--space-2);
@@ -352,7 +368,30 @@
   border-radius: var(--radius-md);
   padding: var(--space-3);
   text-align: center;
+  position: relative;
 }
+.sh-stat-pill--editing {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-soft);
+}
+.sh-stat-pill-edit {
+  position: absolute;
+  top: 0.25rem;
+  right: 0.25rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-sm, 6px);
+  color: var(--ink-faint);
+  cursor: pointer;
+}
+.sh-stat-pill-edit:hover { color: var(--accent); background: var(--accent-soft); }
+.sh-stat-pill-edit:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 .sh-stat-pill .lbl {
   font-size: var(--font-size-2xs);
   letter-spacing: 0.16em;
@@ -489,14 +528,18 @@
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-3);
   max-width: 22rem;
-  overflow: hidden;
+  /* visible (not hidden) so absolutely-positioned children like the
+     autocomplete suggestions list can extend past the modal edge
+     instead of getting clipped. The head/foot below carry matching
+     radii so the rounded corners still render cleanly. */
+  overflow: visible;
   animation: sh-scale-in var(--t-base) var(--ease);
 }
 @keyframes sh-scale-in { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
-.sh-modal-head { padding: var(--space-4); border-bottom: 1px solid var(--border-soft); font-family: var(--font-display); font-size: var(--font-size-xl); font-weight: 600; }
+.sh-modal-head { padding: var(--space-4); border-bottom: 1px solid var(--border-soft); font-family: var(--font-display); font-size: var(--font-size-xl); font-weight: 600; border-top-left-radius: var(--radius-xl); border-top-right-radius: var(--radius-xl); }
 .sh-modal-head .sh-eyebrow { display: block; margin-bottom: var(--space-1); }
 .sh-modal-body { padding: var(--space-4); display: flex; flex-direction: column; gap: var(--space-3); }
-.sh-modal-foot { padding: var(--space-3) var(--space-4); border-top: 1px solid var(--border-soft); display: flex; justify-content: flex-end; gap: var(--space-2); background: var(--surface-1); }
+.sh-modal-foot { padding: var(--space-3) var(--space-4); border-top: 1px solid var(--border-soft); display: flex; justify-content: flex-end; gap: var(--space-2); background: var(--surface-1); border-bottom-left-radius: var(--radius-xl); border-bottom-right-radius: var(--radius-xl); }
 
 /* --- WARN STRIP / OVER-LIMIT --------------------------------- */
 .sh-warn-strip {

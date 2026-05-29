@@ -12,6 +12,9 @@ import {
   onSetFortBonus,
   onSetReflexBonus,
   onSetWillBonus,
+  onSetAcBonus,
+  onSetAcTouchBonus,
+  onSetAcFlatBonus,
 } from '../../store/thunks/playerSheetThunks';
 import useLongPress from '../hooks/useLongPress';
 import { getItemByRef, calculateWeaponAttackBonus, calculateWeaponDamage } from '../../lib/utils';
@@ -42,6 +45,9 @@ const BONUS_THUNK = {
   fortBonus:       onSetFortBonus,
   reflexBonus:     onSetReflexBonus,
   willBonus:       onSetWillBonus,
+  acBonus:         onSetAcBonus,
+  acTouchBonus:    onSetAcTouchBonus,
+  acFlatBonus:     onSetAcFlatBonus,
 };
 
 export default function CombatPage() {
@@ -58,6 +64,9 @@ export default function CombatPage() {
   const [hpAdvancedOpen, setHpAdvancedOpen] = useState(false);
   const [editBonus, setEditBonus] = useState(null);
   const [tempBonus, setTempBonus] = useState(0);
+  /* AC has three independent fields editable together; the other stats
+     only need a single temp value (tempBonus above). */
+  const [tempAc, setTempAc] = useState({ general: 0, touch: 0, flat: 0 });
 
   const currentHp = player?.getCurrentHp?.() ?? 0;
   const maxHp = player?.getMaxLife?.() ?? 0;
@@ -123,13 +132,35 @@ export default function CombatPage() {
   const startEditBonus = useCallback(key => {
     if (!player) return;
     setEditBonus(key);
-    setTempBonus(Number(player[key]) || 0);
+    if (key === 'ac') {
+      setTempAc({
+        general: Number(player.acBonus) || 0,
+        touch:   Number(player.acTouchBonus) || 0,
+        flat:    Number(player.acFlatBonus) || 0,
+      });
+    } else {
+      setTempBonus(Number(player[key]) || 0);
+    }
   }, [player]);
 
+  /* Pencil button toggles: clicking the active stat's pencil closes the
+     editor; clicking a different stat's pencil switches to that one. */
+  const toggleEditBonus = useCallback(key => {
+    if (editBonus === key) setEditBonus(null);
+    else startEditBonus(key);
+  }, [editBonus, startEditBonus]);
+
   const saveBonus = useCallback(() => {
-    if (editBonus && BONUS_THUNK[editBonus]) dispatch(BONUS_THUNK[editBonus](tempBonus));
+    if (!editBonus) return;
+    if (editBonus === 'ac') {
+      dispatch(onSetAcBonus(tempAc.general));
+      dispatch(onSetAcTouchBonus(tempAc.touch));
+      dispatch(onSetAcFlatBonus(tempAc.flat));
+    } else if (BONUS_THUNK[editBonus]) {
+      dispatch(BONUS_THUNK[editBonus](tempBonus));
+    }
     setEditBonus(null);
-  }, [editBonus, tempBonus, dispatch]);
+  }, [editBonus, tempBonus, tempAc, dispatch]);
 
   // Hooks above the early-return ----------------------------------
   const equipment = player?.getEquipment?.() ?? {};
@@ -142,6 +173,10 @@ export default function CombatPage() {
     const weapons = [];
     const pushIf = (slot, w) => {
       if (!w?.link) return;
+      /* Shields are equipped in hand slots but don't belong in the
+         attack list — their AC contribution shows in the equipment card
+         instead. */
+      if (/\/(Shield|Specific Shield)\//.test(w.link)) return;
       const item = getItemByRef(w.link)?.raw;
       if (!item) return;
       weapons.push({ slot, name: w.name, link: w.link, weaponItem: item, isTwoHanded: w.twoHanded === true });
@@ -194,39 +229,85 @@ export default function CombatPage() {
   const characterName  = player.getName?.() ?? '';
   const characterClass = player.getClass?.() ?? '';
   const characterLevel = player.getLevel?.() ?? 1;
-  const characterRace  = player.getRace?.() ?? '';
 
   const renderBonusEditor = (label, min, max, step = 1) => (
-    <div className="sh-row-h" style={{ gap: 'var(--space-2)', flexWrap: 'wrap' }}>
-      <span className="sh-eyebrow">{label} bonus</span>
-      <Stepper
-        value={tempBonus}
-        min={min}
-        max={max}
-        step={step}
-        onChange={setTempBonus}
-      />
-      <IconButton icon="check" size="sm" onClick={saveBonus} aria-label="Save bonus" />
-      <IconButton icon="close" ghost size="sm" onClick={() => setEditBonus(null)} aria-label="Cancel" />
-    </div>
+    <Card padding>
+      <div className="sh-row-h" style={{ gap: 'var(--space-2)', flexWrap: 'wrap' }}>
+        <span className="sh-eyebrow">{label} bonus</span>
+        <Stepper
+          value={tempBonus}
+          min={min}
+          max={max}
+          step={step}
+          onChange={setTempBonus}
+        />
+        {/* marginLeft auto pushes the save/cancel pair to the right edge
+            of the row, matching the AC editor's footer layout. */}
+        <IconButton icon="check" size="sm" onClick={saveBonus} aria-label="Save bonus" style={{ marginLeft: 'auto' }} />
+        <IconButton icon="close" ghost size="sm" onClick={() => setEditBonus(null)} aria-label="Cancel" />
+      </div>
+    </Card>
   );
+
+  const renderAcEditor = () => (
+    <Card padding>
+      <div className="sh-stack" style={{ gap: 'var(--space-2)' }}>
+        <Filigree>AC modifiers</Filigree>
+        {[
+          { key: 'general', label: 'General', hint: 'AC + touch + flat' },
+          { key: 'touch',   label: 'Touch',   hint: 'touch only' },
+          { key: 'flat',    label: 'Flat',    hint: 'flat-footed only' },
+        ].map(({ key, label, hint }) => (
+          <div key={key} className="sh-row-h sh-spread" style={{ gap: 'var(--space-2)' }}>
+            <span className="sh-eyebrow">{label} <span className="sh-faint" style={{ textTransform: 'none', letterSpacing: 0 }}>({hint})</span></span>
+            <Stepper
+              value={tempAc[key]}
+              min={-99}
+              max={99}
+              onChange={v => setTempAc(prev => ({ ...prev, [key]: v }))}
+            />
+          </div>
+        ))}
+        <div className="sh-row-h" style={{ gap: 'var(--space-2)', justifyContent: 'flex-end' }}>
+          <IconButton icon="check" size="sm" onClick={saveBonus} aria-label="Save AC modifiers" />
+          <IconButton icon="close" ghost size="sm" onClick={() => setEditBonus(null)} aria-label="Cancel" />
+        </div>
+      </div>
+    </Card>
+  );
+
+  /* Render the inline editor for whichever stat is being edited; placed
+     directly below the grid row that contains the active stat. */
+  const renderActiveEditor = () => {
+    if (editBonus === 'ac') return renderAcEditor();
+    if (editBonus === 'speedBonus')      return renderBonusEditor('Speed', 0, 99, 5);
+    if (editBonus === 'initiativeBonus') return renderBonusEditor('Init', -99, 99);
+    if (editBonus === 'fortBonus')       return renderBonusEditor('Fort', -99, 99);
+    if (editBonus === 'reflexBonus')     return renderBonusEditor('Ref',  -99, 99);
+    if (editBonus === 'willBonus')       return renderBonusEditor('Will', -99, 99);
+    return null;
+  };
+
+  const TOP_ROW_KEYS    = ['ac', 'initiativeBonus', 'speedBonus'];
+  const BOTTOM_ROW_KEYS = ['fortBonus', 'reflexBonus', 'willBonus'];
 
   const bab_display = formatBaseAttackBonus(bab);
 
   return (
-    <div className="sh-stack" style={{ padding: 'var(--space-4)', paddingBottom: 'var(--space-12)' }}>
+    <div
+      className="sh-stack combat-page-wrap"
+      style={{ paddingTop: 'var(--space-4)', paddingBottom: 'var(--space-12)' }}
+    >
       {/* Header card with portrait + identity */}
       <Card padding>
-        <div className="sh-row-h" style={{ gap: 'var(--space-3)', alignItems: 'flex-start' }}>
+        <div className="sh-row-h" style={{ gap: 'var(--space-3)', alignItems: 'stretch' }}>
           <div className="sh-portrait" aria-hidden="true">
             <Icon name="badge" />
           </div>
           <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 'var(--space-1)' }}>
             <Filigree>{characterClass || 'No class'} · level {characterLevel}</Filigree>
-            <div className="sh-display" style={{ fontSize: 'var(--font-size-2xl)' }}>{characterName || 'Unnamed'}</div>
-            <div className="sh-row-h" style={{ gap: 'var(--space-2)', flexWrap: 'wrap' }}>
-              {characterRace && <Pill>{characterRace}</Pill>}
-              <Pill tone="accent">{characterClass} {characterLevel}</Pill>
+            <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 0 }}>
+              <div className="sh-display" style={{ fontSize: 'var(--font-size-2xl)' }}>{characterName || 'Unnamed'}</div>
             </div>
           </div>
         </div>
@@ -352,49 +433,65 @@ export default function CombatPage() {
         )}
       </Card>
 
-      {/* Defense pills row (AC / Init / Speed) */}
+      {/* Defense pills row (AC / Init / Speed). Each pill carries its
+          own pencil; the matching inline editor renders below the row. */}
       <div className="sh-grid-3">
-        <StatPill accent label="AC" value={ac} sub={`touch ${acTouch} flat ${acFlat}`} />
+        <StatPill
+          accent
+          label="AC"
+          value={ac}
+          sub={
+            <>
+              <span style={{ display: 'block' }}>touch {acTouch}</span>
+              <span style={{ display: 'block' }}>flat {acFlat}</span>
+            </>
+          }
+          editing={editBonus === 'ac'}
+          onEdit={() => toggleEditBonus('ac')}
+        />
         <StatPill
           label="Init"
           value={totalInitiative >= 0 ? `+${totalInitiative}` : `${totalInitiative}`}
           sub={initiativeBonus !== 0 ? `bonus ${initiativeBonus >= 0 ? '+' : ''}${initiativeBonus}` : null}
+          editing={editBonus === 'initiativeBonus'}
+          onEdit={() => toggleEditBonus('initiativeBonus')}
         />
-        <StatPill label="Speed" value={speedDisplay} sub={speedInfo?.hasReduction ? 'encumbered' : null} />
+        <StatPill
+          label="Speed"
+          value={speedDisplay}
+          sub={speedInfo?.hasReduction ? 'encumbered' : (speedBonus !== 0 ? `bonus +${speedBonus}` : null)}
+          editing={editBonus === 'speedBonus'}
+          onEdit={() => toggleEditBonus('speedBonus')}
+        />
       </div>
+      {TOP_ROW_KEYS.includes(editBonus) && renderActiveEditor()}
 
       {/* Saves row */}
       <div className="sh-grid-3">
-        <StatPill label="Fort" value={totalFort >= 0 ? `+${totalFort}` : totalFort} sub={fortBonus ? `bonus ${fortBonus >= 0 ? '+' : ''}${fortBonus}` : null} />
-        <StatPill label="Ref"  value={totalRef  >= 0 ? `+${totalRef}`  : totalRef}  sub={reflexBonus ? `bonus ${reflexBonus >= 0 ? '+' : ''}${reflexBonus}` : null} />
-        <StatPill accent label="Will" value={totalWill >= 0 ? `+${totalWill}` : totalWill} sub={willBonus ? `bonus ${willBonus >= 0 ? '+' : ''}${willBonus}` : null} />
+        <StatPill
+          label="Fort"
+          value={totalFort >= 0 ? `+${totalFort}` : totalFort}
+          sub={fortBonus ? `bonus ${fortBonus >= 0 ? '+' : ''}${fortBonus}` : null}
+          editing={editBonus === 'fortBonus'}
+          onEdit={() => toggleEditBonus('fortBonus')}
+        />
+        <StatPill
+          label="Ref"
+          value={totalRef >= 0 ? `+${totalRef}` : totalRef}
+          sub={reflexBonus ? `bonus ${reflexBonus >= 0 ? '+' : ''}${reflexBonus}` : null}
+          editing={editBonus === 'reflexBonus'}
+          onEdit={() => toggleEditBonus('reflexBonus')}
+        />
+        <StatPill
+          accent
+          label="Will"
+          value={totalWill >= 0 ? `+${totalWill}` : totalWill}
+          sub={willBonus ? `bonus ${willBonus >= 0 ? '+' : ''}${willBonus}` : null}
+          editing={editBonus === 'willBonus'}
+          onEdit={() => toggleEditBonus('willBonus')}
+        />
       </div>
-
-      {/* Bonus / speed edit strip */}
-      <Card padding>
-        <div className="sh-stack">
-          <div className="sh-row-h sh-spread">
-            <Filigree>Adjust modifiers</Filigree>
-            <span className="sh-mono sh-faint" style={{ fontSize: 'var(--font-size-xs)' }}>BAB {bab_display}</span>
-          </div>
-          {editBonus === null ? (
-            <div className="sh-row-h" style={{ gap: 'var(--space-2)', flexWrap: 'wrap' }}>
-              <Pill tone="ghost" icon="edit"><button type="button" className="sh-link-btn" onClick={() => startEditBonus('speedBonus')} style={inlineLinkBtn}>Speed {speedBonus >= 0 ? '+' : ''}{speedBonus}</button></Pill>
-              <Pill tone="ghost" icon="edit"><button type="button" className="sh-link-btn" onClick={() => startEditBonus('initiativeBonus')} style={inlineLinkBtn}>Init {initiativeBonus >= 0 ? '+' : ''}{initiativeBonus}</button></Pill>
-              <Pill tone="ghost" icon="edit"><button type="button" className="sh-link-btn" onClick={() => startEditBonus('fortBonus')} style={inlineLinkBtn}>Fort {fortBonus >= 0 ? '+' : ''}{fortBonus}</button></Pill>
-              <Pill tone="ghost" icon="edit"><button type="button" className="sh-link-btn" onClick={() => startEditBonus('reflexBonus')} style={inlineLinkBtn}>Ref {reflexBonus >= 0 ? '+' : ''}{reflexBonus}</button></Pill>
-              <Pill tone="ghost" icon="edit"><button type="button" className="sh-link-btn" onClick={() => startEditBonus('willBonus')} style={inlineLinkBtn}>Will {willBonus >= 0 ? '+' : ''}{willBonus}</button></Pill>
-            </div>
-          ) : (
-            renderBonusEditor(
-              editBonus.replace(/Bonus$/, ''),
-              editBonus === 'speedBonus' ? 0 : -99,
-              99,
-              editBonus === 'speedBonus' ? 5 : 1,
-            )
-          )}
-        </div>
-      </Card>
+      {BOTTOM_ROW_KEYS.includes(editBonus) && renderActiveEditor()}
 
       {/* Attacks card */}
       <Card
@@ -423,11 +520,17 @@ export default function CombatPage() {
             </div>
           ) : (
             <div className="sh-stack" style={{ gap: 'var(--space-2)' }}>
-              {equippedWeapons.map(w => {
+              {equippedWeapons.map((w, idx) => {
                 const ab = calculateWeaponAttackBonus(player, { weaponItem: w.weaponItem, isTwoHanded: w.isTwoHanded });
                 const dmg = calculateWeaponDamage(player, { weaponItem: w.weaponItem, isTwoHanded: w.isTwoHanded });
+                /* Only show the separator border between rows, not above
+                   the first weapon (otherwise it visually doubles the
+                   Card's own internal padding boundary). */
+                const rowStyle = idx === 0
+                  ? { gap: 'var(--space-3)' }
+                  : { gap: 'var(--space-3)', borderTop: '1px solid var(--border-soft)', paddingTop: 'var(--space-2)' };
                 return (
-                  <div key={`${w.link}-${w.slot}`} className="sh-row-h sh-spread" style={{ gap: 'var(--space-3)', borderTop: '1px solid var(--border-soft)', paddingTop: 'var(--space-2)' }}>
+                  <div key={`${w.link}-${w.slot}`} className="sh-row-h sh-spread" style={rowStyle}>
                     <SpellLink link={w.link}>
                       <span className="sh-display" style={{ fontSize: 'var(--font-size-lg)' }}>{w.name}</span>
                     </SpellLink>
@@ -482,13 +585,4 @@ export default function CombatPage() {
     </div>
   );
 }
-
-const inlineLinkBtn = {
-  background: 'transparent',
-  border: 0,
-  color: 'inherit',
-  font: 'inherit',
-  cursor: 'pointer',
-  padding: 0,
-};
 

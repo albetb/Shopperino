@@ -45,3 +45,41 @@
 .sh-inv-table tbody tr:last-child { border-bottom: 0; }
 .sh-inv-table tbody tr:hover { background: var(--surface-2); }
 .sh-inv-table tbody td { padding: var(--space-2) var(--space-3); vertical-align: middle; }
+
+/* Mobile: cards in the inventory page were 92% (.card-width-spellbook's
+   mobile default) while the other player-sheet tabs render at 100%.
+   Force the inventory cards — including the cards container itself —
+   to fill the wrapper so they match combat / skills / etc., and tighten
+   the items-table columns so the action button doesn't bleed past the
+   right edge. */
+@media (max-width: 768px) {
+  /* Re-introduce inter-card spacing via the wrapper's gap so cards don't
+     stack flush when the per-card margin-bottom is zeroed below. */
+  .inventory-page-wrap {
+    gap: var(--space-3);
+  }
+  .inventory-page-wrap .card-width-spellbook {
+    /* Keep the base 92% width (matches race/class/features/combat/notes).
+       Margin is zeroed because the wrapper now handles vertical rhythm
+       via its own `gap`. */
+    margin-bottom: 0;
+  }
+
+  /* Slimmer column rules: name fills remaining space, type stays compact,
+     padding shrinks so the action button fits without overflow. */
+  .inventory-page-wrap .sh-inv-table {
+    table-layout: fixed;
+  }
+  .inventory-page-wrap .sh-inv-table .sh-inv-th--num    { width: 2.25rem; }
+  .inventory-page-wrap .sh-inv-table .sh-inv-th--name   { width: auto; min-width: 0; }
+  .inventory-page-wrap .sh-inv-table .sh-inv-th--type   { width: 4.5rem; }
+  .inventory-page-wrap .sh-inv-table .sh-inv-th--action { width: 2.5rem; }
+  .inventory-page-wrap .sh-inv-table th,
+  .inventory-page-wrap .sh-inv-table td {
+    padding: var(--space-2) 0.4rem;
+  }
+  .inventory-page-wrap .sh-inv-table td.td-muted {
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+}

@@ -8,6 +8,7 @@
 
 import { loadFile } from '../loadFile';
 import { getItemByRef } from '../utils';
+import { getCarryingCapacity as capacityFromStr, classifyLoad } from './carryingCapacity';
 
 const ABILITY_KEYS = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
 
@@ -131,6 +132,11 @@ class Player {
     this.fortBonus = 0;
     this.reflexBonus = 0;
     this.willBonus = 0;
+    /* AC modifiers: general adds to AC/touch/flat; the touch and flat
+       fields stack only on top of their respective totals. */
+    this.acBonus = 0;
+    this.acTouchBonus = 0;
+    this.acFlatBonus = 0;
     this.inventory = []; // Array of { Name, ItemType, Number, Link, effectIds }
   }
 
@@ -289,6 +295,16 @@ class Player {
       this.willBonus = data.willBonus;
     }
 
+    if (typeof data.acBonus === 'number') {
+      this.acBonus = data.acBonus;
+    }
+    if (typeof data.acTouchBonus === 'number') {
+      this.acTouchBonus = data.acTouchBonus;
+    }
+    if (typeof data.acFlatBonus === 'number') {
+      this.acFlatBonus = data.acFlatBonus;
+    }
+
     return this;
   }
 
@@ -338,6 +354,9 @@ class Player {
       fortBonus: typeof this.fortBonus === 'number' ? this.fortBonus : 0,
       reflexBonus: typeof this.reflexBonus === 'number' ? this.reflexBonus : 0,
       willBonus: typeof this.willBonus === 'number' ? this.willBonus : 0,
+      acBonus: typeof this.acBonus === 'number' ? this.acBonus : 0,
+      acTouchBonus: typeof this.acTouchBonus === 'number' ? this.acTouchBonus : 0,
+      acFlatBonus: typeof this.acFlatBonus === 'number' ? this.acFlatBonus : 0,
     };
   }
 
@@ -734,6 +753,27 @@ class Player {
   }
 
   /**
+   * Shield bonus from any shield equipped in a hand slot. Shields live
+   * under the items.json "Shield" / "Specific Shield" buckets and use
+   * the same "Armor/Shield Bonus" field as armor. Per project decision
+   * this applies only to normal AC — not touch and not flat-footed.
+   */
+  getShieldBonus() {
+    const slots = ['lh1', 'rh1', 'lh2', 'rh2'];
+    let total = 0;
+    for (const slot of slots) {
+      const entry = this.equipment?.[slot];
+      if (!entry?.link) continue;
+      if (!/\/(Shield|Specific Shield)\//.test(entry.link)) continue;
+      const raw = getItemByRef(entry.link)?.raw;
+      const val = raw?.['Armor/Shield Bonus'];
+      if (val === undefined || val === null) continue;
+      total += parseInt(String(val).replace('+', ''), 10) || 0;
+    }
+    return total;
+  }
+
+  /**
    * Maximum DEX bonus allowed by equipped armor. Returns Infinity if no cap.
    */
   getMaxDexBonus() {
@@ -765,9 +805,10 @@ class Player {
 
   /**
    * Armor class = 10 + Dex modifier (capped by armor) + armor bonus. Monk adds Wis bonus (min 0) and +1 at 5, +2 at 10, +3 at 15, +4 at 20.
+   * Adds the user-supplied general acBonus on top.
    */
   getArmorClass() {
-    let ac = 10 + this.getEffectiveDexMod() + this.getArmorBonus();
+    let ac = 10 + this.getEffectiveDexMod() + this.getArmorBonus() + this.getShieldBonus();
     if (this.class === 'Monk') {
       ac += Math.max(0, this.getWisMod());
       const level = this.getLevel();
@@ -776,11 +817,12 @@ class Player {
       else if (level >= 10) ac += 2;
       else if (level >= 5) ac += 1;
     }
-    return ac;
+    return ac + Number(this.acBonus || 0);
   }
 
   /**
    * Touch AC (ignores armor bonus): 10 + Dex modifier (capped by armor).
+   * Adds the general acBonus and the touch-only acTouchBonus.
    */
   getContactAC() {
     let ac = 10 + this.getEffectiveDexMod();
@@ -792,11 +834,12 @@ class Player {
       else if (level >= 10) ac += 2;
       else if (level >= 5) ac += 1;
     }
-    return ac;
+    return ac + Number(this.acBonus || 0) + Number(this.acTouchBonus || 0);
   }
 
   /**
    * Flat-footed AC (ignores DEX, uses armor): 10 + armor bonus. Monk still gets Wis bonus.
+   * Adds the general acBonus and the flat-footed-only acFlatBonus.
    */
   getFlatFootedAC() {
     let ac = 10 + this.getArmorBonus();
@@ -808,7 +851,7 @@ class Player {
       else if (level >= 10) ac += 2;
       else if (level >= 5) ac += 1;
     }
-    return ac;
+    return ac + Number(this.acBonus || 0) + Number(this.acFlatBonus || 0);
   }
 
   /**
@@ -861,10 +904,41 @@ class Player {
   }
 
   /**
-   * Total weight of inventory. For now returns 0; will be derived later.
+   * Total inventory weight in kg = Σ (item Weight × Number). Weight comes
+   * from the items.json reference resolved via the saved Link. Items with
+   * no Link or no Weight contribute 0.
    */
   getInventoryWeight() {
-    return 0;
+    if (!Array.isArray(this.inventory)) return 0;
+    let total = 0;
+    for (const entry of this.inventory) {
+      if (!entry) continue;
+      const count = Number(entry.Number) || 0;
+      if (count <= 0) continue;
+      const raw = entry.Link ? getItemByRef(entry.Link)?.raw : null;
+      const weight = Number(raw?.Weight) || 0;
+      total += weight * count;
+    }
+    return total;
+  }
+
+  /**
+   * Carrying capacity ({ light, medium, heavy } max kg) based on the
+   * character's total Str, race size, and biped/quadruped shape. No PC
+   * race is a quadruped today so this always resolves to 'biped'.
+   */
+  getCarryingCapacity() {
+    const str = this.getAbilityTotal('str');
+    const size = this.getSize() || 'Medium';
+    return capacityFromStr(str, size, 'biped');
+  }
+
+  /**
+   * Which load tier the current inventory weight falls into.
+   * @returns {'none' | 'light' | 'medium' | 'heavy' | 'over'}
+   */
+  getLoadStatus() {
+    return classifyLoad(this.getInventoryWeight(), this.getCarryingCapacity());
   }
 
   /**

@@ -71,9 +71,14 @@ function getEquipmentSlotsLayout(equipment) {
 }
 
 function EquipmentSlotBox({ slotKey, dataSlot, config, entry, onUnequip, onOpenCard, player }) {
-  const isWeaponSlot = ['lh1', 'rh1', 'lh2', 'rh2', 'set1', 'set2'].includes(slotKey);
+  const isHandSlot = ['lh1', 'rh1', 'lh2', 'rh2', 'set1', 'set2'].includes(slotKey);
   const isArmorSlot = slotKey === 'armor';
   const isOtherSlot = ['other1', 'other2', 'other3', 'other4'].includes(slotKey);
+  /* Shields live in hand slots but display like armor — show their
+     "Armor/Shield Bonus" instead of attack + damage. */
+  const isShield = isHandSlot && typeof entry?.link === 'string'
+    && /\/(Shield|Specific Shield)\//.test(entry.link);
+  const isWeaponSlot = isHandSlot && !isShield;
 
   let attackBonus = null;
   let damage = null;
@@ -87,10 +92,10 @@ function EquipmentSlotBox({ slotKey, dataSlot, config, entry, onUnequip, onOpenC
     }
   }
 
-  if (entry && entry.link && isArmorSlot) {
-    const armorItem = getItemByRef(entry.link)?.raw;
-    if (armorItem && armorItem['Armor/Shield Bonus'] !== undefined) {
-      armorBonus = armorItem['Armor/Shield Bonus'];
+  if (entry && entry.link && (isArmorSlot || isShield)) {
+    const raw = getItemByRef(entry.link)?.raw;
+    if (raw && raw['Armor/Shield Bonus'] !== undefined) {
+      armorBonus = raw['Armor/Shield Bonus'];
     }
   }
 

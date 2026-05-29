@@ -57,11 +57,24 @@ export default function AddItemFormInventory({ open, onAddItem, items, onClose }
     setIsFocused(false);
   };
 
+  const clampQty = (n) => Math.max(0, Math.min(MAX_NUMBER, n));
+
+  const handleQtyChange = (e) => {
+    const raw = e.target.value;
+    if (raw === '') { setNumber(''); return; }
+    const parsed = parseInt(raw, 10);
+    if (Number.isNaN(parsed)) return;
+    setNumber(clampQty(parsed));
+  };
+
   const handleNumberBlur = () => {
     const numValue = number ? parseInt(number, 10) : 0;
-    if (numValue < 0) setNumber(0);
-    else if (numValue > MAX_NUMBER) setNumber(MAX_NUMBER);
-    else setNumber(numValue);
+    setNumber(clampQty(Number.isNaN(numValue) ? 0 : numValue));
+  };
+
+  const stepQty = (delta) => () => {
+    const current = typeof number === 'number' ? number : parseInt(number, 10) || 0;
+    setNumber(clampQty(current + delta));
   };
 
   const handleNameBlur = () => {
@@ -136,18 +149,39 @@ export default function AddItemFormInventory({ open, onAddItem, items, onClose }
             ))}
           </select>
         </label>
-        <label className="sh-field">
+        <div className="sh-field">
           <span className="sh-label">Quantity</span>
-          <input
-            type="number"
-            min={0}
-            max={MAX_NUMBER}
-            value={number}
-            onChange={(e) => setNumber(e.target.value)}
-            onBlur={handleNumberBlur}
-            className="sh-input"
-          />
-        </label>
+          <div className="sh-qty-stepper">
+            <button
+              type="button"
+              className="sh-qty-btn"
+              onClick={stepQty(-1)}
+              aria-label="Decrease quantity"
+              disabled={(typeof number === 'number' ? number : parseInt(number, 10) || 0) <= 0}
+            >
+              <span className="material-symbols-outlined">remove</span>
+            </button>
+            <input
+              type="number"
+              inputMode="numeric"
+              min={0}
+              max={MAX_NUMBER}
+              value={number}
+              onChange={handleQtyChange}
+              onBlur={handleNumberBlur}
+              className="sh-input sh-qty-input"
+            />
+            <button
+              type="button"
+              className="sh-qty-btn"
+              onClick={stepQty(1)}
+              aria-label="Increase quantity"
+              disabled={(typeof number === 'number' ? number : parseInt(number, 10) || 0) >= MAX_NUMBER}
+            >
+              <span className="material-symbols-outlined">add</span>
+            </button>
+          </div>
+        </div>
       </div>
     </Modal>
   );

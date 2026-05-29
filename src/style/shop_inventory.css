@@ -325,24 +325,71 @@ tr.add-item td.action-size .item-number-button {
 
 .suggestions {
   position: absolute;
-  /* Pop up directly above the input (bottom edge of suggestions = top of
-     input) using bottom: 100% instead of the old top: 0.4rem +
-     translateY(-100%) hack, which gave inconsistent placement. */
-  bottom: 100%;
+  /* Drop directly below the input so the list has the modal's full
+     remaining height to expand into instead of getting clipped by the
+     modal's top edge. */
+  top: 100%;
   left: 0;
   width: 100%;
-  margin-bottom: 0.25rem;
+  margin-top: 0.25rem;
   border: 1px solid var(--white);
   background-color: var(--dark-grey);
   color: var(--white);
-  /* Cap height so the list never spills above the card. Vertical scroll
-     handles long match lists. */
+  /* Cap height so the list never spills past the card/modal. Vertical
+     scroll handles long match lists. */
   max-height: 12rem;
   overflow-y: auto;
-  z-index: 50;
   padding: 0;
   border-radius: 0.9em;
-  z-index: 1;
+  z-index: 50;
+}
+
+/* Quantity stepper: [ − ][ input ][ + ] sized so the input fills the
+   remaining space and the buttons match the input height. */
+.sh-qty-stepper {
+  display: flex;
+  align-items: stretch;
+  gap: var(--space-2);
+  width: 100%;
+}
+.sh-qty-stepper .sh-qty-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: center;
+  /* Hide native spinners — the +/- buttons replace them. */
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+.sh-qty-stepper .sh-qty-input::-webkit-outer-spin-button,
+.sh-qty-stepper .sh-qty-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.sh-qty-btn {
+  flex: 0 0 var(--tap-target);
+  width: var(--tap-target);
+  height: var(--tap-target);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  color: var(--ink);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  padding: 0;
+  box-sizing: border-box;
+}
+.sh-qty-btn:hover:not(:disabled) {
+  border-color: var(--accent);
+}
+.sh-qty-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.sh-qty-btn .material-symbols-outlined {
+  font-size: 1.25rem;
+  line-height: 1;
 }
 
 .suggestion-item {
@@ -392,10 +439,30 @@ tr.add-item td.action-size .item-number-button {
      read as actual buttons. */
   border: 1px solid var(--border) !important;
 }
+/* Single-button armor row: collapse to one column so the lone shield
+   button centers in the popup and renders at a comfortable size
+   instead of huddling in the left half of the 2-col grid. */
+.inventory-options-equip-row--single {
+  grid-template-columns: 1fr !important;
+  justify-items: center;
+}
+.inventory-options-equip-row--single .inventory-equip-btn {
+  width: 60% !important;
+  min-height: 3rem;
+}
+.inventory-options-equip-row--single .inventory-equip-btn .material-symbols-outlined {
+  font-size: 1.5rem;
+}
 /* Same treatment for the slider-row level frame and the bottom action
    buttons so they all look like they belong on the same surface. */
 .inventory-options-popup .item-number-button {
   border: 1px solid var(--border) !important;
+}
+/* The mobile bottom nav (.sh-bnav) sits at z-index 900. Without an
+   override the popup (z-index 1) would render behind it and clicks in
+   the overlap region would hit the navbar instead of the popup. */
+.inventory-options-popup {
+  z-index: 1000;
 }
 
 .width-90 {
