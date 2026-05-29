@@ -11,9 +11,6 @@ Remaining items only (✓-done items omitted). Difficulty buckets approximate ef
 **Spellbook table action buttons — notebook-tab styling**
 - Open decisions: build a shared `NotebookTabButton` common atom (used by Learn / Prepare / Use), or restyle each in place? Target width — keep `--btn-width-sm * 2.5` or shrink (and to what)?
 
-**Merge ability base + bonus edit into a single panel**
-- Open decisions: column-header row (`Ability | Base | Bonus`) above the steppers, or small label inside each stepper cluster? Confirm two steppers + label still fit at narrowest mobile sidebar width before committing.
-
 ### 🔴 Large / cross-cutting (half-day+)
 
 **UI consistency pass — unified card widths app-wide**
@@ -83,18 +80,9 @@ Each item is one block:
 
 ---
 
-### Merge ability base + bonus edit into a single panel
-**Where:** [menu_card_ability_scores.jsx](../../src/components/menus/player_sheet_sidebar/cards/menu_card_ability_scores.jsx); supporting styles in [menu_cards.css](../../src/style/menu_cards.css) (`.ability-edit-row`, `.ability-edit-row-controls`, `.ability-edit-row-label`).
-**Change:** Replace the two separate edit modes (`'base'` / `'bonus'`) with a single edit mode that shows **both** steppers per ability on the same row. Layout: `Str  [- 10 +]  [- 0 +]` per row, with a small column-header row above (e.g. `Base / Bonus`). One edit icon in the card title (instead of two), one save check that dispatches both `onSetAbilityBase` and `onSetAbilityBonus` per key.
-**Why:** Editing base and bonus are conceptually the same task ("tune this ability"). Two separate modes means two entries, two saves, and you can't see the bonus while tweaking the base. One panel cuts the trips in half and makes the relationship between the two numbers visible.
-**Notes:**
-- `editMode` collapses from `null | 'base' | 'bonus'` → `null | 'edit'` (or just a boolean). `tempValues` shape changes to `{ [key]: { base, bonus } }`.
-- `enterEdit` seeds `tempValues` with both `getAbilityBase` and `getAbilityBonus`.
-- `saveAll` dispatches both `onSetAbilityBase(key, …)` and `onSetAbilityBonus(key, …)` per key, then `exitEdit`.
-- Each row needs two `.ability-edit-row-controls` clusters side by side. Current rule is `width: 60%` per cluster — drop to roughly `flex: 1` each (or `~40%` per), with a small gap.
-- Header row above the steppers: `Ability | Base | Bonus`. Reuse `.ability-label-cell` styling.
-- Mobile width is the constraint: label + two pill steppers in a sidebar that's already 60% width of card. May need to shrink the `.level-frame` `min-width` or use `--btn-height-sm` buttons (already the case) so two steppers fit. Worth verifying in a narrow viewport.
-- Keep the existing `[!]` warning in the card title (all defaults) and the per-row clamp to `MIN_BASE/MAX_BASE` / `MIN_BONUS/MAX_BONUS`.
+### ✓ Merge ability base + bonus edit into a single panel (done)
+**Where:** [menu_card_ability_scores.jsx](../../src/components/menus/player_sheet_sidebar/cards/menu_card_ability_scores.jsx), [menu_cards.css](../../src/style/menu_cards.css).
+**Change applied:** Edit state collapsed from `null | 'base' | 'bonus'` to a single `isEditing` boolean; `tempValues` is now `{ [key]: { base, bonus } }`. One edit icon in the card title and one save check that calls both `onSetAbilityBase` and `onSetAbilityBonus` per key. Each row shows label + two stepper clusters side by side (`flex: 1` each) with a small column-header row above (`Base / Bonus`). Bonus range changed to `[-20, 99]` and bonuses are displayed signed (`+1`, `-1`, `0` with no sign at zero) both in the read-only modifier and in the bonus stepper while editing. The `[!]` all-defaults warning on the card title is preserved.
 
 ---
 

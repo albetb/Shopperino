@@ -43,7 +43,7 @@
 .player-sheet-alignment-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: var(--space-2);
   width: 100%;
   padding: 0.35rem 0;
 }
@@ -56,6 +56,20 @@
   color: var(--ink);
   font-weight: inherit;
   margin: 0;
+  flex: 0 0 40%;
+  text-align: left;
+}
+
+/* Match the 40/60 label/dropdown ratio used by the alignment card in
+   features_page.jsx so wizard-school and domain dropdowns line up with the
+   rest of the player sheet's main-content cards. Overrides the natural
+   width of .modern-dropdown.small-long inside these rows. */
+.player-sheet-alignment-row > select,
+.player-sheet-alignment-row > .modern-dropdown {
+  flex: 0 0 60%;
+  width: 60%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .player-sheet-languages-table-wrap {

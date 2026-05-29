@@ -153,7 +153,7 @@ class Player {
         if (a && typeof a === 'object') {
           this.abilities[key] = {
             base: clamp(a.base, 0, 99),
-            bonus: clamp(a.bonus, 0, 99),
+            bonus: clamp(a.bonus, -20, 99),
           };
         }
       });
@@ -386,11 +386,12 @@ class Player {
 
   /**
    * @param {string} abilityKey - One of 'str','dex','con','int','wis','cha'
-   * @returns {number} Bonus (0–99)
+   * @returns {number} Bonus (-20..99) — negatives allowed for stat-draining
+   *   effects (poison, ability damage, etc.).
    */
   getAbilityBonus(abilityKey) {
     const a = this.abilities[abilityKey];
-    return a ? clamp(a.bonus, 0, 99) : 0;
+    return a ? clamp(a.bonus, -20, 99) : 0;
   }
 
   /**
@@ -494,7 +495,7 @@ class Player {
 
   setAbilityBonus(abilityKey, value) {
     if (!ABILITY_KEYS.includes(abilityKey)) return;
-    this.abilities[abilityKey].bonus = clamp(value, 0, 99);
+    this.abilities[abilityKey].bonus = clamp(value, -20, 99);
   }
 
   // —— Notes ——

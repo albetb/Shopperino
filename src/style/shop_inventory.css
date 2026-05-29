@@ -431,9 +431,10 @@ tr.add-item td.action-size .item-number-button {
 }
 
 .highlight {
-  text-shadow:
-    1px 1px 1px var(--grey-t),
-    0 0 2px var(--main-t);
+  color: var(--accent);
+}
+.highlight.button-link {
+  color: var(--accent);
 }
 
 .flat-button {

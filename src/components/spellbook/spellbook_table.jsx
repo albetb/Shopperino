@@ -35,6 +35,9 @@ import {
   onPrepareDomainSpell,
   onUnprepareDomainSpell,
   onUseDomainSpell,
+  onSpecializedChange,
+  onForbidden1Change,
+  onForbidden2Change,
 } from '../../store/thunks/spellbookThunks';
 import {
   onPlayerLearnUnlearnSpell,
@@ -187,11 +190,19 @@ export default function SpellbookTable({ source = 'app' }) {
         />
       )}
 
-      {!isApp && spellbook?.Class === 'Wizard' && (
+      {spellbook?.Class === 'Wizard' && (
         <WizardSchoolsCard
           inst={inst}
-          player={player}
-          setOption={(key, value) => dispatch(onSetPlayerSpellOption(key, value))}
+          player={isApp
+            ? { specialized: inst.Specialized, forbidden1: inst.Forbidden1, forbidden2: inst.Forbidden2 }
+            : player}
+          setOption={isApp
+            ? (key, value) => {
+                if (key === 'specialized') dispatch(onSpecializedChange(value));
+                else if (key === 'forbidden1') dispatch(onForbidden1Change(value));
+                else if (key === 'forbidden2') dispatch(onForbidden2Change(value));
+              }
+            : (key, value) => dispatch(onSetPlayerSpellOption(key, value))}
           collapsed={wizardSchoolsCollapsed}
           toggle={() => setWizardSchoolsCollapsed(!wizardSchoolsCollapsed)}
         />
