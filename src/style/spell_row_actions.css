@@ -1,0 +1,246 @@
+/* ================================================================
+   Spellbook row-action controls
+   Tokens: --ink*, --accent*, --surface-1/2/3, --bg, --bg-elev,
+           --border, --border-soft, --border-strong,
+           --radius-sm, --radius-pill,
+           --font-display, --font-ui, --font-mono, --font-size-sm,
+           --t-fast, --t-base, --t-slow, --ease
+   ================================================================ */
+
+/* Action cell must allow the LearnTab tip to protrude past the column,
+   and acts as the positioning anchor for the absolute LearnTab. */
+.spellbook-table td.action-cell,
+.action-cell {
+  overflow: visible;
+  position: relative;
+}
+
+/* ================================================================
+   1. LEARN — Sliding Tab
+   ================================================================ */
+.tab-learn {
+  /* Right edge anchored at the cell's right; width grows leftward,
+     so the pointed tip extends out instead of the whole tab sliding. */
+  --tab-w-default: 22px;
+  --tab-w-hover:   30px;
+  --tab-w-learned: 52px;
+  --tab-h: 34px;
+  position: absolute;
+  right: 0.35rem;
+  top: 50%;
+  width: var(--tab-w-default);
+  height: var(--tab-h);
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  color: var(--ink-muted);
+  outline: none;
+  isolation: isolate;
+  transform: translateY(-50%);
+  transition: width var(--t-base) cubic-bezier(.34, 1.3, .5, 1);
+}
+.tab-learn::before {
+  content: '';
+  position: absolute;
+  inset: -8px -12px;
+  border-radius: 6px;
+}
+.tab-learn .tab-shape {
+  position: absolute;
+  inset: 0;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-right: 0;
+  clip-path: polygon(8px 0, 100% 0, 100% 100%, 8px 100%, 0 50%);
+  box-shadow: -2px 0 5px -2px oklch(0 0 0 / 0.45);
+  transition: background var(--t-fast) var(--ease),
+              border-color var(--t-fast) var(--ease),
+              box-shadow var(--t-base) var(--ease);
+}
+.tab-learn .tab-glyph {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 7px;
+  font-family: var(--font-display);
+  font-size: 14px;
+  color: var(--ink-muted);
+  line-height: 1;
+  transition: color var(--t-fast) var(--ease);
+  z-index: 2;
+}
+.tab-learn .dog-ear {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 9px;
+  height: 9px;
+  opacity: 0;
+  transition: opacity var(--t-base) var(--ease);
+  z-index: 3;
+}
+.tab-learn .dog-ear svg { display: block; }
+
+.tab-learn:not(.is-learned):not(.is-disabled):hover { width: var(--tab-w-hover); }
+.tab-learn:not(.is-learned):hover .tab-shape {
+  background: var(--surface-3);
+  border-color: var(--border-strong);
+}
+.tab-learn:not(.is-learned):hover .tab-glyph { color: var(--accent); }
+
+.tab-learn:active { transition-duration: var(--t-fast); }
+.tab-learn:not(.is-learned):active { width: calc(var(--tab-w-hover) + 4px); }
+.tab-learn.is-learned:active { width: calc(var(--tab-w-learned) - 4px); }
+
+.tab-learn.is-learned { width: var(--tab-w-learned); }
+.tab-learn.is-learned .tab-shape {
+  background: var(--accent);
+  border-color: var(--accent-strong);
+}
+.tab-learn.is-learned .tab-glyph { color: var(--accent-fg); padding-right: 6px; }
+.tab-learn.is-learned .dog-ear { opacity: 1; }
+
+.tab-learn[disabled],
+.tab-learn.is-disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+  width: var(--tab-w-default);
+}
+.tab-learn.is-disabled .tab-shape {
+  background: var(--surface-1);
+  border-color: var(--border-soft);
+  opacity: 0.6;
+  box-shadow: none;
+}
+.tab-learn.is-disabled .tab-glyph { color: var(--ink-disabled); }
+
+/* ================================================================
+   2. PREPARE — Fused Stepper
+   ================================================================ */
+.fused-stepper {
+  display: inline-grid;
+  grid-template-columns: 22px 28px 22px;
+  height: 28px;
+  background: var(--surface-1);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-pill);
+  align-items: stretch;
+  overflow: hidden;
+  font-family: var(--font-ui);
+}
+.fused-stepper button {
+  background: transparent;
+  border: 0;
+  color: var(--ink-muted);
+  cursor: pointer;
+  padding: 0;
+  font-size: 14px;
+  line-height: 1;
+  position: relative;
+  font-family: inherit;
+}
+.fused-stepper button::before {
+  content: '';
+  position: absolute;
+  inset: -8px -2px;
+}
+.fused-stepper .num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: var(--font-size-sm);
+  color: var(--ink);
+  border-left: 1px solid var(--border-soft);
+  border-right: 1px solid var(--border-soft);
+  background: var(--bg);
+}
+.fused-stepper button:hover { color: var(--accent); background: var(--surface-3); }
+.fused-stepper button:disabled { color: var(--ink-disabled); cursor: not-allowed; background: transparent; }
+.fused-stepper.is-disabled { opacity: 0.55; pointer-events: none; }
+
+/* ================================================================
+   3. CAST — Star Orbit (scaled down to fit ~36px row height)
+   Original handoff used 49px; we shrink to 2.25rem so the existing
+   .spellbook-table row height does not grow.
+   ================================================================ */
+.orbit-cast {
+  --size: 2.25rem;       /* 36px — matches existing --btn-height-sm row */
+  --radius: 0.75rem;     /* 12px ring radius */
+  position: relative;
+  width: var(--size);
+  height: var(--size);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  color: var(--ink);
+}
+.orbit-cast::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+}
+.orbit-cast .orbit-num {
+  position: relative;
+  z-index: 2;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 1;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  transition: color var(--t-fast) var(--ease), transform var(--t-fast) var(--ease);
+}
+.orbit-cast .orbit-path {
+  position: absolute;
+  width: calc(var(--radius) * 2);
+  height: calc(var(--radius) * 2);
+  border-radius: 50%;
+  border: 1px dashed var(--border-soft);
+  opacity: 0.5;
+}
+.orbit-cast .ring {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% 50%;
+}
+.orbit-cast.casting .ring {
+  animation: orbit-spin var(--t-slow) cubic-bezier(.34, 1, .5, 1);
+}
+@keyframes orbit-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(calc(360deg / var(--star-count, 9))); }
+}
+.orbit-cast .star {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  transform: rotate(var(--a)) translateY(calc(-1 * var(--radius)));
+}
+.orbit-cast .star .material-symbols-outlined {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  font-size: 11px;
+  color: var(--accent);
+  font-variation-settings: 'FILL' 1, 'wght' 500;
+  filter: drop-shadow(0 0 2px var(--accent-glow));
+}
+.orbit-cast:hover .orbit-num { color: var(--accent); }
+.orbit-cast:active .orbit-num { transform: scale(0.9); }
+.orbit-cast.is-empty {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.orbit-cast.is-empty .orbit-num { color: var(--ink-faint); }
+.orbit-cast.is-empty .orbit-path { opacity: 0.35; }

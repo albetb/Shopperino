@@ -1,8 +1,17 @@
 import PropTypes from 'prop-types';
 import { isMobile } from '../../lib/utils';
 import { addCardByLink } from '../../store/slices/appSlice';
+import { StarOrbitCast } from './row_actions';
 
-export default function SpontaneousSpells({ spontaneousByLevel, spontaneousLevels, dispatch, showShortDescriptions }) {
+export default function SpontaneousSpells({
+    spontaneousByLevel,
+    spontaneousLevels,
+    dispatch,
+    showShortDescriptions,
+    getRemaining,
+    totalForLevel = 0,
+    onUseSpell,
+}) {
     if (spontaneousLevels.length === 0) return null;
 
     return (
@@ -17,38 +26,39 @@ export default function SpontaneousSpells({ spontaneousByLevel, spontaneousLevel
                         </tr>
                     </thead>
                     <tbody>
-                        {spontaneousByLevel[lvl].map((item, i) => (
-                            <tr key={i}>
-
-
-                                <td className={`${i === 0 ? 'first' : ''} col-btn-sm-max`}>
-                                    <div className='card-side-div'>
-                                        <div className='spell-slot-div2 justify-center'>
-                                            <span className='material-symbols-outlined'>wand_stars</span>
-                                        </div>
-                                    </div>
-                                </td>
-
-                                <td className={`${i === 0 ? 'first' : ''} col-auto`}>
-                                    <button
-                                        className="button-link spell-table-cell-name"
-                                        onClick={() => dispatch(addCardByLink({ links: item.Link, bonus: 0 }))}
-                                    >
-                                        {item.Name}
-                                    </button>
-                                    {showShortDescriptions && item['Short Description'] && (
-                                        <div className="spell-table-cell-desc">
-                                            {item['Short Description']}
-                                        </div>
-                                    )}
-                                </td>
-                                {!isMobile() && (
-                                    <td className={`${i === 0 ? 'first' : ''} col-30`}>
-                                        {item.School.split(' ')[0]}
+                        {spontaneousByLevel[lvl].map((item, i) => {
+                            const remaining = getRemaining ? getRemaining(item.Link) : 0;
+                            return (
+                                <tr key={i}>
+                                    <td className={`${i === 0 ? 'first' : ''} col-btn-sm-max action-cell`}>
+                                        <StarOrbitCast
+                                            remaining={remaining}
+                                            total={totalForLevel}
+                                            onClick={() => onUseSpell?.(item.Link)}
+                                        />
                                     </td>
-                                )}
-                            </tr>
-                        ))}
+
+                                    <td className={`${i === 0 ? 'first' : ''} col-auto`}>
+                                        <button
+                                            className="button-link spell-table-cell-name"
+                                            onClick={() => dispatch(addCardByLink({ links: item.Link, bonus: 0 }))}
+                                        >
+                                            {item.Name}
+                                        </button>
+                                        {showShortDescriptions && item['Short Description'] && (
+                                            <div className="spell-table-cell-desc">
+                                                {item['Short Description']}
+                                            </div>
+                                        )}
+                                    </td>
+                                    {!isMobile() && (
+                                        <td className={`${i === 0 ? 'first' : ''} col-30`}>
+                                            {item.School.split(' ')[0]}
+                                        </td>
+                                    )}
+                                </tr>
+                            );
+                        })}
                     </tbody>
                 </table>
             ))}
@@ -61,4 +71,7 @@ SpontaneousSpells.propTypes = {
     spontaneousLevels: PropTypes.arrayOf(PropTypes.number).isRequired,
     dispatch: PropTypes.func.isRequired,
     showShortDescriptions: PropTypes.bool.isRequired,
+    getRemaining: PropTypes.func,
+    totalForLevel: PropTypes.number,
+    onUseSpell: PropTypes.func,
 };

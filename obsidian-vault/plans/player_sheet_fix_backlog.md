@@ -31,24 +31,10 @@
 
 ## Still TODO
 
-### Combat page — rework the header card
-**Where:** [combat_page.jsx](../../src/components/player_sheet/combat_page.jsx), the `<Card padding>` block right at the top containing the badge portrait, class+level filigree, character name and the race/class pills.
-**Change:** Redesign or replace the header card — in its current form it's mostly a placeholder (icon + name + repeated class pill) and doesn't earn its vertical space. Options to consider: drop it entirely and surface the character name elsewhere (e.g. in the page title), or fold useful per-character context into it (portrait when we have one, xp / encounter status, conditions like dying/disabled, quick-access actions).
-**Why:** Right now it's the largest card on the page and adds no information the sidebar isn't already showing. Either give it a job or remove it.
-**Open decisions (biggest one in this file):** drop the card entirely (and where does the character name go — into the page title?), or keep it and repurpose (portrait? conditions? xp? quick actions?). Need a concrete spec before any code lands.
-
----
-
 ### Per-class player sheet customization
 **See:** [per_class_customization_backlog.md](per_class_customization_backlog.md) — full plan lives in its own file (one section per class plus shared sub-systems). Includes conventions, per-class checklist, open decisions, and implementation order.
 **Tl;dr:** every base class needs its own block on the player sheet (rage tracker, smite tracker, sneak-attack dice, wild shape, lay-on-hands pool, favored enemies, etc.). Today only race-level toggles exist. Subsumes the previous standalone "Fighter bonus combat feats" item.
 
 ---
-
-## Recommended attack order
-
-1. **Verify math** — encumbrance, spell slots — against the rules notes. Catch any silent inconsistency before they bite.
-2. **Header card spec** — pin down the open decision (drop vs repurpose) before touching code.
-3. **Per-class customization** — see [per_class_customization_backlog.md](per_class_customization_backlog.md); settle conventions on a pilot class (Fighter or Barbarian) first, then roll out.
 
 When in doubt: read the relevant rules note first, then the corresponding `src/data/*.json`. Don't rederive a mechanic from memory if a topic file exists for it.

@@ -3,6 +3,7 @@ import { isMobile, trimLine } from '../../lib/utils';
 import { addCardByLink } from '../../store/slices/appSlice';
 import SpontaneousSpells from './spontaneous_spells';
 import DomainSpells from './domain_spells';
+import { LearnTab, FusedStepper, StarOrbitCast } from './row_actions';
 
 const classKeyMap = {
   Sorcerer: 'Sor/Wiz',
@@ -144,6 +145,9 @@ export default function SpellLevelCard({
           spontaneousLevels={[level]}
           dispatch={dispatch}
           showShortDescriptions={showShortDescriptions}
+          getRemaining={getRemaining}
+          totalForLevel={spellsPerDay[level] || 0}
+          onUseSpell={actions?.onUseSpell}
         />
       )}
 
@@ -164,25 +168,14 @@ export default function SpellLevelCard({
               const prepCount = slotForSpell ? slotForSpell.Prepared : 0;
               return (
                 <tr key={i}>
-                  <td className={`${i === 0 ? 'first' : ''} col-btn-sm`}>
-                    <div className="card-side-div">
-                      <div className="spell-slot-div">
-                        <button
-                          className={`smaller flat-button ${prepCount === 0 ? 'opacity-50' : ''}`}
-                          onClick={() => actions?.onUnprepareDomainSpell?.(level, item.Link)}
-                          disabled={prepCount === 0}
-                        >
-                          <span className="material-symbols-outlined">remove</span>
-                        </button>
-                        <label className="level-text">{prepCount}</label>
-                        <button
-                          className="smaller flat-button"
-                          onClick={() => actions?.onPrepareDomainSpell?.(level, item.Link)}
-                        >
-                          <span className="material-symbols-outlined">add</span>
-                        </button>
-                      </div>
-                    </div>
+                  <td className={`${i === 0 ? 'first' : ''} col-btn-sm action-cell`}>
+                    <FusedStepper
+                      value={prepCount}
+                      onChange={(next) => {
+                        if (next > prepCount) actions?.onPrepareDomainSpell?.(level, item.Link);
+                        else if (next < prepCount) actions?.onUnprepareDomainSpell?.(level, item.Link);
+                      }}
+                    />
                   </td>
                   <td className={`${i === 0 ? 'first' : ''} col-auto`}>
                     <button
@@ -227,59 +220,44 @@ export default function SpellLevelCard({
               return (
                 <tr key={i}>
                   {page === 0 && (
-                    <td className={`${firstClass} col-btn-sm`}>
-                      <button
-                        className={`flat-button smaller ${learnedLinks.has(item.Link) ? 'opacity-50' : ''}`}
+                    <td className={`${firstClass} col-btn-sm action-cell`}>
+                      <LearnTab
+                        learned={learnedLinks.has(item.Link)}
                         onClick={() => actions?.onLearnUnlearnSpell?.(item.Link)}
-                      >
-                        <span className="material-symbols-outlined">
-                          {learnedLinks.has(item.Link) ? 'bookmark_remove' : 'bookmark_add'}
-                        </span>
-                      </button>
+                      />
                     </td>
                   )}
 
-                  {page === 1 && (
-                    <td className={`${firstClass} col-btn-sm`}>
-                      <div className='card-side-div'>
-                        <div className='spell-slot-div'>
-                          <button
-                            className={`smaller flat-button ${inst.getSpellPreparedUsed(item.Link).Prepared === 0 ? 'opacity-50' : ''}`}
-                            onClick={() => actions?.onUnprepareSpell?.(item.Link)}
-                            disabled={inst.getSpellPreparedUsed(item.Link).Prepared === 0}
-                          >
-                            <span className='material-symbols-outlined'>remove</span>
-                          </button>
-                          <label className='level-text' style={{margin: "0 8px 0 8px"}}>
-                            {inst.getSpellPreparedUsed(item.Link).Prepared}
-                          </label>
-                          <button
-                            className='smaller flat-button'
-                            onClick={() => actions?.onPrepareSpell?.(item.Link)}
-                          >
-                            <span className='material-symbols-outlined'>add</span>
-                          </button>
-                        </div>
-                      </div>
-                    </td>
-                  )}
+                  {page === 1 && (() => {
+                    const prepared = inst.getSpellPreparedUsed(item.Link).Prepared || 0;
+                    return (
+                      <td className={`${firstClass} col-btn-sm action-cell`}>
+                        <FusedStepper
+                          value={prepared}
+                          onChange={(next) => {
+                            if (next > prepared) actions?.onPrepareSpell?.(item.Link);
+                            else if (next < prepared) actions?.onUnprepareSpell?.(item.Link);
+                          }}
+                        />
+                      </td>
+                    );
+                  })()}
 
-                  {page === 2 && (
-                    <td className={`${firstClass} col-btn-sm-max`}>
-                      <div className='card-side-div'>
-                        <div className='spell-slot-div2'>
-                          <button
-                            className={`flat-button smaller ${getRemaining(item.Link) <= 0 ? 'opacity-50' : ''}`}
-                            onClick={() => actions?.onUseSpell?.(item.Link)}
-                            disabled={getRemaining(item.Link) <= 0}
-                          >
-                            <span className='material-symbols-outlined'>wand_stars</span>
-                          </button>
-                          <label className='level-text'>{getRemaining(item.Link)}</label>
-                        </div>
-                      </div>
-                    </td>
-                  )}
+                  {page === 2 && (() => {
+                    const remaining = getRemaining(item.Link);
+                    const total = ["Sorcerer", "Bard"].includes(inst.Class)
+                      ? (spellsPerDay[level] || 0)
+                      : (inst.getSpellPreparedUsed(item.Link).Prepared || 0);
+                    return (
+                      <td className={`${firstClass} col-btn-sm-max action-cell`}>
+                        <StarOrbitCast
+                          remaining={remaining}
+                          total={total}
+                          onClick={() => actions?.onUseSpell?.(item.Link)}
+                        />
+                      </td>
+                    );
+                  })()}
 
                   <td className={`${firstClass} col-auto`}>
                     <div className="spell-table-cell-name-row">

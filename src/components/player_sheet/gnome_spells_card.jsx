@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { addCardByLink } from '../../store/slices/appSlice';
 import { onPlayerUseGnomeSpell } from '../../store/thunks/playerSheetThunks';
+import { StarOrbitCast } from '../spellbook/row_actions';
 import '../../style/menu_cards.css';
 import '../../style/shop_inventory.css';
 
@@ -42,21 +43,12 @@ export default function GnomeSpellsCard() {
               const remaining = Math.max(0, 1 - used);
               return (
               <tr key={spell.link}>
-                <td className={`${i === 0 ? 'first' : ''} col-btn-sm-max`}>
-                  <div className="card-side-div">
-                    <div className="spell-slot-div2">
-                      <button
-                        type="button"
-                        className={`flat-button smaller ${remaining <= 0 ? 'opacity-50' : ''}`}
-                        onClick={() => dispatch(onPlayerUseGnomeSpell(spell.link))}
-                        disabled={remaining <= 0}
-                        title="Use (1/day)"
-                      >
-                        <span className="material-symbols-outlined">wand_stars</span>
-                      </button>
-                      <label className="level-text">{remaining}</label>
-                    </div>
-                  </div>
+                <td className={`${i === 0 ? 'first' : ''} col-btn-sm-max action-cell`}>
+                  <StarOrbitCast
+                    remaining={remaining}
+                    total={1}
+                    onClick={() => dispatch(onPlayerUseGnomeSpell(spell.link))}
+                  />
                 </td>
                 <td className={`${i === 0 ? 'first' : ''} col-auto`}>
                   <button
