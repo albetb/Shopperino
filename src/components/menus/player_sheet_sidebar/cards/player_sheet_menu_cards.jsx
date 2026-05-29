@@ -44,7 +44,9 @@ export default function PlayerSheetMenuCards() {
     const featUsed = player.getFeatPointsUsed();
     const featMax = player.getFeatPointsMax();
     const showAlert = skillUsed < skillTotal || featUsed < featMax;
-    return showAlert ? '[!] Character' : 'Character';
+    return showAlert ? (
+      <><span className="material-symbols-outlined" style={{ color: 'var(--danger)' }}>priority_high</span> Character</>
+    ) : 'Character';
   }, [player]);
 
   return (

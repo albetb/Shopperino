@@ -88,7 +88,9 @@ export default function MenuCardAbilityScores({ isCollapsed, onToggleCollapse })
   const allDefault = player && ABILITY_KEYS.every(
     (key) => player.getAbilityBase(key) === 10 && player.getAbilityBonus(key) === 0
   );
-  const displayTitle = allDefault ? '[!] Ability' : 'Ability';
+  const displayTitle = allDefault ? (
+    <><span className="material-symbols-outlined" style={{ color: 'var(--danger)' }}>priority_high</span> Ability</>
+  ) : 'Ability';
 
   if (!player) {
     return (
@@ -233,15 +235,6 @@ export default function MenuCardAbilityScores({ isCollapsed, onToggleCollapse })
                     </div>
                   );
                 })}
-              </div>
-              <div className="ability-grid ability-grid-dice">
-                {ABILITY_KEYS.map((key) => (
-                  <div key={key} className="ability-grid-cell ability-dice-cell">
-                    <button type="button" className="ability-dice-button" disabled aria-label={`Roll ${ABILITY_LABELS[key]}`}>
-                      <span className="material-symbols-outlined">casino</span>
-                    </button>
-                  </div>
-                ))}
               </div>
             </>
           )}

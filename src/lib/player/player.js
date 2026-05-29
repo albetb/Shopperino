@@ -113,7 +113,6 @@ class Player {
     this.damage = 0;
     this.skills = {};
     this.gold = 0;
-    this.featsUsed = 0;
     this.feats = [];
     this.bonusLanguagesLearned = [];
     this.domain1 = '';
@@ -201,8 +200,6 @@ class Player {
     }
 
     if (Number.isFinite(data.gold)) this.gold = Math.max(0, Number(Number(data.gold).toFixed(2)));
-
-    if (Number.isFinite(data.featsUsed)) this.featsUsed = Math.max(0, Math.floor(data.featsUsed));
 
     if (Array.isArray(data.feats)) {
       this.feats = data.feats
@@ -328,7 +325,6 @@ class Player {
       damage: this.damage,
       skills: { ...this.skills },
       gold: Number(Number(this.gold).toFixed(2)),
-      featsUsed: Math.max(0, Math.floor(this.featsUsed)),
       feats: Array.isArray(this.feats) ? [...this.feats] : [],
       bonusLanguagesLearned: [...(this.bonusLanguagesLearned || [])],
       domain1: this.domain1 || '',
@@ -961,11 +957,7 @@ class Player {
   }
 
   getFeatPointsUsed() {
-    return Math.max(0, Math.floor(Number(this.featsUsed) || 0));
-  }
-
-  setFeatPointsUsed(value) {
-    this.featsUsed = Math.max(0, Math.floor(Number(value) || 0));
+    return Array.isArray(this.feats) ? this.feats.length : 0;
   }
 
   /**
