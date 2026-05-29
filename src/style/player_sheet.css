@@ -968,8 +968,8 @@
   }
 
   .player-sheet-note-editor {
-    width: 95vw;
-    max-width: 95vw;
+    width: 92%;
+    max-width: 92%;
     height: 78vh;
   }
   .player-sheet-note-textarea {

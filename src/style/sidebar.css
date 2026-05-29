@@ -414,8 +414,8 @@ p {
   }
 
   .search-results .card-width-spellbook {
-    width: 99vw;
-    max-width: 99vw;
+    width: 92%;
+    max-width: 92%;
     margin-left: auto;
     margin-right: auto;
   }
