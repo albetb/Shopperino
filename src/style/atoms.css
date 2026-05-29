@@ -760,3 +760,19 @@ body.theme-light :focus-visible {
 }
 .sh-portrait .material-symbols-outlined,
 .sh-portrait .mi { font-size: 1.75rem; opacity: 0.55; }
+.sh-portrait > .sh-portrait-img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+}
+button.sh-portrait {
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+button.sh-portrait:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}

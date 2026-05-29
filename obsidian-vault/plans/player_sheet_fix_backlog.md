@@ -39,10 +39,9 @@
 
 ---
 
-### Fighter bonus combat feats
-**Where:** [player.js](../../src/lib/player/player.js) — `getFeatPointsMax()`.
-**Change:** Fighter gets one bonus combat feat at 1st level and one at every even level thereafter. Currently not included in the feat-points budget.
-**Open decisions:** fold Fighter bonus feats into a single `getFeatPointsMax()` total, or split into `generalFeatSlots` + `classBonusFeatSlots` (two budgets shown separately in the UI)?
+### Per-class player sheet customization
+**See:** [per_class_customization_backlog.md](per_class_customization_backlog.md) — full plan lives in its own file (one section per class plus shared sub-systems). Includes conventions, per-class checklist, open decisions, and implementation order.
+**Tl;dr:** every base class needs its own block on the player sheet (rage tracker, smite tracker, sneak-attack dice, wild shape, lay-on-hands pool, favored enemies, etc.). Today only race-level toggles exist. Subsumes the previous standalone "Fighter bonus combat feats" item.
 
 ---
 
@@ -50,6 +49,6 @@
 
 1. **Verify math** — encumbrance, spell slots — against the rules notes. Catch any silent inconsistency before they bite.
 2. **Header card spec** — pin down the open decision (drop vs repurpose) before touching code.
-3. **Fighter bonus feats** — once the split-vs-fold call is made, isolated change in the model.
+3. **Per-class customization** — see [per_class_customization_backlog.md](per_class_customization_backlog.md); settle conventions on a pilot class (Fighter or Barbarian) first, then roll out.
 
 When in doubt: read the relevant rules note first, then the corresponding `src/data/*.json`. Don't rederive a mechanic from memory if a topic file exists for it.

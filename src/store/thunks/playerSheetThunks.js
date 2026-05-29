@@ -128,6 +128,24 @@ export const onSetCharacterRace = (race) => (dispatch, getState) => {
   persistPlayer(dispatch, getState, p);
 };
 
+export const onSetCharacterPortrait = (dataUrl) => (dispatch, getState) => {
+  const app = getState().persist;
+  if (app.pss == null || app.pss < 0 || !app.psc?.[app.pss]) return;
+  const p = db.getPlayerByIndex(app, app.pss);
+  if (!p) return;
+  p.setPortrait(typeof dataUrl === 'string' ? dataUrl : '');
+  persistPlayer(dispatch, getState, p);
+};
+
+export const onClearCharacterPortrait = () => (dispatch, getState) => {
+  const app = getState().persist;
+  if (app.pss == null || app.pss < 0 || !app.psc?.[app.pss]) return;
+  const p = db.getPlayerByIndex(app, app.pss);
+  if (!p) return;
+  p.setPortrait('');
+  persistPlayer(dispatch, getState, p);
+};
+
 export const onSetCharacterClass = (_class) => (dispatch, getState) => {
   const app = getState().persist;
   if (app.pss == null || app.pss < 0 || !app.psc?.[app.pss]) return;

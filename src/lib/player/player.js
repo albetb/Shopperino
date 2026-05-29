@@ -107,6 +107,7 @@ class Player {
     this.abilities = defaultAbilities();
     this.notes = {};
     this.selectedNoteName = '';
+    this.portrait = ''; // data URL (JPEG ~256x256) or empty string
     this.maxLife = 10;
     this.healthModifier = 0;
     this.damage = 0;
@@ -180,6 +181,7 @@ class Player {
     if (typeof data.selectedNoteName === 'string') {
       this.selectedNoteName = this.notes[data.selectedNoteName] != null ? data.selectedNoteName : '';
     }
+    if (typeof data.portrait === 'string') this.portrait = data.portrait;
 
     if (Number.isFinite(data.maxLife)) this.maxLife = Math.max(this.getBaseLifeMin(), data.maxLife);
     if (Number.isFinite(data.healthModifier)) this.healthModifier = data.healthModifier;
@@ -320,6 +322,7 @@ class Player {
       abilities: { ...this.abilities },
       notes: { ...this.notes },
       selectedNoteName: this.selectedNoteName,
+      portrait: this.portrait || '',
       maxLife: this.maxLife,
       healthModifier: this.healthModifier,
       damage: this.damage,
@@ -375,6 +378,10 @@ class Player {
 
   getLevel() {
     return this.level;
+  }
+
+  getPortrait() {
+    return this.portrait || '';
   }
 
   getEquipment() {
@@ -496,6 +503,10 @@ class Player {
 
   setRace(race) {
     this.race = typeof race === 'string' ? race : '';
+  }
+
+  setPortrait(value) {
+    this.portrait = typeof value === 'string' ? value : '';
   }
 
   setClass(_class) {

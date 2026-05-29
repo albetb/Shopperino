@@ -1,0 +1,16 @@
+{
+  "executor_run_id": null,
+  "divergences": [],
+  "step_1_status": "NOT DONE",
+  "step_1_criteria_count": 5,
+  "step_2_status": "NOT DONE",
+  "step_2_criteria_count": 5,
+  "step_3_status": "NOT DONE",
+  "step_3_criteria_count": 6,
+  "step_4_status": "NOT DONE",
+  "step_4_criteria_count": 5,
+  "step_5_status": "NOT DONE",
+  "step_5_criteria_count": 5,
+  "step_6_status": "NOT DONE",
+  "step_6_criteria_count": 4
+}

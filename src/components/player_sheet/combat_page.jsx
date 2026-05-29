@@ -15,7 +15,10 @@ import {
   onSetAcBonus,
   onSetAcTouchBonus,
   onSetAcFlatBonus,
+  onSetCharacterPortrait,
+  onClearCharacterPortrait,
 } from '../../store/thunks/playerSheetThunks';
+import PortraitEditorSheet from './PortraitEditorSheet';
 import useLongPress from '../hooks/useLongPress';
 import { getItemByRef, calculateWeaponAttackBonus, calculateWeaponDamage } from '../../lib/utils';
 import SpellLink from '../common/spell_link';
@@ -57,6 +60,7 @@ export default function CombatPage() {
 
   const [hpFeedback, setHpFeedback] = useState(null);
   const hpFeedbackTotalRef = useRef(0);
+  const [portraitOpen, setPortraitOpen] = useState(false);
   const [editMaxLife, setEditMaxLife] = useState(false);
   const [tempMaxLife, setTempMaxLife] = useState(10);
   const [editBonusLife, setEditBonusLife] = useState(false);
@@ -229,6 +233,7 @@ export default function CombatPage() {
   const characterName  = player.getName?.() ?? '';
   const characterClass = player.getClass?.() ?? '';
   const characterLevel = player.getLevel?.() ?? 1;
+  const characterPortrait = player.getPortrait?.() ?? '';
 
   const renderBonusEditor = (label, min, max, step = 1) => (
     <Card padding>
@@ -294,6 +299,7 @@ export default function CombatPage() {
   const bab_display = formatBaseAttackBonus(bab);
 
   return (
+    <>
     <div
       className="sh-stack combat-page-wrap"
       style={{ paddingTop: 'var(--space-4)', paddingBottom: 'var(--space-12)' }}
@@ -301,9 +307,16 @@ export default function CombatPage() {
       {/* Header card with portrait + identity */}
       <Card padding>
         <div className="sh-row-h" style={{ gap: 'var(--space-3)', alignItems: 'stretch' }}>
-          <div className="sh-portrait" aria-hidden="true">
-            <Icon name="badge" />
-          </div>
+          <button
+            type="button"
+            className="sh-portrait"
+            onClick={() => setPortraitOpen(true)}
+            aria-label={characterPortrait ? 'Change portrait' : 'Add portrait'}
+          >
+            {characterPortrait
+              ? <img src={characterPortrait} alt="" className="sh-portrait-img" />
+              : <Icon name="badge" />}
+          </button>
           <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 'var(--space-1)' }}>
             <Filigree>{characterClass || 'No class'} · level {characterLevel}</Filigree>
             <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 0 }}>
@@ -583,6 +596,14 @@ export default function CombatPage() {
         ));
       })()}
     </div>
+    <PortraitEditorSheet
+      open={portraitOpen}
+      onClose={() => setPortraitOpen(false)}
+      currentPortrait={characterPortrait}
+      onSave={(dataUrl) => { dispatch(onSetCharacterPortrait(dataUrl)); setPortraitOpen(false); }}
+      onRemove={() => { dispatch(onClearCharacterPortrait()); setPortraitOpen(false); }}
+    />
+    </>
   );
 }
 
