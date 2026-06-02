@@ -108,6 +108,14 @@ export function getPlayerSheetCardsCollapsed(app) {
   return out;
 }
 
+const COMBAT_PAGE_CARD_KEYS = ['player', 'combat', 'items', 'carry', 'money'];
+export function getCombatPageCardsCollapsed(app) {
+  const raw = app?.pscombat && typeof app.pscombat === 'object' ? app.pscombat : {};
+  const out = {};
+  COMBAT_PAGE_CARD_KEYS.forEach(k => { out[k] = !!raw[k]; });
+  return out;
+}
+
 export function setAppUIFlag(app, bit, value) {
   const def = appState.getDefaultApp();
   const uiFlags = appState.setUIFlagValue(app?.uiFlags ?? def.uiFlags, bit, value);

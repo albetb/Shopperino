@@ -477,17 +477,17 @@ export const onRemoveFeatAt = (index) => (dispatch, getState) => {
 };
 
 // Inventory
-export const onAddInventoryItem = (name, type, number, link) => (dispatch, getState) => {
+export const onAddInventoryItem = (name, type, number, link, opts) => (dispatch, getState) => {
   const player = getState().playerSheet?.player;
   if (!player) return;
-  player.addInventoryItem(name, type, number, link);
+  player.addInventoryItem(name, type, number, link, opts);
   persistPlayer(dispatch, getState, player);
 };
 
-export const onRemoveInventoryItem = (name, type, number) => (dispatch, getState) => {
+export const onRemoveInventoryItem = (name, type, number, opts) => (dispatch, getState) => {
   const player = getState().playerSheet?.player;
   if (!player) return;
-  player.removeInventoryItem(name, type, number);
+  player.removeInventoryItem(name, type, number, opts);
   persistPlayer(dispatch, getState, player);
 };
 

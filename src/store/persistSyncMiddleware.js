@@ -34,6 +34,7 @@ const PREF_ACTIONS = [
   'playerSheet/setIsPlayerSheetSidebarCollapsed',
   'playerSheet/setPlayerSheetMainView',
   'playerSheet/setPlayerSheetCardCollapsed',
+  'playerSheet/setCombatPageCardCollapsed',
 ];
 
 export function persistSyncMiddleware(store) {
@@ -106,6 +107,9 @@ export function persistSyncMiddleware(store) {
         break;
       case 'playerSheet/setPlayerSheetCardCollapsed':
         nextPersist = { ...nextPersist, pscards: state.playerSheet.cardCollapsed };
+        break;
+      case 'playerSheet/setCombatPageCardCollapsed':
+        nextPersist = { ...nextPersist, pscombat: state.playerSheet.combatPageCardsCollapsed };
         break;
       default:
         return result;

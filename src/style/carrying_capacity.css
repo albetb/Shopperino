@@ -1,5 +1,13 @@
 /* Carrying capacity card — compact 6-column table of load tiers. */
 
+.carry-title-readout {
+  margin-left: auto;
+  margin-right: var(--space-2);
+  font-size: var(--font-size-sm);
+  color: var(--ink-faint);
+  white-space: nowrap;
+}
+
 .carry-table {
   display: flex;
   flex-direction: column;

@@ -183,7 +183,7 @@ export default function CombatPage() {
       if (/\/(Shield|Specific Shield)\//.test(w.link)) return;
       const item = getItemByRef(w.link)?.raw;
       if (!item) return;
-      weapons.push({ slot, name: w.name, link: w.link, weaponItem: item, isTwoHanded: w.twoHanded === true });
+      weapons.push({ slot, name: w.name, link: w.link, weaponItem: item, isTwoHanded: w.twoHanded === true, itemData: w });
     };
     pushIf('main', mainHandWeapon);
     if (mainHandWeapon?.twoHanded !== true && (!mainHandWeapon || offHandWeapon?.link !== mainHandWeapon.link)) {
@@ -534,8 +534,8 @@ export default function CombatPage() {
           ) : (
             <div className="sh-stack" style={{ gap: 'var(--space-2)' }}>
               {equippedWeapons.map((w, idx) => {
-                const ab = calculateWeaponAttackBonus(player, { weaponItem: w.weaponItem, isTwoHanded: w.isTwoHanded });
-                const dmg = calculateWeaponDamage(player, { weaponItem: w.weaponItem, isTwoHanded: w.isTwoHanded });
+                const ab = calculateWeaponAttackBonus(player, { weaponItem: w.weaponItem, isTwoHanded: w.isTwoHanded, itemData: w.itemData });
+                const dmg = calculateWeaponDamage(player, { weaponItem: w.weaponItem, isTwoHanded: w.isTwoHanded, itemData: w.itemData });
                 /* Only show the separator border between rows, not above
                    the first weapon (otherwise it visually doubles the
                    Card's own internal padding boundary). */

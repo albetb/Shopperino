@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import { getItem, itemRefLink } from 'lib/item';
 import { itemTypes } from 'lib/utils';
+import { magicTypeFor } from 'lib/item/formatItemName';
 import Modal from '../../common/Modal';
 import Button from '../../common/Button';
+import EquipBonusControls from './EquipBonusControls';
 import 'style/shop_inventory.css';
 
 export default function AddItemFormInventory({ open, onAddItem, items, onClose }) {
@@ -12,6 +14,9 @@ export default function AddItemFormInventory({ open, onAddItem, items, onClose }
   const [suggestions, setSuggestions] = useState([]);
   const [isFocused, setIsFocused] = useState(false);
   const [link, setLink] = useState('');
+  const [masterwork, setMasterwork] = useState(false);
+  const [bonus, setBonus] = useState(0);
+  const [effectIds, setEffectIds] = useState([]);
 
   const MAX_NUMBER = 99;
   const MAX_NAME_LENGTH = 64;
@@ -24,8 +29,33 @@ export default function AddItemFormInventory({ open, onAddItem, items, onClose }
       setLink('');
       setSuggestions([]);
       setIsFocused(false);
+      setMasterwork(false);
+      setBonus(0);
+      setEffectIds([]);
     }
   }, [open]);
+
+  // Bonus / masterwork / effects only apply to weapon-armor-shield instances.
+  const isBonusCandidate = (
+    ['Weapon', 'Specific Weapon', 'Armor', 'Specific Armor', 'Shield', 'Specific Shield'].includes(itemType)
+    && !!link
+  );
+  const magicLabel = isBonusCandidate
+    ? magicTypeFor(itemType, { bonus, effectIds })
+    : null;
+  const displayType = magicLabel || itemType;
+
+  const handleBonusChange = (patch) => {
+    if (patch.masterwork !== undefined) setMasterwork(patch.masterwork);
+    if (patch.bonus !== undefined) {
+      setBonus(patch.bonus);
+      // Effects require an enhancement bonus; the control also calls us with
+      // effectIds when dropping to 0, but guard here too so external callers
+      // can't desync.
+      if (patch.bonus === 0 && patch.effectIds === undefined) setEffectIds([]);
+    }
+    if (patch.effectIds !== undefined) setEffectIds(patch.effectIds);
+  };
 
   useEffect(() => {
     if (itemName.length >= 2) {
@@ -45,7 +75,10 @@ export default function AddItemFormInventory({ open, onAddItem, items, onClose }
 
   const handleAddItemClick = () => {
     if (!itemName.trim()) return;
-    onAddItem(itemName, itemType, number, link);
+    const opts = isBonusCandidate
+      ? { masterwork: bonus > 0 ? true : masterwork, bonus, effectIds }
+      : undefined;
+    onAddItem(itemName, itemType, number, link, opts);
     onClose?.();
   };
 
@@ -53,6 +86,9 @@ export default function AddItemFormInventory({ open, onAddItem, items, onClose }
     setItemName(suggestion.Name);
     setItemType(suggestion.ItemType);
     setLink(itemRefLink(suggestion) || suggestion.Link || '');
+    setMasterwork(false);
+    setBonus(0);
+    setEffectIds([]);
     setSuggestions([]);
     setIsFocused(false);
   };
@@ -138,17 +174,37 @@ export default function AddItemFormInventory({ open, onAddItem, items, onClose }
           </div>
         </label>
         <label className="sh-field">
-          <span className="sh-label">Type</span>
+          <span className="sh-label">
+            Type
+            {magicLabel && (
+              <span className="sh-magic-type-badge" title="Item carries an enhancement bonus or effects">
+                {magicLabel}
+              </span>
+            )}
+          </span>
           <select
             value={itemType}
             onChange={(e) => setItemType(e.target.value)}
             className="sh-select"
+            aria-label={magicLabel ? `Type: ${displayType}` : 'Type'}
           >
             {itemTypes.map((type, index) => (
               <option key={index} value={type}>{type}</option>
             ))}
           </select>
         </label>
+        {isBonusCandidate && (
+          <div className="sh-field">
+            <span className="sh-label">Magical properties</span>
+            <EquipBonusControls
+              itemLink={link}
+              masterwork={masterwork}
+              bonus={bonus}
+              effectIds={effectIds}
+              onChange={handleBonusChange}
+            />
+          </div>
+        )}
         <div className="sh-field">
           <span className="sh-label">Quantity</span>
           <div className="sh-qty-stepper">

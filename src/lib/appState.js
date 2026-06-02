@@ -75,6 +75,7 @@ export function getDefaultApp() {
     sss: '',
     psv: 'none', // player sheet main view: 'none' | 'race' | 'class' | 'note'
     pscards: {}, // player sheet sidebar card collapsed: { identity?, abilityScores?, Combat?, ... } true = collapsed
+    pscombat: {}, // combat / inventory page card collapsed: { player?, combat?, items?, carry?, money? } true = collapsed
     th: 'dark',     // theme: 'dark' | 'light' (omitted when default)
     ac: 'crimson',  // accent hue name (omitted when default)
   };

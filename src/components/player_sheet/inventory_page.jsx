@@ -1,6 +1,7 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addCardByLink } from '../../store/slices/appSlice';
+import { getEffectById } from '../../lib/item/effectsUtils';
 import { setCombatPageCardCollapsed } from '../../store/slices/playerSheetSlice';
 import {
   onAddInventoryItem,
@@ -56,34 +57,28 @@ export default function InventoryPage() {
     }
   }, []);
 
-  // Inventory items don't carry their own `id`; `effectIds` stores indices
-  // into the same inventory array (the item that grants the linked effect).
-  // The previous lookup used a non-existent `inv.effectId` field, so it
-  // always missed and linked effects never rendered.
-  const getEffectById = useCallback(
-    effectId => {
-      const idx = Number(effectId);
-      if (!Number.isInteger(idx) || idx < 0 || idx >= inventory.length) return undefined;
-      return inventory[idx];
-    },
-    [inventory]
-  );
 
-  const handleOptionsClick = (e, itemName, itemType, itemNumber, itemLink) => {
+  const handleOptionsClick = (e, itemName, itemType, itemNumber, itemLink, itemMagic = {}) => {
     const equipType = getEquipType({ ItemType: itemType, Link: itemLink });
     const rect = e.currentTarget.getBoundingClientRect();
     setPopupState({
       itemName, itemType, itemNumber, itemLink, equipType,
+      masterwork: !!itemMagic.masterwork,
+      bonus: Number(itemMagic.bonus) || 0,
+      effectIds: Array.isArray(itemMagic.effectIds) ? itemMagic.effectIds : [],
       position: { x: rect.right, y: rect.bottom },
     });
   };
 
-  const handleEquipItem = slot => {
+  const handleEquipItem = (slot) => {
     if (!popupState) return;
     const itemData = {
       name: popupState.itemName,
       link: popupState.itemLink,
       twoHanded: popupState.equipType === 'two-hand',
+      masterwork: !!popupState.masterwork,
+      bonus: Number(popupState.bonus) || 0,
+      effectIds: Array.isArray(popupState.effectIds) ? popupState.effectIds : [],
     };
     if (slot.startsWith('set')) {
       const setNum = slot === 'set1' ? '1' : '2';
@@ -104,9 +99,17 @@ export default function InventoryPage() {
     }
   };
 
-  const handleRemoveItem = (itemName, itemType, number) => dispatch(onRemoveInventoryItem(itemName, itemType, number));
+  const handleRemoveItem = (itemName, itemType, number) => {
+    if (!popupState) return dispatch(onRemoveInventoryItem(itemName, itemType, number));
+    dispatch(onRemoveInventoryItem(itemName, itemType, number, {
+      link: popupState.itemLink,
+      masterwork: !!popupState.masterwork,
+      bonus: Number(popupState.bonus) || 0,
+      effectIds: Array.isArray(popupState.effectIds) ? popupState.effectIds : [],
+    }));
+  };
   const handleOpenCard = (links, bonus) => dispatch(addCardByLink({ links, bonus }));
-  const handleAddItem = (itemName, itemType, number, link) => dispatch(onAddInventoryItem(itemName, itemType, number, link));
+  const handleAddItem = (itemName, itemType, number, link, opts) => dispatch(onAddInventoryItem(itemName, itemType, number, link, opts));
 
   const handleSort = column => {
     if (sortColumn === column) setSortDesc(v => !v);
@@ -166,7 +169,14 @@ export default function InventoryPage() {
         player={player}
       />
 
-      <CarryingCapacityCard player={player} />
+      <CarryingCapacityCard
+        player={player}
+        collapsed={combatPageCardsCollapsed.carry}
+        setCollapsed={(setter) => {
+          const newState = typeof setter === 'function' ? setter(combatPageCardsCollapsed.carry) : setter;
+          dispatch(setCombatPageCardCollapsed({ key: 'carry', value: newState }));
+        }}
+      />
 
       <Card
         className="card-width-spellbook card-overflow-visible"

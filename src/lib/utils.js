@@ -175,7 +175,7 @@ export function getWeaponIcon(weaponItem) {
 export function calculateWeaponAttackBonus(player, weaponData) {
   if (!player || !weaponData) return 0;
 
-  const { weaponItem } = weaponData;
+  const { weaponItem, itemData } = weaponData;
   const weaponType = getWeaponType(weaponItem);
   const bab = player.getBaseAttackBonus?.() ?? 0;
 
@@ -185,7 +185,10 @@ export function calculateWeaponAttackBonus(player, weaponData) {
   // Weapon bonus: perfect weapons give +1 attack
   const weaponBonus = (weaponItem.isPerfect || weaponItem.Name?.toLowerCase().includes('perfect')) ? 1 : 0;
 
-  return bab + abilityMod + weaponBonus;
+  // Enhancement subsumes masterwork (+X weapon is already masterwork).
+  const enhBonus = itemData ? Math.max(itemData.bonus || 0, itemData.masterwork ? 1 : 0) : 0;
+
+  return bab + abilityMod + weaponBonus + enhBonus;
 }
 
 /**
@@ -197,7 +200,7 @@ export function calculateWeaponAttackBonus(player, weaponData) {
 export function calculateWeaponDamage(player, weaponData) {
   if (!player || !weaponData) return '0';
 
-  const { weaponItem, isTwoHanded } = weaponData;
+  const { weaponItem, isTwoHanded, itemData } = weaponData;
   const weaponType = getWeaponType(weaponItem);
 
   // Get the base damage for medium creatures (or small if player is small)
@@ -227,6 +230,9 @@ export function calculateWeaponDamage(player, weaponData) {
   if (isPerfect && (weaponType.isMelee || weaponType.isCompositeRanged)) {
     damageBonus += 1;
   }
+
+  // +X enhancement adds to damage (masterwork alone does not).
+  damageBonus += itemData?.bonus || 0;
 
   // Format the damage string
   if (damageBonus === 0) {

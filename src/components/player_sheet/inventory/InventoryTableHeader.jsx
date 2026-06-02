@@ -1,11 +1,11 @@
-const INVENTORY_COLUMNS = ['number', 'name', 'type'];
+const INVENTORY_COLUMNS = ['number', 'type', 'name'];
 
 export default function InventoryTableHeader({ sortColumn, sortDesc, onSort }) {
   return (
     <thead>
       <tr className="sh-inv-head-row">
         {INVENTORY_COLUMNS.map((col) => {
-          const label = col === 'number' ? '#' : col === 'name' ? 'Name' : 'Type';
+          const label = col === 'number' ? '#' : col === 'name' ? 'Name' : '';
           const isActive = sortColumn === col;
           const thClass =
             col === 'number' ? 'sh-inv-th sh-inv-th--num' :
@@ -16,6 +16,7 @@ export default function InventoryTableHeader({ sortColumn, sortDesc, onSort }) {
               key={col}
               className={`${thClass} ${isActive ? 'is-active' : ''}`}
               onClick={() => onSort(col)}
+              aria-label={col === 'type' ? 'Sort by type' : undefined}
             >
               {label}
               {isActive && (

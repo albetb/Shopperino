@@ -1,4 +1,5 @@
 import { newRandomItem, itemRefLink } from '../item';
+import { formatItemName } from '../item/formatItemName';
 import { computeTrueCost } from './shopPricing';
 import { passingTime as runPassingTime } from './shopSimulation';
 import { getLinkByShareRef, getRefByShareRef, getShareFileCodeAndId } from './shareRef';
@@ -57,7 +58,7 @@ function resolveEntry(entry) {
         if (!link) return null;
         const baseCost = entry.CostOverride != null ? entry.CostOverride : base.Cost;
         const bonus = entry.Bonus != null ? (typeof entry.Bonus === 'string' ? parseInt(entry.Bonus, 10) : entry.Bonus) : null;
-        const name = bonus != null && !isNaN(bonus) ? `${base.Name} +${bonus}` : base.Name;
+        const name = formatItemName(base.Name, { bonus: bonus != null && !isNaN(bonus) ? bonus : 0 });
         const itemType = entry.ItemType != null && entry.ItemType !== '' ? entry.ItemType : itemTypeFromLink(link);
         return {
             Name: name,

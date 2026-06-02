@@ -48,7 +48,7 @@ import {
 import { setShop, setShopGenerated } from './store/slices/shopSlice';
 import { setCity } from './store/slices/citySlice';
 import { setWorldsList, setSelectedWorldIndex, setWorld } from './store/slices/worldSlice';
-import { setCharactersList, setSelectedCharacterIndex, setPlayer, setIsPlayerSheetSidebarCollapsed, setPlayerSheetMainView, setPlayerSheetCardsCollapsed } from './store/slices/playerSheetSlice';
+import { setCharactersList, setSelectedCharacterIndex, setPlayer, setIsPlayerSheetSidebarCollapsed, setPlayerSheetMainView, setPlayerSheetCardsCollapsed, setCombatPageCardsCollapsed } from './store/slices/playerSheetSlice';
 import { setPersist } from './store/slices/persistSlice';
 import './style/App.css';
 import './style/buttons.css';
@@ -122,6 +122,7 @@ export default function App() {
     // Never restore to spellbook on load so selecting/loading a character doesn't show the spellbook
     dispatch(setPlayerSheetMainView(psv === 'playerSpells' ? 'none' : psv));
     dispatch(setPlayerSheetCardsCollapsed(db.getPlayerSheetCardsCollapsed(app)));
+    dispatch(setCombatPageCardsCollapsed(db.getCombatPageCardsCollapsed(app)));
 
     const w = db.getWorldByIndex(app, app.sw);
     const hasInventory = w?.Cities?.some(c =>

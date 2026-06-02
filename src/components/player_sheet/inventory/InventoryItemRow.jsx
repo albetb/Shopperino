@@ -1,6 +1,7 @@
-import { isMobile } from 'lib/utils';
+import formatItemName, { magicTypeFor, iconForItemType } from 'lib/item/formatItemName';
 
 function itemBonus(item) {
+  if (typeof item.bonus === 'number') return item.bonus;
   if (item.Bonus != null && !isNaN(item.Bonus)) return item.Bonus;
   if (item.Name && item.Name.includes('+')) return parseInt(item.Name.split('+')[1], 10);
   if (item.Name && item.Name.includes('perfect')) return -1;
@@ -14,8 +15,15 @@ export default function InventoryItemRow({
   onOpenCard,
   getEffectById,
 }) {
-  const abbrevType = isMobile() && item.ItemType === 'Wondrous Item' ? 'W. Item' : item.ItemType;
+  const magicType = magicTypeFor(item.ItemType, { bonus: item.bonus, effectIds: item.effectIds });
+  const effectiveType = magicType || item.ItemType;
+  const typeIcon = iconForItemType(effectiveType);
   const bonus = itemBonus(item);
+  const displayName = formatItemName(item.Name, {
+    masterwork: item.masterwork,
+    bonus: item.bonus,
+    effectIds: item.effectIds,
+  });
 
   const handleNameClick = () => {
     if (!item.Link) return;
@@ -28,21 +36,29 @@ export default function InventoryItemRow({
   return (
     <tr>
       <td className="align-right td-muted">{item.Number}</td>
+      <td className="td-muted sh-inv-td--type" title={effectiveType}>
+        <span className="material-symbols-outlined sh-inv-type-icon" aria-label={effectiveType}>
+          {typeIcon}
+        </span>
+      </td>
       <td className="td-muted">
         {item.Link ? (
           <button type="button" className="button-link" onClick={handleNameClick}>
-            {item.Name}
+            {displayName}
           </button>
         ) : (
-          item.Name
+          displayName
         )}
       </td>
-      <td className="td-muted">{abbrevType}</td>
       <td className="td-action">
         <button
           type="button"
           className="flat-button smaller btn-cell-muted"
-          onClick={(e) => onOptionsClick(e, item.Name, item.ItemType, item.Number, item.Link)}
+          onClick={(e) => onOptionsClick(e, item.Name, item.ItemType, item.Number, item.Link, {
+            masterwork: !!item.masterwork,
+            bonus: item.bonus || 0,
+            effectIds: Array.isArray(item.effectIds) ? item.effectIds : [],
+          })}
           aria-label="Options"
         >
           <span className="material-symbols-outlined">more_horiz</span>

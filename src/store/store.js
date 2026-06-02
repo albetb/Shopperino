@@ -20,8 +20,13 @@ const store = configureStore({
     loot: lootReducer,
     playerSheet: playerSheetReducer,
   },
+  // Domain models (Player, Spellbook, Shop, World, City, Loot) are stored as
+  // live class instances per the project's architecture (see CLAUDE.md →
+  // Domain Models). Toolkit's serializableCheck warns about them on every
+  // action; disable it. Persistence goes through each class's serialize()
+  // in src/lib/appState.js, not via the store snapshot.
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(persistSyncMiddleware),
+    getDefaultMiddleware({ serializableCheck: false }).concat(persistSyncMiddleware),
 });
 
 export default store;

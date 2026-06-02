@@ -12,6 +12,18 @@ import { getCarryingCapacity as capacityFromStr, classifyLoad } from './carrying
 
 const ABILITY_KEYS = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
 
+/** Two inventory entries stack only if every magical-identity field matches. */
+function sameInventoryEntry(a, b) {
+  if (a.Name !== b.Name) return false;
+  if (a.ItemType !== b.ItemType) return false;
+  if ((a.Link || '') !== (b.Link || '')) return false;
+  if (!!a.masterwork !== !!b.masterwork) return false;
+  if ((a.bonus || 0) !== (b.bonus || 0)) return false;
+  const ae = (Array.isArray(a.effectIds) ? a.effectIds : []).slice().sort().join(',');
+  const be = (Array.isArray(b.effectIds) ? b.effectIds : []).slice().sort().join(',');
+  return ae === be;
+}
+
 /** Fallback when race is not in races.json. Unknown races default to "Medium". */
 const RACE_SIZE_FALLBACK = {
   Human: 'Medium',
@@ -264,13 +276,17 @@ class Player {
     if (Array.isArray(data.inventory)) {
       this.inventory = data.inventory.map((item) => {
         if (!item || typeof item !== 'object') return null;
-        return {
+        const entry = {
           Name: typeof item.Name === 'string' ? item.Name : '',
           ItemType: typeof item.ItemType === 'string' ? item.ItemType : '',
           Number: Math.max(0, Number(item.Number) || 0),
           Link: typeof item.Link === 'string' ? item.Link : '',
-          effectIds: Array.isArray(item.effectIds) ? item.effectIds : [],
+          effectIds: Array.isArray(item.effectIds) ? item.effectIds.filter((n) => Number.isInteger(n)) : [],
         };
+        if (item.masterwork === true) entry.masterwork = true;
+        const b = parseInt(item.bonus, 10);
+        if (Number.isFinite(b) && b > 0) entry.bonus = Math.min(5, b);
+        return entry;
       }).filter(Boolean);
     }
 
@@ -739,6 +755,18 @@ class Player {
     return defaultUnarmedDamage(size);
   }
 
+  getEquipmentBonus(slot) {
+    return this.equipment?.[slot]?.bonus || 0;
+  }
+
+  isEquipmentMasterwork(slot) {
+    return !!this.equipment?.[slot]?.masterwork;
+  }
+
+  getEquipmentEffectIds(slot) {
+    return Array.isArray(this.equipment?.[slot]?.effectIds) ? this.equipment[slot].effectIds : [];
+  }
+
   /**
    * Get equipped armor item's raw data, or null if no armor equipped.
    */
@@ -756,7 +784,8 @@ class Player {
     if (!armor) return 0;
     const val = armor['Armor/Shield Bonus'];
     if (val === undefined || val === null) return 0;
-    return parseInt(String(val).replace('+', ''), 10) || 0;
+    const base = parseInt(String(val).replace('+', ''), 10) || 0;
+    return base + (this.equipment?.armor?.bonus || 0);
   }
 
   /**
@@ -775,7 +804,7 @@ class Player {
       const raw = getItemByRef(entry.link)?.raw;
       const val = raw?.['Armor/Shield Bonus'];
       if (val === undefined || val === null) continue;
-      total += parseInt(String(val).replace('+', ''), 10) || 0;
+      total += (parseInt(String(val).replace('+', ''), 10) || 0) + (entry.bonus || 0);
     }
     return total;
   }
@@ -1185,29 +1214,49 @@ class Player {
     return Array.isArray(this.inventory) ? this.inventory : [];
   }
 
-  addInventoryItem(name, type, number, link = '') {
+  addInventoryItem(name, type, number, link = '', opts = {}) {
     if (!name || !type) return;
     if (!Array.isArray(this.inventory)) this.inventory = [];
 
-    const existingItem = this.inventory.find((item) => item.Name === name && item.ItemType === type);
+    const masterwork = !!opts.masterwork;
+    const bonus = Math.max(0, Math.min(5, parseInt(opts.bonus, 10) || 0));
+    const effectIds = Array.isArray(opts.effectIds)
+      ? opts.effectIds.filter((n) => Number.isInteger(n))
+      : [];
+
+    const existingItem = this.inventory.find((item) =>
+      sameInventoryEntry(item, { Name: name, ItemType: type, Link: link, masterwork, bonus, effectIds })
+    );
 
     if (existingItem) {
       existingItem.Number = Math.max(0, (existingItem.Number || 0) + Math.max(1, Math.floor(number)));
     } else {
-      this.inventory.push({
+      const entry = {
         Name: name,
         ItemType: type,
         Number: Math.max(1, Math.floor(number)),
         Link: link || '',
-        effectIds: [],
-      });
+        effectIds,
+      };
+      if (masterwork) entry.masterwork = true;
+      if (bonus > 0) entry.bonus = bonus;
+      this.inventory.push(entry);
     }
   }
 
-  removeInventoryItem(name, type, number) {
+  removeInventoryItem(name, type, number, opts = {}) {
     if (!Array.isArray(this.inventory)) return;
 
-    const idx = this.inventory.findIndex((item) => item.Name === name && item.ItemType === type);
+    const link = typeof opts.link === 'string' ? opts.link : '';
+    const masterwork = !!opts.masterwork;
+    const bonus = Math.max(0, Math.min(5, parseInt(opts.bonus, 10) || 0));
+    const effectIds = Array.isArray(opts.effectIds)
+      ? opts.effectIds.filter((n) => Number.isInteger(n))
+      : [];
+
+    const idx = this.inventory.findIndex((item) =>
+      sameInventoryEntry(item, { Name: name, ItemType: type, Link: link, masterwork, bonus, effectIds })
+    );
     if (idx === -1) return;
 
     const item = this.inventory[idx];
@@ -1228,7 +1277,19 @@ class Player {
     if (!this.equipment || typeof this.equipment !== 'object') {
       this.equipment = {};
     }
-    this.equipment[slot] = itemData;
+    const entry = { ...itemData };
+    const masterwork = !!itemData.masterwork;
+    const bonus = clamp(parseInt(itemData.bonus, 10) || 0, 0, 5);
+    const effectIds = Array.isArray(itemData.effectIds)
+      ? itemData.effectIds.filter((n) => Number.isInteger(n))
+      : [];
+    if (masterwork) entry.masterwork = true;
+    else delete entry.masterwork;
+    if (bonus) entry.bonus = bonus;
+    else delete entry.bonus;
+    if (effectIds.length) entry.effectIds = effectIds;
+    else delete entry.effectIds;
+    this.equipment[slot] = entry;
   }
 
   unequipSlot(slot) {

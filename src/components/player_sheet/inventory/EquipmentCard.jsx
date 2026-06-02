@@ -1,5 +1,7 @@
 import React from 'react';
 import { getItemByRef, calculateWeaponAttackBonus, calculateWeaponDamage } from '../../../lib/utils';
+import formatItemName from '../../../lib/item/formatItemName';
+import { getEffectById } from '../../../lib/item/effectsUtils';
 import '../../../style/equipment_grid.css';
 
 const SLOT_CONFIG = {
@@ -87,15 +89,17 @@ function EquipmentSlotBox({ slotKey, dataSlot, config, entry, onUnequip, onOpenC
   if (entry && entry.link && isWeaponSlot && player) {
     const weaponItem = getItemByRef(entry.link)?.raw;
     if (weaponItem) {
-      attackBonus = calculateWeaponAttackBonus(player, { weaponItem, isTwoHanded: entry.twoHanded });
-      damage = calculateWeaponDamage(player, { weaponItem, isTwoHanded: entry.twoHanded });
+      attackBonus = calculateWeaponAttackBonus(player, { weaponItem, isTwoHanded: entry.twoHanded, itemData: entry });
+      damage = calculateWeaponDamage(player, { weaponItem, isTwoHanded: entry.twoHanded, itemData: entry });
     }
   }
 
   if (entry && entry.link && (isArmorSlot || isShield)) {
     const raw = getItemByRef(entry.link)?.raw;
     if (raw && raw['Armor/Shield Bonus'] !== undefined) {
-      armorBonus = raw['Armor/Shield Bonus'];
+      const base = parseInt(String(raw['Armor/Shield Bonus']).replace('+', ''), 10) || 0;
+      const total = base + (entry.bonus || 0);
+      armorBonus = `+${total}`;
     }
   }
 
@@ -118,20 +122,33 @@ function EquipmentSlotBox({ slotKey, dataSlot, config, entry, onUnequip, onOpenC
       </div>
       {entry ? (
         <div className="slot-content">
-          {entry.link ? (
-            <button
-              type="button"
-              className="button-link slot-item-name"
-              onClick={() => onOpenCard(entry.link, 0)}
-              title={entry.name}
-            >
-              {entry.name}
-            </button>
-          ) : (
-            <span className="slot-item-name" title={entry.name}>
-              {entry.name}
-            </span>
-          )}
+          {(() => {
+            const displayName = formatItemName(entry.name, {
+              masterwork: entry.masterwork,
+              bonus: entry.bonus,
+              effectIds: entry.effectIds,
+            });
+            if (!entry.link) {
+              return <span className="slot-item-name" title={displayName}>{displayName}</span>;
+            }
+            const handleClick = () => {
+              const effectLinks = Array.isArray(entry.effectIds)
+                ? entry.effectIds.map((id) => getEffectById(id)?.Link).filter(Boolean)
+                : [];
+              const links = effectLinks.length ? [entry.link, ...effectLinks] : entry.link;
+              onOpenCard(links, entry.bonus || 0);
+            };
+            return (
+              <button
+                type="button"
+                className="button-link slot-item-name"
+                onClick={handleClick}
+                title={displayName}
+              >
+                {displayName}
+              </button>
+            );
+          })()}
           {attackBonus !== null && damage !== null && (
             <div className="slot-weapon-stats">
               <span className="slot-attack">+{attackBonus}</span>

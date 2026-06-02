@@ -10,6 +10,7 @@
   border: 0;
   font-family: var(--font-ui);
   font-size: var(--font-size-sm);
+  table-layout: fixed;
 }
 
 .sh-inv-table thead .sh-inv-head-row {
@@ -28,10 +29,18 @@
   user-select: none;
 }
 .sh-inv-table .sh-inv-th.is-active { color: var(--accent); }
-.sh-inv-table .sh-inv-th--num { width: 3rem; text-align: right; }
+.sh-inv-table .sh-inv-th--num { width: 2rem; text-align: center; padding-right: 0; }
+.sh-inv-table tbody td:first-child { text-align: center; }
 .sh-inv-table .sh-inv-th--name { min-width: 8rem; }
-.sh-inv-table .sh-inv-th--type { width: 6rem; }
+.sh-inv-table .sh-inv-th--type { width: 1.75rem; padding-left: 0; padding-right: 0; text-align: center; }
 .sh-inv-table .sh-inv-th--action { width: 2.5rem; }
+.sh-inv-table tbody td.align-right { padding-right: 0.25rem; }
+.sh-inv-table .sh-inv-td--type { text-align: center; padding-left: 0; padding-right: 0; }
+.sh-inv-type-icon {
+  font-size: 1.15rem;
+  color: var(--ink-faint);
+  vertical-align: middle;
+}
 
 .sh-inv-table .sh-sort-arrow {
   color: var(--accent);
@@ -45,6 +54,10 @@
 .sh-inv-table tbody tr:last-child { border-bottom: 0; }
 .sh-inv-table tbody tr:hover { background: var(--surface-2); }
 .sh-inv-table tbody td { padding: var(--space-2) var(--space-3); vertical-align: middle; }
+.sh-inv-table tbody td:first-child,
+.sh-inv-table thead th:first-child { padding-left: 0.5rem; }
+.sh-inv-table tbody td:last-child,
+.sh-inv-table thead th:last-child { padding-right: 0.5rem; }
 
 /* Mobile: cards in the inventory page were 92% (.card-width-spellbook's
    mobile default) while the other player-sheet tabs render at 100%.
@@ -70,9 +83,9 @@
   .inventory-page-wrap .sh-inv-table {
     table-layout: fixed;
   }
-  .inventory-page-wrap .sh-inv-table .sh-inv-th--num    { width: 2.25rem; }
+  .inventory-page-wrap .sh-inv-table .sh-inv-th--num    { width: 2rem; }
   .inventory-page-wrap .sh-inv-table .sh-inv-th--name   { width: auto; min-width: 0; }
-  .inventory-page-wrap .sh-inv-table .sh-inv-th--type   { width: 4.5rem; }
+  .inventory-page-wrap .sh-inv-table .sh-inv-th--type   { width: 1.6rem; }
   .inventory-page-wrap .sh-inv-table .sh-inv-th--action { width: 2.5rem; }
   .inventory-page-wrap .sh-inv-table th,
   .inventory-page-wrap .sh-inv-table td {
@@ -82,4 +95,91 @@
     word-break: break-word;
     overflow-wrap: break-word;
   }
+}
+
+/* Equip bonus controls (masterwork / +X / effects) inside the inventory
+   options popup. Rendered above the slot buttons when the item is a
+   weapon, armor, or shield. */
+.equip-bonus-controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  border-bottom: 1px solid var(--border-soft);
+}
+.equip-bonus-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+.equip-bonus-mw {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: var(--font-size-xs);
+  cursor: pointer;
+}
+.equip-bonus-mw input[disabled] {
+  opacity: 0.6;
+}
+.equip-bonus-stepper {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+.equip-bonus-step-btn {
+  width: 1.4rem;
+  height: 1.4rem;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  border-radius: 0.25rem;
+  cursor: pointer;
+  font-weight: bold;
+  line-height: 1;
+  padding: 0;
+}
+.equip-bonus-val {
+  min-width: 1.4rem;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  font-size: var(--font-size-sm);
+}
+.equip-bonus-effects {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  max-height: 7rem;
+  overflow-y: auto;
+}
+.equip-bonus-chip {
+  font-size: var(--font-size-2xs);
+  padding: 0.15rem 0.4rem;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  border-radius: 0.75rem;
+  cursor: pointer;
+  color: var(--ink-faint);
+}
+.equip-bonus-chip.sel {
+  background: var(--accent);
+  color: var(--accent-ink, #fff);
+  border-color: var(--accent);
+}
+
+/* Live "Magic Weapon / Magic Armor / Magic Shield" badge shown next to the
+   Type label in the add-item modal once the user picks an enhancement bonus
+   or any magical effect. */
+.sh-magic-type-badge {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0.05rem 0.4rem;
+  font-size: var(--font-size-2xs);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--accent-ink, #fff);
+  background: var(--accent);
+  border-radius: 0.25rem;
+  vertical-align: middle;
 }

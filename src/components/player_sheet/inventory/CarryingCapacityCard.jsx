@@ -1,6 +1,3 @@
-import { useState } from 'react';
-import Card from '../../common/Card';
-import IconButton from '../../common/IconButton';
 import 'style/carrying_capacity.css';
 
 /* Static per-tier effects from equipment.md "Load effects". Speeds are
@@ -19,13 +16,10 @@ function reducedSpeed(baseFt) {
 }
 
 function fmtKg(n) {
-  const v = Number(n) || 0;
-  return Number.isInteger(v) ? `${v}` : v.toFixed(1).replace(/\.0$/, '');
+  return Math.round(Number(n) || 0);
 }
 
-export default function CarryingCapacityCard({ player }) {
-  const [collapsed, setCollapsed] = useState(false);
-
+export default function CarryingCapacityCard({ player, collapsed, setCollapsed }) {
   if (!player) return null;
 
   const capacity = player.getCarryingCapacity?.() ?? { light: 0, medium: 0, heavy: 0 };
@@ -33,7 +27,6 @@ export default function CarryingCapacityCard({ player }) {
   const status = player.getLoadStatus?.() ?? 'none';
   const baseSpeed = player.getBaseSpeed?.() ?? 30;
   const reduced = reducedSpeed(baseSpeed);
-  const str = player.getAbilityTotal?.('str') ?? 10;
 
   const cap = {
     light:  fmtKg(capacity.light),
@@ -42,20 +35,21 @@ export default function CarryingCapacityCard({ player }) {
   };
 
   return (
-    <Card
-      className="card-width-spellbook"
-      eyebrow={`Carrying capacity · Str ${str}`}
-      title={`${fmtKg(weight)} / ${cap.heavy} kg`}
-      action={
-        <IconButton
-          icon={collapsed ? 'expand_more' : 'expand_less'}
-          ghost size="sm"
-          onClick={() => setCollapsed(c => !c)}
-          aria-label="Toggle carrying capacity"
-        />
-      }
-    >
+    <div className={`card card-width-spellbook ${collapsed ? 'collapsed' : ''}`}>
+      <div
+        className="card-side-div card-expand-div"
+        onClick={() => setCollapsed((c) => !c)}
+      >
+        <h3 className="card-title">Carrying capacity</h3>
+        <span className="carry-title-readout sh-mono">{fmtKg(weight)} / {cap.heavy} kg</span>
+        <button type="button" className="collapse-button" aria-label="Toggle carrying capacity">
+          <span className="material-symbols-outlined">
+            {collapsed ? 'expand_more' : 'expand_less'}
+          </span>
+        </button>
+      </div>
       {!collapsed && (
+        <div className="card-content">
         <div className="sh-stack" style={{ gap: 'var(--space-3)' }}>
           <div className="carry-table" role="table" aria-label="Load tiers">
             <div className="carry-row carry-row--head" role="row">
@@ -102,7 +96,8 @@ export default function CarryingCapacityCard({ player }) {
             </div>
           </div>
         </div>
+        </div>
       )}
-    </Card>
+    </div>
   );
 }
