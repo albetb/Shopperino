@@ -14,7 +14,7 @@ function effectTableForItem(itemLink) {
   return null;
 }
 
-export default function EquipBonusControls({ itemLink, masterwork, bonus, effectIds, onChange }) {
+export default function EquipBonusControls({ itemLink, masterwork, bonus, effectIds, onChange, hideEffects = false }) {
   const tableName = effectTableForItem(itemLink);
   const effects = useMemo(() => {
     if (!tableName) return [];
@@ -67,7 +67,7 @@ export default function EquipBonusControls({ itemLink, masterwork, bonus, effect
           >+</button>
         </div>
       </div>
-      {showEffects && effects.length > 0 && (
+      {!hideEffects && showEffects && effects.length > 0 && (
         <div className="equip-bonus-effects">
           {effects.map(eff => {
             const selected = effectIds.includes(eff.id);

@@ -4,6 +4,7 @@ import * as db from '../../lib/storage';
 import { cap } from '../../lib/utils';
 import { getDefaultAlignmentForClass, druidMoralToEthical, druidEthicalToMoral } from '../../lib/alignment';
 import { playerToSpellbookData } from '../../lib/player/playerSpellbookAdapter';
+import { generateStartingEquipment } from '../../lib/player/startingEquipment';
 import {
   setCharactersList,
   setSelectedCharacterIndex,
@@ -22,6 +23,20 @@ function hydratePlayerSheet(dispatch, app) {
     dispatch(setPlayer(p));
   } else {
     dispatch(setPlayer(null));
+  }
+}
+
+/**
+ * Generate the class starting-equipment package the first time a character has
+ * both a race and a class. Idempotent: the generator itself no-ops once its
+ * one-time flag is set, so a later class change never regenerates.
+ */
+function maybeGenerateStartingEquipment(player) {
+  if (!player) return;
+  const race = player.getRace?.();
+  const cls = player.getClass?.();
+  if (race && cls && !player.startingEquipmentGenerated) {
+    generateStartingEquipment(player);
   }
 }
 
@@ -118,6 +133,7 @@ export const onUpdateCharacter = (payload) => (dispatch, getState) => {
       });
     }
   }
+  maybeGenerateStartingEquipment(p);
   persistPlayer(dispatch, getState, p);
 };
 
@@ -127,6 +143,7 @@ export const onSetCharacterRace = (race) => (dispatch, getState) => {
   const p = db.getPlayerByIndex(app, app.pss);
   if (!p) return;
   p.setRace(race);
+  maybeGenerateStartingEquipment(p);
   persistPlayer(dispatch, getState, p);
 };
 
@@ -157,6 +174,7 @@ export const onSetCharacterClass = (_class) => (dispatch, getState) => {
   const { moral, ethical } = getDefaultAlignmentForClass(_class);
   p.moralAlignment = moral;
   p.ethicalAlignment = ethical;
+  maybeGenerateStartingEquipment(p);
   persistPlayer(dispatch, getState, p);
 };
 

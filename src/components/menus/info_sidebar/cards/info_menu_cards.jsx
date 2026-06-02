@@ -244,6 +244,7 @@ export default function InfoMenuCards({ cardsData, closeCard }) {
                       masterwork={editMasterwork}
                       bonus={editBonus}
                       effectIds={editEffectIds}
+                      hideEffects
                       onChange={(patch) => {
                         if (patch.masterwork !== undefined) setEditMasterwork(patch.masterwork);
                         if (patch.bonus !== undefined) {

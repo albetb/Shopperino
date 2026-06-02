@@ -1,0 +1,185 @@
+{
+  "Barbarian": {
+    "items": [
+      { "link": "items/Armor/studded-leather", "type": "Armor", "role": "armor" },
+      { "link": "items/Weapon/greataxe", "type": "Weapon", "role": "melee" },
+      { "link": "items/Weapon/shortbow", "type": "Weapon", "role": "ranged" },
+      { "link": "items/Weapon/dagger", "type": "Weapon", "role": "melee" },
+      { "link": "items/Good/adventuring-backpack", "type": "Good", "role": "gear" },
+      { "link": "items/Good/rations", "type": "Good", "role": "gear" },
+      { "link": "items/Good/bedroll", "type": "Good", "role": "gear" },
+      { "link": "items/Good/sack", "type": "Good", "role": "gear" },
+      { "link": "items/Good/flint-and-steel", "type": "Good", "role": "gear" },
+      { "link": "items/Ammo/bow-arrows", "type": "Ammo", "role": "gear" }
+    ],
+    "gold": { "count": 2, "sides": 4 }
+  },
+  "Bard": {
+    "items": [
+      { "link": "items/Armor/studded-leather", "type": "Armor", "role": "armor" },
+      { "link": "items/Weapon/longsword", "type": "Weapon", "role": "melee" },
+      { "link": "items/Weapon/light-crossbow", "type": "Weapon", "role": "ranged" },
+      { "link": "items/Good/adventuring-backpack", "type": "Good", "role": "gear" },
+      { "link": "items/Good/rations", "type": "Good", "role": "gear" },
+      { "link": "items/Good/bedroll", "type": "Good", "role": "gear" },
+      { "link": "items/Good/sack", "type": "Good", "role": "gear" },
+      { "link": "items/Good/flint-and-steel", "type": "Good", "role": "gear" },
+      { "link": "items/Good/torch", "type": "Good", "role": "gear", "count": 3 },
+      { "link": "items/Ammo/crossbow-bolts", "type": "Ammo", "role": "gear" },
+      { "link": "items/Good/musical-instrument-common", "type": "Good", "role": "gear" },
+      { "link": "items/Good/spell-component-pouch", "type": "Good", "role": "gear" }
+    ],
+    "gold": { "count": 2, "sides": 4 }
+  },
+  "Cleric": {
+    "items": [
+      { "link": "items/Armor/scale-mail", "type": "Armor", "role": "armor" },
+      { "link": "items/Shield/shield-heavy-wooden", "type": "Shield", "role": "shield" },
+      { "link": "items/Weapon/mace-heavy", "type": "Weapon", "role": "melee" },
+      { "link": "items/Weapon/light-crossbow", "type": "Weapon", "role": "ranged" },
+      { "link": "items/Good/adventuring-backpack", "type": "Good", "role": "gear" },
+      { "link": "items/Good/rations", "type": "Good", "role": "gear" },
+      { "link": "items/Good/bedroll", "type": "Good", "role": "gear" },
+      { "link": "items/Good/sack", "type": "Good", "role": "gear" },
+      { "link": "items/Good/flint-and-steel", "type": "Good", "role": "gear" },
+      { "link": "items/Ammo/crossbow-bolts", "type": "Ammo", "role": "gear" },
+      { "link": "items/Good/holy-symbol-wooden", "type": "Good", "role": "gear" },
+      { "link": "items/Good/torch", "type": "Good", "role": "gear", "count": 3 }
+    ],
+    "gold": { "count": 1, "sides": 4 }
+  },
+  "Druid": {
+    "items": [
+      { "link": "items/Armor/hide", "type": "Armor", "role": "armor" },
+      { "link": "items/Shield/shield-heavy-wooden", "type": "Shield", "role": "shield" },
+      { "link": "items/Weapon/scimitar", "type": "Weapon", "role": "melee" },
+      { "link": "items/Weapon/club", "type": "Weapon", "role": "melee" },
+      { "link": "items/Weapon/sling", "type": "Weapon", "role": "ranged" },
+      { "link": "items/Good/adventuring-backpack", "type": "Good", "role": "gear" },
+      { "link": "items/Good/rations", "type": "Good", "role": "gear" },
+      { "link": "items/Good/bedroll", "type": "Good", "role": "gear" },
+      { "link": "items/Good/sack", "type": "Good", "role": "gear" },
+      { "link": "items/Good/flint-and-steel", "type": "Good", "role": "gear" },
+      { "link": "items/Ammo/sling-bullets", "type": "Ammo", "role": "gear" },
+      { "link": "items/Good/holly-and-mistletoe", "type": "Good", "role": "gear" },
+      { "link": "items/Good/torch", "type": "Good", "role": "gear", "count": 3 }
+    ],
+    "gold": { "count": 1, "sides": 6 }
+  },
+  "Fighter": {
+    "items": [
+      { "link": "items/Armor/scale-mail", "type": "Armor", "role": "armor" },
+      { "link": "items/Weapon/greatsword", "type": "Weapon", "role": "melee" },
+      { "link": "items/Weapon/shortbow", "type": "Weapon", "role": "ranged" },
+      { "link": "items/Good/adventuring-backpack", "type": "Good", "role": "gear" },
+      { "link": "items/Good/rations", "type": "Good", "role": "gear" },
+      { "link": "items/Good/bedroll", "type": "Good", "role": "gear" },
+      { "link": "items/Good/sack", "type": "Good", "role": "gear" },
+      { "link": "items/Good/flint-and-steel", "type": "Good", "role": "gear" },
+      { "link": "items/Ammo/bow-arrows", "type": "Ammo", "role": "gear" }
+    ],
+    "gold": { "count": 2, "sides": 4 }
+  },
+  "Monk": {
+    "items": [
+      { "link": "items/Weapon/quarterstaff", "type": "Weapon", "role": "melee" },
+      { "link": "items/Weapon/sling", "type": "Weapon", "role": "ranged" },
+      { "link": "items/Good/adventuring-backpack", "type": "Good", "role": "gear" },
+      { "link": "items/Good/rations", "type": "Good", "role": "gear" },
+      { "link": "items/Good/bedroll", "type": "Good", "role": "gear" },
+      { "link": "items/Good/sack", "type": "Good", "role": "gear" },
+      { "link": "items/Good/flint-and-steel", "type": "Good", "role": "gear" },
+      { "link": "items/Good/torch", "type": "Good", "role": "gear", "count": 3 },
+      { "link": "items/Ammo/sling-bullets", "type": "Ammo", "role": "gear" }
+    ],
+    "gold": { "count": 2, "sides": 4 }
+  },
+  "Paladin": {
+    "items": [
+      { "link": "items/Armor/scale-mail", "type": "Armor", "role": "armor" },
+      { "link": "items/Shield/shield-heavy-wooden", "type": "Shield", "role": "shield" },
+      { "link": "items/Weapon/longsword", "type": "Weapon", "role": "melee" },
+      { "link": "items/Weapon/shortbow", "type": "Weapon", "role": "ranged" },
+      { "link": "items/Good/adventuring-backpack", "type": "Good", "role": "gear" },
+      { "link": "items/Good/rations", "type": "Good", "role": "gear" },
+      { "link": "items/Good/bedroll", "type": "Good", "role": "gear" },
+      { "link": "items/Good/sack", "type": "Good", "role": "gear" },
+      { "link": "items/Good/flint-and-steel", "type": "Good", "role": "gear" },
+      { "link": "items/Good/lantern-hooded", "type": "Good", "role": "gear" },
+      { "link": "items/Good/oil", "type": "Good", "role": "gear" },
+      { "link": "items/Ammo/bow-arrows", "type": "Ammo", "role": "gear" },
+      { "link": "items/Good/holy-symbol-wooden", "type": "Good", "role": "gear" }
+    ],
+    "gold": { "count": 6, "sides": 4 }
+  },
+  "Ranger": {
+    "items": [
+      { "link": "items/Armor/studded-leather", "type": "Armor", "role": "armor" },
+      { "link": "items/Weapon/longsword", "type": "Weapon", "role": "melee" },
+      { "link": "items/Weapon/sword-short", "type": "Weapon", "role": "melee" },
+      { "link": "items/Weapon/longbow", "type": "Weapon", "role": "ranged" },
+      { "link": "items/Good/adventuring-backpack", "type": "Good", "role": "gear" },
+      { "link": "items/Good/rations", "type": "Good", "role": "gear" },
+      { "link": "items/Good/bedroll", "type": "Good", "role": "gear" },
+      { "link": "items/Good/sack", "type": "Good", "role": "gear" },
+      { "link": "items/Good/flint-and-steel", "type": "Good", "role": "gear" },
+      { "link": "items/Good/torch", "type": "Good", "role": "gear", "count": 3 },
+      { "link": "items/Ammo/bow-arrows", "type": "Ammo", "role": "gear" }
+    ],
+    "gold": { "count": 2, "sides": 4 }
+  },
+  "Rogue": {
+    "items": [
+      { "link": "items/Armor/leather", "type": "Armor", "role": "armor" },
+      { "link": "items/Weapon/sword-short", "type": "Weapon", "role": "melee" },
+      { "link": "items/Weapon/light-crossbow", "type": "Weapon", "role": "ranged" },
+      { "link": "items/Weapon/dagger", "type": "Weapon", "role": "melee" },
+      { "link": "items/Good/adventuring-backpack", "type": "Good", "role": "gear" },
+      { "link": "items/Good/rations", "type": "Good", "role": "gear" },
+      { "link": "items/Good/bedroll", "type": "Good", "role": "gear" },
+      { "link": "items/Good/sack", "type": "Good", "role": "gear" },
+      { "link": "items/Good/flint-and-steel", "type": "Good", "role": "gear" },
+      { "link": "items/Good/thieves-tools", "type": "Good", "role": "gear" },
+      { "link": "items/Good/lantern-hooded", "type": "Good", "role": "gear" },
+      { "link": "items/Good/oil", "type": "Good", "role": "gear" },
+      { "link": "items/Ammo/crossbow-bolts", "type": "Ammo", "role": "gear" }
+    ],
+    "gold": { "count": 4, "sides": 4 }
+  },
+  "Sorcerer": {
+    "items": [
+      { "link": "items/Weapon/shortspear", "type": "Weapon", "role": "melee" },
+      { "link": "items/Weapon/light-crossbow", "type": "Weapon", "role": "ranged" },
+      { "link": "items/Good/adventuring-backpack", "type": "Good", "role": "gear" },
+      { "link": "items/Good/rations", "type": "Good", "role": "gear" },
+      { "link": "items/Good/bedroll", "type": "Good", "role": "gear" },
+      { "link": "items/Good/sack", "type": "Good", "role": "gear" },
+      { "link": "items/Good/flint-and-steel", "type": "Good", "role": "gear" },
+      { "link": "items/Good/lantern-hooded", "type": "Good", "role": "gear" },
+      { "link": "items/Good/oil", "type": "Good", "role": "gear" },
+      { "link": "items/Good/spell-component-pouch", "type": "Good", "role": "gear" },
+      { "link": "items/Ammo/crossbow-bolts", "type": "Ammo", "role": "gear" }
+    ],
+    "gold": { "count": 3, "sides": 4 }
+  },
+  "Wizard": {
+    "items": [
+      { "link": "items/Weapon/quarterstaff", "type": "Weapon", "role": "melee" },
+      { "link": "items/Weapon/light-crossbow", "type": "Weapon", "role": "ranged" },
+      { "link": "items/Good/adventuring-backpack", "type": "Good", "role": "gear" },
+      { "link": "items/Good/rations", "type": "Good", "role": "gear" },
+      { "link": "items/Good/bedroll", "type": "Good", "role": "gear" },
+      { "link": "items/Good/sack", "type": "Good", "role": "gear" },
+      { "link": "items/Good/flint-and-steel", "type": "Good", "role": "gear" },
+      { "link": "items/Good/candle", "type": "Good", "role": "gear", "count": 10 },
+      { "link": "items/Good/case-map-or-scroll", "type": "Good", "role": "gear" },
+      { "link": "items/Good/parchment", "type": "Good", "role": "gear", "count": 3 },
+      { "link": "items/Good/ink", "type": "Good", "role": "gear" },
+      { "link": "items/Good/inkpen", "type": "Good", "role": "gear" },
+      { "link": "items/Good/spell-component-pouch", "type": "Good", "role": "gear" },
+      { "link": "items/Good/spellbook-wizards", "type": "Good", "role": "gear" },
+      { "link": "items/Ammo/crossbow-bolts", "type": "Ammo", "role": "gear" }
+    ],
+    "gold": { "count": 3, "sides": 6 }
+  }
+}

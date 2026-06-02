@@ -176,6 +176,10 @@ class Player {
     this.acTouchBonus = 0;
     this.acFlatBonus = 0;
     this.inventory = []; // Array of { Name, ItemType, Number, Link, effectIds }
+    /* Set true the first time a starting-equipment package is generated
+       (when race + class are both chosen). Prevents regeneration if the
+       class is later changed. See lib/player/startingEquipment.js. */
+    this.startingEquipmentGenerated = false;
   }
 
   /**
@@ -357,6 +361,10 @@ class Player {
       this.acFlatBonus = data.acFlatBonus;
     }
 
+    if (data.startingEquipmentGenerated === true) {
+      this.startingEquipmentGenerated = true;
+    }
+
     return this;
   }
 
@@ -409,6 +417,7 @@ class Player {
       acBonus: typeof this.acBonus === 'number' ? this.acBonus : 0,
       acTouchBonus: typeof this.acTouchBonus === 'number' ? this.acTouchBonus : 0,
       acFlatBonus: typeof this.acFlatBonus === 'number' ? this.acFlatBonus : 0,
+      startingEquipmentGenerated: !!this.startingEquipmentGenerated,
     };
   }
 
