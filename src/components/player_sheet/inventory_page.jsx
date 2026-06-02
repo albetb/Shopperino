@@ -67,6 +67,7 @@ export default function InventoryPage() {
       bonus: Number(itemMagic.bonus) || 0,
       effectIds: Array.isArray(itemMagic.effectIds) ? itemMagic.effectIds : [],
       baseLink: typeof itemMagic.baseLink === 'string' ? itemMagic.baseLink : '',
+      overrides: itemMagic.overrides && typeof itemMagic.overrides === 'object' ? itemMagic.overrides : null,
       position: { x: rect.right, y: rect.bottom },
     });
   };
@@ -81,6 +82,7 @@ export default function InventoryPage() {
       bonus: Number(popupState.bonus) || 0,
       effectIds: Array.isArray(popupState.effectIds) ? popupState.effectIds : [],
       ...(popupState.baseLink ? { baseLink: popupState.baseLink } : {}),
+      ...(popupState.overrides ? { overrides: popupState.overrides } : {}),
     };
     if (slot.startsWith('set')) {
       const setNum = slot === 'set1' ? '1' : '2';
@@ -109,9 +111,16 @@ export default function InventoryPage() {
       bonus: Number(popupState.bonus) || 0,
       effectIds: Array.isArray(popupState.effectIds) ? popupState.effectIds : [],
       ...(popupState.baseLink ? { baseLink: popupState.baseLink } : {}),
+      ...(popupState.overrides ? { overrides: popupState.overrides } : {}),
     }));
   };
-  const handleOpenCard = (links, bonus) => dispatch(addCardByLink({ links, bonus }));
+  const handleOpenCard = (links, bonus, opts = {}) =>
+    dispatch(addCardByLink({
+      links,
+      bonus,
+      overrides: opts.overrides || null,
+      editKey: opts.editKey || null,
+    }));
   const handleAddItem = (itemName, itemType, number, link, opts) => dispatch(onAddInventoryItem(itemName, itemType, number, link, opts));
 
   const handleSort = column => {

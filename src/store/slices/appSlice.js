@@ -45,7 +45,7 @@ export const appSlice = createSlice({
     },
 
     addCardByLink(state, action) {
-      const { links: raw, bonus = 0 } = action.payload;
+      const { links: raw, bonus = 0, overrides = null, editKey = null } = action.payload;
       const links = Array.isArray(raw) ? raw : [raw];
       const firstLink = links[0];
       const linkStr = firstLink && String(firstLink);
@@ -132,18 +132,29 @@ export const appSlice = createSlice({
         }
       }
 
-      cards = getItemByLink(firstLink, bonus);
+      cards = getItemByLink(firstLink, bonus, overrides);
+
+      const nameOverridden = !!(overrides && typeof overrides === 'object' && overrides.Name !== undefined);
+      const descriptionOverridden = !!(overrides && typeof overrides === 'object' && overrides.Description !== undefined);
 
       links.slice(1).forEach(link => {
         const effect = getEffectByLink(link);
 
         if (effect) {
-          cards[0].Description = cards[0].Description + "<p><b>" + effect.Name + "</b></p>" + effect.Description;
-          cards[0].Name = composeNameWithEffect(cards[0].Name, effect.Name);
+          if (!descriptionOverridden) {
+            cards[0].Description = cards[0].Description + "<p><b>" + effect.Name + "</b></p>" + effect.Description;
+          }
+          if (!nameOverridden) {
+            cards[0].Name = composeNameWithEffect(cards[0].Name, effect.Name);
+          }
         }
       });
 
       if (cards.length) {
+        if (editKey && typeof editKey === 'object') {
+          cards[0].editable = true;
+          cards[0].editKey = editKey;
+        }
         state.infoCards.unshift(...cards);
         state.infoSidebarCollapsed = false;
       }

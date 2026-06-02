@@ -68,10 +68,78 @@
 }
 
 .close-button,
-.collapse-button {
+.collapse-button,
+.card-edit-button {
   background-color: transparent;
   border: none;
   cursor: pointer;
+  color: var(--ink-muted);
+  padding: 0.15rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-edit-button:hover {
+  color: var(--main-t, var(--accent));
+}
+
+.info-card-edit-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0.25rem 0;
+  width: 96%;
+}
+
+.info-card-edit-row .info-key {
+  flex: 0 0 auto;
+  max-width: 9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.info-card-edit-row--block {
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  gap: 0.2rem;
+}
+
+.info-card-edit-row--block .info-card-input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.info-card-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0.25rem 0.4rem;
+  background: var(--surface-2, var(--surface-1));
+  color: var(--ink);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-sm, 0.25rem);
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.info-card-input:focus {
+  outline: none;
+  border-color: var(--main-t, var(--accent));
+}
+
+.info-card-textarea {
+  resize: vertical;
+  min-height: 2rem;
+  line-height: 1.4;
+}
+
+.info-card-checkbox {
+  width: 1.1rem;
+  height: 1.1rem;
+  cursor: pointer;
+  accent-color: var(--main-t, var(--accent));
 }
 
 .close-button.no-margin-right {

@@ -10,6 +10,8 @@ import {
   setPlayer,
 } from '../slices/playerSheetSlice';
 import { setPersist } from '../slices/persistSlice';
+import { addCardByLink } from '../slices/appSlice';
+import { getEffectById } from '../../lib/item/effectsUtils';
 
 function hydratePlayerSheet(dispatch, app) {
   dispatch(setCharactersList(db.getPlayerSheetCharactersList(app)));
@@ -504,6 +506,89 @@ export const onUnequipSlot = (slot) => (dispatch, getState) => {
   if (!player) return;
   player.unequipSlot(slot);
   persistPlayer(dispatch, getState, player);
+};
+
+function buildLinksForEntry(entry) {
+  if (!entry?.Link && !entry?.link) return null;
+  const baseLink = entry.Link || entry.link;
+  const effectIds = Array.isArray(entry.effectIds) ? entry.effectIds : [];
+  if (effectIds.length) {
+    const effectLinks = effectIds.map((id) => getEffectById(id)?.Link).filter(Boolean);
+    if (effectLinks.length) return [baseLink, ...effectLinks];
+  }
+  return baseLink;
+}
+
+export const onUpdateInventoryItemOverrides = (idx, overrides) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player) return;
+  player.setInventoryItemOverrides(idx, overrides);
+  persistPlayer(dispatch, getState, player);
+  const fresh = getState().playerSheet?.player;
+  const entry = fresh?.getInventory?.()[idx];
+  if (!entry) return;
+  const links = buildLinksForEntry(entry);
+  if (!links) return;
+  dispatch(addCardByLink({
+    links,
+    bonus: entry.bonus || 0,
+    overrides: entry.overrides || null,
+    editKey: { kind: 'inventory', idx },
+  }));
+};
+
+export const onUpdateEquipmentSlotOverrides = (slot, overrides) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player) return;
+  player.setEquipmentSlotOverrides(slot, overrides);
+  persistPlayer(dispatch, getState, player);
+  const fresh = getState().playerSheet?.player;
+  const entry = fresh?.getEquipment?.()[slot];
+  if (!entry) return;
+  const links = buildLinksForEntry(entry);
+  if (!links) return;
+  dispatch(addCardByLink({
+    links,
+    bonus: entry.bonus || 0,
+    overrides: entry.overrides || null,
+    editKey: { kind: 'equipment', slot },
+  }));
+};
+
+export const onUpdateInventoryItemMagic = (idx, magic) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player) return;
+  player.setInventoryItemMagic(idx, magic);
+  persistPlayer(dispatch, getState, player);
+  const fresh = getState().playerSheet?.player;
+  const entry = fresh?.getInventory?.()[idx];
+  if (!entry) return;
+  const links = buildLinksForEntry(entry);
+  if (!links) return;
+  dispatch(addCardByLink({
+    links,
+    bonus: entry.bonus || 0,
+    overrides: entry.overrides || null,
+    editKey: { kind: 'inventory', idx },
+  }));
+};
+
+export const onUpdateEquipmentSlotMagic = (slot, magic) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player) return;
+  player.setEquipmentSlotMagic(slot, magic);
+  persistPlayer(dispatch, getState, player);
+  const fresh = getState().playerSheet?.player;
+  const entry = fresh?.getEquipment?.()[slot];
+  if (!entry) return;
+  const links = buildLinksForEntry(entry);
+  if (!links) return;
+  dispatch(addCardByLink({
+    links,
+    bonus: entry.bonus || 0,
+    overrides: entry.overrides || null,
+    editKey: { kind: 'equipment', slot },
+  }));
 };
 
 // Gold

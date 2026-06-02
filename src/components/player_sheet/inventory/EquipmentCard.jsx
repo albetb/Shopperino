@@ -1,5 +1,5 @@
 import React from 'react';
-import { getItemByRef, calculateWeaponAttackBonus, calculateWeaponDamage } from '../../../lib/utils';
+import { getItemByRef, calculateWeaponAttackBonus, calculateWeaponDamage, applyItemOverrides } from '../../../lib/utils';
 import formatItemName from '../../../lib/item/formatItemName';
 import { getEffectById } from '../../../lib/item/effectsUtils';
 import '../../../style/equipment_grid.css';
@@ -87,7 +87,8 @@ function EquipmentSlotBox({ slotKey, dataSlot, config, entry, onUnequip, onOpenC
   let armorBonus = null;
 
   if (entry && entry.link && isWeaponSlot && player) {
-    const weaponItem = getItemByRef(entry.baseLink || entry.link)?.raw;
+    const rawWeapon = getItemByRef(entry.baseLink || entry.link)?.raw;
+    const weaponItem = rawWeapon ? applyItemOverrides(rawWeapon, entry.overrides) : null;
     if (weaponItem) {
       attackBonus = calculateWeaponAttackBonus(player, { weaponItem, isTwoHanded: entry.twoHanded, itemData: entry });
       damage = calculateWeaponDamage(player, { weaponItem, isTwoHanded: entry.twoHanded, itemData: entry });
@@ -95,9 +96,16 @@ function EquipmentSlotBox({ slotKey, dataSlot, config, entry, onUnequip, onOpenC
   }
 
   if (entry && entry.link && (isArmorSlot || isShield)) {
-    const raw = getItemByRef(entry.baseLink || entry.link)?.raw;
-    if (raw && raw['Armor/Shield Bonus'] !== undefined) {
-      const base = parseInt(String(raw['Armor/Shield Bonus']).replace('+', ''), 10) || 0;
+    const override = entry.overrides?.['Armor/Shield Bonus'];
+    let val;
+    if (override !== undefined) {
+      val = override;
+    } else {
+      const raw = getItemByRef(entry.baseLink || entry.link)?.raw;
+      val = raw?.['Armor/Shield Bonus'];
+    }
+    if (val !== undefined && val !== null) {
+      const base = parseInt(String(val).replace('+', ''), 10) || 0;
       const total = base + (entry.bonus || 0);
       armorBonus = `+${total}`;
     }
@@ -123,7 +131,7 @@ function EquipmentSlotBox({ slotKey, dataSlot, config, entry, onUnequip, onOpenC
       {entry ? (
         <div className="slot-content">
           {(() => {
-            const displayName = formatItemName(entry.name, {
+            const displayName = formatItemName(entry.overrides?.Name ?? entry.name, {
               masterwork: entry.masterwork,
               bonus: entry.bonus,
               effectIds: entry.effectIds,
@@ -136,7 +144,10 @@ function EquipmentSlotBox({ slotKey, dataSlot, config, entry, onUnequip, onOpenC
                 ? entry.effectIds.map((id) => getEffectById(id)?.Link).filter(Boolean)
                 : [];
               const links = effectLinks.length ? [entry.link, ...effectLinks] : entry.link;
-              onOpenCard(links, entry.bonus || 0);
+              onOpenCard(links, entry.bonus || 0, {
+                overrides: entry.overrides || null,
+                editKey: { kind: 'equipment', slot: dataSlot },
+              });
             };
             return (
               <button

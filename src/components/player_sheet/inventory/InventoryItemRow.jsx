@@ -19,7 +19,8 @@ export default function InventoryItemRow({
   const effectiveType = magicType || item.ItemType;
   const typeIcon = iconForItemType(effectiveType);
   const bonus = itemBonus(item);
-  const displayName = formatItemName(item.Name, {
+  const baseName = item.overrides?.Name ?? item.Name;
+  const displayName = formatItemName(baseName, {
     masterwork: item.masterwork,
     bonus: item.bonus,
     effectIds: item.effectIds,
@@ -30,7 +31,10 @@ export default function InventoryItemRow({
     const links = Array.isArray(item.effectIds) && item.effectIds.length
       ? [item.Link, ...item.effectIds.map((id) => getEffectById(id)?.Link).filter(Boolean)]
       : item.Link;
-    onOpenCard(links, bonus);
+    onOpenCard(links, bonus, {
+      overrides: item.overrides || null,
+      editKey: { kind: 'inventory', idx },
+    });
   };
 
   return (
@@ -59,6 +63,7 @@ export default function InventoryItemRow({
             bonus: item.bonus || 0,
             effectIds: Array.isArray(item.effectIds) ? item.effectIds : [],
             baseLink: typeof item.baseLink === 'string' ? item.baseLink : '',
+            overrides: item.overrides && typeof item.overrides === 'object' ? item.overrides : null,
           })}
           aria-label="Options"
         >

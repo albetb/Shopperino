@@ -140,6 +140,22 @@ export function serialize(obj) {
 }
 
 /**
+ * Apply an inventory entry's per-row overrides map onto a base raw item.
+ * Each override key replaces the value on the returned object verbatim.
+ * No-op when overrides is empty.
+ */
+export function applyItemOverrides(raw, overrides) {
+  if (!raw || typeof raw !== 'object') return raw;
+  if (!overrides || typeof overrides !== 'object') return raw;
+  const out = { ...raw };
+  for (const [k, v] of Object.entries(overrides)) {
+    if (typeof k !== 'string' || k === '') continue;
+    out[k] = v;
+  }
+  return out;
+}
+
+/**
  * Get weapon type details (melee, ranged, two-handed, etc.)
  * @param {Object} weaponItem - The weapon data from items.json
  * @returns {Object} { isMelee, isRanged, isTwoHanded, isCompositeRanged }

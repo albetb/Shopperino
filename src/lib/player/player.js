@@ -12,6 +12,31 @@ import { getCarryingCapacity as capacityFromStr, classifyLoad } from './carrying
 
 const ABILITY_KEYS = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
 
+/** Stable stringification of an overrides map for equality compare. */
+function stableOverrides(o) {
+  if (!o || typeof o !== 'object') return '';
+  const keys = Object.keys(o).sort();
+  if (keys.length === 0) return '';
+  return JSON.stringify(keys.map((k) => [k, o[k]]));
+}
+
+/**
+ * Normalize an overrides value into a plain { string: string } map. Returns
+ * null if the result is empty (caller should omit the field then).
+ */
+function normalizeOverrides(o) {
+  if (!o || typeof o !== 'object' || Array.isArray(o)) return null;
+  const out = {};
+  let count = 0;
+  for (const [k, v] of Object.entries(o)) {
+    if (typeof k !== 'string' || k === '') continue;
+    if (v === undefined || v === null) continue;
+    out[k] = typeof v === 'string' ? v : String(v);
+    count += 1;
+  }
+  return count > 0 ? out : null;
+}
+
 /** Two inventory entries stack only if every magical-identity field matches. */
 function sameInventoryEntry(a, b) {
   if (a.Name !== b.Name) return false;
@@ -21,7 +46,8 @@ function sameInventoryEntry(a, b) {
   if ((a.bonus || 0) !== (b.bonus || 0)) return false;
   const ae = (Array.isArray(a.effectIds) ? a.effectIds : []).slice().sort().join(',');
   const be = (Array.isArray(b.effectIds) ? b.effectIds : []).slice().sort().join(',');
-  return ae === be;
+  if (ae !== be) return false;
+  return stableOverrides(a.overrides) === stableOverrides(b.overrides);
 }
 
 /** Fallback when race is not in races.json. Unknown races default to "Medium". */
@@ -270,7 +296,15 @@ class Player {
     }
 
     if (data.equipment && typeof data.equipment === 'object') {
-      this.equipment = { ...data.equipment };
+      this.equipment = {};
+      for (const [slot, entry] of Object.entries(data.equipment)) {
+        if (!entry || typeof entry !== 'object') continue;
+        const copy = { ...entry };
+        const ov = normalizeOverrides(entry.overrides);
+        if (ov) copy.overrides = ov;
+        else delete copy.overrides;
+        this.equipment[slot] = copy;
+      }
     }
 
     if (Array.isArray(data.inventory)) {
@@ -287,6 +321,8 @@ class Player {
         const b = parseInt(item.bonus, 10);
         if (Number.isFinite(b) && b > 0) entry.bonus = Math.min(5, b);
         if (typeof item.baseLink === 'string' && item.baseLink) entry.baseLink = item.baseLink;
+        const ov = normalizeOverrides(item.overrides);
+        if (ov) entry.overrides = ov;
         return entry;
       }).filter(Boolean);
     }
@@ -796,14 +832,22 @@ class Player {
 
   /**
    * Armor bonus from equipped armor, parsed from "Armor/Shield Bonus" field.
+   * Per-entry overrides take precedence over the raw item value.
    */
   getArmorBonus() {
-    const armor = this.getEquippedArmorRaw();
-    if (!armor) return 0;
-    const val = armor['Armor/Shield Bonus'];
+    const entry = this.equipment?.armor;
+    const override = entry?.overrides?.['Armor/Shield Bonus'];
+    let val;
+    if (override !== undefined) {
+      val = override;
+    } else {
+      const armor = this.getEquippedArmorRaw();
+      if (!armor) return 0;
+      val = armor['Armor/Shield Bonus'];
+    }
     if (val === undefined || val === null) return 0;
     const base = parseInt(String(val).replace('+', ''), 10) || 0;
-    return base + (this.equipment?.armor?.bonus || 0);
+    return base + (entry?.bonus || 0);
   }
 
   /**
@@ -819,8 +863,14 @@ class Player {
       const entry = this.equipment?.[slot];
       if (!entry?.link) continue;
       if (!/\/(Shield|Specific Shield)\//.test(entry.link)) continue;
-      const raw = getItemByRef(entry.baseLink || entry.link)?.raw;
-      const val = raw?.['Armor/Shield Bonus'];
+      const override = entry.overrides?.['Armor/Shield Bonus'];
+      let val;
+      if (override !== undefined) {
+        val = override;
+      } else {
+        const raw = getItemByRef(entry.baseLink || entry.link)?.raw;
+        val = raw?.['Armor/Shield Bonus'];
+      }
       if (val === undefined || val === null) continue;
       total += (parseInt(String(val).replace('+', ''), 10) || 0) + (entry.bonus || 0);
     }
@@ -969,9 +1019,16 @@ class Player {
       if (!entry) continue;
       const count = Number(entry.Number) || 0;
       if (count <= 0) continue;
-      const lookupLink = entry.baseLink || entry.Link;
-      const raw = lookupLink ? getItemByRef(lookupLink)?.raw : null;
-      const weight = Number(raw?.Weight) || 0;
+      const override = entry.overrides?.Weight;
+      let weight;
+      if (override !== undefined) {
+        const parsed = parseFloat(String(override));
+        weight = Number.isFinite(parsed) ? parsed : 0;
+      } else {
+        const lookupLink = entry.baseLink || entry.Link;
+        const raw = lookupLink ? getItemByRef(lookupLink)?.raw : null;
+        weight = Number(raw?.Weight) || 0;
+      }
       total += weight * count;
     }
     return total;
@@ -1242,9 +1299,10 @@ class Player {
     const effectIds = Array.isArray(opts.effectIds)
       ? opts.effectIds.filter((n) => Number.isInteger(n))
       : [];
+    const overrides = normalizeOverrides(opts.overrides);
 
     const existingItem = this.inventory.find((item) =>
-      sameInventoryEntry(item, { Name: name, ItemType: type, Link: link, masterwork, bonus, effectIds })
+      sameInventoryEntry(item, { Name: name, ItemType: type, Link: link, masterwork, bonus, effectIds, overrides: overrides || undefined })
     );
 
     if (existingItem) {
@@ -1260,6 +1318,7 @@ class Player {
       if (masterwork) entry.masterwork = true;
       if (bonus > 0) entry.bonus = bonus;
       if (typeof opts.baseLink === 'string' && opts.baseLink) entry.baseLink = opts.baseLink;
+      if (overrides) entry.overrides = overrides;
       this.inventory.push(entry);
     }
   }
@@ -1273,9 +1332,10 @@ class Player {
     const effectIds = Array.isArray(opts.effectIds)
       ? opts.effectIds.filter((n) => Number.isInteger(n))
       : [];
+    const overrides = normalizeOverrides(opts.overrides);
 
     const idx = this.inventory.findIndex((item) =>
-      sameInventoryEntry(item, { Name: name, ItemType: type, Link: link, masterwork, bonus, effectIds })
+      sameInventoryEntry(item, { Name: name, ItemType: type, Link: link, masterwork, bonus, effectIds, overrides: overrides || undefined })
     );
     if (idx === -1) return;
 
@@ -1309,6 +1369,9 @@ class Player {
     else delete entry.bonus;
     if (effectIds.length) entry.effectIds = effectIds;
     else delete entry.effectIds;
+    const overrides = normalizeOverrides(itemData.overrides);
+    if (overrides) entry.overrides = overrides;
+    else delete entry.overrides;
     // Clear the paired hand slot when a 1H weapon (or shield) goes into a
     // hand that's currently half of a 2H grip — otherwise the other hand
     // keeps the 2H entry and the UI hides the newly-equipped item.
@@ -1323,6 +1386,74 @@ class Player {
   unequipSlot(slot) {
     if (!slot || !this.equipment) return;
     delete this.equipment[slot];
+  }
+
+  /**
+   * Replace the overrides map on an inventory entry. Passing an empty or
+   * null map clears the field. Callers pre-compute the diff against the
+   * resolved base item.
+   */
+  setInventoryItemOverrides(index, overrides) {
+    if (!Array.isArray(this.inventory)) return;
+    if (typeof index !== 'number' || index < 0 || index >= this.inventory.length) return;
+    const entry = this.inventory[index];
+    if (!entry) return;
+    const normalized = normalizeOverrides(overrides);
+    if (normalized) entry.overrides = normalized;
+    else delete entry.overrides;
+  }
+
+  /**
+   * Replace the overrides map on an equipment slot entry. Passing an empty
+   * or null map clears the field.
+   */
+  setEquipmentSlotOverrides(slot, overrides) {
+    if (!slot || !this.equipment || typeof this.equipment !== 'object') return;
+    const entry = this.equipment[slot];
+    if (!entry || typeof entry !== 'object') return;
+    const normalized = normalizeOverrides(overrides);
+    if (normalized) entry.overrides = normalized;
+    else delete entry.overrides;
+  }
+
+  /**
+   * Atomic update of an inventory entry's magical fields. Used by the
+   * card editor to persist masterwork/bonus/effectIds alongside overrides.
+   */
+  setInventoryItemMagic(index, { masterwork, bonus, effectIds, overrides } = {}) {
+    if (!Array.isArray(this.inventory)) return;
+    if (typeof index !== 'number' || index < 0 || index >= this.inventory.length) return;
+    const entry = this.inventory[index];
+    if (!entry) return;
+    if (masterwork === true) entry.masterwork = true;
+    else delete entry.masterwork;
+    const b = Math.max(0, Math.min(5, parseInt(bonus, 10) || 0));
+    if (b > 0) entry.bonus = b;
+    else delete entry.bonus;
+    if (Array.isArray(effectIds)) {
+      entry.effectIds = effectIds.filter((n) => Number.isInteger(n));
+    }
+    const normalized = normalizeOverrides(overrides);
+    if (normalized) entry.overrides = normalized;
+    else delete entry.overrides;
+  }
+
+  /** Atomic update of an equipment slot entry's magical fields. */
+  setEquipmentSlotMagic(slot, { masterwork, bonus, effectIds, overrides } = {}) {
+    if (!slot || !this.equipment || typeof this.equipment !== 'object') return;
+    const entry = this.equipment[slot];
+    if (!entry || typeof entry !== 'object') return;
+    if (masterwork === true) entry.masterwork = true;
+    else delete entry.masterwork;
+    const b = Math.max(0, Math.min(5, parseInt(bonus, 10) || 0));
+    if (b > 0) entry.bonus = b;
+    else delete entry.bonus;
+    if (Array.isArray(effectIds)) {
+      entry.effectIds = effectIds.filter((n) => Number.isInteger(n));
+    }
+    const normalized = normalizeOverrides(overrides);
+    if (normalized) entry.overrides = normalized;
+    else delete entry.overrides;
   }
 
   // —— Gold ——

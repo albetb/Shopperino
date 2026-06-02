@@ -50,7 +50,7 @@ export function getItemByRef(link) {
   return null;
 }
 
-export function getItemByLink(link, bonus = 0) {
+export function getItemByLink(link, bonus = 0, overrides = null) {
   try {
     const isPathLink = typeof link === 'string' && link.includes('/');
     let found = null;
@@ -147,6 +147,13 @@ export function getItemByLink(link, bonus = 0) {
       if (spellCards.length) {
         const spellLink = `<a href="spells#${card.Link}">${spellCards[0].Name}</a>`;
         card.Description = (card.Description || '') + `<p>Contains the spell: ${spellLink}.</p>`;
+      }
+    }
+
+    if (overrides && typeof overrides === 'object') {
+      for (const [k, v] of Object.entries(overrides)) {
+        if (typeof k !== 'string' || k === '') continue;
+        card[k] = v;
       }
     }
     return [card];

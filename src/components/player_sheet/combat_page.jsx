@@ -20,7 +20,7 @@ import {
 } from '../../store/thunks/playerSheetThunks';
 import PortraitEditorSheet from './PortraitEditorSheet';
 import useLongPress from '../hooks/useLongPress';
-import { getItemByRef, calculateWeaponAttackBonus, calculateWeaponDamage } from '../../lib/utils';
+import { getItemByRef, calculateWeaponAttackBonus, calculateWeaponDamage, applyItemOverrides } from '../../lib/utils';
 import SpellLink from '../common/spell_link';
 import Card from '../common/Card';
 import StatPill from '../common/StatPill';
@@ -181,9 +181,11 @@ export default function CombatPage() {
          attack list — their AC contribution shows in the equipment card
          instead. */
       if (/\/(Shield|Specific Shield)\//.test(w.link)) return;
-      const item = getItemByRef(w.baseLink || w.link)?.raw;
-      if (!item) return;
-      weapons.push({ slot, name: w.name, link: w.link, weaponItem: item, isTwoHanded: w.twoHanded === true, itemData: w });
+      const rawItem = getItemByRef(w.baseLink || w.link)?.raw;
+      if (!rawItem) return;
+      const item = applyItemOverrides(rawItem, w.overrides);
+      const displayName = w.overrides?.Name ?? w.name;
+      weapons.push({ slot, name: displayName, link: w.link, weaponItem: item, isTwoHanded: w.twoHanded === true, itemData: w });
     };
     pushIf('main', mainHandWeapon);
     if (mainHandWeapon?.twoHanded !== true && (!mainHandWeapon || offHandWeapon?.link !== mainHandWeapon.link)) {
