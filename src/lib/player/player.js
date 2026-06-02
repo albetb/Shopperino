@@ -286,6 +286,7 @@ class Player {
         if (item.masterwork === true) entry.masterwork = true;
         const b = parseInt(item.bonus, 10);
         if (Number.isFinite(b) && b > 0) entry.bonus = Math.min(5, b);
+        if (typeof item.baseLink === 'string' && item.baseLink) entry.baseLink = item.baseLink;
         return entry;
       }).filter(Boolean);
     }
@@ -773,7 +774,7 @@ class Player {
   getEquippedArmorRaw() {
     const entry = this.equipment?.armor;
     if (!entry?.link) return null;
-    return getItemByRef(entry.link)?.raw || null;
+    return getItemByRef(entry.baseLink || entry.link)?.raw || null;
   }
 
   /**
@@ -801,7 +802,7 @@ class Player {
       const entry = this.equipment?.[slot];
       if (!entry?.link) continue;
       if (!/\/(Shield|Specific Shield)\//.test(entry.link)) continue;
-      const raw = getItemByRef(entry.link)?.raw;
+      const raw = getItemByRef(entry.baseLink || entry.link)?.raw;
       const val = raw?.['Armor/Shield Bonus'];
       if (val === undefined || val === null) continue;
       total += (parseInt(String(val).replace('+', ''), 10) || 0) + (entry.bonus || 0);
@@ -951,7 +952,8 @@ class Player {
       if (!entry) continue;
       const count = Number(entry.Number) || 0;
       if (count <= 0) continue;
-      const raw = entry.Link ? getItemByRef(entry.Link)?.raw : null;
+      const lookupLink = entry.baseLink || entry.Link;
+      const raw = lookupLink ? getItemByRef(lookupLink)?.raw : null;
       const weight = Number(raw?.Weight) || 0;
       total += weight * count;
     }
@@ -1240,6 +1242,7 @@ class Player {
       };
       if (masterwork) entry.masterwork = true;
       if (bonus > 0) entry.bonus = bonus;
+      if (typeof opts.baseLink === 'string' && opts.baseLink) entry.baseLink = opts.baseLink;
       this.inventory.push(entry);
     }
   }
@@ -1289,6 +1292,14 @@ class Player {
     else delete entry.bonus;
     if (effectIds.length) entry.effectIds = effectIds;
     else delete entry.effectIds;
+    // Clear the paired hand slot when a 1H weapon (or shield) goes into a
+    // hand that's currently half of a 2H grip — otherwise the other hand
+    // keeps the 2H entry and the UI hides the newly-equipped item.
+    const PAIR = { lh1: 'rh1', rh1: 'lh1', lh2: 'rh2', rh2: 'lh2' };
+    const pair = PAIR[slot];
+    if (pair && !entry.twoHanded && this.equipment?.[pair]?.twoHanded) {
+      delete this.equipment[pair];
+    }
     this.equipment[slot] = entry;
   }
 

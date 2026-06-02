@@ -58,6 +58,7 @@ export default function InventoryItemRow({
             masterwork: !!item.masterwork,
             bonus: item.bonus || 0,
             effectIds: Array.isArray(item.effectIds) ? item.effectIds : [],
+            baseLink: typeof item.baseLink === 'string' ? item.baseLink : '',
           })}
           aria-label="Options"
         >

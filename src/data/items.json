@@ -1905,6 +1905,10 @@
       "Link": "sleep-arrow",
       "Cost": 132,
       "Description": "<p>This +1 arrow is painted white and has white fletching. If it strikes a foe so that it would normally deal damage, it instead bursts into magical energy that deals nonlethal damage (in the same amount as would be lethal damage) and forces the target to make a DC 11 Will save or fall asleep.</p> <p>Faint enchantment; CL 5th; Craft Magic Arms and Armor, sleep; Price 132 gp; Cost 69 gp 5 sp + 5 XP.</p>",
+      "Specific": {
+        "Base": "items/Ammo/bow-arrows",
+        "Bonus": 1
+      },
       "id": 165
     },
     {
@@ -1915,6 +1919,10 @@
       "Link": "screaming-bolt",
       "Cost": 267,
       "Description": "<p>One of these +2 bolts screams when fired, forcing all enemies of the wielder within 20 feet of the path of the bolt to succeed on a DC 14 Will save or become shaken. This is a mind-affecting fear effect.</p> <p>Faint enchantment; CL 5th; Craft Magic Arms and Armor, doom; Price 267gp; Cost 128 gp and 5 sp + 10 XP.</p>",
+      "Specific": {
+        "Base": "items/Ammo/crossbow-bolts",
+        "Bonus": 2
+      },
       "id": 166
     },
     {
@@ -1925,6 +1933,11 @@
       "Link": "silver-dagger-masterwork",
       "Cost": 322,
       "Description": "<p>This masterwork alchemical silver dagger is nonmagical. As a masterwork weapon, it has a +1 enhancement bonus on attack rolls.</p> <p>No aura (nonmagical); Price 322 gp.</p>",
+      "Specific": {
+        "Base": "items/Weapon/dagger",
+        "Masterwork": true,
+        "Bonus": 0
+      },
       "id": 167
     },
     {
@@ -1935,6 +1948,11 @@
       "Link": "masterwork-cold-iron-longsword",
       "Cost": 330,
       "Description": "<p>This nonmagical longsword is crafted out of cold iron. As a masterwork weapon, it has a +1 enhancement bonus on attack rolls.</p> <p>No aura (nonmagical); Price 330 gp.</p>",
+      "Specific": {
+        "Base": "items/Weapon/longsword",
+        "Masterwork": true,
+        "Bonus": 0
+      },
       "id": 168
     },
     {
@@ -1955,6 +1973,10 @@
       "Link": "slaying-arrow",
       "Cost": 2282,
       "Description": "<p>This +1 arrow is keyed to a particular type or subtype of creature. If it strikes such a creature, the target must make a DC 20 Fortitude save or die (or, in the case of unliving targets, be destroyed) instantly. Note that even creatures normally exempt from Fortitude saves (undead and constructs) are subject to this attack. When keyed to a living creature, this is a death effect (and thus death ward protects a target). To determine the type or subtype of creature the arrow is keyed to, roll on the table below.</p> <p>A greater slaying arrow functions just like a normal slaying arrow, but the DC to avoid the death effect is 23.</p> <p>Strong necromancy; CL 13th; Craft Magic Arms and Armor, finger of death (slaying arrow) or heightened finger of death (greater slaying arrow); Price 2,282 gp (slaying arrow) or 4,057 gp (greater slaying arrow); Cost 1,144 gp 5 sp + 91 XP (slaying arrow) or 2,032 gp + 162 XP (greater slaying arrow).</p>",
+      "Specific": {
+        "Base": "items/Ammo/bow-arrows",
+        "Bonus": 1
+      },
       "id": 170
     },
     {
@@ -1965,6 +1987,11 @@
       "Link": "adamantine-dagger",
       "Cost": 3002,
       "Description": "<p>This nonmagical dagger is made out of adamantine. As a masterwork weapon, it has a +1 enhancement bonus on attack rolls.</p> <p>No aura (nonmagical); Price 3,002 gp.</p>",
+      "Specific": {
+        "Base": "items/Weapon/dagger",
+        "Masterwork": true,
+        "Bonus": 0
+      },
       "id": 171
     },
     {
@@ -1975,6 +2002,11 @@
       "Link": "adamantine-battleaxe",
       "Cost": 3010,
       "Description": "<p>This nonmagical axe is made out of adamantine. As a masterwork weapon, it has a +1 enhancement bonus on attack rolls.</p> <p>No aura (nonmagical); Price 3,010 gp.</p>",
+      "Specific": {
+        "Base": "items/Weapon/battleaxe",
+        "Masterwork": true,
+        "Bonus": 0
+      },
       "id": 172
     },
     {
@@ -1985,6 +2017,10 @@
       "Link": "slaying-arrow",
       "Cost": 4057,
       "Description": "<p>This +1 arrow is keyed to a particular type or subtype of creature. If it strikes such a creature, the target must make a DC 20 Fortitude save or die (or, in the case of unliving targets, be destroyed) instantly. Note that even creatures normally exempt from Fortitude saves (undead and constructs) are subject to this attack. When keyed to a living creature, this is a death effect (and thus death ward protects a target). To determine the type or subtype of creature the arrow is keyed to, roll on the table below.</p> <p>A greater slaying arrow functions just like a normal slaying arrow, but the DC to avoid the death effect is 23.</p> <p>Strong necromancy; CL 13th; Craft Magic Arms and Armor, finger of death (slaying arrow) or heightened finger of death (greater slaying arrow); Price 2,282 gp (slaying arrow) or 4,057 gp (greater slaying arrow); Cost 1,144 gp 5 sp + 91 XP (slaying arrow) or 2,032 gp + 162 XP (greater slaying arrow).</p>",
+      "Specific": {
+        "Base": "items/Ammo/bow-arrows",
+        "Bonus": 1
+      },
       "id": 173
     },
     {
@@ -1995,6 +2031,10 @@
       "Link": "shatterspike",
       "Cost": 4315,
       "Description": "<p>Wielders without the Improved Sunder feat use Shatterspike as a +1 longsword only; wielders with the Improved Sunder feat add a +4 bonus (including the sword’s +1 enhancement bonus) to the opposed roll when attempting to strike a foe’s weapon. If successful, Shatterspike deals 1d8+4 points of damage plus the wielder’s Strength modifier to the target weapon (the target weapon’s hardness must still be overcome with each hit). Shatterspike can damage weapons with an enhancement bonus of +4 or lower.</p> <p>Strong evocation; CL 13th; Str 13, Craft Arms and Armor, Power Attack, Improved Sunder, shatter; Price 4,315 gp; Cost 2,315 gp + 160 XP; Weight 4 lb.</p>",
+      "Specific": {
+        "Base": "items/Weapon/longsword",
+        "Bonus": 1
+      },
       "id": 174
     },
     {
@@ -2005,6 +2045,10 @@
       "Link": "dagger-of-venom",
       "Cost": 8302,
       "Description": "<p>This black +1 dagger has a serrated edge. It allows the wielder to use a <a href=\"spells#poison\">poison</a> effect (as the spell, save DC 14) upon a creature struck by the blade once per day. The wielder can decide to use the power after he has struck. Doing so is a free action, but the poison effect must be invoked in the same round that the dagger strikes.</p> <p>Faint necromancy; CL 5th; Craft Magic Arms and Armor, poison; Price 8,302 gp; Cost 4,302 gp + 320 XP.</p>",
+      "Specific": {
+        "Base": "items/Weapon/dagger",
+        "Bonus": 1
+      },
       "id": 175
     },
     {
@@ -2015,6 +2059,10 @@
       "Link": "trident-of-warning",
       "Cost": 10115,
       "Description": "<p>A weapon of this type enables its wielder to determine the location, depth, kind, and number of aquatic predators within 680 feet. A trident of warning must be grasped and pointed in order for the character using it to gain such information, and it requires 1 round to scan a hemisphere with a radius of 680 feet. The weapon is otherwise a +2 trident.</p> <p>Moderate divination; CL 7th; Craft Magic Arms and Armor, locate creature; Price 10,115 gp; Cost 5,057 gp and 5 sp + 405 XP.</p>",
+      "Specific": {
+        "Base": "items/Weapon/trident",
+        "Bonus": 2
+      },
       "id": 176
     },
     {
@@ -2025,6 +2073,10 @@
       "Link": "assassins-dagger",
       "Cost": 10302,
       "Description": "<p>This wicked-looking, curved +2 dagger provides a +1 bonus to the DC of a Fortitude save forced by the death attack of an assassin.</p> <p>Moderate necromancy; CL 9th; Craft Magic Arms and Armor, slay living; Price 18,302 gp; Cost 9,302 gp + 720 XP.</p>",
+      "Specific": {
+        "Base": "items/Weapon/dagger",
+        "Bonus": 2
+      },
       "id": 177
     },
     {
@@ -2035,6 +2087,10 @@
       "Link": "shifters-sorrow",
       "Cost": 12780,
       "Description": "<p>This +1/+1 two-bladed sword has blades of alchemical silver. The weapon deals an extra 2d6 points of damage against any creature with the shapechanger subtype. When a shapechanger or a creature in an alternate form (such as a druid using wild shape) is struck by the weapon, it must make a DC 15 Will save or return to its natural form.</p> <p>Strong transmutation; CL 15th; Craft Arms and Armor, baleful polymorph; Price 12,780 gp; Cost 6,780 gp + 480 XP; Weight 10 lb.</p>",
+      "Specific": {
+        "Base": "items/Weapon/sword-two-bladed",
+        "Bonus": 1
+      },
       "id": 178
     },
     {
@@ -2045,6 +2101,10 @@
       "Link": "trident-of-fish-command",
       "Cost": 18650,
       "Description": "<p>The magical properties of this +1 trident with a 6-foot-long haft enable its wielder to charm up to 14 HD of aquatic animals (Will DC 16 negates, animals get a +5 bonus if currently under attack by the wielder or his allies), no two of which can be more than 30 feet apart. The wielder can use this effect up to three times per day. The wielder can communicate with the animals as if using a speak with animals spell. Animals making their saving throw are free of control, but they will not approach within 10 feet of the trident. The trident can be used up to three times per day.</p> <p>Moderate enchantment; CL 7th; Craft Magic Arms and Armor, speak with animals; Price 18,650 gp; Cost 9,325 gp + 746 XP.</p>",
+      "Specific": {
+        "Base": "items/Weapon/trident",
+        "Bonus": 1
+      },
       "id": 179
     },
     {
@@ -2055,6 +2115,13 @@
       "Link": "flame-tongue",
       "Cost": 20715,
       "Description": "<p>This is a +1 flaming burst longsword. Once per day, the sword can blast forth a fiery ray at any target within 30 feet as a ranged touch attack. The ray deals 4d6 points of fire damage on a successful hit.</p> <p>Moderate evocation; CL 12th; Craft Magic Arms and Armor, scorching ray, and flame blade, flame strike, or fireball; Price 20,715 gp; Cost 10,515 gp + 816 XP.</p>",
+      "Specific": {
+        "Base": "items/Weapon/longsword",
+        "Bonus": 1,
+        "Effects": [
+          "flaming-burst"
+        ]
+      },
       "id": 180
     },
     {
@@ -2065,6 +2132,10 @@
       "Link": "luck-blade",
       "Cost": 22060,
       "Description": "<p>This +2 short sword gives its possessor a +1 luck bonus on all saving throws. Its possessor also gains the power of good fortune, usable once per day. This extraordinary ability allows its possessor to reroll one roll that she just made. She must take the result of the reroll, even if it’s worse than the original roll. In addition, a luck blade may contain up to three wishes (when randomly rolled, a luck blade holds 1d4–1 wishes, minimum 0). When the last wish is used, the sword remains a +2 short sword, still grants the +1 luck bonus, and still grants its reroll power.</p> <p>Strong evocation; CL 17th; Craft Magic Arms and Armor, wish or miracle; Price 22,060 gp (0 wishes), 62,360 gp (1 wish), 102,660 gp (2 wishes), 142,960 gp (3 wishes); Cost 11,030 gp + 882 XP (0 wishes), 31,180 gp + 2,494 XP (1 wish); 51,330 gp + 4,106 XP (2 wishes), 71,480 gp + 5,718 XP (3 wishes).</p>",
+      "Specific": {
+        "Base": "items/Weapon/sword-short",
+        "Bonus": 2
+      },
       "id": 181
     },
     {
@@ -2075,6 +2146,10 @@
       "Link": "sword-of-subtlety",
       "Cost": 22310,
       "Description": "<p>A +1 short sword with a thin, dull gray blade, this weapon provides a +4 bonus on its wielder’s attack and damage rolls when he is making a sneak attack with it.</p> <p>Moderate illusion; CL 7th; Craft Magic Arms and Armor, blur; Price 22,310 gp; Cost 11,155 gp + 892 XP.</p>",
+      "Specific": {
+        "Base": "items/Weapon/sword-short",
+        "Bonus": 1
+      },
       "id": 182
     },
     {
@@ -2085,6 +2160,10 @@
       "Link": "sword-of-the-planes",
       "Cost": 22315,
       "Description": "<p>This longsword has an enhancement bonus of +1 on the Material Plane, but on any Elemental Plane its enhancement bonus increases to +2. (The +2 enhancement bonus also applies on the Material Plane when the weapon is used against elementals.) It operates as a +3 longsword on the Astral Plane or the Ethereal Plane or when used against opponents native to either of those planes. On any other plane, or against any outsider, it functions as a +4 longsword.</p> <p>Strong evocation; CL 15th; Craft Magic Arms and Armor, plane shift; Price 22,315 gp; Cost 11,157 gp and 5 sp + 893 XP.</p>",
+      "Specific": {
+        "Base": "items/Weapon/longsword",
+        "Bonus": 1
+      },
       "id": 183
     },
     {
@@ -2095,6 +2174,10 @@
       "Link": "nine-lives-stealer",
       "Cost": 23057,
       "Description": "<p>This longsword always performs as a +2 longsword, but it also has the power to draw the life force from an opponent. It can do this nine times before the ability is lost. At that point, the sword becomes a simple +2 longsword (with a hint of evil about it). A critical hit must be dealt for the sword’s death-dealing ability to function, and this weapon has no effect on creatures not subject to critical hits. The victim is entitled to a DC 20 Fortitude save to avoid death. If the save is successful, the sword’s death-dealing ability does not function, no use of the ability is expended, and normal critical damage is determined. This sword is evil, and any good character attempting to wield it gains two negative levels. These negative levels remain as long as the sword is in hand and disappear when the sword is no longer wielded. These negative levels never result in actual level loss, but they cannot be overcome in any way (including restoration spells) while the sword is wielded.</p> <p>Strong necromancy [evil]; CL 13th; Craft Magic Arms and Armor, finger of death; Price 23,057 gp; Cost 11,528 gp 5 sp + 922 XP.</p>",
+      "Specific": {
+        "Base": "items/Weapon/longsword",
+        "Bonus": 2
+      },
       "id": 184
     },
     {
@@ -2105,6 +2188,10 @@
       "Link": "sword-of-life-stealing",
       "Cost": 25715,
       "Description": "<p>This black iron +2 longsword bestows a negative level when it deals a critical hit. The sword wielder gains 1d6 temporary hit points each time a negative level is bestowed on another. These temporary hit points last for 24 hours. One day after being struck, subjects must make a DC 16 Fortitude save for each negative level or lose a character level.</p> <p>Strong necromancy; CL 17th; Craft Magic Arms and Armor, enervation; Price 25,715 gp; Cost 12,857 gp and 5 sp + 1,029 XP.</p>",
+      "Specific": {
+        "Base": "items/Weapon/longsword",
+        "Bonus": 2
+      },
       "id": 185
     },
     {
@@ -2115,6 +2202,10 @@
       "Link": "oathbow",
       "Cost": 25600,
       "Description": "<p>Of elven make, this white +2 composite longbow (+2 Str bonus) whispers “Swift defeat to my enemies” in Elven when nocked and pulled. Once per day, if the firer swears aloud to slay her target (a free action), the bow’s whisper becomes the low shout “Swift death to those who have wronged me.” Against such a sworn enemy, the bow has a +5 enhancement bonus, and arrows launched from it deal an additional 2d6 points of damage (and x4 on a critical hit instead of the normal x3). However, the bow is treated as only a masterwork weapon against all foes other than the sworn enemy, and the wielder takes a –1 penalty on attack rolls with any weapon other than the oathbow. These bonuses and penalties last for seven days or until the sworn enemy is slain or destroyed by the wielder of the oathbow, whichever comes first.</p> <p>The oathbow may only have one sworn enemy at a time. Once the wielder swears to slay a target, he cannot make a new oath until he has slain that target or seven days have passed. Even if the wielder slays the sworn enemy on the same day that he makes the oath, he cannot activate the oathbow’s special power again until 24 hours have passed from the time he made the oath.</p> <p>Strong evocation; CL 15th; Craft Magic Arms and Armor, creator must be an elf; Price 25,600 gp; Cost 13,100 gp + 1,000 XP.</p>",
+      "Specific": {
+        "Base": "items/Weapon/composite-longbow",
+        "Bonus": 2
+      },
       "id": 186
     },
     {
@@ -2125,6 +2216,10 @@
       "Link": "mace-of-terror",
       "Cost": 38552,
       "Description": "<p>On command, this +2 heavy mace causes the wielder’s clothes and appearance to transform into an illusion of darkest horror such that living creatures in a 30-foot cone become panicked as if by a fear spell (Will DC 16 partial). They take a –2 morale penalty on saving throws, and they flee from the wielder. The wielder may use this ability up to three times per day. </p> <p>Strong necromancy; CL 13th; Craft Magic Arms and Armor, fear; Price 38,552 gp; Cost 19,276 gp + 1,542 XP.</p>",
+      "Specific": {
+        "Base": "items/Weapon/mace-heavy",
+        "Bonus": 2
+      },
       "id": 187
     },
     {
@@ -2135,6 +2230,10 @@
       "Link": "life-drinker",
       "Cost": 40320,
       "Description": "<p>This +1 greataxe is favored by undead and constructs, who do not suffer its drawback. A life-drinker bestows two negative levels on its target whenever it deals damage, just as if its target had been struck by an undead creature. One day after being struck, subjects must make a DC 16 Fortitude save for each negative level or lose a character level.</p> <p>Each time a life-drinker deals damage to a foe, it also bestows one negative level on the wielder. Any negative level gained by the wielder in this fashion lasts for 1 hour.</p> <p>Strong necromancy; CL 13th; Craft Magic Arms and Armor, enervation; Price 40,320 gp; Cost 20,320 gp + 1,600 XP.</p>",
+      "Specific": {
+        "Base": "items/Weapon/greataxe",
+        "Bonus": 1
+      },
       "id": 188
     },
     {
@@ -2145,6 +2244,10 @@
       "Link": "sylvan-scimitar",
       "Cost": 47315,
       "Description": "<p>This +3 scimitar, when used outdoors in a temperate climate, grants its wielder the use of the Cleave feat and deals an extra 1d6 points of damage.</p> <p>Moderate evocation; CL 11th; Craft Magic Arms and Armor, divine power or creator must be a 7th-level druid; Price 47,315gp; Cost 23,657 gp and 5 sp + 1,893 XP.</p>",
+      "Specific": {
+        "Base": "items/Weapon/scimitar",
+        "Bonus": 3
+      },
       "id": 189
     },
     {
@@ -2155,6 +2258,13 @@
       "Link": "rapier-of-puncturing",
       "Cost": 50320,
       "Description": "<p>Three times per day, this +2 wounding rapier allows the wielder to make a touch attack with the weapon that deals 1d6 points of Constitution damage by draining blood. Creatures immune to critical hits are immune to the Constitution damage dealt by this weapon.</p> <p>Strong necromancy; CL 13th; Craft Magic Arms and Armor, harm; Price 50,320 gp; Cost 25,320 gp + 2,000 XP.</p>",
+      "Specific": {
+        "Base": "items/Weapon/rapier",
+        "Bonus": 2,
+        "Effects": [
+          "wounding"
+        ]
+      },
       "id": 190
     },
     {
@@ -2165,6 +2275,10 @@
       "Link": "sun-blade",
       "Cost": 50335,
       "Description": "<p>This sword is the size of a bastard sword. However, a sun blade is wielded as if it were a short sword with respect to weight and ease of use. (In other words, the weapon appears to all viewers to be a bastard sword, and deals bastard sword damage, but the wielder feels and reacts as if the weapon were a short sword.) Any individual able to use either a bastard sword or a short sword with proficiency is proficient in the use of a sun blade. Likewise, Weapon Focus and Weapon Specialization in short sword and bastard sword apply equally, but the benefits of those feats do not stack.</p> <p>In normal combat, the glowing golden blade of the weapon is equal to a +2 bastard sword. Against evil creatures, its enhancement bonus is +4. Against Negative Energy Plane creatures or undead creatures, the sword deals double damage (and x3 on a critical hit instead of the usual x2).</p> <p>The blade also has a special sunlight power. Once per day, the wielder can swing the blade vigorously above her head while speaking a command word. The sunblade then sheds a bright yellow radiance that is like full daylight. The radiance begins shining in a 10-foot radius around the sword wielder and extends outward at 5 feet per round for 10 rounds thereafter, to create a globe of light with a 60-foot radius. When the wielder stops swinging, the radiance fades to a dim glow that persists for another minute before disappearing entirely. All sun blades are of good alignment, and any evil creature attempting to wield one gains one negative level. The negative level remains as long as the sword is in hand and disappears when the sword is no longer wielded. This negative level never results in actual level loss, but it cannot be overcome in any way (including restoration spells) while the sword is wielded.</p> <p>Moderate evocation; CL 10th; Craft Magic Arms and Armor, daylight, creator must be good; Price 50,335 gp; Cost 25,335 gp + 2,000 XP.</p>",
+      "Specific": {
+        "Base": "items/Weapon/bastard-sword",
+        "Bonus": 2
+      },
       "id": 191
     },
     {
@@ -2175,6 +2289,13 @@
       "Link": "frost-brand",
       "Cost": 54475,
       "Description": "<p>This +3 frost greatsword sheds light as a torch when the temperature drops below 0°F. At such times it cannot be concealed when drawn, nor can its light be shut off. Its wielder is protected from fire; the sword absorbs the first 10 points of fire damage each round that the wielder would otherwise take.</p> <p>A frost brand extinguishes all nonmagical fires in its area. As a standard action, it can also dispel lasting fire spells, but not instantaneous effects, though you must succeed on a dispel check (1d20 +14) against each spell to dispel it. The DC to dispel such spells is 11 + the caster level of the fire spell.</p> <p>Strong evocation; CL 14th; Craft Magic Arms and Armor, ice storm, dispel magic, protection from energy; Price 54,475 gp; Cost 27,375 gp and 5 sp + 2179 XP.</p>",
+      "Specific": {
+        "Base": "items/Weapon/greatsword",
+        "Bonus": 3,
+        "Effects": [
+          "frost"
+        ]
+      },
       "id": 192
     },
     {
@@ -2185,6 +2306,10 @@
       "Link": "dwarven-thrower",
       "Cost": 60312,
       "Description": "<p>This weapon commonly functions as a +2 warhammer. In the hands of a dwarf, the warhammer gains an additional +1 enhancement bonus (for a total enhancement bonus of +3) and gains the returning special ability. It can be hurled with a 30-foot range increment. When hurled, it deals an extra 2d8 points of damage against giants or an extra 1d8 points of damage against any other target.</p> <p>Moderate evocation; CL 10th; Craft Magic Arms and Armor, creator must be a dwarf of at least 10th level; Price 60,312 gp; Cost 30,312 gp + 2,400 XP.</p>",
+      "Specific": {
+        "Base": "items/Weapon/warhammer",
+        "Bonus": 2
+      },
       "id": 193
     },
     {
@@ -2195,6 +2320,10 @@
       "Link": "luck-blade",
       "Cost": 62360,
       "Description": "<p>This +2 short sword gives its possessor a +1 luck bonus on all saving throws. Its possessor also gains the power of good fortune, usable once per day. This extraordinary ability allows its possessor to reroll one roll that she just made. She must take the result of the reroll, even if it’s worse than the original roll. In addition, a luck blade may contain up to three wishes (when randomly rolled, a luck blade holds 1d4–1 wishes, minimum 0). When the last wish is used, the sword remains a +2 short sword, still grants the +1 luck bonus, and still grants its reroll power.</p> <p>Strong evocation; CL 17th; Craft Magic Arms and Armor, wish or miracle; Price 22,060 gp (0 wishes), 62,360 gp (1 wish), 102,660 gp (2 wishes), 142,960 gp (3 wishes); Cost 11,030 gp + 882 XP (0 wishes), 31,180 gp + 2,494 XP (1 wish); 51,330 gp + 4,106 XP (2 wishes), 71,480 gp + 5,718 XP (3 wishes).</p>",
+      "Specific": {
+        "Base": "items/Weapon/sword-short",
+        "Bonus": 2
+      },
       "id": 194
     },
     {
@@ -2205,6 +2334,10 @@
       "Link": "mace-of-smiting",
       "Cost": 75312,
       "Description": "<p>This +3 adamantine heavy mace has a +5 enhancement bonus against constructs, and any critical hit dealt to a construct completely destroys it (no saving throw). A critical hit dealt to an outsider deals x4 damage rather than x2.</p> <p>Moderate transmutation; CL 11th; Craft Magic Arms and Armor, disintegrate; Price 75,312 gp; Cost 39,312 gp + 2,880 XP.</p>",
+      "Specific": {
+        "Base": "items/Weapon/mace-heavy",
+        "Bonus": 3
+      },
       "id": 195
     },
     {
@@ -2215,6 +2348,10 @@
       "Link": "luck-blade",
       "Cost": 102660,
       "Description": "<p>This +2 short sword gives its possessor a +1 luck bonus on all saving throws. Its possessor also gains the power of good fortune, usable once per day. This extraordinary ability allows its possessor to reroll one roll that she just made. She must take the result of the reroll, even if it’s worse than the original roll. In addition, a luck blade may contain up to three wishes (when randomly rolled, a luck blade holds 1d4–1 wishes, minimum 0). When the last wish is used, the sword remains a +2 short sword, still grants the +1 luck bonus, and still grants its reroll power.</p> <p>Strong evocation; CL 17th; Craft Magic Arms and Armor, wish or miracle; Price 22,060 gp (0 wishes), 62,360 gp (1 wish), 102,660 gp (2 wishes), 142,960 gp (3 wishes); Cost 11,030 gp + 882 XP (0 wishes), 31,180 gp + 2,494 XP (1 wish); 51,330 gp + 4,106 XP (2 wishes), 71,480 gp + 5,718 XP (3 wishes).</p>",
+      "Specific": {
+        "Base": "items/Weapon/sword-short",
+        "Bonus": 2
+      },
       "id": 196
     },
     {
@@ -2225,6 +2362,13 @@
       "Link": "holy-avenger",
       "Cost": 120630,
       "Description": "<p>This +2 cold iron longsword becomes a +5 holy cold iron longsword in the hands of a paladin.</p> <p>It provides spell resistance of 5 + the paladin’s level to the wielder and anyone adjacent to her. It also enables the wielder to use greater dispel magic (once per round as a standard action) at the class level of the paladin. (Only the area dispel is possible, not the targeted dispel or counterspell versions of greater dispel magic.)</p> <p>Strong abjuration; CL 18th; Craft Magic Arms and Armor, holy aura, creator must be good; Price 120,630 gp; Cost 60,630 gp + 4,800 XP.</p>",
+      "Specific": {
+        "Base": "items/Weapon/longsword",
+        "Bonus": 2,
+        "Effects": [
+          "holy"
+        ]
+      },
       "id": 197
     },
     {
@@ -2235,6 +2379,10 @@
       "Link": "luck-blade",
       "Cost": 142960,
       "Description": "<p>This +2 short sword gives its possessor a +1 luck bonus on all saving throws. Its possessor also gains the power of good fortune, usable once per day. This extraordinary ability allows its possessor to reroll one roll that she just made. She must take the result of the reroll, even if it’s worse than the original roll. In addition, a luck blade may contain up to three wishes (when randomly rolled, a luck blade holds 1d4–1 wishes, minimum 0). When the last wish is used, the sword remains a +2 short sword, still grants the +1 luck bonus, and still grants its reroll power.</p> <p>Strong evocation; CL 17th; Craft Magic Arms and Armor, wish or miracle; Price 22,060 gp (0 wishes), 62,360 gp (1 wish), 102,660 gp (2 wishes), 142,960 gp (3 wishes); Cost 11,030 gp + 882 XP (0 wishes), 31,180 gp + 2,494 XP (1 wish); 51,330 gp + 4,106 XP (2 wishes), 71,480 gp + 5,718 XP (3 wishes).</p>",
+      "Specific": {
+        "Base": "items/Weapon/sword-short",
+        "Bonus": 2
+      },
       "id": 198
     }
   ],
@@ -2424,7 +2572,7 @@
       "Weight": 22.5,
       "Category": "Heavy",
       "Link": "full-plate",
-      "Description": "<p>The suit includes gauntlets, heavy leatherboots, a visored helmet, and a thick layer of padding that is wornunderneath the armor. Each suit of full plate must be individuallyfitted to its owner by a master armorsmith, although a capturedsuit can be resized to fit a new owner at a cost of 200 to 800(2d4x100) gold pieces.</p>",
+      "Description": "<p>The suit includes gauntlets, heavy leather boots, a visored helmet, and a thick layer of padding that is worn underneath the armor. Each suit of full plate must be individually fitted to its owner by a master armorsmith, although a captured suit can be resized to fit a new owner at a cost of 200 to 800 (2d4x100) gold pieces.</p>",
       "id": 210
     }
   ],
@@ -2437,6 +2585,11 @@
       "Link": "mithral-shirt",
       "Cost": 1100,
       "Description": "<p>This extremely light chain shirt is made of very fine mithral links. Speed while wearing a mithral shirt is 30 feet for Medium creatures, or 20 feet for Small. The armor has an arcane spell failure chance of 10%, a maximum Dexterity bonus of +6, and no armor check penalty. It is considered light armor and weighs 10 pounds.</p> <p>No aura (nonmagical); Price 1,100 gp.</p>",
+      "Specific": {
+        "Base": "items/Armor/chain-shirt",
+        "Masterwork": true,
+        "Bonus": 0
+      },
       "id": 211
     },
     {
@@ -2447,6 +2600,11 @@
       "Link": "dragonhide-plate",
       "Cost": 3300,
       "Description": "<p>This suit of full plate is made of dragonhide, rather than metal, so druids can wear it. It is otherwise identical to masterwork full plate.</p> <p>No aura (nonmagical); Price 3,300 gp.</p>",
+      "Specific": {
+        "Base": "items/Armor/full-plate",
+        "Masterwork": true,
+        "Bonus": 0
+      },
       "id": 212
     },
     {
@@ -2457,6 +2615,11 @@
       "Link": "elven-chain",
       "Cost": 4150,
       "Description": "<p>This extremely light chainmail is made of very fine mithral links. Speed while wearing elven chain is 30 feet for Medium creatures, or 20 feet for Small. The armor has an arcane spell failure chance of 20%, a maximum Dexterity bonus of +4, and an armor check penalty of –2. It is considered light armor and weighs 20 pounds.</p> <p>No aura (nonmagical); Price 4,150 gp.</p>",
+      "Specific": {
+        "Base": "items/Armor/chainmail",
+        "Masterwork": true,
+        "Bonus": 0
+      },
       "id": 213
     },
     {
@@ -2467,6 +2630,10 @@
       "Link": "rhino-hide",
       "Cost": 5165,
       "Description": "<p>This +2 hide armor is made from rhinoceros hide. In addition to granting a +2 enhancement bonus to AC, it has a –1 armor check penalty and deals an additional 2d6 points of damage on any successful charge attack made by the wearer, including a mounted charge.</p> <p>Moderate transmutation; CL 9th; Craft Magic Arms and Armor, bull’s strength; Price 5,165 gp; Cost 2,665 gp + 200 XP.</p>",
+      "Specific": {
+        "Base": "items/Armor/hide",
+        "Bonus": 2
+      },
       "id": 214
     },
     {
@@ -2477,6 +2644,11 @@
       "Link": "adamantine-breastplate",
       "Cost": 10200,
       "Description": "<p>This nonmagical breastplate is made of adamantine, giving its wearer damage reduction of 2/–.</p> <p>No aura (nonmagical); Price 10,200 gp.</p>",
+      "Specific": {
+        "Base": "items/Armor/breastplate",
+        "Masterwork": true,
+        "Bonus": 0
+      },
       "id": 215
     },
     {
@@ -2487,6 +2659,11 @@
       "Link": "dwarven-plate",
       "Cost": 16500,
       "Description": "<p>This full plate is made of adamantine, giving its wearer damage reduction of 3/–.</p> <p>No aura (nonmagical); Price 16,500 gp.</p>",
+      "Specific": {
+        "Base": "items/Armor/full-plate",
+        "Masterwork": true,
+        "Bonus": 0
+      },
       "id": 216
     },
     {
@@ -2497,6 +2674,10 @@
       "Link": "banded-mail-of-luck",
       "Cost": 18900,
       "Description": "<p>Ten 100-gp gems adorn this +3 banded mail. Once per week, the armor allows its wearer to require that an attack roll made against him be rerolled. He must take whatever consequences come from the second roll. The wearer’s player must decide whether to have the attack roll rerolled before damage is rolled.</p> <p>Strong enchantment; CL 12th; Craft Magic Arms and Armor, bless; Price 18,900 gp; Cost 10,150 gp + 700 XP.</p>",
+      "Specific": {
+        "Base": "items/Armor/banded-mail",
+        "Bonus": 3
+      },
       "id": 217
     },
     {
@@ -2507,6 +2688,10 @@
       "Link": "celestial-armor",
       "Cost": 22400,
       "Description": "<p>This bright silver or gold +3 chainmail is so fine and light that it can be worn under normal clothing without betraying its presence. It has a maximum Dexterity bonus of +8, an armor check penalty of –2, and an arcane spell failure chance of 15%. It is considered light armor, weighs 20 pounds, and it allows the wearer to use fly on command (as the spell) once per day.</p> <p>Faint transmutation [good]; CL 5th; Craft Magic Arms and Armor, creator must be good, fly; Price 22,400 gp; Cost 12,550 gp + 1,004 XP.</p>",
+      "Specific": {
+        "Base": "items/Armor/chainmail",
+        "Bonus": 3
+      },
       "id": 218
     },
     {
@@ -2517,6 +2702,10 @@
       "Link": "plate-armor-of-the-deep",
       "Cost": 24650,
       "Description": "<p>This +1 full plate is decorated with a wave and fish motif. The wearer of plate armor of the deep is treated as unarmored for purposes of Swim checks. The wearer can breathe underwater and can converse with any creature with a language that breathes water.</p> <p>Moderate abjuration; CL 11th; Craft Magic Arms and Armor, freedom of movement, water breathing, tongues; Price 24,650 gp; Cost 17,150 gp + 600 XP.</p>",
+      "Specific": {
+        "Base": "items/Armor/full-plate",
+        "Bonus": 1
+      },
       "id": 219
     },
     {
@@ -2527,6 +2716,10 @@
       "Link": "breastplate-of-command",
       "Cost": 25400,
       "Description": "<p>This finely crafted +2 breastplate radiates a powerful aura of magic. When worn, the armor bestows a dignified and commanding aura upon its owner. The wearer gains a +2 competence bonus on all Charisma checks, including turning checks and Charisma-based skill checks. The wearer also gains a +2 competence bonus to his Leadership score. Friendly troops within 360 feet of the user become braver than normal. Since the effect arises in great part from the distinctiveness of the armor, the wearer cannot hide or conceal herself in any way and still have the effect function.</p> <p>Strong enchantment; CL 15th; Craft Magic Arms and Armor, mass charm monster; Price 25,400 gp; Cost 10,975 gp + 850 XP.</p>",
+      "Specific": {
+        "Base": "items/Armor/breastplate",
+        "Bonus": 2
+      },
       "id": 220
     },
     {
@@ -2537,6 +2730,10 @@
       "Link": "mithral-full-plate-of-speed",
       "Cost": 26500,
       "Description": "<p>As a free action, the wearer of this fine set of +1 mithral full plate can activate it, enabling her to act as though affected by a haste spell for up to 10 rounds each day. The duration of the haste effect need not be consecutive rounds.</p> <p>Speed while wearing a suit of mithral full plate is 20 feet for Medium creatures, or 15 feet for Small. The armor has an arcane spell failure chance of 25%, a maximum Dexterity bonus of +3, and an armor check penalty of –3. It is considered medium armor and weighs 25 pounds.</p> <p>Faint transmutation; CL 5th; Craft Magic Arms and Armor, haste; Price 26,500 gp.</p>",
+      "Specific": {
+        "Base": "items/Armor/full-plate",
+        "Bonus": 1
+      },
       "id": 221
     },
     {
@@ -2547,6 +2744,10 @@
       "Link": "demon-armor",
       "Cost": 52260,
       "Description": "<p>This plate armor is fashioned to make the wearer appear to be a demon. The helmet is shaped to look like a horned demon head, and its wearer looks out of the open, tooth-filled mouth. This +4 full plate allows the wearer to make claw attacks that deal 1d10 points of damage, strike as +1 weapons, and afflict the target as if she had been struck by a contagion spell (Fortitude DC 14 negates). Use of contagion requires a normal melee attack with the claws. The “claws” are built into the armor’s vambraces and gauntlets. </p> <p>The armor bestows one negative level on any nonevil creature wearing it. This negative level persists as long as the armor is worn and disappears when the armor is removed. The negative level never results in actual level loss, but it cannot be overcome in any way (including restoration spells) while the armor is worn.</p> <p>Strong necromancy [evil]; CL 13th; Craft Magic Arms and Armor, contagion; Price 52,260 gp; Cost 26,130 gp + 2,090 XP.</p>",
+      "Specific": {
+        "Base": "items/Armor/full-plate",
+        "Bonus": 4
+      },
       "id": 222
     }
   ],
@@ -2651,6 +2852,11 @@
       "Link": "darkwood-buckler",
       "Cost": 205,
       "Description": "<p>This nonmagical light wooden shield is made out of darkwood. It has no enhancement bonus, but its construction material makes it lighter than a normal wooden shield. It weighs 2-1/2 pounds and has no armor check penalty.</p> <p>No aura (nonmagical); Price 205 gp.</p>",
+      "Specific": {
+        "Base": "items/Shield/buckler",
+        "Masterwork": true,
+        "Bonus": 0
+      },
       "id": 229
     },
     {
@@ -2661,6 +2867,11 @@
       "Link": "darkwood-shield",
       "Cost": 257,
       "Description": "<p>This nonmagical heavy wooden shield is made out of darkwood. It has no enhancement bonus, but its construction material makes it lighter than a normal wooden shield. It weighs 5 pounds and has no armor check penalty.</p> <p>No aura (nonmagical); Price 257 gp.</p>",
+      "Specific": {
+        "Base": "items/Shield/shield-heavy-wooden",
+        "Masterwork": true,
+        "Bonus": 0
+      },
       "id": 230
     },
     {
@@ -2671,6 +2882,11 @@
       "Link": "mithral-heavy-shield",
       "Cost": 1020,
       "Description": "<p>This heavy shield is made of mithral and thus is much lighter than a standard steel shield. It has a 5% arcane spell failure chance and no armor check penalty. It weighs 5 pounds.</p> <p>No aura (nonmagical); Price 1,020 gp.</p>",
+      "Specific": {
+        "Base": "items/Shield/shield-heavy-steel",
+        "Masterwork": true,
+        "Bonus": 0
+      },
       "id": 231
     },
     {
@@ -2681,6 +2897,10 @@
       "Link": "casters-shield",
       "Cost": 3153,
       "Description": "<p>This +1 light wooden shield has a small leather strip on the back on which a spellcaster can scribe a single spell as on a scroll. A spell so scribed has only half the base raw material cost. Experience point and component costs remain the same. The strip cannot accommodate spells of higher than 3rd level. The strip is reusable.</p> <p>A random caster ’s shield has a 50% chance of having a single medium scroll spell on it. The spell is divine (01–80 on d%) or arcane (81–100).</p> <p>A caster’s shield has a 5% arcane spell failure chance.</p> <p>Moderate abjuration; CL 6th; Craft Magic Arms and Armor, Scribe Scroll, creator must be at least 6th level; Price 3,153 gp (plus the value of the scroll spell if one is currently scribed); Cost 1,653 gp + 120 XP.</p>",
+      "Specific": {
+        "Base": "items/Shield/shield-light-wooden",
+        "Bonus": 1
+      },
       "id": 232
     },
     {
@@ -2691,6 +2911,10 @@
       "Link": "spined-shield",
       "Cost": 5580,
       "Description": "<p>This +1 heavy steel shield is covered in spines. It acts as a normal spiked shield. On command up to three times per day, the shield’s wearer can fire one of the shield’s spines. A fired spine has a +1 enhancement bonus, a range increment of 120 feet, and deals 1d10 points of damage (19–20/x2). Fired spines regenerate each day.</p> <p>Moderate evocation; CL 6th; Craft Magic Arms and Armor, magic missile; Price 5,580 gp; Cost 2,740 gp + 223 XP.</p>",
+      "Specific": {
+        "Base": "items/Shield/shield-heavy-steel",
+        "Bonus": 1
+      },
       "id": 233
     },
     {
@@ -2701,6 +2925,10 @@
       "Link": "lions-shield",
       "Cost": 9170,
       "Description": "<p>This +2 heavy steel shield is fashioned to appear to be a roaring lion’s head. Three times per day as a free action, the lion’s head can be commanded to attack (independently of the shield wearer), biting with the wielder’s base attack bonus (including multiple attacks, if the wielder has them) and dealing 2d6 points of damage. This attack is in addition to any actions performed by the wielder.</p> <p>Moderate conjuration; CL 10th; Craft Magic Arms and Armor, summon nature’s ally IV; Price 9,170 gp; Cost 4,670 gp + 360 XP.</p>",
+      "Specific": {
+        "Base": "items/Shield/shield-heavy-steel",
+        "Bonus": 2
+      },
       "id": 234
     },
     {
@@ -2711,6 +2939,10 @@
       "Link": "winged-shield",
       "Cost": 17257,
       "Description": "<p>This round heavy wooden shield has a +3 enhancement bonus. Small, feathered wings encircle the shield.</p> <p>Once per day it can be commanded to fly (as the spell), carrying the wielder. The shield can carry up to 133 pounds and move at 60 feet per round, or up to 266 pounds and move at 40 feet per round.</p> <p>Faint transmutation; CL 5th; Craft Magic Arms and Armor, fly; Price 17,257 gp; Cost 8,628 gp and 5 sp + 690 XP.</p>",
+      "Specific": {
+        "Base": "items/Shield/shield-heavy-wooden",
+        "Bonus": 3
+      },
       "id": 235
     },
     {
@@ -2721,6 +2953,10 @@
       "Link": "absorbing-shield",
       "Cost": 50170,
       "Description": "<p>This +1 heavy steel shield is flat black and seems to absorb light. Once every two days, on command, it can disintegrate an object that it touches, as the spell but requiring a melee touch attack.</p> <p>Strong transmutation; CL 17th; Craft Magic Arms and Armor, disintegrate; Price 50,170 gp; Cost 25,170 gp + 2,000 XP.</p>",
+      "Specific": {
+        "Base": "items/Shield/shield-heavy-steel",
+        "Bonus": 1
+      },
       "id": 236
     }
   ],

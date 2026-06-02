@@ -90,7 +90,38 @@ export function getItemByLink(link, bonus = 0) {
       return [{ ...scrollCard, Link: found.Link, Description: description }];
     }
 
-    const { Minor, Medium, Major, Chance, Id, Type, Cost, ...card } = found;
+    let { Minor, Medium, Major, Chance, Id, Type, Cost, Specific, ...card } = found;
+
+    // Specific items (Dagger of venom, Holy avenger, Mithral shirt, ...)
+    // carry only prose. Merge the base item's stat fields into the card so
+    // the right-panel shows damage/range/AC/etc. with the Specific entry's
+    // description appended after the base description. Field order is
+    // significant — the renderer iterates keys, so we put Name + base stats
+    // first and Description last.
+    if (Specific && typeof Specific === 'object' && typeof Specific.Base === 'string') {
+      const baseRef = getItemByRef(Specific.Base);
+      if (baseRef?.raw) {
+        const {
+          Minor: _bMin, Medium: _bMed, Major: _bMaj,
+          Chance: _bCh, Id: _bId, Type: _bT, Cost: _bC,
+          Specific: _bSp, Name: _bName,
+          Description: baseDesc,
+          Link: _bLink,
+          ...baseCard
+        } = baseRef.raw;
+        const specificDesc = card.Description || '';
+        const ordered = { Name: card.Name };
+        Object.entries(baseCard).forEach(([k, v]) => {
+          if (ordered[k] === undefined) ordered[k] = v;
+        });
+        Object.entries(card).forEach(([k, v]) => {
+          if (ordered[k] === undefined && k !== 'Description') ordered[k] = v;
+        });
+        ordered.Description = [baseDesc, specificDesc].filter(Boolean).join('<hr/>');
+        card = ordered;
+      }
+    }
+
     if (typeof card.Weight === 'number') card.Weight = card.Weight + ' kg';
     if (typeof card.Range === 'number') card.Range = card.Range === 0 ? '—' : card.Range + ' ft.';
 

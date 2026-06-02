@@ -66,6 +66,7 @@ export default function InventoryPage() {
       masterwork: !!itemMagic.masterwork,
       bonus: Number(itemMagic.bonus) || 0,
       effectIds: Array.isArray(itemMagic.effectIds) ? itemMagic.effectIds : [],
+      baseLink: typeof itemMagic.baseLink === 'string' ? itemMagic.baseLink : '',
       position: { x: rect.right, y: rect.bottom },
     });
   };
@@ -79,6 +80,7 @@ export default function InventoryPage() {
       masterwork: !!popupState.masterwork,
       bonus: Number(popupState.bonus) || 0,
       effectIds: Array.isArray(popupState.effectIds) ? popupState.effectIds : [],
+      ...(popupState.baseLink ? { baseLink: popupState.baseLink } : {}),
     };
     if (slot.startsWith('set')) {
       const setNum = slot === 'set1' ? '1' : '2';
@@ -106,6 +108,7 @@ export default function InventoryPage() {
       masterwork: !!popupState.masterwork,
       bonus: Number(popupState.bonus) || 0,
       effectIds: Array.isArray(popupState.effectIds) ? popupState.effectIds : [],
+      ...(popupState.baseLink ? { baseLink: popupState.baseLink } : {}),
     }));
   };
   const handleOpenCard = (links, bonus) => dispatch(addCardByLink({ links, bonus }));

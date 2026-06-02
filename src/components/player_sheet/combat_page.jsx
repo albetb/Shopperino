@@ -181,7 +181,7 @@ export default function CombatPage() {
          attack list — their AC contribution shows in the equipment card
          instead. */
       if (/\/(Shield|Specific Shield)\//.test(w.link)) return;
-      const item = getItemByRef(w.link)?.raw;
+      const item = getItemByRef(w.baseLink || w.link)?.raw;
       if (!item) return;
       weapons.push({ slot, name: w.name, link: w.link, weaponItem: item, isTwoHanded: w.twoHanded === true, itemData: w });
     };

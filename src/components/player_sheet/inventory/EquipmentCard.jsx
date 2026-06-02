@@ -87,7 +87,7 @@ function EquipmentSlotBox({ slotKey, dataSlot, config, entry, onUnequip, onOpenC
   let armorBonus = null;
 
   if (entry && entry.link && isWeaponSlot && player) {
-    const weaponItem = getItemByRef(entry.link)?.raw;
+    const weaponItem = getItemByRef(entry.baseLink || entry.link)?.raw;
     if (weaponItem) {
       attackBonus = calculateWeaponAttackBonus(player, { weaponItem, isTwoHanded: entry.twoHanded, itemData: entry });
       damage = calculateWeaponDamage(player, { weaponItem, isTwoHanded: entry.twoHanded, itemData: entry });
@@ -95,7 +95,7 @@ function EquipmentSlotBox({ slotKey, dataSlot, config, entry, onUnequip, onOpenC
   }
 
   if (entry && entry.link && (isArmorSlot || isShield)) {
-    const raw = getItemByRef(entry.link)?.raw;
+    const raw = getItemByRef(entry.baseLink || entry.link)?.raw;
     if (raw && raw['Armor/Shield Bonus'] !== undefined) {
       const base = parseInt(String(raw['Armor/Shield Bonus']).replace('+', ''), 10) || 0;
       const total = base + (entry.bonus || 0);

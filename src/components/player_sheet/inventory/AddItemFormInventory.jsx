@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { getItem, itemRefLink } from 'lib/item';
 import { itemTypes } from 'lib/utils';
 import { magicTypeFor } from 'lib/item/formatItemName';
+import { getEffectIdBySlug } from 'lib/item/effectsUtils';
 import Modal from '../../common/Modal';
 import Button from '../../common/Button';
 import EquipBonusControls from './EquipBonusControls';
@@ -14,6 +15,7 @@ export default function AddItemFormInventory({ open, onAddItem, items, onClose }
   const [suggestions, setSuggestions] = useState([]);
   const [isFocused, setIsFocused] = useState(false);
   const [link, setLink] = useState('');
+  const [baseLink, setBaseLink] = useState('');
   const [masterwork, setMasterwork] = useState(false);
   const [bonus, setBonus] = useState(0);
   const [effectIds, setEffectIds] = useState([]);
@@ -27,6 +29,7 @@ export default function AddItemFormInventory({ open, onAddItem, items, onClose }
       setItemName('');
       setItemType('Good');
       setLink('');
+      setBaseLink('');
       setSuggestions([]);
       setIsFocused(false);
       setMasterwork(false);
@@ -76,7 +79,12 @@ export default function AddItemFormInventory({ open, onAddItem, items, onClose }
   const handleAddItemClick = () => {
     if (!itemName.trim()) return;
     const opts = isBonusCandidate
-      ? { masterwork: bonus > 0 ? true : masterwork, bonus, effectIds }
+      ? {
+          masterwork: bonus > 0 ? true : masterwork,
+          bonus,
+          effectIds,
+          ...(baseLink ? { baseLink } : {}),
+        }
       : undefined;
     onAddItem(itemName, itemType, number, link, opts);
     onClose?.();
@@ -86,9 +94,24 @@ export default function AddItemFormInventory({ open, onAddItem, items, onClose }
     setItemName(suggestion.Name);
     setItemType(suggestion.ItemType);
     setLink(itemRefLink(suggestion) || suggestion.Link || '');
-    setMasterwork(false);
-    setBonus(0);
-    setEffectIds([]);
+    // Pre-fill magical metadata from Specific items (auto-detect base + bonus
+    // + effects from items.json so the user doesn't re-enter them).
+    const spec = suggestion.Specific;
+    if (spec && typeof spec === 'object') {
+      setBaseLink(typeof spec.Base === 'string' ? spec.Base : '');
+      const b = Math.max(0, Math.min(5, parseInt(spec.Bonus, 10) || 0));
+      setBonus(b);
+      setMasterwork(b > 0 ? true : !!spec.Masterwork);
+      const ids = Array.isArray(spec.Effects)
+        ? spec.Effects.map(getEffectIdBySlug).filter((n) => typeof n === 'number')
+        : [];
+      setEffectIds(ids);
+    } else {
+      setBaseLink('');
+      setMasterwork(false);
+      setBonus(0);
+      setEffectIds([]);
+    }
     setSuggestions([]);
     setIsFocused(false);
   };
