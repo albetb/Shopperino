@@ -29,6 +29,13 @@ export default function SkillsPage() {
   const [sortBy, setSortBy] = useState(null);
   const [sortDesc, setSortDesc] = useState(false);
   const [classOnly, setClassOnly] = useState(false);
+  const [knowledgeCollapsed, setKnowledgeCollapsed] = useState(false);
+  const [collapsedAbilities, setCollapsedAbilities] = useState(() => new Set());
+  const toggleAbility = ab => setCollapsedAbilities(prev => {
+    const next = new Set(prev);
+    if (next.has(ab)) next.delete(ab); else next.add(ab);
+    return next;
+  });
 
   const rawSkills = useMemo(() => {
     const list = loadFile('skills');
@@ -251,18 +258,25 @@ export default function SkillsPage() {
               <Pill tone={overCap ? 'warn' : 'accent'}>{usedPoints} / {totalPoints} ranks</Pill>
             </div>
           )}
-          {displayedSkills.map(skill => {
-            if (skill.Name === 'Knowledge') {
+          {(() => {
+            const renderKnowledge = () => {
               const subskills = classOnly
                 ? KNOWLEDGE_SUBSKILLS.filter(sub => isClassSkill(knowledgeSkillName(sub)))
                 : KNOWLEDGE_SUBSKILLS;
               return (
                 <Fragment key="Knowledge-group">
-                  <div className="sh-skill-group-head">
+                  <button
+                    type="button"
+                    className="sh-skill-group-head sh-skill-group-head--button"
+                    onClick={() => setKnowledgeCollapsed(v => !v)}
+                    aria-expanded={!knowledgeCollapsed}
+                  >
                     <Icon name="auto_stories" />
                     <span>Knowledge ({knowledgeBase?.Characteristic ?? 'Int'})</span>
-                  </div>
-                  {subskills.map(sub => {
+                    <span className="sh-skill-group-head-spacer" />
+                    <Icon name={knowledgeCollapsed ? 'expand_more' : 'expand_less'} />
+                  </button>
+                  {!knowledgeCollapsed && subskills.map(sub => {
                     const name = knowledgeSkillName(sub);
                     return renderSkillRow({
                       Name: name,
@@ -274,9 +288,49 @@ export default function SkillsPage() {
                   })}
                 </Fragment>
               );
+            };
+
+            const renderOne = (skill) => skill.Name === 'Knowledge' ? renderKnowledge() : renderSkillRow(skill);
+
+            if (sortBy !== 'ability') {
+              return displayedSkills.map(renderOne);
             }
-            return renderSkillRow(skill);
-          })}
+
+            // Group by Characteristic when sorted by ability.
+            const groups = [];
+            const byKey = new Map();
+            for (const skill of displayedSkills) {
+              const ab = skill.Characteristic || '—';
+              if (!byKey.has(ab)) {
+                const g = { ability: ab, skills: [] };
+                byKey.set(ab, g);
+                groups.push(g);
+              }
+              byKey.get(ab).skills.push(skill);
+            }
+            return groups.map(({ ability, skills }) => {
+              const mod = player?.getModifier?.(ability.toLowerCase()) ?? 0;
+              const isCollapsed = collapsedAbilities.has(ability);
+              return (
+                <Fragment key={`ability-${ability}`}>
+                  <button
+                    type="button"
+                    className="sh-skill-group-head sh-skill-group-head--button"
+                    onClick={() => toggleAbility(ability)}
+                    aria-expanded={!isCollapsed}
+                  >
+                    <span>{ability}</span>
+                    <span className="sh-faint" style={{ fontFamily: 'var(--font-mono)', fontWeight: 400 }}>
+                      {mod >= 0 ? `+${mod}` : mod}
+                    </span>
+                    <span className="sh-skill-group-head-spacer" />
+                    <Icon name={isCollapsed ? 'expand_more' : 'expand_less'} />
+                  </button>
+                  {!isCollapsed && skills.map(renderOne)}
+                </Fragment>
+              );
+            });
+          })()}
         </div>
       </Card>
     </div>

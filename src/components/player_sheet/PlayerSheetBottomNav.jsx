@@ -61,8 +61,12 @@ export default function PlayerSheetBottomNav() {
   }, [dispatch]);
   const spellLongPress = useLongPress(handleSpellLongPress, handleSpellClick);
 
-  const handlePrepareSpell = () => { dispatch(setPlayerSpellbookPage(1)); navigate('playerSpells'); };
-  const handleLearnSpell   = () => { dispatch(setPlayerSpellbookPage(0)); navigate('playerSpells'); };
+  const handlePrepareSpell = (e) => { e?.stopPropagation?.(); dispatch(setPlayerSpellbookPage(1)); navigate('playerSpells'); };
+  const handleLearnSpell   = (e) => { e?.stopPropagation?.(); dispatch(setPlayerSpellbookPage(0)); navigate('playerSpells'); };
+  // Swallow the down/up events on the popout so they don't reach the parent
+  // button's long-press handler (which would fire its tap handler and reset
+  // the spellbook page to "cast").
+  const swallow = (e) => e.stopPropagation();
 
   useEffect(() => {
     if (!showSpellOptions) return undefined;
@@ -103,7 +107,14 @@ export default function PlayerSheetBottomNav() {
               <Icon name={it.icon} />
               <span>{it.label}</span>
               {showSpellOptions && (
-                <div className="sh-bnav-popout" ref={spellPopupRef}>
+                <div
+                  className="sh-bnav-popout"
+                  ref={spellPopupRef}
+                  onMouseDown={swallow}
+                  onMouseUp={swallow}
+                  onTouchStart={swallow}
+                  onTouchEnd={swallow}
+                >
                   {isPrepareVisible && (
                     <button type="button" className="sh-bnav-popout-btn" onClick={handlePrepareSpell} title="Prepare Spell">
                       <Icon name="menu_book" />

@@ -16,6 +16,19 @@
 }
 .sh-skill-group-head .material-symbols-outlined,
 .sh-skill-group-head .mi { font-size: 1.125rem; color: var(--ink-faint); }
+button.sh-skill-group-head--button {
+  width: 100%;
+  color: inherit;
+  border-left: none;
+  border-right: none;
+  cursor: pointer;
+  text-align: left;
+}
+button.sh-skill-group-head--button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+.sh-skill-group-head-spacer { flex: 1; }
 
 .sh-skill-row {
   display: grid;

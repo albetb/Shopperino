@@ -496,7 +496,6 @@ export default function CombatPage() {
           onEdit={() => toggleEditBonus('reflexBonus')}
         />
         <StatPill
-          accent
           label="Will"
           value={totalWill >= 0 ? `+${totalWill}` : totalWill}
           sub={willBonus ? `bonus ${willBonus >= 0 ? '+' : ''}${willBonus}` : null}

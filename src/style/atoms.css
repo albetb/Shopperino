@@ -426,7 +426,10 @@
   border-radius: inherit;
   transition: width var(--t-base) var(--ease);
 }
-.sh-bar--hp > span { background: linear-gradient(90deg, var(--danger) 0%, color-mix(in oklch, var(--danger) 65%, var(--accent)) 100%); }
+.sh-bar--hp > span {
+  /* Background is set inline from JS, interpolating red → amber → green by fill ratio. */
+  background: var(--danger);
+}
 .sh-bar--xp > span { background: linear-gradient(90deg, var(--accent), var(--accent-strong)); }
 .sh-bar--warn > span { background: var(--warn); }
 .sh-bar--accent > span { background: var(--accent); }

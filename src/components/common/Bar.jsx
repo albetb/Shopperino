@@ -12,9 +12,15 @@ export default function Bar({ value, variant, className = '', style }) {
     effectiveVariant === 'danger' && 'sh-bar--danger',
     className,
   ].filter(Boolean).join(' ');
+  const fillStyle = { width: `${clamped * 100}%` };
+  if (effectiveVariant === 'hp') {
+    // Interpolate red (0%) → yellow (50%) → green (100%) by fill ratio.
+    const hue = Math.round(clamped * 120);
+    fillStyle.background = `hsl(${hue}, 70%, 45%)`;
+  }
   return (
     <div className={cls} style={style}>
-      <span style={{ width: `${clamped * 100}%` }} />
+      <span style={fillStyle} />
     </div>
   );
 }
