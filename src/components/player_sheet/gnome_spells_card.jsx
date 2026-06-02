@@ -32,7 +32,7 @@ export default function GnomeSpellsCard() {
     <div className="card card-width-spellbook">
       <div className="card-side-div card-expand-div">
         <h3 className="card-title">
-          Gnome spells (1/day each) CD {baseDC} + spell level
+          Gnome spells (1/day each) CD {baseDC} + sp. level
         </h3>
       </div>
       <div className="card-content">
@@ -63,9 +63,6 @@ export default function GnomeSpellsCard() {
                       {spell.shortDesc}
                     </div>
                   )}
-                </td>
-                <td className={`${i === 0 ? 'first' : ''} col-30`}>
-                  {spell.school}
                 </td>
               </tr>
             );

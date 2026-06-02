@@ -8,6 +8,22 @@
   --btn-width-lg: 5.25rem;
 }
 
+/* Suppress the default mobile blue tap-highlight overlay on every
+   interactive element. We rely on hover/focus/active styles instead. */
+button,
+a,
+[role="button"],
+.filter-box,
+.rest-box,
+.spell-row,
+.expandable-card-title-bar,
+input,
+select,
+textarea,
+label {
+  -webkit-tap-highlight-color: transparent;
+}
+
 /* ============================================================
    Legacy button + form-control classes, restyled to match the
    new design system. Anything using these classes (sidebar

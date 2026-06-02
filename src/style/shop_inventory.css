@@ -295,6 +295,8 @@ tr.add-item td.action-size .item-number-button {
 .rest-box {
   border: 2px solid var(--main-t);
   cursor: pointer;
+  border-radius: 10rem;
+  padding: 1.00rem 1.00rem;
 }
 
 .time-div-row {

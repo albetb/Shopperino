@@ -34,7 +34,7 @@ export default function StarOrbitCast({ remaining = 0, total = 1, onClick }) {
             className="star"
             style={{ '--a': `${(360 / n) * i}deg` }}
           >
-            <span className="material-symbols-outlined">star</span>
+            <span className="material-symbols-outlined">arrow_drop_down</span>
           </span>
         ))}
       </span>
