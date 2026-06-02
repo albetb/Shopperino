@@ -121,7 +121,7 @@ Shared sub-systems (familiar, animal companion, special mount, turn undead, wild
 - **Turn undead (Su)** — as a cleric of `paladin level − 3` (so begins at paladin L4 with effective turner level 1). Cha-based. See *Turn undead* sub-system.
 - **Special mount (Sp)** — see *Special mount* sub-system below.
 - **Remove disease (Sp)** — scales from 1/week with extra uses at higher levels.
-- **Spellcasting** — divine, **Wis-based**, **prepared**. Begins at 4th class level. Minimum Wis 11 to cast 1st-level spells (rule from [magic.md](magic.md) still applies). Caster level = `paladin level − 3`. Paladin has no domain access.
+- **Spellcasting** — divine, **Wis-based**, **prepared**. Begins at 4th class level. Minimum Wis 11 to cast 1st-level spells (rule from [magic.md](magic.md) still applies). Caster level = `floor(paladin level / 2)`. Paladin has no domain access.
 - **Alignment** — Lawful Good only. **Code of conduct**: act with honor, do not lie, do not cheat, respect legitimate authority, punish those who threaten innocents, help those in need. Associates: only lawful good followers; can adventure with non-evil allies short-term.
 - **Ex-paladin** — any willful evil act or gross code violation → **loses all paladin class features** (spells, smite, lay on hands, aura, mount, etc.) until *atonement*. Retains weapon/armor proficiencies.
 - **Multiclass restriction** — once paladin takes a level in another class, **they can never again advance as a paladin**.

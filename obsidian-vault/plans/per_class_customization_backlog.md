@@ -71,7 +71,7 @@ Derived from [classes.md](../dnd-rules/classes.md) and [class-features.md](../dn
 - Turn undead from L4: uses `3 + Cha mod / day`, effective turner level = `paladin level − 3`. Reuse the cleric tracker primitive.
 - Special mount from L5: link to a dedicated sub-tab (see Open decisions). Summon usable for `2 hours × paladin level / day`; cooldown of 30 days OR next level-up if the mount dies.
 - Remove disease tracker: 1/week + 1/6 levels.
-- Spellcasting from L4: Wis-based, prepared, caster level = `paladin level − 3`, max spell level 4.
+- Spellcasting from L4: Wis-based, prepared, caster level = `½ paladin level`, max spell level 4.
 - Passive: aura of good, aura of courage (immune to fear + allies within 3 m get +4 morale vs fear), divine health (immune to all disease), detect evil at will.
 - **Alignment + code**: LG only; code-violation warning + ex-paladin lockout flag (loses all class features until atonement).
 - **Multiclass restriction**: same one-way rule as monk.

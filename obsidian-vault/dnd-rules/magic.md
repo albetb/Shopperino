@@ -40,7 +40,7 @@
 - **"—"** = the class cannot cast spells of that level at this class level (no bonus spells either).
 - **"0"** = the class has access to that spell level but only via bonus spells (need sufficient casting ability).
 - A caster may always prepare/cast a **lower-level spell in a higher-level slot**.
-- Hybrid casters (paladin, ranger): caster level = `class level − 3`, spellcasting begins at class level 4.
+- Hybrid casters (paladin, ranger): caster level = `floor(class level / 2)`, spellcasting begins at class level 4.
 
 ## Prepared vs spontaneous casting
 

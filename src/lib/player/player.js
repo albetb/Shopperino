@@ -744,6 +744,23 @@ class Player {
   }
 
   /**
+   * Caster level for the player's class. Used by feat prerequisites (item-creation
+   * feats) and spell scaling. Non-casters get 0. Full casters (Bard, Cleric, Druid,
+   * Sorcerer, Wizard) use their class level. Hybrid divine casters (Paladin, Ranger)
+   * gain spells at 4th level with a caster level of half their class level.
+   * See dnd-rules/magic.md.
+   */
+  getCasterLevel() {
+    const data = getClassData(this.class);
+    if (!data?.hasSpells) return 0;
+    const level = this.getLevel();
+    if (this.class === 'Paladin' || this.class === 'Ranger') {
+      return level < 4 ? 0 : Math.floor(level / 2);
+    }
+    return level;
+  }
+
+  /**
    * Unarmed strike damage. Defaults to PHB size-based damage (Medium = 1d3).
    * Monk uses the scaling table from class-features.md (1d6 at L1, ..., 2d10 at L20),
    * shifted up/down for Large/Small.

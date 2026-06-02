@@ -1374,7 +1374,7 @@
       "Tags": [
         "General"
       ],
-      "Prerequisites": "<a href=\"skills#ride\">Ride</a> 1 rank, <a href=\"feats#mounted-combat\">Mounted combat</a>, <a href=\"feats#<a href=\"skills#ride\">Ride</a>-by-attack\">Ride-by attack</a>.",
+      "Prerequisites": "<a href=\"skills#ride\">Ride</a> 1 rank, <a href=\"feats#mounted-combat\">Mounted combat</a>, <a href=\"feats#ride-by-attack\">Ride-by attack</a>.",
       "Description": "<p><b>Benefit:</b> When mounted and using the charge action, you deal double damage with a melee weapon (or triple damage with a lance).</p>\n",
       "shortDescription": "When mounted and using the charge action, you deal double damage with a melee weapon (or triple damage with a lance).",
       "suggestedClass": [],
