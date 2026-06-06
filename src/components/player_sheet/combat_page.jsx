@@ -19,6 +19,7 @@ import {
   onClearCharacterPortrait,
 } from '../../store/thunks/playerSheetThunks';
 import PortraitEditorSheet from './PortraitEditorSheet';
+import ConditionsCard from './conditions_card';
 import useLongPress from '../hooks/useLongPress';
 import { getItemByRef, calculateWeaponAttackBonus, calculateWeaponDamage, applyItemOverrides } from '../../lib/utils';
 import SpellLink from '../common/spell_link';
@@ -559,6 +560,9 @@ export default function CombatPage() {
           )
         )}
       </Card>
+
+      {/* Conditions card */}
+      <ConditionsCard />
 
       {/* Class-specific cards */}
       {(() => {

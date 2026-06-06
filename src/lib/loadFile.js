@@ -6,10 +6,11 @@ import featsData from '../data/feats.json';
 import skillsData from '../data/skills.json';
 import racesData from '../data/races.json';
 import classesData from '../data/classes.json';
+import animalsData from '../data/animals.json';
 
 /**
  * Load a data file by name. Returns the parsed content or null.
- * Supported: 'items' | 'scrolls' | 'tables' | 'spells' | 'feats' | 'skills' | 'races' | 'classes'
+ * Supported: 'items' | 'scrolls' | 'tables' | 'spells' | 'feats' | 'skills' | 'races' | 'classes' | 'animals'
  */
 export function loadFile(fileName) {
   try {
@@ -30,6 +31,8 @@ export function loadFile(fileName) {
         return racesData?.races ?? {};
       case 'classes':
         return classesData?.classes ?? {};
+      case 'animals':
+        return animalsData ?? { animals: [] };
       default:
         return null;
     }

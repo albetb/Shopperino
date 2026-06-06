@@ -12,6 +12,9 @@ import { getCarryingCapacity as capacityFromStr, classifyLoad } from './carrying
 
 const ABILITY_KEYS = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
 
+/* Conditions implied by HP and applied automatically — never user-toggled. */
+const HP_DERIVED_CONDITIONS = new Set(['Dead', 'Dying', 'Disabled']);
+
 /** Stable stringification of an overrides map for equality compare. */
 function stableOverrides(o) {
   if (!o || typeof o !== 'object') return '';
@@ -175,6 +178,11 @@ class Player {
     this.acBonus = 0;
     this.acTouchBonus = 0;
     this.acFlatBonus = 0;
+    /* Active conditions. Each entry: { name, ability?, amount? }. Some
+       conditions take a sub-choice — Ability Damaged/Drained carry an
+       `ability` (e.g. 'Str'); Energy Drained carries an `amount` (negative
+       levels). Display-only for now; effects are not yet applied to stats. */
+    this.conditions = [];
     this.inventory = []; // Array of { Name, ItemType, Number, Link, effectIds }
     /* Set true the first time a starting-equipment package is generated
        (when race + class are both chosen). Prevents regeneration if the
@@ -365,6 +373,17 @@ class Player {
       this.startingEquipmentGenerated = true;
     }
 
+    if (Array.isArray(data.conditions)) {
+      this.conditions = data.conditions
+        .filter((c) => c && typeof c === 'object' && typeof c.name === 'string' && c.name.trim())
+        .map((c) => {
+          const entry = { name: c.name };
+          if (typeof c.ability === 'string' && c.ability) entry.ability = c.ability;
+          if (Number.isFinite(c.amount)) entry.amount = c.amount;
+          return entry;
+        });
+    }
+
     return this;
   }
 
@@ -418,7 +437,59 @@ class Player {
       acTouchBonus: typeof this.acTouchBonus === 'number' ? this.acTouchBonus : 0,
       acFlatBonus: typeof this.acFlatBonus === 'number' ? this.acFlatBonus : 0,
       startingEquipmentGenerated: !!this.startingEquipmentGenerated,
+      conditions: Array.isArray(this.conditions) ? this.conditions.map((c) => ({ ...c })) : [],
     };
+  }
+
+  // —— Conditions ——
+  /** Copy of the manually-toggled conditions list. */
+  getConditions() {
+    return Array.isArray(this.conditions) ? this.conditions.map((c) => ({ ...c })) : [];
+  }
+
+  /**
+   * Conditions implied by the current HP, derived automatically and not
+   * user-toggleable: Disabled at exactly 0 HP, Dying from −1 to −9, Dead at
+   * −10 or below. Returned as { name } entries (no ability/amount).
+   */
+  getHpDerivedConditions() {
+    const hp = this.getCurrentHp();
+    if (hp <= -10) return [{ name: 'Dead' }];
+    if (hp < 0) return [{ name: 'Dying' }];
+    if (hp === 0) return [{ name: 'Disabled' }];
+    return [];
+  }
+
+  /** True when a condition with the same name (and ability, if any) is active. */
+  hasCondition(name, ability = null) {
+    const ab = ability || null;
+    return (this.conditions || []).some((c) => c.name === name && (c.ability || null) === ab);
+  }
+
+  /**
+   * Add a condition. Blocks exact duplicates (same name + ability).
+   * @param {{ name: string, ability?: string, amount?: number }} cond
+   * @returns {boolean} whether it was added
+   */
+  addCondition(cond) {
+    if (!cond || typeof cond.name !== 'string' || !cond.name.trim()) return false;
+    // Dead/Dying/Disabled are derived from HP — never stored manually.
+    if (HP_DERIVED_CONDITIONS.has(cond.name)) return false;
+    const ability = typeof cond.ability === 'string' && cond.ability ? cond.ability : null;
+    if (this.hasCondition(cond.name, ability)) return false;
+    const entry = { name: cond.name };
+    if (ability) entry.ability = ability;
+    if (Number.isFinite(cond.amount)) entry.amount = cond.amount;
+    if (!Array.isArray(this.conditions)) this.conditions = [];
+    this.conditions.push(entry);
+    return true;
+  }
+
+  /** Remove a condition by name (and ability, if it carries one). */
+  removeCondition(name, ability = null) {
+    if (!Array.isArray(this.conditions)) return;
+    const ab = ability || null;
+    this.conditions = this.conditions.filter((c) => !(c.name === name && (c.ability || null) === ab));
   }
 
   // —— Identity ——

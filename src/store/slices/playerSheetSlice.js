@@ -14,7 +14,7 @@ const initialState = {
   isPlayerSheetSidebarCollapsed: false,
   mainView: 'none', // 'none' | 'race' | 'class' | 'note'
   cardCollapsed: defaultCardCollapsed(),
-  combatPageCardsCollapsed: { player: false, combat: false, items: false, carry: false, money: false },
+  combatPageCardsCollapsed: { player: false, combat: false, conditions: false, items: false, carry: false, money: false },
   playerSpellbookPage: 0,
   playerSpellbookLevelCollapsed: [false, false, false, false, false, false, false, false, false, false],
   playerSpellbookClassDescCollapsed: true,
@@ -62,14 +62,14 @@ export const playerSheetSlice = createSlice({
     },
     setCombatPageCardCollapsed(state, action) {
       const { key, value } = action.payload || {};
-      if (key && ['player', 'combat', 'items', 'carry', 'money'].includes(key)) {
+      if (key && ['player', 'combat', 'conditions', 'items', 'carry', 'money'].includes(key)) {
         state.combatPageCardsCollapsed[key] = !!value;
       }
     },
     setCombatPageCardsCollapsed(state, action) {
       const obj = action.payload;
       if (obj && typeof obj === 'object') {
-        ['player', 'combat', 'items', 'carry', 'money'].forEach(k => {
+        ['player', 'combat', 'conditions', 'items', 'carry', 'money'].forEach(k => {
           if (obj[k] !== undefined) state.combatPageCardsCollapsed[k] = !!obj[k];
         });
       }

@@ -1,0 +1,138 @@
+/* --- CONDITIONS CARD --------------------------------------------- */
+
+.cond-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.cond-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+/* A removable pill: clickable label opens the description, the trailing
+   × removes it (or a lock glyph for HP-derived ones). Colour conveys
+   whether the condition is harmful (red), beneficial (green) or neutral
+   (orange). */
+.cond-pill {
+  display: inline-flex;
+  align-items: stretch;
+  border-radius: var(--radius-pill);
+  border: 1px solid transparent;
+  overflow: hidden;
+}
+
+.cond-pill--negative { background: var(--danger-bg);  border-color: color-mix(in oklch, var(--danger) 35%, transparent); }
+.cond-pill--positive { background: var(--success-bg); border-color: color-mix(in oklch, var(--success) 35%, transparent); }
+.cond-pill--neutral  { background: var(--warn-bg);    border-color: color-mix(in oklch, var(--warn) 35%, transparent); }
+
+.cond-pill--negative .cond-pill-label,
+.cond-pill--negative .cond-pill-x,
+.cond-pill--negative .cond-pill-auto { color: var(--danger); }
+.cond-pill--positive .cond-pill-label,
+.cond-pill--positive .cond-pill-x,
+.cond-pill--positive .cond-pill-auto { color: var(--success); }
+.cond-pill--neutral .cond-pill-label,
+.cond-pill--neutral .cond-pill-x,
+.cond-pill--neutral .cond-pill-auto { color: var(--warn); }
+
+.cond-pill-label {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font: 500 var(--font-size-xs)/1 var(--font-ui);
+  padding: 0.3rem 0.4rem 0.3rem var(--space-2);
+  white-space: nowrap;
+}
+
+.cond-pill-x,
+.cond-pill-auto {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: 0 0.4rem 0 0.1rem;
+}
+
+.cond-pill-x { cursor: pointer; opacity: 0.7; }
+.cond-pill-x:hover { opacity: 1; }
+.cond-pill-auto { opacity: 0.55; }
+
+/* Add button is centered in the card. */
+.cond-add-row {
+  display: flex;
+  justify-content: center;
+}
+
+/* --- PICKER (bottom sheet) --------------------------------------- */
+
+.cond-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.cond-list-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  text-align: left;
+  background: var(--surface-1);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-3);
+  cursor: pointer;
+  color: var(--ink);
+}
+
+.cond-list-item:hover:not(:disabled) { border-color: var(--accent-muted); background: var(--accent-soft); }
+
+.cond-list-item:disabled { opacity: 0.45; cursor: default; }
+
+.cond-list-name {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-display);
+  font-size: var(--font-size-md);
+  font-weight: 600;
+}
+
+.cond-list-desc {
+  color: var(--ink-muted);
+  font-size: var(--font-size-xs);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* --- CONFIG (sub-choice step) ------------------------------------ */
+
+.cond-config {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.cond-config-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.cond-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.cond-config-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-2);
+}

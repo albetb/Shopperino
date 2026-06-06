@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import IconButton from './IconButton';
 
-export default function BottomSheet({ open, onClose, title, eyebrow, children }) {
+export default function BottomSheet({ open, onClose, title, eyebrow, subheader, children }) {
   const ref = useRef(null);
 
   useEffect(() => {
@@ -33,7 +33,8 @@ export default function BottomSheet({ open, onClose, title, eyebrow, children })
             <IconButton icon="close" ghost size="sm" onClick={onClose} aria-label="Close" />
           </div>
         )}
-        {children}
+        {subheader && <div className="sh-sheet-sub">{subheader}</div>}
+        <div className="sh-sheet-scroll">{children}</div>
       </div>
     </>
   );

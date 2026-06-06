@@ -479,6 +479,20 @@ export const onSetAcFlatBonus = (value) => (dispatch, getState) => {
   persistPlayer(dispatch, getState, player);
 };
 
+// Conditions
+export const onAddCondition = (cond) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player) return;
+  if (player.addCondition?.(cond)) persistPlayer(dispatch, getState, player);
+};
+
+export const onRemoveCondition = (name, ability = null) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player) return;
+  player.removeCondition?.(name, ability);
+  persistPlayer(dispatch, getState, player);
+};
+
 // Feats
 export const onAddFeat = (featName) => (dispatch, getState) => {
   const player = getState().playerSheet?.player;

@@ -6,6 +6,7 @@ export { itemTypes, getItemByRef, getItemByLink, getItemById, getItemIdByRef } f
 export { getScrollById, getScrollIdByLink } from './spellbook/scrollUtils';
 export { getEffectByLink, getEffectById, getEffectIdBySlug } from './item/effectsUtils';
 export { getSpellByLink } from './spellbook/spellsUtils';
+export { getAnimalByLink, getAnimalByRef } from './animal/animalsUtils';
 
 const CHARACTERISTIC_FULL = { Str: 'Strength', Dex: 'Dexterity', Con: 'Constitution', Int: 'Intelligence', Wis: 'Wisdom', Cha: 'Charisma', None: 'None' };
 
@@ -62,6 +63,26 @@ export function getConditionByLink(link) {
     if (!entry) return [];
     const [name, description] = entry;
     return [{ Name: name, Description: description || '', Link: link }];
+  } catch (err) {
+    return [];
+  }
+}
+
+/** Slug for a condition name, matching getConditionByLink's lookup. */
+export function conditionSlug(name) {
+  return typeof name === 'string' ? name.toLowerCase().trim().replace(/\s+/g, '-') : '';
+}
+
+/** All conditions as [{ name, description, slug }], in tables.json order. */
+export function getAllConditions() {
+  try {
+    const conditions = loadFile('tables')?.Conditions;
+    if (!conditions || typeof conditions !== 'object') return [];
+    return Object.entries(conditions).map(([name, description]) => ({
+      name,
+      description: description || '',
+      slug: conditionSlug(name),
+    }));
   } catch (err) {
     return [];
   }

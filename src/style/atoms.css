@@ -489,10 +489,25 @@
   border-radius: var(--radius-xl) var(--radius-xl) 0 0;
   box-shadow: var(--shadow-3);
   z-index: 1101;
-  padding: var(--space-3) var(--space-4) var(--space-5);
+  padding: var(--space-3) var(--space-4) 0;
   max-height: 85vh;
-  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   animation: sh-slide-up var(--t-slow) var(--ease);
+}
+
+/* The handle, head and optional subheader stay fixed; only the body scrolls. */
+.sh-sheet > .handle,
+.sh-sheet-head,
+.sh-sheet-sub { flex: 0 0 auto; }
+
+.sh-sheet-sub { margin-bottom: var(--space-3); }
+
+.sh-sheet-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
   padding-bottom: max(var(--space-5), env(safe-area-inset-bottom, 0));
 }
 @keyframes sh-slide-up { from { transform: translateY(100%); } to { transform: translateY(0); } }

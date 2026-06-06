@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { getConditionByLink, getEffectByLink, getFeatByLink, getItemByLink, getItemByRef, getSkillByLink, getSpellByLink, isMobile } from '../../lib/utils';
+import { getAnimalByLink, getConditionByLink, getEffectByLink, getFeatByLink, getItemByLink, getItemByRef, getSkillByLink, getSpellByLink, isMobile } from '../../lib/utils';
 import { applyColors } from '../../lib/colorUtils';
 
 const DEFAULT_BLUE = '#238f8b';
@@ -54,6 +54,7 @@ export const appSlice = createSlice({
       const isFeatLink = linkStr && (linkStr.startsWith('feats#') || linkStr === 'feats');
       const isSkillLink = linkStr && (linkStr.startsWith('skills#') || linkStr === 'skills');
       const isConditionLink = linkStr && linkStr.includes('abilitiesAndConditions#');
+      const isAnimalLink = linkStr && (linkStr.startsWith('monstersAnimal#') || linkStr.startsWith('animals/') || linkStr.startsWith('animals#'));
       const conditionAnchor = isConditionLink ? linkStr.split('#')[1] : null;
       const spellLookupLink = isSpellLink
         ? (hasHash ? linkStr.split('#')[1] : firstLink)
@@ -79,6 +80,17 @@ export const appSlice = createSlice({
       }
 
       if (isSpellLink) return;
+
+      if (isAnimalLink) {
+        const animalCards = getAnimalByLink(firstLink);
+        if (animalCards.length) {
+          const newLinks = new Set(animalCards.map(c => c.Link));
+          state.infoCards = state.infoCards.filter(c => !newLinks.has(c.Link));
+          state.infoCards.unshift(...animalCards);
+          state.infoSidebarCollapsed = false;
+        }
+        return;
+      }
 
       cards = getConditionByLink(conditionAnchor ?? firstLink);
 
