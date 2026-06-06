@@ -217,8 +217,22 @@ export default function CombatPage() {
 
   const bab = player.getBaseAttackBonus?.() ?? 0;
   const strMod = player.getStrMod?.() ?? 0;
-  const punchAttack = bab + strMod;
+  const punchAttack = bab + strMod + (player.getAttackConditionModifier?.() ?? 0);
   const punchDamage = player.getPunchDamage?.() ?? '1d3';
+
+  // Condition-caused deltas for the displayed combat stats (empty when none).
+  const condDeltas = player.getConditionStatDeltas?.() ?? {};
+  const fmtDelta = (d) => `${d > 0 ? '+' : ''}${d}`;
+  const condNote = (d) => (d ? <span className="sh-stat-cond-note" style={{ display: 'block' }}>cond {fmtDelta(d)}</span> : null);
+  const withCond = (baseSub, d) => {
+    const note = condNote(d);
+    if (!note) return baseSub;
+    return baseSub != null ? <>{baseSub}{note}</> : note;
+  };
+  const acCondAffected = !!(condDeltas.ac || condDeltas.acTouch || condDeltas.acFlat);
+  const condBaseline = player.getConditionBaseline?.() ?? null;
+  const punchAtkAffected = condBaseline ? (condBaseline.getBaseAttackBonus() + condBaseline.getStrMod()) !== punchAttack : false;
+  const punchDmgAffected = condBaseline ? condBaseline.getPunchDamage() !== punchDamage : false;
 
   const speedInfo = player.getArmorSpeedInfo?.();
   const speedDisplay = speedInfo?.hasReduction
@@ -345,6 +359,11 @@ export default function CombatPage() {
         {!collapsed.player && (
           <div className="sh-stack">
             <Bar value={hpRatio} variant={hpBarVariant} />
+            {condDeltas.maxHp ? (
+              <div className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
+                <Pill tone="warn" icon="warning">Conditions: {fmtDelta(condDeltas.maxHp)} max HP</Pill>
+              </div>
+            ) : null}
             {(() => {
               // Disabled buttons still receive pointer events, so the long-press
               // handlers must NOT be wired when the button is in its disabled
@@ -456,10 +475,12 @@ export default function CombatPage() {
           accent
           label="AC"
           value={ac}
+          cond={acCondAffected}
           sub={
             <>
               <span style={{ display: 'block' }}>touch {acTouch}</span>
               <span style={{ display: 'block' }}>flat {acFlat}</span>
+              {acCondAffected && condNote(condDeltas.ac || 0)}
             </>
           }
           editing={editBonus === 'ac'}
@@ -468,14 +489,16 @@ export default function CombatPage() {
         <StatPill
           label="Init"
           value={totalInitiative >= 0 ? `+${totalInitiative}` : `${totalInitiative}`}
-          sub={initiativeBonus !== 0 ? `bonus ${initiativeBonus >= 0 ? '+' : ''}${initiativeBonus}` : null}
+          cond={!!condDeltas.initiative}
+          sub={withCond(initiativeBonus !== 0 ? `bonus ${initiativeBonus >= 0 ? '+' : ''}${initiativeBonus}` : null, condDeltas.initiative || 0)}
           editing={editBonus === 'initiativeBonus'}
           onEdit={() => toggleEditBonus('initiativeBonus')}
         />
         <StatPill
           label="Speed"
           value={speedDisplay}
-          sub={speedInfo?.hasReduction ? 'encumbered' : (speedBonus !== 0 ? `bonus +${speedBonus}` : null)}
+          cond={!!condDeltas.speed}
+          sub={withCond(speedInfo?.hasReduction ? 'encumbered' : (speedBonus !== 0 ? `bonus +${speedBonus}` : null), condDeltas.speed || 0)}
           editing={editBonus === 'speedBonus'}
           onEdit={() => toggleEditBonus('speedBonus')}
         />
@@ -487,21 +510,24 @@ export default function CombatPage() {
         <StatPill
           label="Fort"
           value={totalFort >= 0 ? `+${totalFort}` : totalFort}
-          sub={fortBonus ? `bonus ${fortBonus >= 0 ? '+' : ''}${fortBonus}` : null}
+          cond={!!condDeltas.fort}
+          sub={withCond(fortBonus ? `bonus ${fortBonus >= 0 ? '+' : ''}${fortBonus}` : null, condDeltas.fort || 0)}
           editing={editBonus === 'fortBonus'}
           onEdit={() => toggleEditBonus('fortBonus')}
         />
         <StatPill
           label="Ref"
           value={totalRef >= 0 ? `+${totalRef}` : totalRef}
-          sub={reflexBonus ? `bonus ${reflexBonus >= 0 ? '+' : ''}${reflexBonus}` : null}
+          cond={!!condDeltas.reflex}
+          sub={withCond(reflexBonus ? `bonus ${reflexBonus >= 0 ? '+' : ''}${reflexBonus}` : null, condDeltas.reflex || 0)}
           editing={editBonus === 'reflexBonus'}
           onEdit={() => toggleEditBonus('reflexBonus')}
         />
         <StatPill
           label="Will"
           value={totalWill >= 0 ? `+${totalWill}` : totalWill}
-          sub={willBonus ? `bonus ${willBonus >= 0 ? '+' : ''}${willBonus}` : null}
+          cond={!!condDeltas.will}
+          sub={withCond(willBonus ? `bonus ${willBonus >= 0 ? '+' : ''}${willBonus}` : null, condDeltas.will || 0)}
           editing={editBonus === 'willBonus'}
           onEdit={() => toggleEditBonus('willBonus')}
         />
@@ -528,16 +554,19 @@ export default function CombatPage() {
               <div className="sh-row-h" style={{ gap: 'var(--space-3)', justifyContent: 'space-between' }}>
                 <span className="sh-display">Punch</span>
                 <span className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
-                  <Pill tone="accent">{punchAttack >= 0 ? '+' : ''}{punchAttack}</Pill>
-                  <Pill>{punchDamage}</Pill>
+                  <Pill tone={punchAtkAffected ? 'warn' : 'accent'}>{punchAttack >= 0 ? '+' : ''}{punchAttack}</Pill>
+                  <Pill tone={punchDmgAffected ? 'warn' : 'default'}>{punchDamage}</Pill>
                 </span>
               </div>
             </div>
           ) : (
             <div className="sh-stack" style={{ gap: 'var(--space-2)' }}>
               {equippedWeapons.map((w, idx) => {
-                const ab = calculateWeaponAttackBonus(player, { weaponItem: w.weaponItem, isTwoHanded: w.isTwoHanded, itemData: w.itemData });
-                const dmg = calculateWeaponDamage(player, { weaponItem: w.weaponItem, isTwoHanded: w.isTwoHanded, itemData: w.itemData });
+                const wd = { weaponItem: w.weaponItem, isTwoHanded: w.isTwoHanded, itemData: w.itemData };
+                const ab = calculateWeaponAttackBonus(player, wd);
+                const dmg = calculateWeaponDamage(player, wd);
+                const atkAffected = (player.getWeaponAttackConditionDelta?.(wd) ?? 0) !== 0;
+                const dmgAffected = player.isWeaponDamageConditionAffected?.(wd) ?? false;
                 /* Only show the separator border between rows, not above
                    the first weapon (otherwise it visually doubles the
                    Card's own internal padding boundary). */
@@ -550,8 +579,8 @@ export default function CombatPage() {
                       <span className="sh-display" style={{ fontSize: 'var(--font-size-lg)' }}>{w.name}</span>
                     </SpellLink>
                     <span className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
-                      <Pill tone="accent">{ab >= 0 ? '+' : ''}{ab}</Pill>
-                      <Pill>{dmg}</Pill>
+                      <Pill tone={atkAffected ? 'warn' : 'accent'}>{ab >= 0 ? '+' : ''}{ab}</Pill>
+                      <Pill tone={dmgAffected ? 'warn' : 'default'}>{dmg}</Pill>
                     </span>
                   </div>
                 );

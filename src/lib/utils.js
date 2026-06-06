@@ -225,7 +225,11 @@ export function calculateWeaponAttackBonus(player, weaponData) {
   // Enhancement subsumes masterwork (+X weapon is already masterwork).
   const enhBonus = itemData ? Math.max(itemData.bonus || 0, itemData.masterwork ? 1 : 0) : 0;
 
-  return bab + abilityMod + weaponBonus + enhBonus;
+  // Active-condition penalties/bonuses to attack rolls (Shaken, Sickened,
+  // Invisible, Energy Drained, etc.). Logic lives in the Player model.
+  const conditionMod = player.getAttackConditionModifier?.() ?? 0;
+
+  return bab + abilityMod + weaponBonus + enhBonus + conditionMod;
 }
 
 /**
@@ -270,6 +274,9 @@ export function calculateWeaponDamage(player, weaponData) {
 
   // +X enhancement adds to damage (masterwork alone does not).
   damageBonus += itemData?.bonus || 0;
+
+  // Active-condition penalties to weapon damage (e.g. Sickened −2). Model-owned.
+  damageBonus += player.getDamageConditionModifier?.() ?? 0;
 
   // Format the damage string
   if (damageBonus === 0) {

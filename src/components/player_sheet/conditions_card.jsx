@@ -59,8 +59,12 @@ export default function ConditionsCard() {
      instead of the list. */
   const [config, setConfig] = useState(null); // { name, ability, amount }
 
-  const derived = player?.getHpDerivedConditions?.() ?? [];
-  const manual = player?.getConditions?.() ?? [];
+  const derived = player?.getDerivedConditions?.() ?? [];
+  const manualAll = player?.getConditions?.() ?? [];
+  // A condition that is also auto-derived (e.g. Paralyzed from Dex 0) renders
+  // once, as the locked derived pill — drop the manual duplicate.
+  const derivedKeys = new Set(derived.map(c => `${c.name}::${c.ability ?? ''}`));
+  const manual = manualAll.filter(c => !derivedKeys.has(`${c.name}::${c.ability ?? ''}`));
   // Conditions selectable in the picker — derived ones are excluded.
   const allConditions = useMemo(
     () => getAllConditions().filter(c => !HP_DERIVED.has(c.name)),

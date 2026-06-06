@@ -125,6 +125,7 @@ export default function SkillsPage() {
   const renderSkillRow = skill => {
     const isClass = isClassSkill(skill.Name);
     const total = player.getSkillTotal?.(skill.Name) ?? 0;
+    const condDelta = player.getSkillConditionDelta?.(skill.Name) ?? 0;
     const ranks = player.getSkillRanks?.(skill.Name) ?? 0;
     const bonus = player.getSkillBonus?.(skill.Name) ?? 0;
     const maxRanks = player.getMaxSkillRanks?.(skill.Name) ?? 0;
@@ -186,8 +187,12 @@ export default function SkillsPage() {
           </SpellLink>
           {meta}
         </div>
-        <span className={`sh-skill-total sh-mono sh-num ${isOverLimit ? 'sh-warn-text' : ''}`}>
+        <span
+          className={`sh-skill-total sh-mono sh-num ${isOverLimit ? 'sh-warn-text' : ''} ${condDelta ? 'sh-skill-total--cond' : ''}`}
+          title={condDelta ? `Conditions: ${condDelta > 0 ? '+' : ''}${condDelta}` : undefined}
+        >
           {total >= 0 ? `+${total}` : total}
+          {condDelta ? <span className="sh-skill-cond-note">cond {condDelta > 0 ? '+' : ''}{condDelta}</span> : null}
         </span>
       </div>
     );

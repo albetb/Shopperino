@@ -136,3 +136,33 @@
   justify-content: space-between;
   gap: var(--space-2);
 }
+
+/* --- CONDITION-AFFECTED STAT INDICATION -------------------------- */
+
+/* A StatPill whose value is changed by an active condition gets a warm tint
+   and accent border so it reads as "not the normal value". */
+.sh-stat-pill.sh-stat-pill--cond {
+  background: var(--warn-bg);
+  border-color: color-mix(in oklch, var(--warn) 40%, transparent);
+}
+
+/* The "cond ±N" sub-line under an affected stat value. */
+.sh-stat-cond-note {
+  color: var(--warn);
+  font-weight: 600;
+}
+
+/* Skills page: a condition-affected total tints warm and shows its delta. */
+.sh-skill-total--cond {
+  color: var(--warn);
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-end;
+  line-height: 1.1;
+}
+
+.sh-skill-cond-note {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--warn);
+}

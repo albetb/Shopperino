@@ -1,11 +1,12 @@
 import Icon from './Icon';
 
-export default function StatPill({ label, value, sub, accent, editing, onEdit, className = '' }) {
+export default function StatPill({ label, value, sub, accent, editing, onEdit, cond, className = '' }) {
   const cls = [
     'sh-stat-pill',
     accent && 'sh-stat-pill--accent',
     editing && 'sh-stat-pill--editing',
     onEdit && 'sh-stat-pill--has-edit',
+    cond && 'sh-stat-pill--cond',
     className,
   ].filter(Boolean).join(' ');
   return (

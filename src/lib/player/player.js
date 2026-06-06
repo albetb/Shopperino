@@ -7,13 +7,28 @@
  */
 
 import { loadFile } from '../loadFile';
-import { getItemByRef } from '../utils';
+import { getItemByRef, calculateWeaponAttackBonus, calculateWeaponDamage } from '../utils';
 import { getCarryingCapacity as capacityFromStr, classifyLoad } from './carryingCapacity';
+import { aggregateConditionEffects, sumContributions } from './conditionEffects';
 
 const ABILITY_KEYS = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
 
 /* Conditions implied by HP and applied automatically — never user-toggled. */
 const HP_DERIVED_CONDITIONS = new Set(['Dead', 'Dying', 'Disabled']);
+
+/* Dedupe a condition list by name+ability, keeping the first occurrence. */
+function dedupeConditions(list) {
+  const seen = new Set();
+  const out = [];
+  for (const c of list) {
+    if (!c || typeof c.name !== 'string') continue;
+    const key = `${c.name}::${c.ability || ''}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push(c);
+  }
+  return out;
+}
 
 /** Stable stringification of an overrides map for equality compare. */
 function stableOverrides(o) {
@@ -492,6 +507,179 @@ class Player {
     this.conditions = this.conditions.filter((c) => !(c.name === name && (c.ability || null) === ab));
   }
 
+  // —— Condition effects (aggregation) ——
+
+  /**
+   * Conditions that feed the ability-SCORE channel. Only the MANUAL conditions
+   * carry score effects (ability damage/drain, fatigue, exhaustion, entangle,
+   * Helpless/Paralyzed). Derived conditions are deliberately excluded:
+   *   - ability-0-derived status would feed the score channel back into itself
+   *     (a Str-0 derived Helpless must not then zero Dex);
+   *   - HP-derived status (Dead/Dying/Disabled) would cause infinite recursion
+   *     (getMaxLife -> getConMod -> getAbilityTotal -> score channel -> getCurrentHp),
+   *     and they carry no ability-score effect anyway.
+   * See plan preamble (loop-safety).
+   */
+  getScoreConditions() {
+    if (this._ignoreConditions) return [];
+    return dedupeConditions(this.getConditions());
+  }
+
+  /** Aggregated contributions from the score-channel conditions only. */
+  getScoreConditionModifiers() {
+    return aggregateConditionEffects(this.getScoreConditions());
+  }
+
+  /**
+   * Ability total adjusted by the score-channel condition modifiers: additive
+   * deltas (ability damage/drain, fatigue, exhaustion, entangle) plus the
+   * explicit Helpless/Paralyzed zero-overrides. This is the single source of
+   * truth reused by getAbilityTotal and by the ability-0 cascade below.
+   */
+  conditionAdjustedAbilityTotal(abilityKey) {
+    const base = this.getAbilityBase(abilityKey) + this.getAbilityBonus(abilityKey) + this.getRaceAbilityModifier(abilityKey);
+    if (!ABILITY_KEYS.includes(abilityKey)) return base;
+    const mods = this.getScoreConditionModifiers();
+    if (mods.abilityZero[abilityKey] && mods.abilityZero[abilityKey].length > 0) return 0;
+    return base + sumContributions(mods.ability[abilityKey]);
+  }
+
+  /**
+   * All automatically-derived conditions: the HP-derived set plus the
+   * full ability-score cascade (a score driven to 0 implies a status — Str 0
+   * → Helpless, Dex 0 → Paralyzed, Con 0 → Dead, Int/Wis/Cha 0 → Unconscious).
+   * Uses condition-adjusted scores, so condition-induced ability loss cascades.
+   * Idempotent: returns status flags only and never re-enters the score channel.
+   */
+  getDerivedConditions() {
+    const derived = [...this.getHpDerivedConditions()];
+    const names = new Set(derived.map((d) => d.name));
+    const add = (name) => { if (!names.has(name)) { derived.push({ name }); names.add(name); } };
+    if (this.conditionAdjustedAbilityTotal('con') <= 0) add('Dead');
+    if (this.conditionAdjustedAbilityTotal('str') <= 0) add('Helpless');
+    if (this.conditionAdjustedAbilityTotal('dex') <= 0) add('Paralyzed');
+    if (this.conditionAdjustedAbilityTotal('int') <= 0
+      || this.conditionAdjustedAbilityTotal('wis') <= 0
+      || this.conditionAdjustedAbilityTotal('cha') <= 0) add('Unconscious');
+    return derived;
+  }
+
+  /** Manual ∪ derived conditions, deduped by name+ability (manual wins). */
+  getActiveConditions() {
+    if (this._ignoreConditions) return [];
+    return dedupeConditions([...this.getConditions(), ...this.getDerivedConditions()]);
+  }
+
+  /** Aggregated contributions from ALL active conditions (used by flat channels). */
+  getConditionModifiers() {
+    return aggregateConditionEffects(this.getActiveConditions());
+  }
+
+  /** Net condition modifier to attack rolls (Shaken/Sickened/Invisible/etc.). */
+  getAttackConditionModifier() {
+    return sumContributions(this.getConditionModifiers().attack);
+  }
+
+  /** Net condition modifier to weapon damage rolls (Sickened). */
+  getDamageConditionModifier() {
+    return sumContributions(this.getConditionModifiers().damage);
+  }
+
+  /** Net condition modifier applied to all three saving throws. */
+  getSaveConditionModifier() {
+    return sumContributions(this.getConditionModifiers().saves);
+  }
+
+  /** Net condition modifier to initiative (Deafened). */
+  getInitiativeConditionModifier() {
+    return sumContributions(this.getConditionModifiers().initiative);
+  }
+
+  /** Net flat condition penalty to AC (Blinded/Cowering/Stunned −2 each). */
+  getAcConditionModifier() {
+    return sumContributions(this.getConditionModifiers().ac);
+  }
+
+  /** True when any active condition denies the Dex bonus to AC. */
+  losesDexToAC() {
+    return this.getConditionModifiers().loseDexToAC.length > 0;
+  }
+
+  /**
+   * Net condition modifier to max HP (Energy Drained −5 per negative level).
+   * Sourced from the score (manual) channel only — using the full active set
+   * here would recurse (getMaxLife -> getCurrentHp -> derived conditions).
+   */
+  getHpConditionModifier() {
+    return sumContributions(this.getScoreConditionModifiers().hp);
+  }
+
+  /** True when any active condition halves speed (applied once, never compounded). */
+  isHalfSpeed() {
+    return this.getConditionModifiers().halfSpeed.length > 0;
+  }
+
+  /**
+   * A clone of this character with ALL condition effects (manual and derived)
+   * switched off, used to compute how much active conditions changed a derived
+   * stat. Returns null when no conditions are active. Cached per instance.
+   */
+  getConditionBaseline() {
+    if (this._ignoreConditions) return null;
+    if (this._conditionBaselineCache !== undefined) return this._conditionBaselineCache;
+    if (this.getActiveConditions().length === 0) {
+      this._conditionBaselineCache = null;
+      return null;
+    }
+    const clone = new this.constructor();
+    clone.load(this.serialize());
+    clone._ignoreConditions = true;
+    this._conditionBaselineCache = clone;
+    return clone;
+  }
+
+  /**
+   * Net condition-caused change for each displayed combat stat (current minus
+   * condition-free baseline). Captures both channels, including the ability
+   * cascade. Empty object when no conditions are active.
+   */
+  getConditionStatDeltas() {
+    const base = this.getConditionBaseline();
+    if (!base) return {};
+    return {
+      ac: this.getArmorClass() - base.getArmorClass(),
+      acTouch: this.getContactAC() - base.getContactAC(),
+      acFlat: this.getFlatFootedAC() - base.getFlatFootedAC(),
+      initiative: this.getTotalInitiative() - base.getTotalInitiative(),
+      fort: this.getTotalFortitudeSave() - base.getTotalFortitudeSave(),
+      reflex: this.getTotalReflexSave() - base.getTotalReflexSave(),
+      will: this.getTotalWillSave() - base.getTotalWillSave(),
+      speed: this.getTotalSpeed() - base.getTotalSpeed(),
+      maxHp: this.getMaxLife() - base.getMaxLife(),
+    };
+  }
+
+  /** Condition-caused change to a weapon's attack bonus (vs baseline). */
+  getWeaponAttackConditionDelta(weaponData) {
+    const base = this.getConditionBaseline();
+    if (!base) return 0;
+    return calculateWeaponAttackBonus(this, weaponData) - calculateWeaponAttackBonus(base, weaponData);
+  }
+
+  /** True when active conditions change a weapon's damage string (vs baseline). */
+  isWeaponDamageConditionAffected(weaponData) {
+    const base = this.getConditionBaseline();
+    if (!base) return false;
+    return calculateWeaponDamage(this, weaponData) !== calculateWeaponDamage(base, weaponData);
+  }
+
+  /** Condition-caused change to a single skill total (vs baseline). */
+  getSkillConditionDelta(skillName) {
+    const base = this.getConditionBaseline();
+    if (!base) return 0;
+    return this.getSkillTotal(skillName) - base.getSkillTotal(skillName);
+  }
+
   // —— Identity ——
   getName() {
     return this.name;
@@ -570,7 +758,25 @@ class Player {
    * @returns {number}
    */
   getAbilityTotal(abilityKey) {
-    return this.getAbilityBase(abilityKey) + this.getAbilityBonus(abilityKey) + this.getRaceAbilityModifier(abilityKey);
+    // Condition score effects (ability damage/drain, fatigue, exhaustion,
+    // entangle, Helpless/Paralyzed zero-overrides) flow through here so they
+    // cascade into AC, saves, skills, HP, attack/damage and initiative.
+    return this.conditionAdjustedAbilityTotal(abilityKey);
+  }
+
+  /**
+   * The score-channel condition contributions affecting one ability, as
+   * { source, label, value } entries (breakdown-ready). Empty when none.
+   */
+  getAbilityConditionContributions(abilityKey) {
+    const mods = this.getScoreConditionModifiers();
+    const zero = mods.abilityZero[abilityKey] || [];
+    if (zero.length > 0) {
+      // Represent the override as a single contribution down to 0.
+      const base = this.getAbilityBase(abilityKey) + this.getAbilityBonus(abilityKey) + this.getRaceAbilityModifier(abilityKey);
+      return zero.map((z) => ({ source: z.source, label: z.label, value: -base }));
+    }
+    return mods.ability[abilityKey] ? mods.ability[abilityKey].map((c) => ({ ...c })) : [];
   }
 
   /**
@@ -737,7 +943,8 @@ class Player {
     const base = Number(this.maxLife) || 0;
     const bonus = Number(this.healthModifier) || 0;
     const conBonus = this.getConMod() * this.getLevel();
-    return base + bonus + conBonus;
+    // Energy Drained removes 5 HP per negative level (manual/score channel).
+    return base + bonus + conBonus + this.getHpConditionModifier();
   }
 
   /**
@@ -789,7 +996,9 @@ class Player {
    * Total speed = base speed + speedBonus.
    */
   getTotalSpeed() {
-    return this.getBaseSpeed() + Number(this.speedBonus || 0);
+    const speed = this.getBaseSpeed() + Number(this.speedBonus || 0);
+    // Half-speed conditions (Blinded/Exhausted/Entangled/Disabled) apply once.
+    return this.isHalfSpeed() ? Math.floor(speed / 2) : speed;
   }
 
   /**
@@ -823,7 +1032,10 @@ class Player {
 
     // Reduction applies to base race speed; class bonuses and speedBonus are added on top
     const classBonus = this.getBaseSpeed() - raceLandSpeed;
-    const reducedTotal = armorSpeed + classBonus + Number(this.speedBonus || 0);
+    let reducedTotal = armorSpeed + classBonus + Number(this.speedBonus || 0);
+    // Half-speed conditions also halve the armor-reduced speed (once). originalSpeed
+    // goes through getTotalSpeed, which already applies the same halving.
+    if (this.isHalfSpeed()) reducedTotal = Math.floor(reducedTotal / 2);
     return {
       hasReduction: true,
       originalSpeed: this.getTotalSpeed(),
@@ -835,7 +1047,7 @@ class Player {
    * Initiative modifier = Dexterity modifier.
    */
   getInitiativeModifier() {
-    return this.getDexMod();
+    return this.getDexMod() + this.getInitiativeConditionModifier();
   }
 
   /**
@@ -988,11 +1200,21 @@ class Player {
   }
 
   /**
+   * Dex modifier as it applies to AC, honoring "lose Dex bonus to AC"
+   * conditions (Flat-Footed, Blinded, Cowering, Stunned, Helpless, Paralyzed).
+   * A Dex penalty still applies — only the positive bonus is denied.
+   */
+  getAcDexMod() {
+    const dex = this.getEffectiveDexMod();
+    return this.losesDexToAC() ? Math.min(0, dex) : dex;
+  }
+
+  /**
    * Armor class = 10 + Dex modifier (capped by armor) + armor bonus. Monk adds Wis bonus (min 0) and +1 at 5, +2 at 10, +3 at 15, +4 at 20.
    * Adds the user-supplied general acBonus on top.
    */
   getArmorClass() {
-    let ac = 10 + this.getEffectiveDexMod() + this.getArmorBonus() + this.getShieldBonus();
+    let ac = 10 + this.getAcDexMod() + this.getArmorBonus() + this.getShieldBonus();
     if (this.class === 'Monk') {
       ac += Math.max(0, this.getWisMod());
       const level = this.getLevel();
@@ -1001,7 +1223,7 @@ class Player {
       else if (level >= 10) ac += 2;
       else if (level >= 5) ac += 1;
     }
-    return ac + Number(this.acBonus || 0);
+    return ac + Number(this.acBonus || 0) + this.getAcConditionModifier();
   }
 
   /**
@@ -1009,7 +1231,7 @@ class Player {
    * Adds the general acBonus and the touch-only acTouchBonus.
    */
   getContactAC() {
-    let ac = 10 + this.getEffectiveDexMod();
+    let ac = 10 + this.getAcDexMod();
     if (this.class === 'Monk') {
       ac += Math.max(0, this.getWisMod());
       const level = this.getLevel();
@@ -1018,7 +1240,7 @@ class Player {
       else if (level >= 10) ac += 2;
       else if (level >= 5) ac += 1;
     }
-    return ac + Number(this.acBonus || 0) + Number(this.acTouchBonus || 0);
+    return ac + Number(this.acBonus || 0) + Number(this.acTouchBonus || 0) + this.getAcConditionModifier();
   }
 
   /**
@@ -1035,7 +1257,7 @@ class Player {
       else if (level >= 10) ac += 2;
       else if (level >= 5) ac += 1;
     }
-    return ac + Number(this.acBonus || 0) + Number(this.acFlatBonus || 0);
+    return ac + Number(this.acBonus || 0) + Number(this.acFlatBonus || 0) + this.getAcConditionModifier();
   }
 
   /**
@@ -1045,21 +1267,21 @@ class Player {
     const data = getClassData(this.class);
     const level = this.getLevel();
     const base = (data?.fortSave === 'high') ? (2 + Math.floor(level / 2)) : Math.floor(level / 3);
-    return base + this.getConMod();
+    return base + this.getConMod() + this.getSaveConditionModifier();
   }
 
   getReflexSave() {
     const data = getClassData(this.class);
     const level = this.getLevel();
     const base = (data?.reflexSave === 'high') ? (2 + Math.floor(level / 2)) : Math.floor(level / 3);
-    return base + this.getDexMod();
+    return base + this.getDexMod() + this.getSaveConditionModifier();
   }
 
   getWillSave() {
     const data = getClassData(this.class);
     const level = this.getLevel();
     const base = (data?.willSave === 'high') ? (2 + Math.floor(level / 2)) : Math.floor(level / 3);
-    return base + this.getWisMod();
+    return base + this.getWisMod() + this.getSaveConditionModifier();
   }
 
   getTotalFortitudeSave() {
@@ -1255,7 +1477,35 @@ class Player {
       result -= penalty * multiplier;
     }
 
-    return result;
+    return result + this.getSkillConditionModifier(skillName);
+  }
+
+  /**
+   * Net condition modifier for a single skill: the global penalty that hits
+   * every skill (fear/Sickened/Energy Drained) plus any scoped penalties whose
+   * scope matches this skill — by ability (e.g. Blinded −4 to Str/Dex skills) or
+   * by name (Blinded Search, Dazzled Search/Spot). A scoped penalty applies once.
+   */
+  getSkillConditionModifier(skillName) {
+    const mods = this.getConditionModifiers();
+    let total = sumContributions(mods.skillsAll);
+
+    const skills = loadFile('skills');
+    let skill = Array.isArray(skills) ? skills.find((s) => s && s.Name === skillName) : null;
+    if (!skill && /^Knowledge\s*\(/.test(skillName)) {
+      skill = Array.isArray(skills) ? skills.find((s) => s && s.Name === 'Knowledge') : null;
+    }
+    const abilityKey = skill?.Characteristic
+      ? { Str: 'str', Dex: 'dex', Con: 'con', Int: 'int', Wis: 'wis', Cha: 'cha' }[skill.Characteristic]
+      : null;
+
+    mods.skillSpecial.forEach((s) => {
+      const nameMatch = Array.isArray(s.names) && s.names.includes(skillName);
+      const abilityMatch = Array.isArray(s.abilities) && abilityKey && s.abilities.includes(abilityKey);
+      if (nameMatch || abilityMatch) total += s.value;
+    });
+
+    return total;
   }
 
   setSkillRanks(skillName, value) {
