@@ -21,6 +21,7 @@ import {
 import PortraitEditorSheet from './PortraitEditorSheet';
 import ConditionsCard from './conditions_card';
 import AnimalCompanionCard from './animal_companion_card';
+import FamiliarCard from './familiar_card';
 import useLongPress from '../hooks/useLongPress';
 import { getItemByRef, calculateWeaponAttackBonus, calculateWeaponDamage, applyItemOverrides } from '../../lib/utils';
 import SpellLink from '../common/spell_link';
@@ -615,6 +616,7 @@ export default function CombatPage() {
         }
         return cards.map(({ key, title }) => {
           if (key === 'animalCompanion') return <AnimalCompanionCard key={key} />;
+          if (key === 'familiar') return <FamiliarCard key={key} />;
           return (
             <Card
               key={key}

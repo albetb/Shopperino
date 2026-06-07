@@ -14,6 +14,7 @@ import { setPersist } from '../slices/persistSlice';
 import { addCardByLink } from '../slices/appSlice';
 import { getEffectById } from '../../lib/item/effectsUtils';
 import AnimalCompanion from '../../lib/player/animalCompanion';
+import Familiar from '../../lib/player/familiar';
 import { getAnimalBaseByRef } from '../../lib/utils';
 
 function hydratePlayerSheet(dispatch, app) {
@@ -714,6 +715,83 @@ export const onSetCompanionAttackOverride = (index, patch) => (dispatch, getStat
   const companion = player?.companion;
   if (!player || !companion) return;
   companion.setAttackOverride(index, patch);
+  persistPlayer(dispatch, getState, player);
+};
+
+// Familiar (Wizard / Sorcerer)
+export const onSetFamiliar = (ref) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player) return;
+  const base = getAnimalBaseByRef(ref);
+  if (!ref || !base) return;
+  const familiar = new Familiar(player._familiarOwnerContext?.());
+  familiar.setRef(ref);
+  familiar.setName(base.name || '');
+  player.familiar = familiar;
+  persistPlayer(dispatch, getState, player);
+};
+
+export const onClearFamiliar = () => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player) return;
+  player.familiar = null;
+  persistPlayer(dispatch, getState, player);
+};
+
+export const onRenameFamiliar = (name) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  const familiar = player?.familiar;
+  if (!player || !familiar) return;
+  familiar.setName(typeof name === 'string' ? name : '');
+  persistPlayer(dispatch, getState, player);
+};
+
+export const onAdjustFamiliarHp = (delta) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  const familiar = player?.familiar;
+  if (!player || !familiar) return;
+  // Mirror onAdjustCurrentHp: +delta heals (less damage), −delta hurts;
+  // current HP allowed down to −10 (dead), capped at max HP when healing.
+  const currentDamage = familiar.getDamage?.() ?? 0;
+  const maxHp = familiar.getMaxLife?.() ?? 0;
+  const minHp = -10;
+  const newDamage = Math.max(0, Math.min(maxHp - minHp, currentDamage - delta));
+  familiar.setDamage(newDamage);
+  persistPlayer(dispatch, getState, player);
+};
+
+export const onSetFamiliarMaxLife = (value) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  const familiar = player?.familiar;
+  if (!player || !familiar) return;
+  // Empty/null clears the override → the model falls back to ½ master HP.
+  familiar.setMaxLife(value === '' || value == null ? null : Math.max(0, Math.floor(Number(value) || 0)));
+  persistPlayer(dispatch, getState, player);
+};
+
+/** Factory for the eight per-stat familiar bonus setters. */
+const setFamiliarBonus = (key) => (value) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  const familiar = player?.familiar;
+  if (!player || !familiar) return;
+  familiar.setStatBonus(key, Math.max(-99, Math.min(99, Math.floor(Number(value) || 0))));
+  persistPlayer(dispatch, getState, player);
+};
+
+export const onSetFamiliarAcBonus = setFamiliarBonus('acBonus');
+export const onSetFamiliarAcTouchBonus = setFamiliarBonus('acTouchBonus');
+export const onSetFamiliarAcFlatBonus = setFamiliarBonus('acFlatBonus');
+export const onSetFamiliarInitBonus = setFamiliarBonus('initBonus');
+export const onSetFamiliarSpeedBonus = setFamiliarBonus('speedBonus');
+export const onSetFamiliarFortBonus = setFamiliarBonus('fortBonus');
+export const onSetFamiliarReflexBonus = setFamiliarBonus('reflexBonus');
+export const onSetFamiliarWillBonus = setFamiliarBonus('willBonus');
+
+export const onSetFamiliarAttackOverride = (index, patch) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  const familiar = player?.familiar;
+  if (!player || !familiar) return;
+  familiar.setAttackOverride(index, patch);
   persistPlayer(dispatch, getState, player);
 };
 

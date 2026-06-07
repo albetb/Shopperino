@@ -1,0 +1,38 @@
+{
+  "alertness": {
+    "name": "Alertness (Ex)",
+    "description": "<p>While a familiar is within arm's reach, the master gains the Alertness feat.</p>"
+  },
+  "improved-evasion": {
+    "name": "Improved Evasion (Ex)",
+    "description": "<p>When subjected to an attack that normally allows a Reflex saving throw for half damage, a familiar takes no damage if it makes a successful saving throw and half damage even if the saving throw fails.</p>"
+  },
+  "share-spells": {
+    "name": "Share Spells",
+    "description": "<p>At the master's option, he may have any spell (but not any spell-like ability) he casts on himself also affect his familiar. The familiar must be within 5 feet at the time of casting to receive the benefit. If the spell or effect has a duration other than instantaneous, it stops affecting the familiar if it moves farther than 5 feet away and will not affect the familiar again even if it returns to the master before the duration expires. Additionally, the master may cast a spell with a target of “You” on his familiar (as a touch range spell) instead of on himself. A master and his familiar can share spells even if the spells normally do not affect creatures of the familiar's type (magical beast).</p>"
+  },
+  "empathic-link": {
+    "name": "Empathic Link (Su)",
+    "description": "<p>The master has an empathic link with his familiar out to a distance of up to 1 mile. The master cannot see through the familiar's eyes, but they can communicate empathically. Because of the limited nature of the link, only general emotional content can be communicated.</p><p>Because of this empathic link, the master has the same connection to an item or place that his familiar does.</p>"
+  },
+  "deliver-touch-spells": {
+    "name": "Deliver Touch Spells (Su)",
+    "description": "<p>If the master is 3rd level or higher, a familiar can deliver touch spells for him. If the master and the familiar are in contact at the time the master casts a touch spell, he can designate his familiar as the “toucher.” The familiar can then deliver the touch spell just as the master could. As usual, if the master casts another spell before the touch is delivered, the touch spell dissipates.</p>"
+  },
+  "speak-with-master": {
+    "name": "Speak with Master (Ex)",
+    "description": "<p>If the master is 5th level or higher, a familiar and the master can communicate verbally as if they were using a common language. Other creatures do not understand the communication without magical help.</p>"
+  },
+  "speak-with-animals-of-its-kind": {
+    "name": "Speak with Animals of Its Kind (Ex)",
+    "description": "<p>If the master is 7th level or higher, a familiar can communicate with animals of approximately the same kind as itself (including dire varieties): bats with bats, rats with rodents, cats with felines, hawks and owls and ravens with birds, lizards and snakes with reptiles, toads with amphibians, weasels with similar creatures (weasels, minks, polecats, ermines, skunks, wolverines, and badgers). Such communication is limited by the intelligence of the conversing creatures.</p>"
+  },
+  "spell-resistance": {
+    "name": "Spell Resistance (Ex)",
+    "description": "<p>If the master is 11th level or higher, a familiar gains spell resistance equal to the master's level + 5. To affect the familiar with a spell, another spellcaster must get a result on a caster level check (1d20 + caster level) that equals or exceeds the familiar's spell resistance.</p>"
+  },
+  "scry-on-familiar": {
+    "name": "Scry on Familiar (Sp)",
+    "description": "<p>If the master is 13th level or higher, he may scry on his familiar (as if casting the scrying spell) once per day.</p>"
+  }
+}

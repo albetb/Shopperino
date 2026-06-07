@@ -193,24 +193,13 @@ Shared sub-systems (familiar, animal companion, special mount, turn undead, wild
 
 ## Familiar (sorcerer / wizard sub-system)
 
-- Cost: **24 hours of ritual + 100 gp of materials**. Choose familiar type from a defined list.
-- A familiar is a **magical beast** version of a normal animal; treat as a magical beast for all type-targeting effects, but as the normal-animal species for *speak with animals* etc.
-- **Derived stats**:
-  - HD = max(master HD, familiar's natural HD).
-  - HP = **½ master's HP** (rounded down), excluding temp HP.
-  - BAB = master's BAB.
-  - Saves: use master's base save or familiar's, whichever is higher. The familiar uses its own ability mods to saves; does not get master's ability bonuses to saves.
-  - Skills = master's skill ranks (using familiar's ability mods).
-- **Standard abilities** (cumulative, by master level):
-  - L1+ : *Alertness* feat granted to master while familiar is within 1.5 m; share spells (master can cast personal spells on familiar within 1.5 m); empathic link (1.5 km, emotions only); improved evasion.
-  - L3+ : deliver touch spells.
-  - L5+ : speak with master (shared language).
-  - L7+ : speak with animals of its kind.
-  - L11+ : SR = master level + 5.
-  - L13+ : *scry on familiar* 1/day.
-- **Per-species bonus** — each familiar type grants a fixed bonus to the master (e.g. raven → +3 Appraise; weasel → +2 Ref saves). Exact pairings in JSON.
-- **Loss penalty** — if familiar dies or is dismissed against will: master loses `200 XP per master class level` (Fort DC 15 negates). Voluntary release: no XP loss. Cannot drop below 0 XP. Cannot exit your level (i.e. cannot lose a level from this).
-- **Replacement** — 24h ritual + 100 gp, after fasting/meditation. Only 1 familiar at a time.
+> Full mechanics, the advancement table (natural armor / Int / special abilities), and the familiar creature list with per-species bonuses live in **[familiar.md](familiar.md)**. Summary only here.
+
+- Cost **24 hours + 100 gp**. A familiar is a normal animal that **becomes a magical beast** when summoned; it keeps its base animal's HD, BAB, saves, skills, and feats but is treated as a magical beast for type-targeting effects. (Contrast the **animal companion**, which keeps its animal type.) Only one familiar at a time, even across familiar-granting classes (their levels **stack** for abilities).
+- **Derived stats** — HD = max(master level, familiar's natural HD); HP = **½ master's HP** (rounded down, no temp HP); BAB = master's BAB; melee attack uses the familiar's higher of Str/Dex; saves = better of master's base or familiar's (Fort +2/Ref +2/Will +0), using the familiar's own ability mods; skills = better of master's ranks or the animal's, using the familiar's ability mods.
+- **Advancement by master level** — improving **natural armor adj** (+1 → +10) and **Intelligence** (6 → 15), plus cumulative special abilities: Alertness, improved evasion, share spells, empathic link (L1); deliver touch spells (L3); speak with master (L5); speak with animals of its kind (L7); spell resistance = master +5 (L11); *scry on familiar* 1/day (L13).
+- **Per-species bonus** — each familiar type grants a fixed bonus to the master (e.g. raven → +3 Appraise; weasel → +2 Ref saves; toad → +3 hp). Base stat blocks in [src/data/animals.json](../../src/data/animals.json).
+- **Loss penalty** — if the familiar dies or is dismissed, master makes a **Fort DC 15** save or loses **200 XP per master class level** (half on success); never below 0 XP, never a lost level. A slain/dismissed familiar **can't be replaced for a year and a day**; a slain one can be *raised* normally with no level/Con loss.
 
 ## Animal companion (druid / ranger sub-system)
 

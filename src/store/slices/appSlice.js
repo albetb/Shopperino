@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { getAnimalByLink, getCompanionAbilityByLink, getConditionByLink, getEffectByLink, getFeatByLink, getItemByLink, getItemByRef, getSkillByLink, getSpellByLink, isMobile } from '../../lib/utils';
+import { getAnimalByLink, getCompanionAbilityByLink, getFamiliarAbilityByLink, getConditionByLink, getEffectByLink, getFeatByLink, getItemByLink, getItemByRef, getSkillByLink, getSpellByLink, isMobile } from '../../lib/utils';
 import { applyColors } from '../../lib/colorUtils';
 
 const DEFAULT_BLUE = '#238f8b';
@@ -97,6 +97,17 @@ export const appSlice = createSlice({
 
       if (linkStr && linkStr.startsWith('companionAbility#')) {
         const abilityCards = getCompanionAbilityByLink(linkStr);
+        if (abilityCards.length) {
+          const newLinks = new Set(abilityCards.map(c => c.Link));
+          state.infoCards = state.infoCards.filter(c => !newLinks.has(c.Link));
+          state.infoCards.unshift(...abilityCards);
+          state.infoSidebarCollapsed = false;
+        }
+        return;
+      }
+
+      if (linkStr && linkStr.startsWith('familiarAbility#')) {
+        const abilityCards = getFamiliarAbilityByLink(linkStr);
         if (abilityCards.length) {
           const newLinks = new Set(abilityCards.map(c => c.Link));
           state.infoCards = state.infoCards.filter(c => !newLinks.has(c.Link));

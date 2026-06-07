@@ -13,6 +13,12 @@ export {
   getSelectableCompanions,
   getCompanionAdvancement,
 } from './animal/animalCompanionData';
+export {
+  getFamiliarSpecies,
+  getFamiliarBonus,
+  getFamiliarAdvancement,
+  isFamiliarSpecies,
+} from './animal/familiarData';
 
 const CHARACTERISTIC_FULL = { Str: 'Strength', Dex: 'Dexterity', Con: 'Constitution', Int: 'Intelligence', Wis: 'Wisdom', Cha: 'Charisma', None: 'None' };
 
@@ -82,6 +88,25 @@ export function getConditionByLink(link) {
 export function getCompanionAbilityByLink(link) {
   try {
     const abilities = loadFile('companionAbilities');
+    if (!abilities || typeof abilities !== 'object' || typeof link !== 'string') return [];
+    let key = link.trim().toLowerCase();
+    if (key.includes('#')) key = key.split('#').pop();
+    const entry = abilities[key];
+    if (!entry) return [];
+    return [{ Name: entry.name || key, Description: entry.description || '', Link: key }];
+  } catch (err) {
+    return [];
+  }
+}
+
+/**
+ * Returns an info-sidebar card for a wizard/sorcerer familiar special ability.
+ * Accepts "familiarAbility#<slug>" or a bare slug (e.g. "deliver-touch-spells",
+ * "spell-resistance", "share-spells"). Empty array if unknown.
+ */
+export function getFamiliarAbilityByLink(link) {
+  try {
+    const abilities = loadFile('familiarAbilities');
     if (!abilities || typeof abilities !== 'object' || typeof link !== 'string') return [];
     let key = link.trim().toLowerCase();
     if (key.includes('#')) key = key.split('#').pop();

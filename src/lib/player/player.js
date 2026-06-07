@@ -11,6 +11,7 @@ import { getItemByRef, calculateWeaponAttackBonus, calculateWeaponDamage } from 
 import { getCarryingCapacity as capacityFromStr, classifyLoad } from './carryingCapacity';
 import { aggregateConditionEffects, sumContributions } from './conditionEffects';
 import AnimalCompanion from './animalCompanion';
+import Familiar from './familiar';
 
 const ABILITY_KEYS = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
 
@@ -208,6 +209,10 @@ class Player {
        Derived values live in the AnimalCompanion model; effective level is
        resolved from this player's class/level. */
     this.companion = null;
+    /* Wizard / sorcerer familiar (Familiar instance) or null. Its stats derive
+       from this player (master): HP ½ master, BAB = master, best-of saves, etc.
+       Set only for familiar-granting classes. */
+    this.familiar = null;
   }
 
   /**
@@ -409,6 +414,14 @@ class Player {
       this.companion = new AnimalCompanion().load(data.companion, { class: this.class, level: this.level });
     }
 
+    this.familiar = null;
+    if (data.familiar && typeof data.familiar === 'object') {
+      // Load the fields first (so the species ref is set), then sync the master
+      // context — which reads getMaxLife() and the species bonus off this.familiar.
+      this.familiar = new Familiar().load(data.familiar);
+      this.familiar.setOwner(this._familiarOwnerContext());
+    }
+
     return this;
   }
 
@@ -464,6 +477,7 @@ class Player {
       startingEquipmentGenerated: !!this.startingEquipmentGenerated,
       conditions: Array.isArray(this.conditions) ? this.conditions.map((c) => ({ ...c })) : [],
       companion: this.companion ? this.companion.serialize() : null,
+      familiar: this.familiar ? this.familiar.serialize() : null,
     };
   }
 
@@ -722,6 +736,49 @@ class Player {
     return this.companion || null;
   }
 
+  /** Master context fed to the familiar so its derived stats resolve. */
+  _familiarOwnerContext() {
+    return {
+      level: this.level,
+      maxHp: this.getMaxLife(),
+      bab: this.getBaseAttackBonus(),
+      baseFort: this.getBaseFortitudeSave(),
+      baseRef: this.getBaseReflexSave(),
+      baseWill: this.getBaseWillSave(),
+    };
+  }
+
+  /** True when this class grants a familiar (wizard / sorcerer). */
+  grantsFamiliar() {
+    return this.class === 'Wizard' || this.class === 'Sorcerer';
+  }
+
+  /** The familiar (Familiar instance) or null, with a fresh master context. */
+  getFamiliar() {
+    if (this.familiar) this.familiar.setOwner(this._familiarOwnerContext());
+    return this.familiar || null;
+  }
+
+  /**
+   * The active familiar's per-species bonus to the master, flattened for
+   * auto-application: { hp, fort, reflex, skills: { [name]: value } }. Empty
+   * unless the class grants a familiar and one is set. Conditional bonuses
+   * (Hawk/Owl Spot) are excluded — the sheet can't know the lighting.
+   * Reads this.familiar directly (no owner sync) to avoid recursion via getMaxLife.
+   */
+  getFamiliarStatBonuses() {
+    const out = { hp: 0, fort: 0, reflex: 0, skills: {} };
+    if (!this.familiar || !this.grantsFamiliar()) return out;
+    const bonus = this.familiar.getSpeciesBonus?.();
+    if (!bonus || bonus.condition) return out;
+    const value = Number(bonus.value) || 0;
+    if (bonus.kind === 'hp') out.hp += value;
+    else if (bonus.kind === 'save' && bonus.target === 'fort') out.fort += value;
+    else if (bonus.kind === 'save' && bonus.target === 'reflex') out.reflex += value;
+    else if (bonus.kind === 'skill' && bonus.target) out.skills[bonus.target] = (out.skills[bonus.target] || 0) + value;
+    return out;
+  }
+
   /**
    * Size category derived from race (e.g. "Medium", "Small").
    * Uses races.json when available; otherwise fallback map; unknown races default to "Medium".
@@ -961,7 +1018,8 @@ class Player {
     const bonus = Number(this.healthModifier) || 0;
     const conBonus = this.getConMod() * this.getLevel();
     // Energy Drained removes 5 HP per negative level (manual/score channel).
-    return base + bonus + conBonus + this.getHpConditionModifier();
+    // A Toad familiar grants the master +3 HP (per-species familiar bonus).
+    return base + bonus + conBonus + this.getHpConditionModifier() + this.getFamiliarStatBonuses().hp;
   }
 
   /**
@@ -1278,35 +1336,49 @@ class Player {
   }
 
   /**
+   * Base save progression only (no ability modifier, no bonuses):
+   * high = 2 + floor(Level/2), low = floor(Level/3). Used to derive a
+   * familiar's "best of master base / familiar base" saves.
+   */
+  getBaseFortitudeSave() {
+    const data = getClassData(this.class);
+    const level = this.getLevel();
+    return (data?.fortSave === 'high') ? (2 + Math.floor(level / 2)) : Math.floor(level / 3);
+  }
+
+  getBaseReflexSave() {
+    const data = getClassData(this.class);
+    const level = this.getLevel();
+    return (data?.reflexSave === 'high') ? (2 + Math.floor(level / 2)) : Math.floor(level / 3);
+  }
+
+  getBaseWillSave() {
+    const data = getClassData(this.class);
+    const level = this.getLevel();
+    return (data?.willSave === 'high') ? (2 + Math.floor(level / 2)) : Math.floor(level / 3);
+  }
+
+  /**
    * Save base: high = 2 + floor(Level/2), low = floor(Level/3). Then add ability modifier.
    */
   getFortitudeSave() {
-    const data = getClassData(this.class);
-    const level = this.getLevel();
-    const base = (data?.fortSave === 'high') ? (2 + Math.floor(level / 2)) : Math.floor(level / 3);
-    return base + this.getConMod() + this.getSaveConditionModifier();
+    return this.getBaseFortitudeSave() + this.getConMod() + this.getSaveConditionModifier();
   }
 
   getReflexSave() {
-    const data = getClassData(this.class);
-    const level = this.getLevel();
-    const base = (data?.reflexSave === 'high') ? (2 + Math.floor(level / 2)) : Math.floor(level / 3);
-    return base + this.getDexMod() + this.getSaveConditionModifier();
+    return this.getBaseReflexSave() + this.getDexMod() + this.getSaveConditionModifier();
   }
 
   getWillSave() {
-    const data = getClassData(this.class);
-    const level = this.getLevel();
-    const base = (data?.willSave === 'high') ? (2 + Math.floor(level / 2)) : Math.floor(level / 3);
-    return base + this.getWisMod() + this.getSaveConditionModifier();
+    return this.getBaseWillSave() + this.getWisMod() + this.getSaveConditionModifier();
   }
 
   getTotalFortitudeSave() {
-    return this.getFortitudeSave() + Number(this.fortBonus || 0);
+    return this.getFortitudeSave() + Number(this.fortBonus || 0) + this.getFamiliarStatBonuses().fort;
   }
 
   getTotalReflexSave() {
-    return this.getReflexSave() + Number(this.reflexBonus || 0);
+    return this.getReflexSave() + Number(this.reflexBonus || 0) + this.getFamiliarStatBonuses().reflex;
   }
 
   getTotalWillSave() {
@@ -1485,7 +1557,10 @@ class Player {
     const mod = key ? this.getModifier(key) : 0;
     const ranks = Math.floor(this.getSkillRanks(skillName));
     const bonus = this.getSkillBonus(skillName);
-    let result = mod + ranks + bonus;
+    // A familiar grants the master a per-species skill bonus (e.g. Cat → Move
+    // Silently +3); conditional Spot bonuses (Hawk/Owl) are excluded.
+    const familiarSkillBonus = this.getFamiliarStatBonuses().skills[skillName] || 0;
+    let result = mod + ranks + bonus + familiarSkillBonus;
 
     // Apply armor check penalty if skill has ArmorPenalty flag
     const penalty = this.getArmorCheckPenalty();
