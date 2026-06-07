@@ -6,6 +6,9 @@
   align-items: center;
   gap: 0.75rem;
   margin-top: 0.75rem;
+  /* Clear the fixed mobile bottom nav so the last card scrolls fully into
+     view, matching combat/skills/inventory/features. */
+  padding-bottom: var(--space-12);
 }
 
 /* Player sheet: class cards (same layout as race cards) */
@@ -16,6 +19,9 @@
   align-items: center;
   gap: 0.75rem;
   margin-top: 0.75rem;
+  /* Clear the fixed mobile bottom nav so the last card scrolls fully into
+     view, matching combat/skills/inventory/features. */
+  padding-bottom: var(--space-12);
 }
 
 /* Player sheet: features page cards (same layout and card size as race/class) */

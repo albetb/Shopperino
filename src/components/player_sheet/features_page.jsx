@@ -141,11 +141,15 @@ export default function FeaturesPage() {
     <div
       className="player-sheet-features-cards"
       style={{
+        // No horizontal padding: each card carries its own 4% side margin via
+        // .card-width-spellbook (92% width, centered). Padding here would make
+        // the 92% resolve against a narrower box, shrinking the cards below the
+        // 92% used on the other tabs.
         width: '100%',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        padding: 'var(--space-4)',
+        paddingTop: 'var(--space-4)',
         paddingBottom: 'var(--space-12)',
         boxSizing: 'border-box',
       }}
