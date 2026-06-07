@@ -2,6 +2,10 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const PLAYER_SHEET_CARD_KEYS = ['identity', 'abilityScores', 'Combat', 'Spells', 'Character', 'Notes'];
 
+/* Collapsible cards on the combat / inventory pages. Must stay in sync with
+   COMBAT_PAGE_CARD_KEYS in lib/storage.js (the persistence read filter). */
+const COMBAT_PAGE_CARD_KEYS = ['player', 'combat', 'conditions', 'animalCompanion', 'items', 'carry', 'money'];
+
 function defaultCardCollapsed() {
   return Object.fromEntries(PLAYER_SHEET_CARD_KEYS.map(k => [k, false]));
 }
@@ -14,7 +18,7 @@ const initialState = {
   isPlayerSheetSidebarCollapsed: false,
   mainView: 'none', // 'none' | 'race' | 'class' | 'note'
   cardCollapsed: defaultCardCollapsed(),
-  combatPageCardsCollapsed: { player: false, combat: false, conditions: false, items: false, carry: false, money: false },
+  combatPageCardsCollapsed: { player: false, combat: false, conditions: false, animalCompanion: false, items: false, carry: false, money: false },
   playerSpellbookPage: 0,
   playerSpellbookLevelCollapsed: [false, false, false, false, false, false, false, false, false, false],
   playerSpellbookClassDescCollapsed: true,
@@ -62,14 +66,14 @@ export const playerSheetSlice = createSlice({
     },
     setCombatPageCardCollapsed(state, action) {
       const { key, value } = action.payload || {};
-      if (key && ['player', 'combat', 'conditions', 'items', 'carry', 'money'].includes(key)) {
+      if (key && COMBAT_PAGE_CARD_KEYS.includes(key)) {
         state.combatPageCardsCollapsed[key] = !!value;
       }
     },
     setCombatPageCardsCollapsed(state, action) {
       const obj = action.payload;
       if (obj && typeof obj === 'object') {
-        ['player', 'combat', 'conditions', 'items', 'carry', 'money'].forEach(k => {
+        COMBAT_PAGE_CARD_KEYS.forEach(k => {
           if (obj[k] !== undefined) state.combatPageCardsCollapsed[k] = !!obj[k];
         });
       }

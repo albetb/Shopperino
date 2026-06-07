@@ -13,6 +13,8 @@ import {
 import { setPersist } from '../slices/persistSlice';
 import { addCardByLink } from '../slices/appSlice';
 import { getEffectById } from '../../lib/item/effectsUtils';
+import AnimalCompanion from '../../lib/player/animalCompanion';
+import { getAnimalBaseByRef } from '../../lib/utils';
 
 function hydratePlayerSheet(dispatch, app) {
   dispatch(setCharactersList(db.getPlayerSheetCharactersList(app)));
@@ -635,6 +637,83 @@ export const onSetPlayerGold = (value) => (dispatch, getState) => {
   const player = getState().playerSheet?.player;
   if (!player) return;
   player.setGold(value);
+  persistPlayer(dispatch, getState, player);
+};
+
+// Animal companion (Druid / Ranger)
+export const onSetCompanion = (ref) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player) return;
+  const base = getAnimalBaseByRef(ref);
+  if (!ref || !base) return;
+  const companion = new AnimalCompanion({ class: player.getClass?.(), level: player.getLevel?.() });
+  companion.setRef(ref);
+  companion.setName(base.name || '');
+  player.companion = companion;
+  persistPlayer(dispatch, getState, player);
+};
+
+export const onClearCompanion = () => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player) return;
+  player.companion = null;
+  persistPlayer(dispatch, getState, player);
+};
+
+export const onRenameCompanion = (name) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  const companion = player?.companion;
+  if (!player || !companion) return;
+  companion.setName(typeof name === 'string' ? name : '');
+  persistPlayer(dispatch, getState, player);
+};
+
+export const onAdjustCompanionHp = (delta) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  const companion = player?.companion;
+  if (!player || !companion) return;
+  // Mirror onAdjustCurrentHp: +delta heals (less damage), −delta hurts;
+  // current HP allowed down to −10 (dead), capped at max HP when healing.
+  const currentDamage = companion.getDamage?.() ?? 0;
+  const maxHp = companion.getMaxLife?.() ?? 0;
+  const minHp = -10;
+  const newDamage = Math.max(0, Math.min(maxHp - minHp, currentDamage - delta));
+  companion.setDamage(newDamage);
+  persistPlayer(dispatch, getState, player);
+};
+
+export const onSetCompanionMaxLife = (value) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  const companion = player?.companion;
+  if (!player || !companion) return;
+  // Empty/null clears the override → the model falls back to the computed default.
+  companion.setMaxLife(value === '' || value == null ? null : Math.max(0, Math.floor(Number(value) || 0)));
+  persistPlayer(dispatch, getState, player);
+};
+
+/** Factory for the eight per-stat companion bonus setters. */
+const setCompanionBonus = (key) => (value) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  const companion = player?.companion;
+  if (!player || !companion) return;
+  companion.setStatBonus(key, Math.max(-99, Math.min(99, Math.floor(Number(value) || 0))));
+  persistPlayer(dispatch, getState, player);
+};
+
+export const onSetCompanionAcBonus = setCompanionBonus('acBonus');
+export const onSetCompanionAcTouchBonus = setCompanionBonus('acTouchBonus');
+export const onSetCompanionAcFlatBonus = setCompanionBonus('acFlatBonus');
+export const onSetCompanionInitBonus = setCompanionBonus('initBonus');
+export const onSetCompanionSpeedBonus = setCompanionBonus('speedBonus');
+export const onSetCompanionFortBonus = setCompanionBonus('fortBonus');
+export const onSetCompanionReflexBonus = setCompanionBonus('reflexBonus');
+export const onSetCompanionWillBonus = setCompanionBonus('willBonus');
+
+export const onSetCompanionAttackOverride = (index, patch) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  const companion = player?.companion;
+  if (!player || !companion) return;
+  companion.setAttackOverride(index, patch);
   persistPlayer(dispatch, getState, player);
 };
 

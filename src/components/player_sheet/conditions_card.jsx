@@ -162,6 +162,7 @@ export default function ConditionsCard() {
   return (
     <Card
       title="Conditions"
+      className="sh-card--head-spread"
       eyebrow={total ? `${total} active` : null}
       action={
         <IconButton

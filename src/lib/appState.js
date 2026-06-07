@@ -9,7 +9,7 @@ import Shop from './shop';
 import Spellbook from './spellbook';
 import Loot from './loot';
 
-const CURRENT_VERSION = 260516;
+const CURRENT_VERSION = 260607;
 const ROOT_KEY = 'app';
 
 //#region UI bitmask

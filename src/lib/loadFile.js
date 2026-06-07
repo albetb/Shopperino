@@ -7,6 +7,7 @@ import skillsData from '../data/skills.json';
 import racesData from '../data/races.json';
 import classesData from '../data/classes.json';
 import animalsData from '../data/animals.json';
+import companionAbilitiesData from '../data/companionAbilities.json';
 
 /**
  * Load a data file by name. Returns the parsed content or null.
@@ -33,6 +34,8 @@ export function loadFile(fileName) {
         return classesData?.classes ?? {};
       case 'animals':
         return animalsData ?? { animals: [] };
+      case 'companionabilities':
+        return companionAbilitiesData ?? {};
       default:
         return null;
     }

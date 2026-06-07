@@ -6,7 +6,13 @@ export { itemTypes, getItemByRef, getItemByLink, getItemById, getItemIdByRef } f
 export { getScrollById, getScrollIdByLink } from './spellbook/scrollUtils';
 export { getEffectByLink, getEffectById, getEffectIdBySlug } from './item/effectsUtils';
 export { getSpellByLink } from './spellbook/spellsUtils';
-export { getAnimalByLink, getAnimalByRef } from './animal/animalsUtils';
+export { getAnimalByLink, getAnimalByRef, getAnimalBaseByRef, listAnimals } from './animal/animalsUtils';
+export {
+  effectiveCompanionLevel,
+  getCompanionAdjustment,
+  getSelectableCompanions,
+  getCompanionAdvancement,
+} from './animal/animalCompanionData';
 
 const CHARACTERISTIC_FULL = { Str: 'Strength', Dex: 'Dexterity', Con: 'Constitution', Int: 'Intelligence', Wis: 'Wisdom', Cha: 'Charisma', None: 'None' };
 
@@ -63,6 +69,25 @@ export function getConditionByLink(link) {
     if (!entry) return [];
     const [name, description] = entry;
     return [{ Name: name, Description: description || '', Link: link }];
+  } catch (err) {
+    return [];
+  }
+}
+
+/**
+ * Returns an info-sidebar card for an animal-companion special ability.
+ * Accepts "companionAbility#<slug>" or a bare slug (e.g. "evasion",
+ * "improved-evasion", "share-spells", "bonus-tricks"). Empty array if unknown.
+ */
+export function getCompanionAbilityByLink(link) {
+  try {
+    const abilities = loadFile('companionAbilities');
+    if (!abilities || typeof abilities !== 'object' || typeof link !== 'string') return [];
+    let key = link.trim().toLowerCase();
+    if (key.includes('#')) key = key.split('#').pop();
+    const entry = abilities[key];
+    if (!entry) return [];
+    return [{ Name: entry.name || key, Description: entry.description || '', Link: key }];
   } catch (err) {
     return [];
   }

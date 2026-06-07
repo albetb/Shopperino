@@ -149,6 +149,11 @@
   letter-spacing: 0.01em;
 }
 .sh-card-head .sh-eyebrow { margin-right: auto; }
+/* Head-spread modifier: keep eyebrow + title grouped on the left and pin the
+   action (chevron) to the right edge, even when the head has no eyebrow (which
+   otherwise leaves the action next to the title on the left). */
+.sh-card--head-spread .sh-card-head .sh-eyebrow { margin-right: var(--space-2); }
+.sh-card--head-spread .sh-card-head [data-card-head-action] { margin-left: auto; }
 .sh-card-head .sh-card-chev { margin-left: auto; color: var(--ink-faint); transition: transform var(--t-base) var(--ease); }
 .sh-card-head[aria-expanded="false"] .sh-card-chev { transform: rotate(-90deg); }
 .sh-card-body { padding: var(--space-3) var(--space-4); }

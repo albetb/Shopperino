@@ -20,6 +20,7 @@ import {
 } from '../../store/thunks/playerSheetThunks';
 import PortraitEditorSheet from './PortraitEditorSheet';
 import ConditionsCard from './conditions_card';
+import AnimalCompanionCard from './animal_companion_card';
 import useLongPress from '../hooks/useLongPress';
 import { getItemByRef, calculateWeaponAttackBonus, calculateWeaponDamage, applyItemOverrides } from '../../lib/utils';
 import SpellLink from '../common/spell_link';
@@ -612,22 +613,25 @@ export default function CombatPage() {
         } else if (['Wizard', 'Sorcerer'].includes(cls)) {
           cards.push({ key: 'familiar', title: 'Familiar' });
         }
-        return cards.map(({ key, title }) => (
-          <Card
-            key={key}
-            title={title}
-            action={
-              <IconButton
-                icon={collapsed[key] ? 'expand_more' : 'expand_less'}
-                ghost size="sm"
-                onClick={() => toggleCard(key)}
-                aria-label={`Toggle ${title}`}
-              />
-            }
-          >
-            {!collapsed[key] && <div className="sh-faint" style={{ fontSize: 'var(--font-size-sm)' }}>Coming soon.</div>}
-          </Card>
-        ));
+        return cards.map(({ key, title }) => {
+          if (key === 'animalCompanion') return <AnimalCompanionCard key={key} />;
+          return (
+            <Card
+              key={key}
+              title={title}
+              action={
+                <IconButton
+                  icon={collapsed[key] ? 'expand_more' : 'expand_less'}
+                  ghost size="sm"
+                  onClick={() => toggleCard(key)}
+                  aria-label={`Toggle ${title}`}
+                />
+              }
+            >
+              {!collapsed[key] && <div className="sh-faint" style={{ fontSize: 'var(--font-size-sm)' }}>Coming soon.</div>}
+            </Card>
+          );
+        });
       })()}
     </div>
     <PortraitEditorSheet

@@ -1,0 +1,87 @@
+/* Animal companion card (Druid / Ranger) — combat page.
+   Mostly reuses the shared sheet utility classes; this file only carries the
+   bits specific to the companion card: a slightly smaller nested stat pill, the
+   selector, the name link, the HP readout, and the collapsible combat text. */
+
+.companion-card {
+  gap: var(--space-3);
+}
+
+/* Smaller nested stat pills — the companion card sits inside a card, so its
+   six stat pills are scaled down relative to the player's combat pills. */
+.companion-card .sh-stat-pill--sm {
+  padding: var(--space-2);
+}
+
+.companion-card .sh-stat-pill--sm .val {
+  font-size: var(--font-size-lg);
+}
+
+.companion-card .sh-stat-pill--sm .lbl {
+  font-size: var(--font-size-xs);
+}
+
+.companion-card .sh-stat-pill--sm .sub {
+  font-size: var(--font-size-2xs, 0.625rem);
+}
+
+.companion-select,
+.companion-name-input {
+  font: inherit;
+  color: var(--ink);
+  background: var(--surface-2, var(--surface));
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-sm, 0.375rem);
+  padding: var(--space-2);
+  width: 100%;
+}
+
+.companion-name-input {
+  min-width: 0;
+}
+
+.companion-hp-readout {
+  flex: 1;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: var(--font-size-xl);
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+/* Wraps a Pill to make it clickable without altering the pill's own styling. */
+.companion-ability-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  cursor: pointer;
+  display: inline-flex;
+}
+
+.companion-combat-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: var(--font-size-xs);
+  color: var(--ink-muted, var(--ink));
+  cursor: pointer;
+}
+
+.companion-combat-text {
+  font-size: var(--font-size-sm);
+  line-height: 1.45;
+  color: var(--ink-muted, var(--ink));
+}
+
+.companion-combat-text p {
+  margin: 0 0 var(--space-2);
+}

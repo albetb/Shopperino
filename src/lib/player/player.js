@@ -10,6 +10,7 @@ import { loadFile } from '../loadFile';
 import { getItemByRef, calculateWeaponAttackBonus, calculateWeaponDamage } from '../utils';
 import { getCarryingCapacity as capacityFromStr, classifyLoad } from './carryingCapacity';
 import { aggregateConditionEffects, sumContributions } from './conditionEffects';
+import AnimalCompanion from './animalCompanion';
 
 const ABILITY_KEYS = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
 
@@ -203,6 +204,10 @@ class Player {
        (when race + class are both chosen). Prevents regeneration if the
        class is later changed. See lib/player/startingEquipment.js. */
     this.startingEquipmentGenerated = false;
+    /* Druid / ranger animal companion (AnimalCompanion instance) or null.
+       Derived values live in the AnimalCompanion model; effective level is
+       resolved from this player's class/level. */
+    this.companion = null;
   }
 
   /**
@@ -399,6 +404,11 @@ class Player {
         });
     }
 
+    this.companion = null;
+    if (data.companion && typeof data.companion === 'object') {
+      this.companion = new AnimalCompanion().load(data.companion, { class: this.class, level: this.level });
+    }
+
     return this;
   }
 
@@ -453,6 +463,7 @@ class Player {
       acFlatBonus: typeof this.acFlatBonus === 'number' ? this.acFlatBonus : 0,
       startingEquipmentGenerated: !!this.startingEquipmentGenerated,
       conditions: Array.isArray(this.conditions) ? this.conditions.map((c) => ({ ...c })) : [],
+      companion: this.companion ? this.companion.serialize() : null,
     };
   }
 
@@ -703,6 +714,12 @@ class Player {
 
   getEquipment() {
     return this.equipment || {};
+  }
+
+  /** The animal companion (AnimalCompanion instance) or null. */
+  getCompanion() {
+    if (this.companion) this.companion.setOwner({ class: this.class, level: this.level });
+    return this.companion || null;
   }
 
   /**

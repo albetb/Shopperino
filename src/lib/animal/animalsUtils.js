@@ -128,3 +128,20 @@ export function getAnimalByLink(link) {
 
 /** Alias matching the project's getXByRef naming, for "animals/<slug>" refs. */
 export const getAnimalByRef = getAnimalByLink;
+
+/** Every animal stat block (raw objects), in animals.json order. */
+export function listAnimals() {
+  return loadAnimals();
+}
+
+/**
+ * The raw animals.json stat block for an exact "animals/<slug>" ref, or null.
+ * Unlike getAnimalByLink (which fuzzy-matches and builds display cards), this
+ * returns the underlying data object for a single, exact ref — used by the
+ * animal-companion model to read base stats.
+ */
+export function getAnimalBaseByRef(ref) {
+  const want = String(ref || '').trim();
+  if (!want) return null;
+  return loadAnimals().find((a) => a.ref === want) || null;
+}
