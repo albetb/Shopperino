@@ -54,7 +54,10 @@ export const appSlice = createSlice({
       const isFeatLink = linkStr && (linkStr.startsWith('feats#') || linkStr === 'feats');
       const isSkillLink = linkStr && (linkStr.startsWith('skills#') || linkStr === 'skills');
       const isConditionLink = linkStr && linkStr.includes('abilitiesAndConditions#');
-      const isAnimalLink = linkStr && (linkStr.startsWith('monstersAnimal#') || linkStr.startsWith('animals/') || linkStr.startsWith('animals#'));
+      // Animal stat-block anchors: the SRD splits monsters across pages, so animal links
+      // use prefixes like "monstersAnimal#dog" and "monstersDitoDo#dire-wolf". Try any
+      // "monsters…#" anchor against the animal DB (non-animals simply return no card).
+      const isAnimalLink = linkStr && (/^monsters[A-Za-z]*#/.test(linkStr) || linkStr.startsWith('animals/') || linkStr.startsWith('animals#'));
       const conditionAnchor = isConditionLink ? linkStr.split('#')[1] : null;
       const spellLookupLink = isSpellLink
         ? (hasHash ? linkStr.split('#')[1] : firstLink)

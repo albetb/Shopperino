@@ -32,6 +32,8 @@ function linkTokens(link) {
   return new Set(s.split('-').filter(Boolean));
 }
 
+const SIZE_WORDS = new Set(['fine', 'diminutive', 'tiny', 'small', 'medium', 'large', 'huge', 'gargantuan', 'colossal']);
+
 const sameSet = (a, b) => a.size === b.size && [...a].every((t) => b.has(t));
 const subsetOf = (a, b) => [...a].every((t) => b.has(t)); // a ⊆ b
 
@@ -39,8 +41,9 @@ const subsetOf = (a, b) => [...a].every((t) => b.has(t)); // a ⊆ b
  * Match a link's tokens against animals. Order matters:
  *  1. exact token-set match (unique variant, e.g. "snake-constrictor" -> Constrictor Snake)
  *  2. reverse subset, unique (animal tokens ⊆ link tokens, e.g. "whale-orca" -> Orca)
- *  3. forward subset (link tokens ⊆ animal tokens), groups generic slugs
- *     (e.g. "shark" -> 3 sharks, "snake-viper" -> 5 vipers)
+ *  3. size-variant group: link tokens ⊆ animal tokens AND the extra tokens are all
+ *     sizes — so "shark" -> 3 sharks and "snake-viper" -> 5 vipers, but NOT "Dire Shark"
+ *     (its extra "dire" token isn't a size). Dire animals resolve via the exact match above.
  */
 function matchAnimals(animals, want) {
   if (!want.size) return [];
@@ -50,7 +53,11 @@ function matchAnimals(animals, want) {
     if (rev.length === 1) matches = rev;
   }
   if (!matches.length) {
-    matches = animals.filter((a) => subsetOf(want, animalTokens(a)));
+    matches = animals.filter((a) => {
+      const at = animalTokens(a);
+      if (!subsetOf(want, at)) return false;
+      return [...at].every((t) => want.has(t) || SIZE_WORDS.has(t));
+    });
   }
   return matches.sort((a, b) => (SIZE_RANK[a.size] ?? 99) - (SIZE_RANK[b.size] ?? 99));
 }
