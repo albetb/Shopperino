@@ -3,7 +3,7 @@ import { getItem, itemRefLink } from 'lib/item';
 import { itemTypes } from 'lib/utils';
 import { magicTypeFor } from 'lib/item/formatItemName';
 import { getEffectIdBySlug } from 'lib/item/effectsUtils';
-import Modal from '../../common/Modal';
+import BottomSheet from '../../common/BottomSheet';
 import Button from '../../common/Button';
 import EquipBonusControls from './EquipBonusControls';
 import 'style/shop_inventory.css';
@@ -148,24 +148,11 @@ export default function AddItemFormInventory({ open, onAddItem, items, onClose }
         suggestions[0].Name.toLowerCase() !== itemName.toLowerCase()));
 
   return (
-    <Modal
+    <BottomSheet
       open={open}
       onClose={onClose}
       eyebrow="Inventory"
       title="Add item"
-      footer={
-        <div className="sh-row-h" style={{ gap: 'var(--space-2)', justifyContent: 'flex-end' }}>
-          <Button variant="ghost" onClick={onClose}>Cancel</Button>
-          <Button
-            variant="primary"
-            icon="add_shopping_cart"
-            onClick={handleAddItemClick}
-            disabled={!itemName.trim()}
-          >
-            Add
-          </Button>
-        </div>
-      }
     >
       <div className="sh-stack" style={{ gap: 'var(--space-3)' }}>
         <label className="sh-field">
@@ -261,7 +248,18 @@ export default function AddItemFormInventory({ open, onAddItem, items, onClose }
             </button>
           </div>
         </div>
+        <div className="sh-row-h" style={{ gap: 'var(--space-2)', justifyContent: 'flex-end' }}>
+          <Button variant="ghost" onClick={onClose}>Cancel</Button>
+          <Button
+            variant="primary"
+            icon="add_shopping_cart"
+            onClick={handleAddItemClick}
+            disabled={!itemName.trim()}
+          >
+            Add
+          </Button>
+        </div>
       </div>
-    </Modal>
+    </BottomSheet>
   );
 }

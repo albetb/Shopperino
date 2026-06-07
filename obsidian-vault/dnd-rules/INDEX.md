@@ -16,6 +16,7 @@ The list below is regenerated automatically by `.claude/hooks/update-dnd-index.m
 <!-- AUTO-INDEX:START -->
 - [ability-scores.md](ability-scores.md) — **Ability Scores** — The six abilities, score generation, the modifier formula, what each ability drives, and the rules for changing scores during play.
 - [alignment.md](alignment.md) — **Alignment** — The nine-alignment grid: what each is, how it matters mechanically, and how it interacts with classes and spells.
+- [animal-companion.md](animal-companion.md) — **Animal Companion** — Druid / ranger animal-companion sub-system: how a companion is chosen, how it advances with class level (bonus HD, natural armor, ability boosts, tricks, special abilities), and the alternative creature lists with their level adjustments. Per-creature base stat blocks live in [src/data/animals.json](../../src/data/animals.json).
 - [attacks-of-opportunity.md](attacks-of-opportunity.md) — **Attacks of Opportunity** — Threatened squares, what provokes, how AoOs are resolved, reach, 5-ft step.
 - [character-creation.md](character-creation.md) — **Character Creation** — Ordered procedure for building a 1st-level player character. Procedural overview only — details live in the topic files.
 - [class-features.md](class-features.md) — **Class Features** — Per-class catalog of named features and how they resolve mechanically. Per-class numbers (uses/day by level, damage dice, save DCs that depend on level, etc.) live in [src/data/classes.json](../../src/data/classes.json); this file documents the *mechanics* each feature triggers.

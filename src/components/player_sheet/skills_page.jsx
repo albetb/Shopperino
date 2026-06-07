@@ -247,10 +247,8 @@ export default function SkillsPage() {
           {isEditing && (
             <div className="sh-skill-row sh-skill-row--head">
               <span className="sh-skill-dot" aria-hidden="true" style={{ visibility: 'hidden' }} />
-              <div className="sh-skill-edit-body">
-                <div className="sh-skill-edit-name-line">
-                  <span className="sh-eyebrow">Skill · ability</span>
-                </div>
+              <div className="sh-skill-edit-body sh-skill-edit-body--head">
+                <span className="sh-eyebrow sh-skill-head-skill">Skill</span>
                 <div className="sh-skill-edit-steppers">
                   <span className="sh-eyebrow sh-skill-head-label">Ranks</span>
                   <span className="sh-eyebrow sh-skill-head-label">Bonus</span>

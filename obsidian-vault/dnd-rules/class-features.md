@@ -214,15 +214,12 @@ Shared sub-systems (familiar, animal companion, special mount, turn undead, wild
 
 ## Animal companion (druid / ranger sub-system)
 
-- Chosen from a fixed list of base creatures.
-- Companion is a **magical beast**. Stats start at the species' base (per Monster Manual / JSON) and improve by druid level (or `½ ranger level`).
-- **Per-level adjustments** (cumulative): bonus HD (d8 each, +Con mod), bonus natural armor, +Str/+Dex, **bonus tricks known** beyond the normal Handle Animal limit, and **special abilities** (Link, Share Spells, Evasion, Devotion, Multiattack, Improved Evasion) at increasing levels.
-- **Link (Ex)** — master can handle/push the companion as a free action; +4 circumstance on Handle Animal & wild empathy with it.
-- **Share spells (Ex)** — master can target the companion with any spell that normally targets self only, when within 1.5 m. Companion can voluntarily refuse.
-- **Evasion / Improved evasion** — granted to companion at certain levels.
-- **Devotion (Ex)** — `+4` morale to Will saves vs enchantment.
-- **Multiattack** — gains *Multiattack* feat free (or `−2` non-primary penalty if not eligible).
-- **Alternate lists** — a higher-level druid may choose a stronger creature from an *alternate list* by applying a level adjustment (e.g. a leopard from the L4-or-higher list counts as if the druid were at level `current − 3`). If the adjustment reduces effective level below 1, the creature cannot be chosen.
+> Full mechanics, advancement table, and the alternative creature lists live in **[animal-companion.md](animal-companion.md)**. Summary only here.
+
+- Chosen from a fixed list of base creatures (stats in [src/data/animals.json](../../src/data/animals.json)). The companion **keeps its own type** (animal/dinosaur) — it does **not** become a magical beast.
+- Improves by **effective level** = druid level, or **½ ranger level** (ranger first gets one at ranger L4 → effective 2). Companion-granting class levels stack.
+- **Per-level adjustments** (cumulative): bonus HD (d8 each, +Con mod; raises BAB and good Fort/Ref saves on total HD), bonus natural armor, +Str/+Dex, **bonus tricks** beyond the Handle Animal limit, and **special abilities** — Link, Share Spells (L1), Evasion (L3), Devotion (L6), Multiattack (L9), Improved Evasion (L15).
+- **Alternate lists** — a higher-level character may take a stronger creature by applying a level adjustment (e.g. leopard from the L4 list counts as effective level `current − 3`); if that drops effective level below 1, it can't be chosen.
 - **Replacement** — 24-hour ritual after losing a companion (death or release).
 
 ## Special mount (paladin sub-system)

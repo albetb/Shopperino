@@ -27,30 +27,23 @@
 **See:** [per_class_customization_backlog.md](per_class_customization_backlog.md) — full plan lives in its own file (one section per class plus shared sub-systems). Includes conventions, per-class checklist, open decisions, and implementation order.
 **Tl;dr:** every base class needs its own block on the player sheet (rage tracker, smite tracker, sneak-attack dice, wild shape, lay-on-hands pool, favored enemies, etc.). Today only race-level toggles exist. Subsumes the previous standalone "Fighter bonus combat feats" item.
 
-### Animal companion and familiar stat blocks
-**Symptom:** Druid/Ranger animal companions and Wizard/Sorcerer familiars have no stat block data — there's no way to pick one and see its stats on the sheet.
-**Fix:** Collect every official D&D 3.5 stat block for all possible animal companions (every list tier) and every familiar. Store them as static JSON under `src/data/` (e.g. `animal_companions.json`, `familiars.json`) following the same shape as other reference data, and expose them via a `getCompanionByRef` / `getFamiliarByRef` accessor. UI integration into the player sheet is a follow-up once data exists.
-**Rules ref:** [obsidian-vault/dnd-rules/INDEX.md](../dnd-rules/INDEX.md) — animal companion / familiar topic files; cross-reference Monster Manual stat blocks.
+### Monster Manual bestiary — data, summon-spell links, and a Monster Book page
+**Symptom:** Only the Player's Handbook animals (+ dire animals) exist as stat blocks ([src/data/animals.json](../../src/data/animals.json)). The rest of the Monster Manual is absent: summon spells (Summon Monster I–IX, Summon Nature's Ally I–IX) reference many creatures that have no data, animal-companion alternative lists need dinosaurs (Deinonychus, Elasmosaurus, Megaraptor, Triceratops, Tyrannosaurus — see [animal-companion.md](../dnd-rules/animal-companion.md)), and there's no in-app way to browse monsters.
+**Fix:** Three parts, in order:
+- **Data** — collect every Monster Manual stat block and store as static JSON under `src/data/` (e.g. `monsters.json`), following the same schema the animal parser produced (structured numeric fields + `raw`, `description`, `combat`, a `ref` like `monsters/<slug>`). Reuse/extend the one-off parser approach in [obsidian-vault/plans/](.) (`_animals_lib.mjs`). Animals already in `animals.json` can stay or be folded in — decide whether to merge into one `monsters.json` or keep `animals.json` as a subset. Cover all creature types (not just Animal): magical beasts, dragons, outsiders, undead, dinosaurs, etc.
+- **Summon-spell links** — extend the link resolver so every creature referenced by the summon spells resolves to a card. Today `getAnimalByLink` ([src/lib/animal/animalsUtils.js](../../src/lib/animal/animalsUtils.js)) handles `monstersAnimal#…` / `monstersDitoDo#…` / `animals/…` against `animals.json`; generalize it (or add `getMonsterByLink`) to cover all `monsters*#<slug>` SRD anchor prefixes against the full bestiary, keeping the token-set matcher (exact → reverse-subset → size-variant group, dire/template variants excluded from generic groups). Verify every summon-spell anchor in [src/data/spells.json](../../src/data/spells.json) resolves.
+- **Monster Book page** — a new top-level tab (new `currentTab` id in [src/store/slices/appSlice.js](../../src/store/slices/appSlice.js); see the tab table in [CLAUDE.md](../../CLAUDE.md)) that browses the bestiary: searchable/filterable list (by type, CR, size, environment) + the full stat-block card, plus a **random monster suggestion** generator (filter by CR range / environment / type and roll one, reusing the weighted-random helper used by the Shop/Loot generators). Master-mode tool, similar to Shop/Loot.
+**Rules ref:** [obsidian-vault/dnd-rules/INDEX.md](../dnd-rules/INDEX.md) — special-abilities, combat; cross-reference Monster Manual stat blocks. Blocks the dinosaur entries in [animal-companion.md](../dnd-rules/animal-companion.md) and completes the "Animal companion and familiar stat blocks" item above.
 
-### Starting equipment and money per class on character creation
-**Symptom:** When a new player sheet is created, the character starts with no gear and no money — the user has to fill it in manually every time.
-**Fix:** When the sheet is created, seed starting equipment and starting gold for the chosen class following the D&D 3.5 starting package / starting gold rules. Logic belongs in the Player domain model ([src/lib/player/player.js](../../src/lib/player/player.js)), not in the creation component.
-**Rules ref:** [obsidian-vault/dnd-rules/INDEX.md](../dnd-rules/INDEX.md) — class starting gold + starting packages; values per class live in `src/data/classes.json`.
-
-### Conditions panel
-**Symptom:** No way to mark the character as affected by conditions (prone, fatigued, shaken, sickened, dazed, stunned, blinded, etc.). Players track these on paper.
-**Fix:** New player-sheet component (card in the sidebar or a dedicated section) where the user can toggle conditions. Each condition's mechanical effect (penalties to attack, AC, saves, skills, speed, etc.) should be applied automatically by the Player domain model so derived stats reflect the active conditions. Follow the "automatic but non-enforcing" rule — apply the effects but don't block actions.
-**Rules ref:** [obsidian-vault/dnd-rules/INDEX.md](../dnd-rules/INDEX.md) — conditions topic file.
-
-### Automatic item effects on the player sheet
-**Symptom:** Magic items, masterwork gear, and other equipment with mechanical bonuses (cloak of resistance, ring of protection, +X weapons/armor, ability-score items, skill items, etc.) require the user to add the bonuses by hand in the various bonus fields.
-**Fix:** Integrate as many item effects as possible directly in the player sheet so equipping/unequipping an item automatically applies its bonuses to the relevant derived stats (saves, AC, ability scores, skill checks, attack/damage, etc.). Item effect metadata should be encoded in the item JSON (`src/data/items.json` / `scrolls.json`) and consumed by the Player domain model, not by components.
+### Automatic item effects on the player sheet — wondrous items + custom effects
+**Done:** Weapons, armor, and shields apply their masterwork bonus, +X enhancement, and named special effects (flaming, holy, etc.) automatically — attack bonus, damage, AC, and shield bonus are computed from the equipped entries in [src/lib/player/player.js](../../src/lib/player/player.js) + [src/lib/utils.js](../../src/lib/utils.js).
+**Symptom:** Wondrous items, rings, rods, staves, and any item that isn't a weapon/armor/shield still require the user to add their bonuses by hand (cloak of resistance, ring of protection, ability-score items, skill items, etc.). There is also no way to attach a custom mechanical effect to a user-created/edited item so it would feed into derived stats.
+**Fix:**
+- Extend the item-effect schema in `src/data/items.json` so wondrous items (and the other non-WAS categories) carry structured mechanical bonus metadata: target stat (save / ability / skill / AC / speed / etc.), bonus type (deflection, resistance, enhancement, competence, …), value, and any conditional gating.
+- Wire the equipment slots (`other1`–`other4`, `armor` ring/amulet uses if relevant) through the Player domain model so equipping a wondrous item adds its declared bonuses to the matching derived stat with correct stacking-by-type semantics.
+- Support custom item effects on the editable item card: the per-entry `overrides` mechanism (already in place for stat fields) needs a parallel `customEffects` channel so a user can mark an item as "+2 resistance to all saves" or "+1 dodge to AC" and have it flow into the player sheet the same way a built-in effect does.
+- Keep "automatic but non-enforcing": apply the bonus, surface a visual warning when stacking rules would normally void a redundant same-type bonus, but never silently drop a value the user entered.
 **Rules ref:** [obsidian-vault/dnd-rules/INDEX.md](../dnd-rules/INDEX.md) — magic items, bonus stacking rules.
-
-### Editable item effects + custom items
-**Symptom:** There's no UI to add or change the stat bonuses an item grants, and no way to create a custom item with arbitrary bonuses and a custom description (homebrew gear, DM-awarded items, reflavored magic items).
-**Fix:** Build on top of the "Automatic item effects" entry above. Add a UI on the player sheet to add/edit/remove the effects on any equipped item — each effect being a typed bonus (enhancement, deflection, resistance, morale, etc.) on a target stat (AC, save, ability, skill, attack, damage, speed, …). Also allow creating fully custom items with a user-supplied name, description, and effects list, stored on the player character (not in the static `src/data/*.json`). Custom items must flow through the same Player-model bonus pipeline so stacking rules apply consistently.
-**Rules ref:** [obsidian-vault/dnd-rules/INDEX.md](../dnd-rules/INDEX.md) — bonus types and stacking.
 
 ---
 

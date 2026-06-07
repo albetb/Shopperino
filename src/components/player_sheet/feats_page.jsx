@@ -22,7 +22,7 @@ import Button from '../common/Button';
 import IconButton from '../common/IconButton';
 import Filigree from '../common/Filigree';
 import EmptyState from '../common/EmptyState';
-import Switch from '../common/Switch';
+import BottomSheet from '../common/BottomSheet';
 import Icon from '../common/Icon';
 
 export default function FeatsPage() {
@@ -31,6 +31,7 @@ export default function FeatsPage() {
   const [isSelection, setIsSelection] = useState(false);
   const [filterPrereqs, setFilterPrereqs] = useState(false);
   const [filterSuggested, setFilterSuggested] = useState(false);
+  const [query, setQuery] = useState('');
   const [popoverState, setPopoverState] = useState(null);
 
   const playerClass = player?.getClass?.() ?? '';
@@ -59,6 +60,7 @@ export default function FeatsPage() {
 
   const availableFeats = useMemo(() => {
     const normalized = new Set(playerFeats.map(f => getBaseFeatName(f).toLowerCase()));
+    const q = query.trim().toLowerCase();
     return featsData
       .filter(f => {
         if (!f?.Name) return false;
@@ -70,10 +72,11 @@ export default function FeatsPage() {
           const sc = Array.isArray(f.suggestedClass) ? f.suggestedClass : [];
           if (!sc.includes(playerClass)) return false;
         }
+        if (q && !f.Name.toLowerCase().includes(q)) return false;
         return true;
       })
       .sort((a, b) => (a.Name || '').localeCompare(b.Name || ''));
-  }, [featsData, playerFeats, filterPrereqs, filterSuggested, playerClass, player]);
+  }, [featsData, playerFeats, filterPrereqs, filterSuggested, playerClass, player, query]);
 
   const handleAddFeat = (featName, ev) => {
     const baseName = getBaseFeatName(featName);
@@ -128,8 +131,8 @@ export default function FeatsPage() {
             </div>
           )}
         </div>
-        <Button variant="primary" icon="add" onClick={() => setIsSelection(v => !v)}>
-          {isSelection ? 'Close' : 'Choose feat'}
+        <Button variant="primary" icon="add" onClick={() => { setIsSelection(true); setQuery(''); }}>
+          Choose feat
         </Button>
       </div>
 
@@ -175,70 +178,93 @@ export default function FeatsPage() {
         </div>
       )}
 
-      {isSelection && (
-        <Card eyebrow={`${availableFeats.length} available`} title="Choose a feat" padding>
-          <div className="sh-stack">
-            <label className="sh-row-h" style={{ gap: 'var(--space-2)', cursor: 'pointer' }}>
-              <Switch checked={filterPrereqs} onChange={setFilterPrereqs} aria-label="Filter by prerequisites" />
-              <span className="sh-label">Only show feats whose prerequisites I meet</span>
-            </label>
-            {playerClass && (
-              <label className="sh-row-h" style={{ gap: 'var(--space-2)', cursor: 'pointer' }}>
-                <Switch checked={filterSuggested} onChange={setFilterSuggested} aria-label="Only suggested for class" />
-                <span className="sh-label">Only show feats suggested for {playerClass}</span>
-              </label>
-            )}
-            {availableFeats.length === 0 ? (
-              <EmptyState icon="filter_alt_off" title="Nothing matches" hint="Try unchecking the filter." />
-            ) : (
-              <div className="sh-stack" style={{ gap: 'var(--space-1)', maxHeight: '24rem', overflowY: 'auto' }}>
-                {availableFeats.map(feat => {
-                  const baseName = getBaseFeatName(feat.Name);
-                  const isTaken = playerFeats.some(f => getBaseFeatName(f) === baseName);
-                  const isDisabled = isTaken
-                    && !REPEATABLE_NO_CHOICE.includes(baseName)
-                    && !REPEATABLE_WITH_CHOICE[baseName];
-                  const prereqOk = meetsPrerequisites(feat, player);
-                  const shortDesc = feat.shortDescription || '';
-                  return (
-                    <div key={feat.Name} style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      padding: 'var(--space-2) var(--space-3)',
-                      borderRadius: 'var(--radius-sm)',
-                      background: isDisabled ? 'transparent' : 'var(--surface-1)',
-                      opacity: isDisabled ? 0.45 : 1,
-                      gap: '0.25rem',
-                    }}>
-                      <div className="sh-row-h sh-spread" style={{ gap: 'var(--space-2)' }}>
-                        <span className="sh-row-h" style={{ gap: 'var(--space-2)', minWidth: 0, flex: 1 }}>
-                          <SpellLink link={`feats#${slug(getBaseFeatName(feat.Name))}`}>
-                            <span className="sh-display" style={{ fontSize: 'var(--font-size-md)' }}>{feat.Name}</span>
-                          </SpellLink>
-                          {!prereqOk && <Pill tone="warn" icon="warning">prereq</Pill>}
-                        </span>
-                        <IconButton
-                          ghost size="sm"
-                          icon="add"
-                          onClick={(ev) => handleFeatClick(feat, ev)}
-                          disabled={isDisabled}
-                          title={isDisabled ? 'Already selected' : 'Add feat'}
-                          aria-label="Add"
-                        />
-                      </div>
-                      {shortDesc && (
-                        <div className="sh-faint" style={{ fontSize: 'var(--font-size-xs)' }}>
-                          {shortDesc}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            )}
+      <BottomSheet
+        open={isSelection}
+        onClose={() => { setIsSelection(false); setQuery(''); }}
+        title="Choose a feat"
+        eyebrow={`${availableFeats.length} available`}
+        subheader={
+          <div className="sh-stack" style={{ gap: 'var(--space-2)' }}>
+            <input
+              type="text"
+              className="sh-input"
+              placeholder="Search feats…"
+              value={query}
+              onChange={e => setQuery(e.target.value)}
+              autoFocus
+            />
+            <div className="sh-row-h" style={{ gap: 'var(--space-2)', flexWrap: 'wrap' }}>
+              <button
+                type="button"
+                className={['sh-chip', filterPrereqs && 'is-on'].filter(Boolean).join(' ')}
+                aria-pressed={filterPrereqs}
+                onClick={() => setFilterPrereqs(v => !v)}
+              >
+                Prerequisites met
+              </button>
+              {playerClass && (
+                <button
+                  type="button"
+                  className={['sh-chip', filterSuggested && 'is-on'].filter(Boolean).join(' ')}
+                  aria-pressed={filterSuggested}
+                  onClick={() => setFilterSuggested(v => !v)}
+                >
+                  Suggested for {playerClass}
+                </button>
+              )}
+            </div>
           </div>
-        </Card>
-      )}
+        }
+      >
+        {availableFeats.length === 0 ? (
+          <EmptyState icon="filter_alt_off" title="Nothing matches" hint="Try clearing the search or filters." />
+        ) : (
+          <div className="sh-stack" style={{ gap: 'var(--space-1)' }}>
+            {availableFeats.map(feat => {
+              const baseName = getBaseFeatName(feat.Name);
+              const isTaken = playerFeats.some(f => getBaseFeatName(f) === baseName);
+              const isDisabled = isTaken
+                && !REPEATABLE_NO_CHOICE.includes(baseName)
+                && !REPEATABLE_WITH_CHOICE[baseName];
+              const prereqOk = meetsPrerequisites(feat, player);
+              const shortDesc = feat.shortDescription || '';
+              return (
+                <div key={feat.Name} style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  padding: 'var(--space-2) var(--space-3)',
+                  borderRadius: 'var(--radius-sm)',
+                  background: isDisabled ? 'transparent' : 'var(--surface-1)',
+                  opacity: isDisabled ? 0.45 : 1,
+                  gap: '0.25rem',
+                }}>
+                  <div className="sh-row-h sh-spread" style={{ gap: 'var(--space-2)' }}>
+                    <span className="sh-row-h" style={{ gap: 'var(--space-2)', minWidth: 0, flex: 1 }}>
+                      <SpellLink link={`feats#${slug(getBaseFeatName(feat.Name))}`}>
+                        <span className="sh-display" style={{ fontSize: 'var(--font-size-md)' }}>{feat.Name}</span>
+                      </SpellLink>
+                      {!prereqOk && <Pill tone="warn" icon="warning">prereq</Pill>}
+                    </span>
+                    <IconButton
+                      ghost size="sm"
+                      icon="add"
+                      onClick={(ev) => handleFeatClick(feat, ev)}
+                      disabled={isDisabled}
+                      title={isDisabled ? 'Already selected' : 'Add feat'}
+                      aria-label="Add"
+                    />
+                  </div>
+                  {shortDesc && (
+                    <div className="sh-faint" style={{ fontSize: 'var(--font-size-xs)' }}>
+                      {shortDesc}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </BottomSheet>
 
       {popoverState && (
         <FeatChoicePopover

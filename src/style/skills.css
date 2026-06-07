@@ -147,6 +147,16 @@ button.sh-skill-group-head--button:focus-visible {
   text-align: center;
 }
 
+/* Header row only: keep Skill, Ranks and Bonus labels on one line. */
+.sh-skill-edit-body--head {
+  flex-direction: row;
+  align-items: center;
+}
+.sh-skill-head-skill {
+  flex: 1;
+  min-width: 0;
+}
+
 .sh-skill-row.is-overlimit {
   background: linear-gradient(90deg, var(--warn-bg), transparent 30%);
   position: relative;
