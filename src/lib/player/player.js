@@ -10,7 +10,8 @@ import { loadFile } from '../loadFile';
 import { getItemByRef, calculateWeaponAttackBonus, calculateWeaponDamage } from '../utils';
 import { getCarryingCapacity as capacityFromStr, classifyLoad } from './carryingCapacity';
 import { aggregateConditionEffects, sumContributions } from './conditionEffects';
-import { getProgressionValue, hasFeatureAtLevel } from './classProgression';
+import { getClassProgression, getProgressionValue, hasFeatureAtLevel } from './classProgression';
+import { getBaseFeatName } from '../featChoices';
 import AnimalCompanion from './animalCompanion';
 import Familiar from './familiar';
 
@@ -144,6 +145,24 @@ function monkUnarmedDamage(level, size) {
   return (tiers[size] || tiers.Medium)[tier];
 }
 
+/**
+ * Turning check result → the most powerful undead affected, as an offset from
+ * the turner's effective level (SRD, Table: Turning Undead). Entries are
+ * `[minimum check result, HD offset]`, read from the highest qualifying row.
+ * Shared by every turning class, so it lives here rather than in classes.json.
+ */
+const TURN_UNDEAD_TABLE = [
+  [-Infinity, -4],
+  [1, -3],
+  [4, -2],
+  [7, -1],
+  [10, 0],
+  [13, 1],
+  [16, 2],
+  [19, 3],
+  [22, 4],
+];
+
 /** Normalize spells to [[id, prepared, used], ...]. */
 function normalizePlayerSpells(raw) {
   if (!Array.isArray(raw)) return [];
@@ -191,6 +210,10 @@ class Player {
        derived from class progression, never stored here, and over-cap values are
        kept as entered per the non-enforcing rule. Cleared by resetClassFeatureUses. */
     this.classFeatureUses = {};
+    /* Whether a barbarian rage is currently running. A stance rather than a
+       condition: it grants bonuses instead of penalties and ends by choice, so
+       it is not part of the condition subsystem. Its aftermath (Fatigued) is. */
+    this.raging = false;
     this.equipment = {}; // { lh1, rh1, lh2, rh2, set1, set2, armor, other1, other2, other3, other4 }
     this.speedBonus = 0;
     this.initiativeBonus = 0;
@@ -348,6 +371,8 @@ class Player {
       });
     }
 
+    if (data.raging !== undefined) this.raging = !!data.raging;
+
     if (data.equipment && typeof data.equipment === 'object') {
       this.equipment = {};
       for (const [slot, entry] of Object.entries(data.equipment)) {
@@ -481,6 +506,7 @@ class Player {
           : {},
       gnomeSpellUses: this.gnomeSpellUses && typeof this.gnomeSpellUses === 'object' ? { ...this.gnomeSpellUses } : {},
       classFeatureUses: this.classFeatureUses && typeof this.classFeatureUses === 'object' ? { ...this.classFeatureUses } : {},
+      raging: !!this.raging,
       equipment: this.equipment && typeof this.equipment === 'object' ? { ...this.equipment } : {},
       inventory: Array.isArray(this.inventory) ? this.inventory.map((item) => ({ ...item })) : [],
       speedBonus: typeof this.speedBonus === 'number' ? this.speedBonus : 0,
@@ -579,7 +605,8 @@ class Player {
    * truth reused by getAbilityTotal and by the ability-0 cascade below.
    */
   conditionAdjustedAbilityTotal(abilityKey) {
-    const base = this.getAbilityBase(abilityKey) + this.getAbilityBonus(abilityKey) + this.getRaceAbilityModifier(abilityKey);
+    const base = this.getAbilityBase(abilityKey) + this.getAbilityBonus(abilityKey)
+      + this.getRaceAbilityModifier(abilityKey) + this.getRageAbilityBonus(abilityKey);
     if (!ABILITY_KEYS.includes(abilityKey)) return base;
     const mods = this.getScoreConditionModifiers();
     if (mods.abilityZero[abilityKey] && mods.abilityZero[abilityKey].length > 0) return 0;
@@ -864,7 +891,8 @@ class Player {
     const zero = mods.abilityZero[abilityKey] || [];
     if (zero.length > 0) {
       // Represent the override as a single contribution down to 0.
-      const base = this.getAbilityBase(abilityKey) + this.getAbilityBonus(abilityKey) + this.getRaceAbilityModifier(abilityKey);
+      const base = this.getAbilityBase(abilityKey) + this.getAbilityBonus(abilityKey)
+        + this.getRaceAbilityModifier(abilityKey) + this.getRageAbilityBonus(abilityKey);
       return zero.map((z) => ({ source: z.source, label: z.label, value: -base }));
     }
     return mods.ability[abilityKey] ? mods.ability[abilityKey].map((c) => ({ ...c })) : [];
@@ -1114,14 +1142,42 @@ class Player {
   }
 
   /**
-   * Base land speed (feet). From race; Barbarian +10; Monk +10 at 3, +20 at 6, +30 at 9, +40 at 12, +50 at 15, +60 at 18.
+   * The class fast-movement bonus in feet, after its own qualification gate.
+   *
+   * Barbarian fast movement applies only in light armor or none and at a light
+   * load or lighter. The monk's unarmored speed bonus has the same shape with a
+   * stricter armor gate. Both the value and the gate live in classes.json.
+   *
+   * Only the Barbarian branch of getBaseSpeed reads this today; the Monk branch
+   * keeps its own ungated formula until the monk feature set lands.
+   */
+  getFastMovementBonus() {
+    const bonus = Number(getProgressionValue(this.class, 'fastMovement', this.getLevel(), 0)) || 0;
+    if (bonus <= 0) return 0;
+    const prog = getClassProgression(this.class);
+    const load = this.getLoadStatus();
+    const encumbered = load !== 'none' && load !== 'light';
+    const armorCategory = String(this.getEquippedArmorRaw()?.Category || '').toLowerCase();
+    if (prog.fastMovementRequiresUnarmoredAndLight) {
+      return armorCategory || encumbered ? 0 : bonus;
+    }
+    if (prog.fastMovementRequiresLightArmorAndLoad) {
+      if (armorCategory && armorCategory !== 'light') return 0;
+      if (encumbered) return 0;
+    }
+    return bonus;
+  }
+
+  /**
+   * Base land speed (feet). From race; Barbarian +10 when unencumbered and in
+   * light armor or none; Monk +10 at 3, +20 at 6, +30 at 9, +40 at 12, +50 at 15, +60 at 18.
    */
   getBaseSpeed() {
     const races = loadFile('races');
     const base = Number(races?.[this.race]?.landSpeed) || 30;
     const data = getClassData(this.class);
     if (!data) return base;
-    if (this.class === 'Barbarian') return base + 10;
+    if (this.class === 'Barbarian') return base + this.getFastMovementBonus();
     if (this.class === 'Monk') {
       const level = this.getLevel();
       const monkBonus = 10 * Math.min(6, Math.floor(level / 3));
@@ -1251,6 +1307,277 @@ class Player {
     return getProgressionValue(this.class, 'sneakAttackDice', this.getLevel(), 0);
   }
 
+  /**
+   * Barbarian rages per day: 1 at 1st level and a further one every four
+   * levels, to 6 at 20th. Zero for every other class.
+   */
+  getRageUsesMax() {
+    return getProgressionValue(this.class, 'rageUsesPerDay', this.getLevel(), 0);
+  }
+
+  /**
+   * The rage tier in effect: 'rage', 'greater rage' (11th) or 'mighty rage'
+   * (20th), naming the bonus set in `rageBonuses`. Null for every other class.
+   */
+  getRageTier() {
+    return getProgressionValue(this.class, 'rageTier', this.getLevel(), null);
+  }
+
+  /**
+   * The bonuses the current rage tier grants: { str, con, will, ac }.
+   * All zero when the character has no rage.
+   */
+  getRageTierBonuses() {
+    const tier = this.getRageTier();
+    const table = getClassProgression(this.class).rageBonuses;
+    const bonuses = tier ? table?.[tier] : null;
+    return {
+      str: Number(bonuses?.str) || 0,
+      con: Number(bonuses?.con) || 0,
+      will: Number(bonuses?.will) || 0,
+      ac: Number(bonuses?.ac) || 0,
+    };
+  }
+
+  /**
+   * Tireless rage (17th): the barbarian is no longer fatigued when a rage ends.
+   * Orthogonal to the rage tier — a 17th level barbarian still rages at the
+   * greater rage bonuses, simply without the aftermath.
+   */
+  hasTirelessRage() {
+    return hasFeatureAtLevel(this.class, 'tirelessRageLevel', this.getLevel());
+  }
+
+  /**
+   * Barbarian damage reduction X/—: 1 at 7th level and a further point every
+   * three levels, to 5 at 19th. Zero below 7th and for every other class.
+   */
+  getDamageReduction() {
+    return getProgressionValue(this.class, 'damageReduction', this.getLevel(), 0);
+  }
+
+  // —— Rage (active stance) ——
+
+  /**
+   * Whether a rage is currently running. Gated on the class actually having
+   * rage, so a stale flag left by a class change grants nothing.
+   */
+  isRaging() {
+    return !!this.raging && !!this.getRageTier();
+  }
+
+  /** Set the rage stance directly, without touching the daily uses. */
+  setRaging(value) {
+    this.raging = !!value;
+  }
+
+  /** Enter a rage: spend one of the day's uses and start the stance. */
+  startRage() {
+    if (!this.getRageTier()) return;
+    this.useClassFeature('rage', 1);
+    this.raging = true;
+  }
+
+  /**
+   * End a rage. The barbarian is fatigued for the rest of the encounter,
+   * unless tireless rage (17th) has removed the aftermath.
+   */
+  endRage() {
+    const wasRaging = this.isRaging();
+    this.raging = false;
+    if (wasRaging && !this.hasTirelessRage()) this.addCondition({ name: 'Fatigued' });
+  }
+
+  /**
+   * The rage bonus to one ability score — Strength and Constitution only.
+   * Applied inside the ability total so it cascades into hit points, saves,
+   * skills, carrying capacity and attack and damage rolls.
+   */
+  getRageAbilityBonus(abilityKey) {
+    if (!this.isRaging()) return 0;
+    const bonuses = this.getRageTierBonuses();
+    if (abilityKey === 'str') return bonuses.str;
+    if (abilityKey === 'con') return bonuses.con;
+    return 0;
+  }
+
+  /** The morale bonus a running rage grants on Will saves. */
+  getRageWillBonus() {
+    return this.isRaging() ? this.getRageTierBonuses().will : 0;
+  }
+
+  /** The AC penalty a running rage carries: −2 at every tier. */
+  getRageAcModifier() {
+    return this.isRaging() ? this.getRageTierBonuses().ac : 0;
+  }
+
+  /**
+   * The hit points a rage is worth: the Constitution modifier gain times the
+   * level, so `level × 2` at the base tier. The rules call these temporary hit
+   * points; the model reaches the same total through the boosted Constitution
+   * in getMaxLife, so this is reported for display and never added on top.
+   * Non-zero for any barbarian, raging or not — it is what a rage would grant.
+   */
+  getRageTempHp() {
+    if (!this.getRageTier()) return 0;
+    return Math.floor(this.getRageTierBonuses().con / 2) * this.getLevel();
+  }
+
+  /**
+   * Rage duration in rounds: 3 + the raged Constitution modifier — the
+   * modifier of the boosted score, whether or not the rage is running yet.
+   */
+  getRageDuration() {
+    if (!this.getRageTier()) return 0;
+    const base = Number(getClassProgression(this.class).rageDurationBase) || 0;
+    const ragedCon = this.isRaging()
+      ? this.getConMod()
+      : Math.floor((this.getAbilityTotal('con') + this.getRageTierBonuses().con - 10) / 2);
+    return base + ragedCon;
+  }
+
+  // —— Turn / rebuke undead (cleric and paladin) ——
+
+  /**
+   * The class's turning configuration, or null when it has none. A paladin
+   * turns as a cleric of three levels lower and only from 4th level, both of
+   * which are expressed here rather than branching on the class name.
+   */
+  getTurnUndeadConfig() {
+    const config = getClassProgression(this.class).turnUndead;
+    if (!config || typeof config !== 'object') return null;
+    return this.getLevel() >= (Number(config.minLevel) || 1) ? config : null;
+  }
+
+  /** Whether the character can turn or rebuke undead at their current level. */
+  canTurnUndead() {
+    return this.getTurnUndeadConfig() !== null;
+  }
+
+  /**
+   * Attempts per day: `3 + Charisma modifier`, floored at zero. A cleric has
+   * them from 1st level, a paladin from 4th.
+   */
+  getTurnUndeadAttemptsMax() {
+    const config = this.getTurnUndeadConfig();
+    if (!config) return 0;
+    const base = Number(config.attemptsBase) || 0;
+    return Math.max(0, base + this.getModifier(config.attemptsAbility || 'cha'));
+  }
+
+  /**
+   * The level the character turns at: their class level for a cleric, three
+   * lower for a paladin. Never negative, and zero without the feature.
+   */
+  getTurnUndeadEffectiveLevel() {
+    const config = this.getTurnUndeadConfig();
+    if (!config) return 0;
+    return Math.max(0, this.getLevel() + (Number(config.effectiveLevelOffset) || 0));
+  }
+
+  /** The bonus added to the d20 turning check: the Charisma modifier. */
+  getTurnUndeadCheckBonus() {
+    const config = this.getTurnUndeadConfig();
+    if (!config) return 0;
+    return this.getModifier(config.attemptsAbility || 'cha');
+  }
+
+  /**
+   * The highest undead HD a given turning check result reaches, from the SRD
+   * table: the effective level shifted by −4 on a failed check up to +4 on 22
+   * or better. Never negative.
+   */
+  getTurnUndeadHighestHd(checkResult) {
+    if (!this.canTurnUndead()) return 0;
+    const result = Number(checkResult);
+    if (!Number.isFinite(result)) return 0;
+    let offset = TURN_UNDEAD_TABLE[0][1];
+    for (const [minimum, shift] of TURN_UNDEAD_TABLE) {
+      if (result >= minimum) offset = shift;
+    }
+    return Math.max(0, this.getTurnUndeadEffectiveLevel() + offset);
+  }
+
+  /**
+   * Turning damage — the total undead HD affected — as `2d6 + effective level
+   * + Charisma modifier`. Returns the dice and the flat bonus separately so
+   * the UI can show either the formula or just the modifier.
+   */
+  getTurnUndeadDamage() {
+    const config = this.getTurnUndeadConfig();
+    if (!config) return { dice: '', bonus: 0, formula: '' };
+    const dice = getClassProgression(this.class).turningDamageDice || '2d6';
+    const bonus = this.getTurnUndeadEffectiveLevel() + this.getTurnUndeadCheckBonus();
+    return { dice, bonus, formula: `${dice}${bonus >= 0 ? '+' : ''}${bonus}` };
+  }
+
+  /**
+   * The highest undead HD destroyed outright rather than turned: destruction
+   * applies when the effective level is at least twice the undead's HD.
+   */
+  getTurnUndeadDestroyThreshold() {
+    return Math.floor(this.getTurnUndeadEffectiveLevel() / 2);
+  }
+
+  /**
+   * Whether the character rebukes and commands undead instead of turning and
+   * destroying them. Evil clerics rebuke; paladins never do.
+   */
+  rebukesUndead() {
+    const config = this.getTurnUndeadConfig();
+    if (!config?.canRebuke) return false;
+    return this.moralAlignment === 'Evil';
+  }
+
+  // —— Paladin ——
+
+  /**
+   * Smite evil uses per day: one at 1st level and another every five levels.
+   * Zero for every other class.
+   */
+  getSmiteEvilMax() {
+    return getProgressionValue(this.class, 'smiteEvilUsesPerDay', this.getLevel(), 0);
+  }
+
+  /** Smite evil adds the Charisma modifier to the attack roll. */
+  getSmiteEvilAttackBonus() {
+    return this.getSmiteEvilMax() > 0 ? this.getChaMod() : 0;
+  }
+
+  /** Smite evil adds the paladin's level to the damage roll. */
+  getSmiteEvilDamageBonus() {
+    return this.getSmiteEvilMax() > 0 ? this.getLevel() : 0;
+  }
+
+  /**
+   * The lay on hands pool: `paladin level × Charisma modifier` hit points a
+   * day, from 2nd level. A non-positive Charisma modifier leaves no pool at
+   * all, so the result floors at zero rather than going negative.
+   */
+  getLayOnHandsMax() {
+    const config = getClassProgression(this.class).layOnHands;
+    if (!config || this.getLevel() < (Number(config.minLevel) || 1)) return 0;
+    return Math.max(0, this.getLevel() * this.getChaMod());
+  }
+
+  /**
+   * Hit points still in the lay on hands pool. Unlike a uses-per-day feature
+   * the paladin spends an arbitrary amount per use, so the model tracks the
+   * running total spent and reports what is left. Never reports negative,
+   * though the spent total itself is kept as entered.
+   */
+  getLayOnHandsRemaining() {
+    return Math.max(0, this.getLayOnHandsMax() - this.getClassFeatureUsed('layOnHands'));
+  }
+
+  /**
+   * Remove disease uses per week: one at 6th level and another every three
+   * levels after. Zero below 6th and for every other class.
+   */
+  getRemoveDiseaseMax() {
+    return getProgressionValue(this.class, 'removeDiseaseUsesPerWeek', this.getLevel(), 0);
+  }
+
   getEquipmentBonus(slot) {
     return this.equipment?.[slot]?.bonus || 0;
   }
@@ -1373,7 +1700,7 @@ class Player {
       else if (level >= 10) ac += 2;
       else if (level >= 5) ac += 1;
     }
-    return ac + Number(this.acBonus || 0) + this.getAcConditionModifier();
+    return ac + Number(this.acBonus || 0) + this.getAcConditionModifier() + this.getRageAcModifier();
   }
 
   /**
@@ -1390,7 +1717,8 @@ class Player {
       else if (level >= 10) ac += 2;
       else if (level >= 5) ac += 1;
     }
-    return ac + Number(this.acBonus || 0) + Number(this.acTouchBonus || 0) + this.getAcConditionModifier();
+    return ac + Number(this.acBonus || 0) + Number(this.acTouchBonus || 0)
+      + this.getAcConditionModifier() + this.getRageAcModifier();
   }
 
   /**
@@ -1407,7 +1735,8 @@ class Player {
       else if (level >= 10) ac += 2;
       else if (level >= 5) ac += 1;
     }
-    return ac + Number(this.acBonus || 0) + Number(this.acFlatBonus || 0) + this.getAcConditionModifier();
+    return ac + Number(this.acBonus || 0) + Number(this.acFlatBonus || 0)
+      + this.getAcConditionModifier() + this.getRageAcModifier();
   }
 
   /**
@@ -1445,7 +1774,8 @@ class Player {
   }
 
   getWillSave() {
-    return this.getBaseWillSave() + this.getWisMod() + this.getSaveConditionModifier();
+    return this.getBaseWillSave() + this.getWisMod() + this.getSaveConditionModifier()
+      + this.getRageWillBonus();
   }
 
   /**
@@ -1542,6 +1872,65 @@ class Player {
 
   getFeatPointsUsed() {
     return Array.isArray(this.feats) ? this.feats.length : 0;
+  }
+
+  /**
+   * Bonus combat feat slots the class grants on top of the general budget.
+   * A fighter gets one at 1st level and another at every even level, so
+   * `1 + floor(level / 2)`. Zero for every other class.
+   */
+  getClassBonusFeatSlotsMax() {
+    const levels = getClassProgression(this.class).bonusFeatLevels;
+    if (!Array.isArray(levels)) return 0;
+    const level = this.getLevel();
+    return levels.filter((at) => Number(at) <= level).length;
+  }
+
+  /**
+   * Selected feats that qualify for the class bonus slots — for a fighter,
+   * those flagged `fighterBonus` in feats.json. Feats taken with a choice
+   * ("Weapon focus (longsword)") match on their base name.
+   *
+   * Uncapped: a fighter may hold more combat feats than they have slots for,
+   * and the UI flags the overflow rather than blocking it.
+   */
+  getClassBonusFeatsUsed() {
+    const flag = getClassProgression(this.class).bonusFeatSource;
+    if (!flag) return 0;
+    const feats = loadFile('feats');
+    if (!Array.isArray(feats)) return 0;
+    const qualifying = new Set(
+      feats.filter((f) => f?.[flag] && typeof f.Name === 'string')
+        .map((f) => f.Name.toLowerCase())
+    );
+    return this.getFeats()
+      .filter((name) => {
+        const stored = String(name).trim().toLowerCase();
+        // Exact first: a canonical name may itself carry a parenthetical
+        // ("Armor proficiency (heavy)") that must not be stripped away.
+        return qualifying.has(stored) || qualifying.has(getBaseFeatName(name).toLowerCase());
+      })
+      .length;
+  }
+
+  /**
+   * Feats charged against the general budget: everything that does not
+   * qualify for the class bonus slots. For a class without bonus slots this
+   * is simply the whole selection.
+   */
+  getGeneralFeatsUsed() {
+    return this.getFeatPointsUsed() - this.getClassBonusFeatsUsed();
+  }
+
+  /**
+   * Whether this class runs a second, independent feat budget — it must both
+   * grant slots and define which feats fill them. A class that grants slots
+   * without a qualifying flag has nothing to charge against them yet, so it
+   * keeps the single general budget.
+   */
+  hasClassBonusFeatPool() {
+    const prog = getClassProgression(this.class);
+    return Array.isArray(prog.bonusFeatLevels) && !!prog.bonusFeatSource;
   }
 
   /**

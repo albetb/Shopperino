@@ -1,0 +1,127 @@
+import Player from './player';
+
+function make(cls, level, race = 'Elf') {
+  const p = new Player();
+  p.setRace(race);
+  p.setClass(cls);
+  p.setLevel(level);
+  return p;
+}
+
+describe('class bonus feat slots', () => {
+  test('a fighter gains a slot at 1st level and at every even level', () => {
+    expect(make('Fighter', 1).getClassBonusFeatSlotsMax()).toBe(1);
+    expect(make('Fighter', 2).getClassBonusFeatSlotsMax()).toBe(2);
+    expect(make('Fighter', 20).getClassBonusFeatSlotsMax()).toBe(11);
+  });
+
+  test('slots match 1 + floor(level / 2) at every fighter level', () => {
+    for (let lvl = 1; lvl <= 20; lvl += 1) {
+      expect(make('Fighter', lvl).getClassBonusFeatSlotsMax()).toBe(1 + Math.floor(lvl / 2));
+    }
+  });
+
+  test('classes with no bonus feats report none', () => {
+    expect(make('Barbarian', 20).getClassBonusFeatSlotsMax()).toBe(0);
+    expect(make('Rogue', 20).getClassBonusFeatSlotsMax()).toBe(0);
+    expect(make('Cleric', 20).getClassBonusFeatSlotsMax()).toBe(0);
+    expect(make('', 20).getClassBonusFeatSlotsMax()).toBe(0);
+  });
+
+  test('the slot count is data-driven, so wizards and monks get their own', () => {
+    // Wizard: a bonus feat every five levels. Monk: 1st, 2nd and 6th.
+    // Neither has a qualifying-feat flag yet, so nothing is charged to them.
+    expect(make('Wizard', 4).getClassBonusFeatSlotsMax()).toBe(0);
+    expect(make('Wizard', 5).getClassBonusFeatSlotsMax()).toBe(1);
+    expect(make('Wizard', 20).getClassBonusFeatSlotsMax()).toBe(4);
+    expect(make('Monk', 6).getClassBonusFeatSlotsMax()).toBe(3);
+  });
+});
+
+describe('feats charged against the bonus slots', () => {
+  test('only feats flagged fighterBonus in feats.json count', () => {
+    const p = make('Fighter', 6);
+    p.addFeat('Cleave');      // fighterBonus
+    p.addFeat('Alertness');   // general only
+    p.addFeat('Dodge');       // fighterBonus
+    expect(p.getClassBonusFeatsUsed()).toBe(2);
+    expect(p.getGeneralFeatsUsed()).toBe(1);
+  });
+
+  test('a feat taken with a choice matches on its base name', () => {
+    const p = make('Fighter', 6);
+    p.addFeat('Weapon focus (longsword)');
+    p.addFeat('Improved critical (greataxe)');
+    expect(p.getClassBonusFeatsUsed()).toBe(2);
+    expect(p.getGeneralFeatsUsed()).toBe(0);
+  });
+
+  test('a canonical name carrying its own parenthetical is not misread', () => {
+    // "Armor proficiency (heavy)" is a whole feat name, not a choice, and it
+    // is not a fighter bonus feat — stripping the suffix must not change that.
+    const p = make('Fighter', 6);
+    p.addFeat('Armor proficiency (heavy)');
+    expect(p.getClassBonusFeatsUsed()).toBe(0);
+    expect(p.getGeneralFeatsUsed()).toBe(1);
+  });
+
+  test('more combat feats than slots are counted, not clamped', () => {
+    const p = make('Fighter', 1); // 1 bonus slot
+    ['Cleave', 'Dodge', 'Blind-fight'].forEach((f) => p.addFeat(f));
+    expect(p.getClassBonusFeatsUsed()).toBe(3);
+    expect(p.getClassBonusFeatSlotsMax()).toBe(1);
+  });
+
+  test('a non-fighter charges every feat to the general budget', () => {
+    const w = make('Wizard', 20);
+    w.addFeat('Cleave');
+    w.addFeat('Alertness');
+    expect(w.getClassBonusFeatsUsed()).toBe(0);
+    expect(w.getGeneralFeatsUsed()).toBe(2);
+  });
+
+  test('a fighter with no feats has nothing in either pool', () => {
+    const p = make('Fighter', 10);
+    expect(p.getClassBonusFeatsUsed()).toBe(0);
+    expect(p.getGeneralFeatsUsed()).toBe(0);
+  });
+});
+
+describe('which classes run a second budget', () => {
+  test('a fighter does: it grants slots and defines what fills them', () => {
+    expect(make('Fighter', 1).hasClassBonusFeatPool()).toBe(true);
+  });
+
+  test('wizards and monks do not yet, having no qualifying-feat flag', () => {
+    // They grant slots, but nothing is charged to them, so a second budget
+    // would only ever read "0 of N". They keep the single general budget.
+    expect(make('Wizard', 20).hasClassBonusFeatPool()).toBe(false);
+    expect(make('Monk', 20).hasClassBonusFeatPool()).toBe(false);
+  });
+
+  test('classes with no bonus feats at all do not', () => {
+    expect(make('Barbarian', 20).hasClassBonusFeatPool()).toBe(false);
+    expect(make('', 20).hasClassBonusFeatPool()).toBe(false);
+  });
+});
+
+describe('the general feat budget is unchanged', () => {
+  test('getFeatPointsMax still returns the general allotment alone', () => {
+    expect(make('Fighter', 1).getFeatPointsMax()).toBe(1);
+    expect(make('Fighter', 20).getFeatPointsMax()).toBe(1 + Math.floor(20 / 3));
+    expect(make('Wizard', 20).getFeatPointsMax()).toBe(1 + Math.floor(20 / 3));
+  });
+
+  test('humans still get their extra general feat, fighters included', () => {
+    expect(make('Fighter', 1, 'Human').getFeatPointsMax()).toBe(2);
+    expect(make('Wizard', 1, 'Human').getFeatPointsMax()).toBe(2);
+  });
+
+  test('getFeatPointsUsed still counts every selected feat', () => {
+    const p = make('Fighter', 6);
+    p.addFeat('Cleave');
+    p.addFeat('Alertness');
+    expect(p.getFeatPointsUsed()).toBe(2);
+    expect(p.getGeneralFeatsUsed() + p.getClassBonusFeatsUsed()).toBe(2);
+  });
+});

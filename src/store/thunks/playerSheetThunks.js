@@ -389,6 +389,38 @@ export const onPlayerRest = () => (dispatch, getState) => {
   if (playerAfter) persistPlayer(dispatch, getState, playerAfter);
 };
 
+/**
+ * Spend or give back class-feature uses. The delta is signed, matching the
+ * model: positive spends, negative returns. Never capped at the feature's
+ * maximum — going over is flagged in the UI, not blocked.
+ */
+export const onUseClassFeature = (key, delta = 1) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player) return;
+  player.useClassFeature(key, delta);
+  persistPlayer(dispatch, getState, player);
+};
+
+/** Clear one class-feature counter without resting the whole character. */
+export const onResetClassFeature = (key) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player) return;
+  player.setClassFeatureUses(key, 0);
+  persistPlayer(dispatch, getState, player);
+};
+
+/**
+ * Start or end a barbarian rage. Starting spends one of the day's uses;
+ * ending leaves the barbarian fatigued unless tireless rage has removed it.
+ */
+export const onToggleRage = () => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player) return;
+  if (player.isRaging()) player.endRage();
+  else player.startRage();
+  persistPlayer(dispatch, getState, player);
+};
+
 export const onPlayerPrepareDomainSpell = (level, spell_link) => (dispatch, getState) => {
   withPlayerSpellbook(getState, (s) => s.prepareDomainSpell(level, spell_link));
   const player = getState().playerSheet?.player;

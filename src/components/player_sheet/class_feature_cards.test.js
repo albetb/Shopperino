@@ -19,8 +19,26 @@ describe('class feature card registry', () => {
     expect(keysFor('Sorcerer', 1)).toEqual(['familiar']);
   });
 
+  test('barbarians get a rage card at any level', () => {
+    expect(keysFor('Barbarian', 1)).toEqual(['rage']);
+    expect(keysFor('Barbarian', 20)).toEqual(['rage']);
+  });
+
+  test('clerics turn undead at any level', () => {
+    expect(keysFor('Cleric', 1)).toEqual(['turnUndead']);
+    expect(keysFor('Cleric', 20)).toEqual(['turnUndead']);
+  });
+
+  test('paladin cards arrive one at a time, each at its own level', () => {
+    expect(keysFor('Paladin', 1)).toEqual(['smiteEvil']);
+    expect(keysFor('Paladin', 2)).toEqual(['smiteEvil', 'layOnHands']);
+    expect(keysFor('Paladin', 3)).toEqual(['smiteEvil', 'layOnHands']);
+    expect(keysFor('Paladin', 4)).toEqual(['smiteEvil', 'layOnHands', 'turnUndead']);
+    expect(keysFor('Paladin', 6)).toEqual(['smiteEvil', 'layOnHands', 'turnUndead', 'removeDisease']);
+  });
+
   test('every registered entry carries a renderable component', () => {
-    ['Druid', 'Ranger', 'Wizard', 'Sorcerer'].forEach((cls) => {
+    ['Barbarian', 'Cleric', 'Druid', 'Paladin', 'Ranger', 'Wizard', 'Sorcerer'].forEach((cls) => {
       getClassFeatureCards(cls, 20).forEach((entry) => {
         expect(typeof entry.Component).toBe('function');
         expect(typeof entry.key).toBe('string');
@@ -29,7 +47,7 @@ describe('class feature card registry', () => {
   });
 
   test('classes with no registered cards render nothing', () => {
-    ['Fighter', 'Barbarian', 'Rogue', 'Monk', 'Bard', 'Cleric', 'Paladin'].forEach((cls) => {
+    ['Fighter', 'Rogue', 'Monk', 'Bard'].forEach((cls) => {
       expect(getClassFeatureCards(cls, 20)).toEqual([]);
     });
   });

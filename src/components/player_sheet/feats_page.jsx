@@ -46,10 +46,18 @@ export default function FeatsPage() {
   const playerFeats = useMemo(() => player?.getFeats?.() ?? [], [player]);
   const count = playerFeats.length;
   const max = player?.getFeatPointsMax?.() ?? 1;
+  // A fighter runs two independent budgets: the general allotment everyone
+  // gets, and bonus slots that only combat feats can fill. Which feats count
+  // against which pool is the model's decision, not this component's.
+  const hasBonusPool = player?.hasClassBonusFeatPool?.() ?? false;
+  const bonusMax = player?.getClassBonusFeatSlotsMax?.() ?? 0;
+  const bonusUsed = player?.getClassBonusFeatsUsed?.() ?? 0;
+  const generalUsed = player?.getGeneralFeatsUsed?.() ?? count;
   // Per CLAUDE.md: rules are signaled, never enforced. The "Choose feat"
-  // button is always available; the warning pill below flags when the
-  // selection count is above the allotment.
-  const overCap = count > max;
+  // button is always available; the warning pills below flag a pool whose
+  // selection count is above its own allotment.
+  const overCap = generalUsed > max;
+  const bonusOverCap = hasBonusPool && bonusUsed > bonusMax;
 
   const isAllowedFeat = featName => {
     const baseName = getBaseFeatName(featName);
@@ -123,11 +131,22 @@ export default function FeatsPage() {
     <div className="sh-stack" style={{ padding: 'var(--space-4)', paddingBottom: 'var(--space-12)' }}>
       <div className="sh-row-h sh-spread">
         <div>
-          <Filigree>{count} of {max} selected</Filigree>
+          <Filigree>
+            {hasBonusPool
+              ? `${generalUsed} of ${max} general · ${bonusUsed} of ${bonusMax} combat`
+              : `${count} of ${max} selected`}
+          </Filigree>
           <div className="sh-display" style={{ fontSize: 'var(--font-size-2xl)' }}>Feats</div>
-          {overCap && (
-            <div style={{ marginTop: 'var(--space-1)' }}>
-              <Pill tone="warn" icon="warning">Over cap ({count - max} extra)</Pill>
+          {(overCap || bonusOverCap) && (
+            <div className="sh-row-h" style={{ marginTop: 'var(--space-1)', gap: 'var(--space-2)', flexWrap: 'wrap' }}>
+              {overCap && (
+                <Pill tone="warn" icon="warning">
+                  {hasBonusPool ? 'General' : 'Over cap'} ({generalUsed - max} extra)
+                </Pill>
+              )}
+              {bonusOverCap && (
+                <Pill tone="warn" icon="warning">Combat ({bonusUsed - bonusMax} extra)</Pill>
+              )}
             </div>
           )}
         </div>

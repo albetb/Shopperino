@@ -1,6 +1,9 @@
 import { useSelector } from 'react-redux';
 import AnimalCompanionCard from './animal_companion_card';
 import FamiliarCard from './familiar_card';
+import RageCard from './rage_card';
+import TurnUndeadCard from './turn_undead_card';
+import { SmiteEvilCard, LayOnHandsCard, RemoveDiseaseCard } from './paladin_cards';
 
 /**
  * Registry of the class-feature cards shown on the combat page.
@@ -14,8 +17,20 @@ import FamiliarCard from './familiar_card';
  * which ones exist for the current character.
  */
 const CLASS_FEATURE_CARDS = {
+  Barbarian: [
+    { key: 'rage', Component: RageCard },
+  ],
+  Cleric: [
+    { key: 'turnUndead', Component: TurnUndeadCard },
+  ],
   Druid: [
     { key: 'animalCompanion', Component: AnimalCompanionCard },
+  ],
+  Paladin: [
+    { key: 'smiteEvil', Component: SmiteEvilCard },
+    { key: 'layOnHands', Component: LayOnHandsCard, minLevel: 2 },
+    { key: 'turnUndead', Component: TurnUndeadCard, minLevel: 4 },
+    { key: 'removeDisease', Component: RemoveDiseaseCard, minLevel: 6 },
   ],
   Ranger: [
     { key: 'animalCompanion', Component: AnimalCompanionCard, minLevel: 4 },
