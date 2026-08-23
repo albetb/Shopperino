@@ -296,6 +296,20 @@
   gap: 0.15rem;
 }
 
+/* A score raised or lowered by a temporary effect — rage, an assumed
+   wild-shape form, or a condition. Green up, red down. */
+.ability-score-cell--up,
+.ability-score-cell--down {
+  border-radius: var(--radius-sm);
+  box-shadow: 0 0 0.45rem color-mix(in oklch, currentColor 45%, transparent);
+}
+
+.ability-score-cell--up { color: var(--success); }
+.ability-score-cell--down { color: var(--danger); }
+
+.ability-score-cell--up .ability-modifier { color: var(--success); }
+.ability-score-cell--down .ability-modifier { color: var(--danger); }
+
 .ability-modifier {
   font-size: 0.75em;
   font-weight: 400;

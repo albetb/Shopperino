@@ -112,6 +112,8 @@ export default function MenuCardAbilityScores({ isCollapsed, onToggleCollapse })
     );
   }
 
+  const tempDeltas = player.getTemporaryStatDeltas?.() ?? {};
+
   const titleContent = isEditing ? (
     <>
       <button
@@ -228,8 +230,20 @@ export default function MenuCardAbilityScores({ isCollapsed, onToggleCollapse })
                 {ABILITY_KEYS.map((key) => {
                   const total = player.getAbilityTotal(key);
                   const mod = player.getModifier(key);
+                  // A score moved by a temporary effect — rage, an assumed
+                  // wild-shape form, or a condition — glows by direction.
+                  const delta = tempDeltas[key] || 0;
+                  const cls = [
+                    'ability-grid-cell ability-score-cell',
+                    delta > 0 ? 'ability-score-cell--up' : '',
+                    delta < 0 ? 'ability-score-cell--down' : '',
+                  ].filter(Boolean).join(' ');
                   return (
-                    <div key={key} className="ability-grid-cell ability-score-cell">
+                    <div
+                      key={key}
+                      className={cls}
+                      title={delta ? `Temporary effects: ${delta > 0 ? '+' : ''}${delta}` : undefined}
+                    >
                       <div>{total}</div>
                       <div className="ability-modifier">{formatModifier(mod)}</div>
                     </div>

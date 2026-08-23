@@ -3,9 +3,11 @@ import { getClassFeatureCards } from './class_feature_cards';
 const keysFor = (cls, level) => getClassFeatureCards(cls, level).map((c) => c.key);
 
 describe('class feature card registry', () => {
-  test('druids get an animal companion at any level', () => {
+  test('druids get an animal companion at any level, and wild shape from 5th', () => {
     expect(keysFor('Druid', 1)).toEqual(['animalCompanion']);
-    expect(keysFor('Druid', 20)).toEqual(['animalCompanion']);
+    expect(keysFor('Druid', 4)).toEqual(['animalCompanion']);
+    expect(keysFor('Druid', 5)).toEqual(['wildShape', 'animalCompanion']);
+    expect(keysFor('Druid', 20)).toEqual(['wildShape', 'animalCompanion']);
   });
 
   test('ranger cards arrive one at a time, each at its own level', () => {

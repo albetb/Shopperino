@@ -1,0 +1,91 @@
+/* Druid wild shape card. */
+
+.wild-shape-card {
+  gap: var(--space-3);
+}
+
+/* The form picker. Capped in height so a 40-entry list does not push the rest
+   of the combat page off screen; scrolls inside itself instead. */
+.wild-shape-list {
+  max-height: 18rem;
+  overflow-y: auto;
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-sm);
+}
+
+.wild-shape-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: 0.3rem var(--space-2);
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.wild-shape-row:last-child {
+  border-bottom: none;
+}
+
+.wild-shape-name {
+  text-align: left;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wild-shape-row-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+  font-size: var(--font-size-xs);
+}
+
+.wild-shape-statblock {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--accent);
+  font-size: var(--font-size-sm);
+}
+
+.wild-shape-combat-text {
+  font-size: var(--font-size-sm);
+  color: var(--ink-muted);
+  line-height: 1.45;
+}
+
+.wild-shape-combat-text p {
+  margin: 0 0 var(--space-2);
+}
+
+/* Banner above the spell table when the druid cannot cast in her current form. */
+.wild-shape-cast-block {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding: 0.6rem 0.8rem;
+  text-align: left;
+  font-size: var(--font-size-sm);
+  color: var(--warn);
+  background: var(--warn-bg);
+  border-color: color-mix(in oklch, var(--warn) 40%, transparent);
+}
+
+.wild-shape-cast-block .material-symbols-outlined {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+/* A cast button locked by shape rather than by an empty slot. */
+.orbit-cast.is-blocked {
+  opacity: 0.4;
+  cursor: not-allowed;
+  filter: grayscale(1);
+}

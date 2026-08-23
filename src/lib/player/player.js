@@ -10,7 +10,9 @@ import { loadFile } from '../loadFile';
 import { getItemByRef, calculateWeaponAttackBonus, calculateWeaponDamage } from '../utils';
 import { getCarryingCapacity as capacityFromStr, classifyLoad } from './carryingCapacity';
 import { aggregateConditionEffects, sumContributions } from './conditionEffects';
-import { getClassProgression, getProgressionValue, hasFeatureAtLevel } from './classProgression';
+import { getClassProgression, getProgressionValue, hasFeatureAtLevel, resolveAtLevel } from './classProgression';
+import { listAnimals, getAnimalBaseByRef } from '../animal/animalsUtils';
+import { parseAttacks, recomputeAttack } from '../animal/attackParser';
 import { getBaseFeatName } from '../featChoices';
 import { getDeityByName, isWithinOneStep, formatDeityAlignment } from '../deityData';
 import AnimalCompanion from './animalCompanion';
@@ -18,6 +20,20 @@ import Familiar from './familiar';
 import SpecialMount from './specialMount';
 
 const ABILITY_KEYS = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
+
+/* Abilities an assumed form replaces outright. Int, Wis and Cha stay the
+   character's own — magic.md → Polymorph sub-rules. */
+const SHAPE_REPLACED_ABILITIES = ['str', 'dex', 'con'];
+
+/* Size modifier to AC and attack rolls. Also the inverse of the special-size
+   modifier used for grapple, which this project does not model. */
+const SIZE_AC_MODIFIER = {
+  Fine: 8, Diminutive: 4, Tiny: 2, Small: 1, Medium: 0,
+  Large: -1, Huge: -2, Gargantuan: -4, Colossal: -8,
+};
+
+/* Speed ceilings an assumed form is subject to (alter self). */
+const SHAPE_MAX_SPEED = { fly: 120, other: 60 };
 
 /* Conditions implied by HP and applied automatically — never user-toggled. */
 const HP_DERIVED_CONDITIONS = new Set(['Dead', 'Dying', 'Disabled']);
@@ -277,6 +293,12 @@ class Player {
        companion there is nothing to choose — the creature follows the
        paladin's size — so this is simply present or absent. */
     this.specialMount = null;
+    /* Druid wild shape: the animals.json ref of the assumed form, or '' when
+       in her true shape. The form is not a separate creature — it replaces
+       this character's own physical stats — so unlike the companion there is
+       no sub-model, only a reference. Uses per day live in classFeatureUses
+       under 'wildShape', so Rest clears them with everything else. */
+    this.wildShapeRef = '';
   }
 
   /**
@@ -360,6 +382,7 @@ class Player {
     if (typeof data.moralAlignment === 'string') this.moralAlignment = data.moralAlignment;
     if (typeof data.ethicalAlignment === 'string') this.ethicalAlignment = data.ethicalAlignment;
     if (typeof data.deity === 'string') this.deity = data.deity;
+    if (typeof data.wildShapeRef === 'string') this.wildShapeRef = data.wildShapeRef;
 
     if (Array.isArray(data.spells)) {
       this.spells = normalizePlayerSpells(data.spells);
@@ -584,6 +607,7 @@ class Player {
       companion: this.companion ? this.companion.serialize() : null,
       familiar: this.familiar ? this.familiar.serialize() : null,
       specialMount: this.specialMount ? this.specialMount.serialize() : null,
+      wildShapeRef: this.wildShapeRef || '',
     };
   }
 
@@ -668,12 +692,49 @@ class Player {
    * truth reused by getAbilityTotal and by the ability-0 cascade below.
    */
   conditionAdjustedAbilityTotal(abilityKey) {
-    const base = this.getAbilityBase(abilityKey) + this.getAbilityBonus(abilityKey)
-      + this.getRaceAbilityModifier(abilityKey) + this.getRageAbilityBonus(abilityKey);
+    const base = this._abilityScoreSum(abilityKey);
     if (!ABILITY_KEYS.includes(abilityKey)) return base;
     const mods = this.getScoreConditionModifiers();
     if (mods.abilityZero[abilityKey] && mods.abilityZero[abilityKey].length > 0) return 0;
     return base + sumContributions(mods.ability[abilityKey]);
+  }
+
+  /**
+   * The pre-condition ability score: normally base + bonus + race + rage, but
+   * a wild-shaped druid *replaces* Str, Dex and Con with the form's scores
+   * (magic.md → Polymorph sub-rules) rather than adding to them. Int, Wis and
+   * Cha are always the character's own.
+   *
+   * @param {boolean} shaped - false to read through the form, as if unshifted.
+   *   Used by getMaxLife, since the rules keep hit points on the druid's own
+   *   Constitution even while transformed.
+   */
+  _abilityScoreSum(abilityKey, shaped = true) {
+    const rage = this.getRageAbilityBonus(abilityKey);
+    if (shaped && SHAPE_REPLACED_ABILITIES.includes(abilityKey)) {
+      const score = this.getWildShapeForm()?.abilities?.[abilityKey];
+      if (Number.isFinite(Number(score))) return Number(score) + rage;
+    }
+    return this.getAbilityBase(abilityKey) + this.getAbilityBonus(abilityKey)
+      + this.getRaceAbilityModifier(abilityKey) + rage;
+  }
+
+  /**
+   * An ability total computed as if the character were not wild-shaped, with
+   * condition effects still applied. Only Str/Dex/Con differ from the normal
+   * total, and only while transformed.
+   */
+  unshapedAbilityTotal(abilityKey) {
+    const base = this._abilityScoreSum(abilityKey, false);
+    if (!ABILITY_KEYS.includes(abilityKey)) return base;
+    const mods = this.getScoreConditionModifiers();
+    if (mods.abilityZero[abilityKey] && mods.abilityZero[abilityKey].length > 0) return 0;
+    return base + sumContributions(mods.ability[abilityKey]);
+  }
+
+  /** Con modifier ignoring any assumed form — the one hit points are built on. */
+  getUnshapedConMod() {
+    return Math.floor((this.unshapedAbilityTotal('con') - 10) / 2);
   }
 
   /**
@@ -752,31 +813,51 @@ class Player {
   }
 
   /**
-   * A clone of this character with ALL condition effects (manual and derived)
-   * switched off, used to compute how much active conditions changed a derived
-   * stat. Returns null when no conditions are active. Cached per instance.
+   * True when any temporary effect is currently altering derived stats:
+   * an active condition, a running rage, or an assumed wild-shape form.
+   * These are exactly the effects the baseline below strips.
    */
-  getConditionBaseline() {
-    if (this._ignoreConditions) return null;
-    if (this._conditionBaselineCache !== undefined) return this._conditionBaselineCache;
-    if (this.getActiveConditions().length === 0) {
-      this._conditionBaselineCache = null;
+  hasTemporaryEffects() {
+    return this.getActiveConditions().length > 0 || this.isRaging() || this.isWildShaped();
+  }
+
+  /**
+   * A clone of this character with every TEMPORARY effect switched off —
+   * conditions (manual and derived), rage, and wild shape — used to compute
+   * how much those effects changed a derived stat. Returns null when none are
+   * active. Cached per instance.
+   *
+   * Equipment and permanent bonuses are deliberately kept, so the comparison
+   * answers "what did the effects do to me" rather than "what would a naked
+   * version of me look like".
+   */
+  getTemporaryBaseline() {
+    if (this._ignoreTemporary) return null;
+    if (this._temporaryBaselineCache !== undefined) return this._temporaryBaselineCache;
+    if (!this.hasTemporaryEffects()) {
+      this._temporaryBaselineCache = null;
       return null;
     }
     const clone = new this.constructor();
     clone.load(this.serialize());
     clone._ignoreConditions = true;
-    this._conditionBaselineCache = clone;
+    clone._ignoreTemporary = true;
+    clone.raging = false;
+    clone.wildShapeRef = '';
+    this._temporaryBaselineCache = clone;
     return clone;
   }
 
   /**
-   * Net condition-caused change for each displayed combat stat (current minus
-   * condition-free baseline). Captures both channels, including the ability
-   * cascade. Empty object when no conditions are active.
+   * Net change to each displayed combat stat caused by temporary effects
+   * (current minus effect-free baseline). Captures every channel, including
+   * the ability cascade. Empty object when nothing temporary is active.
+   *
+   * The UI reads the sign to glow a changed stat green or red, so entries are
+   * kept even when zero-valued callers filter them out themselves.
    */
-  getConditionStatDeltas() {
-    const base = this.getConditionBaseline();
+  getTemporaryStatDeltas() {
+    const base = this.getTemporaryBaseline();
     if (!base) return {};
     return {
       ac: this.getArmorClass() - base.getArmorClass(),
@@ -788,26 +869,39 @@ class Player {
       will: this.getTotalWillSave() - base.getTotalWillSave(),
       speed: this.getTotalSpeed() - base.getTotalSpeed(),
       maxHp: this.getMaxLife() - base.getMaxLife(),
+      ...Object.fromEntries(ABILITY_KEYS.map((key) => [
+        key, this.getAbilityTotal(key) - base.getAbilityTotal(key),
+      ])),
     };
   }
 
-  /** Condition-caused change to a weapon's attack bonus (vs baseline). */
+  /** Back-compat alias: the deltas now cover rage and wild shape too. */
+  getConditionStatDeltas() {
+    return this.getTemporaryStatDeltas();
+  }
+
+  /** @deprecated Use getTemporaryBaseline — kept for existing callers. */
+  getConditionBaseline() {
+    return this.getTemporaryBaseline();
+  }
+
+  /** Temporary-effect change to a weapon's attack bonus (vs baseline). */
   getWeaponAttackConditionDelta(weaponData) {
-    const base = this.getConditionBaseline();
+    const base = this.getTemporaryBaseline();
     if (!base) return 0;
     return calculateWeaponAttackBonus(this, weaponData) - calculateWeaponAttackBonus(base, weaponData);
   }
 
-  /** True when active conditions change a weapon's damage string (vs baseline). */
+  /** True when temporary effects change a weapon's damage string (vs baseline). */
   isWeaponDamageConditionAffected(weaponData) {
-    const base = this.getConditionBaseline();
+    const base = this.getTemporaryBaseline();
     if (!base) return false;
     return calculateWeaponDamage(this, weaponData) !== calculateWeaponDamage(base, weaponData);
   }
 
-  /** Condition-caused change to a single skill total (vs baseline). */
+  /** Temporary-effect change to a single skill total (vs baseline). */
   getSkillConditionDelta(skillName) {
-    const base = this.getConditionBaseline();
+    const base = this.getTemporaryBaseline();
     if (!base) return 0;
     return this.getSkillTotal(skillName) - base.getSkillTotal(skillName);
   }
@@ -887,6 +981,254 @@ class Player {
     this.specialMount = null;
   }
 
+  // —— Wild shape (druid) ——
+
+  /** The class's wildShape progression block, or an empty object. */
+  getWildShapeConfig() {
+    const config = getClassProgression(this.class).wildShape;
+    return config && typeof config === 'object' ? config : {};
+  }
+
+  /** Whether the class has wild shape at all (regardless of level). */
+  grantsWildShape() {
+    return Array.isArray(this.getWildShapeConfig().usesPerDay);
+  }
+
+  /** Uses per day at this level. Zero below the first breakpoint. */
+  getWildShapeMax() {
+    const table = this.getWildShapeConfig().usesPerDay;
+    if (!Array.isArray(table)) return 0;
+    return resolveAtLevel(table, this.getLevel(), 0);
+  }
+
+  getWildShapeUsed() {
+    return this.getClassFeatureUsed('wildShape');
+  }
+
+  /** Uses left today. Never negative, even when the used figure is over cap. */
+  getWildShapeRemaining() {
+    return Math.max(0, this.getWildShapeMax() - this.getWildShapeUsed());
+  }
+
+  /** True once the druid is high enough level to transform at all. */
+  canWildShape() {
+    return this.getWildShapeMax() > 0;
+  }
+
+  /** How long a form lasts: 1 hour per druid level. */
+  getWildShapeDurationHours() {
+    const perLevel = Number(this.getWildShapeConfig().durationHoursPerLevel) || 0;
+    return perLevel * this.getLevel();
+  }
+
+  /** The largest HD an assumed form may have — the druid's class level. */
+  getWildShapeHdCap() {
+    return this.getWildShapeConfig().hdCapEqualsLevel ? this.getLevel() : 0;
+  }
+
+  /** Creature sizes unlocked at this level, in the order the rules grant them. */
+  getWildShapeSizes() {
+    const unlocks = this.getWildShapeConfig().sizeUnlocks;
+    if (!Array.isArray(unlocks)) return [];
+    const level = this.getLevel();
+    return unlocks
+      .filter((u) => Number(u?.level) <= level)
+      .flatMap((u) => (Array.isArray(u.sizes) ? u.sizes : []));
+  }
+
+  /**
+   * Creature types this druid may currently assume through the normal wild
+   * shape pool: animals from 5th, plants from 12th. Elementals are excluded —
+   * they draw on a separate daily allowance and grant the form's Su and Sp
+   * abilities, so they are not interchangeable with these.
+   */
+  getWildShapeTypes() {
+    const types = ['animal'];
+    const plantLevel = Number(this.getWildShapeConfig().plantLevel);
+    if (plantLevel && this.getLevel() >= plantLevel) types.push('plant');
+    return types;
+  }
+
+  /**
+   * The forms this druid may assume right now, sorted by name. Filtered to an
+   * allowed creature type, an unlocked size, and an HD count within the cap.
+   *
+   * Draws from animals.json and the Plant entries of monsters.json — the two
+   * files the project has creature blocks in. Elemental forms are not listed;
+   * see getWildShapeMissingTiers().
+   */
+  getWildShapeForms() {
+    if (!this.canWildShape()) return [];
+    const sizes = new Set(this.getWildShapeSizes());
+    const hdCap = this.getWildShapeHdCap();
+    const types = new Set(this.getWildShapeTypes());
+    const monsters = loadFile('monsters')?.monsters;
+    const pool = [...listAnimals(), ...(Array.isArray(monsters) ? monsters : [])];
+    return pool
+      .filter((creature) => {
+        if (!types.has(String(creature?.type || '').toLowerCase())) return false;
+        if (!sizes.has(creature.size)) return false;
+        const hd = Number(creature?.hitDice?.count) || 0;
+        return hdCap === 0 || hd <= hdCap;
+      })
+      .sort((a, b) => String(a.name).localeCompare(String(b.name)));
+  }
+
+  /**
+   * Form tiers the druid has unlocked but that this card does not offer, as
+   * `{ tier, level, reason }`. Lets the card explain the omission rather than
+   * silently dropping a feature the character has earned.
+   */
+  getWildShapeMissingTiers() {
+    const config = this.getWildShapeConfig();
+    const level = this.getLevel();
+    const missing = [];
+    const elemental = config.elementalUsesPerDay;
+    if (Array.isArray(elemental) && elemental.length > 0) {
+      const at = Number(elemental[0]?.[0]);
+      if (at && level >= at) {
+        missing.push({
+          tier: 'Elemental',
+          level: at,
+          reason: 'draws on a separate daily allowance and grants the form\'s supernatural abilities',
+        });
+      }
+    }
+    return missing;
+  }
+
+  /** True while transformed. */
+  isWildShaped() {
+    return !!this.wildShapeRef;
+  }
+
+  getWildShapeRef() {
+    return this.wildShapeRef || '';
+  }
+
+  /** The animals.json block of the assumed form, or null when in true form. */
+  getWildShapeForm() {
+    if (!this.wildShapeRef) return null;
+    return getAnimalBaseByRef(this.wildShapeRef) || null;
+  }
+
+  /** Display name of the current form, or '' when in true form. */
+  getWildShapeName() {
+    return this.getWildShapeForm()?.name || '';
+  }
+
+  /**
+   * Assume a form. Spends one use and restores hit points as if rested for a
+   * night (1 per character level), both per the rules. Returns false when the
+   * ref names no known animal.
+   *
+   * The use is spent even when already over the daily allowance — going over
+   * is flagged in the card, never blocked.
+   */
+  enterWildShape(ref) {
+    if (!this.grantsWildShape()) return false;
+    if (!getAnimalBaseByRef(ref)) return false;
+    this.wildShapeRef = ref;
+    this.useClassFeature('wildShape', 1);
+    this.healAsIfRested();
+    return true;
+  }
+
+  /** Revert to true form. Free: it costs no use and heals nothing. */
+  exitWildShape() {
+    this.wildShapeRef = '';
+  }
+
+  /** A night's natural healing: 1 HP per character level (combat.md). */
+  healAsIfRested() {
+    this.damage = Math.max(0, (Number(this.damage) || 0) - this.getLevel());
+  }
+
+  /** Size modifier to AC and attack rolls for the current size. */
+  getSizeAcModifier() {
+    return SIZE_AC_MODIFIER[this.getSize()] ?? 0;
+  }
+
+  /**
+   * The natural attacks of the assumed form, as
+   * `[{ name, count, bonus, damage, type, index }]`.
+   *
+   * The animals.json line is already computed for the creature's own BAB and
+   * Str. A wild-shaped druid uses *her* base attack bonus with *the form's*
+   * Str — and she has the form's Str already — so only the BAB gap needs
+   * correcting. Size is likewise baked into the creature's line and is
+   * unchanged by the druid inhabiting it.
+   *
+   * Empty in true form. Extra limbs grant no extra attacks, so the list is
+   * taken verbatim from the block rather than multiplied.
+   */
+  getWildShapeAttacks() {
+    const form = this.getWildShapeForm();
+    if (!form) return [];
+    const src = form.fullAttack && form.fullAttack !== '-' ? form.fullAttack : form.attack;
+    const lines = parseAttacks(src);
+    const babDelta = this.getBaseAttackBonus() - (Number(form.baseAttackGrapple?.baseAttack) || 0);
+    return lines.map((line, index) => ({
+      ...recomputeAttack(line, { babDelta, strModDelta: 0, sizeModDelta: 0 }),
+      index,
+    }));
+  }
+
+  /**
+   * Special attacks the form grants. Extraordinary special *attacks* transfer;
+   * special *qualities* (scent, low-light vision) do not, so those are
+   * deliberately not read (magic.md → Polymorph sub-rules).
+   */
+  getWildShapeSpecialAttacks() {
+    const list = this.getWildShapeForm()?.specialAttacks;
+    return Array.isArray(list) ? [...list] : [];
+  }
+
+  /**
+   * Special qualities of the form, returned for display only so the card can
+   * state plainly that they are NOT gained — the single most misapplied part
+   * of the polymorph rules.
+   */
+  getWildShapeUngainedQualities() {
+    const list = this.getWildShapeForm()?.specialQualities;
+    return Array.isArray(list) ? [...list] : [];
+  }
+
+  /**
+   * The assumed form's natural armor bonus, read off the parenthesised
+   * components of its AC line ("14 (+2 Dex, +2 natural)"). Zero when in true
+   * form or when the block lists none.
+   */
+  getWildShapeNaturalArmor() {
+    const form = this.getWildShapeForm();
+    if (!form) return 0;
+    const match = String(form.armorClass?.components || '').match(/([+-]?\d+)\s*natural/i);
+    return match ? Number(match[1]) || 0 : 0;
+  }
+
+  /**
+   * Whether worn armor and shields still function. They meld into an assumed
+   * form and stop contributing AC — the inventory stays fully editable, only
+   * the numbers stop counting.
+   */
+  isEquipmentMelded() {
+    return this.isWildShaped();
+  }
+
+  /**
+   * Whether spells can be cast right now. A druid loses speech in animal form,
+   * so verbal components fail — unless she has Natural Spell.
+   */
+  canCastSpells() {
+    if (!this.isWildShaped()) return true;
+    return this.hasNaturalSpell();
+  }
+
+  /** Whether the character holds the Natural Spell feat. */
+  hasNaturalSpell() {
+    return this.getFeats().some((f) => getBaseFeatName(f).toLowerCase() === 'natural spell');
+  }
+
   /** Master context fed to the familiar so its derived stats resolve. */
   _familiarOwnerContext() {
     return {
@@ -934,7 +1276,18 @@ class Player {
    * Size category derived from race (e.g. "Medium", "Small").
    * Uses races.json when available; otherwise fallback map; unknown races default to "Medium".
    */
+  /**
+   * Current size. An assumed form's natural size replaces the character's own,
+   * which cascades into AC, attack rolls and carrying capacity.
+   */
   getSize() {
+    const form = this.getWildShapeForm();
+    if (form?.size) return form.size;
+    return this.getTrueSize();
+  }
+
+  /** The character's own size, ignoring any assumed form. */
+  getTrueSize() {
     if (!this.race) return '';
     const races = loadFile('races');
     const fromData = races?.[this.race]?.size;
@@ -998,8 +1351,7 @@ class Player {
     const zero = mods.abilityZero[abilityKey] || [];
     if (zero.length > 0) {
       // Represent the override as a single contribution down to 0.
-      const base = this.getAbilityBase(abilityKey) + this.getAbilityBonus(abilityKey)
-        + this.getRaceAbilityModifier(abilityKey) + this.getRageAbilityBonus(abilityKey);
+      const base = this._abilityScoreSum(abilityKey);
       return zero.map((z) => ({ source: z.source, label: z.label, value: -base }));
     }
     return mods.ability[abilityKey] ? mods.ability[abilityKey].map((c) => ({ ...c })) : [];
@@ -1217,7 +1569,10 @@ class Player {
   getMaxLife() {
     const base = Number(this.maxLife) || 0;
     const bonus = Number(this.healthModifier) || 0;
-    const conBonus = this.getConMod() * this.getLevel();
+    // Deliberately the UNSHAPED Con: a wild-shaped druid keeps her own hit
+    // points, even though the form's Con drives Fortitude saves and Con checks
+    // (magic.md → Polymorph sub-rules → Hit points).
+    const conBonus = this.getUnshapedConMod() * this.getLevel();
     // Energy Drained removes 5 HP per negative level (manual/score channel).
     // A Toad familiar grants the master +3 HP (per-species familiar bonus).
     return base + bonus + conBonus + this.getHpConditionModifier() + this.getFamiliarStatBonuses().hp;
@@ -1282,10 +1637,39 @@ class Player {
    * light load or lighter, Monk +10 at 3rd rising to +60 at 18th, unarmored.
    */
   getBaseSpeed() {
+    // An assumed form replaces the character's land speed outright — class
+    // fast movement is a class feature of the druid's own body, not the form's.
+    const form = this.getWildShapeForm();
+    if (form) return this.getWildShapeSpeed('land');
     const races = loadFile('races');
     const base = Number(races?.[this.race]?.landSpeed) || 30;
     if (!getClassData(this.class)) return base;
     return base + this.getFastMovementBonus();
+  }
+
+  /**
+   * A movement mode of the assumed form, capped as alter self requires:
+   * 120 ft flying, 60 ft for everything else. Zero when in true form or when
+   * the form lacks that mode.
+   */
+  getWildShapeSpeed(mode = 'land') {
+    const speed = Number(this.getWildShapeForm()?.speed?.[mode]) || 0;
+    if (speed <= 0) return 0;
+    const cap = mode === 'fly' ? SHAPE_MAX_SPEED.fly : SHAPE_MAX_SPEED.other;
+    return Math.min(speed, cap);
+  }
+
+  /**
+   * Every movement mode the assumed form grants, as `{ mode, speed }`, capped.
+   * Empty in true form. Used by the card to list burrow/climb/fly/swim, which
+   * the single speed stat cannot show.
+   */
+  getWildShapeMovementModes() {
+    const speed = this.getWildShapeForm()?.speed;
+    if (!speed || typeof speed !== 'object') return [];
+    return Object.keys(speed)
+      .filter((mode) => mode !== 'raw' && Number(speed[mode]) > 0)
+      .map((mode) => ({ mode, speed: this.getWildShapeSpeed(mode) }));
   }
 
   /**
@@ -1302,6 +1686,10 @@ class Player {
    * Dwarves ignore armor speed reduction. Monk/Barbarian bonuses are preserved on top of reduced speed.
    */
   getArmorSpeedInfo() {
+    // Melded armor slows nothing: the form moves at its own speed.
+    if (this.isEquipmentMelded()) {
+      return { hasReduction: false, originalSpeed: this.getTotalSpeed(), reducedSpeed: this.getTotalSpeed() };
+    }
     const armor = this.getEquippedArmorRaw();
     const races = loadFile('races');
     const raceLandSpeed = Number(races?.[this.race]?.landSpeed) || 30;
@@ -2195,6 +2583,8 @@ class Player {
    * Per-entry overrides take precedence over the raw item value.
    */
   getArmorBonus() {
+    // Worn armor melds into an assumed form and stops functioning.
+    if (this.isEquipmentMelded()) return 0;
     const entry = this.equipment?.armor;
     const override = entry?.overrides?.['Armor/Shield Bonus'];
     let val;
@@ -2217,6 +2607,8 @@ class Player {
    * this applies only to normal AC — not touch and not flat-footed.
    */
   getShieldBonus() {
+    // A carried shield melds into an assumed form along with everything else.
+    if (this.isEquipmentMelded()) return 0;
     const slots = ['lh1', 'rh1', 'lh2', 'rh2'];
     let total = 0;
     for (const slot of slots) {
@@ -2241,6 +2633,7 @@ class Player {
    * Maximum DEX bonus allowed by equipped armor. Returns Infinity if no cap.
    */
   getMaxDexBonus() {
+    if (this.isEquipmentMelded()) return Infinity;
     const armor = this.getEquippedArmorRaw();
     if (!armor) return Infinity;
     const val = armor['Maximum Dex Bonus'];
@@ -2253,6 +2646,7 @@ class Player {
    * Armor check penalty from equipped armor. Returns 0 if no penalty or no armor.
    */
   getArmorCheckPenalty() {
+    if (this.isEquipmentMelded()) return 0;
     const armor = this.getEquippedArmorRaw();
     if (!armor) return 0;
     const val = armor['Armor Check Penalty'];
@@ -2283,7 +2677,7 @@ class Player {
    */
   getArmorClass() {
     const ac = 10 + this.getAcDexMod() + this.getArmorBonus() + this.getShieldBonus()
-      + this.getMonkAcBonus();
+      + this.getMonkAcBonus() + this.getWildShapeNaturalArmor() + this.getSizeAcModifier();
     return ac + Number(this.acBonus || 0) + this.getAcConditionModifier() + this.getRageAcModifier();
   }
 
@@ -2292,7 +2686,8 @@ class Player {
    * Adds the general acBonus and the touch-only acTouchBonus.
    */
   getContactAC() {
-    const ac = 10 + this.getAcDexMod() + this.getMonkAcBonus();
+    // Natural armor is excluded from touch AC; the size modifier is not.
+    const ac = 10 + this.getAcDexMod() + this.getMonkAcBonus() + this.getSizeAcModifier();
     return ac + Number(this.acBonus || 0) + Number(this.acTouchBonus || 0)
       + this.getAcConditionModifier() + this.getRageAcModifier();
   }
@@ -2302,7 +2697,8 @@ class Player {
    * Adds the general acBonus and the flat-footed-only acFlatBonus.
    */
   getFlatFootedAC() {
-    const ac = 10 + this.getArmorBonus() + this.getMonkAcBonus();
+    const ac = 10 + this.getArmorBonus() + this.getMonkAcBonus()
+      + this.getWildShapeNaturalArmor() + this.getSizeAcModifier();
     return ac + Number(this.acBonus || 0) + Number(this.acFlatBonus || 0)
       + this.getAcConditionModifier() + this.getRageAcModifier();
   }

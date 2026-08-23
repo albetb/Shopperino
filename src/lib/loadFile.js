@@ -7,13 +7,15 @@ import skillsData from '../data/skills.json';
 import racesData from '../data/races.json';
 import classesData from '../data/classes.json';
 import animalsData from '../data/animals.json';
+import monstersData from '../data/monsters.json';
+import verminData from '../data/vermin.json';
 import deitiesData from '../data/deities.json';
 import companionAbilitiesData from '../data/companionAbilities.json';
 import familiarAbilitiesData from '../data/familiarAbilities.json';
 
 /**
  * Load a data file by name. Returns the parsed content or null.
- * Supported: 'items' | 'scrolls' | 'tables' | 'spells' | 'feats' | 'skills' | 'races' | 'classes' | 'animals' | 'deities'
+ * Supported: 'items' | 'scrolls' | 'tables' | 'spells' | 'feats' | 'skills' | 'races' | 'classes' | 'animals' | 'monsters' | 'vermin' | 'deities'
  */
 export function loadFile(fileName) {
   try {
@@ -36,6 +38,10 @@ export function loadFile(fileName) {
         return classesData?.classes ?? {};
       case 'animals':
         return animalsData ?? { animals: [] };
+      case 'monsters':
+        return monstersData ?? { monsters: [] };
+      case 'vermin':
+        return verminData ?? { vermin: [] };
       case 'deities':
         return deitiesData?.deities ?? [];
       case 'companionabilities':

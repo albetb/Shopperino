@@ -18,9 +18,24 @@ function loadAnimals() {
   return Array.isArray(data?.animals) ? data.animals : [];
 }
 
-/** Set of slug tokens for an animal, derived from its ref (e.g. "animals/bear-black" -> {bear, black}). */
+/**
+ * Every creature stat block the app knows about. The three files are disjoint,
+ * so a link resolves to exactly one record set. Animals come first because the
+ * SRD's own summoning tables lean on them most heavily.
+ */
+function loadCreatures() {
+  const monsters = loadFile('monsters');
+  const vermin = loadFile('vermin');
+  return [
+    ...loadAnimals(),
+    ...(Array.isArray(monsters?.monsters) ? monsters.monsters : []),
+    ...(Array.isArray(vermin?.vermin) ? vermin.vermin : []),
+  ];
+}
+
+/** Set of slug tokens for a creature, from its ref ("animals/bear-black" -> {bear, black}). */
 function animalTokens(animal) {
-  const slug = String(animal.ref || '').replace(/^animals\//, '');
+  const slug = String(animal.ref || '').replace(/^[a-z]+\//, '');
   return new Set(slug.split('-').filter(Boolean));
 }
 
@@ -59,6 +74,19 @@ function matchAnimals(animals, want) {
       return [...at].every((t) => want.has(t) || SIZE_WORDS.has(t));
     });
   }
+  // Group links: the SRD points a whole summoning row at one family entry, e.g.
+  // "monstersEtoF#elemental" or "monstersMtoN#mephit". Every member matches.
+  if (!matches.length) {
+    matches = animals.filter((a) => subsetOf(want, animalTokens(a)));
+  }
+  // Compound-word links: "hell-hound" against a block named "Hellhound".
+  if (!matches.length && want.size > 1) {
+    const joined = [...want].join('');
+    matches = animals.filter((a) => {
+      const at = animalTokens(a);
+      return at.has(joined) || [...at].join('') === joined;
+    });
+  }
   return matches.sort((a, b) => (SIZE_RANK[a.size] ?? 99) - (SIZE_RANK[b.size] ?? 99));
 }
 
@@ -78,6 +106,31 @@ function abilitiesLine(ab) {
  * mirroring how equipment cards are shaped (the renderer shows each key as a
  * compact "Key: value" row). Key insertion order is the display order.
  */
+const DRAGON_ATTACKS = [
+  ['bite', 'Bite'],
+  ['claws', '2 claws'],
+  ['wings', '2 wings'],
+  ['tailSlap', 'Tail slap'],
+  ['crush', 'Crush'],
+  ['tailSweep', 'Tail sweep'],
+];
+
+/**
+ * True dragons have no Attack/Full Attack line in the SRD — they get an attack
+ * bonus plus damage dice by size — so their card shows those two rows instead.
+ */
+function attackRows(a) {
+  if (a.attack == null && a.fullAttack == null && a.attackBonus != null) {
+    const damage = a.attackDamage || {};
+    const parts = DRAGON_ATTACKS.filter(([key]) => damage[key]).map(([key, label]) => `${label} ${damage[key]}`);
+    return {
+      'Attack Bonus': sign(a.attackBonus),
+      'Natural Attacks': parts.length ? parts.join(', ') : '—',
+    };
+  }
+  return { Attack: dash(a.attack), 'Full Attack': dash(a.fullAttack) };
+}
+
 function buildCard(a) {
   const subtypes = Array.isArray(a.subtypes) && a.subtypes.length ? ` (${a.subtypes.join(', ')})` : '';
   const card = {
@@ -88,8 +141,7 @@ function buildCard(a) {
     Speed: dash(a.speed?.raw),
     'Armor Class': dash(a.armorClass?.raw),
     'Base Attack/Grapple': dash(a.baseAttackGrapple?.raw),
-    Attack: dash(a.attack),
-    'Full Attack': dash(a.fullAttack),
+    ...attackRows(a),
     'Space/Reach': dash(a.spaceReach?.raw),
     'Special Attacks': list(a.specialAttacks),
     'Special Qualities': list(a.specialQualities),
@@ -100,9 +152,16 @@ function buildCard(a) {
     Environment: dash(a.environment),
     Organization: dash(a.organization),
     'Challenge Rating': dash(a.challengeRating?.text),
-    Advancement: dash(a.advancement),
   };
+  // Monster and vermin blocks carry these two; the animal page omits them.
+  if (a.treasure != null) card.Treasure = a.treasure;
+  if (a.alignment != null) card.Alignment = a.alignment;
+  card.Advancement = dash(a.advancement);
   if (a.levelAdjustment != null) card['Level Adjustment'] = sign(a.levelAdjustment);
+  if (a.ageCategory) {
+    card.Age = a.ageYears ? `${a.ageCategory} (${a.ageYears} years)` : a.ageCategory;
+    if (a.casterLevel != null) card['Caster Level'] = `${a.casterLevel}th`;
+  }
   const prose = [];
   if (a.description) prose.push(a.description);
   if (a.combat) prose.push(`<p><b>Combat</b></p>${a.combat}`);
@@ -128,6 +187,22 @@ export function getAnimalByLink(link) {
 
 /** Alias matching the project's getXByRef naming, for "animals/<slug>" refs. */
 export const getAnimalByRef = getAnimalByLink;
+
+/**
+ * Returns info-sidebar card(s) for any creature link — animal, monster or vermin.
+ * This is what the SRD's summoning tables point at: "monstersAnimal#owl",
+ * "monstersDtoDe#bone-devil", "monstersVermin#monstrous-spider". Generic slugs
+ * return one card per variant, so "monstrous-spider" opens all seven sizes.
+ */
+export function getCreatureByLink(link) {
+  try {
+    const creatures = loadCreatures();
+    if (!creatures.length) return [];
+    return matchAnimals(creatures, linkTokens(link)).map(buildCard);
+  } catch (err) {
+    return [];
+  }
+}
 
 /** Every animal stat block (raw objects), in animals.json order. */
 export function listAnimals() {

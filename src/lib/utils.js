@@ -6,7 +6,7 @@ export { itemTypes, getItemByRef, getItemByLink, getItemById, getItemIdByRef } f
 export { getScrollById, getScrollIdByLink } from './spellbook/scrollUtils';
 export { getEffectByLink, getEffectById, getEffectIdBySlug } from './item/effectsUtils';
 export { getSpellByLink } from './spellbook/spellsUtils';
-export { getAnimalByLink, getAnimalByRef, getAnimalBaseByRef, listAnimals } from './animal/animalsUtils';
+export { getAnimalByLink, getAnimalByRef, getAnimalBaseByRef, getCreatureByLink, listAnimals } from './animal/animalsUtils';
 export {
   effectiveCompanionLevel,
   getCompanionAdjustment,

@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { getAnimalByLink, getCompanionAbilityByLink, getFamiliarAbilityByLink, getConditionByLink, getEffectByLink, getFeatByLink, getItemByLink, getItemByRef, getSkillByLink, getSpellByLink, isMobile } from '../../lib/utils';
+import { getCreatureByLink, getCompanionAbilityByLink, getFamiliarAbilityByLink, getConditionByLink, getEffectByLink, getFeatByLink, getItemByLink, getItemByRef, getSkillByLink, getSpellByLink, isMobile } from '../../lib/utils';
 import { applyColors } from '../../lib/colorUtils';
 
 const DEFAULT_BLUE = '#238f8b';
@@ -54,10 +54,11 @@ export const appSlice = createSlice({
       const isFeatLink = linkStr && (linkStr.startsWith('feats#') || linkStr === 'feats');
       const isSkillLink = linkStr && (linkStr.startsWith('skills#') || linkStr === 'skills');
       const isConditionLink = linkStr && linkStr.includes('abilitiesAndConditions#');
-      // Animal stat-block anchors: the SRD splits monsters across pages, so animal links
-      // use prefixes like "monstersAnimal#dog" and "monstersDitoDo#dire-wolf". Try any
-      // "monsters…#" anchor against the animal DB (non-animals simply return no card).
-      const isAnimalLink = linkStr && (/^monsters[A-Za-z]*#/.test(linkStr) || linkStr.startsWith('animals/') || linkStr.startsWith('animals#'));
+      // Creature stat-block anchors: the SRD splits creatures across pages, so links
+      // use prefixes like "monstersAnimal#dog", "monstersDtoDe#bone-devil" and
+      // "monstersVermin#monstrous-spider". Any "monsters…#" anchor is looked up
+      // against animals + monsters + vermin (an unknown anchor returns no card).
+      const isCreatureLink = linkStr && (/^monsters[A-Za-z]*#/.test(linkStr) || /^(animals|monsters|vermin)[/#]/.test(linkStr));
       const conditionAnchor = isConditionLink ? linkStr.split('#')[1] : null;
       const spellLookupLink = isSpellLink
         ? (hasHash ? linkStr.split('#')[1] : firstLink)
@@ -84,12 +85,12 @@ export const appSlice = createSlice({
 
       if (isSpellLink) return;
 
-      if (isAnimalLink) {
-        const animalCards = getAnimalByLink(firstLink);
-        if (animalCards.length) {
-          const newLinks = new Set(animalCards.map(c => c.Link));
+      if (isCreatureLink) {
+        const creatureCards = getCreatureByLink(firstLink);
+        if (creatureCards.length) {
+          const newLinks = new Set(creatureCards.map(c => c.Link));
           state.infoCards = state.infoCards.filter(c => !newLinks.has(c.Link));
-          state.infoCards.unshift(...animalCards);
+          state.infoCards.unshift(...creatureCards);
           state.infoSidebarCollapsed = false;
         }
         return;

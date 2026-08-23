@@ -20,7 +20,9 @@ export default function SpellLevelCard({
   charBonus,
   actions,
   dispatch,
-  showShortDescriptions
+  showShortDescriptions,
+  castingBlocked = false,
+  castingBlockedReason = ''
 }) {
 
   const key = classKeyMap[inst.Class] || '';
@@ -255,6 +257,8 @@ export default function SpellLevelCard({
                         <StarOrbitCast
                           remaining={remaining}
                           total={total}
+                          blocked={castingBlocked}
+                          blockedReason={castingBlockedReason}
                           onClick={() => actions?.onUseSpell?.(item.Link)}
                         />
                       </td>
@@ -332,5 +336,9 @@ SpellLevelCard.propTypes = {
     onUseDomainSpell: PropTypes.func,
   }),
   dispatch: PropTypes.func.isRequired,
-  showShortDescriptions: PropTypes.bool.isRequired
+  showShortDescriptions: PropTypes.bool.isRequired,
+  /** True when the caster cannot cast at all right now (a wild-shaped druid
+      without Natural Spell). Slot counts stay visible; only the button locks. */
+  castingBlocked: PropTypes.bool,
+  castingBlockedReason: PropTypes.string
 };

@@ -52,6 +52,7 @@ import {
   onSetPlayerSpellOption,
 } from '../../store/thunks/playerSheetThunks';
 import '../../style/shop_inventory.css';
+import '../../style/wild_shape.css';
 
 export default function SpellbookTable({ source = 'app' }) {
   const dispatch = useDispatch();
@@ -152,12 +153,29 @@ export default function SpellbookTable({ source = 'app' }) {
     );
   }
 
+  // A wild-shaped druid loses speech, so verbal components fail and she cannot
+  // cast — unless she has Natural Spell. Slot counts stay visible and preparing
+  // still works; only the cast button locks, with the reason stated once above.
+  const castingBlocked = !isApp && player?.canCastSpells?.() === false;
+  const castingBlockedReason = 'No speech in animal form — Natural Spell removes this';
+
   return (
     <>
       <SpellbookTableHeader
         spellbook={spellbook}
         page={page}
       />
+
+      {castingBlocked && (
+        <div className="card card-width-spellbook wild-shape-cast-block">
+          <span className="material-symbols-outlined">auto_fix_off</span>
+          <span>
+            Wild-shaped as <b>{player.getWildShapeName()}</b> — you cannot cast.
+            An animal form has no speech, so verbal components fail. The{' '}
+            <b>Natural Spell</b> feat removes this restriction.
+          </span>
+        </div>
+      )}
 
       <SpellFilters
         filters={filters}
@@ -228,6 +246,8 @@ export default function SpellbookTable({ source = 'app' }) {
           spellsPerDay={spellsPerDay}
           charBonus={charBonus}
           showShortDescriptions={showShortDescriptions}
+          castingBlocked={castingBlocked}
+          castingBlockedReason={castingBlockedReason}
           actions={actions}
           dispatch={dispatch}
         />

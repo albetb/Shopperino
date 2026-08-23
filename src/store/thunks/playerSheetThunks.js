@@ -987,6 +987,31 @@ export const onSetSpecialMountAttackOverride = (index, patch) => (dispatch, getS
   persistPlayer(dispatch, getState, player);
 };
 
+// Wild shape (Druid). Assuming a form spends a use and heals as if rested;
+// reverting is free. Neither is gated on having uses left — going over the
+// daily allowance is flagged on the card, not blocked.
+export const onEnterWildShape = (ref) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player) return;
+  if (!player.enterWildShape(ref)) return;
+  persistPlayer(dispatch, getState, player);
+};
+
+export const onExitWildShape = () => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player) return;
+  player.exitWildShape();
+  persistPlayer(dispatch, getState, player);
+};
+
+/** Restore the day's wild shape uses without resting the whole character. */
+export const onResetWildShapeUses = () => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player) return;
+  player.setClassFeatureUses('wildShape', 0);
+  persistPlayer(dispatch, getState, player);
+};
+
 export { hydratePlayerSheet };
 
 export const hydratePlayerSheetThunk = (app) => (dispatch) => {

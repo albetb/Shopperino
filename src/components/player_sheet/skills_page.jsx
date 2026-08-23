@@ -188,11 +188,17 @@ export default function SkillsPage() {
           {meta}
         </div>
         <span
-          className={`sh-skill-total sh-mono sh-num ${isOverLimit ? 'sh-warn-text' : ''} ${condDelta ? 'sh-skill-total--cond' : ''}`}
-          title={condDelta ? `Conditions: ${condDelta > 0 ? '+' : ''}${condDelta}` : undefined}
+          className={[
+            'sh-skill-total sh-mono sh-num',
+            isOverLimit ? 'sh-warn-text' : '',
+            condDelta ? 'sh-skill-total--cond' : '',
+            condDelta > 0 ? 'sh-skill-total--up' : '',
+            condDelta < 0 ? 'sh-skill-total--down' : '',
+          ].filter(Boolean).join(' ')}
+          title={condDelta ? `Temporary effects: ${condDelta > 0 ? '+' : ''}${condDelta}` : undefined}
         >
           {total >= 0 ? `+${total}` : total}
-          {condDelta ? <span className="sh-skill-cond-note">cond {condDelta > 0 ? '+' : ''}{condDelta}</span> : null}
+          {condDelta ? <span className="sh-skill-cond-note">{condDelta > 0 ? '+' : ''}{condDelta}</span> : null}
         </span>
       </div>
     );

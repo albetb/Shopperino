@@ -396,6 +396,60 @@ Specialist names: abjurer, conjurer, diviner, enchanter, evoker, illusionist, ne
 - Only the **caster of a divine scroll** may transcribe it for use; written spells revert to divine form after deciphering by anyone, but only divine casters with that spell on their class list may then cast.
 - New divine spell research: same procedure as arcane research; some clerics share with their faith, others guard them.
 
+## Polymorph sub-rules (shape-changing)
+
+The shared mechanic behind *alter self*, *polymorph* and the druid's wild shape. Sourced from the *alter self* and *polymorph* entries in [src/data/spells.json](../../src/data/spells.json) — *polymorph* is defined as "functions like *alter self*, except…", so the two must be read together. Wild shape layers its own exceptions on top; see [class-features.md](class-features.md) → Wild shape.
+
+### What the new form gives you
+
+Physical qualities only:
+
+- **Str, Dex and Con scores of the new form** (*polymorph*; plain *alter self* keeps your own).
+- **Natural size**, with the size change flowing into AC, attack rolls, grapple and carrying capacity.
+- **Natural armor bonus** of the form.
+- **Natural weapons** (claw, bite, gore…). Extra limbs do **not** grant extra attacks.
+- **Mundane movement modes** — burrow, climb, walk, swim, winged flight. Capped at **120 ft flying / 60 ft non-flying**.
+- **Racial skill bonuses** and **racial bonus feats** of the form.
+- Gross physical qualities (wings, number of limbs).
+- **All extraordinary special *attacks*** of the form (*polymorph* only).
+
+### What you keep
+
+- **Class and level, hit points, alignment, base attack bonus, base save bonuses.** Only the *ability modifiers* layered on those change — the base numbers do not.
+- **Int, Wis and Cha** scores.
+- All **supernatural and spell-like** attacks and qualities of your *normal* form, except any needing a body part the new form lacks (a mouth for a breath weapon, eyes for a gaze).
+- Extraordinary attacks and qualities **derived from class levels**. You lose those from your normal form that are not.
+- Spellcasting ability — but see the component restriction below.
+
+### What you do NOT get
+
+- The form's extraordinary special **qualities**: darkvision, low-light vision, blindsense, blindsight, fast healing, regeneration, **scent**, and so on. This is the most commonly mis-applied clause — a wolf form grants the bite, not the scent.
+- Any **supernatural or spell-like** ability of the new form.
+- The form's Hit Dice, BAB, skill ranks or (non-racial) feats.
+
+### Hit points
+
+- Hit points **do not change**: they stay computed from your own Constitution, even though the form's Con applies to Fortitude saves and Con checks.
+- *Polymorph* and wild shape additionally **restore hit points as if you had rested for a night** on assuming the form — `1 HP per character level`, per [combat.md](combat.md) → Natural healing. Changing back heals nothing further.
+- If slain while transformed, the subject reverts to its original form but stays dead.
+
+### Casting while transformed
+
+- The new form must be **able to speak intelligibly** to use verbal components, and must have **limbs capable of fine manipulation** for somatic or material components.
+- An animal form fails both, so a transformed druid cannot cast — which is what the **Natural Spell** feat exists to bypass.
+
+### Equipment
+
+- On changing, each item either **remains worn or held** (if the new form can wear or hold it) or **melds into the form and becomes nonfunctional**. An animal form melds essentially everything, so worn armor stops contributing AC and held weapons stop being usable.
+- On reverting, melded objects reappear in place and work again. Items donned in the assumed form that the true form cannot wear fall to the ground.
+
+### Limits
+
+- Assumed form's **HD may not exceed the caster level** (or the subject's HD, whichever is lower); *polymorph* caps at 15 HD. Wild shape caps at the **druid's class level** instead.
+- No form smaller than Fine; no incorporeal or gaseous forms; no creature carrying a template.
+- Incorporeal and gaseous creatures cannot be polymorphed. A creature with the **shapechanger** subtype can revert as a standard action.
+- *Polymorph* changes the subject's **creature type and subtype** to match the form; plain *alter self* does not.
+
 ## Cross-references
 
 - [spell-components.md](spell-components.md) — V/S/M/F/DF/XP details, suffix codes.
@@ -403,7 +457,7 @@ Specialist names: abjurer, conjurer, diviner, enchanter, evoker, illusionist, ne
 - [counterspelling.md](counterspelling.md) — readying, identification, *dispel magic* counter.
 - [metamagic.md](metamagic.md) — slot adjustment, prep timing, casting time differences.
 - [special-abilities.md](special-abilities.md) — Sp / Su / Ex / Natural categorization.
-- [class-features.md](class-features.md) — domain spells, spontaneous swap, familiar, animal companion.
+- [class-features.md](class-features.md) — domain spells, spontaneous swap, familiar, animal companion, wild shape.
 - [combat.md](combat.md) — touch spells, AoO from casting, defensive casting.
 - [conditions.md](conditions.md) — referenced statuses (blinded, paralyzed, etc.).
 - [saving-throws.md](saving-throws.md) — save DC, save effects.
@@ -415,3 +469,4 @@ Specialist names: abjurer, conjurer, diviner, enchanter, evoker, illusionist, ne
 
 - Manuale del Giocatore — pp. 8–10, 23, 32, 43–44, 55–56
 - Manuale del Giocatore — pp. 169–183 (casting, concentration, counterspelling, spell description anatomy, schools, wizard prep, sorcerer/bard prep, divine prep, scribing, combining effects, raise dead level loss, spell suffixes, HD/caster level conventions)
+- [src/data/spells.json](../../src/data/spells.json) — the *alter self* and *polymorph* entries, source of the polymorph sub-rules section above

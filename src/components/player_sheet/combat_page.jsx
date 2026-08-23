@@ -222,17 +222,31 @@ export default function CombatPage() {
   const punchAttack = bab + strMod + (player.getAttackConditionModifier?.() ?? 0);
   const punchDamage = player.getPunchDamage?.() ?? '1d3';
 
-  // Condition-caused deltas for the displayed combat stats (empty when none).
-  const condDeltas = player.getConditionStatDeltas?.() ?? {};
+  // Change to each displayed stat caused by temporary effects — conditions,
+  // rage, or an assumed wild-shape form. Empty when none are active. The sign
+  // drives the green/red glow, so these stay numbers rather than booleans.
+  const condDeltas = player.getTemporaryStatDeltas?.() ?? {};
   const fmtDelta = (d) => `${d > 0 ? '+' : ''}${d}`;
-  const condNote = (d) => (d ? <span className="sh-stat-cond-note" style={{ display: 'block' }}>cond {fmtDelta(d)}</span> : null);
+  const condNote = (d) => (d
+    ? (
+      <span
+        className={`sh-stat-cond-note ${d > 0 ? 'sh-stat-cond-note--up' : 'sh-stat-cond-note--down'}`}
+        style={{ display: 'block' }}
+      >
+        {fmtDelta(d)}
+      </span>
+    )
+    : null);
   const withCond = (baseSub, d) => {
     const note = condNote(d);
     if (!note) return baseSub;
     return baseSub != null ? <>{baseSub}{note}</> : note;
   };
+  // AC glows on the full-AC delta, falling back to touch/flat when only those
+  // moved (a natural-armour form raises AC and flat but never touch).
+  const acDelta = condDeltas.ac || condDeltas.acFlat || condDeltas.acTouch || 0;
   const acCondAffected = !!(condDeltas.ac || condDeltas.acTouch || condDeltas.acFlat);
-  const condBaseline = player.getConditionBaseline?.() ?? null;
+  const condBaseline = player.getTemporaryBaseline?.() ?? null;
   const punchAtkAffected = condBaseline ? (condBaseline.getBaseAttackBonus() + condBaseline.getStrMod()) !== punchAttack : false;
   const punchDmgAffected = condBaseline ? condBaseline.getPunchDamage() !== punchDamage : false;
 
@@ -498,12 +512,12 @@ export default function CombatPage() {
           accent
           label="AC"
           value={ac}
-          cond={acCondAffected}
+          cond={acDelta}
           sub={
             <>
               <span style={{ display: 'block' }}>touch {acTouch}</span>
               <span style={{ display: 'block' }}>flat {acFlat}</span>
-              {acCondAffected && condNote(condDeltas.ac || 0)}
+              {acCondAffected && condNote(acDelta)}
             </>
           }
           editing={editBonus === 'ac'}
@@ -512,7 +526,7 @@ export default function CombatPage() {
         <StatPill
           label="Init"
           value={totalInitiative >= 0 ? `+${totalInitiative}` : `${totalInitiative}`}
-          cond={!!condDeltas.initiative}
+          cond={condDeltas.initiative || 0}
           sub={withCond(initiativeBonus !== 0 ? `bonus ${initiativeBonus >= 0 ? '+' : ''}${initiativeBonus}` : null, condDeltas.initiative || 0)}
           editing={editBonus === 'initiativeBonus'}
           onEdit={() => toggleEditBonus('initiativeBonus')}
@@ -520,7 +534,7 @@ export default function CombatPage() {
         <StatPill
           label="Speed"
           value={speedDisplay}
-          cond={!!condDeltas.speed}
+          cond={condDeltas.speed || 0}
           sub={withCond(speedInfo?.hasReduction ? 'encumbered' : (speedBonus !== 0 ? `bonus +${speedBonus}` : null), condDeltas.speed || 0)}
           editing={editBonus === 'speedBonus'}
           onEdit={() => toggleEditBonus('speedBonus')}
@@ -533,7 +547,7 @@ export default function CombatPage() {
         <StatPill
           label="Fort"
           value={totalFort >= 0 ? `+${totalFort}` : totalFort}
-          cond={!!condDeltas.fort}
+          cond={condDeltas.fort || 0}
           sub={withCond(fortBonus ? `bonus ${fortBonus >= 0 ? '+' : ''}${fortBonus}` : null, condDeltas.fort || 0)}
           editing={editBonus === 'fortBonus'}
           onEdit={() => toggleEditBonus('fortBonus')}
@@ -541,7 +555,7 @@ export default function CombatPage() {
         <StatPill
           label="Ref"
           value={totalRef >= 0 ? `+${totalRef}` : totalRef}
-          cond={!!condDeltas.reflex}
+          cond={condDeltas.reflex || 0}
           sub={withCond(reflexBonus ? `bonus ${reflexBonus >= 0 ? '+' : ''}${reflexBonus}` : null, condDeltas.reflex || 0)}
           editing={editBonus === 'reflexBonus'}
           onEdit={() => toggleEditBonus('reflexBonus')}
@@ -549,7 +563,7 @@ export default function CombatPage() {
         <StatPill
           label="Will"
           value={totalWill >= 0 ? `+${totalWill}` : totalWill}
-          cond={!!condDeltas.will}
+          cond={condDeltas.will || 0}
           sub={withCond(willBonus ? `bonus ${willBonus >= 0 ? '+' : ''}${willBonus}` : null, condDeltas.will || 0)}
           editing={editBonus === 'willBonus'}
           onEdit={() => toggleEditBonus('willBonus')}

@@ -231,11 +231,13 @@ Shared sub-systems (familiar, animal companion, special mount, turn undead, wild
 - Maximum HD of assumed form = druid level.
 - The druid must have personally seen the kind of animal.
 - **Mechanics of the change** — uses *polymorph* sub-rules:
-  - HP and class/feats retained; ability scores become the form's; size changes accordingly.
-  - Gain the form's natural attacks, movement modes, extraordinary and supernatural abilities for movement/senses (per polymorph rules in [magic.md](magic.md) once written).
-  - Cannot cast spells (no verbal/somatic ability in animal form unless the form can speak). Druid spell-like abilities and supernatural class features remain usable except where shape prevents.
-  - Equipment merges into the form (does not function unless the form can use it).
-- **Uses/day** progresses by level.
+  - **Str/Dex/Con become the form's**; Int/Wis/Cha stay the druid's. Class, level, **hit points**, BAB and base saves are all retained — only the ability modifiers layered on them change.
+  - Gain the form's natural attacks, natural armor, size and movement modes — but **not** its extraordinary special *qualities* (scent, low-light vision) nor any Su/Sp ability. Full detail in [magic.md](magic.md) → Polymorph sub-rules.
+  - **Each use restores HP as if rested for a night** (`1 HP per character level`). Changing back heals nothing.
+  - Cannot cast spells: the druid loses speech in animal form, so verbal components fail. The **Natural Spell** feat removes this restriction. Supernatural and spell-like class features remain usable except where the shape prevents them.
+  - Equipment melds into the form and becomes nonfunctional — worn armor stops contributing AC, held weapons stop being usable. It reappears intact on reverting.
+- **Uses/day** progresses by level; changing back is free and does not cost a use.
+- Elemental forms (16th+) are the exception to the "no Su/Sp" rule: the druid **does** gain the elemental's extraordinary, supernatural and spell-like abilities and its feats, while keeping her own creature type.
 
 ## Turn / rebuke undead (cleric / paladin sub-system)
 

@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 
-export default function StarOrbitCast({ remaining = 0, total = 1, onClick }) {
+export default function StarOrbitCast({ remaining = 0, total = 1, onClick, blocked = false, blockedReason = '' }) {
   const empty = remaining <= 0;
+  const disabled = empty || blocked;
   const n = Math.min(Math.max(remaining, 0), 9);
   const [casting, setCasting] = useState(false);
 
   const handleClick = (e) => {
-    if (empty) return;
+    if (disabled) return;
     setCasting(true);
     setTimeout(() => setCasting(false), 340);
     onClick?.(e);
@@ -19,10 +20,14 @@ export default function StarOrbitCast({ remaining = 0, total = 1, onClick }) {
       className={
         'orbit-cast' +
         (empty ? ' is-empty' : '') +
+        (blocked ? ' is-blocked' : '') +
         (casting ? ' casting' : '')
       }
-      aria-label={empty ? 'No slots remaining' : `Cast spell (${remaining} of ${total} left)`}
-      disabled={empty}
+      aria-label={blocked
+        ? (blockedReason || 'Cannot cast right now')
+        : (empty ? 'No slots remaining' : `Cast spell (${remaining} of ${total} left)`)}
+      title={blocked ? blockedReason || undefined : undefined}
+      disabled={disabled}
       onClick={handleClick}
       style={{ '--star-count': n || 1 }}
     >
@@ -47,4 +52,7 @@ StarOrbitCast.propTypes = {
   remaining: PropTypes.number,
   total: PropTypes.number,
   onClick: PropTypes.func,
+  /** Disable casting for a reason other than an empty slot (e.g. wild shape). */
+  blocked: PropTypes.bool,
+  blockedReason: PropTypes.string,
 };
