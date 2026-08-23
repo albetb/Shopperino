@@ -1,0 +1,57 @@
+/* Bardic performance list (bardic_music_card.jsx).
+   All sizing is in rem per the CSS convention in CLAUDE.md. */
+
+.bardic-performances {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bardic-performance {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding-top: var(--space-2);
+  border-top: 0.0625rem solid var(--border-soft);
+}
+
+.bardic-performance:first-child {
+  padding-top: 0;
+  border-top: none;
+}
+
+/* Not yet gained: dimmed but still readable, so the bard can see what is next. */
+.bardic-performance.is-locked {
+  opacity: 0.55;
+}
+
+.bardic-performance-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.bardic-performance-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+}
+
+.bardic-performance-tags {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.bardic-performance-summary {
+  font-size: var(--font-size-xs);
+  line-height: 1.35;
+}

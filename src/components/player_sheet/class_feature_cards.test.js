@@ -8,10 +8,11 @@ describe('class feature card registry', () => {
     expect(keysFor('Druid', 20)).toEqual(['animalCompanion']);
   });
 
-  test('rangers only get an animal companion from level 4', () => {
-    expect(keysFor('Ranger', 3)).toEqual([]);
-    expect(keysFor('Ranger', 4)).toEqual(['animalCompanion']);
-    expect(keysFor('Ranger', 20)).toEqual(['animalCompanion']);
+  test('ranger cards arrive one at a time, each at its own level', () => {
+    expect(keysFor('Ranger', 1)).toEqual(['favoredEnemy']);
+    expect(keysFor('Ranger', 2)).toEqual(['favoredEnemy', 'combatStyle']);
+    expect(keysFor('Ranger', 4)).toEqual(['favoredEnemy', 'combatStyle', 'animalCompanion']);
+    expect(keysFor('Ranger', 20)).toEqual(['favoredEnemy', 'combatStyle', 'animalCompanion']);
   });
 
   test('wizards and sorcerers get a familiar', () => {
@@ -24,9 +25,9 @@ describe('class feature card registry', () => {
     expect(keysFor('Barbarian', 20)).toEqual(['rage']);
   });
 
-  test('clerics turn undead at any level', () => {
-    expect(keysFor('Cleric', 1)).toEqual(['turnUndead']);
-    expect(keysFor('Cleric', 20)).toEqual(['turnUndead']);
+  test('clerics turn undead and see their domains at any level', () => {
+    expect(keysFor('Cleric', 1)).toEqual(['turnUndead', 'domains']);
+    expect(keysFor('Cleric', 20)).toEqual(['turnUndead', 'domains']);
   });
 
   test('paladin cards arrive one at a time, each at its own level', () => {
@@ -37,8 +38,19 @@ describe('class feature card registry', () => {
     expect(keysFor('Paladin', 6)).toEqual(['smiteEvil', 'layOnHands', 'turnUndead', 'removeDisease']);
   });
 
+  test('monks get stunning fist at once and wholeness of body from 7th', () => {
+    expect(keysFor('Monk', 1)).toEqual(['stunningFist']);
+    expect(keysFor('Monk', 6)).toEqual(['stunningFist']);
+    expect(keysFor('Monk', 7)).toEqual(['stunningFist', 'wholenessOfBody']);
+  });
+
+  test('bards get bardic music at any level', () => {
+    expect(keysFor('Bard', 1)).toEqual(['bardicMusic']);
+    expect(keysFor('Bard', 20)).toEqual(['bardicMusic']);
+  });
+
   test('every registered entry carries a renderable component', () => {
-    ['Barbarian', 'Cleric', 'Druid', 'Paladin', 'Ranger', 'Wizard', 'Sorcerer'].forEach((cls) => {
+    ['Barbarian', 'Bard', 'Cleric', 'Druid', 'Monk', 'Paladin', 'Ranger', 'Wizard', 'Sorcerer'].forEach((cls) => {
       getClassFeatureCards(cls, 20).forEach((entry) => {
         expect(typeof entry.Component).toBe('function');
         expect(typeof entry.key).toBe('string');
@@ -47,7 +59,7 @@ describe('class feature card registry', () => {
   });
 
   test('classes with no registered cards render nothing', () => {
-    ['Fighter', 'Rogue', 'Monk', 'Bard'].forEach((cls) => {
+    ['Fighter', 'Rogue'].forEach((cls) => {
       expect(getClassFeatureCards(cls, 20)).toEqual([]);
     });
   });

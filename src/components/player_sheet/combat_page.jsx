@@ -236,6 +236,15 @@ export default function CombatPage() {
   const punchAtkAffected = condBaseline ? (condBaseline.getBaseAttackBonus() + condBaseline.getStrMod()) !== punchAttack : false;
   const punchDmgAffected = condBaseline ? condBaseline.getPunchDamage() !== punchDamage : false;
 
+  // Flurry of blows: an extra attack at the highest BAB, with a blanket
+  // penalty on every attack. Only unarmed strikes and monk weapons qualify,
+  // so each equipped weapon is tested individually by the model.
+  const flurry = player.getFlurryOfBlows?.() ?? { extraAttacks: 0, penalty: 0 };
+  const flurryWeapons = equippedWeapons.filter((w) =>
+    player.isFlurryWeapon?.({ weaponItem: w.weaponItem, isTwoHanded: w.isTwoHanded }) ?? false);
+  // With nothing equipped the monk is punching, which always qualifies.
+  const flurryUnarmed = flurry.extraAttacks > 0 && equippedWeapons.length === 0;
+
   const speedInfo = player.getArmorSpeedInfo?.();
   const speedDisplay = speedInfo?.hasReduction
     ? `${speedInfo.reducedSpeed} / ${speedInfo.originalSpeed} ft`
@@ -597,6 +606,48 @@ export default function CombatPage() {
                       <Pill tone={atkAffected ? 'warn' : 'accent'}>{ab >= 0 ? '+' : ''}{ab}</Pill>
                       <Pill tone={dmgAffected ? 'warn' : 'default'}>{dmg}</Pill>
                     </span>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+          {(flurryUnarmed || flurryWeapons.length > 0) && (
+            <div
+              className="sh-stack"
+              style={{
+                gap: 'var(--space-1)',
+                borderTop: '0.0625rem solid var(--border-soft)',
+                paddingTop: 'var(--space-2)',
+                marginTop: 'var(--space-2)',
+              }}
+              title="A full-round action. Every attack in the flurry, including the extra one, takes the listed penalty. Usable only with unarmed strikes and monk weapons — a quarterstaff qualifies only when wielded two-handed."
+            >
+              <div className="sh-row-h sh-spread" style={{ gap: 'var(--space-3)' }}>
+                <span className="sh-display">Flurry of blows</span>
+                <span className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
+                  <Pill tone="accent">
+                    +{flurry.extraAttacks} attack{flurry.extraAttacks === 1 ? '' : 's'}
+                  </Pill>
+                  <Pill tone={flurry.penalty < 0 ? 'warn' : 'default'}>
+                    {flurry.penalty === 0 ? 'no penalty' : `${flurry.penalty} to all`}
+                  </Pill>
+                  <Icon name="info" />
+                </span>
+              </div>
+              {flurryUnarmed ? (
+                <div className="sh-row-h sh-spread sh-faint" style={{ gap: 'var(--space-3)' }}>
+                  <span>Punch</span>
+                  <Pill tone="ghost">
+                    {punchAttack + flurry.penalty >= 0 ? '+' : ''}{punchAttack + flurry.penalty}
+                  </Pill>
+                </div>
+              ) : flurryWeapons.map((w) => {
+                const wd = { weaponItem: w.weaponItem, isTwoHanded: w.isTwoHanded, itemData: w };
+                const flurried = calculateWeaponAttackBonus(player, wd) + flurry.penalty;
+                return (
+                  <div key={`flurry-${w.link}-${w.slot}`} className="sh-row-h sh-spread sh-faint" style={{ gap: 'var(--space-3)' }}>
+                    <span>{w.name}</span>
+                    <Pill tone="ghost">{flurried >= 0 ? '+' : ''}{flurried}</Pill>
                   </div>
                 );
               })}

@@ -1,0 +1,45 @@
+/* Cleric domain granted powers (domains_card.jsx).
+   All sizing is in rem per the CSS convention in CLAUDE.md. */
+
+.domains-card {
+  gap: var(--space-3);
+}
+
+.domains-card-slot {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding-top: var(--space-2);
+  border-top: 0.0625rem solid var(--border-soft);
+}
+
+.domains-card-slot:first-child {
+  padding-top: 0;
+  border-top: none;
+}
+
+.domains-card-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.domains-card-name {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+}
+
+/* The granted power arrives as HTML paragraphs from tables.json. */
+.domains-card-power {
+  font-size: var(--font-size-xs);
+  line-height: 1.4;
+}
+
+.domains-card-power p {
+  margin: 0 0 var(--space-1);
+}
+
+.domains-card-power p:last-child {
+  margin-bottom: 0;
+}

@@ -1,10 +1,10 @@
 import { useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { onAddBonusLanguage, onRemoveBonusLanguage } from '../../store/thunks/playerSheetThunks';
-import { onSetPlayerAlignment } from '../../store/thunks/playerSheetThunks';
+import { onSetPlayerAlignment, onSetExClass } from '../../store/thunks/playerSheetThunks';
 import { getClassData, getRaceData } from '../../lib/player';
 import { getAllowedEthics, getAllowedMorals } from '../../lib/alignment';
-import { getClassStats, renderFeature } from './class_cards';
+import { getClassStats, renderFeature, ClassFeaturePills } from './class_cards';
 import StatBar from './stat_bar';
 import Card from '../common/Card';
 import Filigree from '../common/Filigree';
@@ -12,6 +12,8 @@ import Pill from '../common/Pill';
 import Button from '../common/Button';
 import IconButton from '../common/IconButton';
 import EmptyState from '../common/EmptyState';
+import Icon from '../common/Icon';
+import Switch from '../common/Switch';
 import '../../style/player_sheet.css';
 
 const FEATURE_CARD_KEYS = ['alignment', 'languages', 'weaponArmor', 'racialTraits', 'classTraits'];
@@ -105,6 +107,13 @@ export default function FeaturesPage() {
       f => !String(f).trimStart().startsWith('Weapon and Armor Proficiency')
     );
   }, [classData]);
+  // The short entries carry the `[N]` gain-level markers the pills read; the
+  // long list stays as the description a pill expands into. Fall back to the
+  // long list for any class that has no short form.
+  const classShortFeatures = useMemo(() => {
+    const short = classData?.shortClassFeatures;
+    return Array.isArray(short) && short.length > 0 ? short : classFeaturesFiltered;
+  }, [classData, classFeaturesFiltered]);
 
   const [selectedLang, setSelectedLang] = useState('');
   const moralAlignment = player?.moralAlignment ?? 'Neutral';
@@ -114,6 +123,9 @@ export default function FeaturesPage() {
   const currentMoral = allowedMorals.includes(moralAlignment) ? moralAlignment : allowedMorals[0];
   const currentEthical = allowedEthics.includes(ethicalAlignment) ? ethicalAlignment : allowedEthics[0];
   const setAlignment = (key, value) => dispatch(onSetPlayerAlignment(key, value));
+  const alignmentWarnings = player?.getAlignmentWarnings?.() ?? [];
+  const hasCodeOfConduct = player?.hasCodeOfConduct?.() ?? false;
+  const isExClass = player?.isExClass?.() ?? false;
   const alignmentTitle = currentMoral === 'Neutral' && currentEthical === 'Neutral'
     ? 'Neutral'
     : `${currentEthical} ${currentMoral}`;
@@ -196,6 +208,40 @@ export default function FeaturesPage() {
               {allowedMorals.map(m => <option key={m} value={m}>{m}</option>)}
             </select>
           </label>
+
+          {/* Warnings only: the selection above is never restricted, per the
+              non-enforcing rule in CLAUDE.md. */}
+          {alignmentWarnings.map(w => (
+            <div key={w.code + w.message} className="sh-warn-strip">
+              <Icon name="warning" />
+              {w.message}
+            </div>
+          ))}
+
+          {hasCodeOfConduct && (
+            <>
+              <label
+                className="sh-field"
+                style={{ flexDirection: 'row', alignItems: 'center', gap: 'var(--space-2)' }}
+              >
+                <span className="sh-label" style={{ flex: '0 0 40%' }}>Code broken</span>
+                <span style={{ flex: '0 0 60%' }}>
+                  <Switch
+                    checked={isExClass}
+                    aria-label={`Mark ${className} as fallen`}
+                    onChange={(value) => dispatch(onSetExClass(value))}
+                  />
+                </span>
+              </label>
+              {isExClass && (
+                <div className="sh-warn-strip">
+                  <Icon name="gavel" />
+                  Class features are lost until atonement. The sheet still shows
+                  them — track the loss at the table.
+                </div>
+              )}
+            </>
+          )}
         </div>
       </CollapsibleCard>
 
@@ -315,7 +361,11 @@ export default function FeaturesPage() {
                 </div>
               )}
               <div className="player-sheet-class-features">
-                {classFeaturesFiltered.map((text, idx) => renderFeature(text, idx))}
+                <ClassFeaturePills
+                  features={classShortFeatures}
+                  longFeatures={classFeaturesFiltered}
+                  level={player?.getLevel?.() ?? 1}
+                />
               </div>
             </>
           )}

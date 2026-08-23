@@ -421,6 +421,46 @@ export const onToggleRage = () => (dispatch, getState) => {
   persistPlayer(dispatch, getState, player);
 };
 
+/** Name a new ranger favored enemy, spending a slot. */
+export const onAddFavoredEnemy = (type, subtype = null) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player?.addFavoredEnemy(type, subtype)) return;
+  persistPlayer(dispatch, getState, player);
+};
+
+/** Spend a slot raising an existing favored enemy by one step. */
+export const onRaiseFavoredEnemy = (index) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player?.raiseFavoredEnemy(index)) return;
+  persistPlayer(dispatch, getState, player);
+};
+
+/** Drop a favored enemy, returning every slot it held. */
+export const onRemoveFavoredEnemy = (index) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player) return;
+  player.removeFavoredEnemyAt(index);
+  persistPlayer(dispatch, getState, player);
+};
+
+/**
+ * Mark or clear the fallen state (ex-paladin, ex-monk, …). Display only: no
+ * derived value changes, the sheet simply says the features are lost.
+ */
+export const onSetExClass = (value) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player) return;
+  player.setExClass(value);
+  persistPlayer(dispatch, getState, player);
+};
+
+/** Choose the ranger's combat style. Permanent in the rules, set once here. */
+export const onSetCombatStyle = (style) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player?.setCombatStyle(style)) return;
+  persistPlayer(dispatch, getState, player);
+};
+
 export const onPlayerPrepareDomainSpell = (level, spell_link) => (dispatch, getState) => {
   withPlayerSpellbook(getState, (s) => s.prepareDomainSpell(level, spell_link));
   const player = getState().playerSheet?.player;

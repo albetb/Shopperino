@@ -146,6 +146,19 @@ function monkUnarmedDamage(level, size) {
 }
 
 /**
+ * Convert an armor speed entry to feet. items.json stores these metric
+ * ("6m", "4.5m") while every speed the sheet computes is in feet, so the
+ * two have to be reconciled somewhere. Uses the D&D square as the bridge:
+ * 1.5 m = 5 ft, giving 9 m → 30, 6 m → 20 and 4.5 m → 15.
+ * @returns {number|null} feet, or null when the entry is unparseable.
+ */
+function metersToFeet(value) {
+  const meters = parseFloat(String(value));
+  if (!Number.isFinite(meters)) return null;
+  return Math.round((meters / 1.5) * 5);
+}
+
+/**
  * Turning check result → the most powerful undead affected, as an offset from
  * the turner's effective level (SRD, Table: Turning Undead). Entries are
  * `[minimum check result, HD offset]`, read from the highest qualifying row.
@@ -214,6 +227,17 @@ class Player {
        condition: it grants bonuses instead of penalties and ends by choice, so
        it is not part of the condition subsystem. Its aftermath (Fatigued) is. */
     this.raging = false;
+    /* Ranger favored enemies, in selection order. Each entry is
+       { type, subtype?, bonus }; the bonus rises in steps of 2 when a later
+       slot is spent raising an existing enemy rather than naming a new one. */
+    this.favoredEnemies = [];
+    /* Ranger combat style: 'Archery' or 'Two-Weapon Fighting', chosen once at
+       2nd level and permanent thereafter. Null until chosen. */
+    this.combatStyle = null;
+    /* Set when the character has broken their class's code or alignment
+       requirement. Display only: the sheet says the features are lost until
+       atonement, but every derived value stays as it was. */
+    this.exClass = false;
     this.equipment = {}; // { lh1, rh1, lh2, rh2, set1, set2, armor, other1, other2, other3, other4 }
     this.speedBonus = 0;
     this.initiativeBonus = 0;
@@ -373,6 +397,22 @@ class Player {
 
     if (data.raging !== undefined) this.raging = !!data.raging;
 
+    if (typeof data.combatStyle === 'string' && data.combatStyle.trim() !== '') {
+      this.combatStyle = data.combatStyle.trim();
+    }
+    if (data.exClass !== undefined) this.exClass = !!data.exClass;
+
+    if (Array.isArray(data.favoredEnemies)) {
+      const step = Number(getClassProgression(data.class ?? this.class).favoredEnemyBonusStep) || 2;
+      this.favoredEnemies = data.favoredEnemies
+        .filter((e) => e && typeof e.type === 'string' && e.type.trim() !== '')
+        .map((e) => {
+          const entry = { type: e.type.trim(), bonus: Math.max(step, Math.floor(Number(e.bonus)) || step) };
+          if (typeof e.subtype === 'string' && e.subtype.trim() !== '') entry.subtype = e.subtype.trim();
+          return entry;
+        });
+    }
+
     if (data.equipment && typeof data.equipment === 'object') {
       this.equipment = {};
       for (const [slot, entry] of Object.entries(data.equipment)) {
@@ -507,6 +547,11 @@ class Player {
       gnomeSpellUses: this.gnomeSpellUses && typeof this.gnomeSpellUses === 'object' ? { ...this.gnomeSpellUses } : {},
       classFeatureUses: this.classFeatureUses && typeof this.classFeatureUses === 'object' ? { ...this.classFeatureUses } : {},
       raging: !!this.raging,
+      favoredEnemies: Array.isArray(this.favoredEnemies)
+        ? this.favoredEnemies.map((e) => ({ ...e }))
+        : [],
+      combatStyle: this.combatStyle || null,
+      exClass: !!this.exClass,
       equipment: this.equipment && typeof this.equipment === 'object' ? { ...this.equipment } : {},
       inventory: Array.isArray(this.inventory) ? this.inventory.map((item) => ({ ...item })) : [],
       speedBonus: typeof this.speedBonus === 'number' ? this.speedBonus : 0,
@@ -1148,8 +1193,6 @@ class Player {
    * load or lighter. The monk's unarmored speed bonus has the same shape with a
    * stricter armor gate. Both the value and the gate live in classes.json.
    *
-   * Only the Barbarian branch of getBaseSpeed reads this today; the Monk branch
-   * keeps its own ungated formula until the monk feature set lands.
    */
   getFastMovementBonus() {
     const bonus = Number(getProgressionValue(this.class, 'fastMovement', this.getLevel(), 0)) || 0;
@@ -1169,21 +1212,15 @@ class Player {
   }
 
   /**
-   * Base land speed (feet). From race; Barbarian +10 when unencumbered and in
-   * light armor or none; Monk +10 at 3, +20 at 6, +30 at 9, +40 at 12, +50 at 15, +60 at 18.
+   * Base land speed (feet). From race, plus the class fast-movement bonus when
+   * the character qualifies for it: Barbarian +10 in light armor or none at a
+   * light load or lighter, Monk +10 at 3rd rising to +60 at 18th, unarmored.
    */
   getBaseSpeed() {
     const races = loadFile('races');
     const base = Number(races?.[this.race]?.landSpeed) || 30;
-    const data = getClassData(this.class);
-    if (!data) return base;
-    if (this.class === 'Barbarian') return base + this.getFastMovementBonus();
-    if (this.class === 'Monk') {
-      const level = this.getLevel();
-      const monkBonus = 10 * Math.min(6, Math.floor(level / 3));
-      return base + monkBonus;
-    }
-    return base;
+    if (!getClassData(this.class)) return base;
+    return base + this.getFastMovementBonus();
   }
 
   /**
@@ -1213,14 +1250,14 @@ class Player {
       return { hasReduction: false, originalSpeed: this.getTotalSpeed(), reducedSpeed: this.getTotalSpeed() };
     }
 
-    const key = raceLandSpeed === 20 ? 'Speed (20ft)' : 'Speed (30ft)';
+    const key = raceLandSpeed === 20 ? 'Speed (6m)' : 'Speed (9m)';
     const armorSpeedStr = armor[key];
     if (!armorSpeedStr) {
       return { hasReduction: false, originalSpeed: this.getTotalSpeed(), reducedSpeed: this.getTotalSpeed() };
     }
 
-    const armorSpeed = parseInt(armorSpeedStr, 10);
-    if (isNaN(armorSpeed) || armorSpeed >= raceLandSpeed) {
+    const armorSpeed = metersToFeet(armorSpeedStr);
+    if (armorSpeed === null || armorSpeed >= raceLandSpeed) {
       return { hasReduction: false, originalSpeed: this.getTotalSpeed(), reducedSpeed: this.getTotalSpeed() };
     }
 
@@ -1529,6 +1566,436 @@ class Player {
     return this.moralAlignment === 'Evil';
   }
 
+  // —— Alignment and code of conduct ——
+
+  /**
+   * Whether the character has fallen: a paladin who breaks the code, a monk
+   * who stops being lawful, and so on. Display only — the model keeps every
+   * derived value intact, per the non-enforcing rule in CLAUDE.md.
+   */
+  isExClass() {
+    return !!this.exClass;
+  }
+
+  /** Mark or clear the fallen state. Cleared by atonement in the fiction. */
+  setExClass(value) {
+    this.exClass = !!value;
+  }
+
+  /** Whether the class carries a code of conduct that can be broken. */
+  hasCodeOfConduct() {
+    return !!getClassProgression(this.class).hasCodeOfConduct;
+  }
+
+  /**
+   * Alignment problems with the current class, as `{ code, message }` entries.
+   * Empty when nothing is wrong.
+   *
+   * Four rules, all data-driven: a required alignment (paladin, monk), a
+   * forbidden one (barbarian, bard), a class needing one neutral axis (druid),
+   * and a cleric holding an alignment domain that does not match them.
+   *
+   * The cleric's "within one step of their deity" rule is not checked: the
+   * model stores no deity to compare against.
+   */
+  getAlignmentWarnings() {
+    const prog = getClassProgression(this.class);
+    const ethical = this.ethicalAlignment || 'Neutral';
+    const moral = this.moralAlignment || 'Neutral';
+    const current = ethical === 'Neutral' && moral === 'Neutral'
+      ? 'True Neutral'
+      : `${ethical} ${moral}`;
+    const warnings = [];
+
+    const required = prog.alignmentRequired;
+    if (typeof required === 'string' && required) {
+      const [needEthical, needMoral] = required.split(' ');
+      if (ethical !== needEthical || (needMoral && moral !== needMoral)) {
+        warnings.push({
+          code: 'alignmentRequired',
+          message: `A ${this.class} must be ${required}, not ${current}.`,
+        });
+      }
+    }
+
+    const forbidden = prog.alignmentForbidden;
+    if (typeof forbidden === 'string' && (ethical === forbidden || moral === forbidden)) {
+      warnings.push({
+        code: 'alignmentForbidden',
+        message: `A ${forbidden} character cannot advance as a ${this.class}.`,
+      });
+    }
+
+    if (prog.alignmentRequiresNeutralAxis && ethical !== 'Neutral' && moral !== 'Neutral') {
+      warnings.push({
+        code: 'neutralAxisRequired',
+        message: `A ${this.class} must be neutral on at least one axis; ${current} is neither.`,
+      });
+    }
+
+    const alignmentDomains = prog.alignmentDomains;
+    if (alignmentDomains) {
+      [this.domain1, this.domain2].forEach((domain) => {
+        const rule = domain ? alignmentDomains[domain] : null;
+        if (!rule) return;
+        const actual = rule.axis === 'ethical' ? ethical : moral;
+        if (actual !== rule.value) {
+          warnings.push({
+            code: 'alignmentDomainMismatch',
+            message: `The ${domain} domain needs a ${rule.value} cleric; this one is ${current}.`,
+          });
+        }
+      });
+    }
+
+    return warnings;
+  }
+
+  // —— Ranger ——
+
+  /**
+   * Favored enemy slots: one at 1st level and another every five levels, so
+   * `1 + floor(level / 5)`. Each slot either names a new enemy or raises an
+   * existing one. Zero for every other class.
+   */
+  getFavoredEnemySlotsMax() {
+    const levels = getClassProgression(this.class).favoredEnemyLevels;
+    if (!Array.isArray(levels)) return 0;
+    const level = this.getLevel();
+    return levels.filter((at) => Number(at) <= level).length;
+  }
+
+  /**
+   * Slots actually spent. An entry at +2 cost one slot, +4 cost two, and so
+   * on, since raising an existing enemy consumes a slot just as naming a new
+   * one does.
+   */
+  getFavoredEnemySlotsUsed() {
+    const step = Number(getClassProgression(this.class).favoredEnemyBonusStep) || 2;
+    return this.getFavoredEnemies()
+      .reduce((sum, entry) => sum + Math.max(1, Math.round(entry.bonus / step)), 0);
+  }
+
+  /** The chosen favored enemies, in selection order. Returns copies. */
+  getFavoredEnemies() {
+    return Array.isArray(this.favoredEnemies)
+      ? this.favoredEnemies.map((e) => ({ ...e }))
+      : [];
+  }
+
+  /** The creature types a favored enemy may be chosen from. */
+  getFavoredEnemyTypes() {
+    const types = getClassProgression(this.class).favoredEnemyTypes;
+    return Array.isArray(types) ? [...types] : [];
+  }
+
+  /** The subtypes available for a type, empty when it takes none. */
+  getFavoredEnemySubtypes(type) {
+    const map = getClassProgression(this.class).favoredEnemySubtypes;
+    const list = map?.[type];
+    return Array.isArray(list) ? [...list] : [];
+  }
+
+  /** Humanoids and outsiders are too broad to take whole: they need a subtype. */
+  favoredEnemyRequiresSubtype(type) {
+    const required = getClassProgression(this.class).favoredEnemySubtypeRequiredFor;
+    return Array.isArray(required) && required.includes(type);
+  }
+
+  /** The skills a favored enemy bonus applies to, against that enemy only. */
+  getFavoredEnemySkills() {
+    const skills = getClassProgression(this.class).favoredEnemySkills;
+    return Array.isArray(skills) ? [...skills] : [];
+  }
+
+  /** Whether a named skill is one the favored enemy bonus reaches. */
+  appliesFavoredEnemyBonusToSkill(skillName) {
+    return this.getFavoredEnemySkills()
+      .some((s) => s.toLowerCase() === String(skillName).trim().toLowerCase());
+  }
+
+  /**
+   * The bonus this character has against one creature type, applying both to
+   * the favored enemy skills and to weapon damage. Zero when the type is not
+   * a favored enemy. A subtype must match when the entry carries one.
+   */
+  getFavoredEnemyBonus(type, subtype = null) {
+    const wanted = String(type || '').trim().toLowerCase();
+    if (!wanted) return 0;
+    const wantedSub = subtype ? String(subtype).trim().toLowerCase() : null;
+    const match = this.getFavoredEnemies().find((e) => {
+      if (String(e.type).toLowerCase() !== wanted) return false;
+      if (!e.subtype) return true;
+      return wantedSub !== null && String(e.subtype).toLowerCase() === wantedSub;
+    });
+    return match ? match.bonus : 0;
+  }
+
+  /**
+   * Name a new favored enemy at the base bonus. Duplicates are rejected —
+   * raising an existing enemy is raiseFavoredEnemy, a different slot use.
+   * Going past the earned slots is allowed and flagged in the UI.
+   * @returns {boolean} whether it was added
+   */
+  addFavoredEnemy(type, subtype = null) {
+    const name = String(type || '').trim();
+    if (!name) return false;
+    const sub = subtype ? String(subtype).trim() : null;
+    if (!Array.isArray(this.favoredEnemies)) this.favoredEnemies = [];
+    const exists = this.favoredEnemies.some((e) =>
+      String(e.type).toLowerCase() === name.toLowerCase()
+      && String(e.subtype || '').toLowerCase() === String(sub || '').toLowerCase());
+    if (exists) return false;
+    const step = Number(getClassProgression(this.class).favoredEnemyBonusStep) || 2;
+    const entry = { type: name, bonus: step };
+    if (sub) entry.subtype = sub;
+    this.favoredEnemies.push(entry);
+    return true;
+  }
+
+  /** Spend a slot raising an existing favored enemy by one step. */
+  raiseFavoredEnemy(index) {
+    if (!Array.isArray(this.favoredEnemies)) return false;
+    const entry = this.favoredEnemies[index];
+    if (!entry) return false;
+    const step = Number(getClassProgression(this.class).favoredEnemyBonusStep) || 2;
+    entry.bonus = (Number(entry.bonus) || 0) + step;
+    return true;
+  }
+
+  /** Drop a favored enemy entirely, returning every slot it held. */
+  removeFavoredEnemyAt(index) {
+    if (!Array.isArray(this.favoredEnemies)) return;
+    if (index < 0 || index >= this.favoredEnemies.length) return;
+    this.favoredEnemies.splice(index, 1);
+  }
+
+  /** The combat styles a ranger may choose between, empty for other classes. */
+  getCombatStyleOptions() {
+    const styles = getClassProgression(this.class).combatStyle?.styles;
+    return styles ? Object.keys(styles) : [];
+  }
+
+  /** The level at which the combat style is chosen, 0 without the feature. */
+  getCombatStyleChoiceLevel() {
+    return Number(getClassProgression(this.class).combatStyle?.chooseLevel) || 0;
+  }
+
+  /** Whether the ranger is high enough level to have chosen a style. */
+  canChooseCombatStyle() {
+    const at = this.getCombatStyleChoiceLevel();
+    return at > 0 && this.getLevel() >= at;
+  }
+
+  /** The chosen combat style, or null when none is set or none is valid. */
+  getCombatStyle() {
+    const chosen = this.combatStyle;
+    if (!chosen) return null;
+    return this.getCombatStyleOptions().includes(chosen) ? chosen : null;
+  }
+
+  /**
+   * Set the combat style. Permanent in the rules, so the model accepts only a
+   * style the class actually offers; passing null clears it.
+   * @returns {boolean} whether the style was set
+   */
+  setCombatStyle(style) {
+    if (style === null || style === '') {
+      this.combatStyle = null;
+      return true;
+    }
+    if (!this.getCombatStyleOptions().includes(style)) return false;
+    this.combatStyle = style;
+    return true;
+  }
+
+  /**
+   * The feats the chosen style has granted by this level, in order. These come
+   * free of their normal prerequisites and are charged to neither feat budget,
+   * so they are deliberately not part of getFeats().
+   */
+  getCombatStyleFeats() {
+    const style = this.getCombatStyle();
+    if (!style) return [];
+    const table = getClassProgression(this.class).combatStyle?.styles?.[style];
+    if (!Array.isArray(table)) return [];
+    const level = this.getLevel();
+    return table
+      .filter((entry) => Array.isArray(entry) && Number(entry[0]) <= level)
+      .sort((a, b) => Number(a[0]) - Number(b[0]))
+      .map(([at, feat]) => ({ level: Number(at), feat }));
+  }
+
+  /**
+   * Whether the style's benefits are currently suppressed: they apply only in
+   * light armor or none. True only when a style is actually in play.
+   */
+  isCombatStyleSuppressed() {
+    if (!this.getCombatStyle()) return false;
+    if (!getClassProgression(this.class).combatStyle?.requiresLightArmor) return false;
+    const category = String(this.getEquippedArmorRaw()?.Category || '').toLowerCase();
+    return category !== '' && category !== 'light';
+  }
+
+  // —— Bard ——
+
+  /** Bardic music uses per day: a number equal to the bard's class level. */
+  getBardicMusicMax() {
+    return getProgressionValue(this.class, 'bardicMusicUsesPerDay', this.getLevel(), 0);
+  }
+
+  /**
+   * The bardic knowledge check modifier: bard level + Intelligence modifier,
+   * rolled on a d20 to recall a piece of legend or lore.
+   */
+  getBardicKnowledgeBonus() {
+    const ability = getClassProgression(this.class).bardicKnowledgeAbility;
+    if (!ability) return 0;
+    return this.getLevel() + this.getModifier(ability);
+  }
+
+  /** Save DC for the performances that allow one: `10 + half level + Cha`. */
+  getPerformanceSaveDc() {
+    if (!getClassProgression(this.class).performances) return 0;
+    return 10 + Math.floor(this.getLevel() / 2) + this.getChaMod();
+  }
+
+  /** The morale bonus inspire courage grants: +1, rising to +4 at 20th. */
+  getInspireCourageBonus() {
+    return getProgressionValue(this.class, 'inspireCourageBonus', this.getLevel(), 0);
+  }
+
+  /**
+   * Every bardic performance with its prerequisites and current availability.
+   * A performance unlocks on both class level and actual Perform ranks, so
+   * each entry reports the two gates separately — the UI shows a locked
+   * performance alongside the prerequisite holding it back rather than hiding it.
+   * @returns {Array<{name, level, performRanks, summary, saveDc, meetsLevel, meetsRanks, available}>}
+   */
+  getBardicPerformances() {
+    const performances = getClassProgression(this.class).performances;
+    if (!Array.isArray(performances)) return [];
+    const level = this.getLevel();
+    const ranks = this.getSkillRanks('Perform');
+    const saveDc = this.getPerformanceSaveDc();
+    return performances.map((p) => {
+      const meetsLevel = level >= (Number(p.level) || 1);
+      const meetsRanks = ranks >= (Number(p.performRanks) || 0);
+      return {
+        name: p.name,
+        level: Number(p.level) || 1,
+        performRanks: Number(p.performRanks) || 0,
+        summary: p.summary || '',
+        saveDc: p.hasSave ? saveDc : null,
+        meetsLevel,
+        meetsRanks,
+        available: meetsLevel && meetsRanks,
+      };
+    });
+  }
+
+  // —— Monk ——
+
+  /**
+   * Stunning fist attempts per day: a number equal to the monk's level.
+   * (The `1 per 4 levels` rate is what a non-monk gets from the feat.)
+   */
+  getStunningFistMax() {
+    return getProgressionValue(this.class, 'stunningFistUsesPerDay', this.getLevel(), 0);
+  }
+
+  /** Stunning fist save DC: `10 + half monk level + Wisdom modifier`. */
+  getStunningFistDc() {
+    if (this.getStunningFistMax() <= 0) return 0;
+    return 10 + Math.floor(this.getLevel() / 2) + this.getWisMod();
+  }
+
+  /**
+   * The damage reduction an unarmed strike bypasses: magic at 4th, lawful at
+   * 10th, adamantine at 16th. Null before that and for every other class.
+   */
+  getKiStrikeTier() {
+    return getProgressionValue(this.class, 'kiStrike', this.getLevel(), null);
+  }
+
+  /**
+   * The wholeness of body pool: `2 × monk level` hit points a day, from 7th
+   * level, which the monk spends on themselves in any split.
+   */
+  getWholenessOfBodyMax() {
+    const config = getClassProgression(this.class).wholenessOfBody;
+    if (!config || this.getLevel() < (Number(config.minLevel) || 1)) return 0;
+    return Math.max(0, this.getLevel() * (Number(config.hpPerLevel) || 0));
+  }
+
+  /** Hit points still in the wholeness of body pool. Never negative. */
+  getWholenessOfBodyRemaining() {
+    return Math.max(0, this.getWholenessOfBodyMax() - this.getClassFeatureUsed('wholenessOfBody'));
+  }
+
+  /**
+   * How much shorter a fall counts as, in feet, when the monk is within arm's
+   * reach of a wall: 20 ft at 4th, rising every two levels. At 20th the fall
+   * is ignored from any height, reported as Infinity. Zero below 4th.
+   */
+  getSlowFallDistance() {
+    const distance = getProgressionValue(this.class, 'slowFall', this.getLevel(), 0);
+    return distance === -1 ? Infinity : distance;
+  }
+
+  /**
+   * Flurry of blows: the extra attacks it grants at the highest base attack
+   * bonus, and the blanket penalty every attack in the flurry takes. The
+   * penalty eases from −2 to −1 at 5th and disappears at 9th.
+   * @returns {{extraAttacks: number, penalty: number}} both zero without flurry.
+   */
+  getFlurryOfBlows() {
+    const extraAttacks = getProgressionValue(this.class, 'flurryExtraAttacks', this.getLevel(), 0);
+    if (!extraAttacks) return { extraAttacks: 0, penalty: 0 };
+    return {
+      extraAttacks,
+      penalty: getProgressionValue(this.class, 'flurryPenalty', this.getLevel(), 0),
+    };
+  }
+
+  /** Whether the character has flurry of blows at all. */
+  hasFlurryOfBlows() {
+    return this.getFlurryOfBlows().extraAttacks > 0;
+  }
+
+  /**
+   * Whether a weapon can be used in a flurry. Only unarmed strikes and monk
+   * weapons qualify; a quarterstaff counts only in a two-handed grip.
+   * @param {{weaponItem: Object, isTwoHanded: boolean}} weaponData
+   */
+  isFlurryWeapon(weaponData) {
+    const monkWeapons = getClassProgression(this.class).monkWeapons;
+    if (!Array.isArray(monkWeapons) || !this.hasFlurryOfBlows()) return false;
+    const raw = String(weaponData?.weaponItem?.Name || '').trim().toLowerCase();
+    if (!raw) return false;
+    // Shuriken ship as "Shuriken (5)"; compare on the name without the count.
+    const name = raw.replace(/\s*\([^)]*\)\s*$/, '').trim();
+    if (!monkWeapons.some((w) => String(w).toLowerCase() === name)) return false;
+    if (name === 'quarterstaff') return weaponData?.isTwoHanded === true;
+    return true;
+  }
+
+  /**
+   * The monk's AC bonus: the Wisdom modifier plus a level milestone, but only
+   * while unarmored, shieldless and at a light load or lighter. Zero for every
+   * other class. A negative Wisdom modifier never lowers AC.
+   */
+  getMonkAcBonus() {
+    const milestone = getProgressionValue(this.class, 'acBonus', this.getLevel(), 0);
+    const prog = getClassProgression(this.class);
+    if (!prog.acBonus) return 0;
+    if (this.getEquippedArmorRaw()) return 0;
+    if (this.getShieldBonus() > 0) return 0;
+    const load = this.getLoadStatus();
+    if (load !== 'none' && load !== 'light') return 0;
+    return Math.max(0, this.getWisMod()) + milestone;
+  }
+
   // —— Paladin ——
 
   /**
@@ -1691,15 +2158,8 @@ class Player {
    * Adds the user-supplied general acBonus on top.
    */
   getArmorClass() {
-    let ac = 10 + this.getAcDexMod() + this.getArmorBonus() + this.getShieldBonus();
-    if (this.class === 'Monk') {
-      ac += Math.max(0, this.getWisMod());
-      const level = this.getLevel();
-      if (level >= 20) ac += 4;
-      else if (level >= 15) ac += 3;
-      else if (level >= 10) ac += 2;
-      else if (level >= 5) ac += 1;
-    }
+    const ac = 10 + this.getAcDexMod() + this.getArmorBonus() + this.getShieldBonus()
+      + this.getMonkAcBonus();
     return ac + Number(this.acBonus || 0) + this.getAcConditionModifier() + this.getRageAcModifier();
   }
 
@@ -1708,15 +2168,7 @@ class Player {
    * Adds the general acBonus and the touch-only acTouchBonus.
    */
   getContactAC() {
-    let ac = 10 + this.getAcDexMod();
-    if (this.class === 'Monk') {
-      ac += Math.max(0, this.getWisMod());
-      const level = this.getLevel();
-      if (level >= 20) ac += 4;
-      else if (level >= 15) ac += 3;
-      else if (level >= 10) ac += 2;
-      else if (level >= 5) ac += 1;
-    }
+    const ac = 10 + this.getAcDexMod() + this.getMonkAcBonus();
     return ac + Number(this.acBonus || 0) + Number(this.acTouchBonus || 0)
       + this.getAcConditionModifier() + this.getRageAcModifier();
   }
@@ -1726,15 +2178,7 @@ class Player {
    * Adds the general acBonus and the flat-footed-only acFlatBonus.
    */
   getFlatFootedAC() {
-    let ac = 10 + this.getArmorBonus();
-    if (this.class === 'Monk') {
-      ac += Math.max(0, this.getWisMod());
-      const level = this.getLevel();
-      if (level >= 20) ac += 4;
-      else if (level >= 15) ac += 3;
-      else if (level >= 10) ac += 2;
-      else if (level >= 5) ac += 1;
-    }
+    const ac = 10 + this.getArmorBonus() + this.getMonkAcBonus();
     return ac + Number(this.acBonus || 0) + Number(this.acFlatBonus || 0)
       + this.getAcConditionModifier() + this.getRageAcModifier();
   }

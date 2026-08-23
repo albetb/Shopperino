@@ -6,6 +6,7 @@ import { onSetCharacterClass } from '../../store/thunks/playerSheetThunks';
 import { setIsPlayerSheetSidebarCollapsed } from '../../store/slices/playerSheetSlice';
 import StatBar from './stat_bar';
 import '../../style/menu_cards.css';
+import '../../style/class_feature_pills.css';
 
 const WEAPON_LOW = ['Bard', 'Druid', 'Monk', 'Rogue', 'Wizard'];
 const WEAPON_MID = ['Cleric', 'Sorcerer'];
@@ -97,6 +98,94 @@ function renderFeature(text, index) {
       {label ? ' ' : ''}
       {rest}
     </p>
+  );
+}
+
+/**
+ * Split a `shortClassFeatures` string into its parts.
+ *
+ * Entries look like `[4] Uncanny Dodge (Ex): retain Dex to AC…`, where the
+ * leading marker is the level the feature is gained. Later `[N]` markers inside
+ * the text are scaling steps, not gain levels, so only the leading one counts.
+ * A dozen entries carry no marker at all — ex-class rules, codes of conduct,
+ * bonus languages — and those apply at every level.
+ *
+ * @returns {{level: number|null, name: string, description: string}|null}
+ *   level is null when the feature is not level-gated.
+ */
+export function parseClassFeature(text) {
+  const trimmed = String(text || '').trim();
+  if (!trimmed) return null;
+  const marker = trimmed.match(/^\[(\d+)\]\s*/);
+  const body = marker ? trimmed.slice(marker[0].length) : trimmed;
+  const colonIndex = body.indexOf(':');
+  return {
+    level: marker ? Number(marker[1]) : null,
+    name: colonIndex > 0 ? body.slice(0, colonIndex).trim() : body,
+    description: colonIndex > 0 ? body.slice(colonIndex + 1).trim() : '',
+  };
+}
+
+/**
+ * Find the long-form prose for a parsed feature, matched on its label. Falls
+ * back to the short description when the long list has no counterpart.
+ */
+export function findFullFeatureText(feature, longFeatures) {
+  if (!feature) return '';
+  const label = feature.name.toLowerCase();
+  const match = (longFeatures ?? []).find((f) => {
+    const body = String(f).trim();
+    const colonIndex = body.indexOf(':');
+    if (colonIndex <= 0) return false;
+    return body.slice(0, colonIndex).trim().toLowerCase() === label;
+  });
+  if (!match) return feature.description;
+  const colonIndex = String(match).indexOf(':');
+  return String(match).slice(colonIndex + 1).trim();
+}
+
+/**
+ * Class features as compact, level-aware pills.
+ *
+ * A feature the character has reached reads as gained; one still ahead of them
+ * stays on the list, dimmed and tagged with the level it arrives at, so the
+ * page doubles as a preview of what levelling up buys. Clicking a pill opens
+ * the full description underneath it.
+ */
+export function ClassFeaturePills({ features, longFeatures, level }) {
+  const [openIndex, setOpenIndex] = useState(null);
+  const parsed = (features ?? []).map(parseClassFeature).filter(Boolean);
+  if (parsed.length === 0) return null;
+
+  return (
+    <ul className="class-feature-pills">
+      {parsed.map((feature, index) => {
+        const gained = feature.level === null || level >= feature.level;
+        const open = openIndex === index;
+        return (
+          <li key={`${feature.name}-${index}`} className="class-feature-pill-item">
+            <button
+              type="button"
+              className={['class-feature-pill', gained ? 'is-gained' : 'is-pending', open && 'is-open']
+                .filter(Boolean).join(' ')}
+              aria-expanded={open}
+              title={feature.description}
+              onClick={() => setOpenIndex(open ? null : index)}
+            >
+              {feature.level !== null && (
+                <span className="class-feature-pill-level">{feature.level}</span>
+              )}
+              <span className="class-feature-pill-name">{feature.name}</span>
+            </button>
+            {open && (
+              <p className="class-feature-pill-body">
+                {findFullFeatureText(feature, longFeatures)}
+              </p>
+            )}
+          </li>
+        );
+      })}
+    </ul>
   );
 }
 

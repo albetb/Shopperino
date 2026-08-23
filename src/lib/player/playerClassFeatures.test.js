@@ -155,6 +155,133 @@ describe('rogue sneak attack', () => {
   });
 });
 
+describe('alignment warnings', () => {
+  function aligned(cls, ethical, moral, level = 5) {
+    const p = make(cls, level);
+    p.ethicalAlignment = ethical;
+    p.moralAlignment = moral;
+    return p;
+  }
+
+  const codes = (p) => p.getAlignmentWarnings().map((w) => w.code);
+
+  test('a monk must be lawful', () => {
+    expect(codes(aligned('Monk', 'Lawful', 'Good'))).toEqual([]);
+    expect(codes(aligned('Monk', 'Lawful', 'Evil'))).toEqual([]);
+    expect(codes(aligned('Monk', 'Chaotic', 'Good'))).toEqual(['alignmentRequired']);
+    expect(codes(aligned('Monk', 'Neutral', 'Neutral'))).toEqual(['alignmentRequired']);
+  });
+
+  test('a paladin must be lawful good on both axes', () => {
+    expect(codes(aligned('Paladin', 'Lawful', 'Good'))).toEqual([]);
+    expect(codes(aligned('Paladin', 'Lawful', 'Neutral'))).toEqual(['alignmentRequired']);
+    expect(codes(aligned('Paladin', 'Chaotic', 'Good'))).toEqual(['alignmentRequired']);
+    expect(codes(aligned('Paladin', 'Chaotic', 'Evil'))).toEqual(['alignmentRequired']);
+  });
+
+  test('a barbarian and a bard must not be lawful', () => {
+    expect(codes(aligned('Barbarian', 'Lawful', 'Good'))).toEqual(['alignmentForbidden']);
+    expect(codes(aligned('Barbarian', 'Chaotic', 'Evil'))).toEqual([]);
+    expect(codes(aligned('Bard', 'Lawful', 'Neutral'))).toEqual(['alignmentForbidden']);
+    expect(codes(aligned('Bard', 'Neutral', 'Good'))).toEqual([]);
+  });
+
+  test('a druid must be neutral on at least one axis', () => {
+    expect(codes(aligned('Druid', 'Neutral', 'Good'))).toEqual([]);
+    expect(codes(aligned('Druid', 'Lawful', 'Neutral'))).toEqual([]);
+    expect(codes(aligned('Druid', 'Neutral', 'Neutral'))).toEqual([]);
+    expect(codes(aligned('Druid', 'Lawful', 'Good'))).toEqual(['neutralAxisRequired']);
+    expect(codes(aligned('Druid', 'Chaotic', 'Evil'))).toEqual(['neutralAxisRequired']);
+  });
+
+  test('a cleric may only hold an alignment domain that matches them', () => {
+    const evilClericGoodDomain = aligned('Cleric', 'Neutral', 'Evil');
+    evilClericGoodDomain.domain1 = 'Good';
+    expect(codes(evilClericGoodDomain)).toEqual(['alignmentDomainMismatch']);
+
+    const lawfulClericLawDomain = aligned('Cleric', 'Lawful', 'Neutral');
+    lawfulClericLawDomain.domain1 = 'Law';
+    expect(codes(lawfulClericLawDomain)).toEqual([]);
+  });
+
+  test('both cleric domain slots are checked', () => {
+    const p = aligned('Cleric', 'Chaotic', 'Good');
+    p.domain1 = 'Law';   // needs Lawful
+    p.domain2 = 'Evil';  // needs Evil
+    expect(codes(p)).toEqual(['alignmentDomainMismatch', 'alignmentDomainMismatch']);
+  });
+
+  test('non-alignment domains are never flagged', () => {
+    const p = aligned('Cleric', 'Chaotic', 'Evil');
+    p.domain1 = 'Healing';
+    p.domain2 = 'War';
+    expect(codes(p)).toEqual([]);
+  });
+
+  test('classes with no alignment rule are never warned', () => {
+    ['Fighter', 'Rogue', 'Wizard', 'Sorcerer', 'Ranger'].forEach((cls) => {
+      expect(codes(aligned(cls, 'Lawful', 'Evil'))).toEqual([]);
+      expect(codes(aligned(cls, 'Chaotic', 'Good'))).toEqual([]);
+    });
+  });
+
+  test('each warning carries a message naming the problem', () => {
+    const p = aligned('Paladin', 'Chaotic', 'Evil');
+    const [warning] = p.getAlignmentWarnings();
+    expect(warning.message).toContain('Lawful Good');
+    expect(warning.message).toContain('Chaotic Evil');
+  });
+
+  test('warnings never change a derived value', () => {
+    const ok = aligned('Paladin', 'Lawful', 'Good', 10);
+    const fallen = aligned('Paladin', 'Chaotic', 'Evil', 10);
+    ok.setAbilityBase('cha', 16);
+    fallen.setAbilityBase('cha', 16);
+    expect(fallen.getAlignmentWarnings()).toHaveLength(1);
+    expect(fallen.getSmiteEvilMax()).toBe(ok.getSmiteEvilMax());
+    expect(fallen.getLayOnHandsMax()).toBe(ok.getLayOnHandsMax());
+    expect(fallen.getTotalWillSave()).toBe(ok.getTotalWillSave());
+  });
+});
+
+describe('the fallen (ex-class) flag', () => {
+  test('only paladins carry a code of conduct today', () => {
+    expect(make('Paladin', 5).hasCodeOfConduct()).toBe(true);
+    expect(make('Fighter', 5).hasCodeOfConduct()).toBe(false);
+    expect(make('Monk', 5).hasCodeOfConduct()).toBe(false);
+  });
+
+  test('the flag is settable and starts clear', () => {
+    const p = make('Paladin', 5);
+    expect(p.isExClass()).toBe(false);
+    p.setExClass(true);
+    expect(p.isExClass()).toBe(true);
+    p.setExClass(false);
+    expect(p.isExClass()).toBe(false);
+  });
+
+  test('it survives a serialize and load round trip', () => {
+    const p = make('Paladin', 5);
+    p.setExClass(true);
+    const restored = new Player();
+    restored.load(JSON.parse(JSON.stringify(p.serialize())));
+    expect(restored.isExClass()).toBe(true);
+  });
+
+  test('being fallen changes nothing the model derives', () => {
+    const p = make('Paladin', 10);
+    p.setAbilityBase('cha', 16);
+    const smite = p.getSmiteEvilMax();
+    const pool = p.getLayOnHandsMax();
+    const will = p.getTotalWillSave();
+
+    p.setExClass(true);
+    expect(p.getSmiteEvilMax()).toBe(smite);
+    expect(p.getLayOnHandsMax()).toBe(pool);
+    expect(p.getTotalWillSave()).toBe(will);
+  });
+});
+
 describe('paladin divine grace', () => {
   function paladin(level, cha) {
     const p = make('Paladin', level);

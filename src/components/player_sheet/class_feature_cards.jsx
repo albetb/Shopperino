@@ -4,6 +4,11 @@ import FamiliarCard from './familiar_card';
 import RageCard from './rage_card';
 import TurnUndeadCard from './turn_undead_card';
 import { SmiteEvilCard, LayOnHandsCard, RemoveDiseaseCard } from './paladin_cards';
+import { StunningFistCard, WholenessOfBodyCard } from './monk_cards';
+import BardicMusicCard from './bardic_music_card';
+import FavoredEnemyCard from './favored_enemy_card';
+import CombatStyleCard from './combat_style_card';
+import DomainsCard from './domains_card';
 
 /**
  * Registry of the class-feature cards shown on the combat page.
@@ -20,11 +25,19 @@ const CLASS_FEATURE_CARDS = {
   Barbarian: [
     { key: 'rage', Component: RageCard },
   ],
+  Bard: [
+    { key: 'bardicMusic', Component: BardicMusicCard },
+  ],
   Cleric: [
     { key: 'turnUndead', Component: TurnUndeadCard },
+    { key: 'domains', Component: DomainsCard },
   ],
   Druid: [
     { key: 'animalCompanion', Component: AnimalCompanionCard },
+  ],
+  Monk: [
+    { key: 'stunningFist', Component: StunningFistCard },
+    { key: 'wholenessOfBody', Component: WholenessOfBodyCard, minLevel: 7 },
   ],
   Paladin: [
     { key: 'smiteEvil', Component: SmiteEvilCard },
@@ -33,6 +46,8 @@ const CLASS_FEATURE_CARDS = {
     { key: 'removeDisease', Component: RemoveDiseaseCard, minLevel: 6 },
   ],
   Ranger: [
+    { key: 'favoredEnemy', Component: FavoredEnemyCard },
+    { key: 'combatStyle', Component: CombatStyleCard, minLevel: 2 },
     { key: 'animalCompanion', Component: AnimalCompanionCard, minLevel: 4 },
   ],
   Wizard: [

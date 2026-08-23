@@ -1,0 +1,73 @@
+/* Level-aware class feature pills (class_cards.jsx → ClassFeaturePills).
+   All sizing is in rem per the CSS convention in CLAUDE.md. */
+
+.class-feature-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* An open pill takes the full row so its description has room to read. */
+.class-feature-pill-item {
+  display: contents;
+}
+
+.class-feature-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.2rem 0.5rem;
+  border: 0.0625rem solid var(--border-soft);
+  border-radius: 0.6rem;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: var(--font-size-xs);
+  line-height: 1.3;
+  text-align: left;
+  cursor: pointer;
+}
+
+.class-feature-pill:hover,
+.class-feature-pill.is-open {
+  border-color: var(--accent);
+}
+
+/* Not yet reached: still listed, so the page previews the next few levels. */
+.class-feature-pill.is-pending {
+  opacity: 0.45;
+  border-style: dashed;
+}
+
+.class-feature-pill-level {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.1rem;
+  height: 1.1rem;
+  padding: 0 0.2rem;
+  border-radius: 0.55rem;
+  background: var(--border-soft);
+  font-size: 0.65rem;
+  font-weight: 600;
+}
+
+.class-feature-pill.is-gained .class-feature-pill-level {
+  background: var(--accent-muted);
+}
+
+.class-feature-pill-name {
+  font-weight: 600;
+}
+
+.class-feature-pill-body {
+  flex: 1 0 100%;
+  margin: 0 0 var(--space-1);
+  padding: var(--space-1) 0.5rem;
+  border-left: 0.125rem solid var(--border-soft);
+  font-size: var(--font-size-xs);
+  line-height: 1.4;
+}

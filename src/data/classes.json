@@ -162,7 +162,8 @@
         ],
         "uncannyDodgeLevel": 2,
         "improvedUncannyDodgeLevel": 5,
-        "illiterateByDefault": true
+        "illiterateByDefault": true,
+        "alignmentForbidden": "Lawful"
       }
     },
     "Bard": {
@@ -303,7 +304,8 @@
             "summary": "Suggestion applied to any number of fascinated targets at once."
           }
         ],
-        "noArcaneSpellFailureInLightArmor": true
+        "noArcaneSpellFailureInLightArmor": true,
+        "alignmentForbidden": "Lawful"
       }
     },
     "Cleric": {
@@ -353,7 +355,25 @@
         "domainCount": 2,
         "domainSlotsPerSpellLevel": 1,
         "spontaneousCasting": "cure-or-inflict",
-        "alignmentWithinOneStepOfDeity": true
+        "alignmentWithinOneStepOfDeity": true,
+        "alignmentDomains": {
+          "Law": {
+            "axis": "ethical",
+            "value": "Lawful"
+          },
+          "Chaos": {
+            "axis": "ethical",
+            "value": "Chaotic"
+          },
+          "Good": {
+            "axis": "moral",
+            "value": "Good"
+          },
+          "Evil": {
+            "axis": "moral",
+            "value": "Evil"
+          }
+        }
       }
     },
     "Druid": {
@@ -514,7 +534,8 @@
         "aThousandFacesLevel": 13,
         "timelessBodyLevel": 15,
         "metalArmorProhibited": true,
-        "spontaneousCasting": "summon-natures-ally"
+        "spontaneousCasting": "summon-natures-ally",
+        "alignmentRequiresNeutralAxis": true
       }
     },
     "Fighter": {
@@ -1011,7 +1032,49 @@
         "swiftTrackerLevel": 8,
         "evasionLevel": 9,
         "camouflageLevel": 13,
-        "hideInPlainSightLevel": 17
+        "hideInPlainSightLevel": 17,
+        "favoredEnemyTypes": [
+          "Aberration",
+          "Animal",
+          "Construct",
+          "Dragon",
+          "Elemental",
+          "Fey",
+          "Giant",
+          "Humanoid",
+          "Magical beast",
+          "Monstrous humanoid",
+          "Ooze",
+          "Outsider",
+          "Plant",
+          "Undead",
+          "Vermin"
+        ],
+        "favoredEnemySubtypes": {
+          "Humanoid": [
+            "Aquatic",
+            "Dwarf",
+            "Elf",
+            "Gnoll",
+            "Gnome",
+            "Goblinoid",
+            "Halfling",
+            "Human",
+            "Orc",
+            "Reptilian"
+          ],
+          "Outsider": [
+            "Air",
+            "Chaotic",
+            "Earth",
+            "Evil",
+            "Fire",
+            "Good",
+            "Lawful",
+            "Native",
+            "Water"
+          ]
+        }
       }
     },
     "Rogue": {
