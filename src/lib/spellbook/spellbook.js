@@ -1,5 +1,6 @@
 import { loadFile } from '../utils';
 import { strToEnum, enumToStr } from '../storageFormat';
+import { getClassProgression } from '../player/classProgression';
 
 const ALL_SPELLS = loadFile("spells");
 
@@ -38,6 +39,16 @@ const CLASSCHARMAP = {
     "Bard": 'Charisma',
     "Ranger": 'Wisdom',
     "Paladin": 'Wisdom'
+};
+/** How each class is written in a spell's `Level` field ("Sor/Wiz 3", "Clr 1"). */
+export const CLASSSPELLKEY = {
+    "Sorcerer": 'Sor/Wiz',
+    "Wizard": 'Sor/Wiz',
+    "Cleric": 'Clr',
+    "Druid": 'Drd',
+    "Bard": 'Brd',
+    "Ranger": 'Rgr',
+    "Paladin": 'Pal'
 };
 export const MAGICSCHOOLS = [
     "Abjuration",
@@ -314,6 +325,55 @@ class Spellbook {
         if (this.Class === "Wizard")
             return 1 + this.getCharBonus() + 2 * this.Level
         return [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    }
+
+    /**
+     * True for a class whose spells known is a fixed per-level table that can
+     * be exceeded — sorcerer and bard. A wizard's figure is only what levelling
+     * hands out for free; copying scrolls legitimately puts them above it, so
+     * it is never treated as a cap.
+     */
+    hasSpellsKnownCap() {
+        return ["Sorcerer", "Bard"].includes(this.Class);
+    }
+
+    /** Spells currently known at each spell level, as { [level]: count }. */
+    getKnownCountByLevel() {
+        const key = CLASSSPELLKEY[this.Class] || '';
+        if (!key) return {};
+        return this.getLearnedSpells().reduce((acc, spell) => {
+            const entry = String(spell.Level || '').split(',').map(p => p.trim())
+                .find(p => p.startsWith(`${key} `));
+            if (!entry) return acc;
+            const lvl = parseInt(entry.slice(key.length).trim(), 10);
+            if (Number.isFinite(lvl)) acc[lvl] = (acc[lvl] || 0) + 1;
+            return acc;
+        }, {});
+    }
+
+    /**
+     * How many spells of a level are known beyond what the table allows, or 0.
+     * Per CLAUDE.md the excess is reported, never blocked — the UI flags it.
+     */
+    getSpellsKnownOverCap(level) {
+        if (!this.hasSpellsKnownCap()) return 0;
+        const allowed = this.getSpellsKnown()[level];
+        if (!Number.isFinite(allowed)) return 0;
+        const known = this.getKnownCountByLevel()[level] || 0;
+        return Math.max(0, known - allowed);
+    }
+
+    /**
+     * The levels at which this class may trade one known spell for another —
+     * the sorcerer's 4th and every even level after, the bard's 5th and every
+     * third. Empty for a class that learns spells freely.
+     *
+     * Informational only: learning and unlearning stay unrestricted, so the
+     * sheet lists these levels rather than gating the toggle on them.
+     */
+    getSpellSwapLevels() {
+        const levels = getClassProgression(this.Class).spellSwapLevels;
+        return Array.isArray(levels) ? levels.filter(n => Number.isFinite(Number(n))).map(Number) : [];
     }
 
     getSpontaneousSpells({ name, school, level } = {}) {

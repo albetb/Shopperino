@@ -1,0 +1,36 @@
+/* Informational card listing a spontaneous caster's spell-swap levels. */
+
+.spell-swap-note {
+  padding: 0.75rem 0.9rem;
+  text-align: left;
+}
+
+.spell-swap-note-head {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 600;
+  margin-bottom: 0.35rem;
+}
+
+.spell-swap-note-head .material-symbols-outlined {
+  font-size: 1.1rem;
+  color: var(--accent);
+}
+
+.spell-swap-note-body {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--ink-muted);
+  line-height: 1.45;
+}
+
+.swap-level {
+  opacity: 0.55;
+}
+
+.swap-level.is-reached {
+  opacity: 1;
+  color: var(--accent);
+  font-weight: 600;
+}

@@ -1,9 +1,10 @@
 import { useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { onAddBonusLanguage, onRemoveBonusLanguage } from '../../store/thunks/playerSheetThunks';
-import { onSetPlayerAlignment, onSetExClass } from '../../store/thunks/playerSheetThunks';
+import { onSetPlayerAlignment, onSetExClass, onSetPlayerDeity } from '../../store/thunks/playerSheetThunks';
 import { getClassData, getRaceData } from '../../lib/player';
 import { getAllowedEthics, getAllowedMorals } from '../../lib/alignment';
+import { listDeities, formatDeityAlignment } from '../../lib/utils';
 import { getClassStats, renderFeature, ClassFeaturePills } from './class_cards';
 import StatBar from './stat_bar';
 import Card from '../common/Card';
@@ -17,6 +18,9 @@ import Switch from '../common/Switch';
 import '../../style/player_sheet.css';
 
 const FEATURE_CARD_KEYS = ['alignment', 'languages', 'weaponArmor', 'racialTraits', 'classTraits'];
+
+/* Sentinel option value for a patron outside the SRD table. */
+const CUSTOM_DEITY = '__custom__';
 
 function CollapsibleCard({ eyebrow, title, action, open, onToggle, children }) {
   const toggle = (
@@ -130,6 +134,24 @@ export default function FeaturesPage() {
     ? 'Neutral'
     : `${currentEthical} ${currentMoral}`;
 
+  // Deity: divine classes only. A name outside the SRD table is kept as free
+  // text — the select then sits on the "Other" entry and reveals an input.
+  const usesDeity = player?.usesDeity?.() ?? false;
+  const deity = player?.getDeity?.() ?? '';
+  const deityData = player?.getDeityData?.() ?? null;
+  const deities = useMemo(() => listDeities(), []);
+  const [customDeity, setCustomDeity] = useState(false);
+  const deityIsCustom = customDeity || (deity !== '' && !deityData);
+  const handleDeitySelect = value => {
+    if (value === CUSTOM_DEITY) {
+      setCustomDeity(true);
+      dispatch(onSetPlayerDeity(''));
+      return;
+    }
+    setCustomDeity(false);
+    dispatch(onSetPlayerDeity(value));
+  };
+
   const handleAdd = () => {
     const lang = (selectedLang || '').trim();
     if (!lang) return;
@@ -208,6 +230,58 @@ export default function FeaturesPage() {
               {allowedMorals.map(m => <option key={m} value={m}>{m}</option>)}
             </select>
           </label>
+
+          {usesDeity && (
+            <>
+              <label
+                className="sh-field"
+                style={{ flexDirection: 'row', alignItems: 'center', gap: 'var(--space-2)' }}
+              >
+                <span className="sh-label" style={{ flex: '0 0 40%' }}>Deity</span>
+                <select
+                  className="sh-select"
+                  style={{ flex: '0 0 60%' }}
+                  value={deityIsCustom ? CUSTOM_DEITY : deity}
+                  onChange={e => handleDeitySelect(e.target.value)}
+                >
+                  <option value="">None</option>
+                  {deities.map(d => (
+                    <option key={d.name} value={d.name}>{d.name}</option>
+                  ))}
+                  <option value={CUSTOM_DEITY}>Other…</option>
+                </select>
+              </label>
+
+              {deityIsCustom && (
+                <label
+                  className="sh-field"
+                  style={{ flexDirection: 'row', alignItems: 'center', gap: 'var(--space-2)' }}
+                >
+                  <span className="sh-label" style={{ flex: '0 0 40%' }}>Name</span>
+                  <input
+                    className="sh-input"
+                    style={{ flex: '0 0 60%' }}
+                    type="text"
+                    value={deity}
+                    placeholder="Patron or cause"
+                    onChange={e => dispatch(onSetPlayerDeity(e.target.value))}
+                  />
+                </label>
+              )}
+
+              {deityData && (
+                <div className="sh-muted" style={{ fontSize: 'var(--font-size-xs)' }}>
+                  {formatDeityAlignment(deityData)} · {deityData.title} · grants{' '}
+                  {deityData.domains.join(', ')}
+                </div>
+              )}
+              {deityIsCustom && deity !== '' && (
+                <div className="sh-muted" style={{ fontSize: 'var(--font-size-xs)' }}>
+                  Not in the core pantheon — alignment and domains are not checked.
+                </div>
+              )}
+            </>
+          )}
 
           {/* Warnings only: the selection above is never restricted, per the
               non-enforcing rule in CLAUDE.md. */}

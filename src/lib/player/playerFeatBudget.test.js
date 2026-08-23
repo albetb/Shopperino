@@ -30,7 +30,6 @@ describe('class bonus feat slots', () => {
 
   test('the slot count is data-driven, so wizards and monks get their own', () => {
     // Wizard: a bonus feat every five levels. Monk: 1st, 2nd and 6th.
-    // Neither has a qualifying-feat flag yet, so nothing is charged to them.
     expect(make('Wizard', 4).getClassBonusFeatSlotsMax()).toBe(0);
     expect(make('Wizard', 5).getClassBonusFeatSlotsMax()).toBe(1);
     expect(make('Wizard', 20).getClassBonusFeatSlotsMax()).toBe(4);
@@ -72,12 +71,45 @@ describe('feats charged against the bonus slots', () => {
     expect(p.getClassBonusFeatSlotsMax()).toBe(1);
   });
 
-  test('a non-fighter charges every feat to the general budget', () => {
+  test('a class with no bonus pool charges every feat to the general budget', () => {
+    const b = make('Barbarian', 20);
+    b.addFeat('Cleave');
+    b.addFeat('Alertness');
+    expect(b.getClassBonusFeatsUsed()).toBe(0);
+    expect(b.getGeneralFeatsUsed()).toBe(2);
+  });
+
+  test('a combat feat is not a wizard bonus feat', () => {
     const w = make('Wizard', 20);
     w.addFeat('Cleave');
     w.addFeat('Alertness');
     expect(w.getClassBonusFeatsUsed()).toBe(0);
     expect(w.getGeneralFeatsUsed()).toBe(2);
+  });
+
+  test('the wizard pool takes metamagic and item creation feats, by tag', () => {
+    const w = make('Wizard', 20);
+    w.addFeat('Empower spell');       // Metamagic
+    w.addFeat('Craft wand');          // Item creation
+    w.addFeat('Alertness');           // General
+    expect(w.getClassBonusFeatsUsed()).toBe(2);
+    expect(w.getGeneralFeatsUsed()).toBe(1);
+  });
+
+  test('Spell mastery qualifies by name, having no category of its own', () => {
+    // It is tagged "Special" in feats.json, so only the explicit name list
+    // can pick it up.
+    const w = make('Wizard', 20);
+    w.addFeat('Spell mastery');
+    expect(w.getClassBonusFeatsUsed()).toBe(1);
+    expect(w.getGeneralFeatsUsed()).toBe(0);
+  });
+
+  test('the two pools stay separate: a fighter gets no credit for metamagic', () => {
+    const f = make('Fighter', 20);
+    f.addFeat('Empower spell');
+    expect(f.getClassBonusFeatsUsed()).toBe(0);
+    expect(f.getGeneralFeatsUsed()).toBe(1);
   });
 
   test('a fighter with no feats has nothing in either pool', () => {
@@ -92,16 +124,46 @@ describe('which classes run a second budget', () => {
     expect(make('Fighter', 1).hasClassBonusFeatPool()).toBe(true);
   });
 
-  test('wizards and monks do not yet, having no qualifying-feat flag', () => {
-    // They grant slots, but nothing is charged to them, so a second budget
-    // would only ever read "0 of N". They keep the single general budget.
-    expect(make('Wizard', 20).hasClassBonusFeatPool()).toBe(false);
+  test('a wizard does: metamagic, item creation and Spell mastery fill its slots', () => {
+    expect(make('Wizard', 20).hasClassBonusFeatPool()).toBe(true);
+  });
+
+  test('a monk does not — its bonus feats are a fixed per-level choice', () => {
+    // It grants slots, but nothing qualifies for them in data, so a second
+    // budget would only ever read "0 of N". It keeps the single general budget.
     expect(make('Monk', 20).hasClassBonusFeatPool()).toBe(false);
   });
 
   test('classes with no bonus feats at all do not', () => {
     expect(make('Barbarian', 20).hasClassBonusFeatPool()).toBe(false);
     expect(make('', 20).hasClassBonusFeatPool()).toBe(false);
+  });
+
+  test('each pool carries its own label', () => {
+    expect(make('Fighter', 1).getClassBonusFeatLabel()).toBe('combat');
+    expect(make('Wizard', 5).getClassBonusFeatLabel()).toBe('bonus');
+    expect(make('Barbarian', 1).getClassBonusFeatLabel()).toBe('bonus');
+  });
+});
+
+describe('class-granted feats', () => {
+  test('a wizard has Scribe Scroll from 1st level', () => {
+    expect(make('Wizard', 1).getGrantedFeats()).toEqual([{ level: 1, feat: 'Scribe scroll' }]);
+    expect(make('Wizard', 20).getGrantedFeats()).toEqual([{ level: 1, feat: 'Scribe scroll' }]);
+  });
+
+  test('it is charged to neither budget and is not part of getFeats', () => {
+    const w = make('Wizard', 5);
+    expect(w.getFeats()).toEqual([]);
+    expect(w.getFeatPointsUsed()).toBe(0);
+    expect(w.getGeneralFeatsUsed()).toBe(0);
+    expect(w.getClassBonusFeatsUsed()).toBe(0);
+  });
+
+  test('other classes are granted nothing', () => {
+    expect(make('Fighter', 20).getGrantedFeats()).toEqual([]);
+    expect(make('Sorcerer', 20).getGrantedFeats()).toEqual([]);
+    expect(make('', 20).getGrantedFeats()).toEqual([]);
   });
 });
 

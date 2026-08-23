@@ -6,6 +6,7 @@ import ClassDescriptionCard from './class_description';
 import DomainDescriptionCard from './domain_description';
 import WizardSchoolsCard from './wizard_schools_card';
 import SpellLevelCard from './spell_level';
+import SpellSwapNote from './spell_swap_note';
 import GnomeSpellsCard from '../player_sheet/gnome_spells_card';
 import useSpellbookData from './hooks/use_spellbook_data';
 import usePlayerSpellbookData from '../player_sheet/hooks/use_player_spellbook_data';
@@ -207,6 +208,8 @@ export default function SpellbookTable({ source = 'app' }) {
           toggle={() => setWizardSchoolsCollapsed(!wizardSchoolsCollapsed)}
         />
       )}
+
+      {page === 0 && <SpellSwapNote inst={inst} />}
 
       {!isApp && page === 2 && player?.getRace?.() === 'Gnome' && <GnomeSpellsCard />}
 

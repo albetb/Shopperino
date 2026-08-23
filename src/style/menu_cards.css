@@ -170,6 +170,21 @@
   text-overflow: ellipsis;
 }
 
+/* A sorcerer or bard holding more spells of a level than the spells-known
+   table allows. Flagged, never blocked — see CLAUDE.md. */
+.card-title-over-cap {
+  color: var(--warn);
+}
+
+.over-cap-badge {
+  margin-left: 0.4rem;
+  padding: 0.05rem 0.35rem;
+  border: 1px solid var(--warn);
+  border-radius: 0.6rem;
+  font-size: var(--font-size-xs);
+  vertical-align: middle;
+}
+
 .card-content {
   margin-top: 0.3rem;
   margin-bottom: 0.65rem;

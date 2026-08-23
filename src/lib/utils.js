@@ -14,6 +14,13 @@ export {
   getCompanionAdvancement,
 } from './animal/animalCompanionData';
 export {
+  listDeities,
+  getDeityByName,
+  isKnownDeity,
+  isWithinOneStep,
+  formatDeityAlignment,
+} from './deityData';
+export {
   getFamiliarSpecies,
   getFamiliarBonus,
   getFamiliarAdvancement,

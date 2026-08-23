@@ -35,7 +35,9 @@ describe('class feature card registry', () => {
     expect(keysFor('Paladin', 2)).toEqual(['smiteEvil', 'layOnHands']);
     expect(keysFor('Paladin', 3)).toEqual(['smiteEvil', 'layOnHands']);
     expect(keysFor('Paladin', 4)).toEqual(['smiteEvil', 'layOnHands', 'turnUndead']);
-    expect(keysFor('Paladin', 6)).toEqual(['smiteEvil', 'layOnHands', 'turnUndead', 'removeDisease']);
+    expect(keysFor('Paladin', 5)).toEqual(['smiteEvil', 'layOnHands', 'turnUndead', 'specialMount']);
+    expect(keysFor('Paladin', 6))
+      .toEqual(['smiteEvil', 'layOnHands', 'turnUndead', 'specialMount', 'removeDisease']);
   });
 
   test('monks get stunning fist at once and wholeness of body from 7th', () => {

@@ -305,7 +305,15 @@
           }
         ],
         "noArcaneSpellFailureInLightArmor": true,
-        "alignmentForbidden": "Lawful"
+        "alignmentForbidden": "Lawful",
+        "spellSwapLevels": [
+          5,
+          8,
+          11,
+          14,
+          17,
+          20
+        ]
       }
     },
     "Cleric": {
@@ -373,7 +381,9 @@
             "axis": "moral",
             "value": "Evil"
           }
-        }
+        },
+        "usesDeity": true,
+        "deityDomainsRequired": true
       }
     },
     "Druid": {
@@ -535,7 +545,8 @@
         "timelessBodyLevel": 15,
         "metalArmorProhibited": true,
         "spontaneousCasting": "summon-natures-ally",
-        "alignmentRequiresNeutralAxis": true
+        "alignmentRequiresNeutralAxis": true,
+        "usesDeity": true
       }
     },
     "Fighter": {
@@ -574,7 +585,8 @@
           18,
           20
         ],
-        "bonusFeatSource": "fighterBonus"
+        "bonusFeatSource": "fighterBonus",
+        "bonusFeatLabel": "combat"
       }
     },
     "Monk": {
@@ -918,7 +930,63 @@
         ],
         "specialMountLevel": 5,
         "alignmentRequired": "Lawful Good",
-        "hasCodeOfConduct": true
+        "hasCodeOfConduct": true,
+        "usesDeity": true,
+        "specialMount": {
+          "minLevel": 5,
+          "bonusHitDie": 10,
+          "summonHoursPerLevel": 2,
+          "spellResistanceBonus": 5,
+          "improvedSpeedBonus": 10,
+          "mountsBySize": {
+            "Medium": "animals/warhorse-heavy",
+            "Small": "animals/pony-war"
+          },
+          "advancement": [
+            {
+              "minLevel": 5,
+              "bonusHD": 2,
+              "naturalArmorAdj": 4,
+              "strAdj": 1,
+              "intelligence": 6,
+              "specials": [
+                "Empathic link",
+                "Improved evasion",
+                "Share spells",
+                "Share saving throws"
+              ]
+            },
+            {
+              "minLevel": 8,
+              "bonusHD": 4,
+              "naturalArmorAdj": 6,
+              "strAdj": 2,
+              "intelligence": 7,
+              "specials": [
+                "Improved speed",
+                "Command creatures of its kind"
+              ]
+            },
+            {
+              "minLevel": 11,
+              "bonusHD": 6,
+              "naturalArmorAdj": 8,
+              "strAdj": 3,
+              "intelligence": 8,
+              "specials": [
+                "Spell resistance"
+              ]
+            },
+            {
+              "minLevel": 15,
+              "bonusHD": 8,
+              "naturalArmorAdj": 10,
+              "strAdj": 4,
+              "intelligence": 9,
+              "specials": []
+            }
+          ]
+        }
       }
     },
     "Ranger": {
@@ -1074,7 +1142,8 @@
             "Native",
             "Water"
           ]
-        }
+        },
+        "usesDeity": true
       }
     },
     "Rogue": {
@@ -1308,14 +1377,23 @@
           15,
           20
         ],
-        "bonusFeatCategories": [
-          "Metamagic",
-          "Item creation",
-          "Spell Mastery"
-        ],
         "prohibitedSchoolCount": 2,
         "castingAbility": "int",
-        "arcaneSpellFailureApplies": true
+        "arcaneSpellFailureApplies": true,
+        "bonusFeatTags": [
+          "Metamagic",
+          "Item creation"
+        ],
+        "bonusFeatNames": [
+          "Spell mastery"
+        ],
+        "bonusFeatLabel": "bonus",
+        "grantedFeats": [
+          [
+            1,
+            "Scribe scroll"
+          ]
+        ]
       }
     }
   }

@@ -320,6 +320,20 @@ export const onSetPlayerAlignment = (key, value) => (dispatch, getState) => {
   persistPlayer(dispatch, getState, p);
 };
 
+/**
+ * Set the patron deity. Free text: a name outside deities.json is kept as a
+ * homebrew patron, it simply cannot be alignment-checked.
+ */
+export const onSetPlayerDeity = (value) => (dispatch, getState) => {
+  const app = getState().persist;
+  if (app.pss == null || app.pss < 0 || !app.psc?.[app.pss]) return;
+  const p = db.getPlayerByIndex(app, app.pss);
+  if (!p) return;
+  if (typeof value !== 'string') return;
+  p.setDeity(value);
+  persistPlayer(dispatch, getState, p);
+};
+
 export const onPlayerLearnSpell = (spell_link) => (dispatch, getState) => {
   withPlayerSpellbook(getState, (s) => s.learnSpell(spell_link));
   const player = getState().playerSheet?.player;
@@ -880,6 +894,96 @@ export const onSetFamiliarAttackOverride = (index, patch) => (dispatch, getState
   const familiar = player?.familiar;
   if (!player || !familiar) return;
   familiar.setAttackOverride(index, patch);
+  persistPlayer(dispatch, getState, player);
+};
+
+// Special mount (Paladin). The creature follows the paladin's size, so there
+// is nothing to pick — the mount is simply called or released.
+export const onCallSpecialMount = () => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player) return;
+  if (!player.addSpecialMount()) return;
+  persistPlayer(dispatch, getState, player);
+};
+
+export const onReleaseSpecialMount = () => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player) return;
+  player.removeSpecialMount();
+  persistPlayer(dispatch, getState, player);
+};
+
+export const onRenameSpecialMount = (name) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  const mount = player?.specialMount;
+  if (!player || !mount) return;
+  mount.setName(typeof name === 'string' ? name : '');
+  persistPlayer(dispatch, getState, player);
+};
+
+export const onAdjustSpecialMountHp = (delta) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  const mount = player?.specialMount;
+  if (!player || !mount) return;
+  // Mirrors onAdjustCompanionHp: +delta heals, −delta hurts, floor at −10.
+  const currentDamage = mount.getDamage();
+  const maxHp = mount.getMaxLife();
+  const newDamage = Math.max(0, Math.min(maxHp + 10, currentDamage - delta));
+  mount.setDamage(newDamage);
+  persistPlayer(dispatch, getState, player);
+};
+
+export const onSetSpecialMountMaxLife = (value) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  const mount = player?.specialMount;
+  if (!player || !mount) return;
+  mount.setMaxLife(value === '' || value == null ? null : Math.max(0, Math.floor(Number(value) || 0)));
+  persistPlayer(dispatch, getState, player);
+};
+
+/**
+ * Spend or give back summoning hours. Signed, like the class-feature tracker,
+ * and never capped — going over the daily allowance is flagged, not blocked.
+ */
+export const onUseSpecialMountHours = (delta = 1) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  const mount = player?.specialMount;
+  if (!player || !mount) return;
+  mount.useSummonHours(delta);
+  persistPlayer(dispatch, getState, player);
+};
+
+export const onResetSpecialMountHours = () => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  const mount = player?.specialMount;
+  if (!player || !mount) return;
+  mount.resetSummonHours();
+  persistPlayer(dispatch, getState, player);
+};
+
+/** Factory for the eight per-stat mount bonus setters. */
+const setSpecialMountBonus = (key) => (value) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  const mount = player?.specialMount;
+  if (!player || !mount) return;
+  mount.setStatBonus(key, Math.max(-99, Math.min(99, Math.floor(Number(value) || 0))));
+  persistPlayer(dispatch, getState, player);
+};
+
+export const onSetSpecialMountAcBonus = setSpecialMountBonus('acBonus');
+export const onSetSpecialMountAcTouchBonus = setSpecialMountBonus('acTouchBonus');
+export const onSetSpecialMountAcFlatBonus = setSpecialMountBonus('acFlatBonus');
+export const onSetSpecialMountInitBonus = setSpecialMountBonus('initBonus');
+export const onSetSpecialMountSpeedBonus = setSpecialMountBonus('speedBonus');
+export const onSetSpecialMountFortBonus = setSpecialMountBonus('fortBonus');
+export const onSetSpecialMountReflexBonus = setSpecialMountBonus('reflexBonus');
+export const onSetSpecialMountWillBonus = setSpecialMountBonus('willBonus');
+
+export const onSetSpecialMountAttackOverride = (index, patch) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  const mount = player?.specialMount;
+  if (!player || !mount) return;
+  mount.setAttackOverride(index, patch);
   persistPlayer(dispatch, getState, player);
 };
 

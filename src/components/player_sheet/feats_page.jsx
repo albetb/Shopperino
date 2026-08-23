@@ -46,13 +46,21 @@ export default function FeatsPage() {
   const playerFeats = useMemo(() => player?.getFeats?.() ?? [], [player]);
   const count = playerFeats.length;
   const max = player?.getFeatPointsMax?.() ?? 1;
-  // A fighter runs two independent budgets: the general allotment everyone
-  // gets, and bonus slots that only combat feats can fill. Which feats count
-  // against which pool is the model's decision, not this component's.
+  // A fighter or wizard runs two independent budgets: the general allotment
+  // everyone gets, and bonus slots only certain feats can fill. Which feats
+  // count against which pool is the model's decision, not this component's.
   const hasBonusPool = player?.hasClassBonusFeatPool?.() ?? false;
   const bonusMax = player?.getClassBonusFeatSlotsMax?.() ?? 0;
   const bonusUsed = player?.getClassBonusFeatsUsed?.() ?? 0;
+  const bonusLabel = player?.getClassBonusFeatLabel?.() ?? 'bonus';
   const generalUsed = player?.getGeneralFeatsUsed?.() ?? count;
+  // Class-granted feats (the wizard's Scribe Scroll) cost nothing from either
+  // budget, so they are listed apart and cannot be removed.
+  const grantedFeats = useMemo(() => player?.getGrantedFeats?.() ?? [], [player]);
+  const grantedNames = useMemo(
+    () => new Set(grantedFeats.map(g => g.feat.toLowerCase())),
+    [grantedFeats]
+  );
   // Per CLAUDE.md: rules are signaled, never enforced. The "Choose feat"
   // button is always available; the warning pills below flag a pool whose
   // selection count is above its own allotment.
@@ -72,6 +80,9 @@ export default function FeatsPage() {
     return featsData
       .filter(f => {
         if (!f?.Name) return false;
+        // A class-granted feat is already held; offering it again would let it
+        // be paid for twice.
+        if (grantedNames.has(f.Name.toLowerCase())) return false;
         const baseName = getBaseFeatName(f.Name);
         const isRepeatable = REPEATABLE_NO_CHOICE.includes(baseName) || REPEATABLE_WITH_CHOICE[baseName];
         if (!isRepeatable && normalized.has(baseName.toLowerCase())) return false;
@@ -84,7 +95,7 @@ export default function FeatsPage() {
         return true;
       })
       .sort((a, b) => (a.Name || '').localeCompare(b.Name || ''));
-  }, [featsData, playerFeats, filterPrereqs, filterSuggested, playerClass, player, query]);
+  }, [featsData, playerFeats, grantedNames, filterPrereqs, filterSuggested, playerClass, player, query]);
 
   const handleAddFeat = (featName, ev) => {
     const baseName = getBaseFeatName(featName);
@@ -133,7 +144,7 @@ export default function FeatsPage() {
         <div>
           <Filigree>
             {hasBonusPool
-              ? `${generalUsed} of ${max} general · ${bonusUsed} of ${bonusMax} combat`
+              ? `${generalUsed} of ${max} general · ${bonusUsed} of ${bonusMax} ${bonusLabel}`
               : `${count} of ${max} selected`}
           </Filigree>
           <div className="sh-display" style={{ fontSize: 'var(--font-size-2xl)' }}>Feats</div>
@@ -145,7 +156,9 @@ export default function FeatsPage() {
                 </Pill>
               )}
               {bonusOverCap && (
-                <Pill tone="warn" icon="warning">Combat ({bonusUsed - bonusMax} extra)</Pill>
+                <Pill tone="warn" icon="warning">
+                  {bonusLabel.charAt(0).toUpperCase() + bonusLabel.slice(1)} ({bonusUsed - bonusMax} extra)
+                </Pill>
               )}
             </div>
           )}
@@ -155,8 +168,41 @@ export default function FeatsPage() {
         </Button>
       </div>
 
+      {grantedFeats.length > 0 && (
+        <div className="sh-stack">
+          {grantedFeats.map(({ level, feat }) => {
+            const data = featMap[getBaseFeatName(feat)];
+            return (
+              <Card key={`granted-${feat}`} padding>
+                <div className="sh-row-h" style={{ gap: 'var(--space-3)', alignItems: 'flex-start' }}>
+                  <Icon name="workspace_premium" className="sh-accent-text" />
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <span className="sh-row-h" style={{ gap: 'var(--space-2)', flexWrap: 'wrap' }}>
+                      <SpellLink link={`feats#${slug(getBaseFeatName(feat))}`}>
+                        <span className="sh-display" style={{ fontSize: 'var(--font-size-lg)' }}>{feat}</span>
+                      </SpellLink>
+                      <Pill tone="accent">granted · lv {level}</Pill>
+                    </span>
+                    {data?.shortDescription && (
+                      <div className="sh-faint" style={{ fontSize: 'var(--font-size-xs)', marginTop: 'var(--space-1)' }}>
+                        {data.shortDescription}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </Card>
+            );
+          })}
+          <div className="sh-faint" style={{ fontSize: 'var(--font-size-xs)' }}>
+            Granted by the class — costs nothing from either budget.
+          </div>
+        </div>
+      )}
+
       {playerFeats.length === 0 ? (
-        <EmptyState icon="auto_awesome" title="No feats yet" hint="Tap 'Choose feat' to start." />
+        grantedFeats.length === 0 && (
+          <EmptyState icon="auto_awesome" title="No feats yet" hint="Tap 'Choose feat' to start." />
+        )
       ) : (
         <div className="sh-stack">
           {playerFeats.map((displayFeat, idx) => {

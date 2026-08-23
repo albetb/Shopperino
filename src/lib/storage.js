@@ -108,7 +108,7 @@ export function getPlayerSheetCardsCollapsed(app) {
   return out;
 }
 
-const COMBAT_PAGE_CARD_KEYS = ['player', 'combat', 'conditions', 'animalCompanion', 'familiar', 'items', 'carry', 'money'];
+const COMBAT_PAGE_CARD_KEYS = ['player', 'combat', 'conditions', 'animalCompanion', 'familiar', 'specialMount', 'items', 'carry', 'money'];
 export function getCombatPageCardsCollapsed(app) {
   const raw = app?.pscombat && typeof app.pscombat === 'object' ? app.pscombat : {};
   const out = {};

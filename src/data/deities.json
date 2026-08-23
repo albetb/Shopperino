@@ -1,0 +1,172 @@
+{
+  "deities": [
+    {
+      "name": "Boccob",
+      "title": "god of magic",
+      "ethical": "Neutral",
+      "moral": "Neutral",
+      "domains": ["Knowledge", "Magic", "Trickery"],
+      "favoredWeapon": "Quarterstaff"
+    },
+    {
+      "name": "Corellon Larethian",
+      "title": "god of elves",
+      "ethical": "Chaotic",
+      "moral": "Good",
+      "domains": ["Chaos", "Good", "Protection", "War"],
+      "favoredWeapon": "Longsword"
+    },
+    {
+      "name": "Ehlonna",
+      "title": "goddess of the woodlands",
+      "ethical": "Neutral",
+      "moral": "Good",
+      "domains": ["Animal", "Good", "Plant", "Sun"],
+      "favoredWeapon": "Longsword"
+    },
+    {
+      "name": "Erythnul",
+      "title": "god of slaughter",
+      "ethical": "Chaotic",
+      "moral": "Evil",
+      "domains": ["Chaos", "Evil", "Trickery", "War"],
+      "favoredWeapon": "Morningstar"
+    },
+    {
+      "name": "Fharlanghn",
+      "title": "god of roads",
+      "ethical": "Neutral",
+      "moral": "Neutral",
+      "domains": ["Luck", "Protection", "Travel"],
+      "favoredWeapon": "Quarterstaff"
+    },
+    {
+      "name": "Garl Glittergold",
+      "title": "god of gnomes",
+      "ethical": "Neutral",
+      "moral": "Good",
+      "domains": ["Good", "Protection", "Trickery"],
+      "favoredWeapon": "Battleaxe"
+    },
+    {
+      "name": "Gruumsh",
+      "title": "god of orcs",
+      "ethical": "Chaotic",
+      "moral": "Evil",
+      "domains": ["Chaos", "Evil", "Strength", "War"],
+      "favoredWeapon": "Spear"
+    },
+    {
+      "name": "Heironeous",
+      "title": "god of valor",
+      "ethical": "Lawful",
+      "moral": "Good",
+      "domains": ["Good", "Law", "War"],
+      "favoredWeapon": "Longsword"
+    },
+    {
+      "name": "Hextor",
+      "title": "god of tyranny",
+      "ethical": "Lawful",
+      "moral": "Evil",
+      "domains": ["Destruction", "Evil", "Law", "War"],
+      "favoredWeapon": "Flail"
+    },
+    {
+      "name": "Kord",
+      "title": "god of strength",
+      "ethical": "Chaotic",
+      "moral": "Good",
+      "domains": ["Chaos", "Good", "Luck", "Strength"],
+      "favoredWeapon": "Greatsword"
+    },
+    {
+      "name": "Kurtulmak",
+      "title": "god of kobolds",
+      "ethical": "Lawful",
+      "moral": "Evil",
+      "domains": ["Evil", "Law", "Luck", "Trickery"],
+      "favoredWeapon": "Spear"
+    },
+    {
+      "name": "Lolth",
+      "title": "goddess of drow",
+      "ethical": "Chaotic",
+      "moral": "Evil",
+      "domains": ["Chaos", "Destruction", "Evil", "Trickery"],
+      "favoredWeapon": "Dagger"
+    },
+    {
+      "name": "Moradin",
+      "title": "god of dwarves",
+      "ethical": "Lawful",
+      "moral": "Good",
+      "domains": ["Earth", "Good", "Law", "Protection"],
+      "favoredWeapon": "Warhammer"
+    },
+    {
+      "name": "Nerull",
+      "title": "god of death",
+      "ethical": "Neutral",
+      "moral": "Evil",
+      "domains": ["Death", "Evil", "Trickery"],
+      "favoredWeapon": "Scythe"
+    },
+    {
+      "name": "Obad-Hai",
+      "title": "god of nature",
+      "ethical": "Neutral",
+      "moral": "Neutral",
+      "domains": ["Air", "Animal", "Earth", "Fire", "Plant", "Water"],
+      "favoredWeapon": "Quarterstaff"
+    },
+    {
+      "name": "Olidammara",
+      "title": "god of thieves",
+      "ethical": "Chaotic",
+      "moral": "Neutral",
+      "domains": ["Chaos", "Luck", "Trickery"],
+      "favoredWeapon": "Rapier"
+    },
+    {
+      "name": "Pelor",
+      "title": "god of the sun",
+      "ethical": "Neutral",
+      "moral": "Good",
+      "domains": ["Good", "Healing", "Strength", "Sun"],
+      "favoredWeapon": "Mace, heavy"
+    },
+    {
+      "name": "St. Cuthbert",
+      "title": "god of retribution",
+      "ethical": "Lawful",
+      "moral": "Neutral",
+      "domains": ["Destruction", "Law", "Protection", "Strength"],
+      "favoredWeapon": "Mace, heavy"
+    },
+    {
+      "name": "Vecna",
+      "title": "god of secrets",
+      "ethical": "Neutral",
+      "moral": "Evil",
+      "domains": ["Evil", "Knowledge", "Magic"],
+      "favoredWeapon": "Dagger"
+    },
+    {
+      "name": "Wee Jas",
+      "title": "goddess of death and magic",
+      "ethical": "Lawful",
+      "moral": "Neutral",
+      "domains": ["Death", "Law", "Magic"],
+      "favoredWeapon": "Dagger"
+    },
+    {
+      "name": "Yondalla",
+      "title": "goddess of halflings",
+      "ethical": "Lawful",
+      "moral": "Good",
+      "domains": ["Good", "Law", "Protection"],
+      "favoredWeapon": "Short sword"
+    }
+  ]
+}

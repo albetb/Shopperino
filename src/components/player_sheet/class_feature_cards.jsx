@@ -9,6 +9,7 @@ import BardicMusicCard from './bardic_music_card';
 import FavoredEnemyCard from './favored_enemy_card';
 import CombatStyleCard from './combat_style_card';
 import DomainsCard from './domains_card';
+import SpecialMountCard from './special_mount_card';
 
 /**
  * Registry of the class-feature cards shown on the combat page.
@@ -43,6 +44,7 @@ const CLASS_FEATURE_CARDS = {
     { key: 'smiteEvil', Component: SmiteEvilCard },
     { key: 'layOnHands', Component: LayOnHandsCard, minLevel: 2 },
     { key: 'turnUndead', Component: TurnUndeadCard, minLevel: 4 },
+    { key: 'specialMount', Component: SpecialMountCard, minLevel: 5 },
     { key: 'removeDisease', Component: RemoveDiseaseCard, minLevel: 6 },
   ],
   Ranger: [

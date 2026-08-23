@@ -4,16 +4,7 @@ import { addCardByLink } from '../../store/slices/appSlice';
 import SpontaneousSpells from './spontaneous_spells';
 import DomainSpells from './domain_spells';
 import { LearnTab, FusedStepper, StarOrbitCast } from './row_actions';
-
-const classKeyMap = {
-  Sorcerer: 'Sor/Wiz',
-  Wizard: 'Sor/Wiz',
-  Cleric: 'Clr',
-  Druid: 'Drd',
-  Bard: 'Brd',
-  Ranger: 'Rgr',
-  Paladin: 'Pal'
-};
+import { CLASSSPELLKEY as classKeyMap } from '../../lib/spellbook/spellbook';
 
 export default function SpellLevelCard({
   level,
@@ -78,9 +69,11 @@ export default function SpellLevelCard({
         return `Lv${lvl} (${count}/${known[lvl]} known)`;
       }
       case (inst.Class === 'Wizard' && page === 0):
+        // Not a cap: the figure is what levelling grants for free, and copying
+        // scrolls legitimately puts a wizard above it. Never flagged.
         return lvl === 0
           ? `Lv${lvl} (Wizards know all lv0 spells)`
-          : `Lv${lvl} (${spellLength - learnedByLevel0Length}/${known} known in total)`;
+          : `Lv${lvl} (${spellLength - learnedByLevel0Length}/${known} free in total)`;
       case (page === 1): {
         const preparedList = learned.reduce((acc, sp) => {
           const entry = sp.Level.split(',').map(p => p.trim()).find(p => p.startsWith(`${key} `));
@@ -116,6 +109,10 @@ export default function SpellLevelCard({
     }
   };
 
+  // Sorcerers and bards know a fixed number of spells per level. Going over is
+  // allowed — the count is highlighted rather than blocked, per CLAUDE.md.
+  const knownOverCap = page === 0 ? inst.getSpellsKnownOverCap(level) : 0;
+
   const specialized = inst.Specialized;
   const baseSchoolClass = inst.Class === "Wizard" && specialized
     && inst.Forbidden1 && (inst.Forbidden2 || specialized === "Divination")
@@ -129,8 +126,13 @@ export default function SpellLevelCard({
   return (
     <div className={`card card-width-spellbook ${collapsed ? 'collapsed' : ''}`}>
       <div className="card-side-div card-expand-div" onClick={toggle}>
-        <h3 className="card-title">
+        <h3 className={`card-title${knownOverCap > 0 ? ' card-title-over-cap' : ''}`}>
           {trimLine(spellCardTitle(level), isMobile() ? 35 : 45)}
+          {knownOverCap > 0 && (
+            <span className="over-cap-badge" title="More spells known than the table allows">
+              +{knownOverCap}
+            </span>
+          )}
         </h3>
         <button className="collapse-button">
           <span className="material-symbols-outlined">

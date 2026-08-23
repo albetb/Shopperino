@@ -12,8 +12,10 @@ import { getCarryingCapacity as capacityFromStr, classifyLoad } from './carrying
 import { aggregateConditionEffects, sumContributions } from './conditionEffects';
 import { getClassProgression, getProgressionValue, hasFeatureAtLevel } from './classProgression';
 import { getBaseFeatName } from '../featChoices';
+import { getDeityByName, isWithinOneStep, formatDeityAlignment } from '../deityData';
 import AnimalCompanion from './animalCompanion';
 import Familiar from './familiar';
+import SpecialMount from './specialMount';
 
 const ABILITY_KEYS = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
 
@@ -213,6 +215,10 @@ class Player {
     this.forbidden2 = '';
     this.moralAlignment = 'Neutral';
     this.ethicalAlignment = 'Neutral';
+    /* Patron deity, as free text. Names matching src/data/deities.json resolve
+       to a known alignment and domain list; anything else is a homebrew patron
+       the sheet records but cannot check. Only divine classes are asked for one. */
+    this.deity = '';
     this.spells = [];
     this.usedDomainSpells = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     this.preparedDomainSpells = {};
@@ -267,6 +273,10 @@ class Player {
        from this player (master): HP ½ master, BAB = master, best-of saves, etc.
        Set only for familiar-granting classes. */
     this.familiar = null;
+    /* Paladin special mount (SpecialMount instance) or null. Unlike the
+       companion there is nothing to choose — the creature follows the
+       paladin's size — so this is simply present or absent. */
+    this.specialMount = null;
   }
 
   /**
@@ -349,6 +359,7 @@ class Player {
     if (typeof data.forbidden2 === 'string') this.forbidden2 = data.forbidden2;
     if (typeof data.moralAlignment === 'string') this.moralAlignment = data.moralAlignment;
     if (typeof data.ethicalAlignment === 'string') this.ethicalAlignment = data.ethicalAlignment;
+    if (typeof data.deity === 'string') this.deity = data.deity;
 
     if (Array.isArray(data.spells)) {
       this.spells = normalizePlayerSpells(data.spells);
@@ -503,6 +514,11 @@ class Player {
       this.familiar.setOwner(this._familiarOwnerContext());
     }
 
+    this.specialMount = null;
+    if (data.specialMount && typeof data.specialMount === 'object') {
+      this.specialMount = new SpecialMount().load(data.specialMount, this._mountOwnerContext());
+    }
+
     return this;
   }
 
@@ -533,6 +549,7 @@ class Player {
       forbidden2: this.forbidden2 || '',
       moralAlignment: this.moralAlignment || 'Neutral',
       ethicalAlignment: this.ethicalAlignment || 'Neutral',
+      deity: this.deity || '',
       spells: Array.isArray(this.spells) ? this.spells.map((s) => [...s]) : [],
       usedDomainSpells: Array.isArray(this.usedDomainSpells) ? [...this.usedDomainSpells] : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       preparedDomainSpells:
@@ -566,6 +583,7 @@ class Player {
       conditions: Array.isArray(this.conditions) ? this.conditions.map((c) => ({ ...c })) : [],
       companion: this.companion ? this.companion.serialize() : null,
       familiar: this.familiar ? this.familiar.serialize() : null,
+      specialMount: this.specialMount ? this.specialMount.serialize() : null,
     };
   }
 
@@ -825,6 +843,50 @@ class Player {
     return this.companion || null;
   }
 
+  // —— Special mount (paladin) ——
+
+  /** Rider context fed to the mount: its whole advancement rides on these two. */
+  _mountOwnerContext() {
+    return { level: this.getLevel(), size: this.getSize() || 'Medium' };
+  }
+
+  /**
+   * Whether the class grants a special mount at all, and at which level. The
+   * paladin's arrives at 5th; every other class returns 0.
+   */
+  getSpecialMountLevel() {
+    return Number(getClassProgression(this.class).specialMount?.minLevel) || 0;
+  }
+
+  /** True once the paladin is high enough level to call a mount. */
+  canHaveSpecialMount() {
+    const at = this.getSpecialMountLevel();
+    return at > 0 && this.getLevel() >= at;
+  }
+
+  /** The special mount (SpecialMount instance) or null, with fresh context. */
+  getSpecialMount() {
+    if (this.specialMount) this.specialMount.setOwner(this._mountOwnerContext());
+    return this.specialMount || null;
+  }
+
+  /**
+   * Call the mount. No-op if one is already bonded or the class does not grant
+   * one; the level requirement is not enforced, per the non-enforcing rule —
+   * the card simply does not offer the button below 5th.
+   */
+  addSpecialMount() {
+    if (this.specialMount) return this.specialMount;
+    if (this.getSpecialMountLevel() === 0) return null;
+    this.specialMount = new SpecialMount(this._mountOwnerContext());
+    return this.specialMount;
+  }
+
+  /** Release or lose the mount. */
+  removeSpecialMount() {
+    this.specialMount = null;
+  }
+
   /** Master context fed to the familiar so its derived stats resolve. */
   _familiarOwnerContext() {
     return {
@@ -1039,6 +1101,9 @@ class Player {
   /** Clear every class-feature counter (rest). */
   resetClassFeatureUses() {
     this.classFeatureUses = {};
+    // The mount's summoning allowance is a daily pool too, but it lives on the
+    // mount rather than in this map.
+    if (this.specialMount) this.specialMount.resetSummonHours();
   }
 
   // —— Setters (for UI / Redux updates) ——
@@ -1587,17 +1652,56 @@ class Player {
     return !!getClassProgression(this.class).hasCodeOfConduct;
   }
 
+  // —— Deity ——
+
+  /**
+   * Whether this class is asked for a patron deity. Divine classes only:
+   * a cleric must have one, and paladins, druids and rangers may. Arcane and
+   * non-casting classes are not asked — religion is flavor for them.
+   */
+  usesDeity() {
+    return !!getClassProgression(this.class).usesDeity;
+  }
+
+  /** The recorded deity name, free text and possibly not in the table. */
+  getDeity() {
+    return this.deity || '';
+  }
+
+  setDeity(value) {
+    this.deity = typeof value === 'string' ? value.trim() : '';
+  }
+
+  /** The deities.json entry for the recorded name, or null for a custom patron. */
+  getDeityData() {
+    return getDeityByName(this.deity);
+  }
+
+  /** The deity's alignment as a phrase ("Lawful Good"), empty if unknown. */
+  getDeityAlignment() {
+    return formatDeityAlignment(this.getDeityData());
+  }
+
+  /** The domains the deity grants, or [] when the patron is not in the table. */
+  getDeityDomains() {
+    const deity = this.getDeityData();
+    return Array.isArray(deity?.domains) ? [...deity.domains] : [];
+  }
+
   /**
    * Alignment problems with the current class, as `{ code, message }` entries.
    * Empty when nothing is wrong.
    *
-   * Four rules, all data-driven: a required alignment (paladin, monk), a
+   * Six rules, all data-driven: a required alignment (paladin, monk), a
    * forbidden one (barbarian, bard), a class needing one neutral axis (druid),
-   * and a cleric holding an alignment domain that does not match them.
+   * a cleric holding an alignment domain that does not match them, a cleric
+   * drifted more than one step from their deity, and a cleric holding a domain
+   * their deity does not grant.
    *
-   * The cleric's "within one step of their deity" rule is not checked: the
-   * model stores no deity to compare against.
+   * The last two are skipped for a deity that is not in deities.json — a
+   * homebrew patron has no alignment or domain list to check against.
    */
+
   getAlignmentWarnings() {
     const prog = getClassProgression(this.class);
     const ethical = this.ethicalAlignment || 'Neutral';
@@ -1645,6 +1749,26 @@ class Player {
             message: `The ${domain} domain needs a ${rule.value} cleric; this one is ${current}.`,
           });
         }
+      });
+    }
+
+    const deity = this.getDeityData();
+    if (deity && prog.alignmentWithinOneStepOfDeity
+      && !isWithinOneStep(deity, ethical, moral)) {
+      warnings.push({
+        code: 'deityAlignmentDrift',
+        message: `${current} is more than one step from ${deity.name} (${formatDeityAlignment(deity)}).`,
+      });
+    }
+
+    if (deity && prog.deityDomainsRequired) {
+      const granted = this.getDeityDomains();
+      [this.domain1, this.domain2].forEach((domain) => {
+        if (!domain || granted.includes(domain)) return;
+        warnings.push({
+          code: 'deityDomainNotGranted',
+          message: `${deity.name} does not grant the ${domain} domain (${granted.join(', ')}).`,
+        });
       });
     }
 
@@ -2331,22 +2455,46 @@ class Player {
   }
 
   /**
-   * Selected feats that qualify for the class bonus slots — for a fighter,
-   * those flagged `fighterBonus` in feats.json. Feats taken with a choice
-   * ("Weapon focus (longsword)") match on their base name.
+   * The names of every feat that can fill this class's bonus slots, lowercased.
+   * Three data-driven ways to qualify, combined: a per-feat boolean field in
+   * feats.json (`bonusFeatSource`, the fighter's `fighterBonus`), a set of
+   * feat tags (`bonusFeatTags`, the wizard's Metamagic and Item creation), and
+   * an explicit name list (`bonusFeatNames`, the wizard's Spell mastery, which
+   * belongs to no category of its own).
+   */
+  getClassBonusFeatNames() {
+    const prog = getClassProgression(this.class);
+    const feats = loadFile('feats');
+    if (!Array.isArray(feats)) return new Set();
+    const flag = prog.bonusFeatSource;
+    const tags = Array.isArray(prog.bonusFeatTags)
+      ? prog.bonusFeatTags.map((t) => String(t).toLowerCase())
+      : [];
+    const names = Array.isArray(prog.bonusFeatNames)
+      ? prog.bonusFeatNames.map((n) => String(n).toLowerCase())
+      : [];
+    if (!flag && tags.length === 0 && names.length === 0) return new Set();
+    const qualifying = new Set(names);
+    feats.forEach((f) => {
+      if (typeof f?.Name !== 'string') return;
+      const byFlag = flag && f[flag];
+      const byTag = tags.length > 0 && Array.isArray(f.Tags)
+        && f.Tags.some((t) => tags.includes(String(t).toLowerCase()));
+      if (byFlag || byTag) qualifying.add(f.Name.toLowerCase());
+    });
+    return qualifying;
+  }
+
+  /**
+   * Selected feats that qualify for the class bonus slots. Feats taken with a
+   * choice ("Weapon focus (longsword)") match on their base name.
    *
    * Uncapped: a fighter may hold more combat feats than they have slots for,
    * and the UI flags the overflow rather than blocking it.
    */
   getClassBonusFeatsUsed() {
-    const flag = getClassProgression(this.class).bonusFeatSource;
-    if (!flag) return 0;
-    const feats = loadFile('feats');
-    if (!Array.isArray(feats)) return 0;
-    const qualifying = new Set(
-      feats.filter((f) => f?.[flag] && typeof f.Name === 'string')
-        .map((f) => f.Name.toLowerCase())
-    );
+    const qualifying = this.getClassBonusFeatNames();
+    if (qualifying.size === 0) return 0;
     return this.getFeats()
       .filter((name) => {
         const stored = String(name).trim().toLowerCase();
@@ -2369,12 +2517,37 @@ class Player {
   /**
    * Whether this class runs a second, independent feat budget — it must both
    * grant slots and define which feats fill them. A class that grants slots
-   * without a qualifying flag has nothing to charge against them yet, so it
-   * keeps the single general budget.
+   * without any qualifying rule (the monk, whose bonus feats are a fixed
+   * per-level choice) has nothing to charge against them, so it keeps the
+   * single general budget.
    */
   hasClassBonusFeatPool() {
     const prog = getClassProgression(this.class);
-    return Array.isArray(prog.bonusFeatLevels) && !!prog.bonusFeatSource;
+    return Array.isArray(prog.bonusFeatLevels) && this.getClassBonusFeatNames().size > 0;
+  }
+
+  /**
+   * What the class calls its bonus pool — "combat" for a fighter, "bonus" for
+   * a wizard. Used as a label only.
+   */
+  getClassBonusFeatLabel() {
+    return getClassProgression(this.class).bonusFeatLabel || 'bonus';
+  }
+
+  /**
+   * Feats the class hands out for free by this level, as `{ level, feat }`.
+   * The wizard's Scribe Scroll at 1st is the only one: it is charged to
+   * neither budget, so — like the ranger's combat-style feats — it is
+   * deliberately not part of getFeats().
+   */
+  getGrantedFeats() {
+    const table = getClassProgression(this.class).grantedFeats;
+    if (!Array.isArray(table)) return [];
+    const level = this.getLevel();
+    return table
+      .filter((entry) => Array.isArray(entry) && Number(entry[0]) <= level)
+      .sort((a, b) => Number(a[0]) - Number(b[0]))
+      .map(([at, feat]) => ({ level: Number(at), feat: String(feat) }));
   }
 
   /**
