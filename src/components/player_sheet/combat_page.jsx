@@ -17,11 +17,11 @@ import {
   onSetAcFlatBonus,
   onSetCharacterPortrait,
   onClearCharacterPortrait,
+  onPlayerRest,
 } from '../../store/thunks/playerSheetThunks';
 import PortraitEditorSheet from './PortraitEditorSheet';
 import ConditionsCard from './conditions_card';
-import AnimalCompanionCard from './animal_companion_card';
-import FamiliarCard from './familiar_card';
+import ClassFeatureCards from './class_feature_cards';
 import useLongPress from '../hooks/useLongPress';
 import { getItemByRef, calculateWeaponAttackBonus, calculateWeaponDamage, applyItemOverrides } from '../../lib/utils';
 import SpellLink from '../common/spell_link';
@@ -316,6 +316,7 @@ export default function CombatPage() {
   const BOTTOM_ROW_KEYS = ['fortBonus', 'reflexBonus', 'willBonus'];
 
   const bab_display = formatBaseAttackBonus(bab);
+  const sneakAttackDice = player.getSneakAttackDice?.() ?? 0;
 
   return (
     <>
@@ -350,12 +351,23 @@ export default function CombatPage() {
         title={`${currentHp} / ${maxHp} hp`}
         eyebrow="Hit points"
         action={
-          <IconButton
-            icon={collapsed.player ? 'expand_more' : 'expand_less'}
-            ghost size="sm"
-            aria-label="Toggle HP card"
-            onClick={() => toggleCard('player')}
-          />
+          <>
+            {/* A day's rest: refreshes spell slots, gnome racial spells and
+                every per-day class-feature counter in one action. */}
+            <IconButton
+              icon="bedtime"
+              ghost size="sm"
+              aria-label="Rest: refresh spells and class feature uses"
+              title="Rest"
+              onClick={() => dispatch(onPlayerRest())}
+            />
+            <IconButton
+              icon={collapsed.player ? 'expand_more' : 'expand_less'}
+              ghost size="sm"
+              aria-label="Toggle HP card"
+              onClick={() => toggleCard('player')}
+            />
+          </>
         }
       >
         {!collapsed.player && (
@@ -550,7 +562,8 @@ export default function CombatPage() {
         }
       >
         {!collapsed.combat && (
-          equippedWeapons.length === 0 ? (
+          <>
+          {equippedWeapons.length === 0 ? (
             <div className="sh-stack">
               <div className="sh-warn-strip"><Icon name="sports_mma" />No weapon equipped — defaulting to punch.</div>
               <div className="sh-row-h" style={{ gap: 'var(--space-3)', justifyContent: 'space-between' }}>
@@ -588,53 +601,34 @@ export default function CombatPage() {
                 );
               })}
             </div>
-          )
+          )}
+          {sneakAttackDice > 0 && (
+            <div
+              className="sh-row-h sh-spread"
+              style={{
+                gap: 'var(--space-3)',
+                borderTop: '0.0625rem solid var(--border-soft)',
+                paddingTop: 'var(--space-2)',
+                marginTop: 'var(--space-2)',
+              }}
+              title="Applies when the target is denied its Dex bonus or you are flanking (ranged: within 30 ft). Added on a critical hit but never multiplied. No effect on oozes, plants, undead, constructs, incorporeal creatures, or anything immune to critical hits."
+            >
+              <span className="sh-display">Sneak attack</span>
+              <span className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
+                <Pill tone="accent">+{sneakAttackDice}d6</Pill>
+                <Icon name="info" />
+              </span>
+            </div>
+          )}
+          </>
         )}
       </Card>
 
       {/* Conditions card */}
       <ConditionsCard />
 
-      {/* Class-specific cards */}
-      {(() => {
-        const cls = player.getClass?.() ?? '';
-        const lvl = player.getLevel?.() ?? 1;
-        const cards = [];
-        if (cls === 'Druid') {
-          cards.push({ key: 'animalCompanion', title: 'Animal companion' });
-          if (lvl >= 5) cards.push({ key: 'wildShape', title: 'Wild shape' });
-        } else if (cls === 'Cleric') {
-          cards.push({ key: 'turnRebukeUndead', title: 'Turn or rebuke undead' });
-        } else if (cls === 'Paladin' && lvl >= 4) {
-          cards.push({ key: 'turnUndead', title: 'Turn undead' });
-        } else if (cls === 'Bard') {
-          cards.push({ key: 'bardicMusic', title: 'Bardic music' });
-        } else if (cls === 'Ranger' && lvl >= 4) {
-          cards.push({ key: 'animalCompanion', title: 'Animal companion' });
-        } else if (['Wizard', 'Sorcerer'].includes(cls)) {
-          cards.push({ key: 'familiar', title: 'Familiar' });
-        }
-        return cards.map(({ key, title }) => {
-          if (key === 'animalCompanion') return <AnimalCompanionCard key={key} />;
-          if (key === 'familiar') return <FamiliarCard key={key} />;
-          return (
-            <Card
-              key={key}
-              title={title}
-              action={
-                <IconButton
-                  icon={collapsed[key] ? 'expand_more' : 'expand_less'}
-                  ghost size="sm"
-                  onClick={() => toggleCard(key)}
-                  aria-label={`Toggle ${title}`}
-                />
-              }
-            >
-              {!collapsed[key] && <div className="sh-faint" style={{ fontSize: 'var(--font-size-sm)' }}>Coming soon.</div>}
-            </Card>
-          );
-        });
-      })()}
+      {/* Class-specific cards — see class_feature_cards.jsx for the registry */}
+      <ClassFeatureCards />
     </div>
     <PortraitEditorSheet
       open={portraitOpen}

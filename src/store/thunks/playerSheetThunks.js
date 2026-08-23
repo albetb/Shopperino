@@ -373,6 +373,22 @@ export const onPlayerRefreshSpell = () => (dispatch, getState) => {
   if (playerAfter) persistPlayer(dispatch, getState, playerAfter);
 };
 
+/**
+ * A full day's rest. Refreshes spell slots, gnome racial spells and every
+ * per-day class-feature counter (rage, smite, turn undead, lay on hands, …)
+ * in a single action, then persists once.
+ */
+export const onPlayerRest = () => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (player) {
+    player.resetGnomeSpellUses();
+    player.resetClassFeatureUses();
+  }
+  withPlayerSpellbook(getState, (s) => s.refreshSpell());
+  const playerAfter = getState().playerSheet?.player;
+  if (playerAfter) persistPlayer(dispatch, getState, playerAfter);
+};
+
 export const onPlayerPrepareDomainSpell = (level, spell_link) => (dispatch, getState) => {
   withPlayerSpellbook(getState, (s) => s.prepareDomainSpell(level, spell_link));
   const player = getState().playerSheet?.player;

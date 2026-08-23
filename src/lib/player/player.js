@@ -10,6 +10,7 @@ import { loadFile } from '../loadFile';
 import { getItemByRef, calculateWeaponAttackBonus, calculateWeaponDamage } from '../utils';
 import { getCarryingCapacity as capacityFromStr, classifyLoad } from './carryingCapacity';
 import { aggregateConditionEffects, sumContributions } from './conditionEffects';
+import { getProgressionValue, hasFeatureAtLevel } from './classProgression';
 import AnimalCompanion from './animalCompanion';
 import Familiar from './familiar';
 
@@ -184,6 +185,12 @@ class Player {
     this.usedDomainSpells = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     this.preparedDomainSpells = {};
     this.gnomeSpellUses = {}; // { [spellLink]: 0|1 } per-day uses for gnome racial spells
+    /* Per-day class-feature consumption, keyed by feature ("rage", "smiteEvil",
+       "turnUndead", …). Uses-per-day features count whole uses; pools such as
+       lay on hands and wholeness of body store the amount spent. Maximums are
+       derived from class progression, never stored here, and over-cap values are
+       kept as entered per the non-enforcing rule. Cleared by resetClassFeatureUses. */
+    this.classFeatureUses = {};
     this.equipment = {}; // { lh1, rh1, lh2, rh2, set1, set2, armor, other1, other2, other3, other4 }
     this.speedBonus = 0;
     this.initiativeBonus = 0;
@@ -332,6 +339,15 @@ class Player {
       });
     }
 
+    if (data.classFeatureUses && typeof data.classFeatureUses === 'object') {
+      this.classFeatureUses = {};
+      Object.entries(data.classFeatureUses).forEach(([key, n]) => {
+        if (typeof key === 'string' && key.trim() !== '' && Number.isFinite(Number(n))) {
+          this.classFeatureUses[key] = Math.max(0, Math.floor(Number(n)));
+        }
+      });
+    }
+
     if (data.equipment && typeof data.equipment === 'object') {
       this.equipment = {};
       for (const [slot, entry] of Object.entries(data.equipment)) {
@@ -464,6 +480,7 @@ class Player {
             )
           : {},
       gnomeSpellUses: this.gnomeSpellUses && typeof this.gnomeSpellUses === 'object' ? { ...this.gnomeSpellUses } : {},
+      classFeatureUses: this.classFeatureUses && typeof this.classFeatureUses === 'object' ? { ...this.classFeatureUses } : {},
       equipment: this.equipment && typeof this.equipment === 'object' ? { ...this.equipment } : {},
       inventory: Array.isArray(this.inventory) ? this.inventory.map((item) => ({ ...item })) : [],
       speedBonus: typeof this.speedBonus === 'number' ? this.speedBonus : 0,
@@ -905,6 +922,52 @@ class Player {
     this.gnomeSpellUses = {};
   }
 
+  // —— Class-feature uses ——
+  /**
+   * Per-day class-feature consumption, keyed by feature. Uses-per-day features
+   * count whole uses; pools store the amount spent. Returns a defensive copy.
+   * @returns {Object<string, number>}
+   */
+  getClassFeatureUses() {
+    return this.classFeatureUses && typeof this.classFeatureUses === 'object'
+      ? { ...this.classFeatureUses }
+      : {};
+  }
+
+  /** Amount already used or spent for one feature. */
+  getClassFeatureUsed(key) {
+    if (typeof key !== 'string' || key.trim() === '') return 0;
+    return this.getClassFeatureUses()[key] ?? 0;
+  }
+
+  /**
+   * Consume a feature: one use by default, or `amount` points for a pool.
+   * Not capped against the feature's maximum — the sheet flags over-cap
+   * visually instead of blocking it.
+   */
+  useClassFeature(key, amount = 1) {
+    if (typeof key !== 'string' || key.trim() === '') return;
+    const delta = Math.floor(Number(amount));
+    if (!Number.isFinite(delta)) return;
+    if (!this.classFeatureUses || typeof this.classFeatureUses !== 'object') this.classFeatureUses = {};
+    const current = this.classFeatureUses[key] ?? 0;
+    this.classFeatureUses[key] = Math.max(0, current + delta);
+  }
+
+  /** Set a feature's used amount outright (stepper edits, undoing a use). */
+  setClassFeatureUses(key, value) {
+    if (typeof key !== 'string' || key.trim() === '') return;
+    const n = Math.floor(Number(value));
+    if (!Number.isFinite(n)) return;
+    if (!this.classFeatureUses || typeof this.classFeatureUses !== 'object') this.classFeatureUses = {};
+    this.classFeatureUses[key] = Math.max(0, n);
+  }
+
+  /** Clear every class-feature counter (rest). */
+  resetClassFeatureUses() {
+    this.classFeatureUses = {};
+  }
+
   // —— Setters (for UI / Redux updates) ——
   setName(name) {
     this.name = typeof name === 'string' ? name : '';
@@ -1176,6 +1239,18 @@ class Player {
     return defaultUnarmedDamage(size);
   }
 
+  /**
+   * Rogue sneak attack bonus dice: +1d6 at 1st level and a further +1d6 every
+   * two levels, to +10d6 at 19th. Zero for every other class.
+   *
+   * The dice apply when the target is denied its Dex bonus or the rogue is
+   * flanking (ranged attacks only within 30 ft), and are added on a critical
+   * hit but never multiplied. See dnd-rules/class-features.md (Rogue).
+   */
+  getSneakAttackDice() {
+    return getProgressionValue(this.class, 'sneakAttackDice', this.getLevel(), 0);
+  }
+
   getEquipmentBonus(slot) {
     return this.equipment?.[slot]?.bonus || 0;
   }
@@ -1373,16 +1448,29 @@ class Player {
     return this.getBaseWillSave() + this.getWisMod() + this.getSaveConditionModifier();
   }
 
+  /**
+   * Divine grace: a paladin adds their Charisma modifier to every saving throw
+   * from 2nd level. Zero for all other classes. A negative Charisma modifier
+   * lowers the saves, as it does for the ability modifiers themselves.
+   * See dnd-rules/class-features.md (Paladin).
+   */
+  getDivineGraceBonus() {
+    if (!hasFeatureAtLevel(this.class, 'divineGraceLevel', this.getLevel())) return 0;
+    return this.getChaMod();
+  }
+
   getTotalFortitudeSave() {
-    return this.getFortitudeSave() + Number(this.fortBonus || 0) + this.getFamiliarStatBonuses().fort;
+    return this.getFortitudeSave() + Number(this.fortBonus || 0)
+      + this.getFamiliarStatBonuses().fort + this.getDivineGraceBonus();
   }
 
   getTotalReflexSave() {
-    return this.getReflexSave() + Number(this.reflexBonus || 0) + this.getFamiliarStatBonuses().reflex;
+    return this.getReflexSave() + Number(this.reflexBonus || 0)
+      + this.getFamiliarStatBonuses().reflex + this.getDivineGraceBonus();
   }
 
   getTotalWillSave() {
-    return this.getWillSave() + Number(this.willBonus || 0);
+    return this.getWillSave() + Number(this.willBonus || 0) + this.getDivineGraceBonus();
   }
 
   getTotalInitiative() {

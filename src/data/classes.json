@@ -44,7 +44,126 @@
         "[17] Tireless Rage: no longer becomes fatigued at the end of his rage.",
         "[20] Mighty Rage: +8 Strength, +8 Constitution, +4 Will, –2 AC during rage.",
         "Ex-Barbarians: A lawful barbarian loses the ability to rage and cannot gain more levels as a barbarian."
-      ]
+      ],
+      "progression": {
+        "fastMovement": 10,
+        "fastMovementRequiresLightArmorAndLoad": true,
+        "rageUsesPerDay": [
+          [
+            1,
+            1
+          ],
+          [
+            4,
+            2
+          ],
+          [
+            8,
+            3
+          ],
+          [
+            12,
+            4
+          ],
+          [
+            16,
+            5
+          ],
+          [
+            20,
+            6
+          ]
+        ],
+        "rageTier": [
+          [
+            1,
+            "rage"
+          ],
+          [
+            11,
+            "greater rage"
+          ],
+          [
+            20,
+            "mighty rage"
+          ]
+        ],
+        "rageBonuses": {
+          "rage": {
+            "str": 4,
+            "con": 4,
+            "will": 2,
+            "ac": -2
+          },
+          "greater rage": {
+            "str": 6,
+            "con": 6,
+            "will": 3,
+            "ac": -2
+          },
+          "mighty rage": {
+            "str": 8,
+            "con": 8,
+            "will": 4,
+            "ac": -2
+          }
+        },
+        "rageTempHpPerLevel": 2,
+        "rageDurationBase": 3,
+        "tirelessRageLevel": 17,
+        "indomitableWillLevel": 14,
+        "damageReduction": [
+          [
+            7,
+            1
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            13,
+            3
+          ],
+          [
+            16,
+            4
+          ],
+          [
+            19,
+            5
+          ]
+        ],
+        "trapSense": [
+          [
+            3,
+            1
+          ],
+          [
+            6,
+            2
+          ],
+          [
+            9,
+            3
+          ],
+          [
+            12,
+            4
+          ],
+          [
+            15,
+            5
+          ],
+          [
+            18,
+            6
+          ]
+        ],
+        "uncannyDodgeLevel": 2,
+        "improvedUncannyDodgeLevel": 5,
+        "illiterateByDefault": true
+      }
     },
     "Bard": {
       "hitDice": "d6",
@@ -96,7 +215,96 @@
         "[15] Inspire Heroics: (Perform 18+) inspire tremendous heroism. +4 saving throws and +4 AC. One target at [15], two at [18]. Within 30 feet. Lasts for as long as the bard sings and for up to 5 rounds thereafter.",
         "[18] Mass Suggestion: (Perform 21+) can make a suggestion simultaneously to any number of creatures that he has already fascinated.",
         "Ex-Bards: A lawful bard cannot progress in levels as a bard, though he retains all his bard abilities."
-      ]
+      ],
+      "progression": {
+        "bardicMusicUsesPerDay": "level",
+        "bardicKnowledgeAbility": "int",
+        "performanceSaveDc": "10 + floor(level/2) + cha",
+        "inspireCourageBonus": [
+          [
+            1,
+            1
+          ],
+          [
+            8,
+            2
+          ],
+          [
+            14,
+            3
+          ],
+          [
+            20,
+            4
+          ]
+        ],
+        "performances": [
+          {
+            "name": "Countersong",
+            "level": 1,
+            "performRanks": 3,
+            "hasSave": false,
+            "summary": "Perform check replaces saves against sonic or language-dependent magic within 9 m, while sustained."
+          },
+          {
+            "name": "Fascinate",
+            "level": 1,
+            "performRanks": 3,
+            "hasSave": true,
+            "summary": "One target per three bard levels within 27 m; Will save against the Perform check or fascinated for 1 round per level."
+          },
+          {
+            "name": "Inspire courage",
+            "level": 1,
+            "performRanks": 3,
+            "hasSave": false,
+            "summary": "Allies who hear gain a morale bonus to attack, weapon damage and saves against charm and fear."
+          },
+          {
+            "name": "Inspire competence",
+            "level": 3,
+            "performRanks": 6,
+            "hasSave": false,
+            "summary": "One ally within 9 m gains +2 competence on a chosen skill, up to 2 minutes."
+          },
+          {
+            "name": "Suggestion",
+            "level": 6,
+            "performRanks": 9,
+            "hasSave": true,
+            "summary": "As the spell, on an already fascinated creature. Mind-affecting compulsion."
+          },
+          {
+            "name": "Inspire greatness",
+            "level": 9,
+            "performRanks": 12,
+            "hasSave": false,
+            "summary": "One ally plus one per three levels beyond 9th gains +2 bonus HD, +2 competence to attack, +1 morale to Fortitude."
+          },
+          {
+            "name": "Song of freedom",
+            "level": 12,
+            "performRanks": 15,
+            "hasSave": false,
+            "summary": "One minute of concentration produces break enchantment on one target within 9 m."
+          },
+          {
+            "name": "Inspire heroism",
+            "level": 15,
+            "performRanks": 18,
+            "hasSave": false,
+            "summary": "One ally plus one per three levels beyond 15th gains +4 morale on saves and +4 dodge AC."
+          },
+          {
+            "name": "Mass suggestion",
+            "level": 18,
+            "performRanks": 21,
+            "hasSave": true,
+            "summary": "Suggestion applied to any number of fascinated targets at once."
+          }
+        ],
+        "noArcaneSpellFailureInLightArmor": true
+      }
     },
     "Cleric": {
       "hitDice": "d8",
@@ -132,7 +340,21 @@
         "[1] Turn or Rebuke Undead (Su): 3 + Cha modifier times per day. Good turns/destroys undead; evil rebukes/commands. +2 on turning checks with 5+ ranks in Knowledge (religion).",
         "Bonus Languages: Celestial, Abyssal, Infernal.",
         "Ex-Clerics: gross violation of code loses all spells and class features except armor and weapon proficiencies until atonement."
-      ]
+      ],
+      "progression": {
+        "turnUndead": {
+          "attemptsBase": 3,
+          "attemptsAbility": "cha",
+          "effectiveLevelOffset": 0,
+          "minLevel": 1,
+          "canRebuke": true
+        },
+        "turningDamageDice": "2d6",
+        "domainCount": 2,
+        "domainSlotsPerSpellLevel": 1,
+        "spontaneousCasting": "cure-or-inflict",
+        "alignmentWithinOneStepOfDeity": true
+      }
     },
     "Druid": {
       "hitDice": "d8",
@@ -190,7 +412,110 @@
         "[13] A Thousand Faces (Su): change appearance at will as disguise self (normal form only).",
         "[15] Timeless Body (Ex): no ability penalties for aging; cannot be magically aged.",
         "Ex-Druids: ceasing to revere nature, prohibited alignment, or teaching Druidic to nondruid loses all spells and druid abilities until atonement."
-      ]
+      ],
+      "progression": {
+        "natureSense": {
+          "Knowledge (nature)": 2,
+          "Survival": 2
+        },
+        "wildEmpathyAbility": "cha",
+        "woodlandStrideLevel": 2,
+        "tracklessStepLevel": 3,
+        "resistNaturesLureLevel": 4,
+        "wildShape": {
+          "usesPerDay": [
+            [
+              5,
+              1
+            ],
+            [
+              6,
+              2
+            ],
+            [
+              7,
+              3
+            ],
+            [
+              10,
+              4
+            ],
+            [
+              14,
+              5
+            ],
+            [
+              18,
+              6
+            ]
+          ],
+          "sizeUnlocks": [
+            {
+              "level": 5,
+              "sizes": [
+                "Small",
+                "Medium"
+              ]
+            },
+            {
+              "level": 8,
+              "sizes": [
+                "Large"
+              ]
+            },
+            {
+              "level": 11,
+              "sizes": [
+                "Tiny"
+              ]
+            },
+            {
+              "level": 15,
+              "sizes": [
+                "Huge"
+              ]
+            }
+          ],
+          "plantLevel": 12,
+          "elementalUsesPerDay": [
+            [
+              16,
+              1
+            ],
+            [
+              18,
+              2
+            ],
+            [
+              20,
+              3
+            ]
+          ],
+          "elementalSizeUnlocks": [
+            {
+              "level": 16,
+              "sizes": [
+                "Small",
+                "Medium",
+                "Large"
+              ]
+            },
+            {
+              "level": 20,
+              "sizes": [
+                "Huge"
+              ]
+            }
+          ],
+          "hdCapEqualsLevel": true,
+          "durationHoursPerLevel": 1
+        },
+        "venomImmunityLevel": 9,
+        "aThousandFacesLevel": 13,
+        "timelessBodyLevel": 15,
+        "metalArmorProhibited": true,
+        "spontaneousCasting": "summon-natures-ally"
+      }
     },
     "Fighter": {
       "hitDice": "d10",
@@ -213,7 +538,23 @@
       ],
       "shortClassFeatures": [
         "[1] Bonus Feats: gets a bonus combat-oriented feat. Additional bonus feats at [2], [4], [6], [8], [10], [12], [14], [16], [18], and [20]."
-      ]
+      ],
+      "progression": {
+        "bonusFeatLevels": [
+          1,
+          2,
+          4,
+          6,
+          8,
+          10,
+          12,
+          14,
+          16,
+          18,
+          20
+        ],
+        "bonusFeatSource": "fighterBonus"
+      }
     },
     "Monk": {
       "hitDice": "d8",
@@ -287,7 +628,163 @@
         "[19] Empty Body: can assume an ethereal state for 1 round per monk level per day, as though using the spell etherealness.",
         "[20] Perfect Self: is treated as an outsider, gains damage reduction 10/magic.",
         "Ex-Monks: A nonlawful monk cannot gain new levels as a monk but retains all monk abilities."
-      ]
+      ],
+      "progression": {
+        "fastMovement": [
+          [
+            3,
+            10
+          ],
+          [
+            6,
+            20
+          ],
+          [
+            9,
+            30
+          ],
+          [
+            12,
+            40
+          ],
+          [
+            15,
+            50
+          ],
+          [
+            18,
+            60
+          ]
+        ],
+        "fastMovementRequiresUnarmoredAndLight": true,
+        "acBonus": [
+          [
+            5,
+            1
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            15,
+            3
+          ],
+          [
+            20,
+            4
+          ]
+        ],
+        "flurryPenalty": [
+          [
+            1,
+            -2
+          ],
+          [
+            5,
+            -1
+          ],
+          [
+            9,
+            0
+          ]
+        ],
+        "flurryExtraAttacks": [
+          [
+            1,
+            1
+          ],
+          [
+            11,
+            2
+          ]
+        ],
+        "monkWeapons": [
+          "Kama",
+          "Nunchaku",
+          "Sai",
+          "Shuriken",
+          "Siangham",
+          "Quarterstaff",
+          "Unarmed strike"
+        ],
+        "stunningFistUsesPerDay": "level",
+        "stunningFistDc": "10 + floor(level/2) + wis",
+        "kiStrike": [
+          [
+            4,
+            "magic"
+          ],
+          [
+            10,
+            "lawful"
+          ],
+          [
+            16,
+            "adamantine"
+          ]
+        ],
+        "slowFall": [
+          [
+            4,
+            20
+          ],
+          [
+            6,
+            30
+          ],
+          [
+            8,
+            40
+          ],
+          [
+            10,
+            50
+          ],
+          [
+            12,
+            60
+          ],
+          [
+            14,
+            70
+          ],
+          [
+            16,
+            80
+          ],
+          [
+            18,
+            90
+          ],
+          [
+            20,
+            -1
+          ]
+        ],
+        "wholenessOfBody": {
+          "minLevel": 7,
+          "hpPerLevel": 2
+        },
+        "bonusFeatLevels": [
+          1,
+          2,
+          6
+        ],
+        "evasionLevel": 2,
+        "stillMindLevel": 3,
+        "purityOfBodyLevel": 5,
+        "improvedEvasionLevel": 9,
+        "diamondBodyLevel": 11,
+        "abundantStepLevel": 12,
+        "diamondSoulLevel": 13,
+        "quiveringPalmLevel": 15,
+        "timelessBodyLevel": 17,
+        "tongueOfSunAndMoonLevel": 17,
+        "emptyBodyLevel": 19,
+        "perfectSelfLevel": 20,
+        "alignmentRequired": "Lawful"
+      }
     },
     "Paladin": {
       "hitDice": "d10",
@@ -336,7 +833,72 @@
         "Code of Conduct: lawful good; loses all class abilities if willingly commits evil. Respect authority, act with honor, help those in need, punish those who harm innocents.",
         "Associates: never knowingly associate with evil; only lawful good henchmen, followers, or cohorts.",
         "Ex-Paladins: ceasing to be lawful good, willful evil act, or gross code violation loses all paladin spells and abilities (except weapon, armor, shield proficiencies) until atonement. Multiclass paladin cannot raise paladin level again after taking another class level."
-      ]
+      ],
+      "progression": {
+        "turnUndead": {
+          "attemptsBase": 3,
+          "attemptsAbility": "cha",
+          "effectiveLevelOffset": -3,
+          "minLevel": 4,
+          "canRebuke": false
+        },
+        "turningDamageDice": "2d6",
+        "detectEvilLevel": 1,
+        "smiteEvilUsesPerDay": [
+          [
+            1,
+            1
+          ],
+          [
+            5,
+            2
+          ],
+          [
+            10,
+            3
+          ],
+          [
+            15,
+            4
+          ],
+          [
+            20,
+            5
+          ]
+        ],
+        "divineGraceLevel": 2,
+        "layOnHands": {
+          "minLevel": 2,
+          "hpFormula": "level * chaMod"
+        },
+        "auraOfCourageLevel": 3,
+        "divineHealthLevel": 3,
+        "removeDiseaseUsesPerWeek": [
+          [
+            6,
+            1
+          ],
+          [
+            9,
+            2
+          ],
+          [
+            12,
+            3
+          ],
+          [
+            15,
+            4
+          ],
+          [
+            18,
+            5
+          ]
+        ],
+        "specialMountLevel": 5,
+        "alignmentRequired": "Lawful Good",
+        "hasCodeOfConduct": true
+      }
     },
     "Ranger": {
       "hitDice": "d8",
@@ -385,7 +947,72 @@
         "[11] Combat Style Mastery (Ex): archery gains Improved Precise Shot; two-weapon gains Greater Two-Weapon Fighting. Light or no armor only.",
         "[13] Camouflage (Ex): use Hide in any natural terrain even without cover or concealment.",
         "[17] Hide in Plain Sight (Ex): use Hide in natural terrain even while observed."
-      ]
+      ],
+      "progression": {
+        "favoredEnemyLevels": [
+          1,
+          5,
+          10,
+          15,
+          20
+        ],
+        "favoredEnemyBonusStep": 2,
+        "favoredEnemySkills": [
+          "Bluff",
+          "Listen",
+          "Sense Motive",
+          "Spot",
+          "Survival"
+        ],
+        "favoredEnemySubtypeRequiredFor": [
+          "Humanoid",
+          "Outsider"
+        ],
+        "trackLevel": 1,
+        "wildEmpathyAbility": "cha",
+        "enduranceLevel": 3,
+        "combatStyle": {
+          "chooseLevel": 2,
+          "requiresLightArmor": true,
+          "styles": {
+            "Archery": [
+              [
+                2,
+                "Rapid Shot"
+              ],
+              [
+                6,
+                "Manyshot"
+              ],
+              [
+                11,
+                "Improved Precise Shot"
+              ]
+            ],
+            "Two-Weapon Fighting": [
+              [
+                2,
+                "Two-Weapon Fighting"
+              ],
+              [
+                6,
+                "Improved Two-Weapon Fighting"
+              ],
+              [
+                11,
+                "Greater Two-Weapon Fighting"
+              ]
+            ]
+          }
+        },
+        "animalCompanionLevel": 4,
+        "animalCompanionLevelDivisor": 2,
+        "woodlandStrideLevel": 7,
+        "swiftTrackerLevel": 8,
+        "evasionLevel": 9,
+        "camouflageLevel": 13,
+        "hideInPlainSightLevel": 17
+      }
     },
     "Rogue": {
       "hitDice": "d6",
@@ -431,7 +1058,103 @@
         "[4] Uncanny Dodge (Ex): retain Dex to AC when flat-footed or vs invisible attacker. If already have from another class, gain improved uncanny dodge instead.",
         "[8] Improved Uncanny Dodge (Ex): cannot be flanked; sneak attack by flanking only if attacker has 4+ more rogue levels.",
         "[10] Special Abilities: at [10], [13], [16], [19] choose one: Crippling Strike (sneak attack also 2 Str damage), Defensive Roll (once/day Reflex for half when reduced to 0 or fewer HP), Improved Evasion (half damage on failed Reflex), Opportunist (once/round AoO vs opponent just damaged in melee by ally), Skill Mastery (3 + Int modifier skills, take 10 when not normally allowed), Slippery Mind (extra save 1 round later vs enchantment), or Feat."
-      ]
+      ],
+      "progression": {
+        "sneakAttackDice": [
+          [
+            1,
+            1
+          ],
+          [
+            3,
+            2
+          ],
+          [
+            5,
+            3
+          ],
+          [
+            7,
+            4
+          ],
+          [
+            9,
+            5
+          ],
+          [
+            11,
+            6
+          ],
+          [
+            13,
+            7
+          ],
+          [
+            15,
+            8
+          ],
+          [
+            17,
+            9
+          ],
+          [
+            19,
+            10
+          ]
+        ],
+        "sneakAttackRangeFeet": 30,
+        "sneakAttackImmuneTypes": [
+          "Ooze",
+          "Plant",
+          "Undead",
+          "Construct",
+          "Incorporeal"
+        ],
+        "trapfindingLevel": 1,
+        "evasionLevel": 2,
+        "trapSense": [
+          [
+            3,
+            1
+          ],
+          [
+            6,
+            2
+          ],
+          [
+            9,
+            3
+          ],
+          [
+            12,
+            4
+          ],
+          [
+            15,
+            5
+          ],
+          [
+            18,
+            6
+          ]
+        ],
+        "uncannyDodgeLevel": 4,
+        "improvedUncannyDodgeLevel": 8,
+        "specialAbilityLevels": [
+          10,
+          13,
+          16,
+          19
+        ],
+        "specialAbilities": [
+          "Crippling Strike",
+          "Defensive Roll",
+          "Improved Evasion",
+          "Opportunist",
+          "Skill Mastery",
+          "Slippery Mind"
+        ]
+      }
     },
     "Sorcerer": {
       "hitDice": "d4",
@@ -455,7 +1178,24 @@
       "shortClassFeatures": [
         "[1] Spells: casts arcane spells from sorcerer/wizard list. No preparation. Charisma 10 + spell level. DC 10 + spell level + Cha modifier. Knows four 0-level and two 1st-level at start; gains more per Table: Sorcerer Spells Known. At [4], [6], [8]... can swap one known spell for another of same level.",
         "[1] Familiar: 24 hours, 100 gp. Magical beast companion; scales with level. If dies or dismissed, DC 15 Fort or lose 200 XP per level (half on success). Cannot replace for year and day. Only one familiar if multiple classes grant it."
-      ]
+      ],
+      "progression": {
+        "familiarLevel": 1,
+        "spellSwapLevels": [
+          4,
+          6,
+          8,
+          10,
+          12,
+          14,
+          16,
+          18,
+          20
+        ],
+        "castingAbility": "cha",
+        "spontaneous": true,
+        "arcaneSpellFailureApplies": true
+      }
     },
     "Wizard": {
       "hitDice": "d4",
@@ -495,7 +1235,25 @@
         "Spellbooks: must study spellbook to prepare spells. Cannot prepare spell not in book except read magic. Starts with all 0-level (minus prohibited school) plus three 1st-level + one per Int bonus. Two new spells per level for spellbook. Can add spells from other wizards' spellbooks.",
         "[1] School Specialization: may specialize in one school at 1st level; gain +1 spell per level of that school and +2 Spellcraft to learn it. Must give up two other schools (one if specialized in Divination). Cannot cast prohibited school spells from scrolls or wands. Eight schools: Abjuration, Conjuration, Divination, Enchantment, Evocation, Illusion, Necromancy, Transmutation. Universal cannot be specialty or prohibited.",
         "Arcane Spells and Armor: armor interferes with somatic components (arcane spell failure). Still Spell metamagic removes somatic component at +1 spell level."
-      ]
+      ],
+      "progression": {
+        "familiarLevel": 1,
+        "scribeScrollLevel": 1,
+        "bonusFeatLevels": [
+          5,
+          10,
+          15,
+          20
+        ],
+        "bonusFeatCategories": [
+          "Metamagic",
+          "Item creation",
+          "Spell Mastery"
+        ],
+        "prohibitedSchoolCount": 2,
+        "castingAbility": "int",
+        "arcaneSpellFailureApplies": true
+      }
     }
   }
 }

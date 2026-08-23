@@ -52,7 +52,7 @@ Derived from [classes.md](../dnd-rules/classes.md) and [class-features.md](../dn
 - No other class features; everything else is "see your feats."
 
 ### Monk
-- Stunning fist tracker: uses/day = `1 + floor(level/4)` (`1/4 levels + 1`). DC = `10 + ½ monk level + Wis mod`.
+- Stunning fist tracker: uses/day = monk level ("a number of times per day equal to her monk level"; the `1 + floor(level/4)` rate is the *feat* taken by a non-monk, not the monk class feature). DC = `10 + ½ monk level + Wis mod`.
 - Flurry of blows row in the Attacks card: extra attack at highest BAB, blanket `−2` (drops at later levels per `classes.json`) on every attack in the flurry. Only with unarmed strikes or monk weapons (kama, nunchaku, sai, shuriken, siangham; quarterstaff counts as monk weapon when 2H).
 - Unarmed strike + AC-from-Wis: already implemented — verify "unarmored + unencumbered (light load)" gating since AC bonus is lost with any armor, any shield, or medium/heavy load.
 - Fast movement +X m (per JSON), same unarmored/unencumbered gate.

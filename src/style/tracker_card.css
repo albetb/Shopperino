@@ -1,0 +1,55 @@
+/* Shared used/max tracker for per-day class features (tracker_card.jsx).
+   All sizing is in rem per the CSS convention in CLAUDE.md. */
+
+.tracker-card-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.tracker-card-count {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.25rem;
+  font-size: var(--font-size-lg);
+  line-height: 1.2;
+}
+
+.tracker-card-sep {
+  opacity: 0.5;
+  padding: 0 0.1rem;
+}
+
+/* Spent more than the level allows: flagged, never blocked. */
+.tracker-card-count-over {
+  color: var(--warn, #d98b2b);
+  font-weight: 600;
+}
+
+.tracker-card-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-left: auto;
+}
+
+.tracker-card-input {
+  width: 3.5rem;
+  padding: 0.2rem 0.4rem;
+  border: 0.0625rem solid var(--border-soft);
+  border-radius: 0.35rem;
+  background: transparent;
+  color: inherit;
+  font-size: var(--font-size-sm);
+  text-align: right;
+}
+
+.tracker-card-meta {
+  gap: 0.4rem;
+  font-size: var(--font-size-sm);
+}
+
+.tracker-card-note {
+  font-size: var(--font-size-sm);
+}
