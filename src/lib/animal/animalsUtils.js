@@ -220,3 +220,14 @@ export function getAnimalBaseByRef(ref) {
   if (!want) return null;
   return loadAnimals().find((a) => a.ref === want) || null;
 }
+
+/**
+ * As getAnimalBaseByRef, but across every creature file — animals, monsters
+ * and vermin. Used where a ref may name any creature, such as a druid's wild
+ * shape form (animal, plant or elemental).
+ */
+export function getCreatureBaseByRef(ref) {
+  const want = String(ref || '').trim();
+  if (!want) return null;
+  return loadCreatures().find((c) => c.ref === want) || null;
+}

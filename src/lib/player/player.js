@@ -11,7 +11,7 @@ import { getItemByRef, calculateWeaponAttackBonus, calculateWeaponDamage } from 
 import { getCarryingCapacity as capacityFromStr, classifyLoad } from './carryingCapacity';
 import { aggregateConditionEffects, sumContributions } from './conditionEffects';
 import { getClassProgression, getProgressionValue, hasFeatureAtLevel, resolveAtLevel } from './classProgression';
-import { listAnimals, getAnimalBaseByRef } from '../animal/animalsUtils';
+import { listAnimals, getCreatureBaseByRef } from '../animal/animalsUtils';
 import { parseAttacks, recomputeAttack } from '../animal/attackParser';
 import { getBaseFeatName } from '../featChoices';
 import { getDeityByName, isWithinOneStep, formatDeityAlignment } from '../deityData';
@@ -1074,27 +1074,98 @@ class Player {
       .sort((a, b) => String(a.name).localeCompare(String(b.name)));
   }
 
+  // —— Elemental wild shape (16th+, its own daily allowance) ——
+
   /**
-   * Form tiers the druid has unlocked but that this card does not offer, as
-   * `{ tier, level, reason }`. Lets the card explain the omission rather than
-   * silently dropping a feature the character has earned.
+   * Elemental uses per day: 1 at 16th, 2 at 18th, 3 at 20th. Entirely separate
+   * from the animal/plant allowance — the rules call these "in addition to her
+   * normal wild shape usage".
    */
-  getWildShapeMissingTiers() {
-    const config = this.getWildShapeConfig();
+  getElementalWildShapeMax() {
+    const table = this.getWildShapeConfig().elementalUsesPerDay;
+    if (!Array.isArray(table)) return 0;
+    return resolveAtLevel(table, this.getLevel(), 0);
+  }
+
+  getElementalWildShapeUsed() {
+    return this.getClassFeatureUsed('elementalWildShape');
+  }
+
+  getElementalWildShapeRemaining() {
+    return Math.max(0, this.getElementalWildShapeMax() - this.getElementalWildShapeUsed());
+  }
+
+  /** True once the druid can assume elemental form at all. */
+  canElementalWildShape() {
+    return this.getElementalWildShapeMax() > 0;
+  }
+
+  /** Elemental sizes unlocked at this level: Small/Medium/Large at 16, Huge at 20. */
+  getElementalWildShapeSizes() {
+    const unlocks = this.getWildShapeConfig().elementalSizeUnlocks;
+    if (!Array.isArray(unlocks)) return [];
     const level = this.getLevel();
-    const missing = [];
-    const elemental = config.elementalUsesPerDay;
-    if (Array.isArray(elemental) && elemental.length > 0) {
-      const at = Number(elemental[0]?.[0]);
-      if (at && level >= at) {
-        missing.push({
-          tier: 'Elemental',
-          level: at,
-          reason: 'draws on a separate daily allowance and grants the form\'s supernatural abilities',
-        });
-      }
-    }
-    return missing;
+    return unlocks
+      .filter((u) => Number(u?.level) <= level)
+      .flatMap((u) => (Array.isArray(u.sizes) ? u.sizes : []));
+  }
+
+  /**
+   * Whether a creature block is one of the four elementals a druid may become.
+   * Type alone is too loose: Belker, Invisible Stalker, Magmin and Thoqqua all
+   * carry an elemental type and subtype without being elementals in the sense
+   * the rule means, so the name must match too.
+   */
+  isElementalForm(creature) {
+    if (String(creature?.type || '').toLowerCase() !== 'elemental') return false;
+    const config = this.getWildShapeConfig();
+    const allowed = Array.isArray(config.elementalSubtypes)
+      ? config.elementalSubtypes.map((s) => String(s).toLowerCase())
+      : [];
+    const subtypes = Array.isArray(creature.subtypes)
+      ? creature.subtypes.map((s) => String(s).toLowerCase())
+      : [];
+    if (!subtypes.some((s) => allowed.includes(s))) return false;
+    const pattern = config.elementalNamePattern;
+    if (!pattern) return true;
+    return String(creature.name || '').toLowerCase().includes(String(pattern).toLowerCase());
+  }
+
+  /**
+   * The elemental forms available right now, sorted by name. Bound by the
+   * elemental size unlocks and by the same Hit Dice cap as any other form —
+   * which is why a 20th-level druid may become a Huge elemental (16 HD) but
+   * never a Greater (21) or Elder (24).
+   */
+  getElementalWildShapeForms() {
+    if (!this.canElementalWildShape()) return [];
+    const sizes = new Set(this.getElementalWildShapeSizes());
+    const hdCap = this.getWildShapeHdCap();
+    const monsters = loadFile('monsters')?.monsters;
+    if (!Array.isArray(monsters)) return [];
+    return monsters
+      .filter((creature) => {
+        if (!this.isElementalForm(creature)) return false;
+        if (!sizes.has(creature.size)) return false;
+        const hd = Number(creature?.hitDice?.count) || 0;
+        return hdCap === 0 || hd <= hdCap;
+      })
+      .sort((a, b) => String(a.name).localeCompare(String(b.name)));
+  }
+
+  /** True when the current form is an elemental rather than an animal or plant. */
+  isElementalShaped() {
+    const form = this.getWildShapeForm();
+    return !!form && this.isElementalForm(form);
+  }
+
+  /**
+   * Which daily allowance a form draws on. Elementals have their own pool;
+   * animals and plants share the normal one.
+   */
+  getWildShapeUsesKey(ref) {
+    const creature = getCreatureBaseByRef(ref);
+    return creature && this.isElementalForm(creature) ? 'elementalWildShape' : 'wildShape';
   }
 
   /** True while transformed. */
@@ -1109,7 +1180,7 @@ class Player {
   /** The animals.json block of the assumed form, or null when in true form. */
   getWildShapeForm() {
     if (!this.wildShapeRef) return null;
-    return getAnimalBaseByRef(this.wildShapeRef) || null;
+    return getCreatureBaseByRef(this.wildShapeRef) || null;
   }
 
   /** Display name of the current form, or '' when in true form. */
@@ -1127,9 +1198,9 @@ class Player {
    */
   enterWildShape(ref) {
     if (!this.grantsWildShape()) return false;
-    if (!getAnimalBaseByRef(ref)) return false;
+    if (!getCreatureBaseByRef(ref)) return false;
     this.wildShapeRef = ref;
-    this.useClassFeature('wildShape', 1);
+    this.useClassFeature(this.getWildShapeUsesKey(ref), 1);
     this.healAsIfRested();
     return true;
   }
@@ -1185,11 +1256,33 @@ class Player {
   }
 
   /**
-   * Special qualities of the form, returned for display only so the card can
-   * state plainly that they are NOT gained — the single most misapplied part
-   * of the polymorph rules.
+   * Special qualities the form grants. Normally none — this is the single most
+   * misapplied part of the polymorph rules — but an **elemental** form is the
+   * stated exception: the druid gains all of the elemental's extraordinary,
+   * supernatural and spell-like abilities.
+   */
+  getWildShapeSpecialQualities() {
+    if (!this.isElementalShaped()) return [];
+    const list = this.getWildShapeForm()?.specialQualities;
+    return Array.isArray(list) ? [...list] : [];
+  }
+
+  /**
+   * Feats the form grants. Only an elemental form does: "she also gains the
+   * elemental's feats for as long as she maintains the wild shape".
+   */
+  getWildShapeFeats() {
+    if (!this.isElementalShaped()) return [];
+    const list = this.getWildShapeForm()?.feats;
+    return Array.isArray(list) ? [...list] : [];
+  }
+
+  /**
+   * Special qualities of the form that are NOT gained, returned so the card can
+   * say so plainly. Empty for an elemental, which grants them all.
    */
   getWildShapeUngainedQualities() {
+    if (this.isElementalShaped()) return [];
     const list = this.getWildShapeForm()?.specialQualities;
     return Array.isArray(list) ? [...list] : [];
   }

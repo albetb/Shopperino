@@ -20,68 +20,117 @@ import '../../style/wild_shape.css';
 const fmtBonus = (n) => `${n >= 0 ? '+' : ''}${n}`;
 
 /**
- * Druid wild shape.
- *
- * Out of form the card is a scrollable, name-sorted list of every animal the
- * druid may currently assume — size unlocked, Hit Dice within her level — each
- * linking to its stat block and carrying a transform button.
- *
- * In form it shows what the change did that the stat pills cannot: the natural
- * attacks, the movement modes, the special attacks gained, and the special
- * qualities pointedly *not* gained. The numbers themselves land on the sheet
- * directly, glowing green or red against the druid's true form.
+ * The two wild shape allowances, as card configuration. They share every
+ * mechanic — the difference is which pool they spend, which creatures they
+ * offer, and that an elemental form uniquely grants the form's supernatural
+ * abilities and feats.
  */
-export default function WildShapeCard() {
+const ANIMAL_POOL = {
+  key: 'wildShape',
+  usesKey: 'wildShape',
+  label: 'Wild Shape',
+  icon: 'pets',
+  isUnlocked: (p) => p.canWildShape(),
+  getMax: (p) => p.getWildShapeMax(),
+  getUsed: (p) => p.getWildShapeUsed(),
+  getRemaining: (p) => p.getWildShapeRemaining(),
+  getForms: (p) => p.getWildShapeForms(),
+  ownsCurrentForm: (p) => p.isWildShaped() && !p.isElementalShaped(),
+  describeLimits: (p) => `${p.getWildShapeTypes().join(' and ')} forms · sizes `
+    + `${p.getWildShapeSizes().join(', ') || 'none'} · up to ${p.getWildShapeHdCap()} HD`,
+};
+
+const ELEMENTAL_POOL = {
+  key: 'elementalWildShape',
+  usesKey: 'elementalWildShape',
+  label: 'Elemental Shape',
+  icon: 'local_fire_department',
+  isUnlocked: (p) => p.canElementalWildShape(),
+  getMax: (p) => p.getElementalWildShapeMax(),
+  getUsed: (p) => p.getElementalWildShapeUsed(),
+  getRemaining: (p) => p.getElementalWildShapeRemaining(),
+  getForms: (p) => p.getElementalWildShapeForms(),
+  ownsCurrentForm: (p) => p.isElementalShaped(),
+  describeLimits: (p) => `air, earth, fire and water · sizes `
+    + `${p.getElementalWildShapeSizes().join(', ') || 'none'} · up to ${p.getWildShapeHdCap()} HD`,
+};
+
+export function WildShapeCard() {
+  return <ShapeCard pool={ANIMAL_POOL} />;
+}
+
+export function ElementalShapeCard() {
+  return <ShapeCard pool={ELEMENTAL_POOL} />;
+}
+
+export default WildShapeCard;
+
+/**
+ * One wild shape allowance.
+ *
+ * Out of form the card is a scrollable, name-sorted list of every form this
+ * pool currently offers, each linking to its stat block and carrying a
+ * transform button. In form it shows what the change did that the stat pills
+ * cannot; the numbers themselves land on the sheet directly, glowing green or
+ * red against the druid's true form.
+ *
+ * Only one shape can be held at a time, so while a form from the *other* pool
+ * is active this card's transform buttons are disabled rather than hidden —
+ * the list still reads as a reference.
+ */
+function ShapeCard({ pool }) {
   const dispatch = useDispatch();
   const player = useSelector((state) => state.playerSheet?.player);
-  const collapsed = useSelector((state) => state.playerSheet?.combatPageCardsCollapsed?.wildShape ?? false);
+  const collapsed = useSelector((state) => state.playerSheet?.combatPageCardsCollapsed?.[pool.key] ?? false);
   const [query, setQuery] = useState('');
 
-  const forms = useMemo(() => player?.getWildShapeForms?.() ?? [], [player]);
+  const forms = useMemo(() => (player ? pool.getForms(player) : []), [player, pool]);
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     return q ? forms.filter((f) => String(f.name).toLowerCase().includes(q)) : forms;
   }, [forms, query]);
 
   if (!player) return null;
-  if (!player.canWildShape?.()) return null;
+  // Unlocked strictly by level: below it the card does not exist at all.
+  if (!pool.isUnlocked(player)) return null;
 
-  const max = player.getWildShapeMax();
-  const used = player.getWildShapeUsed();
-  const remaining = player.getWildShapeRemaining();
+  const max = pool.getMax(player);
+  const used = pool.getUsed(player);
+  const remaining = pool.getRemaining(player);
   const overCap = used > max;
   const hours = player.getWildShapeDurationHours();
-  const shaped = player.isWildShaped();
+  const ownsForm = pool.ownsCurrentForm(player);
+  // A form from the other pool blocks this one: only one shape at a time.
+  const blockedByOther = player.isWildShaped() && !ownsForm;
   const form = player.getWildShapeForm();
-  const missingTiers = player.getWildShapeMissingTiers();
 
   const toggleCollapsed = () =>
-    dispatch(setCombatPageCardCollapsed({ key: 'wildShape', value: !collapsed }));
+    dispatch(setCombatPageCardCollapsed({ key: pool.key, value: !collapsed }));
 
   const cardAction = (
     <span className="sh-row-h" style={{ gap: 'var(--space-1)' }}>
       <IconButton
         icon="restart_alt"
         ghost size="sm"
-        onClick={() => dispatch(onResetWildShapeUses())}
+        onClick={() => dispatch(onResetWildShapeUses(pool.usesKey))}
         disabled={used === 0}
-        aria-label="Restore wild shape uses"
+        aria-label={`Restore ${pool.label} uses`}
         title="Restore uses to maximum"
       />
       <IconButton
         icon={collapsed ? 'expand_more' : 'expand_less'}
         ghost size="sm"
         onClick={toggleCollapsed}
-        aria-label="Toggle wild shape"
+        aria-label={`Toggle ${pool.label}`}
       />
     </span>
   );
 
   return (
     <Card
-      title={`Wild Shape - ${remaining}/${max} - ${hours}h`}
+      title={`${pool.label} - ${remaining}/${max} - ${hours}h`}
       className="sh-card--head-spread"
-      eyebrow={shaped ? form?.name || 'transformed' : 'true form'}
+      eyebrow={ownsForm ? form?.name || 'transformed' : 'true form'}
       action={cardAction}
     >
       {!collapsed && (
@@ -93,10 +142,18 @@ export default function WildShapeCard() {
             </div>
           )}
 
-          {shaped ? (
+          {ownsForm ? (
             <ShapedBody player={player} form={form} dispatch={dispatch} />
           ) : (
             <>
+              {blockedByOther && (
+                <div className="sh-warn-strip">
+                  <Icon name="block" />
+                  Already shaped as <b>{form?.name}</b>. Return to your true form
+                  first — only one shape at a time.
+                </div>
+              )}
+
               {forms.length > 8 && (
                 <input
                   type="text"
@@ -104,13 +161,13 @@ export default function WildShapeCard() {
                   placeholder="Search forms…"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  aria-label="Search wild shape forms"
+                  aria-label={`Search ${pool.label} forms`}
                 />
               )}
 
               {filtered.length === 0 ? (
                 <EmptyState
-                  icon="pets"
+                  icon={pool.icon}
                   title={forms.length === 0 ? 'No forms available' : 'Nothing matches'}
                   hint={forms.length === 0
                     ? `Forms are limited to unlocked sizes and ${player.getWildShapeHdCap()} Hit Dice or fewer.`
@@ -118,24 +175,27 @@ export default function WildShapeCard() {
                 />
               ) : (
                 <div className="wild-shape-list" role="list">
-                  {filtered.map((animal) => (
-                    <div key={animal.ref} className="wild-shape-row" role="listitem">
+                  {filtered.map((creature) => (
+                    <div key={creature.ref} className="wild-shape-row" role="listitem">
                       <button
                         type="button"
                         className="button-link wild-shape-name"
-                        onClick={() => dispatch(addCardByLink({ links: animal.ref }))}
+                        onClick={() => dispatch(addCardByLink({ links: creature.ref }))}
                         title="Show stat block"
                       >
-                        {animal.name}
+                        {creature.name}
                       </button>
                       <span className="wild-shape-row-meta">
-                        <span className="sh-faint">{animal.size} · {animal.hitDice?.count ?? 0} HD</span>
+                        <span className="sh-faint">{creature.size} · {creature.hitDice?.count ?? 0} HD</span>
                         <IconButton
                           icon="change_circle"
                           size="sm"
-                          onClick={() => dispatch(onEnterWildShape(animal.ref))}
-                          aria-label={`Transform into ${animal.name}`}
-                          title={`Transform into ${animal.name}`}
+                          disabled={blockedByOther}
+                          onClick={() => dispatch(onEnterWildShape(creature.ref))}
+                          aria-label={`Transform into ${creature.name}`}
+                          title={blockedByOther
+                            ? 'Return to your true form first'
+                            : `Transform into ${creature.name}`}
                         />
                       </span>
                     </div>
@@ -144,18 +204,9 @@ export default function WildShapeCard() {
               )}
 
               <div className="sh-faint" style={{ fontSize: 'var(--font-size-xs)' }}>
-                {player.getWildShapeTypes().join(' and ')} forms ·
-                {' '}sizes {player.getWildShapeSizes().join(', ') || 'none'} ·
-                {' '}up to {player.getWildShapeHdCap()} HD. The form must be one
-                you are familiar with — that part is the table's call.
+                {pool.describeLimits(player)}. The form must be one you are
+                familiar with — that part is the table's call.
               </div>
-
-              {missingTiers.map((t) => (
-                <div key={t.tier} className="sh-faint" style={{ fontSize: 'var(--font-size-xs)' }}>
-                  {t.tier} form is unlocked at level {t.level} but is not listed here:
-                  {' '}it {t.reason}.
-                </div>
-              ))}
             </>
           )}
         </div>
@@ -169,9 +220,12 @@ function ShapedBody({ player, form, dispatch }) {
   const [combatOpen, setCombatOpen] = useState(false);
   const attacks = player.getWildShapeAttacks();
   const specialAttacks = player.getWildShapeSpecialAttacks();
+  const specialQualities = player.getWildShapeSpecialQualities();
+  const feats = player.getWildShapeFeats();
   const ungained = player.getWildShapeUngainedQualities();
   const modes = player.getWildShapeMovementModes();
   const naturalArmor = player.getWildShapeNaturalArmor();
+  const isElemental = player.isElementalShaped();
   const canCast = player.canCastSpells();
 
   return (
@@ -201,7 +255,7 @@ function ShapedBody({ player, form, dispatch }) {
       {!canCast && (
         <div className="sh-warn-strip">
           <Icon name="auto_fix_off" />
-          No speech in animal form, so verbal components fail — you cannot cast.
+          No speech in this form, so verbal components fail — you cannot cast.
           The Natural Spell feat removes this.
         </div>
       )}
@@ -227,12 +281,22 @@ function ShapedBody({ player, form, dispatch }) {
         </div>
       )}
 
-      {specialAttacks.length > 0 && (
+      {(specialAttacks.length > 0 || specialQualities.length > 0 || feats.length > 0) && (
         <div className="sh-stack" style={{ gap: 'var(--space-1)' }}>
           <Filigree>Gained</Filigree>
           <div className="sh-row-h" style={{ gap: 'var(--space-2)', flexWrap: 'wrap' }}>
-            {specialAttacks.map((s) => <Pill key={s} tone="success">{s}</Pill>)}
+            {specialAttacks.map((s) => <Pill key={`a-${s}`} tone="success">{s}</Pill>)}
+            {specialQualities.map((s) => <Pill key={`q-${s}`} tone="success">{s}</Pill>)}
+            {feats.map((s) => <Pill key={`f-${s}`} tone="accent" icon="auto_awesome">{s}</Pill>)}
           </div>
+          {isElemental && (
+            <div className="sh-faint" style={{ fontSize: 'var(--font-size-xs)' }}>
+              An elemental form is the exception to the usual rule: you gain all
+              of its extraordinary, supernatural and spell-like abilities, and
+              its feats, for as long as you hold the shape. Your own creature
+              type stays what it was.
+            </div>
+          )}
         </div>
       )}
 

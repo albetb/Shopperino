@@ -1004,11 +1004,15 @@ export const onExitWildShape = () => (dispatch, getState) => {
   persistPlayer(dispatch, getState, player);
 };
 
-/** Restore the day's wild shape uses without resting the whole character. */
-export const onResetWildShapeUses = () => (dispatch, getState) => {
+/**
+ * Restore a wild shape allowance without resting the whole character. The two
+ * pools are independent — 'wildShape' covers animals and plants, and
+ * 'elementalWildShape' the elemental forms.
+ */
+export const onResetWildShapeUses = (key = 'wildShape') => (dispatch, getState) => {
   const player = getState().playerSheet?.player;
   if (!player) return;
-  player.setClassFeatureUses('wildShape', 0);
+  player.setClassFeatureUses(key, 0);
   persistPlayer(dispatch, getState, player);
 };
 

@@ -10,7 +10,7 @@ import FavoredEnemyCard from './favored_enemy_card';
 import CombatStyleCard from './combat_style_card';
 import DomainsCard from './domains_card';
 import SpecialMountCard from './special_mount_card';
-import WildShapeCard from './wild_shape_card';
+import { WildShapeCard, ElementalShapeCard } from './wild_shape_card';
 
 /**
  * Registry of the class-feature cards shown on the combat page.
@@ -36,6 +36,7 @@ const CLASS_FEATURE_CARDS = {
   ],
   Druid: [
     { key: 'wildShape', Component: WildShapeCard, minLevel: 5 },
+    { key: 'elementalWildShape', Component: ElementalShapeCard, minLevel: 16 },
     { key: 'animalCompanion', Component: AnimalCompanionCard },
   ],
   Monk: [

@@ -538,7 +538,14 @@
             }
           ],
           "hdCapEqualsLevel": true,
-          "durationHoursPerLevel": 1
+          "durationHoursPerLevel": 1,
+          "elementalSubtypes": [
+            "Air",
+            "Earth",
+            "Fire",
+            "Water"
+          ],
+          "elementalNamePattern": "elemental"
         },
         "venomImmunityLevel": 9,
         "aThousandFacesLevel": 13,

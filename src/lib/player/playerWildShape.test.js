@@ -98,12 +98,140 @@ describe('which forms are available', () => {
     expect(druid(15).getWildShapeForms().map((f) => f.name)).toContain('Tendriculos');
   });
 
-  test('elemental forms are flagged as unlocked but not offered', () => {
-    expect(druid(15).getWildShapeMissingTiers()).toEqual([]);
-    const missing = druid(16).getWildShapeMissingTiers();
-    expect(missing).toHaveLength(1);
-    expect(missing[0].tier).toBe('Elemental');
-    expect(missing[0].level).toBe(16);
+  test('elementals never appear in the normal pool, whatever the level', () => {
+    const at20 = druid(20).getWildShapeForms();
+    expect(at20.every((f) => String(f.type).toLowerCase() !== 'elemental')).toBe(true);
+  });
+});
+
+describe('elemental shape is a separate allowance', () => {
+  test('it unlocks at 16th and grows at 18th and 20th', () => {
+    expect(druid(15).canElementalWildShape()).toBe(false);
+    expect(druid(15).getElementalWildShapeMax()).toBe(0);
+    expect(druid(16).getElementalWildShapeMax()).toBe(1);
+    expect(druid(17).getElementalWildShapeMax()).toBe(1);
+    expect(druid(18).getElementalWildShapeMax()).toBe(2);
+    expect(druid(20).getElementalWildShapeMax()).toBe(3);
+  });
+
+  test('sizes unlock separately from the animal tiers', () => {
+    expect(druid(16).getElementalWildShapeSizes().sort()).toEqual(['Large', 'Medium', 'Small']);
+    expect(druid(20).getElementalWildShapeSizes()).toContain('Huge');
+  });
+
+  test('it offers the four elementals, not every Elemental-typed creature', () => {
+    const names = druid(20).getElementalWildShapeForms().map((f) => f.name);
+    expect(names.length).toBeGreaterThan(0);
+    names.forEach((n) => expect(n).toMatch(/elemental/i));
+    // All four carry an elemental subtype but are not elementals in the sense
+    // the rule means.
+    ['Belker', 'Invisible Stalker', 'Magmin', 'Thoqqua'].forEach((n) => {
+      expect(names).not.toContain(n);
+    });
+  });
+
+  test('the Hit Dice cap bars Greater and Elder even at 20th', () => {
+    const names = druid(20).getElementalWildShapeForms().map((f) => f.name);
+    expect(names).toContain('Air Elemental, Huge');       // 16 HD, within a level-20 cap
+    expect(names).not.toContain('Air Elemental, Greater'); // 21 HD
+    expect(names).not.toContain('Air Elemental, Elder');   // 24 HD
+  });
+
+  test('Huge elementals stay locked until 20th', () => {
+    const at18 = druid(18).getElementalWildShapeForms().map((f) => f.size);
+    expect(at18).not.toContain('Huge');
+    expect(druid(20).getElementalWildShapeForms().map((f) => f.size)).toContain('Huge');
+  });
+
+  test('the list is sorted by name', () => {
+    const names = druid(20).getElementalWildShapeForms().map((f) => f.name);
+    expect(names).toEqual([...names].sort((a, b) => a.localeCompare(b)));
+  });
+
+  test('below 16th there are no elemental forms at all', () => {
+    expect(druid(15).getElementalWildShapeForms()).toEqual([]);
+  });
+});
+
+describe('the two allowances are independent', () => {
+  const ELEMENTAL = 'monsters/air-elemental-medium';
+
+  test('an elemental form spends the elemental pool, not the animal one', () => {
+    const p = druid(20);
+    expect(p.getWildShapeUsesKey(ELEMENTAL)).toBe('elementalWildShape');
+    expect(p.getWildShapeUsesKey(WOLF)).toBe('wildShape');
+    p.enterWildShape(ELEMENTAL);
+    expect(p.getElementalWildShapeUsed()).toBe(1);
+    expect(p.getWildShapeUsed()).toBe(0);
+  });
+
+  test('an animal form spends the animal pool, not the elemental one', () => {
+    const p = druid(20);
+    p.enterWildShape(WOLF);
+    expect(p.getWildShapeUsed()).toBe(1);
+    expect(p.getElementalWildShapeUsed()).toBe(0);
+  });
+
+  test('isElementalShaped tells the two apart', () => {
+    const p = druid(20);
+    expect(p.isElementalShaped()).toBe(false);
+    p.enterWildShape(WOLF);
+    expect(p.isWildShaped()).toBe(true);
+    expect(p.isElementalShaped()).toBe(false);
+    p.exitWildShape();
+    p.enterWildShape(ELEMENTAL);
+    expect(p.isWildShaped()).toBe(true);
+    expect(p.isElementalShaped()).toBe(true);
+  });
+
+  test('resting clears both pools', () => {
+    const p = druid(20);
+    p.enterWildShape(ELEMENTAL);
+    p.exitWildShape();
+    p.enterWildShape(WOLF);
+    p.resetClassFeatureUses();
+    expect(p.getWildShapeUsed()).toBe(0);
+    expect(p.getElementalWildShapeUsed()).toBe(0);
+  });
+
+  test('an elemental form survives a round trip and stays recognised', () => {
+    const p = druid(20);
+    p.enterWildShape(ELEMENTAL);
+    const revived = new Player().load(p.serialize());
+    revived.setClass('Druid');
+    revived.setLevel(20);
+    expect(revived.isElementalShaped()).toBe(true);
+    expect(revived.getWildShapeName()).toBe('Air Elemental, Medium');
+  });
+});
+
+describe('an elemental form grants what other forms do not', () => {
+  const ELEMENTAL = 'monsters/air-elemental-medium';
+
+  test('its special qualities and feats transfer', () => {
+    const p = druid(20);
+    p.enterWildShape(ELEMENTAL);
+    expect(p.getWildShapeSpecialQualities().length).toBeGreaterThan(0);
+    expect(p.getWildShapeFeats().length).toBeGreaterThan(0);
+    // Nothing is withheld, so there is nothing to list as not gained.
+    expect(p.getWildShapeUngainedQualities()).toEqual([]);
+  });
+
+  test('an animal form withholds both', () => {
+    const p = druid(20);
+    p.enterWildShape(WOLF);
+    expect(p.getWildShapeSpecialQualities()).toEqual([]);
+    expect(p.getWildShapeFeats()).toEqual([]);
+    expect(p.getWildShapeUngainedQualities()).toContain('scent');
+  });
+
+  test('its physical stats apply like any other form', () => {
+    const p = druid(20, { str: 10, dex: 10 });
+    p.enterWildShape(ELEMENTAL);
+    const air = p.getWildShapeForm().abilities;
+    expect(p.getAbilityTotal('str')).toBe(air.str);
+    expect(p.getAbilityTotal('dex')).toBe(air.dex);
+    expect(p.getWildShapeAttacks().length).toBeGreaterThan(0);
   });
 });
 
