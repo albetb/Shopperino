@@ -1,0 +1,3889 @@
+{
+  "traps": [
+    {
+      "name": "Basic Arrow Trap",
+      "cr": 1,
+      "ref": "traps/cr1/basic-arrow-trap",
+      "type": "mechanical",
+      "trigger": {
+        "type": "proximity"
+      },
+      "reset": "manual",
+      "attacks": [
+        {
+          "bonus": 10,
+          "mode": "ranged",
+          "damage": "1d6",
+          "critical": "x3",
+          "weapon": "arrow"
+        }
+      ],
+      "searchDC": 20,
+      "disableDeviceDC": 20,
+      "cost": {
+        "marketPriceGp": 2000
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Camouflaged Pit Trap",
+      "cr": 1,
+      "ref": "traps/cr1/camouflaged-pit-trap",
+      "type": "mechanical",
+      "trigger": {
+        "type": "location"
+      },
+      "reset": "manual",
+      "save": {
+        "type": "Reflex",
+        "dc": 20,
+        "result": "avoids"
+      },
+      "pit": {
+        "depthFt": 10,
+        "fallDamage": "1d6"
+      },
+      "searchDC": 24,
+      "disableDeviceDC": 20,
+      "cost": {
+        "marketPriceGp": 1800
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Deeper Pit Trap",
+      "cr": 1,
+      "ref": "traps/cr1/deeper-pit-trap",
+      "type": "mechanical",
+      "trigger": {
+        "type": "location"
+      },
+      "reset": "manual",
+      "bypass": {
+        "type": "hidden switch",
+        "searchDC": 25
+      },
+      "save": {
+        "type": "Reflex",
+        "dc": 15,
+        "result": "avoids"
+      },
+      "pit": {
+        "depthFt": 20,
+        "fallDamage": "2d6"
+      },
+      "multipleTargets": "first target in each of two adjacent 5-ft. squares",
+      "searchDC": 20,
+      "disableDeviceDC": 23,
+      "cost": {
+        "marketPriceGp": 1300
+      },
+      "footprint": {
+        "kind": "squares",
+        "squares": 2,
+        "layout": "adjacent"
+      }
+    },
+    {
+      "name": "Fusillade of Darts",
+      "cr": 1,
+      "ref": "traps/cr1/fusillade-of-darts",
+      "type": "mechanical",
+      "trigger": {
+        "type": "location"
+      },
+      "reset": "manual",
+      "attacks": [
+        {
+          "bonus": 10,
+          "mode": "ranged",
+          "damage": "1d4+1",
+          "weapon": "dart"
+        }
+      ],
+      "multipleTargets": "fires 1d4 darts at each target in two adjacent 5-ft. squares",
+      "searchDC": 14,
+      "disableDeviceDC": 20,
+      "cost": {
+        "marketPriceGp": 500
+      },
+      "footprint": {
+        "kind": "squares",
+        "squares": 2,
+        "layout": "adjacent"
+      }
+    },
+    {
+      "name": "Poison Dart Trap",
+      "cr": 1,
+      "ref": "traps/cr1/poison-dart-trap",
+      "type": "mechanical",
+      "trigger": {
+        "type": "location"
+      },
+      "reset": "manual",
+      "attacks": [
+        {
+          "bonus": 8,
+          "mode": "ranged",
+          "damage": "1d4",
+          "plusPoison": true,
+          "weapon": "dart"
+        }
+      ],
+      "poison": {
+        "name": "bloodroot",
+        "save": "Fortitude",
+        "saveDC": 12,
+        "initial": "0",
+        "secondary": "1d4 Con plus 1d3 Wis"
+      },
+      "searchDC": 20,
+      "disableDeviceDC": 18,
+      "cost": {
+        "marketPriceGp": 700
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Poison Needle Trap",
+      "cr": 1,
+      "ref": "traps/cr1/poison-needle-trap",
+      "type": "mechanical",
+      "trigger": {
+        "type": "touch"
+      },
+      "reset": "manual",
+      "attacks": [
+        {
+          "bonus": 8,
+          "mode": "ranged",
+          "damage": "1"
+        }
+      ],
+      "searchDC": 22,
+      "disableDeviceDC": 20,
+      "cost": {
+        "marketPriceGp": 1300
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Portcullis Trap",
+      "cr": 1,
+      "ref": "traps/cr1/portcullis-trap",
+      "type": "mechanical",
+      "trigger": {
+        "type": "location"
+      },
+      "reset": "manual",
+      "attacks": [
+        {
+          "bonus": 10,
+          "mode": "melee",
+          "damage": "3d6"
+        }
+      ],
+      "searchDC": 20,
+      "disableDeviceDC": 20,
+      "cost": {
+        "marketPriceGp": 1400
+      },
+      "note": "Damage applies only to those underneath the portcullis. Portcullis blocks passageway.",
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Razor-Wire across Hallway",
+      "cr": 1,
+      "ref": "traps/cr1/razor-wire-across-hallway",
+      "type": "mechanical",
+      "trigger": {
+        "type": "location"
+      },
+      "reset": "no",
+      "attacks": [
+        {
+          "bonus": 10,
+          "mode": "melee",
+          "damage": "2d6",
+          "weapon": "wire"
+        }
+      ],
+      "multipleTargets": "first target in each of two adjacent 5-ft. squares",
+      "searchDC": 22,
+      "disableDeviceDC": 15,
+      "cost": {
+        "marketPriceGp": 400
+      },
+      "footprint": {
+        "kind": "squares",
+        "squares": 2,
+        "layout": "adjacent"
+      }
+    },
+    {
+      "name": "Rolling Rock Trap",
+      "cr": 1,
+      "ref": "traps/cr1/rolling-rock-trap",
+      "type": "mechanical",
+      "trigger": {
+        "type": "location"
+      },
+      "reset": "manual",
+      "attacks": [
+        {
+          "bonus": 10,
+          "mode": "melee",
+          "damage": "2d6",
+          "weapon": "rock"
+        }
+      ],
+      "searchDC": 20,
+      "disableDeviceDC": 22,
+      "cost": {
+        "marketPriceGp": 1400
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Scything Blade Trap",
+      "cr": 1,
+      "ref": "traps/cr1/scything-blade-trap",
+      "type": "mechanical",
+      "trigger": {
+        "type": "location"
+      },
+      "reset": "automatic",
+      "attacks": [
+        {
+          "bonus": 8,
+          "mode": "melee",
+          "damage": "1d8",
+          "critical": "x3"
+        }
+      ],
+      "searchDC": 21,
+      "disableDeviceDC": 20,
+      "cost": {
+        "marketPriceGp": 1700
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Spear Trap",
+      "cr": 1,
+      "ref": "traps/cr1/spear-trap",
+      "type": "mechanical",
+      "trigger": {
+        "type": "location"
+      },
+      "reset": "manual",
+      "attacks": [
+        {
+          "bonus": 12,
+          "mode": "ranged",
+          "damage": "1d8",
+          "critical": "x3",
+          "weapon": "spear"
+        }
+      ],
+      "searchDC": 20,
+      "disableDeviceDC": 20,
+      "cost": {
+        "marketPriceGp": 1200
+      },
+      "note": "200-ft. max range, target determined randomly from those in its path.",
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Swinging Block Trap",
+      "cr": 1,
+      "ref": "traps/cr1/swinging-block-trap",
+      "type": "mechanical",
+      "trigger": {
+        "type": "touch"
+      },
+      "reset": "manual",
+      "attacks": [
+        {
+          "bonus": 5,
+          "mode": "melee",
+          "damage": "4d6",
+          "weapon": "stone block"
+        }
+      ],
+      "searchDC": 20,
+      "disableDeviceDC": 20,
+      "cost": {
+        "marketPriceGp": 500
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Wall Blade Trap",
+      "cr": 1,
+      "ref": "traps/cr1/wall-blade-trap",
+      "type": "mechanical",
+      "trigger": {
+        "type": "touch"
+      },
+      "reset": "automatic",
+      "bypass": {
+        "type": "hidden switch",
+        "searchDC": 25
+      },
+      "attacks": [
+        {
+          "bonus": 10,
+          "mode": "melee",
+          "damage": "2d4",
+          "critical": "x4",
+          "weapon": "scythe"
+        }
+      ],
+      "searchDC": 22,
+      "disableDeviceDC": 22,
+      "cost": {
+        "marketPriceGp": 2500
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Box of Brown Mold",
+      "cr": 2,
+      "ref": "traps/cr2/box-of-brown-mold",
+      "type": "mechanical",
+      "trigger": {
+        "type": "touch",
+        "detail": "opening the box"
+      },
+      "reset": "automatic",
+      "effect": {
+        "kind": "aura",
+        "radiusFt": 5,
+        "damage": "3d6",
+        "damageType": "cold nonlethal"
+      },
+      "searchDC": 22,
+      "disableDeviceDC": 16,
+      "cost": {
+        "marketPriceGp": 3000
+      },
+      "footprint": {
+        "kind": "burst",
+        "radiusFt": 5,
+        "squares": 4
+      }
+    },
+    {
+      "name": "Bricks from Ceiling",
+      "cr": 2,
+      "ref": "traps/cr2/bricks-from-ceiling",
+      "type": "mechanical",
+      "trigger": {
+        "type": "touch"
+      },
+      "reset": "repair",
+      "attacks": [
+        {
+          "bonus": 12,
+          "mode": "melee",
+          "damage": "2d6",
+          "weapon": "bricks"
+        }
+      ],
+      "multipleTargets": "all targets in two adjacent 5-ft. squares",
+      "searchDC": 20,
+      "disableDeviceDC": 20,
+      "cost": {
+        "marketPriceGp": 2400
+      },
+      "footprint": {
+        "kind": "squares",
+        "squares": 2,
+        "layout": "adjacent"
+      }
+    },
+    {
+      "name": "Burning Hands Trap",
+      "cr": 2,
+      "ref": "traps/cr2/burning-hands-trap",
+      "type": "magic device",
+      "trigger": {
+        "type": "proximity",
+        "detail": "alarm"
+      },
+      "reset": "automatic",
+      "save": {
+        "type": "Reflex",
+        "dc": 11,
+        "result": "half"
+      },
+      "spellEffects": [
+        {
+          "spell": "burning hands",
+          "casterLevel": 1,
+          "casterClass": "wizard",
+          "effect": "1d4 fire",
+          "save": {
+            "raw": "DC 11 Reflex save half damage",
+            "dc": 11,
+            "type": "Reflex",
+            "result": "half"
+          }
+        }
+      ],
+      "searchDC": 26,
+      "disableDeviceDC": 26,
+      "cost": {
+        "gp": 500,
+        "xp": 40
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Camouflaged Pit Trap",
+      "cr": 2,
+      "ref": "traps/cr2/camouflaged-pit-trap",
+      "type": "mechanical",
+      "trigger": {
+        "type": "location"
+      },
+      "reset": "manual",
+      "save": {
+        "type": "Reflex",
+        "dc": 20,
+        "result": "avoids"
+      },
+      "pit": {
+        "depthFt": 20,
+        "fallDamage": "2d6"
+      },
+      "multipleTargets": "first target in each of two adjacent 5-ft. squares",
+      "searchDC": 24,
+      "disableDeviceDC": 19,
+      "cost": {
+        "marketPriceGp": 3400
+      },
+      "footprint": {
+        "kind": "squares",
+        "squares": 2,
+        "layout": "adjacent"
+      }
+    },
+    {
+      "name": "Inflict Light Wounds Trap",
+      "cr": 2,
+      "ref": "traps/cr2/inflict-light-wounds-trap",
+      "type": "magic device",
+      "trigger": {
+        "type": "touch"
+      },
+      "reset": "automatic",
+      "save": {
+        "type": "Will",
+        "dc": 11,
+        "result": "half"
+      },
+      "spellEffects": [
+        {
+          "spell": "inflict light wounds",
+          "casterLevel": 1,
+          "casterClass": "cleric",
+          "effect": "1d8+1",
+          "save": {
+            "raw": "DC 11 Will save half damage",
+            "dc": 11,
+            "type": "Will",
+            "result": "half"
+          }
+        }
+      ],
+      "searchDC": 26,
+      "disableDeviceDC": 26,
+      "cost": {
+        "gp": 500,
+        "xp": 40
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Javelin Trap",
+      "cr": 2,
+      "ref": "traps/cr2/javelin-trap",
+      "type": "mechanical",
+      "trigger": {
+        "type": "location"
+      },
+      "reset": "manual",
+      "attacks": [
+        {
+          "bonus": 16,
+          "mode": "ranged",
+          "damage": "1d6+4",
+          "weapon": "javelin"
+        }
+      ],
+      "searchDC": 20,
+      "disableDeviceDC": 18,
+      "cost": {
+        "marketPriceGp": 4800
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Large Net Trap",
+      "cr": 2,
+      "ref": "traps/cr2/large-net-trap",
+      "type": "mechanical",
+      "trigger": {
+        "type": "location"
+      },
+      "reset": "manual",
+      "attacks": [
+        {
+          "bonus": 5,
+          "mode": "melee",
+          "special": "see note"
+        }
+      ],
+      "searchDC": 20,
+      "disableDeviceDC": 25,
+      "cost": {
+        "marketPriceGp": 3000
+      },
+      "note": "Characters in 10-ft. square are grappled by net (Str 18) if they fail a DC 14 Reflex save.",
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Pit Trap",
+      "cr": 2,
+      "ref": "traps/cr2/pit-trap",
+      "type": "mechanical",
+      "trigger": {
+        "type": "location"
+      },
+      "reset": "manual",
+      "save": {
+        "type": "Reflex",
+        "dc": 20,
+        "result": "avoids"
+      },
+      "pit": {
+        "depthFt": 40,
+        "fallDamage": "4d6"
+      },
+      "searchDC": 20,
+      "disableDeviceDC": 20,
+      "cost": {
+        "marketPriceGp": 2000
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Poison Needle Trap",
+      "cr": 2,
+      "ref": "traps/cr2/poison-needle-trap",
+      "type": "mechanical",
+      "trigger": {
+        "type": "touch"
+      },
+      "reset": "repair",
+      "bypass": {
+        "type": "lock",
+        "openLockDC": 30
+      },
+      "attacks": [
+        {
+          "bonus": 17,
+          "mode": "melee",
+          "damage": "1",
+          "plusPoison": true,
+          "weapon": "needle"
+        }
+      ],
+      "poison": {
+        "name": "blue whinnis",
+        "save": "Fortitude",
+        "saveDC": 14,
+        "saveNote": "poison only",
+        "initial": "1 Con",
+        "secondary": "unconsciousness"
+      },
+      "searchDC": 22,
+      "disableDeviceDC": 17,
+      "cost": {
+        "marketPriceGp": 4720
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Spiked Pit Trap",
+      "cr": 2,
+      "ref": "traps/cr2/spiked-pit-trap",
+      "type": "mechanical",
+      "trigger": {
+        "type": "location"
+      },
+      "reset": "automatic",
+      "save": {
+        "type": "Reflex",
+        "dc": 20,
+        "result": "avoids"
+      },
+      "pit": {
+        "depthFt": 20,
+        "fallDamage": "2d6",
+        "spikes": {
+          "attackBonus": 10,
+          "count": "1d4",
+          "damage": "1d4+2"
+        }
+      },
+      "multipleTargets": "first target in each of two adjacent 5-ft. squares",
+      "searchDC": 18,
+      "disableDeviceDC": 15,
+      "cost": {
+        "marketPriceGp": 1600
+      },
+      "footprint": {
+        "kind": "squares",
+        "squares": 2,
+        "layout": "adjacent"
+      }
+    },
+    {
+      "name": "Tripping Chain",
+      "cr": 2,
+      "ref": "traps/cr2/tripping-chain",
+      "type": "mechanical",
+      "trigger": {
+        "type": "location"
+      },
+      "reset": "automatic",
+      "attacks": [
+        {
+          "bonus": 15,
+          "mode": "melee touch",
+          "special": "trip"
+        },
+        {
+          "bonus": 15,
+          "mode": "melee",
+          "damage": "2d4+2",
+          "weapon": "spiked chain"
+        }
+      ],
+      "multipleTraps": "tripping and melee attack",
+      "searchDC": 15,
+      "disableDeviceDC": 18,
+      "cost": {
+        "marketPriceGp": 3800
+      },
+      "note": "This trap is really one CR 1 trap that trips and a second CR 1 trap that attacks with a spiked chain. If the tripping attack succeeds, a +4 bonus applies to the spiked chain attack because the opponent is prone.",
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Well-Camouflaged Pit Trap",
+      "cr": 2,
+      "ref": "traps/cr2/well-camouflaged-pit-trap",
+      "type": "mechanical",
+      "trigger": {
+        "type": "location"
+      },
+      "reset": "repair",
+      "save": {
+        "type": "Reflex",
+        "dc": 20,
+        "result": "avoids"
+      },
+      "pit": {
+        "depthFt": 10,
+        "fallDamage": "1d6"
+      },
+      "searchDC": 27,
+      "disableDeviceDC": 20,
+      "cost": {
+        "marketPriceGp": 4400
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Burning Hands Trap",
+      "cr": 3,
+      "ref": "traps/cr3/burning-hands-trap",
+      "type": "magic device",
+      "trigger": {
+        "type": "proximity",
+        "detail": "alarm"
+      },
+      "reset": "automatic",
+      "save": {
+        "type": "Reflex",
+        "dc": 11,
+        "result": "half"
+      },
+      "spellEffects": [
+        {
+          "spell": "burning hands",
+          "casterLevel": 5,
+          "casterClass": "wizard",
+          "effect": "5d4 fire",
+          "save": {
+            "raw": "DC 11 Reflex save half damage",
+            "dc": 11,
+            "type": "Reflex",
+            "result": "half"
+          }
+        }
+      ],
+      "searchDC": 26,
+      "disableDeviceDC": 26,
+      "cost": {
+        "gp": 2500,
+        "xp": 200
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Camouflaged Pit Trap",
+      "cr": 3,
+      "ref": "traps/cr3/camouflaged-pit-trap",
+      "type": "mechanical",
+      "trigger": {
+        "type": "location"
+      },
+      "reset": "manual",
+      "save": {
+        "type": "Reflex",
+        "dc": 20,
+        "result": "avoids"
+      },
+      "pit": {
+        "depthFt": 30,
+        "fallDamage": "3d6"
+      },
+      "multipleTargets": "first target in each of two adjacent squares",
+      "searchDC": 24,
+      "disableDeviceDC": 18,
+      "cost": {
+        "marketPriceGp": 4800
+      },
+      "footprint": {
+        "kind": "squares",
+        "squares": 2,
+        "layout": "adjacent"
+      }
+    },
+    {
+      "name": "Ceiling Pendulum",
+      "cr": 3,
+      "ref": "traps/cr3/ceiling-pendulum",
+      "type": "mechanical",
+      "trigger": {
+        "type": "timed"
+      },
+      "reset": "automatic",
+      "attacks": [
+        {
+          "bonus": 15,
+          "mode": "melee",
+          "damage": "1d12+8",
+          "critical": "x3",
+          "weapon": "greataxe"
+        }
+      ],
+      "searchDC": 15,
+      "disableDeviceDC": 27,
+      "cost": {
+        "marketPriceGp": 14100
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Fire Trap",
+      "cr": 3,
+      "ref": "traps/cr3/fire-trap",
+      "type": "spell",
+      "trigger": {
+        "type": "spell"
+      },
+      "reset": "no",
+      "save": {
+        "type": "Reflex",
+        "dc": 13,
+        "result": "half"
+      },
+      "spellEffects": [
+        {
+          "spell": "fire trap",
+          "casterLevel": 3,
+          "casterClass": "druid",
+          "effect": "1d4+3 fire",
+          "save": {
+            "raw": "DC 13 Reflex save half damage",
+            "dc": 13,
+            "type": "Reflex",
+            "result": "half"
+          }
+        }
+      ],
+      "searchDC": 27,
+      "disableDeviceDC": 27,
+      "cost": {
+        "npcSpellcasterGp": 85
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Extended Bane Trap",
+      "cr": 3,
+      "ref": "traps/cr3/extended-bane-trap",
+      "type": "magic device",
+      "trigger": {
+        "type": "proximity",
+        "detail": "detect good"
+      },
+      "reset": "automatic",
+      "save": {
+        "type": "Will",
+        "dc": 13,
+        "result": "negates"
+      },
+      "spellEffects": [
+        {
+          "spell": "extended bane",
+          "casterLevel": 3,
+          "casterClass": "cleric",
+          "save": {
+            "raw": "DC 13 Will save negates",
+            "dc": 13,
+            "type": "Will",
+            "result": "negates"
+          }
+        }
+      ],
+      "searchDC": 27,
+      "disableDeviceDC": 27,
+      "cost": {
+        "gp": 3500,
+        "xp": 280
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Ghoul Touch Trap",
+      "cr": 3,
+      "ref": "traps/cr3/ghoul-touch-trap",
+      "type": "magic device",
+      "trigger": {
+        "type": "touch"
+      },
+      "reset": "automatic",
+      "save": {
+        "type": "Fortitude",
+        "dc": 13,
+        "result": "negates"
+      },
+      "spellEffects": [
+        {
+          "spell": "ghoul touch",
+          "casterLevel": 3,
+          "casterClass": "wizard",
+          "save": {
+            "raw": "DC 13 Fortitude save negates",
+            "dc": 13,
+            "type": "Fortitude",
+            "result": "negates"
+          }
+        }
+      ],
+      "searchDC": 27,
+      "disableDeviceDC": 27,
+      "cost": {
+        "gp": 3000,
+        "xp": 240
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Hail of Needles",
+      "cr": 3,
+      "ref": "traps/cr3/hail-of-needles",
+      "type": "mechanical",
+      "trigger": {
+        "type": "location"
+      },
+      "reset": "manual",
+      "attacks": [
+        {
+          "bonus": 20,
+          "mode": "ranged",
+          "damage": "2d4"
+        }
+      ],
+      "searchDC": 22,
+      "disableDeviceDC": 22,
+      "cost": {
+        "marketPriceGp": 5400
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Acid Arrow Trap",
+      "cr": 3,
+      "ref": "traps/cr3/acid-arrow-trap",
+      "type": "magic device",
+      "trigger": {
+        "type": "proximity",
+        "detail": "alarm"
+      },
+      "reset": "automatic",
+      "attacks": [
+        {
+          "bonus": 2,
+          "mode": "ranged touch"
+        }
+      ],
+      "spellEffects": [
+        {
+          "spell": "acid arrow",
+          "casterLevel": 3,
+          "casterClass": "wizard",
+          "effect": "2d4 acid/round for 2 rounds"
+        }
+      ],
+      "searchDC": 27,
+      "disableDeviceDC": 27,
+      "cost": {
+        "gp": 3000,
+        "xp": 240
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Pit Trap",
+      "cr": 3,
+      "ref": "traps/cr3/pit-trap",
+      "type": "mechanical",
+      "trigger": {
+        "type": "location"
+      },
+      "reset": "manual",
+      "save": {
+        "type": "Reflex",
+        "dc": 20,
+        "result": "avoids"
+      },
+      "pit": {
+        "depthFt": 60,
+        "fallDamage": "6d6"
+      },
+      "searchDC": 20,
+      "disableDeviceDC": 20,
+      "cost": {
+        "marketPriceGp": 3000
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Poisoned Arrow Trap",
+      "cr": 3,
+      "ref": "traps/cr3/poisoned-arrow-trap",
+      "type": "mechanical",
+      "trigger": {
+        "type": "touch"
+      },
+      "reset": "manual",
+      "bypass": {
+        "type": "lock",
+        "openLockDC": 30
+      },
+      "attacks": [
+        {
+          "bonus": 12,
+          "mode": "ranged",
+          "damage": "1d8",
+          "plusPoison": true,
+          "weapon": "arrow"
+        }
+      ],
+      "poison": {
+        "name": "Large monstrous scorpion venom",
+        "save": "Fortitude",
+        "saveDC": 14,
+        "initial": "1d4 Con",
+        "secondary": "1d4 Con"
+      },
+      "searchDC": 19,
+      "disableDeviceDC": 15,
+      "cost": {
+        "marketPriceGp": 2900
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Spiked Pit Trap",
+      "cr": 3,
+      "ref": "traps/cr3/spiked-pit-trap",
+      "type": "mechanical",
+      "trigger": {
+        "type": "location"
+      },
+      "reset": "manual",
+      "save": {
+        "type": "Reflex",
+        "dc": 20,
+        "result": "avoids"
+      },
+      "pit": {
+        "depthFt": 20,
+        "fallDamage": "2d6",
+        "spikes": {
+          "attackBonus": 10,
+          "count": "1d4",
+          "damage": "1d4+2"
+        }
+      },
+      "multipleTargets": "first target in each of two adjacent 5-ft. squares",
+      "searchDC": 21,
+      "disableDeviceDC": 20,
+      "cost": {
+        "marketPriceGp": 3600
+      },
+      "footprint": {
+        "kind": "squares",
+        "squares": 2,
+        "layout": "adjacent"
+      }
+    },
+    {
+      "name": "Stone Blocks from Ceiling",
+      "cr": 3,
+      "ref": "traps/cr3/stone-blocks-from-ceiling",
+      "type": "mechanical",
+      "trigger": {
+        "type": "location"
+      },
+      "reset": "repair",
+      "attacks": [
+        {
+          "bonus": 10,
+          "mode": "melee",
+          "damage": "4d6",
+          "weapon": "stone blocks"
+        }
+      ],
+      "searchDC": 25,
+      "disableDeviceDC": 20,
+      "cost": {
+        "marketPriceGp": 5400
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Bestow Curse Trap",
+      "cr": 4,
+      "ref": "traps/cr4/bestow-curse-trap",
+      "type": "magic device",
+      "trigger": {
+        "type": "touch",
+        "detail": "detect chaos"
+      },
+      "reset": "automatic",
+      "save": {
+        "type": "Will",
+        "dc": 14,
+        "result": "negates"
+      },
+      "spellEffects": [
+        {
+          "spell": "bestow curse",
+          "casterLevel": 5,
+          "casterClass": "cleric",
+          "save": {
+            "raw": "DC 14 Will save negates",
+            "dc": 14,
+            "type": "Will",
+            "result": "negates"
+          }
+        }
+      ],
+      "searchDC": 28,
+      "disableDeviceDC": 28,
+      "cost": {
+        "gp": 8000,
+        "xp": 640
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Camouflaged Pit Trap",
+      "cr": 4,
+      "ref": "traps/cr4/camouflaged-pit-trap",
+      "type": "mechanical",
+      "trigger": {
+        "type": "location"
+      },
+      "reset": "manual",
+      "save": {
+        "type": "Reflex",
+        "dc": 20,
+        "result": "avoids"
+      },
+      "pit": {
+        "depthFt": 40,
+        "fallDamage": "4d6"
+      },
+      "multipleTargets": "first target in each of two adjacent 5-ft. squares",
+      "searchDC": 25,
+      "disableDeviceDC": 17,
+      "cost": {
+        "marketPriceGp": 6800
+      },
+      "footprint": {
+        "kind": "squares",
+        "squares": 2,
+        "layout": "adjacent"
+      }
+    },
+    {
+      "name": "Collapsing Column",
+      "cr": 4,
+      "ref": "traps/cr4/collapsing-column",
+      "type": "mechanical",
+      "trigger": {
+        "type": "touch",
+        "detail": "attached"
+      },
+      "reset": "no",
+      "attacks": [
+        {
+          "bonus": 15,
+          "mode": "melee",
+          "damage": "6d6",
+          "weapon": "stone blocks"
+        }
+      ],
+      "searchDC": 20,
+      "disableDeviceDC": 24,
+      "cost": {
+        "marketPriceGp": 8800
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Glyph of Warding (Blast)",
+      "cr": 4,
+      "ref": "traps/cr4/glyph-of-warding-blast",
+      "type": "spell",
+      "trigger": {
+        "type": "spell"
+      },
+      "reset": "no",
+      "save": {
+        "type": "Reflex",
+        "dc": 14,
+        "result": "half"
+      },
+      "spellEffects": [
+        {
+          "spell": "glyph of warding [blast]",
+          "casterLevel": 5,
+          "casterClass": "cleric",
+          "effect": "2d8 acid",
+          "save": {
+            "raw": "DC 14 Reflex save half damage",
+            "dc": 14,
+            "type": "Reflex",
+            "result": "half"
+          }
+        }
+      ],
+      "multipleTargets": "all targets within 5 ft.",
+      "searchDC": 28,
+      "disableDeviceDC": 28,
+      "cost": {
+        "npcSpellcasterGp": 350
+      },
+      "footprint": {
+        "kind": "burst",
+        "radiusFt": 5,
+        "squares": 4
+      }
+    },
+    {
+      "name": "Lightning Bolt Trap",
+      "cr": 4,
+      "ref": "traps/cr4/lightning-bolt-trap",
+      "type": "magic device",
+      "trigger": {
+        "type": "proximity",
+        "detail": "alarm"
+      },
+      "reset": "automatic",
+      "save": {
+        "type": "Reflex",
+        "dc": 14,
+        "result": "half"
+      },
+      "spellEffects": [
+        {
+          "spell": "lightning bolt",
+          "casterLevel": 5,
+          "casterClass": "wizard",
+          "effect": "5d6 electricity",
+          "save": {
+            "raw": "DC 14 Reflex save half damage",
+            "dc": 14,
+            "type": "Reflex",
+            "result": "half"
+          }
+        }
+      ],
+      "searchDC": 28,
+      "disableDeviceDC": 28,
+      "cost": {
+        "gp": 7500,
+        "xp": 600
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Pit Trap",
+      "cr": 4,
+      "ref": "traps/cr4/pit-trap",
+      "type": "mechanical",
+      "trigger": {
+        "type": "location"
+      },
+      "reset": "manual",
+      "save": {
+        "type": "Reflex",
+        "dc": 20,
+        "result": "avoids"
+      },
+      "pit": {
+        "depthFt": 80,
+        "fallDamage": "8d6"
+      },
+      "searchDC": 20,
+      "disableDeviceDC": 20,
+      "cost": {
+        "marketPriceGp": 4000
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Poisoned Dart Trap",
+      "cr": 4,
+      "ref": "traps/cr4/poisoned-dart-trap",
+      "type": "mechanical",
+      "trigger": {
+        "type": "location"
+      },
+      "reset": "manual",
+      "attacks": [
+        {
+          "bonus": 15,
+          "mode": "ranged",
+          "damage": "1d4+4",
+          "plusPoison": true,
+          "weapon": "dart"
+        }
+      ],
+      "poison": {
+        "name": "Small monstrous centipede poison",
+        "save": "Fortitude",
+        "saveDC": 10,
+        "initial": "1d2 Dex",
+        "secondary": "1d2 Dex"
+      },
+      "multipleTargets": "1 dart per target in a 10-ft.-by-10-ft. area",
+      "searchDC": 21,
+      "disableDeviceDC": 22,
+      "cost": {
+        "marketPriceGp": 12090
+      },
+      "footprint": {
+        "kind": "area",
+        "widthFt": 10,
+        "lengthFt": 10,
+        "squares": 4
+      }
+    },
+    {
+      "name": "Sepia Snake Sigil Trap",
+      "cr": 4,
+      "ref": "traps/cr4/sepia-snake-sigil-trap",
+      "type": "spell",
+      "trigger": {
+        "type": "spell"
+      },
+      "reset": "no",
+      "save": {
+        "type": "Reflex",
+        "dc": 14,
+        "result": "negates"
+      },
+      "spellEffects": [
+        {
+          "spell": "sepia snake sigil",
+          "casterLevel": 5,
+          "casterClass": "wizard",
+          "save": {
+            "raw": "DC 14 Reflex save negates",
+            "dc": 14,
+            "type": "Reflex",
+            "result": "negates"
+          }
+        }
+      ],
+      "searchDC": 28,
+      "disableDeviceDC": 28,
+      "cost": {
+        "npcSpellcasterGp": 650
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Spiked Pit Trap",
+      "cr": 4,
+      "ref": "traps/cr4/spiked-pit-trap",
+      "type": "mechanical",
+      "trigger": {
+        "type": "location"
+      },
+      "reset": "automatic",
+      "save": {
+        "type": "Reflex",
+        "dc": 20,
+        "result": "avoids"
+      },
+      "pit": {
+        "depthFt": 60,
+        "fallDamage": "6d6",
+        "spikes": {
+          "attackBonus": 10,
+          "count": "1d4",
+          "damage": "1d4+5"
+        }
+      },
+      "searchDC": 20,
+      "disableDeviceDC": 20,
+      "cost": {
+        "marketPriceGp": 4000
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Wall Scythe Trap",
+      "cr": 4,
+      "ref": "traps/cr4/wall-scythe-trap",
+      "type": "mechanical",
+      "trigger": {
+        "type": "location"
+      },
+      "reset": "automatic",
+      "attacks": [
+        {
+          "bonus": 20,
+          "mode": "melee",
+          "damage": "2d4+8",
+          "critical": "x4",
+          "weapon": "scythe"
+        }
+      ],
+      "searchDC": 21,
+      "disableDeviceDC": 18,
+      "cost": {
+        "marketPriceGp": 17200
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Water-Filled Room Trap",
+      "cr": 4,
+      "ref": "traps/cr4/water-filled-room-trap",
+      "type": "mechanical",
+      "trigger": {
+        "type": "location"
+      },
+      "reset": "automatic",
+      "multipleTargets": "all targets in a 10-ft.-by-10-ft. room",
+      "neverMiss": true,
+      "onsetDelayRounds": 5,
+      "liquid": true,
+      "searchDC": 17,
+      "disableDeviceDC": 23,
+      "cost": {
+        "marketPriceGp": 11200
+      },
+      "effect": {
+        "kind": "drowning"
+      },
+      "footprint": {
+        "kind": "room",
+        "widthFt": 10,
+        "lengthFt": 10,
+        "squares": 4
+      }
+    },
+    {
+      "name": "Wide-Mouth Spiked Pit Trap",
+      "cr": 4,
+      "ref": "traps/cr4/wide-mouth-spiked-pit-trap",
+      "type": "mechanical",
+      "trigger": {
+        "type": "location"
+      },
+      "reset": "manual",
+      "save": {
+        "type": "Reflex",
+        "dc": 20,
+        "result": "avoids"
+      },
+      "pit": {
+        "depthFt": 20,
+        "fallDamage": "2d6",
+        "spikes": {
+          "attackBonus": 10,
+          "count": "1d4",
+          "damage": "1d4+2"
+        }
+      },
+      "multipleTargets": "first target in each of two adjacent 5-ft. squares",
+      "searchDC": 18,
+      "disableDeviceDC": 25,
+      "cost": {
+        "marketPriceGp": 7200
+      },
+      "footprint": {
+        "kind": "squares",
+        "squares": 2,
+        "layout": "adjacent"
+      }
+    },
+    {
+      "name": "Camouflaged Pit Trap",
+      "cr": 5,
+      "ref": "traps/cr5/camouflaged-pit-trap",
+      "type": "mechanical",
+      "trigger": {
+        "type": "location"
+      },
+      "reset": "manual",
+      "save": {
+        "type": "Reflex",
+        "dc": 20,
+        "result": "avoids"
+      },
+      "pit": {
+        "depthFt": 50,
+        "fallDamage": "5d6"
+      },
+      "multipleTargets": "first target in each of two adjacent 5-ft. squares",
+      "searchDC": 25,
+      "disableDeviceDC": 17,
+      "cost": {
+        "marketPriceGp": 8500
+      },
+      "footprint": {
+        "kind": "squares",
+        "squares": 2,
+        "layout": "adjacent"
+      }
+    },
+    {
+      "name": "Doorknob Smeared with Contact Poison",
+      "cr": 5,
+      "ref": "traps/cr5/doorknob-smeared-with-contact-poison",
+      "type": "mechanical",
+      "trigger": {
+        "type": "touch",
+        "detail": "attached"
+      },
+      "reset": "manual",
+      "poison": {
+        "name": "nitharit",
+        "save": "Fortitude",
+        "saveDC": 13,
+        "initial": "0",
+        "secondary": "3d6 Con"
+      },
+      "searchDC": 25,
+      "disableDeviceDC": 19,
+      "cost": {
+        "marketPriceGp": 9650
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Falling Block Trap",
+      "cr": 5,
+      "ref": "traps/cr5/falling-block-trap",
+      "type": "mechanical",
+      "trigger": {
+        "type": "location"
+      },
+      "reset": "manual",
+      "attacks": [
+        {
+          "bonus": 15,
+          "mode": "melee",
+          "damage": "6d6"
+        }
+      ],
+      "multipleTargets": "can strike all characters in two adjacent specified squares",
+      "searchDC": 20,
+      "disableDeviceDC": 25,
+      "cost": {
+        "marketPriceGp": 15000
+      },
+      "footprint": {
+        "kind": "multi",
+        "squares": 2
+      }
+    },
+    {
+      "name": "Fire Trap",
+      "cr": 5,
+      "ref": "traps/cr5/fire-trap",
+      "type": "spell",
+      "trigger": {
+        "type": "spell"
+      },
+      "reset": "no",
+      "save": {
+        "type": "Reflex",
+        "dc": 16,
+        "result": "half"
+      },
+      "spellEffects": [
+        {
+          "spell": "fire trap",
+          "casterLevel": 7,
+          "casterClass": "wizard",
+          "effect": "1d4+7 fire",
+          "save": {
+            "raw": "DC 16 Reflex save half damage",
+            "dc": 16,
+            "type": "Reflex",
+            "result": "half"
+          }
+        }
+      ],
+      "searchDC": 29,
+      "disableDeviceDC": 29,
+      "cost": {
+        "npcSpellcasterGp": 305
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Fireball Trap",
+      "cr": 5,
+      "ref": "traps/cr5/fireball-trap",
+      "type": "magic device",
+      "trigger": {
+        "type": "touch"
+      },
+      "reset": "automatic",
+      "save": {
+        "type": "Reflex",
+        "dc": 14,
+        "result": "half"
+      },
+      "spellEffects": [
+        {
+          "spell": "fireball",
+          "casterLevel": 8,
+          "casterClass": "wizard",
+          "effect": "8d6 fire",
+          "save": {
+            "raw": "DC 14 Reflex save half damage",
+            "dc": 14,
+            "type": "Reflex",
+            "result": "half"
+          }
+        }
+      ],
+      "searchDC": 28,
+      "disableDeviceDC": 28,
+      "cost": {
+        "gp": 12000,
+        "xp": 960
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Flooding Room Trap",
+      "cr": 5,
+      "ref": "traps/cr5/flooding-room-trap",
+      "type": "mechanical",
+      "trigger": {
+        "type": "proximity"
+      },
+      "reset": "automatic",
+      "searchDC": 20,
+      "disableDeviceDC": 25,
+      "cost": {
+        "marketPriceGp": 17500
+      },
+      "note": "Room floods in 4 rounds.",
+      "liquid": true,
+      "effect": {
+        "kind": "drowning"
+      },
+      "footprint": {
+        "kind": "room",
+        "widthFt": 10,
+        "lengthFt": 10,
+        "squares": 4
+      }
+    },
+    {
+      "name": "Fusillade of Darts",
+      "cr": 5,
+      "ref": "traps/cr5/fusillade-of-darts",
+      "type": "mechanical",
+      "trigger": {
+        "type": "location"
+      },
+      "reset": "manual",
+      "attacks": [
+        {
+          "bonus": 18,
+          "mode": "ranged",
+          "damage": "1d4+1",
+          "weapon": "dart"
+        }
+      ],
+      "multipleTargets": "1d8 darts per target in a 10-ft.-by-10-ft. area",
+      "searchDC": 19,
+      "disableDeviceDC": 25,
+      "cost": {
+        "marketPriceGp": 18000
+      },
+      "footprint": {
+        "kind": "area",
+        "widthFt": 10,
+        "lengthFt": 10,
+        "squares": 4
+      }
+    },
+    {
+      "name": "Moving Executioner Statue",
+      "cr": 5,
+      "ref": "traps/cr5/moving-executioner-statue",
+      "type": "mechanical",
+      "trigger": {
+        "type": "location"
+      },
+      "reset": "automatic",
+      "bypass": {
+        "type": "hidden switch",
+        "searchDC": 25
+      },
+      "attacks": [
+        {
+          "bonus": 16,
+          "mode": "melee",
+          "damage": "1d12+8",
+          "critical": "x3",
+          "weapon": "greataxe"
+        }
+      ],
+      "multipleTargets": "both arms attack",
+      "searchDC": 25,
+      "disableDeviceDC": 18,
+      "cost": {
+        "marketPriceGp": 22500
+      },
+      "footprint": {
+        "kind": "multi",
+        "squares": 2
+      }
+    },
+    {
+      "name": "Phantasmal Killer Trap",
+      "cr": 5,
+      "ref": "traps/cr5/phantasmal-killer-trap",
+      "type": "magic device",
+      "trigger": {
+        "type": "proximity",
+        "detail": "alarm covering the entire room"
+      },
+      "reset": "automatic",
+      "spellEffects": [
+        {
+          "spell": "phantasmal killer",
+          "casterLevel": 7,
+          "casterClass": "wizard",
+          "save": {
+            "raw": "DC 16 Will save for disbelief and DC 16 Fort save for partial effect",
+            "dc": 16,
+            "type": "Will",
+            "result": "partial"
+          }
+        }
+      ],
+      "searchDC": 29,
+      "disableDeviceDC": 29,
+      "cost": {
+        "gp": 14000,
+        "xp": 1120
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Pit Trap",
+      "cr": 5,
+      "ref": "traps/cr5/pit-trap",
+      "type": "mechanical",
+      "trigger": {
+        "type": "location"
+      },
+      "reset": "manual",
+      "save": {
+        "type": "Reflex",
+        "dc": 20,
+        "result": "avoids"
+      },
+      "pit": {
+        "depthFt": 100,
+        "fallDamage": "10d6"
+      },
+      "searchDC": 20,
+      "disableDeviceDC": 20,
+      "cost": {
+        "marketPriceGp": 5000
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Poison Wall Spikes",
+      "cr": 5,
+      "ref": "traps/cr5/poison-wall-spikes",
+      "type": "mechanical",
+      "trigger": {
+        "type": "location"
+      },
+      "reset": "manual",
+      "attacks": [
+        {
+          "bonus": 16,
+          "mode": "melee",
+          "damage": "1d8+4",
+          "plusPoison": true,
+          "weapon": "spike"
+        }
+      ],
+      "poison": {
+        "name": "Medium monstrous spider venom",
+        "save": "Fortitude",
+        "saveDC": 12,
+        "initial": "1d4 Str",
+        "secondary": "1d4 Str"
+      },
+      "multipleTargets": "closest target in each of two adjacent 5-ft. squares",
+      "searchDC": 17,
+      "disableDeviceDC": 21,
+      "cost": {
+        "marketPriceGp": 12650
+      },
+      "footprint": {
+        "kind": "squares",
+        "squares": 2,
+        "layout": "adjacent"
+      }
+    },
+    {
+      "name": "Spiked Pit Trap",
+      "cr": 5,
+      "ref": "traps/cr5/spiked-pit-trap",
+      "type": "mechanical",
+      "trigger": {
+        "type": "location"
+      },
+      "reset": "manual",
+      "save": {
+        "type": "Reflex",
+        "dc": 25,
+        "result": "avoids"
+      },
+      "pit": {
+        "depthFt": 40,
+        "fallDamage": "4d6",
+        "spikes": {
+          "attackBonus": 10,
+          "count": "1d4",
+          "damage": "1d4+4"
+        }
+      },
+      "multipleTargets": "first target in each of two adjacent 5-ft. squares",
+      "searchDC": 21,
+      "disableDeviceDC": 20,
+      "cost": {
+        "marketPriceGp": 13500
+      },
+      "footprint": {
+        "kind": "squares",
+        "squares": 2,
+        "layout": "adjacent"
+      }
+    },
+    {
+      "name": "Spiked Pit Trap (80 Ft. Deep)",
+      "cr": 5,
+      "ref": "traps/cr5/spiked-pit-trap-80-ft-deep",
+      "type": "mechanical",
+      "trigger": {
+        "type": "location"
+      },
+      "reset": "manual",
+      "save": {
+        "type": "Reflex",
+        "dc": 20,
+        "result": "avoids"
+      },
+      "pit": {
+        "depthFt": 80,
+        "fallDamage": "8d6",
+        "spikes": {
+          "attackBonus": 10,
+          "count": "1d4",
+          "damage": "1d4+5"
+        }
+      },
+      "searchDC": 20,
+      "disableDeviceDC": 20,
+      "cost": {
+        "marketPriceGp": 5000
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Ungol Dust Vapor Trap",
+      "cr": 5,
+      "ref": "traps/cr5/ungol-dust-vapor-trap",
+      "type": "mechanical",
+      "trigger": {
+        "type": "location"
+      },
+      "reset": "manual",
+      "poison": {
+        "name": "ungol dust",
+        "save": "Fortitude",
+        "saveDC": 15,
+        "initial": "1 Cha",
+        "secondary": "1d6 Cha plus 1 Cha drain"
+      },
+      "multipleTargets": "all targets in a 10-ft.-by-10-ft. room",
+      "neverMiss": true,
+      "onsetDelayRounds": 2,
+      "gas": true,
+      "searchDC": 20,
+      "disableDeviceDC": 16,
+      "cost": {
+        "marketPriceGp": 9000
+      },
+      "footprint": {
+        "kind": "room",
+        "widthFt": 10,
+        "lengthFt": 10,
+        "squares": 4
+      }
+    },
+    {
+      "name": "Built-to-Collapse Wall",
+      "cr": 6,
+      "ref": "traps/cr6/built-to-collapse-wall",
+      "type": "mechanical",
+      "trigger": {
+        "type": "proximity"
+      },
+      "reset": "no",
+      "attacks": [
+        {
+          "bonus": 20,
+          "mode": "melee",
+          "damage": "8d6",
+          "weapon": "stone blocks"
+        }
+      ],
+      "multipleTargets": "all targets in a 10-ft.-by-10-ft. area",
+      "searchDC": 14,
+      "disableDeviceDC": 16,
+      "cost": {
+        "marketPriceGp": 15000
+      },
+      "footprint": {
+        "kind": "area",
+        "widthFt": 10,
+        "lengthFt": 10,
+        "squares": 4
+      }
+    },
+    {
+      "name": "Compacting Room",
+      "cr": 6,
+      "ref": "traps/cr6/compacting-room",
+      "type": "mechanical",
+      "trigger": {
+        "type": "timed"
+      },
+      "reset": "automatic",
+      "bypass": {
+        "type": "hidden switch",
+        "searchDC": 25
+      },
+      "effect": {
+        "kind": "crush",
+        "damage": "12d6",
+        "detail": "walls move together"
+      },
+      "multipleTargets": "all targets in a 10-ft. by 10-ft. room",
+      "neverMiss": true,
+      "onsetDelayRounds": 4,
+      "searchDC": 20,
+      "disableDeviceDC": 22,
+      "cost": {
+        "marketPriceGp": 25200
+      },
+      "footprint": {
+        "kind": "room",
+        "widthFt": 10,
+        "lengthFt": 10,
+        "squares": 4
+      }
+    },
+    {
+      "name": "Flame Strike Trap",
+      "cr": 6,
+      "ref": "traps/cr6/flame-strike-trap",
+      "type": "magic device",
+      "trigger": {
+        "type": "proximity",
+        "detail": "detect magic"
+      },
+      "reset": "automatic",
+      "save": {
+        "type": "Reflex",
+        "dc": 17,
+        "result": "half"
+      },
+      "spellEffects": [
+        {
+          "spell": "flame strike",
+          "casterLevel": 9,
+          "casterClass": "cleric",
+          "effect": "9d6 fire",
+          "save": {
+            "raw": "DC 17 Reflex save half damage",
+            "dc": 17,
+            "type": "Reflex",
+            "result": "half"
+          }
+        }
+      ],
+      "searchDC": 30,
+      "disableDeviceDC": 30,
+      "cost": {
+        "gp": 22750,
+        "xp": 1820
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Fusillade of Spears",
+      "cr": 6,
+      "ref": "traps/cr6/fusillade-of-spears",
+      "type": "mechanical",
+      "trigger": {
+        "type": "proximity"
+      },
+      "reset": "repair",
+      "attacks": [
+        {
+          "bonus": 21,
+          "mode": "ranged",
+          "damage": "1d8",
+          "weapon": "spear"
+        }
+      ],
+      "multipleTargets": "1d6 spears per target in a 10 ft.-by-10-ft. area",
+      "searchDC": 26,
+      "disableDeviceDC": 20,
+      "cost": {
+        "marketPriceGp": 31200
+      },
+      "footprint": {
+        "kind": "area",
+        "widthFt": 10,
+        "lengthFt": 10,
+        "squares": 4
+      }
+    },
+    {
+      "name": "Glyph of Warding (Blast)",
+      "cr": 6,
+      "ref": "traps/cr6/glyph-of-warding-blast",
+      "type": "spell",
+      "trigger": {
+        "type": "spell"
+      },
+      "reset": "no",
+      "save": {
+        "type": "Reflex",
+        "dc": 14,
+        "result": "half"
+      },
+      "spellEffects": [
+        {
+          "spell": "glyph of warding [blast]",
+          "casterLevel": 16,
+          "casterClass": "cleric",
+          "effect": "8d8 sonic",
+          "save": {
+            "raw": "DC 14 Reflex save half damage",
+            "dc": 14,
+            "type": "Reflex",
+            "result": "half"
+          }
+        }
+      ],
+      "multipleTargets": "all targets within 5 ft.",
+      "searchDC": 28,
+      "disableDeviceDC": 28,
+      "cost": {
+        "npcSpellcasterGp": 680
+      },
+      "footprint": {
+        "kind": "burst",
+        "radiusFt": 5,
+        "squares": 4
+      }
+    },
+    {
+      "name": "Lightning Bolt Trap",
+      "cr": 6,
+      "ref": "traps/cr6/lightning-bolt-trap",
+      "type": "magic device",
+      "trigger": {
+        "type": "proximity",
+        "detail": "alarm"
+      },
+      "reset": "automatic",
+      "save": {
+        "type": "Reflex",
+        "dc": 14,
+        "result": "half"
+      },
+      "spellEffects": [
+        {
+          "spell": "lightning bolt",
+          "casterLevel": 10,
+          "casterClass": "wizard",
+          "effect": "10d6 electricity",
+          "save": {
+            "raw": "DC 14 Reflex save half damage",
+            "dc": 14,
+            "type": "Reflex",
+            "result": "half"
+          }
+        }
+      ],
+      "searchDC": 28,
+      "disableDeviceDC": 28,
+      "cost": {
+        "gp": 15000,
+        "xp": 1200
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Spiked Blocks from Ceiling",
+      "cr": 6,
+      "ref": "traps/cr6/spiked-blocks-from-ceiling",
+      "type": "mechanical",
+      "trigger": {
+        "type": "location"
+      },
+      "reset": "repair",
+      "attacks": [
+        {
+          "bonus": 20,
+          "mode": "melee",
+          "damage": "6d6",
+          "weapon": "spikes"
+        }
+      ],
+      "multipleTargets": "all targets in a 10-ft.-by-10-ft. area",
+      "searchDC": 24,
+      "disableDeviceDC": 20,
+      "cost": {
+        "marketPriceGp": 21600
+      },
+      "footprint": {
+        "kind": "area",
+        "widthFt": 10,
+        "lengthFt": 10,
+        "squares": 4
+      }
+    },
+    {
+      "name": "Spiked Pit Trap (100 Ft. Deep)",
+      "cr": 6,
+      "ref": "traps/cr6/spiked-pit-trap-100-ft-deep",
+      "type": "mechanical",
+      "trigger": {
+        "type": "location"
+      },
+      "reset": "manual",
+      "save": {
+        "type": "Reflex",
+        "dc": 20,
+        "result": "avoids"
+      },
+      "pit": {
+        "depthFt": 100,
+        "fallDamage": "10d6",
+        "spikes": {
+          "attackBonus": 10,
+          "count": "1d4",
+          "damage": "1d4+5"
+        }
+      },
+      "searchDC": 20,
+      "disableDeviceDC": 20,
+      "cost": {
+        "marketPriceGp": 6000
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Whirling Poison Blades",
+      "cr": 6,
+      "ref": "traps/cr6/whirling-poison-blades",
+      "type": "mechanical",
+      "trigger": {
+        "type": "timed"
+      },
+      "reset": "automatic",
+      "bypass": {
+        "type": "hidden lock",
+        "searchDC": 25,
+        "openLockDC": 30
+      },
+      "attacks": [
+        {
+          "bonus": 10,
+          "mode": "melee",
+          "damage": "1d4+4",
+          "critical": "19-20/x2",
+          "plusPoison": true,
+          "weapon": "dagger"
+        }
+      ],
+      "poison": {
+        "name": "purple worm poison",
+        "save": "Fortitude",
+        "saveDC": 24,
+        "initial": "1d6 Str",
+        "secondary": "2d6 Str"
+      },
+      "multipleTargets": "one target in each of three preselected 5-ft. squares",
+      "searchDC": 20,
+      "disableDeviceDC": 20,
+      "cost": {
+        "marketPriceGp": 30200
+      },
+      "footprint": {
+        "kind": "squares",
+        "squares": 3,
+        "layout": "preselected"
+      }
+    },
+    {
+      "name": "Wide-Mouth Pit Trap",
+      "cr": 6,
+      "ref": "traps/cr6/wide-mouth-pit-trap",
+      "type": "mechanical",
+      "trigger": {
+        "type": "location"
+      },
+      "reset": "manual",
+      "save": {
+        "type": "Reflex",
+        "dc": 25,
+        "result": "avoids"
+      },
+      "pit": {
+        "depthFt": 40,
+        "fallDamage": "4d6"
+      },
+      "multipleTargets": "all targets within a 10-ft.-by-10-ft. area",
+      "searchDC": 26,
+      "disableDeviceDC": 25,
+      "cost": {
+        "marketPriceGp": 28200
+      },
+      "footprint": {
+        "kind": "area",
+        "widthFt": 10,
+        "lengthFt": 10,
+        "squares": 4
+      }
+    },
+    {
+      "name": "Wyvern Arrow Trap",
+      "cr": 6,
+      "ref": "traps/cr6/wyvern-arrow-trap",
+      "type": "mechanical",
+      "trigger": {
+        "type": "proximity"
+      },
+      "reset": "manual",
+      "attacks": [
+        {
+          "bonus": 14,
+          "mode": "ranged",
+          "damage": "1d8",
+          "plusPoison": true,
+          "weapon": "arrow"
+        }
+      ],
+      "poison": {
+        "name": "wyvern poison",
+        "save": "Fortitude",
+        "saveDC": 17,
+        "initial": "2d6 Con",
+        "secondary": "2d6 Con"
+      },
+      "searchDC": 20,
+      "disableDeviceDC": 16,
+      "cost": {
+        "marketPriceGp": 17400
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Acid Fog Trap",
+      "cr": 7,
+      "ref": "traps/cr7/acid-fog-trap",
+      "type": "magic device",
+      "trigger": {
+        "type": "proximity",
+        "detail": "alarm"
+      },
+      "reset": "automatic",
+      "spellEffects": [
+        {
+          "spell": "acid fog",
+          "casterLevel": 11,
+          "casterClass": "wizard",
+          "effect": "2d6/round acid for 11 rounds"
+        }
+      ],
+      "searchDC": 31,
+      "disableDeviceDC": 31,
+      "cost": {
+        "gp": 33000,
+        "xp": 2640
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Blade Barrier Trap",
+      "cr": 7,
+      "ref": "traps/cr7/blade-barrier-trap",
+      "type": "magic device",
+      "trigger": {
+        "type": "proximity",
+        "detail": "alarm"
+      },
+      "reset": "automatic",
+      "save": {
+        "type": "Reflex",
+        "dc": 19,
+        "result": "half"
+      },
+      "spellEffects": [
+        {
+          "spell": "blade barrier",
+          "casterLevel": 11,
+          "casterClass": "cleric",
+          "effect": "11d6 slashing",
+          "save": {
+            "raw": "DC 19 Reflex save half damage",
+            "dc": 19,
+            "type": "Reflex",
+            "result": "half"
+          }
+        }
+      ],
+      "searchDC": 31,
+      "disableDeviceDC": 31,
+      "cost": {
+        "gp": 33000,
+        "xp": 2640
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Burnt Othur Vapor Trap",
+      "cr": 7,
+      "ref": "traps/cr7/burnt-othur-vapor-trap",
+      "type": "mechanical",
+      "trigger": {
+        "type": "location"
+      },
+      "reset": "repair",
+      "poison": {
+        "name": "burnt othur fumes",
+        "save": "Fortitude",
+        "saveDC": 18,
+        "initial": "1 Con drain",
+        "secondary": "3d6 Con"
+      },
+      "multipleTargets": "all targets in a 10-ft.-by-10-ft. room",
+      "neverMiss": true,
+      "onsetDelayRounds": 3,
+      "gas": true,
+      "searchDC": 21,
+      "disableDeviceDC": 21,
+      "cost": {
+        "marketPriceGp": 17500
+      },
+      "footprint": {
+        "kind": "room",
+        "widthFt": 10,
+        "lengthFt": 10,
+        "squares": 4
+      }
+    },
+    {
+      "name": "Chain Lightning Trap",
+      "cr": 7,
+      "ref": "traps/cr7/chain-lightning-trap",
+      "type": "magic device",
+      "trigger": {
+        "type": "proximity",
+        "detail": "alarm"
+      },
+      "reset": "automatic",
+      "save": {
+        "type": "Reflex",
+        "dc": 19,
+        "result": "half"
+      },
+      "spellEffects": [
+        {
+          "spell": "chain lightning",
+          "casterLevel": 11,
+          "casterClass": "wizard",
+          "effect": "11d6 electricity to target nearest center of trigger area plus 5d6 electricity to each of up to eleven secondary targets",
+          "save": {
+            "raw": "DC 19 Reflex save half damage",
+            "dc": 19,
+            "type": "Reflex",
+            "result": "half"
+          }
+        }
+      ],
+      "searchDC": 31,
+      "disableDeviceDC": 31,
+      "cost": {
+        "gp": 33000,
+        "xp": 2640
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Black Tentacles Trap",
+      "cr": 7,
+      "ref": "traps/cr7/black-tentacles-trap",
+      "type": "magic device",
+      "trigger": {
+        "type": "proximity",
+        "detail": "alarm"
+      },
+      "reset": "no",
+      "attacks": [
+        {
+          "bonus": 7,
+          "mode": "melee"
+        }
+      ],
+      "spellEffects": [
+        {
+          "spell": "black tentacles",
+          "casterLevel": 7,
+          "casterClass": "wizard",
+          "effect": "1d4+7 tentacles, Atk +7 melee [1d6+4, tentacle]"
+        }
+      ],
+      "multipleTargets": "up to six tentacles per target in each of two adjacent 5-ft. squares",
+      "searchDC": 29,
+      "disableDeviceDC": 29,
+      "cost": {
+        "gp": 1400,
+        "xp": 112
+      },
+      "footprint": {
+        "kind": "squares",
+        "squares": 2,
+        "layout": "adjacent"
+      }
+    },
+    {
+      "name": "Fusillade of Greenblood Oil Darts",
+      "cr": 7,
+      "ref": "traps/cr7/fusillade-of-greenblood-oil-darts",
+      "type": "mechanical",
+      "trigger": {
+        "type": "location"
+      },
+      "reset": "manual",
+      "attacks": [
+        {
+          "bonus": 18,
+          "mode": "ranged",
+          "damage": "1d4+1",
+          "plusPoison": true,
+          "weapon": "dart"
+        }
+      ],
+      "poison": {
+        "name": "greenblood oil",
+        "save": "Fortitude",
+        "saveDC": 13,
+        "initial": "1 Con",
+        "secondary": "1d2 Con"
+      },
+      "multipleTargets": "1d8 darts per target in a 10-ft.-by-10-ft. area",
+      "searchDC": 25,
+      "disableDeviceDC": 25,
+      "cost": {
+        "marketPriceGp": 33000
+      },
+      "footprint": {
+        "kind": "area",
+        "widthFt": 10,
+        "lengthFt": 10,
+        "squares": 4
+      }
+    },
+    {
+      "name": "Lock Covered in Dragon Bile",
+      "cr": 7,
+      "ref": "traps/cr7/lock-covered-in-dragon-bile",
+      "type": "mechanical",
+      "trigger": {
+        "type": "touch",
+        "detail": "attached"
+      },
+      "reset": "no",
+      "poison": {
+        "name": "dragon bile",
+        "save": "Fortitude",
+        "saveDC": 26,
+        "initial": "3d6 Str",
+        "secondary": "0"
+      },
+      "searchDC": 27,
+      "disableDeviceDC": 16,
+      "cost": {
+        "marketPriceGp": 11300
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Summon Monster VI Trap",
+      "cr": 7,
+      "ref": "traps/cr7/summon-monster-vi-trap",
+      "type": "magic device",
+      "trigger": {
+        "type": "proximity",
+        "detail": "alarm"
+      },
+      "reset": "no",
+      "spellEffects": [
+        {
+          "spell": "summon monster VI",
+          "casterLevel": 11,
+          "casterClass": "wizard"
+        }
+      ],
+      "searchDC": 31,
+      "disableDeviceDC": 31,
+      "cost": {
+        "gp": 3300,
+        "xp": 264
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Water-Filled Room",
+      "cr": 7,
+      "ref": "traps/cr7/water-filled-room",
+      "type": "mechanical",
+      "trigger": {
+        "type": "location"
+      },
+      "reset": "manual",
+      "multipleTargets": "all targets in a 10-ft.-by-10-ft. room",
+      "neverMiss": true,
+      "onsetDelayRounds": 3,
+      "liquid": true,
+      "searchDC": 20,
+      "disableDeviceDC": 25,
+      "cost": {
+        "marketPriceGp": 21000
+      },
+      "effect": {
+        "kind": "drowning"
+      },
+      "footprint": {
+        "kind": "room",
+        "widthFt": 10,
+        "lengthFt": 10,
+        "squares": 4
+      }
+    },
+    {
+      "name": "Well-Camouflaged Pit Trap",
+      "cr": 7,
+      "ref": "traps/cr7/well-camouflaged-pit-trap",
+      "type": "mechanical",
+      "trigger": {
+        "type": "location"
+      },
+      "reset": "repair",
+      "save": {
+        "type": "Reflex",
+        "dc": 25,
+        "result": "avoids"
+      },
+      "pit": {
+        "depthFt": 70,
+        "fallDamage": "7d6"
+      },
+      "multipleTargets": "first target in each of two adjacent 5-ft. squares",
+      "searchDC": 27,
+      "disableDeviceDC": 18,
+      "cost": {
+        "marketPriceGp": 24500
+      },
+      "footprint": {
+        "kind": "squares",
+        "squares": 2,
+        "layout": "adjacent"
+      }
+    },
+    {
+      "name": "Deathblade Wall Scythe",
+      "cr": 8,
+      "ref": "traps/cr8/deathblade-wall-scythe",
+      "type": "mechanical",
+      "trigger": {
+        "type": "touch"
+      },
+      "reset": "manual",
+      "attacks": [
+        {
+          "bonus": 16,
+          "mode": "melee",
+          "damage": "2d4+8",
+          "plusPoison": true,
+          "weapon": "scythe"
+        }
+      ],
+      "poison": {
+        "name": "deathblade",
+        "save": "Fortitude",
+        "saveDC": 20,
+        "initial": "1d6 Con",
+        "secondary": "2d6 Con"
+      },
+      "searchDC": 24,
+      "disableDeviceDC": 19,
+      "cost": {
+        "marketPriceGp": 31400
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Destruction Trap",
+      "cr": 8,
+      "ref": "traps/cr8/destruction-trap",
+      "type": "magic device",
+      "trigger": {
+        "type": "touch",
+        "detail": "alarm"
+      },
+      "reset": "automatic",
+      "spellEffects": [
+        {
+          "spell": "destruction",
+          "casterLevel": 13,
+          "casterClass": "cleric",
+          "save": {
+            "raw": "DC 20 Fortitude save for 10d6 damage",
+            "dc": 20,
+            "type": "Fortitude"
+          }
+        }
+      ],
+      "searchDC": 32,
+      "disableDeviceDC": 32,
+      "cost": {
+        "gp": 45500,
+        "xp": 3640
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Earthquake Trap",
+      "cr": 8,
+      "ref": "traps/cr8/earthquake-trap",
+      "type": "magic device",
+      "trigger": {
+        "type": "proximity",
+        "detail": "alarm"
+      },
+      "reset": "automatic",
+      "spellEffects": [
+        {
+          "spell": "earthquake",
+          "casterLevel": 13,
+          "casterClass": "cleric",
+          "effect": "65-ft. radius",
+          "save": {
+            "raw": "DC 15 or 20 Reflex save, depending on terrain",
+            "dc": 15,
+            "dcAlt": 20,
+            "type": "Reflex"
+          }
+        }
+      ],
+      "searchDC": 32,
+      "disableDeviceDC": 32,
+      "cost": {
+        "gp": 45500,
+        "xp": 3640
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Insanity Mist Vapor Trap",
+      "cr": 8,
+      "ref": "traps/cr8/insanity-mist-vapor-trap",
+      "type": "mechanical",
+      "trigger": {
+        "type": "location"
+      },
+      "reset": "repair",
+      "poison": {
+        "name": "insanity mist",
+        "save": "Fortitude",
+        "saveDC": 15,
+        "initial": "1d4 Wis",
+        "secondary": "2d6 Wis"
+      },
+      "multipleTargets": "all targets in a 10-ft.-by-10-ft. room",
+      "neverMiss": true,
+      "onsetDelayRounds": 1,
+      "gas": true,
+      "searchDC": 25,
+      "disableDeviceDC": 20,
+      "cost": {
+        "marketPriceGp": 23900
+      },
+      "footprint": {
+        "kind": "room",
+        "widthFt": 10,
+        "lengthFt": 10,
+        "squares": 4
+      }
+    },
+    {
+      "name": "Acid Arrow Trap",
+      "cr": 8,
+      "ref": "traps/cr8/acid-arrow-trap",
+      "type": "magic device",
+      "trigger": {
+        "type": "visual",
+        "detail": "true seeing"
+      },
+      "reset": "automatic",
+      "attacks": [
+        {
+          "bonus": 9,
+          "mode": "ranged touch"
+        }
+      ],
+      "spellEffects": [
+        {
+          "spell": "acid arrow",
+          "casterLevel": 18,
+          "casterClass": "wizard",
+          "effect": "2d4 acid damage for 7 rounds"
+        }
+      ],
+      "multipleTraps": "two simultaneous acid arrow traps",
+      "searchDC": 27,
+      "disableDeviceDC": 27,
+      "cost": {
+        "gp": 83500,
+        "xp": 4680
+      },
+      "note": "This trap is really two CR 6 acid arrow traps that fire simultaneously, using the same trigger and reset.",
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Power Word Stun Trap",
+      "cr": 8,
+      "ref": "traps/cr8/power-word-stun-trap",
+      "type": "magic device",
+      "trigger": {
+        "type": "touch"
+      },
+      "reset": "no",
+      "spellEffects": [
+        {
+          "spell": "power word stun",
+          "casterLevel": 13,
+          "casterClass": "wizard"
+        }
+      ],
+      "searchDC": 32,
+      "disableDeviceDC": 32,
+      "cost": {
+        "gp": 4550,
+        "xp": 364
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Prismatic Spray Trap",
+      "cr": 8,
+      "ref": "traps/cr8/prismatic-spray-trap",
+      "type": "magic device",
+      "trigger": {
+        "type": "proximity",
+        "detail": "alarm"
+      },
+      "reset": "automatic",
+      "spellEffects": [
+        {
+          "spell": "prismatic spray",
+          "casterLevel": 13,
+          "casterClass": "wizard",
+          "save": {
+            "raw": "DC 20 Reflex, Fortitude, or Will save, depending on effect",
+            "dc": 20,
+            "type": "Reflex"
+          }
+        }
+      ],
+      "searchDC": 32,
+      "disableDeviceDC": 32,
+      "cost": {
+        "gp": 45500,
+        "xp": 3640
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Reverse Gravity Trap",
+      "cr": 8,
+      "ref": "traps/cr8/reverse-gravity-trap",
+      "type": "magic device",
+      "trigger": {
+        "type": "proximity",
+        "detail": "alarm, 10-ft. area"
+      },
+      "reset": "automatic",
+      "save": {
+        "type": "Reflex",
+        "dc": 20,
+        "result": "avoids"
+      },
+      "spellEffects": [
+        {
+          "spell": "reverse gravity",
+          "casterLevel": 13,
+          "casterClass": "wizard",
+          "effect": "6d6 fall [upon hitting the ceiling of the 60-ft.- high room], then 6d6 fall [upon falling 60 ft. to the floor when the spell ends]",
+          "save": {
+            "raw": "DC 20 Reflex save avoids damage",
+            "dc": 20,
+            "type": "Reflex",
+            "result": "avoids"
+          }
+        }
+      ],
+      "searchDC": 32,
+      "disableDeviceDC": 32,
+      "cost": {
+        "gp": 45500,
+        "xp": 3640
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Well-Camouflaged Pit Trap",
+      "cr": 8,
+      "ref": "traps/cr8/well-camouflaged-pit-trap",
+      "type": "mechanical",
+      "trigger": {
+        "type": "location"
+      },
+      "reset": "repair",
+      "save": {
+        "type": "Reflex",
+        "dc": 20,
+        "result": "avoids"
+      },
+      "pit": {
+        "depthFt": 100,
+        "fallDamage": "10d6"
+      },
+      "searchDC": 27,
+      "disableDeviceDC": 18,
+      "cost": {
+        "marketPriceGp": 16000
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Word of Chaos Trap",
+      "cr": 8,
+      "ref": "traps/cr8/word-of-chaos-trap",
+      "type": "magic device",
+      "trigger": {
+        "type": "proximity",
+        "detail": "detect law"
+      },
+      "reset": "automatic",
+      "spellEffects": [
+        {
+          "spell": "word of chaos",
+          "casterLevel": 13,
+          "casterClass": "cleric"
+        }
+      ],
+      "searchDC": 32,
+      "disableDeviceDC": 32,
+      "cost": {
+        "gp": 46000,
+        "xp": 3680
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Drawer Handle Smeared with Contact Poison",
+      "cr": 9,
+      "ref": "traps/cr9/drawer-handle-smeared-with-contact-poison",
+      "type": "mechanical",
+      "trigger": {
+        "type": "touch",
+        "detail": "attached"
+      },
+      "reset": "manual",
+      "poison": {
+        "name": "black lotus extract",
+        "save": "Fortitude",
+        "saveDC": 20,
+        "initial": "3d6 Con",
+        "secondary": "3d6 Con"
+      },
+      "searchDC": 18,
+      "disableDeviceDC": 26,
+      "cost": {
+        "marketPriceGp": 21600
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Dropping Ceiling",
+      "cr": 9,
+      "ref": "traps/cr9/dropping-ceiling",
+      "type": "mechanical",
+      "trigger": {
+        "type": "location"
+      },
+      "reset": "repair",
+      "effect": {
+        "kind": "crush",
+        "damage": "12d6",
+        "detail": "ceiling moves down"
+      },
+      "multipleTargets": "all targets in a 10-ft.-by-10-ft. room",
+      "neverMiss": true,
+      "onsetDelayRounds": 1,
+      "searchDC": 20,
+      "disableDeviceDC": 16,
+      "cost": {
+        "marketPriceGp": 12600
+      },
+      "footprint": {
+        "kind": "room",
+        "widthFt": 10,
+        "lengthFt": 10,
+        "squares": 4
+      }
+    },
+    {
+      "name": "Incendiary Cloud Trap",
+      "cr": 9,
+      "ref": "traps/cr9/incendiary-cloud-trap",
+      "type": "magic device",
+      "trigger": {
+        "type": "proximity",
+        "detail": "alarm"
+      },
+      "reset": "automatic",
+      "save": {
+        "type": "Reflex",
+        "dc": 22,
+        "result": "half"
+      },
+      "spellEffects": [
+        {
+          "spell": "incendiary cloud",
+          "casterLevel": 15,
+          "casterClass": "wizard",
+          "effect": "4d6/round for 15 rounds",
+          "save": {
+            "raw": "DC 22 Reflex save half damage",
+            "dc": 22,
+            "type": "Reflex",
+            "result": "half"
+          }
+        }
+      ],
+      "searchDC": 33,
+      "disableDeviceDC": 33,
+      "cost": {
+        "gp": 60000,
+        "xp": 4800
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Wide-Mouth Pit Trap",
+      "cr": 9,
+      "ref": "traps/cr9/wide-mouth-pit-trap",
+      "type": "mechanical",
+      "trigger": {
+        "type": "location"
+      },
+      "reset": "manual",
+      "save": {
+        "type": "Reflex",
+        "dc": 25,
+        "result": "avoids"
+      },
+      "pit": {
+        "depthFt": 100,
+        "fallDamage": "10d6"
+      },
+      "multipleTargets": "all targets within a 10-ft.-by-10-ft. area",
+      "searchDC": 25,
+      "disableDeviceDC": 25,
+      "cost": {
+        "marketPriceGp": 40500
+      },
+      "footprint": {
+        "kind": "area",
+        "widthFt": 10,
+        "lengthFt": 10,
+        "squares": 4
+      }
+    },
+    {
+      "name": "Wide-Mouth Spiked Pit with Poisoned Spikes",
+      "cr": 9,
+      "ref": "traps/cr9/wide-mouth-spiked-pit-with-poisoned-spikes",
+      "type": "mechanical",
+      "trigger": {
+        "type": "location"
+      },
+      "reset": "manual",
+      "bypass": {
+        "type": "hidden lock",
+        "searchDC": 25,
+        "openLockDC": 30
+      },
+      "save": {
+        "type": "Reflex",
+        "dc": 20,
+        "result": "avoids"
+      },
+      "pit": {
+        "depthFt": 70,
+        "fallDamage": "7d6",
+        "spikes": {
+          "attackBonus": 10,
+          "count": "1d4",
+          "damage": "1d4+5",
+          "plusPoison": true
+        }
+      },
+      "poison": {
+        "name": "giant wasp poison",
+        "save": "Fortitude",
+        "saveDC": 14,
+        "initial": "1d6 Dex",
+        "secondary": "1d6 Dex"
+      },
+      "multipleTargets": "all targets within a 10-ft.-by-10-ft. area",
+      "searchDC": 20,
+      "disableDeviceDC": 20,
+      "cost": {
+        "marketPriceGp": 11910
+      },
+      "footprint": {
+        "kind": "area",
+        "widthFt": 10,
+        "lengthFt": 10,
+        "squares": 4
+      }
+    },
+    {
+      "name": "Crushing Room",
+      "cr": 10,
+      "ref": "traps/cr10/crushing-room",
+      "type": "mechanical",
+      "trigger": {
+        "type": "location"
+      },
+      "reset": "automatic",
+      "effect": {
+        "kind": "crush",
+        "damage": "16d6",
+        "detail": "walls move together"
+      },
+      "multipleTargets": "all targets in a 10-ft.-by-10-ft. room",
+      "neverMiss": true,
+      "onsetDelayRounds": 2,
+      "searchDC": 22,
+      "disableDeviceDC": 20,
+      "cost": {
+        "marketPriceGp": 29000
+      },
+      "footprint": {
+        "kind": "room",
+        "widthFt": 10,
+        "lengthFt": 10,
+        "squares": 4
+      }
+    },
+    {
+      "name": "Crushing Wall Trap",
+      "cr": 10,
+      "ref": "traps/cr10/crushing-wall-trap",
+      "type": "mechanical",
+      "trigger": {
+        "type": "location"
+      },
+      "reset": "automatic",
+      "effect": {
+        "kind": "crush",
+        "damage": "18d6",
+        "detail": "no attack roll required"
+      },
+      "searchDC": 20,
+      "disableDeviceDC": 25,
+      "cost": {
+        "marketPriceGp": 25000
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Energy Drain Trap",
+      "cr": 10,
+      "ref": "traps/cr10/energy-drain-trap",
+      "type": "magic device",
+      "trigger": {
+        "type": "visual",
+        "detail": "true seeing"
+      },
+      "reset": "automatic",
+      "attacks": [
+        {
+          "bonus": 8,
+          "mode": "ranged touch"
+        }
+      ],
+      "save": {
+        "type": "Fortitude",
+        "dc": 23,
+        "result": "negates"
+      },
+      "spellEffects": [
+        {
+          "spell": "energy drain",
+          "casterLevel": 17,
+          "casterClass": "wizard",
+          "effect": "2d4 negative levels for 24 hours",
+          "save": {
+            "raw": "DC 23 Fortitude save negates",
+            "dc": 23,
+            "type": "Fortitude",
+            "result": "negates"
+          }
+        }
+      ],
+      "searchDC": 34,
+      "disableDeviceDC": 34,
+      "cost": {
+        "gp": 124000,
+        "xp": 7920
+      },
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Forcecage and Summon Monster VII trap",
+      "cr": 10,
+      "ref": "traps/cr10/forcecage-and-summon-monster-vii-trap",
+      "type": "magic device",
+      "trigger": {
+        "type": "proximity",
+        "detail": "alarm"
+      },
+      "reset": "automatic",
+      "spellEffects": [
+        {
+          "spell": "forcecage",
+          "casterLevel": 13,
+          "casterClass": "wizard"
+        },
+        {
+          "spell": "summon monster VII",
+          "casterLevel": 13,
+          "casterClass": "wizard",
+          "effect": "hamatula"
+        }
+      ],
+      "multipleTraps": "one forcecage trap and one summon monster VII trap that summons a hamatula",
+      "searchDC": 32,
+      "disableDeviceDC": 32,
+      "cost": {
+        "gp": 241000,
+        "xp": 7280
+      },
+      "note": "This trap is really one CR 8 trap that creates a forcecage and a second CR 8 trap that summons a hamatula in the same area. If both succeed, the hamatula appears inside the forcecage. These effects are independent of each other.",
+      "footprint": {
+        "kind": "single",
+        "squares": 1
+      }
+    },
+    {
+      "name": "Poisoned Spiked Pit Trap",
+      "cr": 10,
+      "ref": "traps/cr10/poisoned-spiked-pit-trap",
+      "type": "mechanical",
+      "trigger": {
+        "type": "location"
+      },
+      "reset": "manual",
+      "bypass": {
+        "type": "hidden lock",
+        "searchDC": 25,
+        "openLockDC": 30
+      },
+      "save": {
+        "type": "Reflex",
+        "dc": 20,
+        "result": "avoids"
+      },
+      "pit": {
+        "depthFt": 50,
+        "fallDamage": "5d6",
+        "spikes": {
+          "attackBonus": 10,
+          "count": "1d4",
+          "damage": "1d4+5",
+          "plusPoison": true
+        }
+      },
+      "poison": {
+        "name": "purple worm poison",
+        "save": "Fortitude",
+        "saveDC": 24,
+        "initial": "1d6 Str",
+        "secondary": "2d6 Str"
+      },
+      "multipleTargets": "first target in each of two adjacent 5-ft. squares",
+      "searchDC": 16,
+      "disableDeviceDC": 25,
+      "cost": {
+        "marketPriceGp": 19700
+      },
+      "footprint": {
+        "kind": "squares",
+        "squares": 2,
+        "layout": "adjacent"
+      }
+    },
+    {
+      "name": "Wail of the Banshee Trap",
+      "cr": 10,
+      "ref": "traps/cr10/wail-of-the-banshee-trap",
+      "type": "magic device",
+      "trigger": {
+        "type": "proximity",
+        "detail": "alarm"
+      },
+      "reset": "automatic",
+      "save": {
+        "type": "Fortitude",
+        "dc": 23,
+        "result": "negates"
+      },
+      "spellEffects": [
+        {
+          "spell": "wail of the banshee",
+          "casterLevel": 17,
+          "casterClass": "wizard",
+          "save": {
+            "raw": "DC 23 Fortitude save negates",
+            "dc": 23,
+            "type": "Fortitude",
+            "result": "negates"
+          }
+        }
+      ],
+      "multipleTargets": "up to 17 creatures",
+      "searchDC": 34,
+      "disableDeviceDC": 34,
+      "cost": {
+        "gp": 76500,
+        "xp": 6120
+      },
+      "footprint": {
+        "kind": "multi",
+        "squares": 2
+      }
+    }
+  ],
+  "tables": {
+    "trapTypes": [
+      {
+        "id": "mechanical",
+        "label": "Mechanical",
+        "baseCR": 0,
+        "builtWith": "Craft (trapmaking)"
+      },
+      {
+        "id": "magic device",
+        "label": "Magic device",
+        "baseCR": 1,
+        "builtWith": "Craft Wondrous Item"
+      },
+      {
+        "id": "spell",
+        "label": "Spell",
+        "baseCR": 1,
+        "builtWith": "casting the spell"
+      }
+    ],
+    "triggers": [
+      {
+        "id": "location",
+        "label": "Location",
+        "note": "Springs when a creature stands in a given square. Flying creatures do not set it off."
+      },
+      {
+        "id": "proximity",
+        "label": "Proximity",
+        "note": "Springs when a creature comes within a distance; catches flyers. Magic version normally uses alarm."
+      },
+      {
+        "id": "sound",
+        "label": "Sound",
+        "note": "Magic only. Listens with a +15 Listen bonus; requires clairaudience. Beaten by Move Silently or silence."
+      },
+      {
+        "id": "visual",
+        "label": "Visual",
+        "note": "Magic only. Sees; requires arcane eye, clairvoyance or true seeing. Fooled by whatever fools that spell."
+      },
+      {
+        "id": "touch",
+        "label": "Touch",
+        "note": "Springs when touched. Magic version uses alarm shrunk to the trigger spot."
+      },
+      {
+        "id": "timed",
+        "label": "Timed",
+        "note": "Springs on an interval."
+      },
+      {
+        "id": "spell",
+        "label": "Spell",
+        "note": "Only for spell traps; the spell description sets the trigger conditions."
+      }
+    ],
+    "visualTriggerSpells": [
+      {
+        "spell": "arcane eye",
+        "sightRange": "Line of sight (unlimited)",
+        "spotBonus": 20
+      },
+      {
+        "spell": "clairvoyance",
+        "sightRange": "One preselected location",
+        "spotBonus": 15
+      },
+      {
+        "spell": "true seeing",
+        "sightRange": "Line of sight (up to 120 ft.)",
+        "spotBonus": 30
+      }
+    ],
+    "resets": [
+      {
+        "id": "no",
+        "label": "No reset",
+        "note": "One use only. All spell traps use this."
+      },
+      {
+        "id": "repair",
+        "label": "Repair",
+        "note": "Must be repaired before it works again."
+      },
+      {
+        "id": "manual",
+        "label": "Manual",
+        "note": "Someone moves the parts back. Default for mechanical traps."
+      },
+      {
+        "id": "automatic",
+        "label": "Automatic",
+        "note": "Resets itself, at once or after an interval."
+      }
+    ],
+    "bypasses": [
+      {
+        "id": "lock",
+        "label": "Lock",
+        "openLockDC": 30
+      },
+      {
+        "id": "hidden switch",
+        "label": "Hidden switch",
+        "searchDC": 25
+      },
+      {
+        "id": "hidden lock",
+        "label": "Hidden lock",
+        "searchDC": 25,
+        "openLockDC": 30
+      }
+    ],
+    "detectionDCs": {
+      "mechanicalBaseDC": 20,
+      "simpleMechanicalSearchDC": 20,
+      "complexMechanicalSearchDC": 21,
+      "complexRequiresTrapfinding": true,
+      "magicSearchDC": "25 + spell level",
+      "magicDisableDeviceDC": "25 + spell level",
+      "magicRequiresTrapfinding": true,
+      "magicDefaultSaveDC": "10 + spell level x 1.5",
+      "spellTrapSaveDC": "10 + spell level + caster's ability modifier"
+    },
+    "pit": {
+      "fallDamagePer10Ft": "1d6",
+      "coveredPitSearchDC": 20,
+      "coveredPitReflexDC": 20,
+      "noSaveIfRunning": true,
+      "trapdoorWeightLb": [
+        50,
+        80
+      ],
+      "holdSpringDoorOpenStrDC": 13,
+      "spikes": {
+        "treatAs": "dagger",
+        "attackBonus": 10,
+        "damageBonusPer10Ft": 1,
+        "maxDamageBonus": 5,
+        "spikesPerVictim": "1d4",
+        "countsTowardAverageDamage": false
+      }
+    },
+    "crModifiers": {
+      "mechanical": {
+        "searchDC": [
+          {
+            "max": 15,
+            "cr": -1
+          },
+          {
+            "min": 16,
+            "max": 24,
+            "cr": 0
+          },
+          {
+            "min": 25,
+            "max": 29,
+            "cr": 1
+          },
+          {
+            "min": 30,
+            "cr": 2
+          }
+        ],
+        "disableDeviceDC": [
+          {
+            "max": 15,
+            "cr": -1
+          },
+          {
+            "min": 16,
+            "max": 24,
+            "cr": 0
+          },
+          {
+            "min": 25,
+            "max": 29,
+            "cr": 1
+          },
+          {
+            "min": 30,
+            "cr": 2
+          }
+        ],
+        "reflexSaveDC": [
+          {
+            "max": 15,
+            "cr": -1
+          },
+          {
+            "min": 16,
+            "max": 24,
+            "cr": 0
+          },
+          {
+            "min": 25,
+            "max": 29,
+            "cr": 1
+          },
+          {
+            "min": 30,
+            "cr": 2
+          }
+        ],
+        "attackBonus": [
+          {
+            "max": 0,
+            "cr": -2
+          },
+          {
+            "min": 1,
+            "max": 5,
+            "cr": -1
+          },
+          {
+            "min": 6,
+            "max": 14,
+            "cr": 0
+          },
+          {
+            "min": 15,
+            "max": 19,
+            "cr": 1
+          },
+          {
+            "min": 20,
+            "max": 24,
+            "cr": 2
+          }
+        ],
+        "averageDamage": {
+          "crPer7Points": 1,
+          "rounding": "nearest multiple of 7, round up on an exact tie"
+        },
+        "misc": {
+          "alchemicalDevice": "level of the spell it mimics",
+          "liquid": 5,
+          "multipleTarget": 1,
+          "multipleTargetNeverMiss": 0,
+          "onsetDelay1Round": 3,
+          "onsetDelay2Rounds": 2,
+          "onsetDelay3Rounds": 1,
+          "onsetDelay4PlusRounds": -1,
+          "pitSpikes": 1,
+          "touchAttack": 1
+        },
+        "poison": {
+          "black adder venom": 1,
+          "black lotus extract": 8,
+          "bloodroot": 1,
+          "blue whinnis": 1,
+          "burnt othur fumes": 6,
+          "deathblade": 5,
+          "dragon bile": 6,
+          "giant wasp poison": 3,
+          "greenblood oil": 1,
+          "insanity mist": 4,
+          "large scorpion venom": 3,
+          "malyss root paste": 3,
+          "medium spider venom": 2,
+          "nitharit": 4,
+          "purple worm poison": 4,
+          "sassone leaf residue": 3,
+          "shadow essence": 3,
+          "small centipede poison": 1,
+          "terinav root": 5,
+          "ungol dust": 3,
+          "wyvern poison": 5
+        }
+      },
+      "magic": {
+        "baseCR": 1,
+        "rule": "Apply whichever is larger: the level of the highest-level spell used, or +1 per 7 points of average damage per round. Never both.",
+        "highestSpellLevel": "spell level",
+        "averageDamage": {
+          "crPer7Points": 1
+        }
+      }
+    },
+    "costModifiers": {
+      "mechanical": {
+        "baseCostGp": 1000,
+        "formula": "(modified base cost x CR) + poison/alchemical extras",
+        "minimumCostGp": "CR x 100",
+        "automaticResetMultiplier": 20,
+        "automaticResetConsumableMultiplier": 20,
+        "trigger": {
+          "location": 0,
+          "proximity": 1000,
+          "touch": 0,
+          "touch (attached)": -100,
+          "timed": 1000
+        },
+        "reset": {
+          "no": -500,
+          "repair": -200,
+          "manual": 0,
+          "automatic": 500,
+          "automaticWithTimedTrigger": 0
+        },
+        "bypass": {
+          "lock": 100,
+          "hidden switch": 200,
+          "hidden lock": 300
+        },
+        "searchDC": {
+          "below20": "-100 gp x (20 - DC)",
+          "at20": 0,
+          "above20": "+200 gp x (DC - 20)"
+        },
+        "disableDeviceDC": {
+          "below20": "-100 gp x (20 - DC)",
+          "at20": 0,
+          "above20": "+200 gp x (DC - 20)"
+        },
+        "reflexSaveDC": {
+          "below20": "-100 gp x (20 - DC)",
+          "at20": 0,
+          "above20": "+300 gp x (DC - 20)"
+        },
+        "attackBonus": {
+          "below10": "-100 gp x (10 - bonus)",
+          "at10": 0,
+          "above10": "+200 gp x (bonus - 10)"
+        },
+        "damageBonus": {
+          "rangedStrengthRating": "+100 gp x bonus (max +4)",
+          "meleeStrengthBonus": "+100 gp x bonus (max +8)"
+        },
+        "neverMiss": 1000,
+        "poison": "cost of the poison",
+        "alchemicalItem": "cost of the item"
+      },
+      "magicDevice": {
+        "alarmTriggerSpell": 0,
+        "oneShot": {
+          "perSpellGp": "50 gp x caster level x spell level",
+          "perSpellXp": "4 XP x caster level x spell level",
+          "materialComponents": "cost of all material components",
+          "xpComponents": "total XP components x 5 gp"
+        },
+        "automaticReset": {
+          "perSpellGp": "500 gp x caster level x spell level",
+          "perSpellXp": "40 XP x caster level x spell level",
+          "materialComponents": "cost of all material components x 100 gp",
+          "xpComponents": "total XP components x 500 gp"
+        },
+        "buildTime": "1 day per 500 gp of cost"
+      },
+      "spell": {
+        "note": "Free unless an NPC spellcaster must be hired to cast it."
+      }
+    },
+    "craftDC": {
+      "byCR": [
+        {
+          "minCR": 1,
+          "maxCR": 3,
+          "dc": 20
+        },
+        {
+          "minCR": 4,
+          "maxCR": 6,
+          "dc": 25
+        },
+        {
+          "minCR": 7,
+          "maxCR": 10,
+          "dc": 30
+        }
+      ],
+      "modifiers": {
+        "proximityTrigger": 5,
+        "automaticReset": 5
+      },
+      "repair": {
+        "dc": "same as the build DC",
+        "rawMaterialsCost": "one-fifth of the trap's market price"
+      }
+    },
+    "miscFeatures": [
+      {
+        "id": "alchemicalItem",
+        "label": "Alchemical item"
+      },
+      {
+        "id": "gas",
+        "label": "Gas",
+        "note": "Inhaled poison. Usually never miss + onset delay."
+      },
+      {
+        "id": "liquid",
+        "label": "Liquid",
+        "note": "Drowning risk. Usually never miss + onset delay."
+      },
+      {
+        "id": "multipleTarget",
+        "label": "Multiple target"
+      },
+      {
+        "id": "neverMiss",
+        "label": "Never miss",
+        "note": "No attack roll and no save; always carries an onset delay."
+      },
+      {
+        "id": "onsetDelay",
+        "label": "Onset delay"
+      },
+      {
+        "id": "poison",
+        "label": "Poison",
+        "note": "Injury, contact and inhaled only — never ingested."
+      },
+      {
+        "id": "pitSpikes",
+        "label": "Pit spikes"
+      },
+      {
+        "id": "touchAttack",
+        "label": "Touch attack"
+      }
+    ]
+  }
+}

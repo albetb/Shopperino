@@ -45,6 +45,7 @@ The list below is regenerated automatically by `.claude/hooks/update-dnd-index.m
 - [special-abilities.md](special-abilities.md) — **Special Abilities** — Categorization of non-spell abilities that creatures, classes, and items can use: Spell-like, Supernatural, Extraordinary, Natural.
 - [spell-components.md](spell-components.md) — **Spell Components** — What each component is, what prevents it, and the suffix conventions in spell lists.
 - [spell-resistance.md](spell-resistance.md) — **Spell Resistance** — A creature's innate magical defense; the caster-level check needed to overcome it.
+- [traps.md](traps.md) — **Traps** — How a trap is assembled and priced: the element checklist (trigger, reset, bypass, attack-or-save, effect), the detection and disarm DCs, and the CR / cost / Craft formulas used to build one from scratch. The 105 sample traps and every numeric table on this page live in [src/data/traps.json](../../src/data/traps.json).
 - [vision-and-light.md](vision-and-light.md) — **Vision and Light** — Light levels, special vision modes, miss chances and skill effects from poor visibility.
 <!-- AUTO-INDEX:END -->
 
@@ -64,6 +65,7 @@ Hand-maintained map of enumerable data and which rule topics it relates to.
 | [`classes.json`](../../src/data/classes.json) | `{ classes: [...] }` | All classes with HD, BAB/save progressions, skill points, class features | `classes.md`, `multiclassing.md`, `prestige-classes.md` |
 | [`items.json`](../../src/data/items.json) | `{ Good, Ammo, Weapon, Specific Weapon, Armor, Specific Armor, Shield, Specific Shield }` | Mundane and specific weapons/armor/shields/gear with stats | `equipment.md`, `magic-items.md` |
 | [`tables.json`](../../src/data/tables.json) | Object with many keyed tables | Lookup tables: shop types, magic item chance, scroll levels, weapon/armor bases, enums, etc. | `equipment.md`, `magic-items.md` (used mainly by Shop/Loot generators) |
+| [`traps.json`](../../src/data/traps.json) | `{ traps: [...], tables: {...} }` | 105 sample traps CR 1–10 (trigger, reset, DCs, attack/save, damage, poison, cost, derived board `footprint`) + the generator tables (CR modifiers, cost modifiers, Craft DCs, enums) | `traps.md` |
 
 ### Reverse lookup: rule topic → data files
 
@@ -73,6 +75,7 @@ Hand-maintained map of enumerable data and which rule topics it relates to.
 - **`skills.md`** ↔ `skills.json`
 - **`races.md`** ↔ `races.json`
 - **`classes.md`** ↔ `classes.json`
+- **`traps.md`** ↔ `traps.json`
 
 ### Access conventions
 
