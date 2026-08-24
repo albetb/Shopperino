@@ -4,6 +4,7 @@
  */
 import Player from './player';
 import * as appState from './appState';
+import { normalizeMultiplierMask, rollFromTuple } from './dice';
 
 // Re-export appState so consumers can use db.loadApp, db.saveApp, etc.
 export const loadApp = appState.loadApp;
@@ -122,6 +123,15 @@ export function getCombatPageCardsCollapsed(app) {
   const out = {};
   COMBAT_PAGE_CARD_KEYS.forEach(k => { out[k] = !!raw[k]; });
   return out;
+}
+
+/* Dice roller. Not tied to a character, so it lives on the root app object
+   rather than on a player: the roller is reachable from every tab. */
+export function getDiceMultiplierMask(app) {
+  return normalizeMultiplierMask(app?.dcm);
+}
+export function getDiceLastRoll(app) {
+  return rollFromTuple(app?.dlr);
 }
 
 export function setAppUIFlag(app, bit, value) {

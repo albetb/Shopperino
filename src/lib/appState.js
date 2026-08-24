@@ -78,6 +78,8 @@ export function getDefaultApp() {
     pscombat: {}, // combat / inventory page card collapsed: { player?, combat?, items?, carry?, money? } true = collapsed
     th: 'dark',     // theme: 'dark' | 'light' (omitted when default)
     ac: 'crimson',  // accent hue name (omitted when default)
+    dcm: 1,         // dice roller: count-button selection, one bit per button
+    dlr: [],        // dice roller: last roll as [sides, ...rolls]
   };
 }
 

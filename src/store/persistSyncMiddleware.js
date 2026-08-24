@@ -11,7 +11,10 @@ import {
   setMasterMode,
   setTheme,
   setAccent,
+  setDiceMultiplierMask,
+  setDiceLastRoll,
 } from './slices/appSlice';
+import { rollToTuple } from '../lib/dice';
 
 const PREF_ACTIONS = [
   toggleSidebar.type,
@@ -24,6 +27,8 @@ const PREF_ACTIONS = [
   setMasterMode.type,
   setTheme.type,
   setAccent.type,
+  setDiceMultiplierMask.type,
+  setDiceLastRoll.type,
   'spellbook/setIsSpellTableCollapsed',
   'spellbook/setIsClassDescriptionCollapsed',
   'spellbook/setIsDomainDescriptionCollapsed',
@@ -107,6 +112,13 @@ export function persistSyncMiddleware(store) {
         break;
       case 'playerSheet/setPlayerSheetCardCollapsed':
         nextPersist = { ...nextPersist, pscards: state.playerSheet.cardCollapsed };
+        break;
+      case setDiceMultiplierMask.type:
+        nextPersist = { ...nextPersist, dcm: state.app.diceMultiplierMask };
+        break;
+      case setDiceLastRoll.type:
+        // Stored as the compact [sides, ...rolls] tuple; the total is derived.
+        nextPersist = { ...nextPersist, dlr: rollToTuple(state.app.diceLastRoll) };
         break;
       case 'playerSheet/setCombatPageCardCollapsed':
         /* Only the collapsed ones are worth bytes — every card key defaults to

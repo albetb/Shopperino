@@ -1,0 +1,140 @@
+/* Quick dice roller (DiceRollerSheet.jsx). Sizing in rem per CLAUDE.md. */
+
+.dice-roller {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.dice-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* One row, always. On a narrow phone the nine die buttons scroll sideways
+   rather than wrapping, so the two rows keep their distinct shapes. */
+.dice-pill-row {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0.35rem;
+  overflow-x: auto;
+  padding-bottom: 0.15rem;
+  scrollbar-width: thin;
+}
+
+.dice-pill {
+  flex: 1 1 auto;
+  min-width: 2.6rem;
+  padding: 0.4rem 0.5rem;
+  border-radius: var(--radius-pill);
+  border: 0.0625rem solid var(--border-soft);
+  background: var(--surface-1);
+  color: var(--ink-muted);
+  font: 600 var(--font-size-sm)/1 var(--font-ui);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease),
+              border-color var(--t-fast) var(--ease);
+}
+
+.dice-pill:hover { border-color: var(--accent-muted); }
+
+/* Pressed count buttons stay visibly down — they are a running selection,
+   not a momentary press. */
+.dice-pill.is-on {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent, var(--bg));
+}
+
+.dice-pill--die {
+  color: var(--ink);
+  font-family: var(--font-display);
+}
+
+.dice-pill--die:active {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+
+/* --- RESULT ------------------------------------------------------- */
+
+.dice-result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 7rem;
+  justify-content: center;
+  padding: var(--space-3);
+  border-radius: var(--radius-lg);
+  border: 0.0625rem solid var(--border-soft);
+  background: var(--surface-1);
+}
+
+.dice-result-empty,
+.dice-result-label {
+  font-size: var(--font-size-xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+.dice-result-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.3rem;
+}
+
+/* One die's face. Fixed width so a scrambling number does not shuffle the
+   row's layout on every tick. */
+.dice-die {
+  min-width: 1.9rem;
+  padding: 0.2rem 0.3rem;
+  border-radius: var(--radius-sm);
+  border: 0.0625rem solid var(--border-soft);
+  background: var(--bg-elev);
+  text-align: center;
+  font: 600 var(--font-size-sm)/1.3 var(--font-mono, var(--font-ui));
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+.dice-total {
+  font-family: var(--font-display);
+  font-size: var(--font-size-3xl, 2rem);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+  color: var(--ink);
+}
+
+/* Still scrambling: dimmed and slightly small, so a settled number is
+   unmistakably the answer. */
+.dice-die.is-rolling,
+.dice-total.is-rolling {
+  opacity: 0.5;
+  color: var(--ink-muted);
+}
+
+/* The brief flash as a number lands. Deliberately short and low-contrast —
+   it should register at a glance without demanding attention. */
+.dice-die.is-settled { animation: dice-flash-small var(--t-slow, 320ms) var(--ease) 1; }
+.dice-total.is-settled { animation: dice-flash var(--t-slow, 320ms) var(--ease) 1; }
+
+@keyframes dice-flash {
+  0%   { color: var(--accent); text-shadow: 0 0 0.9rem color-mix(in oklch, var(--accent) 60%, transparent); }
+  100% { color: var(--ink);    text-shadow: none; }
+}
+
+@keyframes dice-flash-small {
+  0%   { border-color: var(--accent); background: var(--accent-soft); }
+  100% { border-color: var(--border-soft); background: var(--bg-elev); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dice-die.is-settled,
+  .dice-total.is-settled { animation: none; }
+}

@@ -9,6 +9,7 @@ import ColorPicker from './colorPicker';
 import IconButton from '../common/IconButton';
 import BottomSheet from '../common/BottomSheet';
 import Button from '../common/Button';
+import DiceRollerSheet from '../common/DiceRollerSheet';
 
 const TABS = [
   { id: 0, label: 'Home',         icon: 'home',          masterOnly: false },
@@ -28,6 +29,7 @@ export default function TopMenu() {
   const [navOpen, setNavOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [showScan, setShowScan] = useState(false);
+  const [diceOpen, setDiceOpen] = useState(false);
 
   const settingsBtnRef = useRef(null);
   const settingsBoxRef = useRef(null);
@@ -122,6 +124,19 @@ export default function TopMenu() {
     </>
   );
 
+  /* Sits directly left of the settings gear in both layouts — on mobile that
+     puts it between the navigation menu and settings, so its position is the
+     same wherever you are. */
+  const diceButton = (
+    <IconButton
+      ghost
+      icon="casino"
+      aria-label="Roll dice"
+      title="Roll dice"
+      onClick={() => setDiceOpen(true)}
+    />
+  );
+
   const settingsButton = (
     <span ref={settingsBtnRef} style={{ position: 'relative', display: 'inline-flex' }}>
       <IconButton
@@ -170,6 +185,7 @@ export default function TopMenu() {
             <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>{tabBar}</div>
             <div className="sh-topbar-actions">
               {masterPlayerToggle}
+              {diceButton}
               {settingsButton}
             </div>
           </>
@@ -180,6 +196,7 @@ export default function TopMenu() {
             {showLeftMenu && (
               <IconButton ghost icon="menu" aria-label="Open navigation" onClick={() => setNavOpen(true)} />
             )}
+            {diceButton}
             {settingsButton}
           </div>
         )}
@@ -220,6 +237,9 @@ export default function TopMenu() {
           <div className="sh-stack">{settingsMenuItems}</div>
         </BottomSheet>
       )}
+
+      {/* Reachable from every tab, on both layouts — not tied to a character. */}
+      <DiceRollerSheet open={diceOpen} onClose={() => setDiceOpen(false)} />
 
       {showScan && (
         <ScanShopScanner

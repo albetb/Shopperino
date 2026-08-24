@@ -23,6 +23,8 @@ import {
   setInfoSidebarCollapsed,
   setTheme,
   setAccent,
+  setDiceMultiplierMask,
+  setDiceLastRoll,
   selectTheme,
   selectAccent
 } from './store/slices/appSlice';
@@ -70,6 +72,8 @@ export default function App() {
     dispatch(setMainColor(db.getMainColor(app)));
     dispatch(setTheme(db.getTheme(app)));
     dispatch(setAccent(db.getAccent(app)));
+    dispatch(setDiceMultiplierMask(db.getDiceMultiplierMask(app)));
+    dispatch(setDiceLastRoll(db.getDiceLastRoll(app)));
 
     const worlds = db.getWorldsList(app);
     dispatch(setWorldsList(worlds));

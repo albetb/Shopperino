@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { getCreatureByLink, getCompanionAbilityByLink, getFamiliarAbilityByLink, getConditionByLink, getEffectByLink, getFeatByLink, getItemByLink, getItemByRef, getSkillByLink, getSpellByLink, isMobile } from '../../lib/utils';
 import { applyColors } from '../../lib/colorUtils';
+import { normalizeMultiplierMask } from '../../lib/dice';
 
 const DEFAULT_BLUE = '#238f8b';
 const DEFAULT_BLUE_T = '#238f8bb3';
@@ -22,6 +23,11 @@ const initialState = {
   isMasterMode: false, // false = Player (hide Shop/Loot), true = Master (show all)
   theme: 'dark',      // 'dark' | 'light' — drives body.theme-* class
   accent: 'crimson',  // accent hue name — drives body.accent-* class
+  /* Dice roller. Not tied to a character — it opens over any tab — so its
+     state lives here rather than on the player sheet. The mask is one bit per
+     count button; the roll is { sides, rolls, total } or null. */
+  diceMultiplierMask: 1,
+  diceLastRoll: null,
 };
 
 export const appSlice = createSlice({
@@ -211,6 +217,20 @@ export const appSlice = createSlice({
       state.currentTab = action.payload;
     },
 
+    /* Which count buttons are pressed, as a bitmask. The dice module owns
+       both the toggle rule and the "never empty" fallback. */
+    setDiceMultiplierMask(state, action) {
+      state.diceMultiplierMask = normalizeMultiplierMask(action.payload);
+    },
+
+    /* The roll shown when the modal is reopened. Null clears it. */
+    setDiceLastRoll(state, action) {
+      const roll = action.payload;
+      state.diceLastRoll = roll && Array.isArray(roll.rolls) && roll.rolls.length > 0
+        ? { sides: roll.sides, rolls: [...roll.rolls], total: roll.total }
+        : null;
+    },
+
     setMainColor(state, action) {
       state.mainColor = action.payload; // expect a hex like '#1a2b3c'
       applyColors(action.payload);
@@ -282,7 +302,9 @@ export const {
   clearSharedShop,
   setMasterMode,
   setTheme,
-  setAccent
+  setAccent,
+  setDiceMultiplierMask,
+  setDiceLastRoll,
 } = appSlice.actions;
 
 export default appSlice.reducer;
