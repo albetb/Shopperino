@@ -1,0 +1,157 @@
+/* Monster book tab. Sizing in rem per CLAUDE.md.
+
+   The page has no control sidebar, so it centres its own column and leaves
+   room on the right for the info sidebar, which still opens stat blocks. */
+
+.monster-book-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  width: 100%;
+  padding: var(--space-4) var(--space-4) var(--space-12);
+  box-sizing: border-box;
+}
+
+.monster-book-page > * {
+  width: min(48rem, 100%);
+}
+
+.monster-source-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+/* Three filters side by side on a wide screen, stacked on a phone. */
+.monster-filter-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-2);
+}
+
+.monster-actions {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-1);
+}
+
+.monster-actions > * { flex: 1 1 0; }
+
+/* --- RESULTS ------------------------------------------------------ */
+
+.monster-list {
+  display: flex;
+  flex-direction: column;
+  max-height: 60vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.monster-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-2) 0;
+  border-bottom: 0.0625rem solid var(--border-soft);
+}
+
+.monster-row:last-child { border-bottom: none; }
+
+.monster-row-name {
+  font-family: var(--font-display);
+  font-size: var(--font-size-md);
+  text-align: left;
+  min-width: 0;
+}
+
+.monster-row-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+.monster-row-tags {
+  font-size: var(--font-size-xs);
+}
+
+/* --- SHEET -------------------------------------------------------- */
+
+.monster-sheet {
+  width: 100%;
+  gap: var(--space-3);
+}
+
+.monster-hp-readout {
+  flex: 1;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: var(--font-size-2xl);
+  font-variant-numeric: tabular-nums;
+}
+
+/* A bonus applied at the table, shown under the stat it moves. */
+.monster-bonus-note {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.monster-ability-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: var(--space-2);
+}
+
+.monster-ability {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+  padding: var(--space-2) 0.2rem;
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+  border: 0.0625rem solid var(--border-soft);
+}
+
+.monster-ability-score {
+  font-family: var(--font-display);
+  font-size: var(--font-size-lg);
+  font-variant-numeric: tabular-nums;
+}
+
+.monster-ability-mod {
+  font-size: var(--font-size-xs);
+  font-variant-numeric: tabular-nums;
+}
+
+.monster-detail-text {
+  font-size: var(--font-size-sm);
+  line-height: 1.45;
+}
+
+.monster-detail-prose {
+  font-size: var(--font-size-sm);
+  line-height: 1.5;
+  color: var(--ink-muted);
+}
+
+.monster-detail-prose p { margin: 0 0 var(--space-2); }
+
+@media (max-width: 768px) {
+  .monster-book-page {
+    padding-left: var(--space-2);
+    padding-right: var(--space-2);
+  }
+
+  /* Three dropdowns do not fit a phone; stack them. */
+  .monster-filter-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Six ability boxes in a row become unreadably narrow. */
+  .monster-ability-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

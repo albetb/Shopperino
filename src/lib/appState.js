@@ -80,6 +80,8 @@ export function getDefaultApp() {
     ac: 'crimson',  // accent hue name (omitted when default)
     dcm: 1,         // dice roller: count-button selection, one bit per button
     dlr: [],        // dice roller: last roll as [sides, ...rolls]
+    mbf: [],        // monster book filters: [srcMask, name, type, size, terrain, crMin, crMax]
+    mbs: [],        // monster book sheet: [ref, damage, maxLife, ...bonuses]
   };
 }
 

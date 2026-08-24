@@ -18,6 +18,7 @@ const TABS = [
   { id: 3, label: 'Loot',         icon: 'paid',          masterOnly: true  },
   { id: 4, label: 'Search',       icon: 'search',        masterOnly: false },
   { id: 5, label: 'Player sheet - BETA', icon: 'badge',  masterOnly: false },
+  { id: 6, label: 'Monsters',     icon: 'skull',         masterOnly: true  },
 ];
 
 export default function TopMenu() {

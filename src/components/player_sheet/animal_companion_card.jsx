@@ -2,6 +2,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import parse from 'html-react-parser';
 import { setCombatPageCardCollapsed } from '../../store/slices/playerSheetSlice';
+import useCreatureData from '../hooks/useCreatureData';
 import { addCardByLink } from '../../store/slices/appSlice';
 import {
   onSetCompanion,
@@ -70,7 +71,10 @@ export default function AnimalCompanionCard() {
   const cls = player?.getClass?.() ?? '';
   const lvl = player?.getLevel?.() ?? 1;
   const effLevel = effectiveCompanionLevel({ class: cls, level: lvl });
-  const selectable = useMemo(() => getSelectableCompanions(effLevel), [effLevel]);
+  /* Companions come from the lazily-loaded creature files. */
+  const ready = useCreatureData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const selectable = useMemo(() => getSelectableCompanions(effLevel), [effLevel, ready]);
 
   if (!player) return null;
 

@@ -1,0 +1,114 @@
+/* Two-handle range slider (RangeSlider.jsx). Sizing in rem per CLAUDE.md.
+
+   Two <input type="range"> are stacked on one track. Each input is otherwise
+   transparent and ignores pointer events, so only its thumb is grabbable —
+   without that the upper input would swallow every click aimed at the lower
+   one. */
+
+.range-slider {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.range-slider-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.range-slider-value {
+  font-family: var(--font-display);
+  font-size: var(--font-size-md);
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+.range-slider-track-wrap {
+  position: relative;
+  height: 1.75rem;
+  display: flex;
+  align-items: center;
+}
+
+.range-slider-track,
+.range-slider-fill {
+  position: absolute;
+  height: 0.3rem;
+  border-radius: var(--radius-pill);
+  pointer-events: none;
+}
+
+.range-slider-track {
+  left: 0;
+  right: 0;
+  background: var(--surface-2, var(--border-soft));
+  border: 0.0625rem solid var(--border-soft);
+}
+
+.range-slider-fill {
+  background: var(--accent);
+}
+
+.range-slider-input {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  margin: 0;
+  height: 1.75rem;
+  background: none;
+  appearance: none;
+  -webkit-appearance: none;
+  /* The track is drawn by the wrapper, so the input itself must not intercept
+     clicks — only its thumb re-enables them below. */
+  pointer-events: none;
+}
+
+.range-slider-input:focus { outline: none; }
+
+.range-slider-input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  pointer-events: auto;
+  width: 1.15rem;
+  height: 1.15rem;
+  border-radius: 50%;
+  background: var(--bg-elev);
+  border: 0.1875rem solid var(--accent);
+  box-shadow: var(--shadow-1);
+  cursor: grab;
+}
+
+.range-slider-input::-moz-range-thumb {
+  pointer-events: auto;
+  width: 1.15rem;
+  height: 1.15rem;
+  border-radius: 50%;
+  background: var(--bg-elev);
+  border: 0.1875rem solid var(--accent);
+  box-shadow: var(--shadow-1);
+  cursor: grab;
+  /* Firefox draws its own track otherwise. */
+  border-color: var(--accent);
+}
+
+.range-slider-input::-moz-range-track {
+  background: none;
+  border: none;
+}
+
+.range-slider-input:active::-webkit-slider-thumb { cursor: grabbing; }
+.range-slider-input:active::-moz-range-thumb { cursor: grabbing; }
+
+.range-slider-input:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 0.2rem color-mix(in oklch, var(--accent) 35%, transparent);
+}
+.range-slider-input:focus-visible::-moz-range-thumb {
+  box-shadow: 0 0 0 0.2rem color-mix(in oklch, var(--accent) 35%, transparent);
+}
+
+/* Starting order only. When the handles overlap the component rewrites these
+   on pointerdown, picking whichever handle the press landed nearer — see
+   routePress in RangeSlider.jsx. */
+.range-slider-input--high { z-index: 3; }
+.range-slider-input--low { z-index: 2; }

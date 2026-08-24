@@ -12,7 +12,10 @@ import { ShopInventory } from './components/shop';
 import SpellbookTable from './components/spellbook/spellbook_table';
 import SearchPage from './components/search/search_page';
 import PlayerSheetPage from './components/player_sheet/player_sheet_page';
+import MonsterBookPage from './components/monster_book/monster_book_page';
 import * as db from './lib/storage';
+import { preloadCreatureData } from './lib/loadFile';
+import useCreatureData from './components/hooks/useCreatureData';
 import { serialize } from './lib/utils';
 import {
   setStateCurrentTab,
@@ -51,6 +54,7 @@ import { setShop, setShopGenerated } from './store/slices/shopSlice';
 import { setCity } from './store/slices/citySlice';
 import { setWorldsList, setSelectedWorldIndex, setWorld } from './store/slices/worldSlice';
 import { setCharactersList, setSelectedCharacterIndex, setPlayer, setIsPlayerSheetSidebarCollapsed, setPlayerSheetMainView, setPlayerSheetCardsCollapsed, setCombatPageCardsCollapsed } from './store/slices/playerSheetSlice';
+import { setMonsterFilters, setMonsterSheet } from './store/slices/monsterBookSlice';
 import { setPersist } from './store/slices/persistSlice';
 import './style/App.css';
 import './style/buttons.css';
@@ -74,6 +78,13 @@ export default function App() {
     dispatch(setAccent(db.getAccent(app)));
     dispatch(setDiceMultiplierMask(db.getDiceMultiplierMask(app)));
     dispatch(setDiceLastRoll(db.getDiceLastRoll(app)));
+    dispatch(setMonsterSheet(db.getMonsterBookSheet(app)));
+    /* The bestiary is a lazy chunk (see loadFile.js). Start it now, so it is in
+       place long before anything asks for a creature, and read the monster-book
+       filters only once it is — their CR bounds are derived from the data. */
+    preloadCreatureData()
+      .then(() => dispatch(setMonsterFilters(db.getMonsterBookFilters(app))))
+      .catch(() => {});
 
     const worlds = db.getWorldsList(app);
     dispatch(setWorldsList(worlds));
@@ -135,6 +146,10 @@ export default function App() {
     dispatch(setShopGenerated(serialize(hasInventory)));
   }, [dispatch]);
 
+  /* Redraw once the creature chunk lands, so anything showing creature-derived
+     values (a wild-shaped sheet, a companion) stops showing the empty state. */
+  useCreatureData();
+
   const currentTab = useSelector(state => state.persist?.ct ?? state.app?.currentTab ?? 0);
   const sharedShop = useSelector(state => state.app.sharedShop);
   const theme = useSelector(selectTheme);
@@ -190,6 +205,14 @@ export default function App() {
     <SearchPage />
   </>;
 
+  /* No control sidebar: the filters live in a card on the page itself. The
+     info sidebar still opens creature stat blocks, as everywhere else. */
+  const monsterBook = <>
+    <header className="app-header">
+      <MonsterBookPage />
+    </header>
+  </>;
+
   const playerSheet = <>
     <PlayerSheetSidebar />
     <header className="app-header">
@@ -204,7 +227,8 @@ export default function App() {
     2: spellbook,
     3: loot,
     4: search,
-    5: playerSheet
+    5: playerSheet,
+    6: monsterBook,
   };
 
   const currentTabContent = tabPages[currentTab] ??

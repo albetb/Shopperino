@@ -22,8 +22,8 @@ data anywhere. Everything you create lives in your browser's `localStorage`.
 
 The app runs in two modes, toggled on the home page:
 
-- **Master** — everything, including the shop and loot generators.
-- **Player** — the generators are hidden; you get the reference and character tools.
+- **Master** — everything, including the shop and loot generators and the monster book.
+- **Player** — the master tools are hidden; you get the reference and character tools.
 
 ## Features
 
@@ -31,10 +31,11 @@ The app runs in two modes, toggled on the home page:
 |---|---|---|
 | **Shop generator** | Master | Builds a randomized shop inventory scaled to the party level, with per-city and per-world organization (World → City → Shop). Shops are seeded, so the same shop always regenerates identically — and can be shared with players as a **QR code**. |
 | **Loot generator** | Master | Randomized treasure by level: coins, gems, art objects, mundane gear and magic items. |
+| **Monster book** | Master | The full bestiary — 559 creatures across monsters, animals and vermin — filtered by name, type, size, terrain and a challenge-rating range. Track one creature at a time in combat: hit points, damage taken and per-stat bonuses. |
 | **Spellbook** | Everyone | Per-character spell tracking: prepared/known spells, slots by level, domains, wizard schools, spontaneous casting and rest handling. |
 | **Search** | Everyone | Browse and cross-link spells, items, feats and skills. Descriptions are hyperlinked, so a spell reference in a feat takes you straight to it. |
 | **Player sheet** *(beta)* | Everyone | A mostly automatic D&amp;D 3.5 character sheet: abilities, BAB, saves, skills, feats, inventory and carrying capacity, class features (rage, bardic music, turn undead, wild shape, favored enemies, monk and paladin abilities…), animal companions and familiars, conditions, and a portrait editor. |
-| **Dice roller** | Everyone | Reachable from every tab: d2–d100, stacking count buttons, and the last roll is remembered. |
+| **Dice roller** | Everyone | Reachable from every tab: d4–d100, stacking count buttons, and the last roll is remembered. |
 
 Two design rules run through the whole app:
 
@@ -82,10 +83,10 @@ Two consequences worth knowing:
 
 ```
 src/
-├── App.jsx                 # tab router: Home, Shop, Spellbook, Loot, Search, Player sheet
+├── App.jsx                 # tab router: Home, Shop, Spellbook, Loot, Search, Player sheet, Monsters
 ├── components/             # UI, grouped per tool (+ common/ atoms and menus/ sidebars)
 ├── data/                   # static D&D 3.5 reference JSON (spells, items, feats, monsters, …)
-├── lib/                    # domain models: world, city, shop, loot, spellbook, player, dice
+├── lib/                    # domain models: world, city, shop, loot, spellbook, player, monster, dice
 │   ├── appState.js         # storage schema, compaction, load/save
 │   └── storage.js          # higher-level accessors — import storage utilities from here
 ├── store/                  # Redux Toolkit slices, thunks and the persist middleware

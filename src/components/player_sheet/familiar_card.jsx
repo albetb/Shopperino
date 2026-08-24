@@ -2,6 +2,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import parse from 'html-react-parser';
 import { setCombatPageCardCollapsed } from '../../store/slices/playerSheetSlice';
+import useCreatureData from '../hooks/useCreatureData';
 import { addCardByLink } from '../../store/slices/appSlice';
 import {
   onSetFamiliar,
@@ -68,7 +69,10 @@ export default function FamiliarCard() {
   const longPressMinus = useLongPress(() => handleHpDelta(-10), () => handleHpDelta(-1), { delay: 400 });
 
   const lvl = player?.getLevel?.() ?? 1;
-  const species = useMemo(() => getFamiliarSpecies(), []);
+  /* Species come from the lazily-loaded creature files. */
+  const ready = useCreatureData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const species = useMemo(() => getFamiliarSpecies(), [ready]);
 
   if (!player) return null;
 

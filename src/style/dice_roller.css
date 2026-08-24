@@ -78,7 +78,6 @@
 .dice-result-label {
   font-size: var(--font-size-xs);
   letter-spacing: 0.06em;
-  text-transform: uppercase;
   color: var(--ink-muted);
 }
 

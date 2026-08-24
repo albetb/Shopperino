@@ -7,6 +7,7 @@ import worldReducer from './slices/worldSlice';
 import spellbookReducer from './slices/spellbookSlice';
 import lootReducer from './slices/lootSlice';
 import playerSheetReducer from './slices/playerSheetSlice';
+import monsterBookReducer from './slices/monsterBookSlice';
 import { persistSyncMiddleware } from './persistSyncMiddleware';
 
 const store = configureStore({
@@ -19,6 +20,7 @@ const store = configureStore({
     spellbook: spellbookReducer,
     loot: lootReducer,
     playerSheet: playerSheetReducer,
+    monsterBook: monsterBookReducer,
   },
   // Domain models (Player, Spellbook, Shop, World, City, Loot) are stored as
   // live class instances per the project's architecture (see CLAUDE.md →

@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import parse from 'html-react-parser';
 import { setCombatPageCardCollapsed } from '../../store/slices/playerSheetSlice';
+import useCreatureData from '../hooks/useCreatureData';
 import { addCardByLink } from '../../store/slices/appSlice';
 import {
   onEnterWildShape,
@@ -81,7 +82,10 @@ function ShapeCard({ pool }) {
   const collapsed = useSelector((state) => state.playerSheet?.combatPageCardsCollapsed?.[pool.key] ?? false);
   const [query, setQuery] = useState('');
 
-  const forms = useMemo(() => (player ? pool.getForms(player) : []), [player, pool]);
+  /* The forms are creature stat blocks, so recompute when that chunk lands. */
+  const ready = useCreatureData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const forms = useMemo(() => (player ? pool.getForms(player) : []), [player, pool, ready]);
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     return q ? forms.filter((f) => String(f.name).toLowerCase().includes(q)) : forms;

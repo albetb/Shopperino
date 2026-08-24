@@ -17,7 +17,7 @@ This is a personal tool used by the developer and their friends. There is no bac
 
 ## What This Project Is
 
-Shopperino is a D&D 3.5 toolset SPA (React 18 + Redux Toolkit). It has six tabs, selectable via `currentTab` in state:
+Shopperino is a D&D 3.5 toolset SPA (React 18 + Redux Toolkit). It has seven tabs, selectable via `currentTab` in state:
 
 | Tab | ID | Description |
 |-----|----|-------------|
@@ -27,8 +27,11 @@ Shopperino is a D&D 3.5 toolset SPA (React 18 + Redux Toolkit). It has six tabs,
 | Loot | 3 | Randomized loot generator (Master mode only) |
 | Search | 4 | Browse spells, items, feats, skills |
 | Player Sheet | 5 | D&D 3.5 character sheet |
+| Monsters | 6 | Bestiary browser + one tracked monster sheet (Master mode only) |
 
-**Master/Player mode** (`isMasterMode`) hides the Shop and Loot tabs when in Player mode.
+**Master/Player mode** (`isMasterMode`) hides the Shop, Loot and Monsters tabs when in Player mode.
+
+Tabs are declared in two places that must stay in step: `tabPages` in [src/App.jsx](src/App.jsx) and the `TABS` list in [src/components/menus/top_menu.jsx](src/components/menus/top_menu.jsx). The Home page's own tile grid (`TILES` in [src/components/main_page/main_page.jsx](src/components/main_page/main_page.jsx)) is a third, separate list.
 
 ## Architecture
 
@@ -42,6 +45,8 @@ All state is stored under a single localStorage key `"app"`, compressed with `lz
 - `app.psc` — array of player character plain objects
 - `app.uiFlags` — integer bitmask for all boolean UI flags (see `UI_FLAG` enum)
 - `app.stc` — integer bitmask for spell table level-collapse state
+- `app.dcm` / `app.dlr` — dice roller: count-button bitmask, and the last roll as `[sides, ...rolls]`
+- `app.mbf` / `app.mbs` — monster book: filter tuple, and the one tracked monster sheet
 - Identity is array index, not an ID field — never add entity IDs.
 
 **localStorage budget is ~5 MB.** Always optimize for compactness when storing data: use tuples over objects, bitmasks over boolean fields, omit default values (`compactApp` does this), and prefer short key names.
@@ -59,12 +64,13 @@ Slices in [src/store/slices/](src/store/slices/):
 - `spellbook` — spellbook tool state
 - `loot` — loot tool state
 - `playerSheet` — character sheet state
+- `monsterBook` — bestiary filters and the tracked monster sheet
 
 `persistSyncMiddleware` ([src/store/persistSyncMiddleware.js](src/store/persistSyncMiddleware.js)) intercepts specific preference actions and immediately writes them to localStorage via `saveApp()`. Data mutations (creating/editing shops, spellbooks, etc.) are handled by thunks in [src/store/thunks/](src/store/thunks/).
 
 ### Domain Models
 
-Classes in `src/lib/*/` (World, City, Shop, Spellbook, Loot, Player) each have `.load(data)` and `.serialize()` methods. The Player model ([src/lib/player/player.js](src/lib/player/player.js)) computes all derived D&D values (ability modifiers, BAB, saves, etc.) — the UI must not recalculate these.
+Classes in `src/lib/*/` (World, City, Shop, Spellbook, Loot, Player, MonsterSheet) each have `.load(data)` and `.serialize()` methods. The Player model ([src/lib/player/player.js](src/lib/player/player.js)) computes all derived D&D values (ability modifiers, BAB, saves, etc.) — the UI must not recalculate these.
 
 **Do not compute game logic in UI components.** All calculations (damage, AC, skill totals, stat modifiers, etc.) belong in the domain models (`src/lib/player/player.js`, etc.). Components should only call model methods and display the results. This keeps logic centralized, testable, and prevents bugs from duplicate/inconsistent calculations.
 
@@ -73,9 +79,13 @@ Classes in `src/lib/*/` (World, City, Shop, Spellbook, Loot, Player) each have `
 ### Static Game Data
 
 All D&D 3.5 reference data lives as static JSON in [src/data/](src/data/):
-`items.json`, `scrolls.json`, `spells.json`, `feats.json`, `skills.json`, `races.json`, `classes.json`, `tables.json`.
+`items.json`, `scrolls.json`, `spells.json`, `feats.json`, `skills.json`, `races.json`, `classes.json`, `tables.json`, `deities.json`, `startingEquipment.json`, `traps.json`, plus the three creature files and their ability lists (`monsters.json`, `animals.json`, `vermin.json`, `companionAbilities.json`, `familiarAbilities.json`).
+
+Every file is reached through `loadFile(name)` in [src/lib/loadFile.js](src/lib/loadFile.js) — never imported directly by a component.
 
 Items and spells are accessed by a `link` string like `"items/Weapon/longsword"` or `"scrolls/Arcane/fireball"`. Use `getItemByRef(link)` from [src/lib/utils.js](src/lib/utils.js).
+
+**The three creature files are disjoint** — a creature lives in exactly one of them. `getCreatureByLink` / `getCreatureBaseByRef` in [src/lib/animal/animalsUtils.js](src/lib/animal/animalsUtils.js) resolve a ref across all three; never merge them.
 
 ### D&D Rules: Automatic but Non-Enforcing
 
@@ -91,7 +101,7 @@ The notes are built by the `dnd-rules-extract` skill. Their auto-generated secti
 
 ### Layout Pattern
 
-Each tab renders as `<Sidebar /> + <main content />` inside `App.jsx`. Sidebars contain collapsible cards with controls; the main area shows the primary content (table, sheet, etc.). The sidebar for the active tab is always present except for the shared-shop view.
+Each tab renders as `<Sidebar /> + <main content />` inside `App.jsx`. Sidebars contain collapsible cards with controls; the main area shows the primary content (table, sheet, etc.). The sidebar for the active tab is always present except for the shared-shop view, the Search tab and the Monsters tab — the latter puts its filters in a card on the page instead.
 
 ### CSS: Units and Styling
 
