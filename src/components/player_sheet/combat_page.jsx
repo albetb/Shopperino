@@ -264,9 +264,15 @@ export default function CombatPage() {
   const flurryUnarmed = flurry.extraAttacks > 0 && unarmedAvailable;
 
   const speedInfo = player.getArmorSpeedInfo?.();
+  // The form a character travels in is not always a walk: an air elemental
+  // only flies, so its land speed is 0 and the walk would read "0 ft". The
+  // model picks the fastest mode that crosses ground and names it.
+  const primaryMovement = player.getPrimaryMovement?.() ?? { mode: 'land', speed: 30 };
   const speedDisplay = speedInfo?.hasReduction
     ? `${speedInfo.reducedSpeed} / ${speedInfo.originalSpeed} ft`
-    : `${player.getTotalSpeed?.() ?? 30} ft`;
+    : `${primaryMovement.speed} ft`;
+  // Only a non-walking mode earns a label; a walk is the unremarkable default.
+  const speedModeLabel = primaryMovement.mode === 'land' ? null : primaryMovement.mode.toUpperCase();
 
   const totalInitiative = player.getTotalInitiative?.() ?? 0;
   const totalFort = player.getTotalFortitudeSave?.() ?? player.getFortitudeSave?.() ?? 0;
@@ -345,6 +351,8 @@ export default function CombatPage() {
   const bab_display = formatBaseAttackBonus(bab);
   const sneakAttackDice = player.getSneakAttackDice?.() ?? 0;
   const damageReductions = player.getDamageReductions?.() ?? [];
+  const isShaped = player.isWildShaped?.() ?? false;
+  const wildShapeAttacks = isShaped ? (player.getWildShapeAttacks?.() ?? []) : [];
 
   return (
     <>
@@ -556,7 +564,17 @@ export default function CombatPage() {
           label="Speed"
           value={speedDisplay}
           cond={condDeltas.speed || 0}
-          sub={withCond(speedInfo?.hasReduction ? 'encumbered' : (speedBonus !== 0 ? `bonus +${speedBonus}` : null), condDeltas.speed || 0)}
+          sub={
+            <>
+              {speedModeLabel && (
+                <span className="sh-speed-mode" style={{ display: 'block' }}>{speedModeLabel}</span>
+              )}
+              {withCond(
+                speedInfo?.hasReduction ? 'encumbered' : (speedBonus !== 0 ? `bonus +${speedBonus}` : null),
+                condDeltas.speed || 0
+              )}
+            </>
+          }
           editing={editBonus === 'speedBonus'}
           onEdit={() => toggleEditBonus('speedBonus')}
         />
@@ -606,6 +624,40 @@ export default function CombatPage() {
         }
       >
         {!collapsed.combat && (
+          <>
+          {/* An assumed form replaces the whole attack list: its gear has
+              melded, so no weapon it carried is usable and the natural attacks
+              are the only ones it has. */}
+          {isShaped ? (
+            <div className="sh-stack" style={{ gap: 'var(--space-2)' }}>
+              {wildShapeAttacks.length === 0 ? (
+                <div className="sh-warn-strip">
+                  <Icon name="sports_mma" />
+                  This form has no natural attacks.
+                </div>
+              ) : wildShapeAttacks.map((line, idx) => (
+                <div
+                  key={line.index}
+                  className="sh-row-h sh-spread"
+                  style={idx === 0
+                    ? { gap: 'var(--space-3)' }
+                    : { gap: 'var(--space-3)', borderTop: '1px solid var(--border-soft)', paddingTop: 'var(--space-2)' }}
+                >
+                  <span className="sh-display" style={{ fontSize: 'var(--font-size-lg)', textTransform: 'capitalize' }}>
+                    {line.count > 1 ? `${line.count} ` : ''}{line.name}
+                  </span>
+                  <span className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
+                    <Pill tone="accent">{line.bonus >= 0 ? '+' : ''}{line.bonus ?? 0}</Pill>
+                    {line.damage && <Pill tone="default">{line.damage}</Pill>}
+                  </span>
+                </div>
+              ))}
+              <div className="sh-faint" style={{ fontSize: 'var(--font-size-xs)' }}>
+                Natural attacks of your form, computed with your own base attack
+                bonus and the form&apos;s Strength. Extra limbs grant no extra attacks.
+              </div>
+            </div>
+          ) : (
           <>
           {equippedWeapons.length > 0 && (
             <div className="sh-stack" style={{ gap: 'var(--space-2)' }}>
@@ -703,6 +755,10 @@ export default function CombatPage() {
               })}
             </div>
           )}
+          </>
+          )}
+          {/* Sneak attack rides on whichever attack landed, so it sits outside
+              the shaped / unshaped split. */}
           {sneakAttackDice > 0 && (
             <div
               className="sh-row-h sh-spread"

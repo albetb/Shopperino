@@ -35,6 +35,21 @@ const SIZE_AC_MODIFIER = {
 /* Speed ceilings an assumed form is subject to (alter self). */
 const SHAPE_MAX_SPEED = { fly: 120, other: 60 };
 
+/* Modes that carry a creature across open ground, and so compete to be the
+   single speed the sheet reports. Swim and climb are deliberately absent:
+   neither gets you anywhere on land. */
+const SPEED_TRAVERSAL_MODES = ['land', 'fly', 'burrow'];
+
+/**
+ * One movement mode's speed in feet. Most modes are stored as a plain number,
+ * but flight carries its maneuverability too ({ speed, maneuverability }), so
+ * both shapes have to be read.
+ */
+function readSpeedValue(entry) {
+  if (entry && typeof entry === 'object') return Number(entry.speed) || 0;
+  return Number(entry) || 0;
+}
+
 /* Conditions implied by HP and applied automatically — never user-toggled. */
 const HP_DERIVED_CONDITIONS = new Set(['Dead', 'Dying', 'Disabled']);
 
@@ -1172,6 +1187,22 @@ class Player {
       .sort((a, b) => String(a.name).localeCompare(String(b.name)));
   }
 
+  /**
+   * A creature's name with a trailing size dropped: "Air Elemental, Large"
+   * becomes "Air Elemental", since the list already carries the size in its
+   * own column. Only an exact size match is stripped, so the meaningful
+   * suffixes ("Greater", "Elder") survive untouched.
+   */
+  getFormDisplayName(creature) {
+    const name = String(creature?.name || '');
+    const size = String(creature?.size || '');
+    if (!size) return name;
+    const suffix = `, ${size}`;
+    return name.toLowerCase().endsWith(suffix.toLowerCase())
+      ? name.slice(0, -suffix.length)
+      : name;
+  }
+
   /** True when the current form is an elemental rather than an animal or plant. */
   isElementalShaped() {
     const form = this.getWildShapeForm();
@@ -1765,7 +1796,7 @@ class Player {
    * the form lacks that mode.
    */
   getWildShapeSpeed(mode = 'land') {
-    const speed = Number(this.getWildShapeForm()?.speed?.[mode]) || 0;
+    const speed = readSpeedValue(this.getWildShapeForm()?.speed?.[mode]);
     if (speed <= 0) return 0;
     const cap = mode === 'fly' ? SHAPE_MAX_SPEED.fly : SHAPE_MAX_SPEED.other;
     return Math.min(speed, cap);
@@ -1780,7 +1811,7 @@ class Player {
     const speed = this.getWildShapeForm()?.speed;
     if (!speed || typeof speed !== 'object') return [];
     return Object.keys(speed)
-      .filter((mode) => mode !== 'raw' && Number(speed[mode]) > 0)
+      .filter((mode) => mode !== 'raw' && readSpeedValue(speed[mode]) > 0)
       .map((mode) => ({ mode, speed: this.getWildShapeSpeed(mode) }));
   }
 
@@ -1791,6 +1822,34 @@ class Player {
     const speed = this.getBaseSpeed() + Number(this.speedBonus || 0);
     // Half-speed conditions (Blinded/Exhausted/Entangled/Disabled) apply once.
     return this.isHalfSpeed() ? Math.floor(speed / 2) : speed;
+  }
+
+  /** speedBonus and the half-speed conditions, applied to a raw mode speed. */
+  _applySpeedModifiers(raw) {
+    const speed = raw + Number(this.speedBonus || 0);
+    return this.isHalfSpeed() ? Math.floor(speed / 2) : speed;
+  }
+
+  /**
+   * The movement the character actually gets around on, as `{ mode, speed }`.
+   *
+   * Normally the land speed, but a form that flies or burrows faster than it
+   * walks travels at that instead — an air elemental has no land speed at all,
+   * so reporting only the walk would show 0 ft. Swimming and climbing are
+   * excluded: neither carries you across open ground, so neither belongs in
+   * the one number the sheet shows for "how far can I move".
+   *
+   * The other modes stay available through getWildShapeMovementModes.
+   */
+  getPrimaryMovement() {
+    if (!this.getWildShapeForm()) return { mode: 'land', speed: this.getTotalSpeed() };
+    let best = { mode: 'land', speed: this.getWildShapeSpeed('land') };
+    SPEED_TRAVERSAL_MODES.forEach((mode) => {
+      const speed = this.getWildShapeSpeed(mode);
+      if (speed > best.speed) best = { mode, speed };
+    });
+    if (best.mode === 'land') return { mode: 'land', speed: this.getTotalSpeed() };
+    return { mode: best.mode, speed: this._applySpeedModifiers(best.speed) };
   }
 
   /**

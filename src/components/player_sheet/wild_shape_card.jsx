@@ -10,14 +10,11 @@ import {
 } from '../../store/thunks/playerSheetThunks';
 import Card from '../common/Card';
 import Pill from '../common/Pill';
-import Button from '../common/Button';
 import IconButton from '../common/IconButton';
 import Filigree from '../common/Filigree';
 import EmptyState from '../common/EmptyState';
 import Icon from '../common/Icon';
 import '../../style/wild_shape.css';
-
-const fmtBonus = (n) => `${n >= 0 ? '+' : ''}${n}`;
 
 /**
  * The two wild shape allowances, as card configuration. They share every
@@ -122,7 +119,6 @@ function ShapeCard({ pool }) {
     <Card
       title={`${pool.label} - ${remaining}/${max} - ${hours}h`}
       className="sh-card--head-spread"
-      eyebrow={ownsForm ? form?.name || 'transformed' : 'true form'}
       action={cardAction}
     >
       {!collapsed && (
@@ -187,7 +183,7 @@ function ShapeCard({ pool }) {
                         onClick={() => dispatch(addCardByLink({ links: creature.ref }))}
                         title="Show stat block"
                       >
-                        {creature.name}
+                        {player.getFormDisplayName(creature)}
                       </button>
                       <span className="wild-shape-row-meta">
                         <span className="sh-faint">{creature.size} · {creature.hitDice?.count ?? 0} HD</span>
@@ -218,15 +214,24 @@ function ShapeCard({ pool }) {
   );
 }
 
-/** The in-form view: what changed that the stat pills cannot show. */
+/**
+ * The in-form view: what changed that the stat pills cannot show.
+ *
+ * Deliberately narrow. The form's natural attacks are not listed here — they
+ * replace the weapon list in the attacks card, which is where a player looks
+ * for something to swing. Nor is what the form fails to grant: a list of
+ * abilities you do not have is noise on a card you read mid-fight.
+ */
 function ShapedBody({ player, form, dispatch }) {
   const [combatOpen, setCombatOpen] = useState(false);
-  const attacks = player.getWildShapeAttacks();
   const specialAttacks = player.getWildShapeSpecialAttacks();
   const specialQualities = player.getWildShapeSpecialQualities();
   const feats = player.getWildShapeFeats();
-  const ungained = player.getWildShapeUngainedQualities();
-  const modes = player.getWildShapeMovementModes();
+  /* The mode the sheet's Speed stat already reports is dropped here — the
+     pills are for the ones that stat cannot show (swim, climb, a slower fly). */
+  const primary = player.getPrimaryMovement();
+  const modes = player.getWildShapeMovementModes()
+    .filter(({ mode }) => mode !== primary.mode);
   const naturalArmor = player.getWildShapeNaturalArmor();
   const isElemental = player.isElementalShaped();
   const canCast = player.canCastSpells();
@@ -242,9 +247,15 @@ function ShapedBody({ player, form, dispatch }) {
         >
           <Icon name="menu_book" size={16} /> Stat block
         </button>
-        <Button variant="primary" icon="undo" onClick={() => dispatch(onExitWildShape())}>
-          Return to true form
-        </Button>
+        <button
+          type="button"
+          className="wild-shape-revert"
+          onClick={() => dispatch(onExitWildShape())}
+          title="Return to true form"
+        >
+          <Icon name="undo" size={14} />
+          True form
+        </button>
       </div>
 
       <div className="sh-row-h" style={{ gap: 'var(--space-2)', flexWrap: 'wrap' }}>
@@ -260,27 +271,6 @@ function ShapedBody({ player, form, dispatch }) {
           <Icon name="auto_fix_off" />
           No speech in this form, so verbal components fail — you cannot cast.
           The Natural Spell feat removes this.
-        </div>
-      )}
-
-      {attacks.length > 0 && (
-        <div className="sh-stack" style={{ gap: 'var(--space-2)' }}>
-          <Filigree>Natural attacks</Filigree>
-          {attacks.map((line) => (
-            <div key={line.index} className="sh-row-h sh-spread" style={{ gap: 'var(--space-3)' }}>
-              <span className="sh-display" style={{ fontSize: 'var(--font-size-lg)', textTransform: 'capitalize' }}>
-                {line.count > 1 ? `${line.count} ` : ''}{line.name}
-              </span>
-              <span className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
-                <Pill tone="accent">{fmtBonus(line.bonus ?? 0)}</Pill>
-                {line.damage && <Pill tone="default">{line.damage}</Pill>}
-              </span>
-            </div>
-          ))}
-          <div className="sh-faint" style={{ fontSize: 'var(--font-size-xs)' }}>
-            Computed with your own base attack bonus and the form's Strength.
-            Extra limbs grant no extra attacks.
-          </div>
         </div>
       )}
 
@@ -302,25 +292,6 @@ function ShapedBody({ player, form, dispatch }) {
           )}
         </div>
       )}
-
-      {ungained.length > 0 && (
-        <div className="sh-stack" style={{ gap: 'var(--space-1)' }}>
-          <Filigree>Not gained</Filigree>
-          <div className="sh-row-h" style={{ gap: 'var(--space-2)', flexWrap: 'wrap' }}>
-            {ungained.map((s) => <Pill key={s} tone="ghost">{s}</Pill>)}
-          </div>
-          <div className="sh-faint" style={{ fontSize: 'var(--font-size-xs)' }}>
-            A form's special <em>qualities</em> never transfer — only its special
-            attacks do. Nor do any supernatural or spell-like abilities.
-          </div>
-        </div>
-      )}
-
-      <div className="sh-faint" style={{ fontSize: 'var(--font-size-xs)' }}>
-        Your gear has melded into the form and stops functioning, so worn armour
-        and shields contribute no AC. The inventory stays editable, and
-        everything reappears intact when you change back.
-      </div>
 
       {form?.combat && (
         <div className="sh-stack" style={{ gap: 'var(--space-1)' }}>

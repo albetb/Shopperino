@@ -55,6 +55,37 @@
   font-size: var(--font-size-sm);
 }
 
+/* Movement-mode tag under the Speed stat ("FLY", "BURROW"), shown only when
+   the character travels by something other than walking. */
+.sh-speed-mode {
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+}
+
+/* Return to true form. Sized like a pill rather than a full button — it sits
+   in a header row, not at the end of a form — but keeps a filled accent
+   background and a border so it still reads as something you press. */
+.wild-shape-revert {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--radius-pill);
+  border: 0.0625rem solid var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
+  font: 600 var(--font-size-xs)/1.4 var(--font-ui);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.wild-shape-revert:hover {
+  background: var(--accent);
+  color: var(--on-accent, var(--bg));
+}
+
 .wild-shape-combat-text {
   font-size: var(--font-size-sm);
   color: var(--ink-muted);
