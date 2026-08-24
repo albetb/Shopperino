@@ -68,13 +68,19 @@ describe('the performance list', () => {
     expect(available(bard(18))).toContain('Mass suggestion');
   });
 
-  test('locked performances are listed, not dropped', () => {
+  test('performances the level has not reached are dropped entirely', () => {
+    // A 1st-level bard has three; nothing gated on a higher level appears,
+    // since it arrives on its own and is not a goal to work towards.
     const p = bard(1);
-    expect(p.getBardicPerformances()).toHaveLength(9);
-    const suggestion = find(p, 'Suggestion');
-    expect(suggestion.available).toBe(false);
-    expect(suggestion.meetsLevel).toBe(false);
-    expect(suggestion.level).toBe(6);
+    expect(p.getBardicPerformances()).toHaveLength(3);
+    expect(find(p, 'Suggestion')).toBeUndefined();
+    expect(p.getBardicPerformances().every(x => x.meetsLevel)).toBe(true);
+  });
+
+  test('the list grows as the bard levels', () => {
+    expect(bard(1).getBardicPerformances()).toHaveLength(3);
+    expect(bard(6).getBardicPerformances()).toHaveLength(5);
+    expect(bard(18).getBardicPerformances()).toHaveLength(9);
   });
 
   test('too few Perform ranks lock a performance the level would allow', () => {

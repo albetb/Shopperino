@@ -1,7 +1,12 @@
 import { useEffect, useRef } from 'react';
 import IconButton from './IconButton';
 
-export default function BottomSheet({ open, onClose, title, eyebrow, subheader, children }) {
+/**
+ * @param {boolean} [fixedHeight] pin the sheet to its maximum height instead of
+ *   letting it shrink to its content. Use it where the body is filtered live:
+ *   a shrinking sheet walks its own controls under a phone keyboard.
+ */
+export default function BottomSheet({ open, onClose, title, eyebrow, subheader, fixedHeight, children }) {
   const ref = useRef(null);
 
   useEffect(() => {
@@ -21,7 +26,13 @@ export default function BottomSheet({ open, onClose, title, eyebrow, subheader, 
   return (
     <>
       <div className="sh-scrim" onClick={onClose} role="presentation" />
-      <div className="sh-sheet" ref={ref} role="dialog" aria-modal="true" aria-label={title}>
+      <div
+        className={['sh-sheet', fixedHeight && 'sh-sheet--fixed'].filter(Boolean).join(' ')}
+        ref={ref}
+        role="dialog"
+        aria-modal="true"
+        aria-label={title}
+      >
         <div className="handle" aria-hidden="true" />
         {(title || eyebrow) && (
           <div className="sh-sheet-head">

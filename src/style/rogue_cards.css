@@ -1,0 +1,37 @@
+/* Rogue special ability picks (rogue_cards.jsx). Sizing in rem per CLAUDE.md. */
+
+.rogue-abilities {
+  gap: var(--space-3);
+}
+
+.rogue-ability-slot {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.rogue-ability-slot + .rogue-ability-slot {
+  border-top: 0.0625rem solid var(--border-soft);
+  padding-top: var(--space-2);
+}
+
+.rogue-ability-field {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.rogue-ability-field .sh-label {
+  flex: 0 0 30%;
+}
+
+.rogue-ability-field .sh-select {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.rogue-ability-description {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  line-height: 1.45;
+}

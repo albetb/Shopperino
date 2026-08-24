@@ -166,17 +166,6 @@ export default function SpellbookTable({ source = 'app' }) {
         page={page}
       />
 
-      {castingBlocked && (
-        <div className="card card-width-spellbook wild-shape-cast-block">
-          <span className="material-symbols-outlined">auto_fix_off</span>
-          <span>
-            Wild-shaped as <b>{player.getWildShapeName()}</b> — you cannot cast.
-            An animal form has no speech, so verbal components fail. The{' '}
-            <b>Natural Spell</b> feat removes this restriction.
-          </span>
-        </div>
-      )}
-
       <SpellFilters
         filters={filters}
         onClearSearchName={() => setSearchName('')}
@@ -227,9 +216,23 @@ export default function SpellbookTable({ source = 'app' }) {
         />
       )}
 
-      {page === 0 && <SpellSwapNote inst={inst} />}
-
       {!isApp && page === 2 && player?.getRace?.() === 'Gnome' && <GnomeSpellsCard />}
+
+      {/* Reminders sit immediately above the spell tables, where the thing
+          they are about is — not above the filters and class description,
+          where they read as page furniture. */}
+      {castingBlocked && (
+        <div className="card card-width-spellbook wild-shape-cast-block">
+          <span className="material-symbols-outlined">auto_fix_off</span>
+          <span>
+            Wild-shaped as <b>{player.getWildShapeName()}</b> — you cannot cast.
+            An animal form has no speech, so verbal components fail. The{' '}
+            <b>Natural Spell</b> feat removes this restriction.
+          </span>
+        </div>
+      )}
+
+      {page === 0 && <SpellSwapNote inst={inst} />}
 
       {levels.map(lvl => (
         <SpellLevelCard

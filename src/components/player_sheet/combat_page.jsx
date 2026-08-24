@@ -256,8 +256,12 @@ export default function CombatPage() {
   const flurry = player.getFlurryOfBlows?.() ?? { extraAttacks: 0, penalty: 0 };
   const flurryWeapons = equippedWeapons.filter((w) =>
     player.isFlurryWeapon?.({ weaponItem: w.weaponItem, isTwoHanded: w.isTwoHanded }) ?? false);
-  // With nothing equipped the monk is punching, which always qualifies.
-  const flurryUnarmed = flurry.extraAttacks > 0 && equippedWeapons.length === 0;
+  // A monk holding only monk weapons — or nothing — can still strike unarmed,
+  // so the punch line joins the weapon list rather than replacing it. The
+  // model owns the "does this whole set qualify" question.
+  const unarmedAvailable = player.canUseUnarmedStrike?.() ?? false;
+  const showsPunch = equippedWeapons.length === 0 || unarmedAvailable;
+  const flurryUnarmed = flurry.extraAttacks > 0 && unarmedAvailable;
 
   const speedInfo = player.getArmorSpeedInfo?.();
   const speedDisplay = speedInfo?.hasReduction
@@ -340,6 +344,7 @@ export default function CombatPage() {
 
   const bab_display = formatBaseAttackBonus(bab);
   const sneakAttackDice = player.getSneakAttackDice?.() ?? 0;
+  const damageReductions = player.getDamageReductions?.() ?? [];
 
   return (
     <>
@@ -396,9 +401,21 @@ export default function CombatPage() {
         {!collapsed.player && (
           <div className="sh-stack">
             <Bar value={hpRatio} variant={hpBarVariant} />
-            {condDeltas.maxHp ? (
-              <div className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
-                <Pill tone="warn" icon="warning">Conditions: {fmtDelta(condDeltas.maxHp)} max HP</Pill>
+            {(condDeltas.maxHp || damageReductions.length > 0) ? (
+              <div className="sh-row-h" style={{ gap: 'var(--space-2)', flexWrap: 'wrap' }}>
+                {condDeltas.maxHp ? (
+                  <Pill tone="warn" icon="warning">Conditions: {fmtDelta(condDeltas.maxHp)} max HP</Pill>
+                ) : null}
+                {/* Damage reduction belongs with the hit points it protects,
+                    and shows here only — never on the card of the feature that
+                    granted it. Sources are listed separately because DR does
+                    not stack: the best applies, or each applies on its own when
+                    the bypass types differ. */}
+                {damageReductions.map(({ amount, bypass, source }) => (
+                  <Pill key={`${source}-${amount}-${bypass}`} tone="success" icon="shield" title={`From ${source}`}>
+                    DR {amount}/{bypass}
+                  </Pill>
+                ))}
               </div>
             ) : null}
             {(() => {
@@ -586,18 +603,7 @@ export default function CombatPage() {
       >
         {!collapsed.combat && (
           <>
-          {equippedWeapons.length === 0 ? (
-            <div className="sh-stack">
-              <div className="sh-warn-strip"><Icon name="sports_mma" />No weapon equipped — defaulting to punch.</div>
-              <div className="sh-row-h" style={{ gap: 'var(--space-3)', justifyContent: 'space-between' }}>
-                <span className="sh-display">Punch</span>
-                <span className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
-                  <Pill tone={punchAtkAffected ? 'warn' : 'accent'}>{punchAttack >= 0 ? '+' : ''}{punchAttack}</Pill>
-                  <Pill tone={punchDmgAffected ? 'warn' : 'default'}>{punchDamage}</Pill>
-                </span>
-              </div>
-            </div>
-          ) : (
+          {equippedWeapons.length > 0 && (
             <div className="sh-stack" style={{ gap: 'var(--space-2)' }}>
               {equippedWeapons.map((w, idx) => {
                 const wd = { weaponItem: w.weaponItem, isTwoHanded: w.isTwoHanded, itemData: w.itemData };
@@ -625,6 +631,28 @@ export default function CombatPage() {
               })}
             </div>
           )}
+          {showsPunch && (
+            <div
+              className="sh-stack"
+              style={equippedWeapons.length === 0 ? undefined : {
+                gap: 'var(--space-1)',
+                borderTop: '0.0625rem solid var(--border-soft)',
+                paddingTop: 'var(--space-2)',
+                marginTop: 'var(--space-2)',
+              }}
+            >
+              {equippedWeapons.length === 0 && (
+                <div className="sh-warn-strip"><Icon name="sports_mma" />No weapon equipped — defaulting to punch.</div>
+              )}
+              <div className="sh-row-h sh-spread" style={{ gap: 'var(--space-3)' }}>
+                <span className="sh-display">Punch</span>
+                <span className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
+                  <Pill tone={punchAtkAffected ? 'warn' : 'accent'}>{punchAttack >= 0 ? '+' : ''}{punchAttack}</Pill>
+                  <Pill tone={punchDmgAffected ? 'warn' : 'default'}>{punchDamage}</Pill>
+                </span>
+              </div>
+            </div>
+          )}
           {(flurryUnarmed || flurryWeapons.length > 0) && (
             <div
               className="sh-stack"
@@ -648,14 +676,18 @@ export default function CombatPage() {
                   <Icon name="info" />
                 </span>
               </div>
-              {flurryUnarmed ? (
+              {/* A monk wielding monk weapons can still strike unarmed, so both
+                  lines can appear at once — a flurry may not mix the two, but
+                  the sheet shows what each one would swing at. */}
+              {flurryUnarmed && (
                 <div className="sh-row-h sh-spread sh-faint" style={{ gap: 'var(--space-3)' }}>
                   <span>Punch</span>
                   <Pill tone="ghost">
                     {punchAttack + flurry.penalty >= 0 ? '+' : ''}{punchAttack + flurry.penalty}
                   </Pill>
                 </div>
-              ) : flurryWeapons.map((w) => {
+              )}
+              {flurryWeapons.map((w) => {
                 const wd = { weaponItem: w.weaponItem, isTwoHanded: w.isTwoHanded, itemData: w };
                 const flurried = calculateWeaponAttackBonus(player, wd) + flurry.penalty;
                 return (
@@ -681,7 +713,6 @@ export default function CombatPage() {
               <span className="sh-display">Sneak attack</span>
               <span className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
                 <Pill tone="accent">+{sneakAttackDice}d6</Pill>
-                <Icon name="info" />
               </span>
             </div>
           )}

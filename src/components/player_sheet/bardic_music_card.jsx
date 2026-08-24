@@ -9,11 +9,12 @@ import {
 import '../../style/bardic_music.css';
 
 /**
- * Bardic music: the day's uses and the full performance list.
+ * Bardic music: the day's uses and the performances the bard's level has
+ * unlocked.
  *
- * Locked performances stay on the list with the prerequisite that gates them,
- * so a bard can see what the next rank of Perform buys. Which gate is unmet —
- * level, ranks, or both — is decided by the model.
+ * A performance still out of reach on Perform ranks stays on the list with the
+ * rank that gates it, since that is something the bard can act on. One gated
+ * only by level is filtered out by the model — it arrives on its own.
  */
 export default function BardicMusicCard() {
   const dispatch = useDispatch();
@@ -23,10 +24,12 @@ export default function BardicMusicCard() {
 
   const performances = player.getBardicPerformances();
   const knowledge = player.getBardicKnowledgeBonus();
+  const inspireCourage = player.getInspireCourageBonus();
 
   return (
     <TrackerCard
       title="Bardic music"
+      collapseKey="bardicMusic"
       used={player.getClassFeatureUsed('bardicMusic')}
       max={max}
       onUse={(delta) => dispatch(onUseClassFeature('bardicMusic', delta))}
@@ -36,31 +39,34 @@ export default function BardicMusicCard() {
         <Pill tone="accent" icon="menu_book">
           Bardic knowledge d20 {knowledge >= 0 ? '+' : ''}{knowledge}
         </Pill>
-        <Pill tone="accent" icon="campaign">
-          Inspire courage +{player.getInspireCourageBonus()}
-        </Pill>
       </div>
 
       <ul className="bardic-performances">
-        {performances.map((p) => (
-          <li
-            key={p.name}
-            className={p.available ? 'bardic-performance' : 'bardic-performance is-locked'}
-          >
-            <div className="bardic-performance-head">
-              <span className="bardic-performance-name">
-                {!p.available && <Icon name="lock" size={14} />}
-                {p.name}
-              </span>
-              <span className="bardic-performance-tags">
-                {p.saveDc != null && <Pill tone="accent">DC {p.saveDc}</Pill>}
-                {!p.meetsLevel && <Pill tone="warn">Level {p.level}</Pill>}
-                {!p.meetsRanks && <Pill tone="warn">{p.performRanks} Perform</Pill>}
-              </span>
-            </div>
-            <span className="sh-faint bardic-performance-summary">{p.summary}</span>
-          </li>
-        ))}
+        {performances.map((p) => {
+          /* Inspire courage is the one performance whose strength scales, so
+             its bonus rides in the row's own tag strip rather than as a
+             separate pill detached from the entry it describes. */
+          const isInspireCourage = /^inspire courage$/i.test(p.name);
+          return (
+            <li
+              key={p.name}
+              className={p.available ? 'bardic-performance' : 'bardic-performance is-locked'}
+            >
+              <div className="bardic-performance-head">
+                <span className="bardic-performance-name">
+                  {!p.available && <Icon name="lock" size={14} />}
+                  {p.name}
+                </span>
+                <span className="bardic-performance-tags">
+                  {isInspireCourage && <Pill tone="accent">+{inspireCourage}</Pill>}
+                  {p.saveDc != null && <Pill tone="accent">DC {p.saveDc}</Pill>}
+                  {!p.meetsRanks && <Pill tone="warn">{p.performRanks} Perform</Pill>}
+                </span>
+              </div>
+              <span className="sh-faint bardic-performance-summary">{p.summary}</span>
+            </li>
+          );
+        })}
       </ul>
     </TrackerCard>
   );

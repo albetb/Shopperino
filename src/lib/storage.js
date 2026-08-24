@@ -108,7 +108,15 @@ export function getPlayerSheetCardsCollapsed(app) {
   return out;
 }
 
-const COMBAT_PAGE_CARD_KEYS = ['player', 'combat', 'conditions', 'animalCompanion', 'familiar', 'specialMount', 'wildShape', 'elementalWildShape', 'items', 'carry', 'money'];
+/* Must stay in sync with the list of the same name in
+   store/slices/playerSheetSlice.js. */
+const COMBAT_PAGE_CARD_KEYS = [
+  'player', 'combat', 'conditions', 'items', 'carry', 'money',
+  'animalCompanion', 'familiar', 'specialMount', 'wildShape', 'elementalWildShape',
+  'rage', 'bardicMusic', 'turnUndead', 'domains', 'favoredEnemy', 'combatStyle',
+  'smiteEvil', 'layOnHands', 'removeDisease',
+  'monkBonusFeats', 'stunningFist', 'wholenessOfBody', 'rogueSpecialAbilities',
+];
 export function getCombatPageCardsCollapsed(app) {
   const raw = app?.pscombat && typeof app.pscombat === 'object' ? app.pscombat : {};
   const out = {};

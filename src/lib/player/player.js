@@ -253,9 +253,18 @@ class Player {
        { type, subtype?, bonus }; the bonus rises in steps of 2 when a later
        slot is spent raising an existing enemy rather than naming a new one. */
     this.favoredEnemies = [];
-    /* Ranger combat style: 'Archery' or 'Two-Weapon Fighting', chosen once at
-       2nd level and permanent thereafter. Null until chosen. */
+    /* Ranger combat style: 'Archery' or 'Two-Weapon Fighting'. The rules make
+       the choice permanent; the sheet lets it be cleared anyway, since a
+       misclick otherwise sticks to the character forever. */
     this.combatStyle = null;
+    /* Monk bonus feats, keyed by the level they are chosen at ('1', '2', '6').
+       One feat per level from a fixed two-option list — see class-features.md.
+       Charged to no feat budget and stored as a plain object of short keys. */
+    this.monkBonusFeats = {};
+    /* Rogue special abilities, keyed by the level they are chosen at ('10',
+       '13', '16', '19'). The value is an ability name, or the FEAT_INSTEAD
+       sentinel when the rogue takes a bonus feat in its place. */
+    this.rogueSpecialAbilities = {};
     /* Set when the character has broken their class's code or alignment
        requirement. Display only: the sheet says the features are lost until
        atonement, but every derived value stays as it was. */
@@ -434,6 +443,14 @@ class Player {
     if (typeof data.combatStyle === 'string' && data.combatStyle.trim() !== '') {
       this.combatStyle = data.combatStyle.trim();
     }
+    /* Both are level-keyed choice maps; a save written before they existed
+       simply has none, which reads as "nothing chosen yet". */
+    if (data.monkBonusFeats && typeof data.monkBonusFeats === 'object') {
+      this.monkBonusFeats = { ...data.monkBonusFeats };
+    }
+    if (data.rogueSpecialAbilities && typeof data.rogueSpecialAbilities === 'object') {
+      this.rogueSpecialAbilities = { ...data.rogueSpecialAbilities };
+    }
     if (data.exClass !== undefined) this.exClass = !!data.exClass;
 
     if (Array.isArray(data.favoredEnemies)) {
@@ -591,6 +608,8 @@ class Player {
         ? this.favoredEnemies.map((e) => ({ ...e }))
         : [],
       combatStyle: this.combatStyle || null,
+      monkBonusFeats: { ...(this.monkBonusFeats || {}) },
+      rogueSpecialAbilities: { ...(this.rogueSpecialAbilities || {}) },
       exClass: !!this.exClass,
       equipment: this.equipment && typeof this.equipment === 'object' ? { ...this.equipment } : {},
       inventory: Array.isArray(this.inventory) ? this.inventory.map((item) => ({ ...item })) : [],
@@ -1890,6 +1909,84 @@ class Player {
     return getProgressionValue(this.class, 'sneakAttackDice', this.getLevel(), 0);
   }
 
+  // —— Rogue special abilities ——
+
+  /**
+   * The levels at which the rogue picks a special ability, filtered to those
+   * already reached — 10th, then every third level. Empty for other classes.
+   */
+  getRogueSpecialAbilityLevels() {
+    const levels = getClassProgression(this.class).specialAbilityLevels;
+    if (!Array.isArray(levels)) return [];
+    const level = this.getLevel();
+    return levels.map(Number).filter((at) => Number.isFinite(at) && at <= level).sort((a, b) => a - b);
+  }
+
+  /**
+   * Every option the rogue may pick, the six named abilities plus the "a feat
+   * instead" entry the SRD offers alongside them.
+   */
+  getRogueSpecialAbilityOptions() {
+    const prog = getClassProgression(this.class);
+    const named = Array.isArray(prog.specialAbilities) ? [...prog.specialAbilities] : [];
+    if (named.length === 0) return [];
+    const featOption = prog.specialAbilityFeatOption;
+    return featOption ? [...named, String(featOption)] : named;
+  }
+
+  /** The rules text for one option, for the card to show under the choice. */
+  getRogueSpecialAbilityDescription(name) {
+    const map = getClassProgression(this.class).specialAbilityDescriptions;
+    return (map && map[name]) || '';
+  }
+
+  /** The ability chosen at one level, or '' while the choice is open. */
+  getRogueSpecialAbility(level) {
+    const chosen = this.rogueSpecialAbilities?.[String(level)];
+    return this.getRogueSpecialAbilityOptions().includes(chosen) ? chosen : '';
+  }
+
+  /**
+   * Choose (or clear, with '') the special ability for one level. The same
+   * ability may not be taken twice — picking one already held elsewhere is
+   * rejected — except the feat option, which can be repeated.
+   */
+  setRogueSpecialAbility(level, ability) {
+    if (!this.rogueSpecialAbilities || typeof this.rogueSpecialAbilities !== 'object') {
+      this.rogueSpecialAbilities = {};
+    }
+    const key = String(level);
+    if (!ability || !this.getRogueSpecialAbilityOptions().includes(ability)) {
+      delete this.rogueSpecialAbilities[key];
+      return;
+    }
+    const featOption = getClassProgression(this.class).specialAbilityFeatOption;
+    if (ability !== featOption) {
+      const takenElsewhere = this.getRogueSpecialAbilityLevels()
+        .some((at) => String(at) !== key && this.getRogueSpecialAbility(at) === ability);
+      if (takenElsewhere) return;
+    }
+    this.rogueSpecialAbilities[key] = ability;
+  }
+
+  /** The chosen special abilities so far, as `{ level, ability }`. */
+  getRogueSpecialAbilities() {
+    return this.getRogueSpecialAbilityLevels()
+      .map((level) => ({ level, ability: this.getRogueSpecialAbility(level) }))
+      .filter((entry) => entry.ability !== '');
+  }
+
+  /**
+   * Bonus feat slots earned by taking "a feat" in place of a special ability.
+   * They widen the general feat budget rather than forming a pool of their
+   * own — the SRD places no restriction on what the feat may be.
+   */
+  getRogueBonusFeatSlots() {
+    const featOption = getClassProgression(this.class).specialAbilityFeatOption;
+    if (!featOption) return 0;
+    return this.getRogueSpecialAbilities().filter((e) => e.ability === featOption).length;
+  }
+
   /**
    * Barbarian rages per day: 1 at 1st level and a further one every four
    * levels, to 6 at 20th. Zero for every other class.
@@ -1937,6 +2034,41 @@ class Player {
    */
   getDamageReduction() {
     return getProgressionValue(this.class, 'damageReduction', this.getLevel(), 0);
+  }
+
+  /**
+   * Every damage reduction currently in effect, as `{ amount, bypass, source }`.
+   *
+   * Two sources exist: the barbarian's class progression, and an assumed
+   * **elemental** form — a Large or bigger elemental carries DR 5/— or 10/—,
+   * and elemental wild shape is the one case where the form's special
+   * qualities transfer (magic.md, polymorph sub-rules). A normal animal or
+   * plant form grants nothing, which getWildShapeSpecialQualities already
+   * enforces by returning an empty list outside an elemental shape.
+   *
+   * DR from different sources does not stack in 3.5 — the best applies, or
+   * each applies separately when the bypass types differ. That is a table
+   * judgement, so every source is listed rather than silently merged.
+   */
+  getDamageReductions() {
+    const out = [];
+    const classDr = this.getDamageReduction();
+    if (classDr > 0) out.push({ amount: classDr, bypass: '—', source: this.class });
+
+    this.getWildShapeSpecialQualities().forEach((quality) => {
+      const match = String(quality).match(/damage reduction\s+(\d+)\s*\/\s*(\S[^,]*)/i);
+      if (!match) return;
+      const amount = Number(match[1]);
+      if (!amount) return;
+      const bypass = match[2].trim().replace(/[.\s]+$/, '');
+      out.push({
+        amount,
+        bypass: bypass === '-' ? '—' : bypass,
+        source: this.getWildShapeName() || 'form',
+      });
+    });
+
+    return out;
   }
 
   // —— Rage (active stance) ——
@@ -2483,20 +2615,24 @@ class Player {
     const level = this.getLevel();
     const ranks = this.getSkillRanks('Perform');
     const saveDc = this.getPerformanceSaveDc();
-    return performances.map((p) => {
-      const meetsLevel = level >= (Number(p.level) || 1);
-      const meetsRanks = ranks >= (Number(p.performRanks) || 0);
-      return {
-        name: p.name,
-        level: Number(p.level) || 1,
-        performRanks: Number(p.performRanks) || 0,
-        summary: p.summary || '',
-        saveDc: p.hasSave ? saveDc : null,
-        meetsLevel,
-        meetsRanks,
-        available: meetsLevel && meetsRanks,
-      };
-    });
+    return performances
+      /* A performance the bard is too low-level for is not a goal, just noise
+         — it arrives on its own. One gated on Perform ranks *is* actionable,
+         so those stay on the list with the rank they need. */
+      .filter((p) => level >= (Number(p.level) || 1))
+      .map((p) => {
+        const meetsRanks = ranks >= (Number(p.performRanks) || 0);
+        return {
+          name: p.name,
+          level: Number(p.level) || 1,
+          performRanks: Number(p.performRanks) || 0,
+          summary: p.summary || '',
+          saveDc: p.hasSave ? saveDc : null,
+          meetsLevel: true,
+          meetsRanks,
+          available: meetsRanks,
+        };
+      });
   }
 
   // —— Monk ——
@@ -2504,8 +2640,12 @@ class Player {
   /**
    * Stunning fist attempts per day: a number equal to the monk's level.
    * (The `1 per 4 levels` rate is what a non-monk gets from the feat.)
+   *
+   * Zero unless the feat is actually held — for a monk it is one of two
+   * options at 1st level, not something the class hands out.
    */
   getStunningFistMax() {
+    if (!this.hasStunningFist()) return 0;
     return getProgressionValue(this.class, 'stunningFistUsesPerDay', this.getLevel(), 0);
   }
 
@@ -2566,6 +2706,99 @@ class Player {
   /** Whether the character has flurry of blows at all. */
   hasFlurryOfBlows() {
     return this.getFlurryOfBlows().extraAttacks > 0;
+  }
+
+  /**
+   * Whether the unarmed strike is available right now — the gate on showing
+   * the punch and flurry lines in the attacks card.
+   *
+   * A whole weapon set must qualify: every occupied hand slot in the active
+   * set holds a monk weapon, or the set is empty. A monk with a longsword in
+   * one hand is not flurrying, however free the other hand is.
+   *
+   * Only a class with monk weapons has a set to qualify — for everyone else
+   * the punch is simply the fallback when nothing at all is equipped, which
+   * the attacks card handles on its own.
+   */
+  canUseUnarmedStrike() {
+    const prog = getClassProgression(this.class);
+    if (!Array.isArray(prog.monkWeapons)) return false;
+    const sets = [['lh1', 'rh1'], ['lh2', 'rh2']]
+      .map((slots) => slots
+        .map((slot) => this.equipment?.[slot])
+        .filter((entry) => entry?.link));
+    /* An empty set is only a qualifying one when *nothing* is held: an unused
+       second row is the default for most characters and must not rescue a set
+       that holds a longsword. */
+    const inUse = sets.filter((held) => held.length > 0);
+    if (inUse.length === 0) return true;
+    return inUse.some((held) => held.every((entry) => {
+      const rawItem = getItemByRef(entry.baseLink || entry.link)?.raw;
+      if (!rawItem) return false;
+      return this.isFlurryWeapon({ weaponItem: rawItem, isTwoHanded: entry.twoHanded === true });
+    }));
+  }
+
+  // —— Monk bonus feats ——
+
+  /**
+   * The levels at which the monk picks a bonus feat, filtered to those already
+   * reached. Empty for every other class.
+   */
+  getMonkBonusFeatLevels() {
+    const options = getClassProgression(this.class).bonusFeatOptions;
+    if (!options || typeof options !== 'object') return [];
+    const level = this.getLevel();
+    return Object.keys(options)
+      .map(Number)
+      .filter((at) => Number.isFinite(at) && at <= level)
+      .sort((a, b) => a - b);
+  }
+
+  /** The two feats offered at a given bonus-feat level. */
+  getMonkBonusFeatOptions(level) {
+    const options = getClassProgression(this.class).bonusFeatOptions?.[String(level)];
+    return Array.isArray(options) ? [...options] : [];
+  }
+
+  /** The feat chosen at a bonus-feat level, or '' if the choice is open. */
+  getMonkBonusFeat(level) {
+    const chosen = this.monkBonusFeats?.[String(level)];
+    return this.getMonkBonusFeatOptions(level).includes(chosen) ? chosen : '';
+  }
+
+  /**
+   * Choose (or clear, with '') the bonus feat for one level. The options are
+   * mutually exclusive, so setting one replaces whatever was there.
+   */
+  setMonkBonusFeat(level, feat) {
+    if (!this.monkBonusFeats || typeof this.monkBonusFeats !== 'object') this.monkBonusFeats = {};
+    const key = String(level);
+    if (!feat || !this.getMonkBonusFeatOptions(level).includes(feat)) {
+      delete this.monkBonusFeats[key];
+      return;
+    }
+    this.monkBonusFeats[key] = feat;
+  }
+
+  /**
+   * Bonus feats the class grants by choice, as `{ level, feat }` — the monk's
+   * only. Like the ranger's combat-style feats these are charged to no budget
+   * and so are deliberately not part of getFeats().
+   */
+  getChosenClassBonusFeats() {
+    return this.getMonkBonusFeatLevels()
+      .map((level) => ({ level, feat: this.getMonkBonusFeat(level) }))
+      .filter((entry) => entry.feat !== '');
+  }
+
+  /**
+   * Whether the character has Stunning Fist from any source — chosen as a monk
+   * bonus feat, or simply taken as a normal feat by anyone who qualifies.
+   */
+  hasStunningFist() {
+    if (this.getChosenClassBonusFeats().some((e) => e.feat === 'Stunning Fist')) return true;
+    return this.getFeats().some((f) => getBaseFeatName(f).toLowerCase() === 'stunning fist');
   }
 
   /**
@@ -2920,11 +3153,13 @@ class Player {
   }
 
   /**
-   * Max feat points = 1 + (1 if Human) + floor(level / 3).
+   * Max feat points = 1 + (1 if Human) + floor(level / 3), plus any slot a
+   * rogue bought by taking a feat in place of a special ability.
    */
   getFeatPointsMax() {
     const level = this.getLevel();
-    return 1 + (this.race === 'Human' ? 1 : 0) + Math.floor(level / 3);
+    return 1 + (this.race === 'Human' ? 1 : 0) + Math.floor(level / 3)
+      + this.getRogueBonusFeatSlots();
   }
 
   getFeatPointsUsed() {
@@ -2975,29 +3210,38 @@ class Player {
   }
 
   /**
-   * Selected feats that qualify for the class bonus slots. Feats taken with a
-   * choice ("Weapon focus (longsword)") match on their base name.
-   *
-   * Uncapped: a fighter may hold more combat feats than they have slots for,
-   * and the UI flags the overflow rather than blocking it.
+   * Whether one selected feat qualifies for this class's bonus slots.
+   * Feats taken with a choice ("Weapon focus (longsword)") match on their
+   * base name.
    */
-  getClassBonusFeatsUsed() {
+  isClassBonusFeat(name, qualifying = this.getClassBonusFeatNames()) {
+    if (qualifying.size === 0) return false;
+    const stored = String(name).trim().toLowerCase();
+    // Exact first: a canonical name may itself carry a parenthetical
+    // ("Armor proficiency (heavy)") that must not be stripped away.
+    return qualifying.has(stored) || qualifying.has(getBaseFeatName(name).toLowerCase());
+  }
+
+  /** How many selected feats *could* fill the bonus slots, ignoring capacity. */
+  getQualifyingBonusFeats() {
     const qualifying = this.getClassBonusFeatNames();
     if (qualifying.size === 0) return 0;
-    return this.getFeats()
-      .filter((name) => {
-        const stored = String(name).trim().toLowerCase();
-        // Exact first: a canonical name may itself carry a parenthetical
-        // ("Armor proficiency (heavy)") that must not be stripped away.
-        return qualifying.has(stored) || qualifying.has(getBaseFeatName(name).toLowerCase());
-      })
-      .length;
+    return this.getFeats().filter((name) => this.isClassBonusFeat(name, qualifying)).length;
   }
 
   /**
-   * Feats charged against the general budget: everything that does not
-   * qualify for the class bonus slots. For a class without bonus slots this
-   * is simply the whole selection.
+   * Bonus slots actually filled — the qualifying feats, capped at the number
+   * of slots the class has granted. A 1st-level fighter with two combat feats
+   * spends one on the bonus slot; the second spills into the general budget,
+   * exactly as it would at the table.
+   */
+  getClassBonusFeatsUsed() {
+    return Math.min(this.getQualifyingBonusFeats(), this.getClassBonusFeatSlotsMax());
+  }
+
+  /**
+   * Feats charged against the general budget: everything the bonus slots could
+   * not absorb. For a class without bonus slots this is the whole selection.
    */
   getGeneralFeatsUsed() {
     return this.getFeatPointsUsed() - this.getClassBonusFeatsUsed();

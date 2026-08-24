@@ -9,6 +9,13 @@ function monk(level, wis = 10) {
   return p;
 }
 
+/** A monk who took Stunning Fist as their 1st-level bonus feat. */
+function stunningMonk(level, wis = 10) {
+  const p = monk(level, wis);
+  p.setMonkBonusFeat(1, 'Stunning Fist');
+  return p;
+}
+
 function other(cls, level, wis = 18) {
   const p = new Player();
   p.setRace('Human');
@@ -20,22 +27,40 @@ function other(cls, level, wis = 18) {
 
 describe('stunning fist', () => {
   test('attempts per day equal the monk level', () => {
-    expect(monk(1).getStunningFistMax()).toBe(1);
-    expect(monk(4).getStunningFistMax()).toBe(4);
-    expect(monk(7).getStunningFistMax()).toBe(7);
-    expect(monk(11).getStunningFistMax()).toBe(11);
-    expect(monk(20).getStunningFistMax()).toBe(20);
+    expect(stunningMonk(1).getStunningFistMax()).toBe(1);
+    expect(stunningMonk(4).getStunningFistMax()).toBe(4);
+    expect(stunningMonk(7).getStunningFistMax()).toBe(7);
+    expect(stunningMonk(11).getStunningFistMax()).toBe(11);
+    expect(stunningMonk(20).getStunningFistMax()).toBe(20);
   });
 
   test('the save DC is 10 + half monk level + Wisdom modifier', () => {
-    expect(monk(1, 14).getStunningFistDc()).toBe(12);   // 10 + 0 + 2
-    expect(monk(4, 14).getStunningFistDc()).toBe(14);   // 10 + 2 + 2
-    expect(monk(11, 16).getStunningFistDc()).toBe(18);  // 10 + 5 + 3
-    expect(monk(20, 20).getStunningFistDc()).toBe(25);  // 10 + 10 + 5
+    expect(stunningMonk(1, 14).getStunningFistDc()).toBe(12);   // 10 + 0 + 2
+    expect(stunningMonk(4, 14).getStunningFistDc()).toBe(14);   // 10 + 2 + 2
+    expect(stunningMonk(11, 16).getStunningFistDc()).toBe(18);  // 10 + 5 + 3
+    expect(stunningMonk(20, 20).getStunningFistDc()).toBe(25);  // 10 + 10 + 5
   });
 
   test('a poor Wisdom lowers the DC', () => {
-    expect(monk(20, 8).getStunningFistDc()).toBe(19);   // 10 + 10 - 1
+    expect(stunningMonk(20, 8).getStunningFistDc()).toBe(19);   // 10 + 10 - 1
+  });
+
+  test('a monk who never took the feat has no attempts', () => {
+    // Stunning Fist is one of two options at 1st level, not an automatic
+    // grant — a monk who took Improved Grapple instead has none.
+    expect(monk(20, 20).getStunningFistMax()).toBe(0);
+    expect(monk(20, 20).getStunningFistDc()).toBe(0);
+
+    const grappler = monk(20, 20);
+    grappler.setMonkBonusFeat(1, 'Improved Grapple');
+    expect(grappler.getStunningFistMax()).toBe(0);
+  });
+
+  test('taking Stunning Fist as an ordinary feat also grants the attempts', () => {
+    const p = monk(6, 14);
+    p.addFeat('Stunning Fist');
+    expect(p.hasStunningFist()).toBe(true);
+    expect(p.getStunningFistMax()).toBe(6);
   });
 
   test('no other class gets it from the class', () => {

@@ -31,6 +31,7 @@ export default function TurnUndeadCard() {
     <TrackerCard
       title={`${verb} undead`}
       eyebrow={`Turning level ${effectiveLevel}`}
+      collapseKey="turnUndead"
       used={player.getClassFeatureUsed('turnUndead')}
       max={player.getTurnUndeadAttemptsMax()}
       onUse={(delta) => dispatch(onUseClassFeature('turnUndead', delta))}

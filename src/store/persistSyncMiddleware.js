@@ -109,7 +109,14 @@ export function persistSyncMiddleware(store) {
         nextPersist = { ...nextPersist, pscards: state.playerSheet.cardCollapsed };
         break;
       case 'playerSheet/setCombatPageCardCollapsed':
-        nextPersist = { ...nextPersist, pscombat: state.playerSheet.combatPageCardsCollapsed };
+        /* Only the collapsed ones are worth bytes — every card key defaults to
+           expanded, so a `false` round-trips identically to an absent key. */
+        nextPersist = {
+          ...nextPersist,
+          pscombat: Object.fromEntries(
+            Object.entries(state.playerSheet.combatPageCardsCollapsed).filter(([, v]) => v)
+          ),
+        };
         break;
       default:
         return result;

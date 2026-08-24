@@ -397,6 +397,10 @@ export const onPlayerRest = () => (dispatch, getState) => {
   if (player) {
     player.resetGnomeSpellUses();
     player.resetClassFeatureUses();
+    // A night's natural healing: 1 HP per character level, never past the
+    // maximum (combat.md). healAsIfRested floors damage at 0, which is the
+    // same cap expressed the other way round.
+    player.healAsIfRested();
   }
   withPlayerSpellbook(getState, (s) => s.refreshSpell());
   const playerAfter = getState().playerSheet?.player;
@@ -420,6 +424,40 @@ export const onResetClassFeature = (key) => (dispatch, getState) => {
   const player = getState().playerSheet?.player;
   if (!player) return;
   player.setClassFeatureUses(key, 0);
+  persistPlayer(dispatch, getState, player);
+};
+
+/**
+ * Wholeness of body: spend `amount` points from the pool and heal the monk by
+ * the same amount in one step. Refuses at full health, since the points would
+ * be thrown away — the card disables the button there too.
+ */
+export const onUseWholenessOfBody = (amount = 1) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player) return;
+  const maxHp = player.getMaxLife?.() ?? 0;
+  const currentHp = player.getCurrentHp?.() ?? 0;
+  const missing = Math.max(0, maxHp - currentHp);
+  const spend = Math.min(Math.max(1, Math.floor(Number(amount) || 1)), missing);
+  if (spend <= 0) return;
+  player.useClassFeature('wholenessOfBody', spend);
+  player.setDamage?.(Math.max(0, (player.getDamage?.() ?? 0) - spend));
+  persistPlayer(dispatch, getState, player);
+};
+
+/** Choose or clear the monk bonus feat granted at one level. */
+export const onSetMonkBonusFeat = (level, feat) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player) return;
+  player.setMonkBonusFeat(level, feat);
+  persistPlayer(dispatch, getState, player);
+};
+
+/** Choose or clear the rogue special ability granted at one level. */
+export const onSetRogueSpecialAbility = (level, ability) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player) return;
+  player.setRogueSpecialAbility(level, ability);
   persistPlayer(dispatch, getState, player);
 };
 

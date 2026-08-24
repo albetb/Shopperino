@@ -107,23 +107,15 @@ function ShapeCard({ pool }) {
   const toggleCollapsed = () =>
     dispatch(setCombatPageCardCollapsed({ key: pool.key, value: !collapsed }));
 
+  /* The title carries the collapse chevron only. Restoring the day's uses is
+     an action on the counter, so it sits with the counter in the body. */
   const cardAction = (
-    <span className="sh-row-h" style={{ gap: 'var(--space-1)' }}>
-      <IconButton
-        icon="restart_alt"
-        ghost size="sm"
-        onClick={() => dispatch(onResetWildShapeUses(pool.usesKey))}
-        disabled={used === 0}
-        aria-label={`Restore ${pool.label} uses`}
-        title="Restore uses to maximum"
-      />
-      <IconButton
-        icon={collapsed ? 'expand_more' : 'expand_less'}
-        ghost size="sm"
-        onClick={toggleCollapsed}
-        aria-label={`Toggle ${pool.label}`}
-      />
-    </span>
+    <IconButton
+      icon={collapsed ? 'expand_more' : 'expand_less'}
+      ghost size="sm"
+      onClick={toggleCollapsed}
+      aria-label={`Toggle ${pool.label}`}
+    />
   );
 
   return (
@@ -135,6 +127,18 @@ function ShapeCard({ pool }) {
     >
       {!collapsed && (
         <div className="wild-shape-card sh-stack">
+          <div className="sh-row-h sh-spread" style={{ gap: 'var(--space-2)' }}>
+            <Filigree>{remaining} of {max} left today</Filigree>
+            <IconButton
+              icon="restart_alt"
+              ghost size="sm"
+              onClick={() => dispatch(onResetWildShapeUses(pool.usesKey))}
+              disabled={used === 0}
+              aria-label={`Restore ${pool.label} uses`}
+              title="Restore uses to maximum"
+            />
+          </div>
+
           {overCap && (
             <div className="sh-warn-strip">
               <Icon name="warning" />
@@ -204,8 +208,7 @@ function ShapeCard({ pool }) {
               )}
 
               <div className="sh-faint" style={{ fontSize: 'var(--font-size-xs)' }}>
-                {pool.describeLimits(player)}. The form must be one you are
-                familiar with — that part is the table's call.
+                {pool.describeLimits(player)}.
               </div>
             </>
           )}

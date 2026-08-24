@@ -31,6 +31,7 @@ export default function FeatsPage() {
   const [isSelection, setIsSelection] = useState(false);
   const [filterPrereqs, setFilterPrereqs] = useState(false);
   const [filterSuggested, setFilterSuggested] = useState(false);
+  const [filterBonusPool, setFilterBonusPool] = useState(false);
   const [query, setQuery] = useState('');
   const [popoverState, setPopoverState] = useState(null);
 
@@ -54,9 +55,18 @@ export default function FeatsPage() {
   const bonusUsed = player?.getClassBonusFeatsUsed?.() ?? 0;
   const bonusLabel = player?.getClassBonusFeatLabel?.() ?? 'bonus';
   const generalUsed = player?.getGeneralFeatsUsed?.() ?? count;
-  // Class-granted feats (the wizard's Scribe Scroll) cost nothing from either
-  // budget, so they are listed apart and cannot be removed.
-  const grantedFeats = useMemo(() => player?.getGrantedFeats?.() ?? [], [player]);
+  // Feats the class hands over rather than sells: the wizard's Scribe Scroll,
+  // the ranger's combat-style feats, and the monk's chosen bonus feats. All
+  // cost nothing from either budget, so they are listed apart and cannot be
+  // removed here — the ones that are chosen are chosen on their class card.
+  const grantedFeats = useMemo(() => {
+    const automatic = player?.getGrantedFeats?.() ?? [];
+    const styleFeats = player?.getCombatStyleFeats?.() ?? [];
+    const chosenBonus = (player?.getChosenClassBonusFeats?.() ?? [])
+      .map(({ level, feat }) => ({ level, feat }));
+    return [...automatic, ...styleFeats, ...chosenBonus]
+      .sort((a, b) => a.level - b.level);
+  }, [player]);
   const grantedNames = useMemo(
     () => new Set(grantedFeats.map(g => g.feat.toLowerCase())),
     [grantedFeats]
@@ -87,6 +97,7 @@ export default function FeatsPage() {
         const isRepeatable = REPEATABLE_NO_CHOICE.includes(baseName) || REPEATABLE_WITH_CHOICE[baseName];
         if (!isRepeatable && normalized.has(baseName.toLowerCase())) return false;
         if (filterPrereqs && !meetsPrerequisites(f, player)) return false;
+        if (filterBonusPool && !(player?.isClassBonusFeat?.(f.Name) ?? false)) return false;
         if (filterSuggested && playerClass) {
           const sc = Array.isArray(f.suggestedClass) ? f.suggestedClass : [];
           if (!sc.includes(playerClass)) return false;
@@ -95,7 +106,7 @@ export default function FeatsPage() {
         return true;
       })
       .sort((a, b) => (a.Name || '').localeCompare(b.Name || ''));
-  }, [featsData, playerFeats, grantedNames, filterPrereqs, filterSuggested, playerClass, player, query]);
+  }, [featsData, playerFeats, grantedNames, filterPrereqs, filterBonusPool, filterSuggested, playerClass, player, query]);
 
   const handleAddFeat = (featName, ev) => {
     const baseName = getBaseFeatName(featName);
@@ -247,6 +258,9 @@ export default function FeatsPage() {
         open={isSelection}
         onClose={() => { setIsSelection(false); setQuery(''); }}
         title="Choose a feat"
+        /* Fixed height: the list is filtered as you type, and a sheet that
+           shrinks with it drags the search box down under the keyboard. */
+        fixedHeight
         eyebrow={`${availableFeats.length} available`}
         subheader={
           <div className="sh-stack" style={{ gap: 'var(--space-2)' }}>
@@ -267,6 +281,20 @@ export default function FeatsPage() {
               >
                 Prerequisites met
               </button>
+              {/* Only a class that runs a second budget can filter to it — the
+                  fighter's combat feats, the wizard's metamagic and item
+                  creation. `bonusLabel` names the pool, so the chip reads
+                  correctly for each without a per-class branch here. */}
+              {hasBonusPool && (
+                <button
+                  type="button"
+                  className={['sh-chip', filterBonusPool && 'is-on'].filter(Boolean).join(' ')}
+                  aria-pressed={filterBonusPool}
+                  onClick={() => setFilterBonusPool(v => !v)}
+                >
+                  {bonusLabel.charAt(0).toUpperCase() + bonusLabel.slice(1)} feats
+                </button>
+              )}
               {playerClass && (
                 <button
                   type="button"

@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 import parse from 'html-react-parser';
 import Card from '../common/Card';
 import Pill from '../common/Pill';
+import useCardCollapse from './hooks/useCardCollapse';
 import { loadFile } from '../../lib/loadFile';
 import '../../style/domains_card.css';
 
@@ -15,6 +16,7 @@ import '../../style/domains_card.css';
  */
 export default function DomainsCard() {
   const player = useSelector((state) => state.playerSheet?.player);
+  const [collapsed, collapseToggle] = useCardCollapse('domains', 'domain powers');
   if (player?.getClass?.() !== 'Cleric') return null;
 
   const powers = loadFile('tables')?.Domains ?? {};
@@ -24,7 +26,13 @@ export default function DomainsCard() {
   ];
 
   return (
-    <Card title="Domain powers" eyebrow="Granted abilities">
+    <Card
+      title="Domain powers"
+      className="sh-card--head-spread"
+      eyebrow="Granted abilities"
+      action={collapseToggle}
+    >
+      {!collapsed && (
       <div className="sh-stack domains-card">
         {slots.map(({ label, name }) => (
           <div key={label} className="domains-card-slot">
@@ -46,6 +54,7 @@ export default function DomainsCard() {
           </div>
         ))}
       </div>
+      )}
     </Card>
   );
 }

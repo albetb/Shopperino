@@ -502,6 +502,13 @@
   animation: sh-slide-up var(--t-slow) var(--ease);
 }
 
+/* Pinned to full height rather than shrinking to fit. A sheet whose body is
+   filtered live (the feat picker) would otherwise shrink as the list narrows,
+   sliding its own search box down under a phone keyboard mid-typing. */
+.sh-sheet--fixed {
+  height: 85vh;
+}
+
 /* The handle, head and optional subheader stay fixed; only the body scrolls. */
 .sh-sheet > .handle,
 .sh-sheet-head,

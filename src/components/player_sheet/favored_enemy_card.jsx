@@ -4,6 +4,7 @@ import Card from '../common/Card';
 import Pill from '../common/Pill';
 import Button from '../common/Button';
 import IconButton from '../common/IconButton';
+import useCardCollapse from './hooks/useCardCollapse';
 import {
   onAddFavoredEnemy,
   onRaiseFavoredEnemy,
@@ -26,6 +27,7 @@ export default function FavoredEnemyCard() {
   const player = useSelector((state) => state.playerSheet?.player);
   const [type, setType] = useState('');
   const [subtype, setSubtype] = useState('');
+  const [collapsed, collapseToggle] = useCardCollapse('favoredEnemy', 'favored enemies');
 
   if (!player?.getFavoredEnemySlotsMax?.()) return null;
 
@@ -52,8 +54,11 @@ export default function FavoredEnemyCard() {
   return (
     <Card
       title="Favored enemies"
+      className="sh-card--head-spread"
       eyebrow={`${used} of ${max} slots`}
+      action={collapseToggle}
     >
+      {!collapsed && (
       <div className="sh-stack favored-enemy">
         {overCap && (
           <Pill tone="warn" icon="warning">
@@ -139,6 +144,7 @@ export default function FavoredEnemyCard() {
           against that enemy, and to weapon damage against it.
         </span>
       </div>
+      )}
     </Card>
   );
 }

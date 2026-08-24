@@ -3,8 +3,15 @@ import { createSlice } from '@reduxjs/toolkit';
 const PLAYER_SHEET_CARD_KEYS = ['identity', 'abilityScores', 'Combat', 'Spells', 'Character', 'Notes'];
 
 /* Collapsible cards on the combat / inventory pages. Must stay in sync with
-   COMBAT_PAGE_CARD_KEYS in lib/storage.js (the persistence read filter). */
-const COMBAT_PAGE_CARD_KEYS = ['player', 'combat', 'conditions', 'animalCompanion', 'familiar', 'specialMount', 'wildShape', 'elementalWildShape', 'items', 'carry', 'money'];
+   COMBAT_PAGE_CARD_KEYS in lib/storage.js (the persistence read filter).
+   Every class-feature card collapses too, so each one owns a key here. */
+const COMBAT_PAGE_CARD_KEYS = [
+  'player', 'combat', 'conditions', 'items', 'carry', 'money',
+  'animalCompanion', 'familiar', 'specialMount', 'wildShape', 'elementalWildShape',
+  'rage', 'bardicMusic', 'turnUndead', 'domains', 'favoredEnemy', 'combatStyle',
+  'smiteEvil', 'layOnHands', 'removeDisease',
+  'monkBonusFeats', 'stunningFist', 'wholenessOfBody', 'rogueSpecialAbilities',
+];
 
 function defaultCardCollapsed() {
   return Object.fromEntries(PLAYER_SHEET_CARD_KEYS.map(k => [k, false]));
@@ -18,7 +25,7 @@ const initialState = {
   isPlayerSheetSidebarCollapsed: false,
   mainView: 'none', // 'none' | 'race' | 'class' | 'note'
   cardCollapsed: defaultCardCollapsed(),
-  combatPageCardsCollapsed: { player: false, combat: false, conditions: false, animalCompanion: false, familiar: false, specialMount: false, wildShape: false, elementalWildShape: false, items: false, carry: false, money: false },
+  combatPageCardsCollapsed: Object.fromEntries(COMBAT_PAGE_CARD_KEYS.map(k => [k, false])),
   playerSpellbookPage: 0,
   playerSpellbookLevelCollapsed: [false, false, false, false, false, false, false, false, false, false],
   playerSpellbookClassDescCollapsed: true,

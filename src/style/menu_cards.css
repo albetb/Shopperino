@@ -208,16 +208,28 @@
   justify-content: space-around;
 }
 
+/* Page buttons (Learn / Prepare / Spellbook). Each carries a min-width from
+   its size class, and three of them overflow the row — the wizard is the only
+   class that shows all three. Letting them share the row equally keeps the
+   right edge aligned with the dropdowns above instead of spilling past them. */
 .buttons-row {
-  justify-content: flex-start;
-  gap: 0.4rem;
   display: flex;
-  justify-content: space-around;
+  gap: 0.4rem;
+  justify-content: space-between;
 }
 
+.buttons-row > .modern-button {
+  flex: 1 1 0;
+  min-width: 0 !important;
+  width: auto !important;
+}
+
+/* The card head shares the 92% width of every .card-side-div below it, so the
+   collapse chevron's right edge lines up with the controls in the body rather
+   than sitting 7% further out. */
 .card-expand-div {
   justify-content: space-between;
-  width: 99%;
+  width: 92%;
 }
 
 .rest-box-full {

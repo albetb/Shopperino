@@ -26,12 +26,12 @@ export default function RageCard() {
   const tier = player.getRageTier();
   const raging = player.isRaging();
   const bonuses = player.getRageTierBonuses();
-  const damageReduction = player.getDamageReduction();
 
   return (
     <TrackerCard
       title="Rage"
       eyebrow={tier === 'rage' ? undefined : tier}
+      collapseKey="rage"
       used={player.getClassFeatureUsed('rage')}
       max={player.getRageUsesMax()}
       onUse={(delta) => dispatch(onUseClassFeature('rage', delta))}
@@ -51,11 +51,8 @@ export default function RageCard() {
         <Pill tone={raging ? 'accent' : 'default'}>
           {player.getRageDuration()} rounds
         </Pill>
-        {damageReduction > 0 && (
-          <Pill tone="success" icon="shield">
-            DR {damageReduction}/—
-          </Pill>
-        )}
+        {/* Damage reduction is not a rage benefit and does not belong here —
+            it shows once, on the hit points card, alongside the HP it protects. */}
       </div>
 
       <div className="tracker-card-row tracker-card-meta">

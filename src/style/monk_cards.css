@@ -1,0 +1,29 @@
+/* Monk bonus feat selection (monk_cards.jsx). Sizing in rem per CLAUDE.md. */
+
+.monk-bonus-feats {
+  gap: var(--space-3);
+}
+
+.monk-bonus-level {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.monk-bonus-level + .monk-bonus-level {
+  border-top: 0.0625rem solid var(--border-soft);
+  padding-top: var(--space-2);
+}
+
+.monk-bonus-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  min-height: 2rem;
+}
+
+.monk-bonus-option-name {
+  font-family: var(--font-display);
+  font-size: var(--font-size-md);
+}

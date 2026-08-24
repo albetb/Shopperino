@@ -44,10 +44,17 @@ describe('class feature card registry', () => {
       .toEqual(['smiteEvil', 'layOnHands', 'turnUndead', 'specialMount', 'removeDisease']);
   });
 
-  test('monks get stunning fist at once and wholeness of body from 7th', () => {
-    expect(keysFor('Monk', 1)).toEqual(['stunningFist']);
-    expect(keysFor('Monk', 6)).toEqual(['stunningFist']);
-    expect(keysFor('Monk', 7)).toEqual(['stunningFist', 'wholenessOfBody']);
+  test('monks pick bonus feats from the start and gain wholeness of body at 7th', () => {
+    expect(keysFor('Monk', 1)).toEqual(['monkBonusFeats', 'stunningFist']);
+    expect(keysFor('Monk', 6)).toEqual(['monkBonusFeats', 'stunningFist']);
+    expect(keysFor('Monk', 7)).toEqual(['monkBonusFeats', 'stunningFist', 'wholenessOfBody']);
+  });
+
+  test('rogues get a special-ability card only from 10th', () => {
+    expect(keysFor('Rogue', 1)).toEqual([]);
+    expect(keysFor('Rogue', 9)).toEqual([]);
+    expect(keysFor('Rogue', 10)).toEqual(['rogueSpecialAbilities']);
+    expect(keysFor('Rogue', 20)).toEqual(['rogueSpecialAbilities']);
   });
 
   test('bards get bardic music at any level', () => {
@@ -56,7 +63,7 @@ describe('class feature card registry', () => {
   });
 
   test('every registered entry carries a renderable component', () => {
-    ['Barbarian', 'Bard', 'Cleric', 'Druid', 'Monk', 'Paladin', 'Ranger', 'Wizard', 'Sorcerer'].forEach((cls) => {
+    ['Barbarian', 'Bard', 'Cleric', 'Druid', 'Monk', 'Paladin', 'Ranger', 'Rogue', 'Wizard', 'Sorcerer'].forEach((cls) => {
       getClassFeatureCards(cls, 20).forEach((entry) => {
         expect(typeof entry.Component).toBe('function');
         expect(typeof entry.key).toBe('string');
@@ -65,9 +72,9 @@ describe('class feature card registry', () => {
   });
 
   test('classes with no registered cards render nothing', () => {
-    ['Fighter', 'Rogue'].forEach((cls) => {
-      expect(getClassFeatureCards(cls, 20)).toEqual([]);
-    });
+    // The fighter's whole feature set is bonus feats, which live in the
+    // Feats tab rather than on a card of their own.
+    expect(getClassFeatureCards('Fighter', 20)).toEqual([]);
   });
 
   test('unknown classes and missing levels are handled without throwing', () => {

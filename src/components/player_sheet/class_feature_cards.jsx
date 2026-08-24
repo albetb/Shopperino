@@ -4,7 +4,8 @@ import FamiliarCard from './familiar_card';
 import RageCard from './rage_card';
 import TurnUndeadCard from './turn_undead_card';
 import { SmiteEvilCard, LayOnHandsCard, RemoveDiseaseCard } from './paladin_cards';
-import { StunningFistCard, WholenessOfBodyCard } from './monk_cards';
+import { MonkBonusFeatsCard, StunningFistCard, WholenessOfBodyCard } from './monk_cards';
+import RogueSpecialAbilitiesCard from './rogue_cards';
 import BardicMusicCard from './bardic_music_card';
 import FavoredEnemyCard from './favored_enemy_card';
 import CombatStyleCard from './combat_style_card';
@@ -40,6 +41,7 @@ const CLASS_FEATURE_CARDS = {
     { key: 'animalCompanion', Component: AnimalCompanionCard },
   ],
   Monk: [
+    { key: 'monkBonusFeats', Component: MonkBonusFeatsCard },
     { key: 'stunningFist', Component: StunningFistCard },
     { key: 'wholenessOfBody', Component: WholenessOfBodyCard, minLevel: 7 },
   ],
@@ -49,6 +51,9 @@ const CLASS_FEATURE_CARDS = {
     { key: 'turnUndead', Component: TurnUndeadCard, minLevel: 4 },
     { key: 'specialMount', Component: SpecialMountCard, minLevel: 5 },
     { key: 'removeDisease', Component: RemoveDiseaseCard, minLevel: 6 },
+  ],
+  Rogue: [
+    { key: 'rogueSpecialAbilities', Component: RogueSpecialAbilitiesCard, minLevel: 10 },
   ],
   Ranger: [
     { key: 'favoredEnemy', Component: FavoredEnemyCard },

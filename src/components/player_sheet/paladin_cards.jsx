@@ -1,6 +1,9 @@
+import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import TrackerCard from './tracker_card';
+import useLongPress from '../hooks/useLongPress';
 import Pill from '../common/Pill';
+import IconButton from '../common/IconButton';
 import {
   onUseClassFeature,
   onResetClassFeature,
@@ -21,6 +24,7 @@ export function SmiteEvilCard() {
   return (
     <TrackerCard
       title="Smite evil"
+      collapseKey="smiteEvil"
       used={player.getClassFeatureUsed('smiteEvil')}
       max={max}
       onUse={(delta) => dispatch(onUseClassFeature('smiteEvil', delta))}
@@ -40,35 +44,43 @@ export function SmiteEvilCard() {
 }
 
 /**
- * Lay on hands — a pool rather than a use counter: the paladin spends any
- * number of points from a daily total, so the card takes a free amount.
+ * Lay on hands — a hit point pool the paladin spends on others, so nothing is
+ * healed on this sheet: each press just moves a point out of the pool. A long
+ * press moves ten, since the pool runs to several times the paladin's level.
  */
 export function LayOnHandsCard() {
   const dispatch = useDispatch();
   const player = useSelector((state) => state.playerSheet?.player);
+  const spend = useCallback(
+    (amount) => dispatch(onUseClassFeature('layOnHands', amount)),
+    [dispatch]
+  );
+  const longPressSpend = useLongPress(() => spend(10), () => spend(1), { delay: 400 });
+
   const max = player?.getLayOnHandsMax?.() ?? 0;
   if (max <= 0) return null;
 
   return (
     <TrackerCard
       title="Lay on hands"
-      variant="pool"
+      collapseKey="layOnHands"
       unit="hp"
       used={player.getClassFeatureUsed('layOnHands')}
       max={max}
-      onUse={(delta) => dispatch(onUseClassFeature('layOnHands', delta))}
       onReset={() => dispatch(onResetClassFeature('layOnHands'))}
-    >
-      <div className="tracker-card-row tracker-card-meta">
-        <Pill tone="success" icon="healing">
-          {player.getLayOnHandsRemaining()} hp to give
-        </Pill>
-      </div>
-      <span className="sh-faint tracker-card-note">
-        A standard action by touch, split however you like across the day. The same
-        points deal damage to undead instead, as a touch attack with no save.
-      </span>
-    </TrackerCard>
+      spendControl={
+        <IconButton
+          icon="remove"
+          ghost
+          size="sm"
+          {...longPressSpend}
+          title="Give 1 hp (hold for 10)"
+          aria-label="Give one hit point"
+        />
+      }
+      note="A standard action by touch, split however you like across the day. The
+        same points deal damage to undead instead, as a touch attack with no save."
+    />
   );
 }
 
@@ -86,15 +98,13 @@ export function RemoveDiseaseCard() {
     <TrackerCard
       title="Remove disease"
       eyebrow="per week"
+      collapseKey="removeDisease"
       used={player.getClassFeatureUsed('removeDisease')}
       max={max}
       onUse={(delta) => dispatch(onUseClassFeature('removeDisease', delta))}
       onReset={() => dispatch(onResetClassFeature('removeDisease'))}
-    >
-      <span className="sh-faint tracker-card-note">
-        Cast as the spell. These uses refresh weekly, not with a night&apos;s rest —
-        reset them by hand when the week turns.
-      </span>
-    </TrackerCard>
+      note={'Cast as the spell. These uses refresh weekly, not with a night’s rest — '
+        + 'reset them by hand when the week turns.'}
+    />
   );
 }

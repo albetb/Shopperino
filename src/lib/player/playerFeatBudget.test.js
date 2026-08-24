@@ -64,11 +64,26 @@ describe('feats charged against the bonus slots', () => {
     expect(p.getGeneralFeatsUsed()).toBe(1);
   });
 
-  test('more combat feats than slots are counted, not clamped', () => {
-    const p = make('Fighter', 1); // 1 bonus slot
-    ['Cleave', 'Dodge', 'Blind-fight'].forEach((f) => p.addFeat(f));
-    expect(p.getClassBonusFeatsUsed()).toBe(3);
+  test('combat feats beyond the bonus slots spill into the general budget', () => {
+    // A 1st-level fighter has one bonus slot and one general feat point
+    // (plus one for Human). Two combat feats fill the bonus slot, then the
+    // general budget — the overflow is charged, not silently absorbed.
+    const p = make('Fighter', 1);
+    p.addFeat('Cleave');
+    p.addFeat('Dodge');
     expect(p.getClassBonusFeatSlotsMax()).toBe(1);
+    expect(p.getQualifyingBonusFeats()).toBe(2);
+    expect(p.getClassBonusFeatsUsed()).toBe(1);
+    expect(p.getGeneralFeatsUsed()).toBe(1);
+  });
+
+  test('every feat is charged exactly once across the two budgets', () => {
+    const p = make('Fighter', 1);
+    ['Cleave', 'Dodge', 'Blind-fight'].forEach((f) => p.addFeat(f));
+    expect(p.getClassBonusFeatsUsed() + p.getGeneralFeatsUsed())
+      .toBe(p.getFeatPointsUsed());
+    expect(p.getClassBonusFeatsUsed()).toBe(1);
+    expect(p.getGeneralFeatsUsed()).toBe(2);
   });
 
   test('a class with no bonus pool charges every feat to the general budget', () => {

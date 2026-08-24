@@ -3,6 +3,10 @@
 .spell-swap-note {
   padding: 0.75rem 0.9rem;
   text-align: left;
+  /* There is no global border-box reset, so .card-width-spellbook's width is
+     a content width — without this the padding is added on top of it and the
+     note renders wider than every other card in the tab. */
+  box-sizing: border-box;
 }
 
 .spell-swap-note-head {
