@@ -1,4 +1,4 @@
-/* --- CONDITIONS CARD --------------------------------------------- */
+/* --- CONDITIONS SECTION (inside the Health card) ------------------ */
 
 .cond-wrap {
   display: flex;
@@ -61,10 +61,25 @@
 .cond-pill-x:hover { opacity: 1; }
 .cond-pill-auto { opacity: 0.55; }
 
-/* Add button is centered in the card. */
-.cond-add-row {
+/* Section heading inside the Health card: a label and a compact "+" rather
+   than the full-width "Add condition" button the standalone card carried. */
+.cond-head {
   display: flex;
-  justify-content: center;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  min-height: 1.75rem;
+}
+
+.cond-head-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.cond-head-count {
+  font-size: var(--font-size-xs);
+  font-variant-numeric: tabular-nums;
 }
 
 /* --- PICKER (bottom sheet) --------------------------------------- */

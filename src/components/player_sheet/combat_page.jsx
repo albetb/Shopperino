@@ -20,7 +20,7 @@ import {
   onPlayerRest,
 } from '../../store/thunks/playerSheetThunks';
 import PortraitEditorSheet from './PortraitEditorSheet';
-import ConditionsCard from './conditions_card';
+import ConditionsSection from './conditions_section';
 import ClassFeatureCards from './class_feature_cards';
 import useLongPress from '../hooks/useLongPress';
 import { getItemByRef, calculateWeaponAttackBonus, calculateWeaponDamage, applyItemOverrides } from '../../lib/utils';
@@ -374,10 +374,12 @@ export default function CombatPage() {
         </div>
       </Card>
 
-      {/* HP card */}
+      {/* Health card: hit points and the conditions that act on them, which
+          overlap enough that splitting them meant reading two cards for one
+          state — Dead, Dying and Disabled are derived from the HP number. */}
       <Card
         title={`${currentHp} / ${maxHp} hp`}
-        eyebrow="Hit points"
+        eyebrow="Health"
         action={
           <>
             {/* A day's rest: refreshes spell slots, gnome racial spells and
@@ -518,6 +520,8 @@ export default function CombatPage() {
                 </div>
               </>
             )}
+
+            <ConditionsSection />
           </div>
         )}
       </Card>
@@ -719,9 +723,6 @@ export default function CombatPage() {
           </>
         )}
       </Card>
-
-      {/* Conditions card */}
-      <ConditionsCard />
 
       {/* Class-specific cards — see class_feature_cards.jsx for the registry */}
       <ClassFeatureCards />

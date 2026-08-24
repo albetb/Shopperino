@@ -1,10 +1,8 @@
 import { useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setCombatPageCardCollapsed } from '../../store/slices/playerSheetSlice';
 import { addCardByLink } from '../../store/slices/appSlice';
 import { onAddCondition, onRemoveCondition } from '../../store/thunks/playerSheetThunks';
 import { getAllConditions, conditionSlug } from '../../lib/utils';
-import Card from '../common/Card';
 import IconButton from '../common/IconButton';
 import BottomSheet from '../common/BottomSheet';
 import Button from '../common/Button';
@@ -48,10 +46,20 @@ function formatConditionLabel(c) {
   return c.name;
 }
 
-export default function ConditionsCard() {
+/**
+ * Conditions, as a section inside the Health card rather than a card of its
+ * own — a condition is something happening to the character's health, and
+ * splitting it from the hit points it modifies meant reading two cards to see
+ * one state. Three of the conditions here (Dead, Dying, Disabled) are derived
+ * straight from the HP number now sitting directly above.
+ *
+ * Renders a compact heading with an add button, the active pills, and the
+ * picker sheet. No card chrome and no collapse of its own — the Health card
+ * owns both.
+ */
+export default function ConditionsSection() {
   const dispatch = useDispatch();
   const player = useSelector(state => state.playerSheet?.player);
-  const collapsed = useSelector(state => state.playerSheet?.combatPageCardsCollapsed?.conditions ?? false);
 
   const [pickerOpen, setPickerOpen] = useState(false);
   const [query, setQuery] = useState('');
@@ -80,9 +88,6 @@ export default function ConditionsCard() {
   if (!player) return null;
 
   const total = derived.length + manual.length;
-
-  const toggleCollapsed = () =>
-    dispatch(setCombatPageCardCollapsed({ key: 'conditions', value: !collapsed }));
 
   const openPicker = () => {
     setQuery('');
@@ -160,31 +165,25 @@ export default function ConditionsCard() {
   );
 
   return (
-    <Card
-      title="Conditions"
-      className="sh-card--head-spread"
-      eyebrow={total ? `${total} active` : null}
-      action={
-        <IconButton
-          icon={collapsed ? 'expand_more' : 'expand_less'}
-          ghost size="sm"
-          onClick={toggleCollapsed}
-          aria-label="Toggle conditions"
-        />
-      }
-    >
-      {!collapsed && (
-        <div className="cond-wrap">
-          {total > 0 && (
-            <div className="cond-pills">
-              {derived.map(c => renderPill(c, { removable: false }))}
-              {manual.map(c => renderPill(c, { removable: true }))}
-            </div>
-          )}
+    <div className="cond-wrap">
+      <div className="cond-head">
+        <span className="sh-eyebrow">Conditions</span>
+        <span className="cond-head-actions">
+          {total > 0 && <span className="sh-faint cond-head-count">{total}</span>}
+          <IconButton
+            icon="add"
+            ghost size="sm"
+            onClick={openPicker}
+            title="Add condition"
+            aria-label="Add condition"
+          />
+        </span>
+      </div>
 
-          <div className="cond-add-row">
-            <Button variant="ghost" icon="add" onClick={openPicker}>Add condition</Button>
-          </div>
+      {total > 0 && (
+        <div className="cond-pills">
+          {derived.map(c => renderPill(c, { removable: false }))}
+          {manual.map(c => renderPill(c, { removable: true }))}
         </div>
       )}
 
@@ -193,6 +192,10 @@ export default function ConditionsCard() {
         onClose={closePicker}
         title={config ? config.name : 'Add condition'}
         eyebrow="Conditions"
+        /* Fixed height while browsing the list: it filters as you type, and a
+           shrinking sheet drags its own search box under a phone keyboard.
+           The sub-choice step is short and fixed, so it keeps its own size. */
+        fixedHeight={!config}
         subheader={config ? null : (
           <input
             type="text"
@@ -273,6 +276,6 @@ export default function ConditionsCard() {
           </div>
         )}
       </BottomSheet>
-    </Card>
+    </div>
   );
 }
