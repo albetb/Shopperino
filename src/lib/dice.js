@@ -14,7 +14,7 @@
 export const DICE_MULTIPLIERS = [1, 2, 3, 4, 5, 10, 20];
 
 /** Die types offered, in display order. */
-export const DICE_TYPES = [2, 3, 4, 6, 8, 10, 12, 20, 100];
+export const DICE_TYPES = [4, 6, 8, 10, 12, 20, 100];
 
 /* Selection is stored as one integer, a bit per multiplier button — the
    compact-storage rule in CLAUDE.md prefers a bitmask over seven booleans. */
