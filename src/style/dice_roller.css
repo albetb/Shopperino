@@ -81,10 +81,16 @@
   color: var(--ink-muted);
 }
 
+/* Five dice per row. Grid rather than wrapping flex so the break lands on a
+   fixed count instead of wherever the width runs out — a 3-digit d100 face is
+   wider than a d6's, and a ragged row is harder to count at a glance. The
+   tracks are `auto`, so an unfilled one collapses and a short roll still
+   centres. */
 .dice-result-list {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(5, auto);
   justify-content: center;
+  justify-items: center;
   gap: 0.3rem;
 }
 

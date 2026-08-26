@@ -14,6 +14,89 @@ import { parseAttacks } from '../animal/attackParser';
  * domain-model rule in CLAUDE.md.
  */
 
+/*
+ * Dragons carry no Attack / Full Attack text. The SRD prints their routine as
+ * a damage-by-size table plus one attack bonus per age category, and the data
+ * keeps exactly that shape: `attackBonus` as a number, `attackDamage` as
+ * `{ bite, claws, wings, tailSlap, crush, tailSweep }` with a null wherever
+ * the age category has not grown that limb yet. So the routine is rebuilt
+ * here rather than left blank — it is derivable, not missing.
+ *
+ * The rules it applies (SRD, Dragon entry): the bite is the primary attack at
+ * the full bonus and full Strength to damage; claws, wings and tail slap are
+ * secondary, at −5 to hit, with half Strength on the claws and wings and one
+ * and a half on the tail slap. Crush and tail sweep are deliberately absent —
+ * they are resolved by a Reflex save rather than an attack roll, which is why
+ * the SRD keeps them out of the attack line too.
+ */
+const DRAGON_ROUTINE = [
+  { key: 'bite', name: 'bite', count: 1, secondary: false, strFactor: 1 },
+  { key: 'claws', name: 'claws', count: 2, secondary: true, strFactor: 0.5 },
+  { key: 'wings', name: 'wings', count: 2, secondary: true, strFactor: 0.5 },
+  { key: 'tailSlap', name: 'tail slap', count: 1, secondary: true, strFactor: 1.5 },
+];
+
+/*
+ * Crush and tail sweep land differently: no attack roll, a Reflex save
+ * instead, at the same DC as the dragon's breath weapon. The data decides who
+ * has them — crush appears from Huge up, tail sweep from Gargantuan — so this
+ * table needs no size check of its own. Both add one and a half times
+ * Strength, as the tail slap does.
+ */
+const DRAGON_SAVE_ATTACKS = [
+  { key: 'crush', name: 'crush', strFactor: 1.5 },
+  { key: 'tailSweep', name: 'tail sweep', strFactor: 1.5 },
+];
+
+/**
+ * The DC a dragon's crush and tail sweep use: its breath weapon's, printed in
+ * the special-attack line as "Breath weapon 12d10 (DC 26)". Matched on the
+ * breath entry specifically — frightful presence carries its own, different DC.
+ */
+function breathSaveDc(base) {
+  const entry = (base?.specialAttacks || []).find((a) => /breath weapon/i.test(String(a)));
+  const dc = String(entry || '').match(/DC\s*(\d+)/i);
+  return dc ? Number(dc[1]) : null;
+}
+
+/** "2d8" + a modifier of 11 -> "2d8+11"; a modifier of 0 adds nothing. */
+function withDamageMod(dice, mod) {
+  if (!dice) return '';
+  if (mod > 0) return `${dice}+${mod}`;
+  if (mod < 0) return `${dice}${mod}`;
+  return dice;
+}
+
+/** The attack rows a dragon's structured fields imply, in SRD order. */
+function dragonAttacks(base, strMod) {
+  const damage = base?.attackDamage;
+  const bonus = base?.attackBonus;
+  if (!damage || typeof bonus !== 'number') return [];
+  const melee = DRAGON_ROUTINE
+    .filter((limb) => damage[limb.key])
+    .map((limb) => ({
+      name: limb.name,
+      count: limb.count,
+      bonus: limb.secondary ? bonus - 5 : bonus,
+      damage: withDamageMod(damage[limb.key], Math.floor(strMod * limb.strFactor)),
+      type: limb.secondary ? 'secondary' : 'primary',
+    }));
+
+  const dc = breathSaveDc(base);
+  const saves = DRAGON_SAVE_ATTACKS
+    .filter((limb) => damage[limb.key])
+    .map((limb) => ({
+      name: limb.name,
+      count: 1,
+      bonus: null,
+      damage: withDamageMod(damage[limb.key], Math.floor(strMod * limb.strFactor)),
+      type: 'save',
+      save: { ability: 'Reflex', dc },
+    }));
+
+  return [...melee, ...saves];
+}
+
 /** The stats a master can nudge, in the order the sheet lays them out. */
 export const BONUS_KEYS = ['ac', 'initiative', 'speed', 'fort', 'reflex', 'will'];
 
@@ -198,16 +281,23 @@ export default class MonsterSheet {
   getAttacks() {
     const base = this.getBase();
     if (!base) return [];
-    const source = base.fullAttack && base.fullAttack !== '-' ? base.fullAttack : base.attack;
-    if (!source) return [];
-    return parseAttacks(source).map((line, index) => ({ ...line, index }));
+    const source = this.getAttackLine();
+    const lines = source
+      ? parseAttacks(source)
+      : dragonAttacks(base, this.getAbilityMod('str') ?? 0);
+    return lines.map((line, index) => ({ ...line, index }));
   }
 
-  /** The raw attack lines, for the cases the parser cannot break down. */
+  /**
+   * The raw attack line, for the cases the parser cannot break down. A bare
+   * "-" is the SRD's way of writing "this creature has no attacks" — the
+   * Formian Queen, a shrieker, a bat — so it reads as absent, not as text.
+   */
   getAttackLine() {
     const base = this.getBase();
     if (!base) return '';
-    return base.fullAttack && base.fullAttack !== '-' ? base.fullAttack : (base.attack || '');
+    const line = base.fullAttack && base.fullAttack !== '-' ? base.fullAttack : (base.attack || '');
+    return String(line).trim() === '-' ? '' : line;
   }
 
   // —— Persistence ——

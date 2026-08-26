@@ -31,7 +31,7 @@ export default function BottomSheet({ open, onClose, title, eyebrow, subheader, 
         ref={ref}
         role="dialog"
         aria-modal="true"
-        aria-label={title}
+        aria-label={title || eyebrow}
       >
         <div className="handle" aria-hidden="true" />
         {(title || eyebrow) && (

@@ -13,13 +13,26 @@
   box-sizing: border-box;
 }
 
+/* border-box matters here: .sh-card carries a 1px border, so a content-box
+   card sized to 100% ends up two pixels wider than the page and scrolls the
+   whole tab sideways. `clip` is the backstop for anything else that cannot
+   shrink — a wide table inside the SRD prose, say — without turning the page
+   into a scroll container the way `hidden` would. */
 .monster-book-page > * {
   width: min(48rem, 100%);
+  box-sizing: border-box;
 }
+
+.monster-book-page {
+  overflow-x: clip;
+}
+
+/* --- FILTERS ------------------------------------------------------ */
 
 .monster-source-row {
   display: flex;
   flex-wrap: wrap;
+  justify-content: space-around;
   gap: var(--space-2);
 }
 
@@ -98,32 +111,31 @@
   font-weight: 600;
 }
 
-.monster-ability-grid {
+/* Back out on the left, CR and the stat-block button on the right, the name
+   centred between them. A grid rather than a wrapping flex row so the three
+   keep those positions instead of re-ordering themselves as the width drops. */
+.monster-sheet-head {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: var(--space-2);
-}
-
-.monster-ability {
-  display: flex;
-  flex-direction: column;
+  grid-template-columns: auto 1fr auto;
   align-items: center;
-  gap: 0.1rem;
-  padding: var(--space-2) 0.2rem;
-  border-radius: var(--radius-md);
-  background: var(--surface-1);
-  border: 0.0625rem solid var(--border-soft);
+  gap: var(--space-3);
 }
 
-.monster-ability-score {
-  font-family: var(--font-display);
-  font-size: var(--font-size-lg);
-  font-variant-numeric: tabular-nums;
+.monster-sheet-identity {
+  min-width: 0;
+  text-align: center;
 }
 
-.monster-ability-mod {
-  font-size: var(--font-size-xs);
-  font-variant-numeric: tabular-nums;
+/* On a phone the middle column is too narrow for a name like "Ancient Red
+   Dragon", so the controls share the top line and the name takes its own. */
+@media (max-width: 37.5rem) {
+  .monster-sheet-head {
+    grid-template-columns: auto 1fr;
+  }
+
+  .monster-sheet-back { grid-area: 1 / 1; justify-self: start; }
+  .monster-sheet-meta { grid-area: 1 / 2; justify-self: end; }
+  .monster-sheet-identity { grid-area: 2 / 1 / auto / -1; }
 }
 
 .monster-detail-text {
@@ -148,10 +160,5 @@
   /* Three dropdowns do not fit a phone; stack them. */
   .monster-filter-grid {
     grid-template-columns: 1fr;
-  }
-
-  /* Six ability boxes in a row become unreadably narrow. */
-  .monster-ability-grid {
-    grid-template-columns: repeat(3, 1fr);
   }
 }

@@ -19,10 +19,12 @@ import {
   onSetMonsterBonus,
   onSetMonsterMaxLife,
 } from '../../store/thunks/monsterBookThunks';
+import '../../style/menu_cards.css';
 import '../../style/monster_book.css';
 
 const fmt = (n) => `${n >= 0 ? '+' : ''}${n}`;
 const ABILITY_KEYS = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
+const ABILITY_LABELS = { str: 'Str', dex: 'Dex', con: 'Con', int: 'Int', wis: 'Wis', cha: 'Cha' };
 
 /* The adjustable stats, and where each one's editor sits. One bonus per stat:
    a master saying "+2 AC" means harder to hit, however you attack it. */
@@ -125,14 +127,22 @@ export default function MonsterSheetView() {
     <div className="sh-stack monster-sheet">
       {/* Identity header — the back link out of the sheet lives here. */}
       <Card padding>
-        <div className="sh-row-h sh-spread" style={{ gap: 'var(--space-3)', flexWrap: 'wrap' }}>
-          <div style={{ minWidth: 0 }}>
+        <div className="monster-sheet-head">
+          <Button
+            className="monster-sheet-back"
+            variant="ghost"
+            icon="arrow_back"
+            onClick={() => dispatch(onCloseMonsterSheet())}
+          >
+            Back
+          </Button>
+          <div className="monster-sheet-identity">
             <Filigree>{sheet.getSizeAndType()}</Filigree>
             <div className="sh-display" style={{ fontSize: 'var(--font-size-2xl)' }}>
               {sheet.getName()}
             </div>
           </div>
-          <span className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
+          <span className="sh-row-h monster-sheet-meta" style={{ gap: 'var(--space-2)' }}>
             <Pill tone="accent">CR {sheet.getChallengeRating()}</Pill>
             <IconButton
               icon="menu_book"
@@ -141,9 +151,6 @@ export default function MonsterSheetView() {
               aria-label="Show full stat block"
               title="Full stat block"
             />
-            <Button variant="ghost" icon="arrow_back" onClick={() => dispatch(onCloseMonsterSheet())}>
-              Back
-            </Button>
           </span>
         </div>
       </Card>
@@ -201,6 +208,31 @@ export default function MonsterSheetView() {
               )}
             </div>
           )}
+        </div>
+      </Card>
+
+      {/* Abilities — the same two-row grid the player sheet's sidebar uses, so a
+          master reads the two the same way. Directly under health because it
+          is what the next die roll usually asks for. */}
+      <Card title="Abilities" className="sh-card--head-spread">
+        <div className="ability-grid ability-grid-labels">
+          {ABILITY_KEYS.map((key) => (
+            <div key={key} className="ability-grid-cell ability-label-cell">
+              {ABILITY_LABELS[key]}
+            </div>
+          ))}
+        </div>
+        <div className="ability-grid ability-grid-scores">
+          {ABILITY_KEYS.map((key) => {
+            const score = sheet.getAbilities()[key];
+            const mod = sheet.getAbilityMod(key);
+            return (
+              <div key={key} className="ability-grid-cell ability-score-cell">
+                <div>{score ?? '—'}</div>
+                <div className="ability-modifier">{mod == null ? '—' : fmt(mod)}</div>
+              </div>
+            );
+          })}
         </div>
       </Card>
 
@@ -267,7 +299,7 @@ export default function MonsterSheetView() {
       <Card title="Attacks" eyebrow={sheet.getBaseAttackGrapple()} className="sh-card--head-spread">
         <div className="sh-stack" style={{ gap: 'var(--space-2)' }}>
           {attacks.length === 0 ? (
-            <div className="sh-faint">{sheet.getAttackLine() || 'No attack routine listed.'}</div>
+            <div className="sh-faint">{sheet.getAttackLine() || 'This creature has no attacks.'}</div>
           ) : attacks.map((line, idx) => (
             <div
               key={line.index}
@@ -280,7 +312,15 @@ export default function MonsterSheetView() {
                 {line.count > 1 ? `${line.count} ` : ''}{line.name}
               </span>
               <span className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
-                <Pill tone={line.type === 'secondary' ? 'default' : 'accent'}>{fmt(line.bonus ?? 0)}</Pill>
+                {/* Crush and tail sweep are rolled against, not for: they show
+                    the save that avoids them where the others show a bonus. */}
+                {line.save ? (
+                  <Pill tone="warn">
+                    {line.save.dc ? `${line.save.ability} DC ${line.save.dc}` : `${line.save.ability} save`}
+                  </Pill>
+                ) : (
+                  <Pill tone={line.type === 'secondary' ? 'default' : 'accent'}>{fmt(line.bonus ?? 0)}</Pill>
+                )}
                 {line.damage && <Pill tone="default">{line.damage}</Pill>}
               </span>
             </div>
@@ -293,23 +333,6 @@ export default function MonsterSheetView() {
               <Pill tone="ghost" icon="directions_run">{sheet.getSpeedLine()}</Pill>
             )}
           </div>
-        </div>
-      </Card>
-
-      {/* Abilities */}
-      <Card title="Abilities" className="sh-card--head-spread">
-        <div className="monster-ability-grid">
-          {ABILITY_KEYS.map((key) => {
-            const score = sheet.getAbilities()[key];
-            const mod = sheet.getAbilityMod(key);
-            return (
-              <div key={key} className="monster-ability">
-                <span className="sh-eyebrow">{key}</span>
-                <span className="monster-ability-score">{score ?? '—'}</span>
-                <span className="sh-faint monster-ability-mod">{mod == null ? '—' : fmt(mod)}</span>
-              </div>
-            );
-          })}
         </div>
       </Card>
 

@@ -201,3 +201,105 @@ describe('the stored filters', () => {
     expect(defaults.crMax).toBeGreaterThan(20);
   });
 });
+
+describe('attack routines the data does not spell out', () => {
+  /* Dragons are the whole reason this exists: 120 of the 559 creatures carry
+     no Attack / Full Attack text, because the SRD prints their routine as a
+     damage-by-size table instead. These expectations are the SRD's own lines,
+     copied from the Draconomicon-style entry, so a drift in the rebuild shows
+     up as a mismatch against the book rather than against itself. */
+  const line = (a) => `${a.count > 1 ? `${a.count} ` : ''}${a.name} ${a.bonus >= 0 ? '+' : ''}${a.bonus} (${a.damage})`;
+
+  test('an adult dragon gets the routine the book prints', () => {
+    const sheet = new MonsterSheet('monsters/red-dragon-adult');
+    // SRD: Bite +31 melee (2d8+11) and 2 claws +26 melee (2d6+5) and
+    //      2 wings +26 melee (1d8+5) and tail slap +26 melee (2d6+16).
+    // Crush is checked separately — it is not part of the printed full attack.
+    expect(sheet.getAttacks().filter((a) => !a.save).map(line)).toEqual([
+      'bite +31 (2d8+11)',
+      '2 claws +26 (2d6+5)',
+      '2 wings +26 (1d8+5)',
+      'tail slap +26 (2d6+16)',
+    ]);
+  });
+
+  test('the bite is primary and everything else is secondary at -5', () => {
+    const attacks = new MonsterSheet('monsters/gold-dragon-great-wyrm')
+      .getAttacks().filter((a) => !a.save);
+    const [bite, ...rest] = attacks;
+    expect(bite.type).toBe('primary');
+    expect(rest.every((a) => a.type === 'secondary')).toBe(true);
+    expect(rest.every((a) => a.bonus === bite.bonus - 5)).toBe(true);
+  });
+
+  test('a wyrmling only gets the limbs its age category has', () => {
+    const sheet = new MonsterSheet('monsters/black-dragon-wyrmling');
+    // SRD: Bite +6 melee (1d4) and 2 claws +1 melee (1d3) — no wings or tail
+    // slap yet, and Str 11 adds nothing, so no "+0" is printed.
+    expect(sheet.getAttacks().map(line)).toEqual([
+      'bite +6 (1d4)',
+      '2 claws +1 (1d3)',
+    ]);
+  });
+
+  test('Strength is applied whole to the bite, half to claws, one and a half to the tail', () => {
+    const attacks = new MonsterSheet('monsters/red-dragon-adult').getAttacks();
+    const strMod = 11; // Str 33
+    const damageMod = (name) => Number(attacks.find((a) => a.name === name).damage.split('+')[1]);
+    expect(damageMod('bite')).toBe(strMod);
+    expect(damageMod('claws')).toBe(Math.floor(strMod / 2));
+    expect(damageMod('tail slap')).toBe(Math.floor(strMod * 1.5));
+  });
+
+  test('crush and tail sweep are listed, with the save that avoids them', () => {
+    const attacks = new MonsterSheet('monsters/gold-dragon-great-wyrm').getAttacks();
+    const crush = attacks.find((a) => a.name === 'crush');
+    const sweep = attacks.find((a) => a.name === 'tail sweep');
+
+    // No attack roll — a Reflex save at the breath weapon's DC, which for this
+    // dragon is the 41 printed in "Breath weapon 24d10 (DC 41)".
+    [crush, sweep].forEach((a) => {
+      expect(a.bonus).toBeNull();
+      expect(a.type).toBe('save');
+      expect(a.save).toEqual({ ability: 'Reflex', dc: 41 });
+    });
+    // Str 47 (+18), one and a half times over, as on the tail slap.
+    expect(crush.damage).toBe('4d8+27');
+    expect(sweep.damage).toBe('2d8+27');
+  });
+
+  test('the DC comes from the breath weapon, not from frightful presence', () => {
+    // Ancient Silver prints "Breath weapon 20d8 (DC 34)" alongside
+    // "Frightful presence (DC 35)" — the crush uses the breath's.
+    const crush = new MonsterSheet('monsters/silver-dragon-ancient')
+      .getAttacks().find((a) => a.name === 'crush');
+    expect(crush.save.dc).toBe(34);
+  });
+
+  test('only dragons big enough for them get them', () => {
+    // Crush from Huge up, tail sweep from Gargantuan — the data carries a null
+    // for a limb the age category has not earned, so nothing is invented.
+    const names = (ref) => new MonsterSheet(ref).getAttacks().map((a) => a.name);
+    expect(names('monsters/black-dragon-wyrmling')).not.toContain('crush');
+    expect(names('monsters/red-dragon-adult')).toContain('crush');          // Huge
+    expect(names('monsters/red-dragon-adult')).not.toContain('tail sweep');
+    expect(names('monsters/silver-dragon-ancient')).toContain('tail sweep'); // Gargantuan
+  });
+
+  test('a "-" attack line reads as no attacks rather than as text', () => {
+    // The four creatures the SRD really does give no attack routine.
+    ['monsters/formian-queen', 'monsters/shrieker', 'animals/bat', 'animals/toad'].forEach((ref) => {
+      const sheet = new MonsterSheet(ref);
+      expect(sheet.isValid()).toBe(true);
+      expect(sheet.getAttackLine()).toBe('');
+      expect(sheet.getAttacks()).toEqual([]);
+    });
+  });
+
+  test('every other creature in the bestiary has an attack routine', () => {
+    const attackless = listBestiary(ALL_SOURCES_MASK)
+      .filter((c) => new MonsterSheet(c.ref).getAttacks().length === 0)
+      .map((c) => c.name);
+    expect(attackless.sort()).toEqual(['Bat', 'Formian Queen', 'Shrieker', 'Toad']);
+  });
+});

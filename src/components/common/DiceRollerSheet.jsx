@@ -104,7 +104,7 @@ export default function DiceRollerSheet({ open, onClose }) {
   const faceSettled = rolling ? settled : faces.map(() => true);
 
   return (
-    <BottomSheet open={open} onClose={onClose} eyebrow="Roll" title="Dice">
+    <BottomSheet open={open} onClose={onClose} eyebrow="Roll dice">
       <div className="dice-roller">
         <div className="dice-section">
           <span className="sh-eyebrow">How many · {count} {count === 1 ? 'die' : 'dice'}</span>

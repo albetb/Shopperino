@@ -41,11 +41,19 @@ export function diceCountFromMask(mask) {
 }
 
 /**
- * Press or release one button. Releasing the last pressed one falls back to
- * "+1" rather than leaving an empty selection, so the count is always valid.
+ * Press or release one button.
+ *
+ * "+1" alone is where the selection rests rather than something the player
+ * chose, so pressing any other button while it is the only one pressed
+ * *replaces* it instead of adding to it — rolling ten dice is one tap, not ten
+ * followed by a tap to clear the stray +1. Add it back by pressing it again.
+ *
+ * Releasing the last pressed button falls back to "+1" rather than leaving an
+ * empty selection, so the count is always valid.
  */
 export function toggleMultiplier(mask, index) {
   const current = Number(mask) || 0;
+  if (current === DEFAULT_MULTIPLIER_MASK && index !== 0) return 1 << index;
   const next = current ^ (1 << index);
   return next === 0 ? DEFAULT_MULTIPLIER_MASK : next;
 }

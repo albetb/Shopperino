@@ -21,17 +21,34 @@ describe('the count-button selection', () => {
   });
 
   test('the pressed buttons add up', () => {
-    // Indices: 0 = +1, 1 = +2, 4 = +5. Press +5 and +2 on top of the default
-    // +1 and the roll is eight dice.
+    // Indices: 0 = +1, 1 = +2, 4 = +5. The first press clears the resting +1,
+    // so +5 then +2 is seven dice.
     let mask = DEFAULT_MULTIPLIER_MASK;
     mask = toggleMultiplier(mask, 4);   // press +5
     mask = toggleMultiplier(mask, 1);   // press +2
-    expect(diceCountFromMask(mask)).toBe(8);
-
-    // Releasing +1 now leaves a valid selection, so it really is released.
-    mask = toggleMultiplier(mask, 0);
-    expect(isMultiplierSelected(mask, 0)).toBe(false);
     expect(diceCountFromMask(mask)).toBe(7);
+
+    // +1 is now one button among others, so pressing it adds rather than resets.
+    mask = toggleMultiplier(mask, 0);
+    expect(isMultiplierSelected(mask, 0)).toBe(true);
+    expect(diceCountFromMask(mask)).toBe(8);
+  });
+
+  test('the resting "+1" is replaced by the first other button pressed', () => {
+    // The reason the rule exists: ten dice should be one tap, not "+10" and
+    // then "+1" again to clear it.
+    const ten = toggleMultiplier(DEFAULT_MULTIPLIER_MASK, 5);   // press +10
+    expect(diceCountFromMask(ten)).toBe(10);
+    expect(isMultiplierSelected(ten, 0)).toBe(false);
+
+    // Pressing +1 afterwards is a deliberate pick, so it adds: eleven dice.
+    const eleven = toggleMultiplier(ten, 0);
+    expect(diceCountFromMask(eleven)).toBe(11);
+
+    // The replacement only applies to a lone "+1" — a real selection still adds.
+    const two = toggleMultiplier(DEFAULT_MULTIPLIER_MASK, 1);   // {+2}
+    const twoAndOne = toggleMultiplier(two, 0);                 // {+2, +1}
+    expect(diceCountFromMask(toggleMultiplier(twoAndOne, 5))).toBe(13);
   });
 
   test('"+1" cannot be released while it is the only one pressed', () => {
