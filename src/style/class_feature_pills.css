@@ -71,3 +71,11 @@
   font-size: var(--font-size-xs);
   line-height: 1.4;
 }
+
+/* A feature that is really a spell links to its stat block, on its own line
+   under the description rather than buried in the prose. */
+.class-feature-pill-spell {
+  display: block;
+  margin-top: var(--space-2);
+  color: var(--accent);
+}

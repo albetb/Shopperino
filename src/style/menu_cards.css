@@ -63,8 +63,21 @@
   margin-bottom: var(--space-4);
 }
 
+/* Collapsed, the head row is the whole card, and it has to sit in the middle
+   of that fixed height. Two things stopped it: the card is a column flex that
+   defaults to packing its child at the top, and .card-title carries a 0.7rem
+   margin above and below — 2.6rem of row inside a 2.35rem box, which pushed
+   the text about 2px below centre and spilled the rest past the bottom edge.
+   Centring the row and dropping only the vertical margins fixes both without
+   changing the bar's height. */
 .card.collapsed {
   height: 2.35rem;
+  justify-content: center;
+}
+
+.card.collapsed .card-title {
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 .close-button,
@@ -222,6 +235,22 @@
   flex: 1 1 0;
   min-width: 0 !important;
   width: auto !important;
+}
+
+/* Generate + share QR. The share button is a bare icon, so it takes half the
+   width of the labelled button beside it instead of an equal share, with a
+   little more air between the two.
+
+   Both selectors are doubled up deliberately: .buttons-row (here) and
+   .buttons-row-around (shop_inventory.css) are single-class rules that would
+   otherwise be decided by whichever stylesheet the bundler happened to put
+   last. */
+.buttons-row.buttons-row-around {
+  gap: 0.7rem;
+}
+
+.buttons-row.buttons-row-around > .modern-button.small-middle {
+  flex: 0.5 1 0;
 }
 
 /* The card head shares the 92% width of every .card-side-div below it, so the

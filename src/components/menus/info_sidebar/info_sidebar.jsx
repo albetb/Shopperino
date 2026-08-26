@@ -49,9 +49,18 @@ export default function InfoSidebar() {
     return null;
   }
 
-  const sharedShopMobile = isMobile() && !!sharedShop;
+  /* Pages that render no left sidebar of their own: Search, the Monster Book,
+     and the shared-shop view. On mobile the two collapsed sidebars become FABs
+     stacked down the right edge, so with no left one to sit under, the info
+     FAB takes the top slot rather than leaving a gap where the missing button
+     would have been. The class is set at every width — the rule that reads it
+     lives in the mobile media query, so it costs nothing on desktop and
+     survives a resize, which an isMobile() check in render would not. */
+  const noLeftSidebar =
+    currentTab === 4 || currentTab === 6 || (currentTab === 1 && !!sharedShop);
+
   return (
-    <div className={`info-sidebar ${isCollapsed ? 'collapsed' : ''} ${sharedShopMobile ? 'info-sidebar-shared-mobile' : ''}`}>
+    <div className={`info-sidebar ${isCollapsed ? 'collapsed' : ''} ${noLeftSidebar ? 'info-sidebar--solo' : ''}`}>
       <button className="info-toggle-button" onClick={handleToggle}>
         <span className="material-symbols-outlined">
           {isCollapsed ? 'manage_search' : 'chevron_right'}

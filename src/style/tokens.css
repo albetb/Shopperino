@@ -52,6 +52,14 @@
   --tap-target: 2.75rem;       /* 44px */
   --tap-target-sm: 2.25rem;    /* 36px */
 
+  /* COIN METALS ------------------------------------------------ */
+  /* Shared by the player sheet's money card and the shop's gold readout, so
+     the same coin is the same colour wherever it appears. Metals, not theme
+     colours: they stay put in light and dark alike. */
+  --coin-gold:   #e3b53c;
+  --coin-silver: #bcc3c8;
+  --coin-copper: #b87333;
+
   /* DURATIONS -------------------------------------------------- */
   --t-fast: 120ms;
   --t-base: 200ms;

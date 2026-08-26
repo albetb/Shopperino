@@ -7,10 +7,12 @@ import 'style/money_card.css';
 
 /* D&D 3.5 coinage. Internally the player stores a single float gp value
    (12.34 gp = 12 g, 3 s, 4 c). We split / recombine here. */
+/* Colours come from tokens.css so the shop's gold readout shows the same
+   coin — see --coin-gold there. */
 const COINS = [
-  { key: 'gold',   label: 'g', color: '#e3b53c', max: 999999, primary: true },
-  { key: 'silver', label: 's', color: '#bcc3c8', max: 9 },
-  { key: 'copper', label: 'c', color: '#b87333', max: 9 },
+  { key: 'gold',   label: 'g', color: 'var(--coin-gold)',   max: 999999, primary: true },
+  { key: 'silver', label: 's', color: 'var(--coin-silver)', max: 9 },
+  { key: 'copper', label: 'c', color: 'var(--coin-copper)', max: 9 },
 ];
 
 function splitGp(total) {

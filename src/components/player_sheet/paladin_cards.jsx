@@ -4,6 +4,8 @@ import TrackerCard from './tracker_card';
 import useLongPress from '../hooks/useLongPress';
 import Pill from '../common/Pill';
 import IconButton from '../common/IconButton';
+import SpellLink from '../common/spell_link';
+import { getFeatureSpell } from '../../lib/player/featureSpells';
 import {
   onUseClassFeature,
   onResetClassFeature,
@@ -103,8 +105,16 @@ export function RemoveDiseaseCard() {
       max={max}
       onUse={(delta) => dispatch(onUseClassFeature('removeDisease', delta))}
       onReset={() => dispatch(onResetClassFeature('removeDisease'))}
-      note={'Cast as the spell. These uses refresh weekly, not with a night’s rest — '
-        + 'reset them by hand when the week turns.'}
+      note={
+        <>
+          Casts the spell{' '}
+          <SpellLink link={getFeatureSpell('remove disease').link}>
+            {getFeatureSpell('remove disease').name}
+          </SpellLink>
+          . These uses refresh weekly, not with a night’s rest — reset them by
+          hand when the week turns.
+        </>
+      }
     />
   );
 }

@@ -29,7 +29,10 @@ export default function ShopItemRow({
   };
 
   return (
-    <tr className={`shop-row${isDeleting ? ' deleting' : ''}`}>
+    /* A shared shop is read-only and renders no sell button, so the row says so
+       — the mobile layout drops that column rather than leaving its gutter as
+       dead space at the right edge. */
+    <tr className={`shop-row${isDeleting ? ' deleting' : ''}${isViewOnly ? ' shop-row--view-only' : ''}`}>
       <td className="align-right td-muted shop-cell shop-cell--num">{item.Number}</td>
       <td className="td-muted shop-cell shop-cell--name">
         {item.Link ? (
@@ -41,7 +44,10 @@ export default function ShopItemRow({
         )}
       </td>
       <td className="td-muted shop-cell shop-cell--type">{abbrevType}</td>
-      <td className="td-muted shop-cell shop-cell--cost">{formatNum(item.Cost)}</td>
+      <td className="td-muted shop-cell shop-cell--cost">
+        {formatNum(item.Cost) + " "}
+        <span className="material-symbols-outlined shop-coin-icon" aria-hidden="true">paid</span>
+      </td>
       {!isViewOnly && (
         <td className="td-action shop-cell shop-cell--action">
           <button

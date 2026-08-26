@@ -175,6 +175,13 @@ td.name-size>input {
   width: 5vw;
 }
 
+/* Prices right-align so the figures line up column-wise rather than ragged
+   after a coin. The header follows its numbers. */
+.shop-cell--cost,
+th.cost-size {
+  text-align: right;
+}
+
 .action-size {
   width: var(--btn-width-sm);
 }
@@ -256,6 +263,33 @@ tr.add-item td.action-size .item-number-button {
   width: auto;
   min-width: max-content;
   max-width: 100%;
+}
+
+/* The gold readout. An <h4>'s default margins were most of the box's height,
+   and the coin says "gold" faster than the word did. */
+.money-box {
+  padding: 0.3rem 1rem;
+}
+
+.money-box-amount {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0;
+}
+
+.money-box-icon {
+  font-size: 1.15rem;
+  color: var(--coin-gold);
+}
+
+/* The same coin beside every price, sized off the cell's own text so it stays
+   in proportion on the smaller mobile row. */
+.shop-coin-icon {
+  font-size: 1.05em;
+  color: var(--coin-gold);
+  vertical-align: -0.18em;
+  margin-right: 0.15rem;
 }
 
 .filter-box-margin {
@@ -471,6 +505,14 @@ tr.add-item td.action-size .item-number-button {
   width: 90%;
 }
 
+/* Popup rows are deliberately narrower than the popup (90-92%), and a flex
+   column with align-items: stretch leaves a sized child against the left
+   edge — so they need centring explicitly. */
+.popup > .card-side-div {
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .modern-input.no-padding {
   padding-left: 0;
 }
@@ -563,23 +605,42 @@ tr.add-item td.action-size .item-number-button {
   /* Shop row, mobile two-line layout (Option B):
        Line 1:  #  Name (large)
        Line 2:  Type (muted) · Cost (mono) · sell button (right edge)
-     Each <tr> becomes a 3-column grid with two rows. Cells are placed via
-     grid-area; padding/borders moved off the <td>s onto the <tr> so the row
-     reads as one block instead of five stacked cells. */
+     Each <tr> becomes a grid with two rows. Cells are placed via grid-area;
+     padding/borders moved off the <td>s onto the <tr> so the row reads as one
+     block instead of five stacked cells.
+
+     The count column is a fixed width rather than `auto`, and the type below
+     it spans two columns. Sharing one auto column meant the longest type in
+     the table — "Magic Weapon" — set its width, so every name on every row
+     started wherever that word happened to end. Fixed, the names all begin at
+     the same place and the second line sizes itself independently. */
   .shop-table thead {
     display: none;
   }
   .shop-table tbody tr.shop-row {
     display: grid;
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: 1.75rem auto 1fr auto;
     grid-template-areas:
-      "num  name  name"
-      "type cost  action";
+      "num  name name action"
+      "type type cost action";
     column-gap: var(--space-3);
-    row-gap: 0.15rem;
+    row-gap: 0.05rem;
     align-items: center;
-    padding: 0.6rem 0.4rem;
+    padding: 0.35rem 0.4rem;
     border-top: 1px solid var(--grey-t);
+  }
+
+  /* Nothing above the first row to separate it from. */
+  .shop-table tbody tr.shop-row:first-child {
+    border-top: 0;
+  }
+
+  /* Shared shop: no sell button, so no column for one. */
+  .shop-table tbody tr.shop-row--view-only {
+    grid-template-columns: 1.75rem auto 1fr;
+    grid-template-areas:
+      "num  name name"
+      "type type cost";
   }
   .shop-table tbody tr.shop-row > td {
     border-top: 0;
@@ -604,11 +665,15 @@ tr.add-item td.action-size .item-number-button {
   }
   .shop-cell--cost {
     grid-area: cost;
+    justify-self: end;
     font-family: var(--font-mono, monospace);
     font-size: 0.85em;
   }
+  /* Its own column, spanning both lines, so it sits level with the row as a
+     whole rather than hanging off the second line. */
   .shop-cell--action {
     grid-area: action;
     justify-self: end;
+    align-self: center;
   }
 }

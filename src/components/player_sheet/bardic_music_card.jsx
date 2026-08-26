@@ -1,5 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import TrackerCard from './tracker_card';
+import SpellLink from '../common/spell_link';
+import { getFeatureSpell } from '../../lib/player/featureSpells';
 import Pill from '../common/Pill';
 import Icon from '../common/Icon';
 import {
@@ -47,6 +49,10 @@ export default function BardicMusicCard() {
              its bonus rides in the row's own tag strip rather than as a
              separate pill detached from the entry it describes. */
           const isInspireCourage = /^inspire courage$/i.test(p.name);
+          /* Suggestion, mass suggestion and song of freedom are spells wearing
+             a performance's name — link straight to the stat block, since that
+             is where the save and the duration are. */
+          const spell = getFeatureSpell(p.name);
           return (
             <li
               key={p.name}
@@ -58,6 +64,11 @@ export default function BardicMusicCard() {
                   {p.name}
                 </span>
                 <span className="bardic-performance-tags">
+                  {spell && (
+                    <Pill tone="ghost" icon="auto_stories">
+                      <SpellLink link={spell.link}>{spell.name}</SpellLink>
+                    </Pill>
+                  )}
                   {isInspireCourage && <Pill tone="accent">+{inspireCourage}</Pill>}
                   {p.saveDc != null && <Pill tone="accent">DC {p.saveDc}</Pill>}
                   {!p.meetsRanks && <Pill tone="warn">{p.performRanks} Perform</Pill>}

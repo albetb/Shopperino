@@ -119,7 +119,10 @@ export default function ShopInventory() {
                 Close
               </button>
             )}
-            <h4><b>Gold: {formatNumber(gold)}</b></h4>
+            <h4 className="money-box-amount" aria-label={`Gold: ${formatNumber(gold)}`}>
+              <span className="material-symbols-outlined money-box-icon" aria-hidden="true">paid</span>
+              <b>{formatNumber(gold)}</b>
+            </h4>
           </div>
         )}
 

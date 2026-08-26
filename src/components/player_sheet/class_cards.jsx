@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { loadFile, isMobile } from '../../lib/utils';
+import SpellLink from '../common/spell_link';
+import { getFeatureSpell } from '../../lib/player/featureSpells';
 import { getClassData } from '../../lib/player';
 import { onSetCharacterClass } from '../../store/thunks/playerSheetThunks';
 import { setIsPlayerSheetSidebarCollapsed } from '../../store/slices/playerSheetSlice';
@@ -180,6 +182,17 @@ export function ClassFeaturePills({ features, longFeatures, level }) {
             {open && (
               <p className="class-feature-pill-body">
                 {findFullFeatureText(feature, longFeatures)}
+                {/* Abundant step is dimension door, detect evil is the spell —
+                    the ability's own text never repeats the range, duration or
+                    save, so link to where they are. */}
+                {getFeatureSpell(feature.name) && (
+                  <span className="class-feature-pill-spell">
+                    Casts{' '}
+                    <SpellLink link={getFeatureSpell(feature.name).link}>
+                      {getFeatureSpell(feature.name).name}
+                    </SpellLink>
+                  </span>
+                )}
               </p>
             )}
           </li>

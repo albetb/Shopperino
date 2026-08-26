@@ -139,10 +139,12 @@
   border-color: var(--accent-muted);
   box-shadow: var(--shadow-1), 0 0 0 1px var(--accent-soft) inset;
 }
+/* No rule under the head: the display face and the body's smaller UI face
+   already separate the two, and the line only became visible as a seam on a
+   collapsed card. */
 .sh-card-head {
   display: flex; align-items: center; gap: var(--space-2);
   padding: var(--space-3) var(--space-4);
-  border-bottom: 1px solid var(--border-soft);
   font-family: var(--font-display);
   font-size: var(--font-size-lg);
   font-weight: 600;

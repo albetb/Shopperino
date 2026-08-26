@@ -243,11 +243,26 @@ p {
   font-size: small;
 }
 
-/* Search page results table in main area */
+/* Search page results table in main area.
+
+   The width matters: the spell-group cards below are sized in percent, and so
+   is the search card above them (.cards). Without a width here this column is
+   shrink-to-fit, so its percentage resolves against whatever the widest child
+   happens to be — which is why the two never lined up. Spanning the header
+   makes both percentages measure the same box. */
 .search-results {
   height: 100%;
+  width: 100%;
   display: flex;
   flex-direction: column;
+}
+
+/* The inline search card on mobile. A little more air above it than a sidebar
+   card wants, and half the trailing padding — the results start right below,
+   so the full gap only pushed them off the screen. */
+.cards.search-inline-cards {
+  margin-top: calc(var(--space-3) + 0.3rem);
+  padding-bottom: var(--space-3);
 }
 
 .search-results-table-wrapper {
@@ -260,7 +275,7 @@ p {
 .search-results-table {
   width: calc(var(--btn-width-sm) * 20);
   border-collapse: collapse;
-  margin-bottom: 0.3em;
+  margin: 0 auto 0.3em;
 }
 
 /* Skills search table: ensure consistent width with other tables */
@@ -298,7 +313,7 @@ p {
 
 /* Cards used for class/domain spell groups on search page */
 .search-results .card-width-spellbook {
-  margin-top: 0.8rem;
+  margin: 0.8rem auto 0;
 }
 
 /* Spell class/domain cards: table and rows full width of card content (96%) */
@@ -471,8 +486,10 @@ p {
   .sidebar.collapsed { top: calc(var(--menu-height) + var(--space-3)); }
   .info-sidebar.collapsed { top: calc(var(--menu-height) + var(--space-3) + 4.7rem); }
 
-  .info-sidebar.info-sidebar-shared-mobile.collapsed {
-    top: var(--menu-height);
+  /* No left sidebar on this page, so the info FAB moves into the slot the
+     left one would have occupied instead of floating below an empty gap. */
+  .info-sidebar.info-sidebar--solo.collapsed {
+    top: calc(var(--menu-height) + var(--space-3));
   }
 
   .sidebar.collapsed .toggle-button,
