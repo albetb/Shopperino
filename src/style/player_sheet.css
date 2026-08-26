@@ -985,3 +985,31 @@
     max-height: 84%;
   }
 }
+
+/* Attack rows: the weapon-type icon and the name travel together on the left,
+   so the pills on the right keep their own edge. */
+.attack-row-label {
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.attack-row-icon {
+  flex-shrink: 0;
+}
+
+/* Equipment card (combat page): the count and the item name travel together,
+   and a long name ellipses rather than pushing the row wide. */
+.equipped-item-label {
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.equipped-item-name {
+  font-family: var(--font-display);
+  font-size: var(--font-size-lg);
+  text-align: left;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

@@ -273,8 +273,15 @@ export function calculateWeaponAttackBonus(player, weaponData) {
   const weaponType = getWeaponType(weaponItem);
   const bab = player.getBaseAttackBonus?.() ?? 0;
 
-  // Determine ability modifier (STR for melee, DEX for ranged)
-  const abilityMod = weaponType.isRanged ? (player.getDexMod?.() ?? 0) : (player.getStrMod?.() ?? 0);
+  // Determine ability modifier (STR for melee, DEX for ranged). Weapon Finesse
+  // lets a light weapon (or a rapier) use Dexterity instead — the model owns
+  // which weapons qualify; the better of the two is what a character with the
+  // feat would always pick.
+  const strMod = player.getStrMod?.() ?? 0;
+  const dexMod = player.getDexMod?.() ?? 0;
+  const abilityMod = weaponType.isRanged
+    ? dexMod
+    : (player.usesWeaponFinesse?.(weaponItem) ? Math.max(strMod, dexMod) : strMod);
 
   // Weapon bonus: perfect weapons give +1 attack
   const weaponBonus = (weaponItem.isPerfect || weaponItem.Name?.toLowerCase().includes('perfect')) ? 1 : 0;
@@ -286,7 +293,10 @@ export function calculateWeaponAttackBonus(player, weaponData) {
   // Invisible, Energy Drained, etc.). Logic lives in the Player model.
   const conditionMod = player.getAttackConditionModifier?.() ?? 0;
 
-  return bab + abilityMod + weaponBonus + enhBonus + conditionMod;
+  // Weapon Focus / Greater Weapon Focus, for this weapon only.
+  const featBonus = player.getWeaponFeatAttackBonus?.(weaponItem) ?? 0;
+
+  return bab + abilityMod + weaponBonus + enhBonus + conditionMod + featBonus;
 }
 
 /**
@@ -334,6 +344,9 @@ export function calculateWeaponDamage(player, weaponData) {
 
   // Active-condition penalties to weapon damage (e.g. Sickened −2). Model-owned.
   damageBonus += player.getDamageConditionModifier?.() ?? 0;
+
+  // Weapon Specialization / Greater Weapon Specialization, for this weapon only.
+  damageBonus += player.getWeaponFeatDamageBonus?.(weaponItem) ?? 0;
 
   // Format the damage string
   if (damageBonus === 0) {

@@ -344,7 +344,9 @@ export default function FeatsPage() {
                       onClick={(ev) => handleFeatClick(feat, ev)}
                       disabled={isDisabled}
                       title={isDisabled ? 'Already selected' : 'Add feat'}
-                      aria-label="Add"
+                      /* Named, because the list shows one of these per feat and
+                         "Add" alone tells a screen reader nothing about which. */
+                      aria-label={`Add ${feat.Name}`}
                     />
                   </div>
                   {shortDesc && (

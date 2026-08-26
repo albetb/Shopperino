@@ -11,6 +11,7 @@ import IconButton from '../common/IconButton';
 import Filigree from '../common/Filigree';
 import Icon from '../common/Icon';
 import useLongPress from '../hooks/useLongPress';
+import useHpFeedback from '../hooks/useHpFeedback';
 import { addCardByLink } from '../../store/slices/appSlice';
 import {
   onAdjustMonsterHp,
@@ -51,7 +52,14 @@ export default function MonsterSheetView() {
   const [tempMaxLife, setTempMaxLife] = useState(0);
   const [notesOpen, setNotesOpen] = useState(false);
 
-  const handleHp = useCallback((delta) => dispatch(onAdjustMonsterHp(delta)), [dispatch]);
+  /* Same readout behaviour as the player sheet: what just changed, briefly,
+     in place of the hp/max line. */
+  const { feedback: hpFeedback, show: showHpFeedback } = useHpFeedback();
+
+  const handleHp = useCallback((delta) => {
+    dispatch(onAdjustMonsterHp(delta));
+    showHpFeedback(delta);
+  }, [dispatch, showHpFeedback]);
   const longPressPlus = useLongPress(() => handleHp(10), () => handleHp(1), { delay: 400 });
   const longPressMinus = useLongPress(() => handleHp(-10), () => handleHp(-1), { delay: 400 });
 
@@ -73,6 +81,14 @@ export default function MonsterSheetView() {
   const specialQualities = sheet.getSpecialQualities();
   const feats = sheet.getFeats();
   const skills = sheet.getSkills();
+
+  /* Back to full health heals whatever damage stands — reported the same way
+     a manual heal is. Read before the dispatch, which is what clears it. */
+  const handleResetHp = () => {
+    const healed = sheet.getDamage();
+    dispatch(onResetMonsterHp());
+    if (healed > 0) showHpFeedback(healed);
+  };
 
   const toggleEditBonus = (key) => {
     if (editBonus === key) { setEditBonus(null); return; }
@@ -165,7 +181,7 @@ export default function MonsterSheetView() {
           <IconButton
             icon="restart_alt"
             ghost size="sm"
-            onClick={() => dispatch(onResetMonsterHp())}
+            onClick={handleResetHp}
             disabled={sheet.getDamage() === 0}
             aria-label="Back to full health"
             title="Back to full health"
@@ -182,7 +198,15 @@ export default function MonsterSheetView() {
               aria-label={hpAdvancedOpen ? 'Hide max hp' : 'Show max hp'}
             />
             <IconButton icon="remove" {...(minusDisabled ? {} : longPressMinus)} disabled={minusDisabled} aria-label="Decrease HP" />
-            <div className="monster-hp-readout">{currentHp} / {maxHp}</div>
+            <div
+              className="monster-hp-readout"
+              style={{
+                color: hpFeedback ? (hpFeedback.delta >= 0 ? 'var(--success)' : 'var(--danger)') : 'var(--ink)',
+                transition: 'color var(--t-base) var(--ease)',
+              }}
+            >
+              {hpFeedback?.text ?? `${currentHp} / ${maxHp}`}
+            </div>
             <IconButton icon="add" {...(plusDisabled ? {} : longPressPlus)} disabled={plusDisabled} aria-label="Increase HP" />
           </div>
           <div className="sh-row-h" style={{ gap: 'var(--space-2)', flexWrap: 'wrap' }}>

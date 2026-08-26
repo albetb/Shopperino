@@ -1,6 +1,7 @@
-/* Player money card — gold / silver / copper row at the top of the
-   inventory page. Gold renders larger; clicking a value or its coin
-   turns the cell into a number input that auto-saves on blur. */
+/* Player money card at the top of the inventory page. One gold figure to two
+   decimals — the decimals are the silver and copper. Clicking the value or its
+   coin turns it into a number input that saves on blur; the chevron opens a
+   row for spending or earning an amount. */
 
 .money-card .sh-card-body {
   padding: var(--space-3) var(--space-4);
@@ -9,9 +10,39 @@
 .money-row {
   display: flex;
   align-items: center;
-  justify-content: space-around;
   gap: var(--space-3);
   flex-wrap: nowrap;
+}
+
+/* The gold takes the whole row bar the toggle, and centres itself in it — so
+   it reads centred against the space it actually has rather than being pushed
+   off-centre by a chevron it does not know about. */
+.money-row .money-cell--primary {
+  flex: 1 1 auto;
+  justify-content: center;
+}
+
+.money-adjust-toggle {
+  flex-shrink: 0;
+}
+
+/* Spend / earn. The box takes the room the gold figure leaves so the two
+   buttons keep a constant size at the right edge. */
+.money-adjust-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border-soft);
+}
+
+.money-adjust-input {
+  flex: 1 1 auto;
+  width: auto;
+  min-width: 0;
+  text-align: left;
+  font-size: var(--font-size-lg);
 }
 
 .money-cell {
@@ -19,6 +50,11 @@
   align-items: center;
   gap: 0.35rem;
   min-width: 0;
+}
+
+/* Two decimals need more room than the old 0-9 silver box did. */
+.money-cell--primary .money-input {
+  width: 7rem;
 }
 
 .money-value {
@@ -88,7 +124,6 @@
 }
 
 .money-cell--primary .money-input {
-  width: 5rem;
   height: var(--tap-target);
   font-size: var(--font-size-2xl);
 }

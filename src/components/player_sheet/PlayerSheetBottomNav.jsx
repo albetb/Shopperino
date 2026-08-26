@@ -37,9 +37,12 @@ export default function PlayerSheetBottomNav() {
   const isRightSidebarOpen = useSelector(state => !state.app.infoSidebarCollapsed);
   const isAnySidebarOpen = isLeftSidebarOpen || isRightSidebarOpen;
 
-  const [showSpellOptions, setShowSpellOptions] = useState(false);
-  const spellPopupRef = useRef(null);
-  const spellBtnRef = useRef(null);
+  /* One popout at a time, held by the id of the button that owns it. Skills
+     and Spells both have one; a second state per button would mean a second
+     outside-click listener saying the same thing. */
+  const [openPopout, setOpenPopout] = useState(null);
+  const popupRef = useRef(null);
+  const btnRefs = useRef({});
 
   const race = player?.getRace?.() ?? '';
   const _class = player?.getClass?.() ?? '';
@@ -50,16 +53,28 @@ export default function PlayerSheetBottomNav() {
   const navigate = view => {
     dispatch(setPlayerSheetMainView(view));
     dispatch(setIsPlayerSheetSidebarCollapsed(true));
-    setShowSpellOptions(false);
+    setOpenPopout(null);
   };
 
-  const handleSpellLongPress = useCallback(() => setShowSpellOptions(true), []);
+  const handleSpellLongPress = useCallback(() => setOpenPopout('playerSpells'), []);
   const handleSpellClick = useCallback(() => {
     dispatch(setPlayerSpellbookPage(2));
     navigate('playerSpells');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
   const spellLongPress = useLongPress(handleSpellLongPress, handleSpellClick);
+
+  /* Feats have no room of their own in the nav, but they are read as often as
+     skills are — so holding Skills brings them up, the way holding Spells
+     brings up prepare and learn. */
+  const handleSkillsLongPress = useCallback(() => setOpenPopout('skills'), []);
+  const handleSkillsClick = useCallback(() => {
+    navigate('skills');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch]);
+  const skillsLongPress = useLongPress(handleSkillsLongPress, handleSkillsClick);
+
+  const handleFeats = (e) => { e?.stopPropagation?.(); navigate('feats'); };
 
   const handlePrepareSpell = (e) => { e?.stopPropagation?.(); dispatch(setPlayerSpellbookPage(1)); navigate('playerSpells'); };
   const handleLearnSpell   = (e) => { e?.stopPropagation?.(); dispatch(setPlayerSpellbookPage(0)); navigate('playerSpells'); };
@@ -69,11 +84,11 @@ export default function PlayerSheetBottomNav() {
   const swallow = (e) => e.stopPropagation();
 
   useEffect(() => {
-    if (!showSpellOptions) return undefined;
+    if (!openPopout) return undefined;
     const onDown = ev => {
-      if (spellPopupRef.current?.contains(ev.target)) return;
-      if (spellBtnRef.current?.contains(ev.target)) return;
-      setShowSpellOptions(false);
+      if (popupRef.current?.contains(ev.target)) return;
+      if (btnRefs.current[openPopout]?.contains(ev.target)) return;
+      setOpenPopout(null);
     };
     document.addEventListener('mousedown', onDown);
     document.addEventListener('touchstart', onDown);
@@ -81,7 +96,7 @@ export default function PlayerSheetBottomNav() {
       document.removeEventListener('mousedown', onDown);
       document.removeEventListener('touchstart', onDown);
     };
-  }, [showSpellOptions]);
+  }, [openPopout]);
 
   const items = ITEMS
     .filter(it => VISIBLE_IDS.includes(it.id))
@@ -98,7 +113,7 @@ export default function PlayerSheetBottomNav() {
           return (
             <button
               key={it.id}
-              ref={spellBtnRef}
+              ref={(el) => { btnRefs.current.playerSpells = el; }}
               type="button"
               className="sh-bnav-item"
               aria-current={mainView === 'playerSpells' ? 'page' : undefined}
@@ -106,10 +121,10 @@ export default function PlayerSheetBottomNav() {
             >
               <Icon name={it.icon} />
               <span>{it.label}</span>
-              {showSpellOptions && (
+              {openPopout === 'playerSpells' && (
                 <div
                   className="sh-bnav-popout"
-                  ref={spellPopupRef}
+                  ref={popupRef}
                   onMouseDown={swallow}
                   onMouseUp={swallow}
                   onTouchStart={swallow}
@@ -125,6 +140,35 @@ export default function PlayerSheetBottomNav() {
                       <Icon name="bookmark_add" />
                     </button>
                   )}
+                </div>
+              )}
+            </button>
+          );
+        }
+        if (it.id === 'skills') {
+          return (
+            <button
+              key={it.id}
+              ref={(el) => { btnRefs.current.skills = el; }}
+              type="button"
+              className="sh-bnav-item"
+              aria-current={mainView === 'skills' ? 'page' : undefined}
+              {...skillsLongPress}
+            >
+              <Icon name={it.icon} />
+              <span>{it.label}</span>
+              {openPopout === 'skills' && (
+                <div
+                  className="sh-bnav-popout"
+                  ref={popupRef}
+                  onMouseDown={swallow}
+                  onMouseUp={swallow}
+                  onTouchStart={swallow}
+                  onTouchEnd={swallow}
+                >
+                  <button type="button" className="sh-bnav-popout-btn" onClick={handleFeats} title="Feats">
+                    <Icon name="auto_awesome" />
+                  </button>
                 </div>
               )}
             </button>

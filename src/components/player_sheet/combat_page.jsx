@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   setCombatPageCardCollapsed,
@@ -22,8 +22,10 @@ import {
 import PortraitEditorSheet from './PortraitEditorSheet';
 import ConditionsSection from './conditions_section';
 import ClassFeatureCards from './class_feature_cards';
+import EquippedItemsCard from './equipped_items_card';
 import useLongPress from '../hooks/useLongPress';
-import { getItemByRef, calculateWeaponAttackBonus, calculateWeaponDamage, applyItemOverrides } from '../../lib/utils';
+import useHpFeedback from '../hooks/useHpFeedback';
+import { getItemByRef, calculateWeaponAttackBonus, calculateWeaponDamage, applyItemOverrides, getWeaponType } from '../../lib/utils';
 import SpellLink from '../common/spell_link';
 import Card from '../common/Card';
 import StatPill from '../common/StatPill';
@@ -34,8 +36,6 @@ import IconButton from '../common/IconButton';
 import Stepper from '../common/Stepper';
 import EmptyState from '../common/EmptyState';
 import Icon from '../common/Icon';
-
-const FEEDBACK_DURATION_MS = 5000;
 
 function formatBaseAttackBonus(bab) {
   const b = Number(bab) || 0;
@@ -61,8 +61,7 @@ export default function CombatPage() {
   const player = useSelector(state => state.playerSheet?.player);
   const collapsed = useSelector(state => state.playerSheet?.combatPageCardsCollapsed ?? { player: false, combat: false, items: false });
 
-  const [hpFeedback, setHpFeedback] = useState(null);
-  const hpFeedbackTotalRef = useRef(0);
+  const { feedback: hpFeedback, show: showHpFeedback } = useHpFeedback();
   const [portraitOpen, setPortraitOpen] = useState(false);
   const [editMaxLife, setEditMaxLife] = useState(false);
   const [tempMaxLife, setTempMaxLife] = useState(10);
@@ -90,22 +89,21 @@ export default function CombatPage() {
   const handleHpDelta = useCallback(delta => {
     if (!player) return;
     dispatch(onAdjustCurrentHp(delta));
-    hpFeedbackTotalRef.current += delta;
-    const total = hpFeedbackTotalRef.current;
-    setHpFeedback({ text: total >= 0 ? `+${total}` : `${total}`, delta: total });
-  }, [player, dispatch]);
+    showHpFeedback(delta);
+  }, [player, dispatch, showHpFeedback]);
+
+  /* A rest heals as well as refreshing uses, so it reports the hit points the
+     same way a manual heal does. Asked before the dispatch: resting is what
+     clears the damage the amount is derived from. */
+  const handleRest = useCallback(() => {
+    if (!player) return;
+    const healed = player.getRestHealAmount?.() ?? 0;
+    dispatch(onPlayerRest());
+    if (healed > 0) showHpFeedback(healed);
+  }, [player, dispatch, showHpFeedback]);
 
   const longPressPlus  = useLongPress(() => handleHpDelta(10),  () => handleHpDelta(1),  { delay: 400 });
   const longPressMinus = useLongPress(() => handleHpDelta(-10), () => handleHpDelta(-1), { delay: 400 });
-
-  useEffect(() => {
-    if (!hpFeedback) return undefined;
-    const t = setTimeout(() => {
-      hpFeedbackTotalRef.current = 0;
-      setHpFeedback(null);
-    }, FEEDBACK_DURATION_MS);
-    return () => clearTimeout(t);
-  }, [hpFeedback]);
 
   const toggleCard = key => dispatch(setCombatPageCardCollapsed({ key, value: !collapsed[key] }));
 
@@ -218,8 +216,9 @@ export default function CombatPage() {
   const willBonus       = Number(player.willBonus)       || 0;
 
   const bab = player.getBaseAttackBonus?.() ?? 0;
-  const strMod = player.getStrMod?.() ?? 0;
-  const punchAttack = bab + strMod + (player.getAttackConditionModifier?.() ?? 0);
+  // Both come from the model: an unarmed strike carries an ability modifier,
+  // conditions and its own Weapon Focus / Specialization, exactly as a weapon does.
+  const punchAttack = player.getPunchAttackBonus?.() ?? bab;
   const punchDamage = player.getPunchDamage?.() ?? '1d3';
 
   // Change to each displayed stat caused by temporary effects — conditions,
@@ -247,7 +246,7 @@ export default function CombatPage() {
   const acDelta = condDeltas.ac || condDeltas.acFlat || condDeltas.acTouch || 0;
   const acCondAffected = !!(condDeltas.ac || condDeltas.acTouch || condDeltas.acFlat);
   const condBaseline = player.getTemporaryBaseline?.() ?? null;
-  const punchAtkAffected = condBaseline ? (condBaseline.getBaseAttackBonus() + condBaseline.getStrMod()) !== punchAttack : false;
+  const punchAtkAffected = condBaseline ? condBaseline.getPunchAttackBonus() !== punchAttack : false;
   const punchDmgAffected = condBaseline ? condBaseline.getPunchDamage() !== punchDamage : false;
 
   // Flurry of blows: an extra attack at the highest BAB, with a blanket
@@ -397,7 +396,7 @@ export default function CombatPage() {
               ghost size="sm"
               aria-label="Rest: refresh spells and class feature uses"
               title="Rest"
-              onClick={() => dispatch(onPlayerRest())}
+              onClick={handleRest}
             />
             <IconButton
               icon={collapsed.player ? 'expand_more' : 'expand_less'}
@@ -675,9 +674,20 @@ export default function CombatPage() {
                   : { gap: 'var(--space-3)', borderTop: '1px solid var(--border-soft)', paddingTop: 'var(--space-2)' };
                 return (
                   <div key={`${w.link}-${w.slot}`} className="sh-row-h sh-spread" style={rowStyle}>
-                    <SpellLink link={w.link}>
-                      <span className="sh-display" style={{ fontSize: 'var(--font-size-lg)' }}>{w.name}</span>
-                    </SpellLink>
+                    <span className="sh-row-h attack-row-label">
+                      {/* A sword for a weapon that is swung, a crosshair for one
+                          used at range — Material Symbols has no bow. Thrown
+                          melee weapons (dagger, spear, trident) read as melee,
+                          which is how they are usually used. */}
+                      <Icon
+                        name={getWeaponType(w.weaponItem).isRanged ? 'my_location' : 'swords'}
+                        size={18}
+                        className="sh-faint attack-row-icon"
+                      />
+                      <SpellLink link={w.link}>
+                        <span className="sh-display" style={{ fontSize: 'var(--font-size-lg)' }}>{w.name}</span>
+                      </SpellLink>
+                    </span>
                     <span className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
                       <Pill tone={atkAffected ? 'warn' : 'accent'}>{ab >= 0 ? '+' : ''}{ab}</Pill>
                       <Pill tone={dmgAffected ? 'warn' : 'default'}>{dmg}</Pill>
@@ -701,7 +711,11 @@ export default function CombatPage() {
                 <div className="sh-warn-strip"><Icon name="sports_mma" />No weapon equipped — defaulting to punch.</div>
               )}
               <div className="sh-row-h sh-spread" style={{ gap: 'var(--space-3)' }}>
-                <span className="sh-display">Punch</span>
+                <span className="sh-row-h attack-row-label">
+                  {/* No weapon to draw — a fist. */}
+                  <Icon name="sports_mma" size={18} className="sh-faint attack-row-icon" />
+                  <span className="sh-display">Punch</span>
+                </span>
                 <span className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
                   <Pill tone={punchAtkAffected ? 'warn' : 'accent'}>{punchAttack >= 0 ? '+' : ''}{punchAttack}</Pill>
                   <Pill tone={punchDmgAffected ? 'warn' : 'default'}>{punchDamage}</Pill>
@@ -779,6 +793,9 @@ export default function CombatPage() {
           </>
         )}
       </Card>
+
+      {/* What is in the four free slots — absent when they are empty. */}
+      <EquippedItemsCard />
 
       {/* Class-specific cards — see class_feature_cards.jsx for the registry */}
       <ClassFeatureCards />

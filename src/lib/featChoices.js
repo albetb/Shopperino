@@ -26,6 +26,13 @@ export const REPEATABLE_WITH_CHOICE = {
 
 const SPELL_SCHOOLS = (MAGICSCHOOLS || []).filter((s) => s !== 'Universal');
 
+/**
+ * An unarmed strike is a legal choice for every weapon-choice feat and is one
+ * of the commonest picks in the game, but it is not an item — items.json has
+ * no entry for it — so it is added to the weapon list by hand.
+ */
+export const UNARMED_STRIKE = 'Unarmed strike';
+
 function getWeaponsByCategory(category) {
   const items = loadFile('items');
   const arr = items?.Weapon;
@@ -87,7 +94,7 @@ export function getChoicesForFeat(featName, playerFeats) {
   } else if (type === 'martialWeapon') {
     options = getWeaponsByCategory('Martial Weapons');
   } else if (type === 'weapon') {
-    options = getWeaponsByCategory(null);
+    options = [UNARMED_STRIKE, ...getWeaponsByCategory(null)];
   } else if (type === 'crossbow') {
     options = getCrossbowWeapons();
   } else if (type === 'skill') {

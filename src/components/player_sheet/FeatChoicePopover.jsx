@@ -43,7 +43,12 @@ export default function FeatChoicePopover({ position, choices, featName, onConfi
       position: 'fixed',
       top: `${top}px`,
       left: `${left}px`,
-      zIndex: 100,
+      // Every add path opens this from inside the "Choose a feat" bottom
+      // sheet, whose scrim is z-index 1100 and whose panel is 1101
+      // (.sh-scrim / .sh-sheet in atoms.css). Anything below that mounts
+      // but renders behind the sheet, which reads as "the picker never
+      // opens" — the whole reason the choice feats appeared broken.
+      zIndex: 1120,
     };
   })()
     : {};

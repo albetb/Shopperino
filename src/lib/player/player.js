@@ -14,6 +14,20 @@ import { getClassProgression, getProgressionValue, hasFeatureAtLevel, resolveAtL
 import { listAnimals, getCreatureBaseByRef } from '../animal/animalsUtils';
 import { parseAttacks, recomputeAttack } from '../animal/attackParser';
 import { getBaseFeatName } from '../featChoices';
+import {
+  getFeatSkillBonus,
+  getFeatSaveBonus,
+  getFeatInitiativeBonus,
+  getFeatHpBonus,
+  getFeatTurnUndeadAttempts,
+  getFeatTurnUndeadLevelBonus,
+  getFeatWeaponAttackBonus,
+  getFeatWeaponDamageBonus,
+  getFeatUnarmedAttackBonus,
+  getFeatUnarmedDamageBonus,
+  hasWeaponFinesse,
+  isFinesseWeapon,
+} from './featEffects';
 import { getDeityByName, isWithinOneStep, formatDeityAlignment } from '../deityData';
 import AnimalCompanion from './animalCompanion';
 import Familiar from './familiar';
@@ -104,6 +118,11 @@ function sameInventoryEntry(a, b) {
   if (ae !== be) return false;
   return stableOverrides(a.overrides) === stableOverrides(b.overrides);
 }
+
+/* The four free slots at the bottom of the equipment grid. Not hands, not
+   armor: whatever the character keeps to hand — a wondrous item, a wand, a
+   potion belt. Order is display order. */
+const OTHER_SLOTS = ['other1', 'other2', 'other3', 'other4'];
 
 /** Fallback when race is not in races.json. Unknown races default to "Medium". */
 const RACE_SIZE_FALLBACK = {
@@ -1260,9 +1279,20 @@ class Player {
     this.wildShapeRef = '';
   }
 
+  /**
+   * How much a night's rest would actually restore: one hit point per
+   * character level, or whatever damage is left when that is less. Separate
+   * from healAsIfRested so the sheet can report the amount before applying it
+   * — the two share this so the number shown and the number healed cannot
+   * disagree.
+   */
+  getRestHealAmount() {
+    return Math.min(Math.max(0, Number(this.damage) || 0), this.getLevel());
+  }
+
   /** A night's natural healing: 1 HP per character level (combat.md). */
   healAsIfRested() {
-    this.damage = Math.max(0, (Number(this.damage) || 0) - this.getLevel());
+    this.damage = Math.max(0, (Number(this.damage) || 0) - this.getRestHealAmount());
   }
 
   /** Size modifier to AC and attack rolls for the current size. */
@@ -1718,7 +1748,9 @@ class Player {
     const conBonus = this.getUnshapedConMod() * this.getLevel();
     // Energy Drained removes 5 HP per negative level (manual/score channel).
     // A Toad familiar grants the master +3 HP (per-species familiar bonus).
-    return base + bonus + conBonus + this.getHpConditionModifier() + this.getFamiliarStatBonuses().hp;
+    // Toughness is +3 hp and may be taken more than once.
+    return base + bonus + conBonus + this.getHpConditionModifier() + this.getFamiliarStatBonuses().hp
+      + getFeatHpBonus(this.getFeats());
   }
 
   /**
@@ -1944,16 +1976,46 @@ class Player {
   }
 
   /**
-   * Unarmed strike damage. Defaults to PHB size-based damage (Medium = 1d3).
-   * Monk uses the scaling table from class-features.md (1d6 at L1, ..., 2d10 at L20),
-   * shifted up/down for Large/Small.
+   * The dice an unarmed strike rolls, with no modifiers. Defaults to PHB
+   * size-based damage (Medium = 1d3); a monk uses the scaling table from
+   * class-features.md (1d6 at L1, ..., 2d10 at L20), shifted for Large/Small.
    */
-  getPunchDamage() {
+  getPunchDamageDice() {
     const size = this.getSize() || 'Medium';
     if (this.class === 'Monk') {
       return monkUnarmedDamage(this.getLevel(), size);
     }
     return defaultUnarmedDamage(size);
+  }
+
+  /**
+   * Attack bonus for an unarmed strike, built the same way a weapon's is: base
+   * attack, an ability modifier, active conditions, and Weapon Focus / Greater
+   * Weapon Focus if they were taken in unarmed strike. An unarmed strike counts
+   * as a light weapon, so Weapon Finesse applies to it and the better of
+   * Strength or Dexterity is used.
+   */
+  getPunchAttackBonus() {
+    const strMod = this.getStrMod();
+    const dexMod = this.getDexMod();
+    const abilityMod = hasWeaponFinesse(this.getFeats()) ? Math.max(strMod, dexMod) : strMod;
+    return this.getBaseAttackBonus() + abilityMod + this.getAttackConditionModifier()
+      + getFeatUnarmedAttackBonus(this.getFeats());
+  }
+
+  /**
+   * Full unarmed damage string, formatted like a weapon's: the dice plus the
+   * Strength modifier, any condition penalty, and Weapon Specialization /
+   * Greater Weapon Specialization taken in unarmed strike. An unarmed strike is
+   * a light weapon, so it never gets the two-handed 1.5x Strength.
+   */
+  getPunchDamage() {
+    const dice = this.getPunchDamageDice();
+    const bonus = this.getStrMod()
+      + this.getDamageConditionModifier()
+      + getFeatUnarmedDamageBonus(this.getFeats());
+    if (bonus === 0) return dice;
+    return bonus > 0 ? `${dice}+${bonus}` : `${dice}${bonus}`;
   }
 
   /**
@@ -2236,7 +2298,9 @@ class Player {
     const config = this.getTurnUndeadConfig();
     if (!config) return 0;
     const base = Number(config.attemptsBase) || 0;
-    return Math.max(0, base + this.getModifier(config.attemptsAbility || 'cha'));
+    // Extra Turning adds four attempts each time it is taken.
+    return Math.max(0, base + this.getModifier(config.attemptsAbility || 'cha')
+      + getFeatTurnUndeadAttempts(this.getFeats()));
   }
 
   /**
@@ -2246,7 +2310,9 @@ class Player {
   getTurnUndeadEffectiveLevel() {
     const config = this.getTurnUndeadConfig();
     if (!config) return 0;
-    return Math.max(0, this.getLevel() + (Number(config.effectiveLevelOffset) || 0));
+    // Improved Turning: turn as if one level higher in the granting class.
+    return Math.max(0, this.getLevel() + (Number(config.effectiveLevelOffset) || 0)
+      + getFeatTurnUndeadLevelBonus(this.getFeats()));
   }
 
   /** The bonus added to the d20 turning check: the Charisma modifier. */
@@ -3140,20 +3206,24 @@ class Player {
 
   getTotalFortitudeSave() {
     return this.getFortitudeSave() + Number(this.fortBonus || 0)
-      + this.getFamiliarStatBonuses().fort + this.getDivineGraceBonus();
+      + this.getFamiliarStatBonuses().fort + this.getDivineGraceBonus()
+      + getFeatSaveBonus(this.getFeats(), 'fortitude');
   }
 
   getTotalReflexSave() {
     return this.getReflexSave() + Number(this.reflexBonus || 0)
-      + this.getFamiliarStatBonuses().reflex + this.getDivineGraceBonus();
+      + this.getFamiliarStatBonuses().reflex + this.getDivineGraceBonus()
+      + getFeatSaveBonus(this.getFeats(), 'reflex');
   }
 
   getTotalWillSave() {
-    return this.getWillSave() + Number(this.willBonus || 0) + this.getDivineGraceBonus();
+    return this.getWillSave() + Number(this.willBonus || 0) + this.getDivineGraceBonus()
+      + getFeatSaveBonus(this.getFeats(), 'will');
   }
 
   getTotalInitiative() {
-    return this.getInitiativeModifier() + Number(this.initiativeBonus || 0);
+    return this.getInitiativeModifier() + Number(this.initiativeBonus || 0)
+      + getFeatInitiativeBonus(this.getFeats());
   }
 
   getGold() {
@@ -3355,6 +3425,31 @@ class Player {
    * doesn't enforce uniqueness (the page already filters duplicates for
    * non-repeatable feats).
    */
+  /**
+   * Attack bonus this character's feats add for one weapon: Weapon Focus and
+   * Greater Weapon Focus, each only for the weapon they were selected for.
+   * The weapon calculators in lib/utils.js read it from here so the rule
+   * itself stays in the model.
+   */
+  getWeaponFeatAttackBonus(weaponItem) {
+    return getFeatWeaponAttackBonus(this.getFeats(), weaponItem?.Name);
+  }
+
+  /** Damage bonus from Weapon Specialization / Greater Weapon Specialization. */
+  getWeaponFeatDamageBonus(weaponItem) {
+    return getFeatWeaponDamageBonus(this.getFeats(), weaponItem?.Name);
+  }
+
+  /**
+   * Whether Weapon Finesse applies to this weapon — the feat plus a weapon it
+   * covers (anything light, plus rapier, whip and spiked chain). The attack
+   * calculation then uses whichever of Strength or Dexterity is higher, which
+   * is what a character with the feat would always choose.
+   */
+  usesWeaponFinesse(weaponItem) {
+    return hasWeaponFinesse(this.getFeats()) && isFinesseWeapon(weaponItem);
+  }
+
   addFeat(featName) {
     if (typeof featName !== 'string') return;
     const trimmed = featName.trim();
@@ -3446,7 +3541,9 @@ class Player {
     // A familiar grants the master a per-species skill bonus (e.g. Cat → Move
     // Silently +3); conditional Spot bonuses (Hawk/Owl) are excluded.
     const familiarSkillBonus = this.getFamiliarStatBonuses().skills[skillName] || 0;
-    let result = mod + ranks + bonus + familiarSkillBonus;
+    // Acrobatic, Stealthy, Skill Focus and the rest of the flat skill feats.
+    const featBonus = getFeatSkillBonus(this.getFeats(), skillName);
+    let result = mod + ranks + bonus + familiarSkillBonus + featBonus;
 
     // Apply armor check penalty if skill has ArmorPenalty flag
     const penalty = this.getArmorCheckPenalty();
@@ -3694,6 +3791,52 @@ class Player {
   unequipSlot(slot) {
     if (!slot || !this.equipment) return;
     delete this.equipment[slot];
+  }
+
+  /**
+   * What is equipped in the four free slots, in slot order.
+   *
+   * An equipped entry stores no quantity — it points at an inventory row — so
+   * the count is read back off that row, matched on everything that makes two
+   * otherwise-identical items different: the enhancement bonus, masterwork,
+   * named effects and any overrides. A count of 1 is the fallback when no row
+   * matches, which is what an item equipped and then removed from the bag
+   * looks like.
+   *
+   * @returns {{slot: string, name: string, link: string, number: number,
+   *   bonus: number, effectIds: number[], overrides: object|null}[]}
+   */
+  getEquippedAccessories() {
+    const equipment = this.getEquipment();
+    const inventory = this.getInventory();
+
+    return OTHER_SLOTS
+      .map((slot) => ({ slot, entry: equipment[slot] }))
+      .filter(({ entry }) => entry && (entry.name || entry.link))
+      .map(({ slot, entry }) => {
+        const name = entry.overrides?.Name ?? entry.name ?? '';
+        /* Same test as sameInventoryEntry, minus ItemType — an equipped entry
+           does not carry one. */
+        const row = inventory.find((item) => (
+          item.Name === (entry.name ?? '')
+          && (item.Link || '') === (entry.link || '')
+          && !!item.masterwork === !!entry.masterwork
+          && (item.bonus || 0) === (entry.bonus || 0)
+          && (Array.isArray(item.effectIds) ? item.effectIds : []).slice().sort().join(',')
+             === (Array.isArray(entry.effectIds) ? entry.effectIds : []).slice().sort().join(',')
+          && stableOverrides(item.overrides) === stableOverrides(entry.overrides)
+        ));
+        return {
+          slot,
+          name,
+          link: entry.link || '',
+          number: Math.max(1, Number(row?.Number) || 1),
+          masterwork: !!entry.masterwork,
+          bonus: entry.bonus || 0,
+          effectIds: Array.isArray(entry.effectIds) ? entry.effectIds : [],
+          overrides: entry.overrides ?? null,
+        };
+      });
   }
 
   /**

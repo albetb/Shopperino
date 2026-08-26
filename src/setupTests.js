@@ -1,3 +1,6 @@
+/* Custom DOM matchers (toBeInTheDocument &c.) for the component tests. */
+import '@testing-library/jest-dom';
+
 /*
  * The creature files load as a lazy chunk in the browser (see loadFile.js), but
  * the domain models read them synchronously. Pull the chunk in before any test
