@@ -178,6 +178,14 @@ export default function SpellbookTable({ source = 'app' }) {
   // A wild-shaped druid loses speech, so verbal components fail and she cannot
   // cast — unless she has Natural Spell. Slot counts stay visible and preparing
   // still works; only the cast button locks, with the reason stated once above.
+  /* The save DC each spell imposes: 10 + its level + the casting ability
+     modifier, plus Spell Focus and Greater Spell Focus for its school. Both
+     models answer the same shape; the player one is the only one that can see
+     feats, because a standalone spellbook has no character behind it. */
+  const getSaveDC = (lvl, spell) => (isApp
+    ? (inst?.getSpellSaveDCFor?.(spell, lvl) ?? null)
+    : (player?.getSpellSaveDCFor?.(spell, lvl) ?? null));
+
   const castingBlocked = !isApp && player?.canCastSpells?.() === false;
   const castingBlockedReason = 'No speech in animal form — Natural Spell removes this';
 
@@ -270,6 +278,7 @@ export default function SpellbookTable({ source = 'app' }) {
           inst={inst}
           spellsPerDay={spellsPerDay}
           charBonus={charBonus}
+          getSaveDC={getSaveDC}
           showShortDescriptions={showShortDescriptions}
           castingBlocked={castingBlocked}
           castingBlockedReason={castingBlockedReason}

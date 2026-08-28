@@ -208,6 +208,21 @@ export const onSetAbilityBonus = (abilityKey, value) => (dispatch, getState) => 
   persistPlayer(dispatch, getState, p);
 };
 
+/**
+ * Clear the level-up reminder: the player has opened the ability editor,
+ * changed something, and closed it again. What they changed, and whether they
+ * kept it, is deliberately not checked — the pill is a reminder that a decision
+ * is owed, not a ledger of the decision made.
+ */
+export const onAcknowledgeAbilityIncreases = () => (dispatch, getState) => {
+  const app = getState().persist;
+  if (app.pss == null || app.pss < 0 || !app.psc?.[app.pss]) return;
+  const p = db.getPlayerByIndex(app, app.pss);
+  if (!p) return;
+  p.acknowledgeAbilityIncreases();
+  persistPlayer(dispatch, getState, p);
+};
+
 export const onSetSkillRanks = (skillName, value) => (dispatch, getState) => {
   const app = getState().persist;
   if (app.pss == null || app.pss < 0 || !app.psc?.[app.pss]) return;

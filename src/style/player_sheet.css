@@ -997,6 +997,34 @@
   flex-shrink: 0;
 }
 
+/* The weapon's own profile, under its name: threat range, and the range
+   increment for anything that can be thrown or fired. Small and quiet — it is
+   reference, not a number you act on, unlike the attack and damage pills. */
+.attack-row-name {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 0.1rem;
+}
+
+.attack-row-meta {
+  font-size: var(--font-size-xs);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* A value a feat moved. The whole point of showing these is that Improved
+   Critical and Far Shot had nowhere to appear, so the changed one is marked. */
+.attack-row-meta .is-feat-boosted {
+  color: var(--accent);
+}
+
+/* Non-proficiency. The -4 is already inside the attack number; this says where
+   it came from, which is the whole reason proficiency is modelled at all. */
+.attack-row-meta .is-untrained {
+  color: var(--warn);
+}
+
 /* Equipment card (combat page): the count and the item name travel together,
    and a long name ellipses rather than pushing the row wide. */
 .equipped-item-label {

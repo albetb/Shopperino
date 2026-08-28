@@ -296,7 +296,12 @@ export function calculateWeaponAttackBonus(player, weaponData) {
   // Weapon Focus / Greater Weapon Focus, for this weapon only.
   const featBonus = player.getWeaponFeatAttackBonus?.(weaponItem) ?? 0;
 
-  return bab + abilityMod + weaponBonus + enhBonus + conditionMod + featBonus;
+  // -4 for a weapon the character was never trained in, plus the armor and
+  // shield check penalties when those are untrained too. The model owns which
+  // is which; this only adds what it reports.
+  const proficiencyPenalty = player.getProficiencyAttackPenalty?.(weaponItem) ?? 0;
+
+  return bab + abilityMod + weaponBonus + enhBonus + conditionMod + featBonus + proficiencyPenalty;
 }
 
 /**

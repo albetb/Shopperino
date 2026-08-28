@@ -18,6 +18,7 @@ export default function SpellLevelCard({
   inst,
   spellsPerDay,
   charBonus,
+  getSaveDC,
   actions,
   dispatch,
   showShortDescriptions,
@@ -280,6 +281,25 @@ export default function SpellLevelCard({
                           {item.School.split(' ')[0]}
                         </span>
                       )}
+                      {(() => {
+                        /* The DC a target rolls against, for the spells that
+                           allow a save. Shown here rather than only in the
+                           spell card because it is read every time the spell
+                           is cast — and it is the only place Spell Focus has
+                           ever been able to appear. */
+                        const save = getSaveDC?.(level, item);
+                        if (!save) return null;
+                        return (
+                          <span
+                            className={'spell-save-dc' + (save.focused ? ' is-focused' : '')}
+                            title={save.focused
+                              ? 'Save DC, including Spell focus for this school'
+                              : 'Save DC against this spell'}
+                          >
+                            DC {save.dc}
+                          </span>
+                        );
+                      })()}
                     </div>
                     {showShortDescriptions && item['Short Description'] && (
                       <div className="spell-table-cell-desc">
@@ -326,6 +346,8 @@ SpellLevelCard.propTypes = {
   inst: PropTypes.object.isRequired,
   spellsPerDay: PropTypes.arrayOf(PropTypes.number).isRequired,
   charBonus: PropTypes.number.isRequired,
+  /** (level, spell) -> { dc, focused } for spells that allow a save, else null. */
+  getSaveDC: PropTypes.func,
   actions: PropTypes.shape({
     onLearnUnlearnSpell: PropTypes.func,
     onPrepareSpell: PropTypes.func,

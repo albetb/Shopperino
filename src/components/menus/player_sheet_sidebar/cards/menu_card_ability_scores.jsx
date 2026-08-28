@@ -2,7 +2,12 @@ import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { ABILITY_KEYS } from '../../../../lib/player';
-import { onSetAbilityBase, onSetAbilityBonus } from '../../../../store/thunks/playerSheetThunks';
+import {
+  onSetAbilityBase,
+  onSetAbilityBonus,
+  onAcknowledgeAbilityIncreases,
+} from '../../../../store/thunks/playerSheetThunks';
+import Pill from '../../../common/Pill';
 import '../../../../style/menu_cards.css';
 
 const ABILITY_LABELS = {
@@ -43,6 +48,13 @@ export default function MenuCardAbilityScores({ isCollapsed, onToggleCollapse })
 
   const [isEditing, setIsEditing] = useState(false);
   const [tempValues, setTempValues] = useState({});
+  /* Whether the player moved anything while the editor was open. This is what
+     clears the level-up reminder, and it is deliberately the loosest possible
+     test: any press of any stepper, on any ability, base or bonus. Not "did a
+     score end up higher" — the point of the pill is that the player has been to
+     the screen and made the decision, and deciding to leave a score alone is a
+     decision. It is also why an undone change still counts. */
+  const [touched, setTouched] = useState(false);
 
   const enterEdit = () => {
     setTempValues(
@@ -56,12 +68,15 @@ export default function MenuCardAbilityScores({ isCollapsed, onToggleCollapse })
         ])
       )
     );
+    setTouched(false);
     setIsEditing(true);
   };
 
   const exitEdit = () => {
+    if (touched) dispatch(onAcknowledgeAbilityIncreases());
     setIsEditing(false);
     setTempValues({});
+    setTouched(false);
   };
 
   const saveAll = () => {
@@ -76,6 +91,7 @@ export default function MenuCardAbilityScores({ isCollapsed, onToggleCollapse })
   const updateTemp = (key, kind, delta) => {
     const min = kind === 'base' ? MIN_BASE : MIN_BONUS;
     const max = kind === 'base' ? MAX_BASE : MAX_BONUS;
+    setTouched(true);
     setTempValues((prev) => {
       const cur = prev[key] ?? { base: DEFAULT_BASE, bonus: 0 };
       return {
@@ -91,6 +107,12 @@ export default function MenuCardAbilityScores({ isCollapsed, onToggleCollapse })
   const displayTitle = allDefault ? (
     <><span className="material-symbols-outlined" style={{ color: 'var(--danger)' }}>priority_high</span> Ability</>
   ) : 'Ability';
+
+  /* A character gains +1 to one ability at 4th, 8th, 12th, 16th and 20th. The
+     sheet never applies it — it only says one is owed, and stops saying so once
+     the player has been to this screen and changed something. More than one can
+     be outstanding at a time, so the pill counts. */
+  const increasesOwed = player?.getAbilityIncreasesOwed?.() ?? 0;
 
   if (!player) {
     return (
@@ -141,6 +163,14 @@ export default function MenuCardAbilityScores({ isCollapsed, onToggleCollapse })
         <span className="material-symbols-outlined">edit</span>
       </span>
       <h3 className="card-title">{displayTitle}</h3>
+      {increasesOwed > 0 && (
+        <span
+          className="ability-increase-pill"
+          title={`${increasesOwed === 1 ? 'A level-up ability increase is' : `${increasesOwed} level-up ability increases are`} owed. Open this card and change a score to clear the reminder — nothing is applied for you.`}
+        >
+          <Pill tone="warn" icon="trending_up">+{increasesOwed} ability</Pill>
+        </span>
+      )}
     </>
   );
 

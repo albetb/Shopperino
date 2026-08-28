@@ -13,7 +13,8 @@ import { aggregateConditionEffects, sumContributions } from './conditionEffects'
 import { getClassProgression, getProgressionValue, hasFeatureAtLevel, resolveAtLevel } from './classProgression';
 import { listAnimals, getCreatureBaseByRef } from '../animal/animalsUtils';
 import { parseAttacks, recomputeAttack } from '../animal/attackParser';
-import { getBaseFeatName } from '../featChoices';
+import { getBaseFeatName, UNARMED_STRIKE } from '../featChoices';
+import { spellAllowsSave } from '../spellbook/spellsUtils';
 import {
   getFeatSkillBonus,
   getFeatSaveBonus,
@@ -27,7 +28,21 @@ import {
   getFeatUnarmedDamageBonus,
   hasWeaponFinesse,
   isFinesseWeapon,
+  getFeatSpellDcBonus,
+  getBaseSchool,
+  parseCritical,
+  widenThreatRange,
+  hasImprovedCritical,
+  getWeaponRangeIncrement,
+  hasRunFeat,
 } from './featEffects';
+import {
+  NON_PROFICIENT_ATTACK_PENALTY,
+  isProficientWithWeapon,
+  isProficientWithArmor,
+  isProficientWithShield,
+  isProficientWithUnarmedStrike,
+} from './proficiency';
 import { getDeityByName, isWithinOneStep, formatDeityAlignment } from '../deityData';
 import AnimalCompanion from './animalCompanion';
 import Familiar from './familiar';
@@ -273,6 +288,11 @@ class Player {
     this.usedDomainSpells = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     this.preparedDomainSpells = {};
     this.gnomeSpellUses = {}; // { [spellLink]: 0|1 } per-day uses for gnome racial spells
+    /* The highest multiple-of-4 level whose +1 ability increase the player has
+       already dealt with. It cannot be derived — base scores move for many
+       reasons, so "did a score go up since 4th" is not answerable — and the
+       sheet only reminds, never applies. 0 means nothing acknowledged yet. */
+    this.abilityIncreaseAcked = 0;
     /* Per-day class-feature consumption, keyed by feature ("rage", "smiteEvil",
        "turnUndead", …). Uses-per-day features count whole uses; pools such as
        lay on hands and wholeness of body store the amount spent. Maximums are
@@ -454,6 +474,9 @@ class Player {
       );
     }
 
+    if (data.abilityIncreaseAcked != null) {
+      this.abilityIncreaseAcked = Math.max(0, Math.floor(Number(data.abilityIncreaseAcked) || 0));
+    }
     if (data.gnomeSpellUses && typeof data.gnomeSpellUses === 'object') {
       this.gnomeSpellUses = {};
       Object.entries(data.gnomeSpellUses).forEach(([link, n]) => {
@@ -636,6 +659,7 @@ class Player {
             )
           : {},
       gnomeSpellUses: this.gnomeSpellUses && typeof this.gnomeSpellUses === 'object' ? { ...this.gnomeSpellUses } : {},
+      abilityIncreaseAcked: this.abilityIncreaseAcked || 0,
       classFeatureUses: this.classFeatureUses && typeof this.classFeatureUses === 'object' ? { ...this.classFeatureUses } : {},
       raging: !!this.raging,
       favoredEnemies: Array.isArray(this.favoredEnemies)
@@ -1569,6 +1593,42 @@ class Player {
     return this.gnomeSpellUses && typeof this.gnomeSpellUses === 'object' ? { ...this.gnomeSpellUses } : {};
   }
 
+  /**
+   * The highest multiple-of-4 level this character has reached — the level
+   * whose +1 ability increase is the most recent one earned. 0 below 4th.
+   *
+   * There is no multiclassing in the model, so the count of increases earned
+   * is exactly `floor(level / 4)`. (experience-and-leveling.md: +1 to one
+   * ability score at character levels 4, 8, 12, 16 and 20.)
+   */
+  getAbilityIncreaseLevel() {
+    return Math.floor(this.getLevel() / 4) * 4;
+  }
+
+  /**
+   * How many +1 ability increases are earned but not yet acknowledged.
+   *
+   * More than one is normal rather than exceptional: a character entered at
+   * 12th has crossed three, and one levelled from 7 to 8 without visiting the
+   * ability screen has two outstanding.
+   */
+  getAbilityIncreasesOwed() {
+    const earned = this.getAbilityIncreaseLevel();
+    const acked = Math.min(this.abilityIncreaseAcked || 0, earned);
+    return Math.max(0, (earned - acked) / 4);
+  }
+
+  /**
+   * Record that the player has been to the ability screen and dealt with it.
+   *
+   * Deliberately not a check that a score actually rose: the sheet computes and
+   * reminds but never enforces, and a player may legitimately decide to note
+   * the increase elsewhere or to have already applied it by hand.
+   */
+  acknowledgeAbilityIncreases() {
+    this.abilityIncreaseAcked = this.getAbilityIncreaseLevel();
+  }
+
   /** Mark one use of a gnome racial spell (1/day). */
   useGnomeSpell(link) {
     if (typeof link !== 'string' || link.trim() === '') return;
@@ -2000,7 +2060,8 @@ class Player {
     const dexMod = this.getDexMod();
     const abilityMod = hasWeaponFinesse(this.getFeats()) ? Math.max(strMod, dexMod) : strMod;
     return this.getBaseAttackBonus() + abilityMod + this.getAttackConditionModifier()
-      + getFeatUnarmedAttackBonus(this.getFeats());
+      + getFeatUnarmedAttackBonus(this.getFeats())
+      + this.getPunchProficiencyPenalty();
   }
 
   /**
@@ -3448,6 +3509,189 @@ class Player {
    */
   usesWeaponFinesse(weaponItem) {
     return hasWeaponFinesse(this.getFeats()) && isFinesseWeapon(weaponItem);
+  }
+
+  /** Class, race and feats — everything proficiency is decided from. */
+  _proficiencyContext() {
+    return { cls: this.getClass(), race: this.getRace(), feats: this.getFeats() };
+  }
+
+  /** Whether this character is proficient with one weapon. */
+  isProficientWithWeapon(weaponItem) {
+    return isProficientWithWeapon(this._proficiencyContext(), weaponItem);
+  }
+
+  /** Whether the equipped body armor is one this character is trained in. */
+  isProficientWithArmor() {
+    if (this.isEquipmentMelded()) return true;
+    return isProficientWithArmor(this._proficiencyContext(), this.getEquippedArmorRaw());
+  }
+
+  /** The shield in a hand slot, or null. Mirrors getShieldBonus's own scan. */
+  getEquippedShieldRaw() {
+    if (this.isEquipmentMelded()) return null;
+    for (const slot of ['lh1', 'rh1', 'lh2', 'rh2']) {
+      const entry = this.equipment?.[slot];
+      if (!entry?.link) continue;
+      if (!/\/(Shield|Specific Shield)\//.test(entry.link)) continue;
+      const raw = getItemByRef(entry.baseLink || entry.link)?.raw;
+      if (raw) return raw;
+    }
+    return null;
+  }
+
+  /** Whether the carried shield is one this character is trained in. */
+  isProficientWithShield() {
+    return isProficientWithShield(this._proficiencyContext(), this.getEquippedShieldRaw());
+  }
+
+  /**
+   * The attack penalty for wearing armor or carrying a shield you are not
+   * trained in: the item's armor check penalty applies to attack rolls, and the
+   * two stack. (equipment.md → Armor categories.)
+   */
+  getArmorProficiencyAttackPenalty() {
+    let penalty = 0;
+    if (!this.isProficientWithArmor()) penalty -= this.getArmorCheckPenalty();
+    if (!this.isProficientWithShield()) {
+      const shield = this.getEquippedShieldRaw();
+      const acp = shield?.['Armor Check Penalty'];
+      if (acp && acp !== '—') penalty -= Math.abs(parseInt(String(acp), 10)) || 0;
+    }
+    return penalty;
+  }
+
+  /**
+   * Everything non-proficiency costs this attack roll: -4 for the weapon, plus
+   * the armor and shield check penalties if they are not trained in either.
+   *
+   * Nothing is blocked — the sheet shows the penalty the rules impose and says
+   * where it came from, the same way it treats encumbrance.
+   */
+  getProficiencyAttackPenalty(weaponItem) {
+    const weapon = this.isProficientWithWeapon(weaponItem) ? 0 : NON_PROFICIENT_ATTACK_PENALTY;
+    return weapon + this.getArmorProficiencyAttackPenalty();
+  }
+
+  /**
+   * The same for a bare fist. An unarmed strike is a simple weapon, so anyone
+   * granted simple weapons is trained in it — which is nearly everyone, but not
+   * a wizard, whose list names five specific weapons and no category.
+   */
+  getPunchProficiencyPenalty() {
+    const weapon = isProficientWithUnarmedStrike(this._proficiencyContext())
+      ? 0
+      : NON_PROFICIENT_ATTACK_PENALTY;
+    return weapon + this.getArmorProficiencyAttackPenalty();
+  }
+
+  /**
+   * The fist's critical profile: an unarmed strike threatens on a natural 20
+   * for double damage. It has no items.json entry, so the profile is stated
+   * here rather than read — but Improved Critical still reaches it, because
+   * "Unarmed strike" is a legal choice for the feat.
+   *
+   * @returns {{text: string, improved: boolean}}
+   */
+  getPunchCritical() {
+    const improved = hasImprovedCritical(this.getFeats(), UNARMED_STRIKE);
+    const low = improved ? widenThreatRange(20) : 20;
+    return { text: `${low >= 20 ? '20' : `${low}-20`}/x2`, improved };
+  }
+
+  /**
+   * A weapon's critical profile as the sheet shows it — "19-20/x2" widened by
+   * Improved Critical when the feat names this weapon.
+   *
+   * Answers null for a weapon that cannot score one at all (the net), which is
+   * the signal to print nothing rather than a blank profile.
+   *
+   * @returns {{text: string, improved: boolean} | null}
+   */
+  getWeaponCritical(weaponItem) {
+    const parsed = parseCritical(weaponItem?.Critical);
+    if (!parsed) return null;
+    const improved = hasImprovedCritical(this.getFeats(), weaponItem?.Name);
+    const low = improved ? widenThreatRange(parsed.low) : parsed.low;
+    const range = low >= 20 ? '20' : `${low}-20`;
+    return { text: `${range}/${parsed.multiplier}`, improved };
+  }
+
+  /**
+   * A weapon's range increment in feet, after Far Shot. 0 means the weapon has
+   * no ranged profile at all, which is how items.json marks pure melee.
+   *
+   * @returns {{feet: number, extended: boolean}} `feet` 0 when there is no range.
+   */
+  getWeaponRange(weaponItem) {
+    const base = Number(weaponItem?.Range) || 0;
+    if (base <= 0) return { feet: 0, extended: false };
+    const feet = getWeaponRangeIncrement(this.getFeats(), weaponItem);
+    return { feet, extended: feet !== base };
+  }
+
+  /**
+   * How many times speed a run covers. Normally 4, dropping to 3 in heavy
+   * armor or under a heavy load; the Run feat lifts each by one, to 5 and 4.
+   * (movement.md, and the feat's own text.)
+   */
+  getRunSpeedMultiplier() {
+    const armor = String(this.getEquippedArmorRaw()?.Category || '').toLowerCase();
+    const load = this.getLoadStatus();
+    const encumbered = armor === 'heavy' || load === 'heavy' || load === 'over';
+    const base = encumbered ? 3 : 4;
+    return hasRunFeat(this.getFeats()) ? base + 1 : base;
+  }
+
+  /** Whether the Run feat is held — it also keeps Dex to AC while running. */
+  hasRunFeat() {
+    return hasRunFeat(this.getFeats());
+  }
+
+  /**
+   * The save DC of one of this character's spells: `10 + spell level + casting
+   * ability modifier`, plus Spell Focus and Greater Spell Focus in that school.
+   *
+   * The spell level is the spell's own, not the slot it is prepared in — a
+   * metamagic'd spell still saves against its base level (metamagic.md).
+   *
+   * @returns {number|null} null when the class has no spellcasting.
+   */
+  getSpellSaveDC(spellLevel, school) {
+    const ability = this.getCastingAbility();
+    if (!ability) return null;
+    const level = Number(spellLevel) || 0;
+    return 10 + level + this.getModifier(ability) + getFeatSpellDcBonus(this.getFeats(), school);
+  }
+
+  /** Which ability powers this class's spells, or '' for a non-caster. */
+  getCastingAbility() {
+    const cls = this.getClass();
+    if (cls === 'Wizard') return 'int';
+    if (['Cleric', 'Druid', 'Ranger', 'Paladin'].includes(cls)) return 'wis';
+    if (['Sorcerer', 'Bard'].includes(cls)) return 'cha';
+    return '';
+  }
+
+  /** Spell Focus / Greater Spell Focus bonus for one school, on its own. */
+  getSpellFocusBonus(school) {
+    return getFeatSpellDcBonus(this.getFeats(), getBaseSchool(school));
+  }
+
+  /**
+   * The save DC to show beside one spell, or null when the spell offers no save
+   * and there is nothing to resist. `focused` says whether Spell Focus or its
+   * Greater form contributed, so the row can show that the feat did something.
+   *
+   * @param {object} spell - A spell object from spells.json
+   * @param {number} level - The spell's level for this character's class
+   * @returns {{dc: number, focused: boolean} | null}
+   */
+  getSpellSaveDCFor(spell, level) {
+    if (!spellAllowsSave(spell)) return null;
+    const dc = this.getSpellSaveDC(level, spell?.School);
+    if (dc == null) return null;
+    return { dc, focused: this.getSpellFocusBonus(spell?.School) > 0 };
   }
 
   addFeat(featName) {

@@ -1,6 +1,7 @@
 import { loadFile } from '../utils';
 import { strToEnum, enumToStr } from '../storageFormat';
 import { getClassProgression } from '../player/classProgression';
+import { spellAllowsSave } from './spellsUtils';
 
 const ALL_SPELLS = loadFile("spells");
 
@@ -305,6 +306,21 @@ class Spellbook {
 
     getDifficultyClass(spell_level) {
         return 10 + this.getCharBonus() + spell_level;
+    }
+
+    /**
+     * The save DC to show beside one spell, or null when the spell offers no
+     * save. `focused` is always false here: Spell Focus is a feat, and a
+     * standalone spellbook has no character behind it to hold feats. The player
+     * sheet answers the same question through Player.getSpellSaveDCFor.
+     *
+     * @param {object} spell - A spell object from spells.json
+     * @param {number} level - The spell's level for this class
+     * @returns {{dc: number, focused: boolean} | null}
+     */
+    getSpellSaveDCFor(spell, level) {
+        if (!spellAllowsSave(spell)) return null;
+        return { dc: this.getDifficultyClass(Number(level) || 0), focused: false };
     }
 
     getSpellcastingDescription() {

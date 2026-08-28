@@ -236,7 +236,16 @@ export function formatFeatWithChoice(featName, choice) {
 }
 
 /**
- * Extract base feat name from display string (e.g. "Weapon focus (Longsword)" -> "Weapon focus").
+ * Extract base feat name from a display string:
+ * "Weapon focus (Longsword)" -> "Weapon focus".
+ *
+ * The parenthetical is only stripped when what is left is a feat that actually
+ * takes a choice. Three real feats carry a parenthetical **in their own name** —
+ * Armor proficiency (light), (medium) and (heavy) — and stripping theirs
+ * collapsed all three onto one name: taking one hid the other two from the
+ * picker and lost every one of them its description, because nothing in
+ * feats.json is called "Armor proficiency".
+ *
  * @param {string} displayName
  * @returns {string}
  */
@@ -244,7 +253,8 @@ export function getBaseFeatName(displayName) {
   if (!displayName || typeof displayName !== 'string') return '';
   const idx = displayName.indexOf(' (');
   if (idx > 0 && displayName.includes(')')) {
-    return displayName.slice(0, idx).trim();
+    const base = displayName.slice(0, idx).trim();
+    if (REPEATABLE_WITH_CHOICE[base]) return base;
   }
   return displayName.trim();
 }

@@ -220,6 +220,14 @@ export default function CombatPage() {
   // conditions and its own Weapon Focus / Specialization, exactly as a weapon does.
   const punchAttack = player.getPunchAttackBonus?.() ?? bab;
   const punchDamage = player.getPunchDamage?.() ?? '1d3';
+  const punchCrit = player.getPunchCritical?.() ?? { text: '20/x2', improved: false };
+  /* Only the weapon half — the armor and shield penalties are reported once for
+     the whole card rather than repeated on every line. */
+  const punchUntrained = (player.getPunchProficiencyPenalty?.() ?? 0)
+    < (player.getArmorProficiencyAttackPenalty?.() ?? 0);
+  const untrainedArmor = player.isProficientWithArmor?.() === false;
+  const untrainedShield = player.isProficientWithShield?.() === false;
+  const armorProficiencyPenalty = player.getArmorProficiencyAttackPenalty?.() ?? 0;
 
   // Change to each displayed stat caused by temporary effects — conditions,
   // rage, or an assumed wild-shape form. Empty when none are active. The sign
@@ -272,6 +280,15 @@ export default function CombatPage() {
     : `${primaryMovement.speed} ft`;
   // Only a non-walking mode earns a label; a walk is the unremarkable default.
   const speedModeLabel = primaryMovement.mode === 'land' ? null : primaryMovement.mode.toUpperCase();
+
+  /* Run: how far a full-round sprint covers. Normally four times speed, three
+     in heavy armor or under a heavy load, and one multiple more with the Run
+     feat — which had nowhere on the sheet to show itself before this. It runs
+     off the speed actually travelled at, so armor and encumbrance are already
+     in the number. */
+  const runMultiplier = player.getRunSpeedMultiplier?.() ?? 4;
+  const hasRun = player.hasRunFeat?.() ?? false;
+  const runSpeed = (speedInfo?.hasReduction ? speedInfo.reducedSpeed : primaryMovement.speed) * runMultiplier;
 
   const totalInitiative = player.getTotalInitiative?.() ?? 0;
   const totalFort = player.getTotalFortitudeSave?.() ?? player.getFortitudeSave?.() ?? 0;
@@ -572,6 +589,15 @@ export default function CombatPage() {
                 speedInfo?.hasReduction ? 'encumbered' : (speedBonus !== 0 ? `bonus +${speedBonus}` : null),
                 condDeltas.speed || 0
               )}
+              <span
+                className={hasRun ? 'sh-accent-text' : undefined}
+                style={{ display: 'block' }}
+                title={hasRun
+                  ? 'Run feat: one multiple further, and you keep your Dexterity bonus to AC while running.'
+                  : 'A full-round run. Without the Run feat you lose your Dexterity bonus to AC.'}
+              >
+                run {runSpeed} ft (&times;{runMultiplier})
+              </span>
             </>
           }
           editing={editBonus === 'speedBonus'}
@@ -658,6 +684,17 @@ export default function CombatPage() {
             </div>
           ) : (
           <>
+          {/* Untrained armor is worth saying once, above every attack line,
+              because unlike a weapon it costs the same on all of them. The
+              penalty is already inside each attack number. */}
+          {(untrainedArmor || untrainedShield) && (
+            <div className="sh-warn-strip" style={{ marginBottom: 'var(--space-2)' }}>
+              <Icon name="shield_with_heart" />
+              Not proficient with your {[untrainedArmor && 'armor', untrainedShield && 'shield']
+                .filter(Boolean).join(' or ')}
+              {armorProficiencyPenalty !== 0 && `: ${armorProficiencyPenalty} on every attack roll`}
+            </div>
+          )}
           {equippedWeapons.length > 0 && (
             <div className="sh-stack" style={{ gap: 'var(--space-2)' }}>
               {equippedWeapons.map((w, idx) => {
@@ -666,6 +703,15 @@ export default function CombatPage() {
                 const dmg = calculateWeaponDamage(player, wd);
                 const atkAffected = (player.getWeaponAttackConditionDelta?.(wd) ?? 0) !== 0;
                 const dmgAffected = player.isWeaponDamageConditionAffected?.(wd) ?? false;
+                /* The weapon's own profile, which the sheet never showed: the
+                   threat range Improved Critical widens, and the range
+                   increment Far Shot extends. Both come from the model so the
+                   feats are applied in one place. */
+                const crit = player.getWeaponCritical?.(w.weaponItem) ?? null;
+                const range = player.getWeaponRange?.(w.weaponItem) ?? { feet: 0, extended: false };
+                /* The -4 is already inside the attack number above; this says
+                   where it came from, which is the part the sheet was missing. */
+                const untrained = player.isProficientWithWeapon?.(w.weaponItem) === false;
                 /* Only show the separator border between rows, not above
                    the first weapon (otherwise it visually doubles the
                    Card's own internal padding boundary). */
@@ -684,9 +730,30 @@ export default function CombatPage() {
                         size={18}
                         className="sh-faint attack-row-icon"
                       />
-                      <SpellLink link={w.link}>
-                        <span className="sh-display" style={{ fontSize: 'var(--font-size-lg)' }}>{w.name}</span>
-                      </SpellLink>
+                      <span className="attack-row-name">
+                        <SpellLink link={w.link}>
+                          <span className="sh-display" style={{ fontSize: 'var(--font-size-lg)' }}>{w.name}</span>
+                        </SpellLink>
+                        {(crit || range.feet > 0 || untrained) && (
+                          <span className="sh-faint attack-row-meta">
+                            {crit && (
+                              <span className={crit.improved ? 'is-feat-boosted' : undefined}>{crit.text}</span>
+                            )}
+                            {crit && range.feet > 0 && ' · '}
+                            {range.feet > 0 && (
+                              <span className={range.extended ? 'is-feat-boosted' : undefined}>
+                                {range.feet} ft.
+                              </span>
+                            )}
+                            {untrained && (crit || range.feet > 0) && ' · '}
+                            {untrained && (
+                              <span className="is-untrained" title="Not proficient with this weapon: −4 on attack rolls.">
+                                not proficient
+                              </span>
+                            )}
+                          </span>
+                        )}
+                      </span>
                     </span>
                     <span className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
                       <Pill tone={atkAffected ? 'warn' : 'accent'}>{ab >= 0 ? '+' : ''}{ab}</Pill>
@@ -714,7 +781,20 @@ export default function CombatPage() {
                 <span className="sh-row-h attack-row-label">
                   {/* No weapon to draw — a fist. */}
                   <Icon name="sports_mma" size={18} className="sh-faint attack-row-icon" />
-                  <span className="sh-display">Punch</span>
+                  <span className="attack-row-name">
+                    <span className="sh-display">Punch</span>
+                    <span className="sh-faint attack-row-meta">
+                      <span className={punchCrit.improved ? 'is-feat-boosted' : undefined}>
+                        {punchCrit.text}
+                      </span>
+                      {punchUntrained && ' · '}
+                      {punchUntrained && (
+                        <span className="is-untrained" title="Not proficient with unarmed strikes: −4 on attack rolls.">
+                          not proficient
+                        </span>
+                      )}
+                    </span>
+                  </span>
                 </span>
                 <span className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
                   <Pill tone={punchAtkAffected ? 'warn' : 'accent'}>{punchAttack >= 0 ? '+' : ''}{punchAttack}</Pill>

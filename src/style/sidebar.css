@@ -380,6 +380,24 @@ p {
   flex-shrink: 0;
 }
 
+/* The save DC a target rolls against. Pushed to the right edge of the name row
+   so the column of DCs lines up down the list and can be read at a glance
+   without picking it out of each spell's name. */
+.spell-save-dc {
+  margin-left: auto;
+  font-size: 0.85em;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Spell focus is the only feat that moves this number, and it had nowhere to
+   appear before the DC existed — so a lifted DC says so. */
+.spell-save-dc.is-focused {
+  color: var(--accent);
+}
+
 .spell-table-cell-desc {
   margin-top: 0.15rem;
   font-size: 0.85em;

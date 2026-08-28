@@ -1,4 +1,9 @@
-import { getChoicesForFeat, getChoiceUnavailableReason, UNARMED_STRIKE } from './featChoices';
+import {
+  getChoicesForFeat,
+  getChoiceUnavailableReason,
+  getBaseFeatName,
+  UNARMED_STRIKE,
+} from './featChoices';
 
 /* Four feats in the game do not choose freely: they choose from what an earlier
    feat already named. Greater Weapon Focus is "choose one type of weapon for
@@ -81,5 +86,23 @@ describe('the sentence shown when a dependent feat has no options', () => {
   test('stays silent while there is still something to choose', () => {
     expect(getChoiceUnavailableReason('Greater weapon focus', [focus('Longsword')])).toBe('');
     expect(getChoiceUnavailableReason('Weapon focus', [])).toBe('');
+  });
+});
+
+describe('a feat whose own name ends in a parenthetical', () => {
+  test('the three armor proficiencies stay three distinct feats', () => {
+    // They are not choice feats — the category is part of the name in
+    // feats.json — so nothing may be stripped off them. Collapsing them onto
+    // "Armor proficiency" made taking one hide the other two from the picker
+    // and lost all three their descriptions.
+    expect(getBaseFeatName('Armor proficiency (light)')).toBe('Armor proficiency (light)');
+    expect(getBaseFeatName('Armor proficiency (medium)')).toBe('Armor proficiency (medium)');
+    expect(getBaseFeatName('Armor proficiency (heavy)')).toBe('Armor proficiency (heavy)');
+  });
+
+  test('a real choice feat still gives up its choice', () => {
+    expect(getBaseFeatName('Weapon focus (Longsword)')).toBe('Weapon focus');
+    expect(getBaseFeatName('Skill focus (Knowledge (arcana))')).toBe('Skill focus');
+    expect(getBaseFeatName('Toughness')).toBe('Toughness');
   });
 });

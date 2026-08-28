@@ -46,6 +46,22 @@ const TOUGHNESS_HP = 3;
 const EXTRA_TURNING_ATTEMPTS = 4;
 const WEAPON_FOCUS_ATTACK = 1;
 const WEAPON_SPECIALIZATION_DAMAGE = 2;
+const SPELL_FOCUS_DC = 1;
+/** Far Shot: half again for a weapon that fires, double for one that is thrown. */
+const FAR_SHOT_PROJECTILE = 1.5;
+const FAR_SHOT_THROWN = 2;
+
+/**
+ * The weapons Far Shot treats as projectiles rather than thrown: the ones that
+ * launch ammunition. Everything else with a range increment is thrown, and gets
+ * the larger multiplier. items.json cannot answer this from its fields — its
+ * "Ranged Weapons" subtype holds bows and shuriken alike — so it is a name test.
+ *
+ * The ten weapons it matches are every bow, every crossbow and the sling, and
+ * nothing else in items.json contains either word. The match cannot be anchored
+ * at the front: "Longbow" and "Shortbow" have no word boundary before "bow".
+ */
+const PROJECTILE_WEAPONS = /(?:bow|sling)\b/i;
 
 /** Save feats, by the save they lift. */
 const SAVE_FEATS = {
@@ -189,4 +205,80 @@ export function getFeatTurnUndeadAttempts(feats) {
 /** Improved Turning: turn as though one level higher. Not repeatable. */
 export function getFeatTurnUndeadLevelBonus(feats) {
   return countFeat(feats, 'Improved turning') > 0 ? 1 : 0;
+}
+
+/**
+ * Save DC bonus from Spell Focus and Greater Spell Focus for one school.
+ *
+ * Each is +1, they stack with each other, and each is only worth anything for
+ * the school it was chosen for. The subschool and the descriptor a spell's
+ * School field carries — "Conjuration (Creation)", "Evocation [Fire]" — are not
+ * part of the choice, so both are stripped before comparing.
+ */
+export function getFeatSpellDcBonus(feats, school) {
+  const wanted = getBaseSchool(school);
+  if (!wanted) return 0;
+  const focus = countFeatForChoice(feats, 'Spell focus', wanted);
+  const greater = countFeatForChoice(feats, 'Greater spell focus', wanted);
+  return SPELL_FOCUS_DC * (focus + greater);
+}
+
+/** "Evocation [Fire]" and "Conjuration (Creation)" are both just their school. */
+export function getBaseSchool(school) {
+  if (typeof school !== 'string') return '';
+  return school.replace(/\[[^\]]*\]/g, '').replace(/\([^)]*\)/g, '').trim();
+}
+
+/**
+ * A weapon's critical profile, read from the "19-20/x2" strings in items.json.
+ *
+ * A string with no range prefix ("x3") threatens on a natural 20 only. The
+ * multiplier is kept as text rather than a number because the gnome hooked
+ * hammer is a double weapon and carries one per head ("x3/x4"). The net has no
+ * profile at all and answers null.
+ *
+ * @returns {{low: number, multiplier: string} | null}
+ */
+export function parseCritical(critical) {
+  if (typeof critical !== 'string') return null;
+  const text = critical.trim();
+  if (!text || text === '—' || text === '-') return null;
+  const ranged = text.match(/^(\d+)\s*-\s*20\s*\/\s*(.+)$/);
+  if (ranged) return { low: Number(ranged[1]), multiplier: ranged[2].trim() };
+  return { low: 20, multiplier: text };
+}
+
+/**
+ * The threat range after Improved Critical, which **doubles** it: a natural 20
+ * becomes 19-20, 19-20 becomes 17-20, 18-20 becomes 15-20. The feat says in as
+ * many words that it does not stack with anything else that widens a threat
+ * range, so this is applied once however many times the feat is held.
+ */
+export function widenThreatRange(low) {
+  const width = 21 - low;
+  return 21 - width * 2;
+}
+
+/** Whether Improved Critical was taken for this weapon by name. */
+export function hasImprovedCritical(feats, weaponName) {
+  return countFeatForChoice(feats, 'Improved critical', weaponName) > 0;
+}
+
+/**
+ * A weapon's range increment in feet after Far Shot. Answers 0 for a weapon
+ * with no range at all, which is how items.json marks a pure melee weapon.
+ */
+export function getWeaponRangeIncrement(feats, weaponItem) {
+  const base = Number(weaponItem?.Range) || 0;
+  if (base <= 0) return 0;
+  if (countFeat(feats, 'Far shot') === 0) return base;
+  const factor = PROJECTILE_WEAPONS.test(weaponItem?.Name || '')
+    ? FAR_SHOT_PROJECTILE
+    : FAR_SHOT_THROWN;
+  return Math.floor(base * factor);
+}
+
+/** Whether the character has the Run feat. */
+export function hasRunFeat(feats) {
+  return countFeat(feats, 'Run') > 0;
 }

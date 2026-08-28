@@ -279,6 +279,15 @@
   min-width: 0;
 }
 
+/* The level-up reminder. It shares the title row with the edit pencil and the
+   card name, so it must never be the thing that pushes them out of the row. */
+.ability-increase-pill {
+  display: inline-flex;
+  flex-shrink: 0;
+  margin-left: auto;
+  margin-right: 0.25rem;
+}
+
 .ability-title-icon {
   display: inline-flex;
   cursor: pointer;
