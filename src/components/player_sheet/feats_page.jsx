@@ -6,6 +6,7 @@ import {
   REPEATABLE_NO_CHOICE,
   REPEATABLE_WITH_CHOICE,
   getChoicesForFeat,
+  getChoiceUnavailableReason,
   formatFeatWithChoice,
   getBaseFeatName,
 } from '../../lib/featChoices';
@@ -111,14 +112,21 @@ export default function FeatsPage() {
   const handleAddFeat = (featName, ev) => {
     const baseName = getBaseFeatName(featName);
     const choicesAvailable = getChoicesForFeat(baseName, playerFeats);
-    if (choicesAvailable.length > 0) {
+    // A feat that names its subject is meaningless without one — adding a bare
+    // "Greater spell focus" would look like nothing happened, which is exactly
+    // how the empty case used to read. Open the popover either way and let it
+    // explain itself.
+    const reason = choicesAvailable.length > 0
+      ? ''
+      : getChoiceUnavailableReason(baseName, playerFeats);
+    if (choicesAvailable.length > 0 || reason) {
       // FeatChoicePopover only renders when given a position — capture the
       // click target's rect so the popover anchors next to the "+" button.
       const rect = ev?.currentTarget?.getBoundingClientRect?.();
       const position = rect
         ? { top: rect.bottom, left: rect.left }
         : { top: window.innerHeight / 2, left: window.innerWidth / 2 };
-      setPopoverState({ feat: featName, choices: choicesAvailable, position });
+      setPopoverState({ feat: featName, choices: choicesAvailable, reason, position });
     } else {
       dispatch(onAddFeat(featName));
     }
@@ -188,11 +196,14 @@ export default function FeatsPage() {
                 <div className="sh-row-h" style={{ gap: 'var(--space-3)', alignItems: 'flex-start' }}>
                   <Icon name="workspace_premium" className="sh-accent-text" />
                   <div style={{ flex: 1, minWidth: 0 }}>
+                    {/* Pill first, so it starts every line at the same x and the
+                        column reads as a list of grants rather than a ragged
+                        badge trailing each name. */}
                     <span className="sh-row-h" style={{ gap: 'var(--space-2)', flexWrap: 'wrap' }}>
+                      <Pill tone="accent">granted · lv {level}</Pill>
                       <SpellLink link={`feats#${slug(getBaseFeatName(feat))}`}>
                         <span className="sh-display" style={{ fontSize: 'var(--font-size-lg)' }}>{feat}</span>
                       </SpellLink>
-                      <Pill tone="accent">granted · lv {level}</Pill>
                     </span>
                     {data?.shortDescription && (
                       <div className="sh-faint" style={{ fontSize: 'var(--font-size-xs)', marginTop: 'var(--space-1)' }}>
@@ -365,6 +376,7 @@ export default function FeatsPage() {
         <FeatChoicePopover
           position={popoverState.position}
           choices={popoverState.choices}
+          reason={popoverState.reason}
           featName={popoverState.feat}
           onConfirm={handleConfirmChoice}
           onClose={() => setPopoverState(null)}

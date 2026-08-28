@@ -54,6 +54,31 @@ import {
 import '../../style/shop_inventory.css';
 import '../../style/wild_shape.css';
 
+/** The seven classes that get a spellbook at all — mirrors the hook's own list. */
+const CASTER_CLASSES = ['Sorcerer', 'Wizard', 'Cleric', 'Druid', 'Bard', 'Ranger', 'Paladin'];
+
+/**
+ * What to say when the sheet has no spellbook to show.
+ *
+ * `pending` marks the cases a spellbook is still coming for — a blank class, or
+ * a Paladin/Ranger below 4th. A Fighter's line is a statement of fact instead,
+ * and callers that already have something on the page (the gnome's racial
+ * spells) drop it rather than tell the player to make a choice they made.
+ *
+ * @param {string} playerClass
+ * @returns {{text: string, pending: boolean}}
+ */
+export function getNoSpellbookHint(playerClass) {
+  if (!playerClass) {
+    return { text: 'Select a spellcasting class (and level 4+ for Paladin/Ranger).', pending: true };
+  }
+  if (['Ranger', 'Paladin'].includes(playerClass)) {
+    return { text: `A ${playerClass} gains spells at 4th level.`, pending: true };
+  }
+  if (CASTER_CLASSES.includes(playerClass)) return { text: '', pending: false };
+  return { text: `A ${playerClass} has no spellcasting.`, pending: false };
+}
+
 export default function SpellbookTable({ source = 'app' }) {
   const dispatch = useDispatch();
   const isApp = source === 'app';
@@ -129,12 +154,15 @@ export default function SpellbookTable({ source = 'app' }) {
     : (v) => dispatch(setPlayerSpellbookSearchSchool(v));
 
   if (!spellbook?.Class) {
+    const hint = isApp
+      ? { text: 'Create a new player and select his class to make a spellbook.', pending: true }
+      : getNoSpellbookHint(player?.getClass?.() ?? '');
     if (!isApp && playerSpellbookPage === 2 && player?.getRace?.() === 'Gnome') {
+      // The gnome's racial spells are the page's content here, so the hint is
+      // only worth a line when a class spellbook is still coming.
       return (
         <>
-          <p className="search-hint">
-            Select a spellcasting class (and level 4+ for Paladin/Ranger) to see class spellbook.
-          </p>
+          {hint.pending && <p className="search-hint">{hint.text}</p>}
           <RestBox
             page={2}
             hasUsedSpells={hasUsedGnomeSpells}
@@ -144,13 +172,7 @@ export default function SpellbookTable({ source = 'app' }) {
         </>
       );
     }
-    return (
-      <p className="search-hint">
-        {isApp
-          ? 'Create a new player and select his class to make a spellbook.'
-          : 'Select a spellcasting class (and level 4+ for Paladin/Ranger).'}
-      </p>
-    );
+    return hint.text ? <p className="search-hint">{hint.text}</p> : null;
   }
 
   // A wild-shaped druid loses speech, so verbal components fail and she cannot

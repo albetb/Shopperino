@@ -81,23 +81,35 @@
   color: var(--ink-muted);
 }
 
-/* Five dice per row. Grid rather than wrapping flex so the break lands on a
-   fixed count instead of wherever the width runs out — a 3-digit d100 face is
-   wider than a d6's, and a ragged row is harder to count at a glance. The
-   tracks are `auto`, so an unfilled one collapses and a short roll still
-   centres. */
+/* Five dice per row, every row centred.
+
+   This was a five-track grid, which centred the tracks rather than the dice:
+   a roll of three left tracks 4 and 5 empty but still counted the two gaps
+   between them, so the line sat a little left of centre — and a partial last
+   row was pinned to the first track whatever its width. Wrapping flex centres
+   what is actually there, on every row. The fixed break at five comes from the
+   width instead: each face is one fixed size, and the list is exactly five of
+   them plus their gaps wide, so the wrap lands on a count rather than wherever
+   the container happens to run out. */
 .dice-result-list {
-  display: grid;
-  grid-template-columns: repeat(5, auto);
+  --dice-die-w: 2.6rem;
+  --dice-die-gap: 0.3rem;
+  display: flex;
+  flex-wrap: wrap;
   justify-content: center;
-  justify-items: center;
-  gap: 0.3rem;
+  gap: var(--dice-die-gap);
+  max-width: calc(5 * var(--dice-die-w) + 4 * var(--dice-die-gap));
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* One die's face. Fixed width so a scrambling number does not shuffle the
-   row's layout on every tick. */
+   row's layout on every tick, and so a 3-digit d100 face takes the same space
+   as a d6's single digit. */
 .dice-die {
-  min-width: 1.9rem;
+  flex: 0 0 var(--dice-die-w, 2.6rem);
+  width: var(--dice-die-w, 2.6rem);
+  box-sizing: border-box;
   padding: 0.2rem 0.3rem;
   border-radius: var(--radius-sm);
   border: 0.0625rem solid var(--border-soft);

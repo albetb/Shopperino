@@ -12,7 +12,7 @@ export const REPEATABLE_NO_CHOICE = ['Extra turning', 'Toughness'];
 /** Feat name -> choice type for repeatable feats requiring a choice. */
 export const REPEATABLE_WITH_CHOICE = {
   'Exotic weapon proficiency': 'exoticWeapon',
-  'Greater spell focus': 'greaterSpellFocus',
+  'Greater spell focus': 'school',
   'Greater weapon focus': 'weapon',
   'Greater weapon specialization': 'weapon',
   'Improved critical': 'weapon',
@@ -25,6 +25,37 @@ export const REPEATABLE_WITH_CHOICE = {
 };
 
 const SPELL_SCHOOLS = (MAGICSCHOOLS || []).filter((s) => s !== 'Universal');
+
+/**
+ * Choice feats that can only be taken for a subject another feat already names.
+ *
+ * Greater Weapon Focus is *"choose one type of weapon for which you have already
+ * selected Weapon Focus"* — the choice is not free, it is drawn from what an
+ * earlier feat picked. Four feats work this way; the values are read as "the
+ * choice must appear in every one of these", so Greater Weapon Specialization
+ * needs one weapon carrying both of its prerequisites, not one of each.
+ *
+ * Keys and values are the exact names in feats.json. Prerequisites that are not
+ * per-choice — a base attack bonus, a fighter level, proficiency with the weapon
+ * — are not here; they stay with the non-blocking `prereq` pill, because they
+ * say nothing about *which* subject is legal.
+ */
+const CHOICE_PREREQUISITE_FEATS = {
+  'Greater spell focus': ['Spell focus'],
+  'Greater weapon focus': ['Weapon focus'],
+  'Weapon specialization': ['Weapon focus'],
+  'Greater weapon specialization': ['Greater weapon focus', 'Weapon specialization'],
+};
+
+/** What a choice type is choosing, for use in a sentence. */
+const CHOICE_SUBJECT = {
+  exoticWeapon: 'weapon',
+  martialWeapon: 'weapon',
+  weapon: 'weapon',
+  crossbow: 'crossbow',
+  skill: 'skill',
+  school: 'school',
+};
 
 /**
  * An unarmed strike is a legal choice for every weapon-choice feat and is one
@@ -88,6 +119,20 @@ export function getChoicesForFeat(featName, playerFeats) {
 
   const taken = new Set(getTakenChoices(featName, playerFeats));
 
+  let options = getChoiceUniverse(type);
+
+  // A dependent feat inherits its list from what its prerequisites already
+  // chose, rather than offering every weapon or school in the game.
+  for (const required of CHOICE_PREREQUISITE_FEATS[featName] ?? []) {
+    const allowed = new Set(getTakenChoices(required, playerFeats));
+    options = options.filter((c) => allowed.has(c));
+  }
+
+  return [...new Set(options)].filter((c) => !taken.has(c)).sort((a, b) => a.localeCompare(b));
+}
+
+/** Every choice a feat of this type could name, before any prerequisite narrows it. */
+function getChoiceUniverse(type) {
   let options = [];
   if (type === 'exoticWeapon') {
     options = getWeaponsByCategory('Exotic Weapons');
@@ -110,14 +155,63 @@ export function getChoicesForFeat(featName, playerFeats) {
     }
   } else if (type === 'school') {
     options = [...SPELL_SCHOOLS];
-  } else if (type === 'greaterSpellFocus') {
-    const spellFocusTaken = getTakenChoices('Spell focus', playerFeats);
-    options = spellFocusTaken.filter((s) => SPELL_SCHOOLS.includes(s));
-    const gsfTaken = getTakenChoices('Greater spell focus', playerFeats);
-    options = options.filter((s) => !gsfTaken.includes(s));
+  }
+  return options;
+}
+
+/** "a", "a and b", "a, b and c" — for feat names inside a sentence. */
+function joinNames(names) {
+  if (names.length <= 1) return names[0] ?? '';
+  return `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}`;
+}
+
+/**
+ * Why a choice feat has nothing left to offer.
+ *
+ * A dependent feat like Greater spell focus is only ever taken for a subject an
+ * earlier feat already named, so a character without that earlier feat has an
+ * empty list. The picker used to render nothing at all in that case, which
+ * reads as a dead button — this is the sentence it shows instead.
+ *
+ * Three different things can be wrong, and they need different sentences: the
+ * prerequisite feat is missing entirely, it is there but no single subject
+ * carries all of them, or it is there and every eligible subject has already
+ * been taken for this feat.
+ *
+ * @param {string} featName - Feat name (exact from feats.json)
+ * @param {string[]} playerFeats - Player's feat list
+ * @returns {string} Empty string when choices are available.
+ */
+export function getChoiceUnavailableReason(featName, playerFeats) {
+  const type = REPEATABLE_WITH_CHOICE[featName];
+  if (!type) return '';
+  if (getChoicesForFeat(featName, playerFeats).length > 0) return '';
+
+  const required = CHOICE_PREREQUISITE_FEATS[featName] ?? [];
+  const subject = CHOICE_SUBJECT[type] ?? 'option';
+
+  if (required.length > 0) {
+    const universe = getChoiceUniverse(type);
+    const chosenFor = (name) => getTakenChoices(name, playerFeats).filter((c) => universe.includes(c));
+
+    const missing = required.filter((name) => chosenFor(name).length === 0);
+    if (missing.length > 0) {
+      return `No ${joinNames(missing)} feat selected — pick a ${subject} there first.`;
+    }
+
+    // Each prerequisite has been taken, but never for the same subject.
+    const shared = required.reduce(
+      (acc, name) => acc.filter((c) => chosenFor(name).includes(c)),
+      universe
+    );
+    if (shared.length === 0) {
+      return `No ${subject} has all of ${joinNames(required)} — they must name the same one.`;
+    }
+
+    return `Every ${subject} you have ${joinNames(required)} for already has ${featName.toLowerCase()}.`;
   }
 
-  return [...new Set(options)].filter((c) => !taken.has(c)).sort((a, b) => a.localeCompare(b));
+  return `Every ${subject} is already taken for this feat.`;
 }
 
 /**

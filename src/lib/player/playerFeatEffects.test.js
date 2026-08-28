@@ -180,8 +180,11 @@ describe('unarmed strike as a weapon-feat choice', () => {
   test('it is offered by the weapon-choice feats', () => {
     // items.json has no unarmed entry, so the option is added by hand.
     expect(getChoicesForFeat('Weapon focus', [])).toContain(UNARMED_STRIKE);
-    expect(getChoicesForFeat('Weapon specialization', [])).toContain(UNARMED_STRIKE);
     expect(getChoicesForFeat('Improved critical', [])).toContain(UNARMED_STRIKE);
+    // Weapon specialization draws its list from Weapon focus, so the fist has
+    // to be focused before it can be specialized in.
+    expect(getChoicesForFeat('Weapon specialization', [`Weapon focus (${UNARMED_STRIKE})`]))
+      .toContain(UNARMED_STRIKE);
   });
 
   test('taking it removes it from what is left to choose', () => {

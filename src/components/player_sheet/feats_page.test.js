@@ -78,3 +78,46 @@ describe('the choice popover for repeatable feats', () => {
     expect(player.getFeats()).toContain('Weapon focus (Longsword)');
   });
 });
+
+describe('a choice feat with nothing to choose', () => {
+  function makeWizard() {
+    const p = new Player();
+    p.name = 'Test';
+    p.class = 'Wizard';
+    p.level = 6;
+    return p;
+  }
+
+  test('Greater spell focus says why it has no options instead of doing nothing', () => {
+    const player = makeWizard();
+    renderFeatsPage(player);
+    openPicker('Greater spell focus');
+
+    expect(screen.getByText(/no spell focus feat selected/i)).toBeInTheDocument();
+    // The point of the fix: the bare feat is not silently added.
+    expect(player.getFeats()).toEqual([]);
+    // Nothing to confirm, so only the close button is offered.
+    expect(screen.queryByRole('button', { name: 'Confirm' })).toBe(null);
+  });
+
+  test('taking Spell focus first unlocks that school for Greater spell focus', () => {
+    const player = makeWizard();
+    player.feats = ['Spell focus (Evocation)'];
+    renderFeatsPage(player);
+    openPicker('Greater spell focus');
+
+    const select = screen.getByRole('combobox', { name: /select option for greater spell focus/i });
+    const options = within(select).getAllByRole('option').map((o) => o.value);
+    // The placeholder plus exactly the one focused school — no other school.
+    expect(options).toEqual(['', 'Evocation']);
+  });
+
+  test('once every focused school is taken, the reason changes', () => {
+    const player = makeWizard();
+    player.feats = ['Spell focus (Evocation)', 'Greater spell focus (Evocation)'];
+    renderFeatsPage(player);
+    openPicker('Greater spell focus');
+
+    expect(screen.getByText(/already has greater spell focus/i)).toBeInTheDocument();
+  });
+});

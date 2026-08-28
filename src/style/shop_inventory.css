@@ -513,6 +513,52 @@ tr.add-item td.action-size .item-number-button {
   margin-right: auto;
 }
 
+/* Feat choice popover.
+
+   Every feat opens the same control, but the option lists are nothing alike:
+   a school is "Necromancy", a skill is "Knowledge (architecture and
+   engineering)", and a native <select> sizes itself to its widest option. That
+   dragged the popup to a different width per feat and pushed the skill picker
+   well past the popup's own edge. Pinning the width here and eliding the
+   overflow keeps one shape for all of them; the full text is still readable in
+   the opened option list, which the browser sizes on its own. */
+.feat-choice-popover {
+  width: 16rem;
+  z-index: 1120;
+}
+
+.feat-choice-body {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.feat-choice-select {
+  width: 100%;
+  max-width: 100%;
+  /* .modern-dropdown carries a min-width that would defeat the max-width. */
+  min-width: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.feat-choice-reason {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  line-height: 1.35;
+  color: var(--ink-muted);
+}
+
+.feat-choice-actions {
+  display: flex;
+  justify-content: space-around;
+  gap: 0.5rem;
+}
+
 .modern-input.no-padding {
   padding-left: 0;
 }
