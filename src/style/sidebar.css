@@ -383,8 +383,16 @@ p {
 /* The save DC a target rolls against. Pushed to the right edge of the name row
    so the column of DCs lines up down the list and can be read at a glance
    without picking it out of each spell's name. */
-.spell-save-dc {
+/* The DC and its breakdown travel together at the right edge of the name row. */
+.spell-save-dc-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
   margin-left: auto;
+  flex-shrink: 0;
+}
+
+.spell-save-dc {
   font-size: 0.85em;
   font-variant-numeric: tabular-nums;
   color: var(--ink-muted);

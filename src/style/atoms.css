@@ -397,6 +397,14 @@
   color: var(--ink-faint);
   cursor: pointer;
 }
+/* The breakdown affordance sits opposite the edit pencil, so a pill can carry
+   both without either moving when the other is absent. */
+.sh-stat-pill-info {
+  position: absolute;
+  top: 0.25rem;
+  left: 0.25rem;
+  display: inline-flex;
+}
 .sh-stat-pill-edit:hover { color: var(--accent); background: var(--accent-soft); }
 .sh-stat-pill-edit:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 .sh-stat-pill .lbl {

@@ -7,7 +7,7 @@
  */
 
 import { loadFile } from '../loadFile';
-import { getItemByRef, calculateWeaponAttackBonus, calculateWeaponDamage } from '../utils';
+import { getItemByRef, calculateWeaponAttackBonus, calculateWeaponDamage, getWeaponType } from '../utils';
 import { getCarryingCapacity as capacityFromStr, classifyLoad } from './carryingCapacity';
 import { aggregateConditionEffects, sumContributions } from './conditionEffects';
 import { getClassProgression, getProgressionValue, hasFeatureAtLevel, resolveAtLevel } from './classProgression';
@@ -43,12 +43,57 @@ import {
   isProficientWithShield,
   isProficientWithUnarmedStrike,
 } from './proficiency';
+import { contribution, situational, compactContributions, BONUS_TYPES } from './contributions';
+import {
+  getFlatRacialSkillBonus,
+  getFlatRacialSaveBonus,
+  getRacialIllusionDcBonus,
+  getRacialSkillBonuses,
+  getRacialSaveBonuses,
+  getRacialAttackBonuses,
+  getRacialACBonuses,
+  getRacialImmunities,
+} from './racialTraits';
 import { getDeityByName, isWithinOneStep, formatDeityAlignment } from '../deityData';
 import AnimalCompanion from './animalCompanion';
 import Familiar from './familiar';
 import SpecialMount from './specialMount';
 
 const ABILITY_KEYS = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
+
+/**
+ * Which saving throws a conditional racial save bonus applies to.
+ *
+ * `racialSaveBonuses` is keyed by what the bonus is *against*, not by which
+ * save it modifies, so the two have to be related by hand: poison is resisted
+ * with Fortitude, enchantments and fear with Will, while a dwarf's bonus
+ * against spells applies to whichever save the spell calls for.
+ */
+const SAVE_SCOPES = {
+  poison: ['fortitude'],
+  spellsAndSpellLike: ['fortitude', 'reflex', 'will'],
+  enchantment: ['will'],
+  illusions: ['will'],
+  fear: ['will'],
+};
+
+const SAVE_SCOPE_LABELS = {
+  poison: 'poison',
+  spellsAndSpellLike: 'spells and spell-like abilities',
+  enchantment: 'enchantment spells and effects',
+  illusions: 'illusions',
+  fear: 'fear',
+};
+
+/** Full ability names, for breakdown rows that must read as prose. */
+const ABILITY_LABELS = {
+  str: 'Strength',
+  dex: 'Dexterity',
+  con: 'Constitution',
+  int: 'Intelligence',
+  wis: 'Wisdom',
+  cha: 'Charisma',
+};
 
 /* Abilities an assumed form replaces outright. Int, Wis and Cha stay the
    character's own — magic.md → Polymorph sub-rules. */
@@ -3268,18 +3313,31 @@ class Player {
   getTotalFortitudeSave() {
     return this.getFortitudeSave() + Number(this.fortBonus || 0)
       + this.getFamiliarStatBonuses().fort + this.getDivineGraceBonus()
-      + getFeatSaveBonus(this.getFeats(), 'fortitude');
+      + getFeatSaveBonus(this.getFeats(), 'fortitude')
+      + this.getFlatRacialSaveBonus();
   }
 
   getTotalReflexSave() {
     return this.getReflexSave() + Number(this.reflexBonus || 0)
       + this.getFamiliarStatBonuses().reflex + this.getDivineGraceBonus()
-      + getFeatSaveBonus(this.getFeats(), 'reflex');
+      + getFeatSaveBonus(this.getFeats(), 'reflex')
+      + this.getFlatRacialSaveBonus();
   }
 
   getTotalWillSave() {
     return this.getWillSave() + Number(this.willBonus || 0) + this.getDivineGraceBonus()
-      + getFeatSaveBonus(this.getFeats(), 'will');
+      + getFeatSaveBonus(this.getFeats(), 'will')
+      + this.getFlatRacialSaveBonus();
+  }
+
+  /**
+   * The racial bonus that applies to every saving throw. Only the halfling has
+   * one, at +1; the dwarf's +2 against poison and the elf's +2 against
+   * enchantment are conditional and stay out of the total, appearing beside it
+   * as situational notes instead.
+   */
+  getFlatRacialSaveBonus() {
+    return getFlatRacialSaveBonus(this.getRace());
   }
 
   getTotalInitiative() {
@@ -3661,7 +3719,18 @@ class Player {
     const ability = this.getCastingAbility();
     if (!ability) return null;
     const level = Number(spellLevel) || 0;
-    return 10 + level + this.getModifier(ability) + getFeatSpellDcBonus(this.getFeats(), school);
+    return 10 + level + this.getModifier(ability)
+      + getFeatSpellDcBonus(this.getFeats(), school)
+      + this.getRacialSpellDcBonus(school);
+  }
+
+  /**
+   * A racial bonus to the save DC of one school. The gnome is the only race
+   * with one: +1 to the DC of every illusion they cast.
+   */
+  getRacialSpellDcBonus(school) {
+    if (getBaseSchool(school) !== 'Illusion') return 0;
+    return getRacialIllusionDcBonus(this.getRace());
   }
 
   /** Which ability powers this class's spells, or '' for a non-caster. */
@@ -3671,6 +3740,424 @@ class Player {
     if (['Cleric', 'Druid', 'Ranger', 'Paladin'].includes(cls)) return 'wis';
     if (['Sorcerer', 'Bard'].includes(cls)) return 'cha';
     return '';
+  }
+
+  // —— Stat breakdown ——
+  //
+  // One `get…Contributions()` per derived stat, each returning the list of
+  // sources that make up the number the sheet shows. The list MUST sum to that
+  // number: the info box prints the total and flags a mismatch, so a breakdown
+  // that does not add up is reporting a bug rather than hiding one.
+  //
+  // Zero rows are dropped by `compactContributions`, so a plain character gets
+  // a short list instead of a wall of "+0".
+
+  /**
+   * What makes up one ability score: the rolled base, the manual bonus, the
+   * racial modifier, rage, and any condition that damaged or drained it.
+   *
+   * An assumed form replaces Strength, Dexterity and Constitution outright
+   * rather than modifying them, so in that case the form is the single source
+   * and the character's own base does not appear at all.
+   */
+  getAbilityContributions(abilityKey) {
+    const rows = [];
+    const formScore = this.getWildShapeForm()?.abilities?.[abilityKey];
+    const replaced = SHAPE_REPLACED_ABILITIES.includes(abilityKey)
+      && Number.isFinite(Number(formScore));
+
+    if (replaced) {
+      rows.push(contribution('form', this.getWildShapeName() || 'assumed form', Number(formScore)));
+    } else {
+      rows.push(contribution('base', 'base score', this.getAbilityBase(abilityKey)));
+      rows.push(contribution('manual', 'manual bonus', this.getAbilityBonus(abilityKey)));
+      rows.push(contribution(
+        'race', this.getRace() || 'race',
+        this.getRaceAbilityModifier(abilityKey), BONUS_TYPES.RACIAL
+      ));
+    }
+    rows.push(contribution('rage', 'rage', this.getRageAbilityBonus(abilityKey), BONUS_TYPES.MORALE));
+    this.getAbilityConditionContributions(abilityKey).forEach((c) => {
+      rows.push(contribution(c.source, c.label, c.value));
+    });
+    return compactContributions(rows);
+  }
+
+  /**
+   * What makes up one saving throw. `which` is 'fortitude', 'reflex' or 'will'.
+   *
+   * Will deliberately has no familiar row: the per-species familiar bonuses
+   * cover Fortitude and Reflex only. Divine Grace adds Charisma to all three.
+   */
+  getSaveContributions(which) {
+    const familiar = this.getFamiliarStatBonuses();
+    const byWhich = {
+      fortitude: {
+        base: this.getBaseFortitudeSave(),
+        ability: ['con', this.getConMod()],
+        manual: Number(this.fortBonus || 0),
+        familiar: familiar.fort,
+      },
+      reflex: {
+        base: this.getBaseReflexSave(),
+        ability: ['dex', this.getDexMod()],
+        manual: Number(this.reflexBonus || 0),
+        familiar: familiar.reflex,
+      },
+      will: {
+        base: this.getBaseWillSave(),
+        ability: ['wis', this.getWisMod()],
+        manual: Number(this.willBonus || 0),
+        familiar: 0,
+      },
+    }[which];
+    if (!byWhich) return [];
+
+    const [abilityKey, abilityMod] = byWhich.ability;
+    const rows = [
+      contribution('base', `${this.getClass() || 'class'} base save`, byWhich.base),
+      contribution('ability', ABILITY_LABELS[abilityKey] || abilityKey, abilityMod),
+      contribution('manual', 'manual bonus', byWhich.manual),
+      contribution('familiar', 'familiar', byWhich.familiar),
+      contribution('divineGrace', 'Divine Grace', this.getDivineGraceBonus()),
+      contribution('feats', 'feats', getFeatSaveBonus(this.getFeats(), which)),
+      contribution('race', this.getRace() || 'race', this.getFlatRacialSaveBonus(), BONUS_TYPES.RACIAL),
+      contribution('conditions', 'conditions', this.getSaveConditionModifier()),
+    ];
+    if (which === 'will') {
+      rows.push(contribution('rage', 'rage', this.getRageWillBonus(), BONUS_TYPES.MORALE));
+    }
+    return compactContributions(rows);
+  }
+
+  /** What makes up initiative: Dexterity, the manual bonus, and the feat. */
+  getInitiativeContributions() {
+    return compactContributions([
+      contribution('ability', 'Dexterity', this.getDexMod()),
+      contribution('manual', 'manual bonus', Number(this.initiativeBonus || 0)),
+      contribution('feats', 'Improved Initiative', getFeatInitiativeBonus(this.getFeats())),
+      contribution('conditions', 'conditions', this.getInitiativeConditionModifier()),
+    ]);
+  }
+
+  /**
+   * What makes up maximum hit points. The Constitution row uses the character's
+   * own Constitution even in an assumed form: a wild-shaped druid keeps her own
+   * hit points (magic.md, polymorph sub-rules).
+   */
+  getMaxLifeContributions() {
+    return compactContributions([
+      contribution('rolled', 'rolled hit points', Number(this.maxLife) || 0),
+      contribution('con', `Constitution x ${this.getLevel()} levels`, this.getUnshapedConMod() * this.getLevel()),
+      contribution('manual', 'bonus life', Number(this.healthModifier) || 0),
+      contribution('familiar', 'familiar', this.getFamiliarStatBonuses().hp),
+      contribution('feats', 'Toughness', getFeatHpBonus(this.getFeats())),
+      contribution('conditions', 'conditions', this.getHpConditionModifier()),
+    ]);
+  }
+
+  /**
+   * What makes up armor class. The largest breakdown on the sheet: ten possible
+   * sources, of which a first-level character in leather has three.
+   *
+   * The Dexterity row is the modifier *after* the armor's maximum, so a
+   * character whose Dex is being capped sees the number the armor allows rather
+   * than the one their score would give — the cap is reported as its own note
+   * in the situational group rather than as a negative row here.
+   */
+  getArmorClassContributions() {
+    const armor = this.getEquippedArmorRaw();
+    const shield = this.getEquippedShieldRaw();
+    return compactContributions([
+      contribution('base', 'base', 10),
+      contribution('ability', 'Dexterity', this.getAcDexMod()),
+      contribution('armor', armor?.Name || 'armor', this.getArmorBonus(), BONUS_TYPES.ARMOR),
+      contribution('shield', shield?.Name || 'shield', this.getShieldBonus(), BONUS_TYPES.SHIELD),
+      contribution('monk', 'monk AC bonus', this.getMonkAcBonus()),
+      contribution('natural', 'natural armor', this.getWildShapeNaturalArmor(), BONUS_TYPES.NATURAL),
+      contribution('size', `${this.getSize()} size`, this.getSizeAcModifier(), BONUS_TYPES.SIZE),
+      contribution('manual', 'manual bonus', Number(this.acBonus || 0)),
+      contribution('rage', 'rage', this.getRageAcModifier(), BONUS_TYPES.MORALE),
+      contribution('conditions', 'conditions', this.getAcConditionModifier()),
+    ]);
+  }
+
+  /** Touch AC: armor, shield and natural armor do not apply; size still does. */
+  getTouchAcContributions() {
+    return compactContributions([
+      contribution('base', 'base', 10),
+      contribution('ability', 'Dexterity', this.getAcDexMod()),
+      contribution('monk', 'monk AC bonus', this.getMonkAcBonus()),
+      contribution('size', `${this.getSize()} size`, this.getSizeAcModifier(), BONUS_TYPES.SIZE),
+      contribution('manual', 'manual bonus', Number(this.acBonus || 0)),
+      contribution('manualTouch', 'touch bonus', Number(this.acTouchBonus || 0)),
+      contribution('rage', 'rage', this.getRageAcModifier(), BONUS_TYPES.MORALE),
+      contribution('conditions', 'conditions', this.getAcConditionModifier()),
+    ]);
+  }
+
+  /** Flat-footed AC: the Dexterity bonus is denied; everything worn still counts. */
+  getFlatFootedAcContributions() {
+    const armor = this.getEquippedArmorRaw();
+    return compactContributions([
+      contribution('base', 'base', 10),
+      contribution('armor', armor?.Name || 'armor', this.getArmorBonus(), BONUS_TYPES.ARMOR),
+      contribution('monk', 'monk AC bonus', this.getMonkAcBonus()),
+      contribution('natural', 'natural armor', this.getWildShapeNaturalArmor(), BONUS_TYPES.NATURAL),
+      contribution('size', `${this.getSize()} size`, this.getSizeAcModifier(), BONUS_TYPES.SIZE),
+      contribution('manual', 'manual bonus', Number(this.acBonus || 0)),
+      contribution('manualFlat', 'flat-footed bonus', Number(this.acFlatBonus || 0)),
+      contribution('rage', 'rage', this.getRageAcModifier(), BONUS_TYPES.MORALE),
+      contribution('conditions', 'conditions', this.getAcConditionModifier()),
+    ]);
+  }
+
+  /**
+   * What makes up speed: the racial land speed, class fast movement, the manual
+   * bonus and the conditions that halve it.
+   *
+   * The armor and encumbrance reduction is deliberately **not** a row. It does
+   * not reduce this number — the sheet shows it as "20 / 30 ft", both figures at
+   * once — so it belongs beside the total as a note, not inside it.
+   */
+  getSpeedContributions() {
+    const rows = [];
+    if (this.getWildShapeForm()) {
+      rows.push(contribution('form', this.getWildShapeName() || 'assumed form', this.getWildShapeSpeed('land')));
+    } else {
+      const races = loadFile('races');
+      const racial = Number(races?.[this.race]?.landSpeed) || 30;
+      rows.push(contribution('race', `${this.getRace() || 'race'} base speed`, racial));
+      rows.push(contribution('class', 'fast movement', this.getBaseSpeed() - racial));
+    }
+    rows.push(contribution('manual', 'manual bonus', Number(this.speedBonus || 0)));
+    const raw = this.getBaseSpeed() + Number(this.speedBonus || 0);
+    if (this.isHalfSpeed()) {
+      rows.push(contribution('conditions', 'halved by conditions', Math.floor(raw / 2) - raw));
+    }
+    return compactContributions(rows);
+  }
+
+  /**
+   * What makes up one skill total: ranks, the key ability, the manual bonus,
+   * the racial bonus, a familiar's per-species bonus, the flat skill feats, the
+   * armor check penalty and any condition.
+   *
+   * The armor check penalty is doubled on Swim, which is the one place the
+   * penalty is not simply itself.
+   */
+  getSkillContributions(skillName) {
+    const skills = loadFile('skills');
+    const list = Array.isArray(skills) ? skills : skills?.Skills;
+    let skill = Array.isArray(list) ? list.find((sk) => sk && sk.Name === skillName) : null;
+    if (!skill && /^Knowledge\s*\(/.test(skillName)) {
+      skill = Array.isArray(list) ? list.find((sk) => sk && sk.Name === 'Knowledge') : null;
+    }
+    const abilityKey = skill?.Characteristic
+      ? { Str: 'str', Dex: 'dex', Con: 'con', Int: 'int', Wis: 'wis', Cha: 'cha' }[skill.Characteristic]
+      : null;
+
+    const rows = [
+      contribution('ranks', 'ranks', Math.floor(this.getSkillRanks(skillName))),
+      contribution('ability', abilityKey ? ABILITY_LABELS[abilityKey] : 'ability', abilityKey ? this.getModifier(abilityKey) : 0),
+      contribution('manual', 'manual bonus', this.getSkillBonus(skillName)),
+      contribution('race', this.getRace() || 'race', getFlatRacialSkillBonus(this.getRace(), skillName), BONUS_TYPES.RACIAL),
+      contribution('familiar', 'familiar', this.getFamiliarStatBonuses().skills[skillName] || 0),
+      contribution('feats', 'feats', getFeatSkillBonus(this.getFeats(), skillName)),
+      contribution('conditions', 'conditions', this.getSkillConditionModifier(skillName)),
+    ];
+
+    const penalty = this.getArmorCheckPenalty();
+    if (penalty > 0 && skill?.ArmorPenalty) {
+      const multiplier = skillName === 'Swim' ? 2 : 1;
+      rows.push(contribution('armorCheck', 'armor check penalty', -penalty * multiplier, BONUS_TYPES.ARMOR));
+    }
+    return compactContributions(rows);
+  }
+
+  /**
+   * What makes up one weapon's attack bonus: base attack, the ability modifier
+   * (Dexterity for a ranged weapon, or the better of the two under Weapon
+   * Finesse), masterwork or enhancement, Weapon Focus, conditions, and the
+   * penalties for using something you were never trained in.
+   *
+   * Lives here rather than beside the calculator in lib/utils.js so that module
+   * keeps reaching the model through optional chaining and gains no import.
+   */
+  getWeaponAttackContributions(weaponData) {
+    const data = weaponData?.weaponItem ? weaponData : { weaponItem: weaponData };
+    const { weaponItem, itemData } = data;
+    if (!weaponItem) return [];
+    const ranged = getWeaponType(weaponItem).isRanged;
+    const finesse = this.usesWeaponFinesse(weaponItem);
+    const abilityKey = ranged ? 'dex' : (finesse && this.getDexMod() > this.getStrMod() ? 'dex' : 'str');
+    const enhancement = itemData ? Math.max(itemData.bonus || 0, itemData.masterwork ? 1 : 0) : 0;
+    const perfect = (weaponItem.isPerfect || weaponItem.Name?.toLowerCase().includes('perfect')) ? 1 : 0;
+    const armorPenalty = this.getArmorProficiencyAttackPenalty();
+
+    return compactContributions([
+      contribution('bab', 'base attack bonus', this.getBaseAttackBonus()),
+      contribution('ability', ABILITY_LABELS[abilityKey] + (finesse && !ranged ? ' (Weapon Finesse)' : ''), this.getModifier(abilityKey)),
+      contribution('perfect', 'perfect weapon', perfect, BONUS_TYPES.ENHANCEMENT),
+      contribution('enhancement', enhancement > 1 ? `+${enhancement} weapon` : 'masterwork', enhancement, BONUS_TYPES.ENHANCEMENT),
+      contribution('feats', 'Weapon Focus', this.getWeaponFeatAttackBonus(weaponItem)),
+      contribution('proficiency', 'not proficient', this.isProficientWithWeapon(weaponItem) ? 0 : NON_PROFICIENT_ATTACK_PENALTY),
+      contribution('armorProficiency', 'untrained armor', armorPenalty, BONUS_TYPES.ARMOR),
+      contribution('conditions', 'conditions', this.getAttackConditionModifier()),
+    ]);
+  }
+
+  /**
+   * What makes up one weapon's damage *bonus* — the number after the dice. The
+   * dice themselves are not a contribution, since they are not added to
+   * anything; they are reported by `getWeaponDamageDice`.
+   */
+  getWeaponDamageContributions(weaponData) {
+    const data = weaponData?.weaponItem ? weaponData : { weaponItem: weaponData };
+    const { weaponItem, isTwoHanded, itemData } = data;
+    if (!weaponItem) return [];
+    const type = getWeaponType(weaponItem);
+    const strMod = this.getStrMod();
+
+    let strValue = 0;
+    let strLabel = 'Strength';
+    if (type.isMelee) {
+      strValue = isTwoHanded ? Math.floor(strMod * 1.5) : strMod;
+      if (isTwoHanded) strLabel = 'Strength (two-handed)';
+    } else if (type.isCompositeRanged) {
+      strValue = Math.max(0, strMod);
+    }
+    const perfect = (weaponItem.isPerfect || weaponItem.Name?.toLowerCase().includes('perfect'))
+      && (type.isMelee || type.isCompositeRanged) ? 1 : 0;
+
+    return compactContributions([
+      contribution('ability', strLabel, strValue),
+      contribution('perfect', 'perfect weapon', perfect, BONUS_TYPES.ENHANCEMENT),
+      contribution('enhancement', `+${itemData?.bonus || 0} weapon`, itemData?.bonus || 0, BONUS_TYPES.ENHANCEMENT),
+      contribution('feats', 'Weapon Specialization', this.getWeaponFeatDamageBonus(weaponItem)),
+      contribution('conditions', 'conditions', this.getDamageConditionModifier()),
+    ]);
+  }
+
+  /** The dice a weapon rolls, before any bonus — sized for this character. */
+  getWeaponDamageDice(weaponItem) {
+    if (!weaponItem) return '';
+    return this.getSize() === 'Small'
+      ? (weaponItem['Dmg (S)'] || '1d4')
+      : (weaponItem['Dmg (M)'] || '1d6');
+  }
+
+  /**
+   * What makes up a spell's save DC: 10, the spell's own level, the casting
+   * ability modifier, Spell Focus and its Greater form, and the gnome's
+   * illusion bonus. The level is the spell's, not the slot it occupies — a
+   * metamagic'd spell still saves against its base level (metamagic.md).
+   */
+  getSpellSaveDCContributions(spell, level) {
+    const ability = this.getCastingAbility();
+    if (!ability) return [];
+    const school = spell?.School ?? spell;
+    return compactContributions([
+      contribution('base', 'base', 10),
+      contribution('level', `spell level ${Number(level) || 0}`, Number(level) || 0),
+      contribution('ability', ABILITY_LABELS[ability], this.getModifier(ability)),
+      contribution('feats', 'Spell Focus', this.getSpellFocusBonus(school)),
+      contribution('race', this.getRace() || 'race', this.getRacialSpellDcBonus(school), BONUS_TYPES.RACIAL),
+    ]);
+  }
+
+  /**
+   * Things tied to a stat that do not change its number.
+   *
+   * A dwarf's +2 against poison is real and worth knowing, but it is not part
+   * of the Fortitude save — putting it there would be wrong every time the
+   * threat is not poison. So it is reported beside the total instead, carrying
+   * a note rather than a value, and `sumContributions` cannot pick it up even
+   * if the two lists were concatenated by mistake.
+   *
+   * The `statKey` vocabulary matches the contribution methods: 'ac', 'acTouch',
+   * 'acFlat', 'fortitude', 'reflex', 'will', 'speed', 'attack', an ability key,
+   * or `skill:<Name>`. This is the socket the remaining conditional feats and
+   * class features plug into — backlog items 3 and 4.
+   */
+  getSituationalContributions(statKey) {
+    if (!statKey) return [];
+    const race = this.getRace();
+    const cls = this.getClass();
+    const level = this.getLevel();
+    const out = [];
+    const isSave = ['fortitude', 'reflex', 'will'].includes(statKey);
+
+    // —— Racial ——
+    if (isSave) {
+      getRacialSaveBonuses(race).filter((b) => !b.flat).forEach((b) => {
+        if (!SAVE_SCOPES[b.against]?.includes(statKey)) return;
+        out.push(situational(
+          `race:${b.against}`, race,
+          `+${b.bonus} on ${statKey} saves against ${SAVE_SCOPE_LABELS[b.against] || b.against}`
+        ));
+      });
+      getRacialImmunities(race).forEach((what) => {
+        if (statKey !== 'will') return;
+        out.push(situational('race:immunity', race, `Immune to ${String(what).toLowerCase()}`));
+      });
+    }
+
+    if (statKey === 'ac' || statKey === 'acTouch') {
+      getRacialACBonuses(race).forEach((b) => {
+        out.push(situational('race:ac', race, `+${b.bonus} ${b.type || ''} bonus against ${b.against}`.replace(/\s+/g, ' ')));
+      });
+    }
+
+    if (statKey === 'attack') {
+      getRacialAttackBonuses(race).forEach((b) => {
+        out.push(situational('race:attack', race, `+${b.bonus} on attack rolls against ${b.against}`));
+      });
+    }
+
+    if (statKey.startsWith('skill:')) {
+      const skillName = statKey.slice('skill:'.length);
+      getRacialSkillBonuses(race)
+        .filter((b) => !b.flat && b.skill.toLowerCase() === skillName.toLowerCase())
+        .forEach((b) => out.push(situational('race:skill', race, `+${b.bonus} when ${b.condition}`)));
+    }
+
+    // —— The caps and reductions that are real but sit outside the total ——
+    if (statKey === 'ac' && this.getMaxDexBonus() < this.getDexMod()) {
+      out.push(situational(
+        'armorMaxDex', 'armor maximum Dexterity',
+        `Your armor caps the Dexterity bonus at +${this.getMaxDexBonus()}`
+      ));
+    }
+    if (statKey === 'speed') {
+      const info = this.getArmorSpeedInfo();
+      if (info?.hasReduction) {
+        out.push(situational(
+          'armorSpeed', 'armor and load',
+          `Reduced to ${info.reducedSpeed} ft while encumbered`
+        ));
+      }
+    }
+
+    // —— Class features whose bonus only exists in a situation ——
+    const trapSense = getProgressionValue(cls, 'trapSense', level, 0);
+    if (trapSense > 0 && (statKey === 'reflex' || statKey === 'ac')) {
+      out.push(situational('trapSense', 'Trap Sense', `+${trapSense} against traps`));
+    }
+    if (statKey === 'will' && hasFeatureAtLevel(cls, 'stillMindLevel', level)) {
+      out.push(situational('stillMind', 'Still Mind', '+2 against enchantment spells and effects'));
+    }
+    if (statKey === 'will' && hasFeatureAtLevel(cls, 'indomitableWillLevel', level)) {
+      out.push(situational('indomitableWill', 'Indomitable Will', '+4 against enchantment while raging'));
+    }
+    if (statKey === 'ac' && hasFeatureAtLevel(cls, 'improvedUncannyDodgeLevel', level)) {
+      out.push(situational('improvedUncannyDodge', 'Improved Uncanny Dodge', 'Cannot be flanked'));
+    }
+    if (isSave && hasFeatureAtLevel(cls, 'resistNaturesLureLevel', level)) {
+      out.push(situational('resistNaturesLure', "Resist Nature's Lure", '+4 against the spell-like abilities of fey'));
+    }
+
+    return out;
   }
 
   /** Spell Focus / Greater Spell Focus bonus for one school, on its own. */
@@ -3787,7 +4274,11 @@ class Player {
     const familiarSkillBonus = this.getFamiliarStatBonuses().skills[skillName] || 0;
     // Acrobatic, Stealthy, Skill Focus and the rest of the flat skill feats.
     const featBonus = getFeatSkillBonus(this.getFeats(), skillName);
-    let result = mod + ranks + bonus + familiarSkillBonus + featBonus;
+    // An elf's +2 on Listen, a halfling's +2 on Move Silently. Only the
+    // unconditional ones — a dwarf's +2 on Appraise applies to stonework alone
+    // and is reported beside the total rather than inside it.
+    const racialBonus = getFlatRacialSkillBonus(this.getRace(), skillName);
+    let result = mod + ranks + bonus + familiarSkillBonus + featBonus + racialBonus;
 
     // Apply armor check penalty if skill has ArmorPenalty flag
     const penalty = this.getArmorCheckPenalty();

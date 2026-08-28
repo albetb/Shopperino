@@ -29,6 +29,7 @@ import { getItemByRef, calculateWeaponAttackBonus, calculateWeaponDamage, applyI
 import SpellLink from '../common/spell_link';
 import Card from '../common/Card';
 import StatPill from '../common/StatPill';
+import StatInfo from '../common/StatInfo';
 import Bar from '../common/Bar';
 import Pill from '../common/Pill';
 import Filigree from '../common/Filigree';
@@ -290,6 +291,21 @@ export default function CombatPage() {
   const hasRun = player.hasRunFeat?.() ?? false;
   const runSpeed = (speedInfo?.hasReduction ? speedInfo.reducedSpeed : primaryMovement.speed) * runMultiplier;
 
+  /* One breakdown box per stat. StatInfo renders nothing when both lists are
+     empty, so "only when there is something to say" needs no test here — the
+     component owns that rule so it cannot drift between surfaces. */
+  const statInfo = (label, value, contributions, statKey, extraNotes = []) => (
+    <StatInfo
+      label={label}
+      value={value}
+      contributions={contributions ?? []}
+      situational={[
+        ...(statKey ? (player.getSituationalContributions?.(statKey) ?? []) : []),
+        ...extraNotes,
+      ]}
+    />
+  );
+
   const totalInitiative = player.getTotalInitiative?.() ?? 0;
   const totalFort = player.getTotalFortitudeSave?.() ?? player.getFortitudeSave?.() ?? 0;
   const totalRef  = player.getTotalReflexSave?.()    ?? player.getReflexSave?.()    ?? 0;
@@ -406,6 +422,7 @@ export default function CombatPage() {
         eyebrow="Health"
         action={
           <>
+            {statInfo('Maximum hit points', maxHp, player.getMaxLifeContributions?.(), 'maxHp')}
             {/* A day's rest: refreshes spell slots, gnome racial spells and
                 every per-day class-feature counter in one action. */}
             <IconButton
@@ -557,6 +574,7 @@ export default function CombatPage() {
           accent
           label="AC"
           value={ac}
+          info={statInfo('Armor Class', ac, player.getArmorClassContributions?.(), 'ac')}
           cond={acDelta}
           sub={
             <>
@@ -571,6 +589,7 @@ export default function CombatPage() {
         <StatPill
           label="Init"
           value={totalInitiative >= 0 ? `+${totalInitiative}` : `${totalInitiative}`}
+          info={statInfo('Initiative', totalInitiative, player.getInitiativeContributions?.(), 'initiative')}
           cond={condDeltas.initiative || 0}
           sub={withCond(initiativeBonus !== 0 ? `bonus ${initiativeBonus >= 0 ? '+' : ''}${initiativeBonus}` : null, condDeltas.initiative || 0)}
           editing={editBonus === 'initiativeBonus'}
@@ -579,6 +598,13 @@ export default function CombatPage() {
         <StatPill
           label="Speed"
           value={speedDisplay}
+          info={statInfo('Speed', primaryMovement.speed, player.getSpeedContributions?.(), 'speed', [{
+            source: 'run',
+            label: 'Running',
+            note: hasRun
+              ? `A full-round run covers ${runSpeed} ft, and the Run feat keeps your Dexterity bonus to AC while running.`
+              : `A full-round run covers ${runSpeed} ft, and you lose your Dexterity bonus to AC while running.`,
+          }])}
           cond={condDeltas.speed || 0}
           sub={
             <>
@@ -589,13 +615,7 @@ export default function CombatPage() {
                 speedInfo?.hasReduction ? 'encumbered' : (speedBonus !== 0 ? `bonus +${speedBonus}` : null),
                 condDeltas.speed || 0
               )}
-              <span
-                className={hasRun ? 'sh-accent-text' : undefined}
-                style={{ display: 'block' }}
-                title={hasRun
-                  ? 'Run feat: one multiple further, and you keep your Dexterity bonus to AC while running.'
-                  : 'A full-round run. Without the Run feat you lose your Dexterity bonus to AC.'}
-              >
+              <span className={hasRun ? 'sh-accent-text' : undefined} style={{ display: 'block' }}>
                 run {runSpeed} ft (&times;{runMultiplier})
               </span>
             </>
@@ -611,6 +631,7 @@ export default function CombatPage() {
         <StatPill
           label="Fort"
           value={totalFort >= 0 ? `+${totalFort}` : totalFort}
+          info={statInfo('Fortitude save', totalFort, player.getSaveContributions?.('fortitude'), 'fortitude')}
           cond={condDeltas.fort || 0}
           sub={withCond(fortBonus ? `bonus ${fortBonus >= 0 ? '+' : ''}${fortBonus}` : null, condDeltas.fort || 0)}
           editing={editBonus === 'fortBonus'}
@@ -619,6 +640,7 @@ export default function CombatPage() {
         <StatPill
           label="Ref"
           value={totalRef >= 0 ? `+${totalRef}` : totalRef}
+          info={statInfo('Reflex save', totalRef, player.getSaveContributions?.('reflex'), 'reflex')}
           cond={condDeltas.reflex || 0}
           sub={withCond(reflexBonus ? `bonus ${reflexBonus >= 0 ? '+' : ''}${reflexBonus}` : null, condDeltas.reflex || 0)}
           editing={editBonus === 'reflexBonus'}
@@ -627,6 +649,7 @@ export default function CombatPage() {
         <StatPill
           label="Will"
           value={totalWill >= 0 ? `+${totalWill}` : totalWill}
+          info={statInfo('Will save', totalWill, player.getSaveContributions?.('will'), 'will')}
           cond={condDeltas.will || 0}
           sub={withCond(willBonus ? `bonus ${willBonus >= 0 ? '+' : ''}${willBonus}` : null, condDeltas.will || 0)}
           editing={editBonus === 'willBonus'}
@@ -746,11 +769,7 @@ export default function CombatPage() {
                               </span>
                             )}
                             {untrained && (crit || range.feet > 0) && ' · '}
-                            {untrained && (
-                              <span className="is-untrained" title="Not proficient with this weapon: −4 on attack rolls.">
-                                not proficient
-                              </span>
-                            )}
+                            {untrained && <span className="is-untrained">not proficient</span>}
                           </span>
                         )}
                       </span>
@@ -758,6 +777,7 @@ export default function CombatPage() {
                     <span className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
                       <Pill tone={atkAffected ? 'warn' : 'accent'}>{ab >= 0 ? '+' : ''}{ab}</Pill>
                       <Pill tone={dmgAffected ? 'warn' : 'default'}>{dmg}</Pill>
+                      {statInfo(`${w.name} attack`, ab, player.getWeaponAttackContributions?.(wd), 'attack')}
                     </span>
                   </div>
                 );
@@ -788,11 +808,7 @@ export default function CombatPage() {
                         {punchCrit.text}
                       </span>
                       {punchUntrained && ' · '}
-                      {punchUntrained && (
-                        <span className="is-untrained" title="Not proficient with unarmed strikes: −4 on attack rolls.">
-                          not proficient
-                        </span>
-                      )}
+                      {punchUntrained && <span className="is-untrained">not proficient</span>}
                     </span>
                   </span>
                 </span>

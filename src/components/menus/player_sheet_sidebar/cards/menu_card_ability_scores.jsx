@@ -8,6 +8,7 @@ import {
   onAcknowledgeAbilityIncreases,
 } from '../../../../store/thunks/playerSheetThunks';
 import Pill from '../../../common/Pill';
+import StatInfo from '../../../common/StatInfo';
 import '../../../../style/menu_cards.css';
 
 const ABILITY_LABELS = {
@@ -268,12 +269,21 @@ export default function MenuCardAbilityScores({ isCollapsed, onToggleCollapse })
                     delta > 0 ? 'ability-score-cell--up' : '',
                     delta < 0 ? 'ability-score-cell--down' : '',
                   ].filter(Boolean).join(' ');
+                  /* A score that is only its base has nothing to explain, and
+                     six cells in a narrow sidebar cannot afford six buttons
+                     that say "10 = 10". StatInfo drops itself when the list is
+                     empty, so the rule is simply not to filter here. */
+                  const contributions = player.getAbilityContributions?.(key) ?? [];
                   return (
-                    <div
-                      key={key}
-                      className={cls}
-                      title={delta ? `Temporary effects: ${delta > 0 ? '+' : ''}${delta}` : undefined}
-                    >
+                    <div key={key} className={cls}>
+                      <span className="ability-score-info">
+                        <StatInfo
+                          label={ABILITY_LABELS[key]}
+                          value={total}
+                          contributions={contributions.length > 1 ? contributions : []}
+                          situational={player.getSituationalContributions?.(key) ?? []}
+                        />
+                      </span>
                       <div>{total}</div>
                       <div className="ability-modifier">{formatModifier(mod)}</div>
                     </div>

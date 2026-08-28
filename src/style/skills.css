@@ -75,6 +75,13 @@ button.sh-skill-group-head--button:focus-visible {
   color: var(--ink-muted);
 }
 
+/* The breakdown affordance leads the meta row, so it sits in the same column
+   down the whole list and the rows that have nothing to explain read as a
+   clean gap rather than as a missing control. */
+.sh-skill-meta .stat-info-button {
+  margin-right: 0.1rem;
+}
+
 .sh-skill-total {
   font-weight: 700;
   font-size: var(--font-size-lg);

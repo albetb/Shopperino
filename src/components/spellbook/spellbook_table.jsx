@@ -182,9 +182,18 @@ export default function SpellbookTable({ source = 'app' }) {
      modifier, plus Spell Focus and Greater Spell Focus for its school. Both
      models answer the same shape; the player one is the only one that can see
      feats, because a standalone spellbook has no character behind it. */
-  const getSaveDC = (lvl, spell) => (isApp
-    ? (inst?.getSpellSaveDCFor?.(spell, lvl) ?? null)
-    : (player?.getSpellSaveDCFor?.(spell, lvl) ?? null));
+  const getSaveDC = (lvl, spell) => {
+    const dc = isApp
+      ? (inst?.getSpellSaveDCFor?.(spell, lvl) ?? null)
+      : (player?.getSpellSaveDCFor?.(spell, lvl) ?? null);
+    if (!dc) return null;
+    // Only the player path can break the DC down — the standalone spellbook has
+    // no character behind it, so it has no feats and no race to report.
+    return {
+      ...dc,
+      contributions: isApp ? [] : (player?.getSpellSaveDCContributions?.(spell, lvl) ?? []),
+    };
+  };
 
   const castingBlocked = !isApp && player?.canCastSpells?.() === false;
   const castingBlockedReason = 'No speech in animal form — Natural Spell removes this';

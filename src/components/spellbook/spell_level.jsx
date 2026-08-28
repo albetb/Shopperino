@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import StatInfo from '../common/StatInfo';
 import { isMobile, trimLine } from '../../lib/utils';
 import { addCardByLink } from '../../store/slices/appSlice';
 import SpontaneousSpells from './spontaneous_spells';
@@ -290,13 +291,20 @@ export default function SpellLevelCard({
                         const save = getSaveDC?.(level, item);
                         if (!save) return null;
                         return (
-                          <span
-                            className={'spell-save-dc' + (save.focused ? ' is-focused' : '')}
-                            title={save.focused
-                              ? 'Save DC, including Spell focus for this school'
-                              : 'Save DC against this spell'}
-                          >
-                            DC {save.dc}
+                          <span className="spell-save-dc-group">
+                            <span
+                              className={'spell-save-dc' + (save.focused ? ' is-focused' : '')}
+                              title={save.focused
+                                ? 'Save DC, including Spell focus for this school'
+                                : 'Save DC against this spell'}
+                            >
+                              DC {save.dc}
+                            </span>
+                            <StatInfo
+                              label={`${item.Name} save DC`}
+                              value={save.dc}
+                              contributions={save.contributions ?? []}
+                            />
                           </span>
                         );
                       })()}

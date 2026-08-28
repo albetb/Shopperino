@@ -344,6 +344,17 @@
   flex-direction: column;
   align-items: center;
   gap: 0.15rem;
+  position: relative;
+}
+
+/* Six ability cells share a narrow sidebar, so the breakdown affordance sits in
+   the corner rather than in the flow — the score itself must stay centred. */
+.ability-score-info {
+  position: absolute;
+  top: 0.05rem;
+  right: 0.05rem;
+  display: inline-flex;
+  line-height: 1;
 }
 
 /* A score raised or lowered by a temporary effect — rage, an assumed

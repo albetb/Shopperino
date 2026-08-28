@@ -8,6 +8,7 @@ import SpellLink from '../common/spell_link';
 import Card from '../common/Card';
 import Filigree from '../common/Filigree';
 import Pill from '../common/Pill';
+import StatInfo from '../common/StatInfo';
 import Stepper from '../common/Stepper';
 import IconButton from '../common/IconButton';
 import EmptyState from '../common/EmptyState';
@@ -133,8 +134,25 @@ export default function SkillsPage() {
     const link = `skills#${slug(skill.Name)}`;
     const step = isClass ? 1 : 1; // Stepper integer steps; half-ranks handled by stepper step 1
     const ranksStep = isClass ? 1 : 1;
+    /* Ranks and the key ability are what a skill is *made of*, so a row with
+       only those has nothing worth explaining and gets no button. Anything
+       else — a racial bonus, a feat, a familiar, the armor check penalty, a
+       manual bonus, a condition — earns one, and the whole list is shown then,
+       because the reader wants the ranks and the ability in the sum too. */
+    const skillRows = player.getSkillContributions?.(skill.Name) ?? [];
+    const beyondTheBasics = skillRows.some(c => c.source !== 'ranks' && c.source !== 'ability');
+    const info = (
+      <StatInfo
+        label={skill.Name}
+        value={total}
+        contributions={beyondTheBasics ? skillRows : []}
+        situational={player.getSituationalContributions?.(`skill:${skill.Name}`) ?? []}
+      />
+    );
+
     const meta = (
       <span className="sh-skill-meta">
+        {info}
         <span className="sh-mono sh-faint">{skill.Characteristic ?? '—'}</span>
         {!isClass && <span className="sh-faint"> · cross-class</span>}
         {skill.ArmorPenalty && (
