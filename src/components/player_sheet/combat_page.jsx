@@ -24,6 +24,7 @@ import ConditionsSection from './conditions_section';
 import ClassFeatureCards from './class_feature_cards';
 import EquippedItemsCard from './equipped_items_card';
 import PotionsCard from './potions_card';
+import ScrollsCard from './scrolls_card';
 import useLongPress from '../hooks/useLongPress';
 import useHpFeedback from '../hooks/useHpFeedback';
 import { getItemByRef, calculateWeaponAttackBonus, calculateWeaponDamage, applyItemOverrides, getWeaponType } from '../../lib/utils';
@@ -1094,6 +1095,7 @@ export default function CombatPage() {
       {/* What is in the four free slots — absent when they are empty. */}
       <EquippedItemsCard />
       <PotionsCard />
+      <ScrollsCard />
 
       {/* Class-specific cards — see class_feature_cards.jsx for the registry */}
       <ClassFeatureCards />

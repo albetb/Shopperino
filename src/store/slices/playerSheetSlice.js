@@ -6,7 +6,7 @@ const PLAYER_SHEET_CARD_KEYS = ['identity', 'abilityScores', 'Combat', 'Spells',
    COMBAT_PAGE_CARD_KEYS in lib/storage.js (the persistence read filter).
    Every class-feature card collapses too, so each one owns a key here. */
 const COMBAT_PAGE_CARD_KEYS = [
-  'player', 'combat', 'items', 'potions', 'carry', 'money',
+  'player', 'combat', 'items', 'potions', 'scrolls', 'carry', 'money',
   'animalCompanion', 'familiar', 'specialMount', 'wildShape', 'elementalWildShape',
   'rage', 'bardicMusic', 'turnUndead', 'domains', 'favoredEnemy', 'combatStyle',
   'smiteEvil', 'layOnHands', 'removeDisease',

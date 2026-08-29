@@ -465,6 +465,9 @@ class Spellbook {
             "Paladin": paladinSpellsPerDay
         }[this.Class];
 
+        // A class with no row in the table casts nothing, rather than throwing.
+        if (!_baseSpellsPerDay) return new Array(10).fill(0);
+
         const lvl = Math.min(Math.max(this.Level, 1), 20);
         let base = _baseSpellsPerDay[lvl - 1];
 

@@ -114,7 +114,7 @@ export function getPlayerSheetCardsCollapsed(app) {
 /* Must stay in sync with the list of the same name in
    store/slices/playerSheetSlice.js. */
 const COMBAT_PAGE_CARD_KEYS = [
-  'player', 'combat', 'items', 'potions', 'carry', 'money',
+  'player', 'combat', 'items', 'potions', 'scrolls', 'carry', 'money',
   'animalCompanion', 'familiar', 'specialMount', 'wildShape', 'elementalWildShape',
   'rage', 'bardicMusic', 'turnUndead', 'domains', 'favoredEnemy', 'combatStyle',
   'smiteEvil', 'layOnHands', 'removeDisease',

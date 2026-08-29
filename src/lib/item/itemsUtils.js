@@ -32,8 +32,11 @@ export function getItemByRef(link) {
     return raw ? { raw, source: 'items' } : null;
   }
 
-  const [source, typeOrSub, slugFromPath] = parts;
-  const effectiveSlug = slugFromPath || slugPart;
+  const [source, typeOrSub] = parts;
+  /* Everything after the type, not just the next segment: six scroll links
+     carry a slash of their own (`open/close`, `blindness/deafness`,
+     `geas/quest`), and taking parts[2] alone resolved them to nothing. */
+  const effectiveSlug = parts.slice(2).join('/') || slugPart;
   if (source === 'items') {
     const items = loadFile('items');
     const list = items[typeOrSub] || [];

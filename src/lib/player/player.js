@@ -22,12 +22,17 @@ import { listAnimals, getCreatureBaseByRef } from '../animal/animalsUtils';
 import { parseAttacks, recomputeAttack } from '../animal/attackParser';
 import { getBaseFeatName, UNARMED_STRIKE } from '../featChoices';
 import { spellAllowsSave } from '../spellbook/spellsUtils';
-import { DOMAINS, CLASSSPELLKEY } from '../spellbook/spellbook';
+import Spellbook, { DOMAINS, CLASSSPELLKEY } from '../spellbook/spellbook';
+import { playerToSpellbookData } from './playerSpellbookAdapter';
 import {
   resolvePotionEffect,
   getPotionByName,
   shiftSize,
 } from '../item/potionEffects';
+import {
+  resolveScroll,
+  scrollUseMagicDeviceDC,
+} from '../item/scrolls';
 import {
   resolveHeldItem,
   getHeldItemSpells,
@@ -5536,6 +5541,111 @@ class Player {
       });
     });
     return [...seen.values()].filter((row) => row.labels.length > 1);
+  }
+
+  /* —— Scrolls ——
+     A scroll is carried like a potion and consumed like a potion, but it is
+     activated by **spell completion**, the strictest of the four methods: the
+     spell must be on your class list *and* you must already be able to cast
+     spells of that level. Both halves are reported here and neither is
+     enforced — the table is the authority, and a rogue with ranks in Use
+     Magic Device really can read a wizard's scroll.
+     Rules: dnd-rules/magic-items.md, dnd-rules/skills-detail.md. */
+
+  /**
+   * The scrolls in the bag, each resolved and already checked against this
+   * character's class and level.
+   *
+   * Identified by the inventory row's `Link` rather than by its name: 151 of
+   * the 598 scroll spells exist as both an Arcane and a Divine scroll under
+   * the same name, and the two can sit at different spell levels — which is
+   * precisely the number the usability check compares against.
+   *
+   * @returns {Array<object>} one entry per inventory row, in inventory order
+   */
+  getCarriedScrolls() {
+    return this.getInventory()
+      .filter((row) => row?.ItemType === 'Scroll' && (Number(row.Number) || 0) > 0)
+      .map((row) => {
+        const scroll = resolveScroll(row.Link);
+        if (!scroll) return null;
+        return {
+          ...scroll,
+          number: Number(row.Number) || 0,
+          umdDC: scrollUseMagicDeviceDC(scroll.casterLevel),
+          ...this.canActivateSpellCompletion(scroll.link, scroll.spellLevel),
+        };
+      })
+      .filter(Boolean);
+  }
+
+  hasCarriedScrolls() {
+    return this.getCarriedScrolls().length > 0;
+  }
+
+  /**
+   * The highest spell level this character can cast today, or -1 for someone
+   * who cannot cast at all.
+   *
+   * Delegates to the spellbook rather than re-reading the slot tables: the
+   * spellbook already owns the progression, the bonus slots and the
+   * ability-score cap ("no spells of a level above your ability score minus
+   * 10"), and a second copy here would be free to disagree with the page the
+   * player is looking at.
+   */
+  getMaxCastableSpellLevel() {
+    /* Guarded on the class rather than on the spellbook: a barbarian has no
+       spell progression at all, and the slot tables have no row to look up
+       for one. `castingAbility` is set for exactly the seven casting classes
+       the spellbook knows, so the two cannot fall out of step. */
+    if (!this.getCastingAbility()) return -1;
+    const data = playerToSpellbookData(this);
+    if (!data?.Class) return -1;
+    return new Spellbook().load(data).maxSpellLevel();
+  }
+
+  /**
+   * Whether this character can read one scroll unaided.
+   *
+   * Spell completion asks two questions, and a scroll can fail either:
+   *
+   * 1. **Is the spell on your class list?** The same test spell trigger uses,
+   *    so it shares `getSpellLevelForItem`.
+   * 2. **Can you cast spells of that level?** This is where a scroll parts
+   *    company with a wand: level is irrelevant to a wand, so a 1st-level
+   *    wizard fires a wand of *fireball* normally but cannot read the scroll.
+   *
+   * Failing either points at Use Magic Device, whose DC for a scroll is
+   * `20 + the scroll's caster level` — not the flat 20 a wand asks for.
+   *
+   * Reported, never blocked, per the project's non-enforcing rule.
+   *
+   * @param {string} spellLink the spell's link
+   * @param {number} scrollLevel the scroll's own spell level
+   * @returns {{usable: boolean, reasons: string[], reason: string}}
+   */
+  canActivateSpellCompletion(spellLink, scrollLevel = 0) {
+    const reasons = [];
+    const cls = this.getClass() || 'your class';
+    const onList = this.getSpellLevelForItem(spellLink);
+    const maxLevel = this.getMaxCastableSpellLevel();
+    /* The level compared against is the one on *this character's* list where
+       they have the spell at all, and the scroll's own otherwise — a spell a
+       cleric gets a level earlier is read at the cleric's level. */
+    const needed = onList === null ? Math.max(0, Number(scrollLevel) || 0) : onList;
+
+    if (maxLevel < 0) {
+      /* No slots at all — a fighter, or a paladin below 4th. One sentence
+         covers it: which list the spell is on is moot when nothing casts. */
+      reasons.push(`A ${cls} of your level casts no spells`);
+    } else {
+      if (onList === null) reasons.push(`Not on the ${cls} spell list`);
+      if (maxLevel < needed) {
+        reasons.push(`You cast up to level ${maxLevel} spells, and this is level ${needed}`);
+      }
+    }
+
+    return { usable: reasons.length === 0, reasons, reason: reasons.join('; ') };
   }
 
   /**

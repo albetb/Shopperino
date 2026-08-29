@@ -14,6 +14,7 @@ import { setPersist } from '../slices/persistSlice';
 import { addCardByLink } from '../slices/appSlice';
 import { getEffectById } from '../../lib/item/effectsUtils';
 import { getPotionByName, resolvePotionEffect } from '../../lib/item/potionEffects';
+import { resolveScroll } from '../../lib/item/scrolls';
 import AnimalCompanion from '../../lib/player/animalCompanion';
 import Familiar from '../../lib/player/familiar';
 import { getAnimalBaseByRef } from '../../lib/utils';
@@ -684,6 +685,30 @@ export const onUsePotion = (name, { target = '', roll = null } = {}) => (dispatc
   } else {
     player.addPotionEffect(name, { target, roll: Number.isFinite(rolled) ? rolled : null });
   }
+
+  persistPlayer(dispatch, getState, player);
+};
+
+/**
+ * Read a scroll: the count drops by one and nothing else changes.
+ *
+ * Deliberately the whole of it. A scroll casts the spell as written, and what
+ * a spell does is not something the sheet models — *knock* opens a door, and
+ * there is no field on this page for a door. So the box confirms, the scroll
+ * is spent, and the spell itself happens at the table. That is the honest
+ * shape; the alternative is a card that pretends to resolve 598 spells.
+ *
+ * Identified by ref rather than by name, because 151 spells exist as both an
+ * Arcane and a Divine scroll under the same name — removing by name alone
+ * would spend whichever of the two the inventory happened to list first.
+ */
+export const onUseScroll = (ref) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player) return;
+  const scroll = resolveScroll(ref);
+  if (!scroll) return;
+
+  player.removeInventoryItem(scroll.name, 'Scroll', 1, { link: ref });
 
   persistPlayer(dispatch, getState, player);
 };
