@@ -13,7 +13,7 @@ import {
 import { setPersist } from '../slices/persistSlice';
 import { addCardByLink } from '../slices/appSlice';
 import { getEffectById } from '../../lib/item/effectsUtils';
-import { getPotionByName, resolvePotionEffect } from '../../lib/item/potionEffects';
+import { getPotionByName, resolvePotionEffect, potionItemType } from '../../lib/item/potionEffects';
 import { resolveScroll } from '../../lib/item/scrolls';
 import AnimalCompanion from '../../lib/player/animalCompanion';
 import Familiar from '../../lib/player/familiar';
@@ -662,7 +662,9 @@ export const onUsePotion = (name, { target = '', roll = null } = {}) => (dispatc
   const effect = raw ? resolvePotionEffect(raw) : null;
   if (!effect) return;
 
-  player.removeInventoryItem(name, 'Potion', 1, { link: effect.link });
+  /* By name rather than by link: the effect table knows `fly` and the
+     inventory row stores `items/Potion/fly`, and a potion name is unique. */
+  player.consumeInventoryItem({ name, type: potionItemType(name) });
 
   const rolled = Number(roll);
   const amount = Number.isFinite(rolled) ? rolled : 0;
@@ -708,7 +710,7 @@ export const onUseScroll = (ref) => (dispatch, getState) => {
   const scroll = resolveScroll(ref);
   if (!scroll) return;
 
-  player.removeInventoryItem(scroll.name, 'Scroll', 1, { link: ref });
+  player.consumeInventoryItem({ name: scroll.name, type: 'Scroll', link: ref });
 
   persistPlayer(dispatch, getState, player);
 };
@@ -866,6 +868,19 @@ export const onUpdateInventoryItemOverrides = (idx, overrides) => (dispatch, get
     overrides: entry.overrides || null,
     editKey: { kind: 'inventory', idx },
   }));
+};
+
+/**
+ * Attune a worn item to a choice its data cannot supply — the energy type of a
+ * ring of energy resistance. Unlike `onUpdateEquipmentSlotOverrides` it opens
+ * no info card: the player is already looking at the item they are answering
+ * for, and a card sliding in over it would be an interruption.
+ */
+export const onSetWornItemChoice = (slot, key, value) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player) return;
+  if (!player.setWornItemChoice(slot, key, value)) return;
+  persistPlayer(dispatch, getState, player);
 };
 
 export const onUpdateEquipmentSlotOverrides = (slot, overrides) => (dispatch, getState) => {

@@ -35,7 +35,7 @@ import StatInfo from '../common/StatInfo';
 import CombatStancesRow from './combat_stances_row';
 import ActionFeatsRow from './action_feats_row';
 import HeldItemsRows from './held_items_rows';
-import { isHeldItemType, heldTypeOfRaw } from '../../lib/item/heldItems';
+import { handItemIsWeapon } from '../../lib/item/heldItems';
 import InfoPopover from '../common/InfoPopover';
 import Bar from '../common/Bar';
 import Pill from '../common/Pill';
@@ -205,11 +205,10 @@ export default function CombatPage() {
       if (/\/(Shield|Specific Shield)\//.test(w.link)) return;
       const rawItem = getItemByRef(w.baseLink || w.link)?.raw;
       if (!rawItem) return;
-      /* A wand, rod or staff occupies a hand but is not an attack. Some rods
-         double as light maces, so the test is whether the entry carries
-         weapon damage rather than what category it came from — a rod that
-         really is a weapon still earns its row. */
-      if (isHeldItemType(w.ItemType ?? heldTypeOfRaw(rawItem)) && !rawItem['Dmg (M)']) return;
+      /* A wand, rod or staff occupies a hand but is not an attack. The rule
+         lives in heldItems.js so the attacks list and the two-weapon check
+         cannot disagree about what counts as a weapon. */
+      if (!handItemIsWeapon(rawItem, w.ItemType)) return;
       const item = applyItemOverrides(rawItem, w.overrides);
       const displayName = w.overrides?.Name ?? w.name;
       weapons.push({ slot, name: displayName, link: w.link, weaponItem: item, isTwoHanded: w.twoHanded === true, itemData: w });
@@ -432,6 +431,13 @@ export default function CombatPage() {
      damage reduction beside the hit points both protect — the paladin's mount
      already showed its own SR while the monk who has it showed nothing. */
   const spellResistance = player.getSpellResistance?.() ?? 0;
+  /* Worn-item defenses. Energy resistance and concealment are the two concepts
+     the sheet had no notion of before item 1; they sit beside DR and SR
+     because they answer the same question — what stops damage reaching me. */
+  const energyResistances = player.getEnergyResistances?.() ?? [];
+  const missChance = player.getMissChance?.() ?? 0;
+  const wornImmunities = player.getWornImmunities?.() ?? [];
+  const grantedAbilities = player.getWornGrantedAbilities?.() ?? [];
   const isShaped = player.isWildShaped?.() ?? false;
   const wildShapeAttacks = isShaped ? (player.getWildShapeAttacks?.() ?? []) : [];
 
@@ -497,7 +503,9 @@ export default function CombatPage() {
         {!collapsed.player && (
           <div className="sh-stack">
             <Bar value={hpRatio} variant={hpBarVariant} />
-            {(condDeltas.maxHp || damageReductions.length > 0 || spellResistance > 0) ? (
+            {(condDeltas.maxHp || damageReductions.length > 0 || spellResistance > 0
+              || energyResistances.length > 0 || missChance > 0
+              || wornImmunities.length > 0 || grantedAbilities.length > 0) ? (
               <div className="sh-row-h" style={{ gap: 'var(--space-2)', flexWrap: 'wrap' }}>
                 {condDeltas.maxHp ? (
                   <Pill tone="warn" icon="warning">Conditions: {fmtDelta(condDeltas.maxHp)} max HP</Pill>
@@ -517,6 +525,34 @@ export default function CombatPage() {
                     SR {spellResistance}
                   </Pill>
                 )}
+                {/* A ring of energy resistance is attuned to one energy type
+                    when it is made. An unattuned one says so rather than
+                    quietly claiming a type it does not have. */}
+                {energyResistances.map(({ type, amount, source }) => (
+                  <Pill
+                    key={`${source}-${type}-${amount}`}
+                    tone={type ? 'success' : 'warn'}
+                    icon={type ? 'local_fire_department' : 'help'}
+                    title={`From ${source}`}
+                  >
+                    {type ? `Resist ${type.toLowerCase()} ${amount}` : `Resist ${amount} — pick an energy type`}
+                  </Pill>
+                ))}
+                {missChance > 0 && (
+                  <Pill tone="success" icon="blur_on" title="Attacks against you must beat this miss chance">
+                    {missChance}% miss chance
+                  </Pill>
+                )}
+                {wornImmunities.map(({ what, source }) => (
+                  <Pill key={`${source}-${what}`} tone="success" icon="block" title={`From ${source}`}>
+                    Immune: {String(what).toLowerCase()}
+                  </Pill>
+                ))}
+                {grantedAbilities.map(({ ability, source }) => (
+                  <Pill key={`${source}-${ability}`} tone="success" icon="auto_awesome" title={`From ${source}`}>
+                    {ability}
+                  </Pill>
+                ))}
               </div>
             ) : null}
             {(() => {

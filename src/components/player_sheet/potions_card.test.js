@@ -219,6 +219,35 @@ describe('the running-effect pills', () => {
     expect(screen.getByText('Barkskin')).toBeInTheDocument();
   });
 
+  test('the pill opens the spell that is running, not the empty bottle', () => {
+    /* "What does haste actually do again" is the question a pill provokes,
+       and a potion's Link is its spell's, so the answer is one tap away. */
+    const dispatched = renderWith(
+      <ActiveEffectPills onRemove={() => {}} />, withEffects('Potion of Haste')
+    );
+    fireEvent.click(screen.getByText('Haste'));
+    const opened = dispatched.find((a) => a.type?.includes('addCardByLink'));
+    expect(opened.payload.links).toBe('spells#haste');
+  });
+
+  test('an elixir has no spell behind it and opens its own item page', () => {
+    const p = pc();
+    p.addPotionEffect('Elixir of hiding');
+    const dispatched = renderWith(<ActiveEffectPills onRemove={() => {}} />, p);
+    fireEvent.click(screen.getByText('Elixir of hiding'));
+    const opened = dispatched.find((a) => a.type?.includes('addCardByLink'));
+    expect(opened.payload.links).toBe('items/Wondrous Item/elixir-of-hiding');
+  });
+
+  test('the x still removes rather than following the link', () => {
+    const removed = [];
+    renderWith(
+      <ActiveEffectPills onRemove={(i) => removed.push(i)} />, withEffects('Potion of Haste')
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'End Haste' }));
+    expect(removed).toEqual([0]);
+  });
+
   test('the x ends it, reporting the index the model gave', () => {
     const removed = [];
     renderWith(

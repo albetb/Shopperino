@@ -89,16 +89,10 @@ export default function MonsterRosterCard() {
                   className={`roster-hp${individual.isDying ? ' is-down' : ''}`}
                   key={individual.index}
                 >
-                  <span className="sh-faint roster-hp-index">
-                    #{individual.index + 1}
-                  </span>
-                  <Bar value={individual.ratio} variant={barVariant(individual)} />
-                  <span className="sh-mono roster-hp-numbers">
-                    {individual.currentHp} / {individual.maxHp}
-                  </span>
-                  {individual.isDying && (
-                    <Icon name="skull" size={14} className="sh-faint" />
-                  )}
+                  {/* Leading the row rather than trailing it: the delete
+                      buttons line up in one column down the left, so a master
+                      clearing several creatures is not chasing a target that
+                      shifts with the width of each hit-point readout. */}
                   <IconButton
                     icon="close"
                     ghost
@@ -115,6 +109,16 @@ export default function MonsterRosterCard() {
                         : 'Remove this one'
                     }
                   />
+                  <span className="sh-faint roster-hp-index">
+                    #{individual.index + 1}
+                  </span>
+                  <Bar value={individual.ratio} variant={barVariant(individual)} />
+                  <span className="sh-mono roster-hp-numbers">
+                    {individual.currentHp} / {individual.maxHp}
+                  </span>
+                  {individual.isDying && (
+                    <Icon name="skull" size={14} className="sh-faint" />
+                  )}
                 </div>
               ))}
             </div>

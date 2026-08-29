@@ -1,5 +1,8 @@
 import { loadFile } from '../loadFile';
 import { getSpellByLink } from '../spellbook/spellsUtils';
+/* The bonus-type names, the AC groupings and `spread` are shared with
+   wornEffects.js — one copy of "which AC numbers does an armor bonus reach". */
+import { T, AC_ALL, AC_WORN, AC_DODGE, SAVES, spread } from './effectSchema';
 
 /**
  * What drinking a potion actually does to the sheet.
@@ -44,34 +47,6 @@ export function shiftSize(size, step) {
   return SIZE_ORDER[moved];
 }
 
-/* Bonus types, spelled the way lib/player/contributions.js spells them. Kept as
-   plain strings rather than imported so this module stays free of the player
-   package, which imports items in the other direction. */
-const T = {
-  ARMOR: 'armor',
-  DEFLECTION: 'deflection',
-  DODGE: 'dodge',
-  ENHANCEMENT: 'enhancement',
-  MORALE: 'morale',
-  RESISTANCE: 'resistance',
-  NATURAL: 'natural',
-  SIZE: 'size',
-  UNTYPED: '',
-};
-
-/* Which AC numbers a bonus of each kind reaches. A deflection bonus applies to
-   all three; an armor or natural-armor bonus is denied to touch AC; a dodge
-   bonus is lost while flat-footed. Getting this wrong is the classic AC bug,
-   so it is stated once here rather than at each spell. */
-const AC_ALL = ['ac', 'acTouch', 'acFlat'];
-const AC_WORN = ['ac', 'acFlat'];
-const AC_DODGE = ['ac', 'acTouch'];
-const SAVES = ['fortitude', 'reflex', 'will'];
-
-/** Expand a shorthand group into `{ statKey: [value, type] }`. */
-function spread(keys, value, type) {
-  return Object.fromEntries(keys.map((key) => [key, [value, type]]));
-}
 
 /* Protection from X and magic circle against X are the same numbers at two
    radii, across four alignments — eight of the 107 potions. Generated rather
@@ -211,7 +186,63 @@ export const POTION_EFFECTS = Object.freeze({
 
   // —— A condition the sheet already models, so drinking it adds the real one ——
   invisibility: { kind: 'condition', label: 'Invisibility', adds: 'Invisible' },
+
+  /* —— Five wondrous items that are potions in everything but their filing ——
+     An elixir is drunk, lasts an hour and is gone; the salve is smeared on and
+     lasts eight. That is this card's shape exactly, not an equipment slot's —
+     so they live here rather than in wornEffects.js. items.json files them
+     under `Wondrous Item`, which is correct (an elixir *is* a wondrous item),
+     so `POTION_LIKE_LINKS` below is the allow-list that lets them through
+     rather than a category change in the data.
+
+     Their `Link` is the item's own, not a spell's, so the description comes
+     from the row rather than from spells.json. */
+  'elixir-of-hiding': {
+    kind: 'buff', label: 'Elixir of hiding', stats: { 'skill:Hide': [10, T.COMPETENCE] },
+    description: '+10 competence bonus on Hide checks for 1 hour.',
+  },
+  'elixir-of-sneaking': {
+    kind: 'buff', label: 'Elixir of sneaking', stats: { 'skill:Move silently': [10, T.COMPETENCE] },
+    description: '+10 competence bonus on Move Silently checks for 1 hour.',
+  },
+  'elixir-of-swimming': {
+    kind: 'buff', label: 'Elixir of swimming', stats: { 'skill:Swim': [10, T.COMPETENCE] },
+    description: '+10 competence bonus on Swim checks for 1 hour.',
+  },
+  'elixir-of-vision': {
+    kind: 'buff', label: 'Elixir of vision', stats: { 'skill:Search': [10, T.COMPETENCE] },
+    description: '+10 competence bonus on Search checks for 1 hour.',
+  },
+  'salve-of-slipperiness': {
+    kind: 'buff', label: 'Salve of slipperiness', stats: { 'skill:Escape artist': [20, T.COMPETENCE] },
+    description: '+20 competence bonus on Escape Artist checks for 8 hours.',
+    situational: 'Webs — magical or not — cannot hold you. Smeared on a floor instead of a person it becomes a long-lasting grease, which the sheet cannot model',
+  },
 });
+
+/* The wondrous items the potions card is allowed to carry. Deliberately a
+   short explicit list: everything else filed under `Wondrous Item` is worn or
+   activated, and letting the card guess would put a bag of holding on it. */
+export const POTION_LIKE_LINKS = Object.freeze([
+  'elixir-of-hiding', 'elixir-of-sneaking', 'elixir-of-swimming', 'elixir-of-vision',
+  'salve-of-slipperiness',
+]);
+
+/** The items.json category a carried potion-shaped item is filed under. */
+export function potionItemType(name) {
+  const wanted = String(name || '').trim().toLowerCase();
+  const rows = loadFile('items')?.['Wondrous Item'] || [];
+  const found = rows.find((row) => String(row?.Name || '').toLowerCase() === wanted);
+  return found && POTION_LIKE_LINKS.includes(found.Link) ? 'Wondrous Item' : 'Potion';
+}
+
+/** Whether an inventory row belongs on the potions card. */
+export function isPotionLikeRow(row) {
+  if (row?.ItemType === 'Potion') return true;
+  if (row?.ItemType !== 'Wondrous Item') return false;
+  const slug = String(row?.Link || '').split('/').pop();
+  return POTION_LIKE_LINKS.includes(slug);
+}
 
 /* Everything else becomes a pill carrying the spell's own short description.
    Listed explicitly rather than defaulted, so that a potion added later cannot
@@ -232,7 +263,11 @@ export const OIL_TARGETS = Object.freeze(['weapon', 'ammo', 'armor', 'any']);
  * Empty today; a guard against items.json growing a potion nobody classified.
  */
 export function unclassifiedPotionLinks() {
-  const rows = loadFile('items')?.Potion || [];
+  const items = loadFile('items') || {};
+  const rows = [
+    ...(items.Potion || []),
+    ...(items['Wondrous Item'] || []).filter((row) => POTION_LIKE_LINKS.includes(row?.Link)),
+  ];
   const known = new Set([...Object.keys(POTION_EFFECTS), ...CONDITION_ONLY]);
   return [...new Set(rows.map((row) => row?.Link).filter((link) => link && !known.has(link)))];
 }
@@ -301,8 +336,16 @@ export function getPotionSpellLevel(link) {
 export function getPotionByName(name) {
   const wanted = String(name || '').trim().toLowerCase();
   if (!wanted) return null;
-  const rows = loadFile('items')?.Potion || [];
-  return rows.find((row) => String(row?.Name || '').toLowerCase() === wanted) || null;
+  const items = loadFile('items') || {};
+  const rows = items.Potion || [];
+  const found = rows.find((row) => String(row?.Name || '').toLowerCase() === wanted);
+  if (found) return found;
+  /* The five elixirs and the salve are filed under Wondrous Item but behave
+     like potions; nothing else in that category is searched. */
+  return (items['Wondrous Item'] || []).find((row) => (
+    POTION_LIKE_LINKS.includes(row?.Link)
+    && String(row?.Name || '').toLowerCase() === wanted
+  )) || null;
 }
 
 /**
@@ -329,9 +372,17 @@ export function resolvePotionEffect(raw) {
     link,
     name,
     spellName: spell?.Name || name,
-    description: String(spell?.['Short Description'] || '').trim(),
+    /* A potion's description is its spell's. The six potion-shaped wondrous
+       items have no spell behind them, so their row carries its own text. */
+    description: String(spell?.['Short Description'] || POTION_EFFECTS[link]?.description || '').trim(),
     casterLevel,
     spellLevel,
+    /* Where an info card for this effect should open.
+       A potion's `Link` **is** its spell's link, so a running effect opens the
+       spell that is running rather than the empty bottle it came from. The six
+       potion-shaped wondrous items have no spell behind them and open their own
+       item page instead. */
+    infoRef: spell ? `spells#${link}` : `items/Wondrous Item/${link}`,
     oil: isOil(raw),
     stats: {},
     item: {},

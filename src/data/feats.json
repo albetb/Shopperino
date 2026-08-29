@@ -708,20 +708,6 @@
       "fighterBonus": true
     },
     {
-      "Name": "Improved familiar",
-      "Tags": [
-        "General"
-      ],
-      "Prerequisites": "Ability to acquire a new familiar, compatible alignment, sufficiently high level (see below).",
-      "Description": "<p>This feat allows spellcasters to acquire a new familiar from a nonstandard list, but only when they could normally acquire a new familiar.</p>\n<p><b>Benefit:</b> When choosing a familiar, the creatures listed below are also available to the spellcaster. The spellcaster may choose a familiar with an alignment up to one step away on each of the alignment axes (lawful through chaotic, good through evil).</p>\n<table border=\"0\" cellpadding=\"1\" cellspacing=\"0\"><tbody><tr><th>Familiar</th><th>Alignment</th><th>Arcane Spellcaster Level</th></tr><tr><td>Shocker lizard</td><td>Neutral</td><td>5th</td></tr><tr class=\"odd-row\"><td>Stirge</td><td>Neutral</td><td>5th</td></tr><tr><td>Formian worker</td><td>Lawful Neutral</td><td>7th</td></tr><tr class=\"odd-row\"><td>Imp</td><td>Lawful Evil</td><td>7th</td></tr><tr><td>Pseudodragon</td><td>Neutral Good</td><td>7th</td></tr><tr class=\"odd-row\"><td>Quasit</td><td>Chaotic Evil</td><td>7th</td></tr></tbody></table>\n<p>Improved familiars otherwise use the rules for regular familiars, with two exceptions: If the creature’s type is something other than animal, its type does not change; and improved familiars do not gain the ability to speak with other creatures of their kind (although many of them already have the ability to communicate).</p>\n<p>The list in the table above presents only a few possible improved familiars. Almost any creature of the same general size and power as those on the list makes a suitable familiar. Nor is the master’s alignment the only possible categorization. For instance, improved familiars could be assigned by the master’s creature type or subtype, as shown below.</p>\n<table border=\"0\" cellpadding=\"1\" cellspacing=\"0\"><tbody><tr><th>Familiar</th><th>Type/Subtype</th><th>Arcane Spellcaster Level</th><th></th><th></th><th></th><th></th></tr><tr><td>Celestial hawk1</td><td>Good</td><td>3rd</td><td></td><td></td><td></td><td></td></tr><tr class=\"odd-row\"><td>Fiendish Tiny viper snake2</td><td>Evil</td><td>3rd</td><td></td><td></td><td></td><td></td></tr><tr><td>Air elemental, Small</td><td>Air</td><td>5th</td><td></td><td></td><td></td><td></td></tr><tr class=\"odd-row\"><td>Earth elemental, Small</td><td>Earth</td><td>5th</td><td></td><td></td><td></td><td></td></tr><tr><td>Fire elemental, Small</td><td>Fire</td><td>5th</td><td></td><td></td><td></td><td></td></tr><tr class=\"odd-row\"><td>Shocker lizard</td><td>Electricity</td><td>5th</td><td></td><td></td><td></td><td></td></tr><tr><td>Water elemental, Small</td><td>Water</td><td>5th</td><td></td><td></td><td></td><td></td></tr><tr class=\"odd-row\"><td>Homunculus3</td><td>Undead</td><td>7th</td><td></td><td></td><td></td><td></td></tr><tr><td>Ice mephit</td><td>Cold</td><td>7th</td><td>1 Or other celestial animal from the standard familiar list.</td><td>2 Or other fiendish animal from the standard familiar list.</td><td>3 The master must first create the homunculus, substituting ichor or another</td><td>part of the master’s body for blood if necessary.</td></tr></tbody></table>",
-      "shortDescription": "Access to improved familiar options (e.g. imp, pseudodragon, shocker lizard).",
-      "suggestedClass": [
-        "Wizard",
-        "Sorcerer"
-      ],
-      "fighterBonus": false
-    },
-    {
       "Name": "Improved feint",
       "Tags": [
         "General"

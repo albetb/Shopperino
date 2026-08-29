@@ -115,7 +115,10 @@ export function ActiveEffectPills({ onRemove }) {
           <span className="cond-pill cond-pill--positive" key={`${effect.name}:${effect.index}`}>
             <span className="cond-pill-label potion-effect-label">
               {effect.oil && <Icon name="colors" size={12} />}
-              {effect.label}
+              {/* The name opens the spell that is running. "What does haste
+                  actually do again" is the question a pill provokes, and the
+                  answer was two taps away on the potions card below. */}
+              <SpellLink link={effect.infoRef}>{effect.label}</SpellLink>
               {/* An applied oil names what it is on, so two oils on two
                   different weapons stay distinguishable. */}
               {effect.target && <span className="potion-effect-target"> · {effect.targetName || effect.target}</span>}

@@ -3,6 +3,7 @@ import { getItem, itemRefLink } from 'lib/item';
 import { itemTypes } from 'lib/utils';
 import { magicTypeFor } from 'lib/item/formatItemName';
 import { getEffectIdBySlug } from 'lib/item/effectsUtils';
+import { wornChoiceKind, ENERGY_TYPES } from 'lib/item/wornEffects';
 import BottomSheet from '../../common/BottomSheet';
 import Button from '../../common/Button';
 import EquipBonusControls from './EquipBonusControls';
@@ -13,15 +14,24 @@ export default function AddItemFormInventory({ open, onAddItem, items, onClose }
   const [itemName, setItemName] = useState('');
   const [itemType, setItemType] = useState('Good');
   const [suggestions, setSuggestions] = useState([]);
+  const [suggestionOverflow, setSuggestionOverflow] = useState(0);
   const [isFocused, setIsFocused] = useState(false);
   const [link, setLink] = useState('');
   const [baseLink, setBaseLink] = useState('');
   const [masterwork, setMasterwork] = useState(false);
   const [bonus, setBonus] = useState(0);
   const [effectIds, setEffectIds] = useState([]);
+  /* A ring of energy resistance is attuned to one energy type when it is made,
+     so items.json cannot say which. It is asked here, at the moment the ring
+     enters the bag, and stored on the row — which also makes a fire ring and a
+     cold ring two separate inventory entries rather than one stack of two. */
+  const [choice, setChoice] = useState('');
 
   const MAX_NUMBER = 99;
   const MAX_NAME_LENGTH = 64;
+  /* Enough to scroll through, few enough to render. Narrowing the query is
+     the intended way past it, and the list says how much it is hiding. */
+  const MAX_SUGGESTIONS = 40;
 
   useEffect(() => {
     if (!open) {
@@ -31,10 +41,12 @@ export default function AddItemFormInventory({ open, onAddItem, items, onClose }
       setLink('');
       setBaseLink('');
       setSuggestions([]);
+      setSuggestionOverflow(0);
       setIsFocused(false);
       setMasterwork(false);
       setBonus(0);
       setEffectIds([]);
+      setChoice('');
     }
   }, [open]);
 
@@ -46,6 +58,8 @@ export default function AddItemFormInventory({ open, onAddItem, items, onClose }
   const magicLabel = isBonusCandidate
     ? magicTypeFor(itemType, { bonus, effectIds })
     : null;
+  // '' for everything that needs no choice, which is all but three items.
+  const choiceKind = wornChoiceKind(String(link || '').split('/').pop());
   const displayType = magicLabel || itemType;
 
   const handleBonusChange = (patch) => {
@@ -66,27 +80,57 @@ export default function AddItemFormInventory({ open, onAddItem, items, onClose }
         item.Name.toLowerCase().includes(itemName.toLowerCase())
       );
       const otherItems = getItem(itemName, itemType);
+      /* Scrolls live in scrolls.json, not items.json, so they are absent from
+         the flattened list the page passes in and reachable only through
+         getItem — which returns them for the 'Scroll' type and no other. A
+         player searching for "Scroll of fireball" therefore had to know to
+         change the dropdown *first*, which is knowing the answer before
+         asking the question. Searched always. */
+      const scrolls = itemType === 'Scroll' ? [] : getItem(itemName, 'Scroll');
       const namesInFilteredSuggestions = new Set(filteredSuggestions.map((item) => item.Name));
       const filteredOtherItems = otherItems.filter(
         (item) => !namesInFilteredSuggestions.has(item.Name)
       );
-      setSuggestions([...filteredSuggestions, ...filteredOtherItems]);
+      /* Capped, because every scroll name begins with "Scroll of": a two-letter
+         query like "sc" matches all 752 of them, and a dropdown that long is
+         worse than no dropdown. The count below says what was left out. */
+      const all = [...filteredSuggestions, ...filteredOtherItems, ...scrolls];
+      setSuggestions(all.slice(0, MAX_SUGGESTIONS));
+      setSuggestionOverflow(Math.max(0, all.length - MAX_SUGGESTIONS));
     } else {
       setSuggestions([]);
+      setSuggestionOverflow(0);
     }
   }, [itemName, itemType, items]);
 
+  /* A name typed or pasted in full never opens the suggestion list — the list
+     hides itself once the only match equals what was typed — so the item's
+     link was never attached, and a row with no link carries no effect, no
+     info card and no selector. Resolving the link from an exact name closes
+     that: picking from the list and typing the whole thing now agree. */
+  useEffect(() => {
+    const typed = itemName.trim().toLowerCase();
+    if (!typed) return;
+    const exact = suggestions.find((s) => String(s.Name).toLowerCase() === typed);
+    if (!exact) return;
+    const resolved = itemRefLink(exact) || exact.Link || '';
+    if (resolved && resolved !== link) setLink(resolved);
+  }, [itemName, suggestions, link]);
+
   const handleAddItemClick = () => {
     if (!itemName.trim()) return;
-    const opts = isBonusCandidate
-      ? {
-          masterwork: bonus > 0 ? true : masterwork,
-          bonus,
-          effectIds,
-          ...(baseLink ? { baseLink } : {}),
-        }
-      : undefined;
-    onAddItem(itemName, itemType, number, link, opts);
+    const opts = {
+      ...(isBonusCandidate ? {
+        masterwork: bonus > 0 ? true : masterwork,
+        bonus,
+        effectIds,
+        ...(baseLink ? { baseLink } : {}),
+      } : {}),
+      /* Left unset when the player skips it: the sheet then shows the ring
+         with its resistance and no type, and says so, rather than guessing. */
+      ...(choiceKind && choice ? { overrides: { [choiceKind]: choice } } : {}),
+    };
+    onAddItem(itemName, itemType, number, link, Object.keys(opts).length ? opts : undefined);
     onClose?.();
   };
 
@@ -112,6 +156,7 @@ export default function AddItemFormInventory({ open, onAddItem, items, onClose }
       setBonus(0);
       setEffectIds([]);
     }
+    setChoice('');
     setSuggestions([]);
     setIsFocused(false);
   };
@@ -176,9 +221,21 @@ export default function AddItemFormInventory({ open, onAddItem, items, onClose }
                     onMouseDown={() => handleSuggestionClick(suggestion)}
                     className="suggestion-item"
                   >
-                    {suggestion.Name}
+                    <span>{suggestion.Name}</span>
+                    {/* 151 spells exist as both an Arcane and a Divine scroll
+                        under the same name, so without the source the two are
+                        one row repeated — and they can sit at different spell
+                        levels, which is what decides who may read them. */}
+                    {suggestion.Source && (
+                      <span className="sh-faint suggestion-item-source">{suggestion.Source}</span>
+                    )}
                   </li>
                 ))}
+                {suggestionOverflow > 0 && (
+                  <li className="suggestion-item suggestion-item--more">
+                    {suggestionOverflow} more — keep typing to narrow it
+                  </li>
+                )}
               </ul>
             )}
           </div>
@@ -203,6 +260,23 @@ export default function AddItemFormInventory({ open, onAddItem, items, onClose }
             ))}
           </select>
         </label>
+        {choiceKind === 'energy' && (
+          <div className="sh-field">
+            <span className="sh-label">Energy type</span>
+            <div className="sh-row-h" style={{ flexWrap: 'wrap', gap: '0.375rem' }}>
+              {ENERGY_TYPES.map((energy) => (
+                <button
+                  type="button"
+                  key={energy}
+                  className={['sh-chip', choice === energy && 'is-on'].filter(Boolean).join(' ')}
+                  onClick={() => setChoice(choice === energy ? '' : energy)}
+                >
+                  {energy}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
         {isBonusCandidate && (
           <div className="sh-field">
             <span className="sh-label">Magical properties</span>

@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setPlayerSheetMainView, setIsPlayerSheetSidebarCollapsed } from '../../../../store/slices/playerSheetSlice';
 import { setPlayerSpellbookPage, setPlayerSpellbookClassDescCollapsed, setPlayerSpellbookLevelCollapsed } from '../../../../store/slices/playerSheetSlice';
 import { getClassData } from '../../../../lib/player';
-import { isMobile } from '../../../../lib/utils';
+import { isMobile, signed } from '../../../../lib/utils';
 import Bar from '../../../common/Bar';
 import '../../../../style/menu_cards.css';
 
@@ -97,19 +97,19 @@ export default function MenuCardCombat() {
             <span>{player?.getBaseSpeed?.() ?? 30}</span>
           </div>
           <div className="player-sheet-combat-stat-cell">
-            <span>+{player?.getInitiativeModifier?.() ?? 0}</span>
+            <span>{signed(player?.getInitiativeModifier?.() ?? 0)}</span>
           </div>
           <div className="player-sheet-combat-stat-cell">
             <span>{player?.getArmorClass?.() ?? 10}</span>
           </div>
           <div className="player-sheet-combat-stat-cell">
-            <span>+{player?.getFortitudeSave?.() ?? 0}</span>
+            <span>{signed(player?.getFortitudeSave?.() ?? 0)}</span>
           </div>
           <div className="player-sheet-combat-stat-cell">
-            <span>+{player?.getReflexSave?.() ?? 0}</span>
+            <span>{signed(player?.getReflexSave?.() ?? 0)}</span>
           </div>
           <div className="player-sheet-combat-stat-cell">
-            <span>+{player?.getWillSave?.() ?? 0}</span>
+            <span>{signed(player?.getWillSave?.() ?? 0)}</span>
           </div>
         </div>
       </div>

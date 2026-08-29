@@ -18,7 +18,6 @@ import {
   onCloseMonsterSheet,
   onResetMonsterHp,
   onAddIndividual,
-  onRemoveIndividual,
   onSetMonsterBonus,
   onSetMonsterMaxLife,
 } from '../../store/thunks/monsterBookThunks';
@@ -41,15 +40,20 @@ const BONUS_LABEL = {
 };
 
 /**
- * One individual's hit points: bar, the same big −/readout/+ the player sheet
- * uses, and a delete.
+ * One individual's hit points: a bar and the same big −/readout/+ the player
+ * sheet uses.
+ *
+ * **No delete here.** Removing a creature is done on the roster card, which is
+ * where the whole encounter is visible — deleting from inside a sheet meant
+ * the page could pull itself out from under the reader, and put the same
+ * action in two places at once.
  *
  * A component rather than a loop body because each row owns hooks — its own
  * long-press timers and its own feedback readout — and hooks cannot be created
  * inside a map. Which is the right shape anyway: the rows are independent, and
  * hurting the third goblin should not flash a number on the first.
  */
-function MonsterHpRow({ individual, count, name, onAdjust, onRemove }) {
+function MonsterHpRow({ individual, count, onAdjust }) {
   const { feedback, show } = useHpFeedback();
 
   const handle = useCallback((delta) => {
@@ -95,16 +99,6 @@ function MonsterHpRow({ individual, count, name, onAdjust, onRemove }) {
           />
         </div>
       </div>
-      <IconButton
-        icon="close"
-        ghost
-        size="sm"
-        onClick={() => onRemove(individual.index)}
-        aria-label={count === 1
-          ? `Remove ${name} from the roster`
-          : `Remove ${name} #${individual.index + 1}`}
-        title={count === 1 ? 'Remove from the roster' : 'Remove this one'}
-      />
     </div>
   );
 }
@@ -275,9 +269,7 @@ export default function MonsterSheetView() {
                 key={individual.index}
                 individual={individual}
                 count={individuals.length}
-                name={sheet.getName()}
                 onAdjust={adjustHp}
-                onRemove={(i) => dispatch(onRemoveIndividual(openIndex, i))}
               />
             ))}
           </div>

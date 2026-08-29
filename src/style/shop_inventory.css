@@ -429,13 +429,36 @@ tr.add-item td.action-size .item-number-button {
 }
 
 .suggestion-item {
-  padding: 8px;
+  padding: 0.5rem;
   cursor: pointer;
   z-index: 1;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
 }
 
 .suggestion-item:hover {
   background-color: var(--dark-grey);
+}
+
+/* Which of the two lists a scroll came from. 151 spells are on both, so the
+   name alone is one row repeated. */
+.suggestion-item-source {
+  font-size: 0.75em;
+  flex: 0 0 auto;
+}
+
+/* Not a choice — the count of what the cap left out. */
+.suggestion-item--more {
+  cursor: default;
+  font-size: 0.75em;
+  opacity: 0.7;
+  justify-content: center;
+}
+
+.suggestion-item--more:hover {
+  background-color: transparent;
 }
 
 .popup {

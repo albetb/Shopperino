@@ -27,18 +27,21 @@ import { playerToSpellbookData } from './playerSpellbookAdapter';
 import {
   resolvePotionEffect,
   getPotionByName,
+  isPotionLikeRow,
   shiftSize,
 } from '../item/potionEffects';
 import {
   resolveScroll,
   scrollUseMagicDeviceDC,
 } from '../item/scrolls';
+import { resolveWornEffect } from '../item/wornEffects';
 import {
   resolveHeldItem,
   getHeldItemSpells,
   getHeldItemCasterLevel,
   getHeldItemMaxCharges,
   getRodMetamagicFeat,
+  handItemIsWeapon,
   refreshesOnRest,
 } from '../item/heldItems';
 import {
@@ -144,6 +147,19 @@ const ABILITY_LABELS = {
   int: 'Intelligence',
   wis: 'Wisdom',
   cha: 'Charisma',
+};
+
+/* The three AC keys are one bonus wearing three names, so a stacking warning
+   must collapse them — two rings of protection overlap once, not three times
+   (`ac`, `acTouch` and `acFlat` all carry the same deflection bonus). */
+const stackingStatKey = (stat) => (
+  ['ac', 'acTouch', 'acFlat'].includes(stat) ? 'ac' : stat
+);
+
+/* skills.json spells the ability as a three-letter abbreviation; the sheet
+   uses the lowercase key. Lowercased on lookup so 'Cha' and 'cha' both land. */
+const ABILITY_BY_ABBREV = {
+  str: 'str', dex: 'dex', con: 'con', int: 'int', wis: 'wis', cha: 'cha',
 };
 
 /* Abilities an assumed form replaces outright. Int, Wis and Cha stay the
@@ -978,10 +994,12 @@ class Player {
     const rage = this.getRageAbilityBonus(abilityKey);
     if (shaped && SHAPE_REPLACED_ABILITIES.includes(abilityKey)) {
       const score = this.getWildShapeForm()?.abilities?.[abilityKey];
-      if (Number.isFinite(Number(score))) return Number(score) + rage + this.getPotionBonus(abilityKey);
+      if (Number.isFinite(Number(score))) return Number(score) + rage + this.getPotionBonus(abilityKey)
+        + this.getWornBonus(abilityKey);
     }
     return this.getAbilityBase(abilityKey) + this.getAbilityBonus(abilityKey)
-      + this.getRaceAbilityModifier(abilityKey) + rage + this.getPotionBonus(abilityKey);
+      + this.getRaceAbilityModifier(abilityKey) + rage + this.getPotionBonus(abilityKey)
+      + this.getWornBonus(abilityKey);
   }
 
   /**
@@ -1291,7 +1309,11 @@ class Player {
   getWildShapeMax() {
     const table = this.getWildShapeConfig().usesPerDay;
     if (!Array.isArray(table)) return 0;
-    return resolveAtLevel(table, this.getLevel(), 0);
+    const base = resolveAtLevel(table, this.getLevel(), 0);
+    /* A druid's vestment adds a use, but only to a character who has the
+       ability at all — it says "worn by a character with the wild shape
+       ability", so it grants nothing to a fighter. */
+    return base > 0 ? base + this.getWornWildShapeUses() : 0;
   }
 
   getWildShapeUsed() {
@@ -1527,7 +1549,11 @@ class Player {
    * disagree.
    */
   getRestHealAmount() {
-    return Math.min(Math.max(0, Number(this.damage) || 0), this.getLevel());
+    /* A periapt of wound closure doubles the natural rate; the pearly white
+       ioun stone heals per hour and so adds on top of the night's total. */
+    const natural = this.getLevel() * this.getWornRestHealMultiplier()
+      + this.getWornRestHealPerHour() * 8;
+    return Math.min(Math.max(0, Number(this.damage) || 0), natural);
   }
 
   /** A night's natural healing: 1 HP per character level (combat.md). */
@@ -1559,8 +1585,14 @@ class Player {
     const src = form.fullAttack && form.fullAttack !== '-' ? form.fullAttack : form.attack;
     const lines = parseAttacks(src);
     const babDelta = this.getBaseAttackBonus() - (Number(form.baseAttackGrapple?.baseAttack) || 0);
+    /* Magic fang and an amulet of mighty fists enhance the natural weapons
+       themselves, so they move these lines and nothing else on the sheet. */
+    const enhancementDelta = this.getNaturalWeaponBonus('naturalAttack');
+    const enhancementDamage = this.getNaturalWeaponBonus('naturalDamage');
     return lines.map((line, index) => ({
-      ...recomputeAttack(line, { babDelta, strModDelta: 0, sizeModDelta: 0 }),
+      ...recomputeAttack(line, {
+        babDelta, strModDelta: 0, sizeModDelta: 0, enhancementDelta, enhancementDamage,
+      }),
       index,
     }));
   }
@@ -2165,7 +2197,8 @@ class Player {
    * Total speed = base speed + speedBonus.
    */
   getTotalSpeed() {
-    const speed = this.getBaseSpeed() + Number(this.speedBonus || 0) + this.getPotionBonus('speed');
+    const speed = this.getBaseSpeed() + Number(this.speedBonus || 0)
+      + this.getPotionBonus('speed') + this.getWornBonus('speed');
     // Half-speed conditions (Blinded/Exhausted/Entangled/Disabled) apply once.
     return this.isHalfSpeed() ? Math.floor(speed / 2) : speed;
   }
@@ -2284,9 +2317,10 @@ class Player {
     if (!data?.hasSpells) return 0;
     const level = this.getLevel();
     if (this.class === 'Paladin' || this.class === 'Ranger') {
-      return level < 4 ? 0 : Math.floor(level / 2);
+      const half = level < 4 ? 0 : Math.floor(level / 2);
+      return half > 0 ? half + this.getWornCasterLevelBonus() : 0;
     }
-    return level;
+    return level + this.getWornCasterLevelBonus();
   }
 
   /**
@@ -2296,9 +2330,10 @@ class Player {
    */
   getPunchDamageDice() {
     const size = this.getSize() || 'Medium';
-    if (this.class === 'Monk') {
-      return monkUnarmedDamage(this.getLevel(), size);
-    }
+    /* The monk's belt gives unarmed damage "as a monk of five levels higher",
+       and a 5th-level monk's to a character with no monk levels at all. */
+    const monkLevel = this.getEffectiveMonkLevel();
+    if (monkLevel > 0) return monkUnarmedDamage(monkLevel, size);
     return defaultUnarmedDamage(size);
   }
 
@@ -2316,7 +2351,14 @@ class Player {
     return this.getBaseAttackBonus() + abilityMod + this.getAttackConditionModifier()
       + getFeatUnarmedAttackBonus(this.getFeats())
       + this.getStanceAttackPenalty()
-      + this.getPunchProficiencyPenalty();
+      + this.getPunchProficiencyPenalty()
+      /* The equipped-weapon path picks these up in calculateWeaponAttackBonus;
+         the punch is its own path and was quietly missing them, so a potion of
+         bless moved every weapon line except this one. */
+      + this.getPotionBonus('attack') + this.getWornBonus('attack')
+      /* An amulet of mighty fists enhances unarmed strikes and natural
+         weapons, and nothing else. */
+      + this.getNaturalWeaponBonus('naturalAttack');
   }
 
   /**
@@ -2330,7 +2372,9 @@ class Player {
     const bonus = this.getStrMod()
       + this.getDamageConditionModifier()
       + getFeatUnarmedDamageBonus(this.getFeats())
-      + this.getPowerAttackDamageBonus();
+      + this.getPowerAttackDamageBonus()
+      + this.getPotionBonus('damage') + this.getWornBonus('damage')
+      + this.getNaturalWeaponBonus('naturalDamage');
     if (bonus === 0) return dice;
     return bonus > 0 ? `${dice}+${bonus}` : `${dice}${bonus}`;
   }
@@ -2523,6 +2567,12 @@ class Player {
     const classDr = this.getDamageReduction();
     if (classDr > 0) out.push({ amount: classDr, bypass: '—', source: this.class });
 
+    /* Worn sources: a mantle of faith, and adamantine armor whose DR comes
+       from the material rather than from an enchantment. Listed rather than
+       merged, for the same reason the class sources are — DR from different
+       sources does not stack, and which one applies is a table judgement. */
+    out.push(...this.getWornDamageReductions());
+
     /* Perfect Self turns the monk into an outsider with DR 10/magic. It has
        no place in the barbarian's scaling table, so it is its own entry —
        and DR belongs beside the hit points it protects, not on a feature card. */
@@ -2666,7 +2716,8 @@ class Player {
     if (!config) return 0;
     // Improved Turning: turn as if one level higher in the granting class.
     return Math.max(0, this.getLevel() + (Number(config.effectiveLevelOffset) || 0)
-      + getFeatTurnUndeadLevelBonus(this.getFeats()));
+      + getFeatTurnUndeadLevelBonus(this.getFeats())
+      + this.getWornTurnUndeadLevelBonus());
   }
 
   /**
@@ -2911,8 +2962,12 @@ class Player {
    * Zero for everyone else — the paladin's mount has its own, on its own card.
    */
   getSpellResistance() {
-    if (!hasFeatureAtLevel(this.class, 'diamondSoulLevel', this.getLevel())) return 0;
-    return 10 + this.getLevel();
+    const fromClass = hasFeatureAtLevel(this.class, 'diamondSoulLevel', this.getLevel())
+      ? 10 + this.getLevel()
+      : 0;
+    /* Spell resistance does not stack — a mantle of spell resistance on a
+       high monk gives whichever number is larger, not their sum. */
+    return Math.max(fromClass, this.getWornSpellResistance());
   }
 
   // —— Ranger ——
@@ -3431,6 +3486,10 @@ class Player {
     if (/\/(Shield|Specific Shield)\//.test(entry.link)) return null;
     const raw = getItemByRef(entry.baseLink || entry.link)?.raw;
     if (!raw) return null;
+    /* Nor is a wand. It occupies a hand, so without this a wand in the off
+       hand made the character count as fighting with two weapons — an extra
+       attack line and a penalty on both hands, for holding a stick. */
+    if (!handItemIsWeapon(raw)) return null;
     return {
       slot,
       name: entry.overrides?.Name ?? entry.name,
@@ -3716,13 +3775,17 @@ class Player {
    * other class. A negative Wisdom modifier never lowers AC.
    */
   getMonkAcBonus() {
-    const milestone = getProgressionValue(this.class, 'acBonus', this.getLevel(), 0);
-    const prog = getClassProgression(this.class);
-    if (!prog.acBonus) return 0;
+    /* A monk's belt raises a monk by five levels and gives a non-monk the AC
+       of a 5th-level monk — "this AC bonus functions just like the monk's",
+       so it takes the same unarmored, shieldless, light-load conditions. */
+    const effectiveLevel = this.getEffectiveMonkLevel();
+    if (effectiveLevel <= 0) return 0;
     if (this.getEquippedArmorRaw()) return 0;
     if (this.getShieldBonus() > 0) return 0;
     const load = this.getLoadStatus();
     if (load !== 'none' && load !== 'light') return 0;
+    // Always the Monk's own table: it is the monk's bonus wherever it comes from.
+    const milestone = getProgressionValue('Monk', 'acBonus', effectiveLevel, 0);
     return Math.max(0, this.getWisMod()) + milestone;
   }
 
@@ -3928,7 +3991,7 @@ class Player {
     const ac = 10 + this.getAcDexMod() + this.getArmorBonus() + this.getShieldBonus()
       + this.getMonkAcBonus() + this.getWildShapeNaturalArmor() + this.getSizeAcModifier();
     return ac + Number(this.acBonus || 0) + this.getAcConditionModifier() + this.getRageAcModifier()
-      + this.getCombatExpertise() + this.getPotionBonus('ac');
+      + this.getCombatExpertise() + this.getPotionBonus('ac') + this.getWornBonus('ac');
   }
 
   /**
@@ -3940,7 +4003,7 @@ class Player {
     const ac = 10 + this.getAcDexMod() + this.getMonkAcBonus() + this.getSizeAcModifier();
     return ac + Number(this.acBonus || 0) + Number(this.acTouchBonus || 0)
       + this.getAcConditionModifier() + this.getRageAcModifier()
-      + this.getCombatExpertise() + this.getPotionBonus('acTouch');
+      + this.getCombatExpertise() + this.getPotionBonus('acTouch') + this.getWornBonus('acTouch');
   }
 
   /**
@@ -3952,7 +4015,7 @@ class Player {
       + this.getWildShapeNaturalArmor() + this.getSizeAcModifier();
     return ac + Number(this.acBonus || 0) + Number(this.acFlatBonus || 0)
       + this.getAcConditionModifier() + this.getRageAcModifier()
-      + this.getPotionBonus('acFlat');
+      + this.getPotionBonus('acFlat') + this.getWornBonus('acFlat');
   }
 
   /**
@@ -4009,20 +4072,23 @@ class Player {
     return this.getFortitudeSave() + Number(this.fortBonus || 0)
       + this.getFamiliarStatBonuses().fort + this.getDivineGraceBonus()
       + getFeatSaveBonus(this.getFeats(), 'fortitude')
-      + this.getFlatRacialSaveBonus() + this.getPotionBonus('fortitude');
+      + this.getFlatRacialSaveBonus() + this.getPotionBonus('fortitude')
+      + this.getWornBonus('fortitude');
   }
 
   getTotalReflexSave() {
     return this.getReflexSave() + Number(this.reflexBonus || 0)
       + this.getFamiliarStatBonuses().reflex + this.getDivineGraceBonus()
       + getFeatSaveBonus(this.getFeats(), 'reflex')
-      + this.getFlatRacialSaveBonus() + this.getPotionBonus('reflex');
+      + this.getFlatRacialSaveBonus() + this.getPotionBonus('reflex')
+      + this.getWornBonus('reflex');
   }
 
   getTotalWillSave() {
     return this.getWillSave() + Number(this.willBonus || 0) + this.getDivineGraceBonus()
       + getFeatSaveBonus(this.getFeats(), 'will')
-      + this.getFlatRacialSaveBonus() + this.getPotionBonus('will');
+      + this.getFlatRacialSaveBonus() + this.getPotionBonus('will')
+      + this.getWornBonus('will');
   }
 
   /**
@@ -4037,7 +4103,8 @@ class Player {
 
   getTotalInitiative() {
     return this.getInitiativeModifier() + Number(this.initiativeBonus || 0)
-      + getFeatInitiativeBonus(this.getFeats());
+      + getFeatInitiativeBonus(this.getFeats())
+      + this.getWornBonus('initiative');
   }
 
   getGold() {
@@ -4255,6 +4322,9 @@ class Player {
     const matches = (feat) => getBaseFeatName(feat).toLowerCase() === wanted;
     if (this.getFeats().some(matches)) return true;
     if (this.getGrantedFeats().some((entry) => matches(entry.feat))) return true;
+    /* An item can grant a feat outright — the dark blue rhomboid grants
+       Alertness — and it is a real feat while the item is worn. */
+    if (this.getWornGrantedFeats().some(matches)) return true;
     /* A ranger's combat-style feats are real feats, charged to no budget and
        free of their prerequisites — but they work only in light armor or
        none, so a ranger in a breastplate has them and cannot use them. */
@@ -4624,6 +4694,7 @@ class Player {
     }
     rows.push(contribution('rage', 'rage', this.getRageAbilityBonus(abilityKey), BONUS_TYPES.MORALE));
     rows.push(...this.getPotionContributions(abilityKey));
+    rows.push(...this.getWornContributions(abilityKey));
     this.getAbilityConditionContributions(abilityKey).forEach((c) => {
       rows.push(contribution(c.source, c.label, c.value));
     });
@@ -4675,6 +4746,7 @@ class Player {
       rows.push(contribution('rage', 'rage', this.getRageWillBonus(), BONUS_TYPES.MORALE));
     }
     rows.push(...this.getPotionContributions(which));
+    rows.push(...this.getWornContributions(which));
     return compactContributions(rows);
   }
 
@@ -4685,6 +4757,7 @@ class Player {
       contribution('manual', 'manual bonus', Number(this.initiativeBonus || 0)),
       contribution('feats', 'Improved Initiative', getFeatInitiativeBonus(this.getFeats())),
       contribution('conditions', 'conditions', this.getInitiativeConditionModifier()),
+      ...this.getWornContributions('initiative'),
     ]);
   }
 
@@ -4729,6 +4802,7 @@ class Player {
       contribution('combatExpertise', 'Combat expertise', this.getCombatExpertise(), BONUS_TYPES.DODGE),
       contribution('conditions', 'conditions', this.getAcConditionModifier()),
       ...this.getPotionContributions('ac'),
+      ...this.getWornContributions('ac'),
     ]);
   }
 
@@ -4745,6 +4819,7 @@ class Player {
       contribution('combatExpertise', 'Combat expertise', this.getCombatExpertise(), BONUS_TYPES.DODGE),
       contribution('conditions', 'conditions', this.getAcConditionModifier()),
       ...this.getPotionContributions('acTouch'),
+      ...this.getWornContributions('acTouch'),
     ]);
   }
 
@@ -4762,6 +4837,7 @@ class Player {
       contribution('rage', 'rage', this.getRageAcModifier(), BONUS_TYPES.MORALE),
       contribution('conditions', 'conditions', this.getAcConditionModifier()),
       ...this.getPotionContributions('acFlat'),
+      ...this.getWornContributions('acFlat'),
     ]);
   }
 
@@ -4785,7 +4861,9 @@ class Player {
     }
     rows.push(contribution('manual', 'manual bonus', Number(this.speedBonus || 0)));
     rows.push(...this.getPotionContributions('speed'));
-    const raw = this.getBaseSpeed() + Number(this.speedBonus || 0) + this.getPotionBonus('speed');
+    rows.push(...this.getWornContributions('speed'));
+    const raw = this.getBaseSpeed() + Number(this.speedBonus || 0)
+      + this.getPotionBonus('speed') + this.getWornBonus('speed');
     if (this.isHalfSpeed()) {
       rows.push(contribution('conditions', 'halved by conditions', Math.floor(raw / 2) - raw));
     }
@@ -4846,6 +4924,7 @@ class Player {
       rows.push(contribution('armorCheck', 'armor check penalty', -penalty * multiplier, BONUS_TYPES.ARMOR));
     }
     rows.push(...this.getPotionContributions(`skill:${skillName}`));
+    rows.push(...this.getWornContributions(`skill:${skillName}`));
     return compactContributions(rows);
   }
 
@@ -4881,6 +4960,7 @@ class Player {
       contribution('combatExpertise', 'Combat expertise', ranged ? 0 : -this.getCombatExpertise()),
       contribution('conditions', 'conditions', this.getAttackConditionModifier()),
       ...this.getPotionContributions('attack'),
+      ...this.getWornContributions('attack'),
       ...this.getOilContributions(data.slot, 'attack'),
     ]);
   }
@@ -4927,6 +5007,7 @@ class Player {
       ),
       contribution('conditions', 'conditions', this.getDamageConditionModifier()),
       ...this.getPotionContributions('damage'),
+      ...this.getWornContributions('damage'),
       ...this.getOilContributions(data.slot, 'damage'),
     ]);
   }
@@ -4986,6 +5067,7 @@ class Player {
     const level = this.getLevel();
     const out = [];
     const isSave = ['fortitude', 'reflex', 'will'].includes(statKey);
+    const isSkillKey = String(statKey).startsWith('skill:');
 
     // —— Racial ——
     if (isSave) {
@@ -5266,6 +5348,44 @@ class Player {
         out.push(situational(`feat:${feat}`, feat, this.getFeatShortDescription(feat)));
       });
 
+    /* —— Worn magic items ——
+       A worn item's note travels with its numbers by default: the headband's
+       "grants no extra skill points" appears beside the Intelligence it
+       raises. `situationalOn` overrides that for the rows whose note has a
+       different home from their bonus, and for the ones that carry no number
+       at all — the sword of subtlety's +4 exists only on a sneak attack. */
+    this.getWornEffects().forEach((effect) => {
+      /* An immunity is a note by nature — there is no number to add — so it
+         becomes one here rather than needing prose written per item. */
+      const parts = [];
+      if (effect.situational) parts.push(effect.situational);
+      effect.immunities.forEach((what) => parts.push(`Immune to ${String(what).toLowerCase()}`));
+      if (effect.grantsAbility) parts.push(`Grants ${effect.grantsAbility}`);
+      if (parts.length === 0) return;
+
+      const homed = effect.situationalOn.length > 0 || effect.situationalOnAbility;
+      const skillAbility = isSkillKey ? this.getSkillAbility(statKey.slice('skill:'.length)) : '';
+      const speaks = homed
+        ? (effect.situationalOn.includes(statKey)
+          || (isSkillKey && effect.situationalOnAbility
+            && skillAbility === effect.situationalOnAbility))
+        /* Homed on the item's *declared* stats, not its live ones: a gated
+           item has no live stats and would otherwise vanish entirely. */
+        : (Boolean(effect.declaredStats[statKey])
+          || (isSkillKey && Boolean(effect.declaredStats.skillsAll))
+          || (isSkillKey && Boolean(effect.declaredSkillsByAbility?.[skillAbility])));
+      if (!speaks) return;
+
+      /* An item whose numbers are gated off still says what it would do —
+         a robe of the archmagi on a cleric is worth explaining, not hiding. */
+      if (effect.inert) {
+        parts.push(`Does nothing for you: ${effect.arcaneOnly
+          ? 'this works only for an arcane caster'
+          : `a ${effect.raceExcept} gains none of it`}`);
+      }
+      out.push(situational(`worn:${effect.slot}`, effect.name || effect.label, parts.join('. ')));
+    });
+
     /* —— Running potions and applied oils ——
        A potion earns a note here when its table row carries a `situational`
        string and it speaks to this stat: protection from evil moves AC and the
@@ -5283,6 +5403,322 @@ class Player {
     });
 
     return out;
+  }
+
+  /* —— Worn item effects ——
+     A cloak of resistance +3 used to move nothing on this sheet; the player
+     added the number by hand or went without it. `WORN_EFFECTS` in
+     lib/item/wornEffects.js says what each item does, and everything below
+     reads it — through the same contribution channel the potions use, so an
+     item bonus lands in the same breakdown box as armor and feats rather than
+     in a channel of its own.
+
+     Two rules the whole block follows:
+     - **Only the active hand set counts.** A staff in the second hand set is
+       stowed, not wielded, and the held-items card already dims it.
+     - **Nothing is enforced.** Two items granting the same bonus type are both
+       added and the overlap is reported, exactly as it is for potions.
+     Audit: obsidian-vault/docs/wondrous_item_audit.md. */
+
+  /** The slots a worn effect can come from. Second hand set excluded. */
+  static WORN_SLOTS = ['armor', 'rh1', 'lh1', 'other1', 'other2', 'other3', 'other4'];
+
+  /** The three classes whose spells are arcane, for `arcaneOnly` items. */
+  static ARCANE_CLASSES = ['Wizard', 'Sorcerer', 'Bard'];
+
+  /**
+   * The equipped items that carry an effect, resolved and already gated.
+   *
+   * Gating happens here rather than at each reader so that a robe of the
+   * archmagi on a cleric, or a belt of dwarvenkind on a dwarf, is absent from
+   * every list at once instead of being remembered at nine call sites. The
+   * situational note survives the gate — "this does nothing for you" is worth
+   * saying — while the numbers do not.
+   *
+   * @returns {Array<object>} one entry per effect-carrying equipped item
+   */
+  getWornEffects() {
+    const equipment = this.getEquipment();
+    const arcane = Player.ARCANE_CLASSES.includes(this.getClass());
+    const race = this.getRace();
+
+    return Player.WORN_SLOTS
+      .map((slot) => ({ slot, entry: equipment[slot] }))
+      .filter(({ entry }) => entry?.link)
+      .map(({ slot, entry }) => {
+        const name = entry.overrides?.Name ?? entry.name ?? '';
+        const effect = resolveWornEffect(entry.link, name);
+        if (!effect) return null;
+        /* An item whose numbers do not apply to this character keeps its row
+           and loses its bonuses, so the sheet can still say it is being worn
+           and why it is doing nothing. */
+        const inert = Boolean((effect.arcaneOnly && !arcane)
+          || (effect.raceExcept && effect.raceExcept === race));
+        return {
+          ...effect,
+          slot,
+          name: name || effect.label,
+          /* The choice made when the item was added — the energy a ring of
+             energy resistance was attuned to. */
+          choice: entry.overrides?.[effect.needsChoice] || '',
+          inert,
+          stats: inert ? {} : effect.stats,
+          skillsByAbility: inert ? null : effect.skillsByAbility,
+          /* What the item *would* do, kept whole. A gated item still has to
+             find the popover it belongs in — an inert row with no stats would
+             otherwise have nowhere at all to say why it is doing nothing. */
+          declaredStats: effect.stats,
+          declaredSkillsByAbility: effect.skillsByAbility,
+        };
+      })
+      .filter(Boolean);
+  }
+
+  /** Whether any equipped item carries an effect at all. */
+  hasWornEffects() {
+    return this.getWornEffects().length > 0;
+  }
+
+  /** The effects that actually move a number, for the stacking check. */
+  getActiveWornEffects() {
+    return this.getWornEffects().filter((effect) => !effect.inert);
+  }
+
+  /**
+   * What the equipped items add to one stat, as contribution rows.
+   *
+   * The `statKey` vocabulary is `getPotionContributions`', with two additions
+   * a worn item needs and a potion never did: `initiative`, and
+   * `skillsByAbility` for "+N on every Charisma-based check" — which sits
+   * between `skill:<Name>` and `skillsAll` and is wanted by exactly two items.
+   */
+  getWornContributions(statKey) {
+    if (!statKey) return [];
+    const key = String(statKey);
+    const isSkill = key.startsWith('skill:');
+    const skillAbility = isSkill ? this.getSkillAbility(key.slice('skill:'.length)) : '';
+    const rows = [];
+
+    this.getActiveWornEffects().forEach((effect) => {
+      /* An item that grants a feat carries that feat's own bonuses, so they
+         land on a character who does not have it. One who already took the
+         feat gets nothing more: the same feat never applies twice, which is
+         not a limit being enforced but the feat's own rule. */
+      if (effect.grantsFeat && this.getFeats().some(
+        (feat) => getBaseFeatName(feat).toLowerCase() === effect.grantsFeat.toLowerCase()
+      )) return;
+      let pick = effect.stats[key];
+      if (!pick && isSkill) pick = effect.stats.skillsAll;
+      if (!pick && isSkill && skillAbility) pick = effect.skillsByAbility?.[skillAbility];
+      if (!pick) return;
+      const [value, type] = pick;
+      rows.push(contribution(`worn:${effect.slot}`, effect.name || effect.label, value, type));
+    });
+
+    return compactContributions(rows);
+  }
+
+  /** The net number the equipped items add to one stat. */
+  getWornBonus(statKey) {
+    return sumContributions(this.getWornContributions(statKey));
+  }
+
+  /**
+   * Which ability a skill is keyed off, in the sheet's own lowercase keys.
+   *
+   * A specialised Knowledge falls back to the Knowledge row, the same way
+   * `getSkillTotal` does — "Knowledge (arcana)" is not itself a row in
+   * skills.json. Empty for Speak Language, which is keyed off nothing.
+   */
+  getSkillAbility(skillName) {
+    const skills = loadFile('skills');
+    const list = Array.isArray(skills) ? skills : [];
+    const wanted = String(skillName || '').toLowerCase();
+    let found = list.find((s) => String(s?.Name || '').toLowerCase() === wanted);
+    if (!found && /^knowledge\s*\(/i.test(wanted)) {
+      found = list.find((s) => s?.Name === 'Knowledge');
+    }
+    return ABILITY_BY_ABBREV[String(found?.Characteristic || '').toLowerCase()] || '';
+  }
+
+  /**
+   * Bonuses of the same named type that two equipped items both grant.
+   *
+   * In 3.5 only the larger applies. The sheet adds both anyway, per the
+   * project's rule of computing without enforcing, and reports the overlap so
+   * the number can be shown as suspect rather than quietly wrong. Two rings of
+   * protection in two of the four slots is the case that makes this real.
+   */
+  getWornStackingWarnings() {
+    const seen = new Map();
+    this.getActiveWornEffects().forEach((effect) => {
+      const counted = new Set();
+      Object.entries(effect.stats).forEach(([stat, [, type]]) => {
+        if (!type) return; // untyped bonuses always stack
+        const normalised = stackingStatKey(stat);
+        const key = `${normalised}::${type}`;
+        // One item overlapping itself across ac/acTouch/acFlat is not an overlap.
+        if (counted.has(key)) return;
+        counted.add(key);
+        if (!seen.has(key)) seen.set(key, { stat: normalised, type, labels: [] });
+        seen.get(key).labels.push(effect.name || effect.label);
+      });
+    });
+    return [...seen.values()].filter((row) => row.labels.length > 1);
+  }
+
+  /* —— Group B: the numbers the sheet already showed, with an item source —— */
+
+  /**
+   * Spell resistance from an equipped item. **Spell resistance does not
+   * stack** — the highest applies — so this is a maximum rather than a sum,
+   * which is why it cannot go through the contribution channel.
+   */
+  getWornSpellResistance() {
+    return this.getActiveWornEffects()
+      .reduce((best, effect) => Math.max(best, effect.spellResistance || 0), 0);
+  }
+
+  /** Damage reduction granted by equipped items, one row per item. */
+  getWornDamageReductions() {
+    return this.getActiveWornEffects()
+      .filter((effect) => effect.damageReduction)
+      .map((effect) => ({
+        amount: effect.damageReduction.amount,
+        bypass: effect.damageReduction.bypass,
+        source: effect.name || effect.label,
+      }));
+  }
+
+  /** Caster levels added by equipped items — the orange ioun stone's +1. */
+  getWornCasterLevelBonus() {
+    return this.getActiveWornEffects().reduce((sum, e) => sum + (e.casterLevel || 0), 0);
+  }
+
+  /** Turning levels added by equipped items — the phylactery's +4. */
+  getWornTurnUndeadLevelBonus() {
+    return this.getActiveWornEffects().reduce((sum, e) => sum + (e.turnUndeadLevel || 0), 0);
+  }
+
+  /** Extra wild shape uses per day — the druid's vestment. */
+  getWornWildShapeUses() {
+    return this.getActiveWornEffects().reduce((sum, e) => sum + (e.wildShapeUses || 0), 0);
+  }
+
+  /**
+   * The monk level an equipped item confers, for AC and unarmed damage only.
+   *
+   * The monk's belt raises a monk by five levels and gives a non-monk the AC
+   * and unarmed damage of a 5th-level monk — so this is added to the class
+   * level for a monk and used as a floor for everyone else.
+   */
+  getWornMonkLevel() {
+    return this.getActiveWornEffects().reduce((sum, e) => sum + (e.monkLevel || 0), 0);
+  }
+
+  /**
+   * The level used for the monk's AC bonus and unarmed damage, which the
+   * monk's belt can raise above the class level — and can grant to a
+   * character with no monk levels at all.
+   */
+  getEffectiveMonkLevel() {
+    const worn = this.getWornMonkLevel();
+    if (this.getClass() === 'Monk') return this.getLevel() + worn;
+    return worn;
+  }
+
+  /** Hit points regained per hour from an item — the pearly white spindle. */
+  getWornRestHealPerHour() {
+    return this.getActiveWornEffects().reduce((sum, e) => sum + (e.restHealPerHour || 0), 0);
+  }
+
+  /** How many times an item multiplies natural healing. 1 when none does. */
+  getWornRestHealMultiplier() {
+    return this.getActiveWornEffects()
+      .reduce((best, e) => Math.max(best, e.restHealMultiplier || 0), 0) || 1;
+  }
+
+  /** Whether an equipped item stabilises the character automatically. */
+  hasWornAutoStabilise() {
+    return this.getActiveWornEffects().some((e) => e.stabilizes);
+  }
+
+  /** Hours of sleep a night needs, when an item shortens it. 8 by default. */
+  getRequiredSleepHours() {
+    const shortest = this.getActiveWornEffects()
+      .reduce((best, e) => (e.sleepHours ? Math.min(best, e.sleepHours) : best), 8);
+    return shortest;
+  }
+
+  /**
+   * Energy resistance from equipped items, as `[{ type, amount, source }]`.
+   *
+   * A ring of energy resistance is attuned to one energy type when it is made,
+   * which items.json cannot say — the type is picked when the ring is added to
+   * the inventory and stored on the row. An unattuned ring reports its amount
+   * with an empty type so the card can ask for one rather than silently
+   * dropping the ring.
+   */
+  getEnergyResistances() {
+    return this.getActiveWornEffects()
+      .filter((effect) => effect.energyResistance > 0)
+      .map((effect) => ({
+        type: effect.choice || '',
+        amount: effect.energyResistance,
+        source: effect.name || effect.label,
+      }));
+  }
+
+  /**
+   * The miss chance an equipped item imposes on attacks against this
+   * character, as a percentage. Concealment does not stack — the best
+   * applies — so this is a maximum.
+   */
+  getMissChance() {
+    return this.getActiveWornEffects()
+      .reduce((best, e) => Math.max(best, e.missChance || 0), 0);
+  }
+
+  /** Immunities granted by equipped items, as `[{ what, source }]`. */
+  getWornImmunities() {
+    const out = [];
+    this.getActiveWornEffects().forEach((effect) => {
+      effect.immunities.forEach((what) => out.push({ what, source: effect.name || effect.label }));
+    });
+    return out;
+  }
+
+  /** Feats granted by an equipped item — the dark blue rhomboid's Alertness. */
+  getWornGrantedFeats() {
+    return this.getActiveWornEffects().filter((e) => e.grantsFeat).map((e) => e.grantsFeat);
+  }
+
+  /** Class abilities granted by an item — the ring of evasion's Evasion. */
+  getWornGrantedAbilities() {
+    return this.getActiveWornEffects()
+      .filter((e) => e.grantsAbility)
+      .map((e) => ({ ability: e.grantsAbility, source: e.name || e.label }));
+  }
+
+  /** Spell levels an equipped ring of wizardry doubles. */
+  getWornDoubledSpellLevels() {
+    return this.getActiveWornEffects()
+      .filter((e) => e.doublesSpellLevel > 0)
+      .map((e) => e.doublesSpellLevel);
+  }
+
+  /**
+   * A speed bonus an item grants to the **animal**, not to the character —
+   * horseshoes of speed. Read by the companion and mount cards.
+   */
+  getCompanionSpeedBonus() {
+    return this.getActiveWornEffects()
+      .reduce((sum, e) => sum + (e.companionSpeed ? e.companionSpeed[0] : 0), 0);
+  }
+
+  /** Items equipped that still need a choice made — an unattuned ring. */
+  getWornItemsNeedingChoice() {
+    return this.getWornEffects().filter((e) => e.needsChoice && !e.choice);
   }
 
   // —— Potions and oils ——
@@ -5308,7 +5744,7 @@ class Player {
    */
   getCarriedPotions() {
     return this.getInventory()
-      .filter((row) => row?.ItemType === 'Potion' && (Number(row.Number) || 0) > 0)
+      .filter((row) => isPotionLikeRow(row) && (Number(row.Number) || 0) > 0)
       .map((row) => {
         const raw = getPotionByName(row.Name);
         const effect = raw ? resolvePotionEffect(raw) : null;
@@ -5512,9 +5948,14 @@ class Player {
    * @param {string} statKey - 'naturalAttack' or 'naturalDamage'
    */
   getNaturalWeaponBonus(statKey) {
-    return this.getResolvedEffects()
+    const fromPotions = this.getResolvedEffects()
       .filter((e) => e.natural)
       .reduce((total, e) => total + (Number(e.stats?.[statKey]?.[0]) || 0), 0);
+    /* An amulet of mighty fists is the worn half of the same idea, and reaches
+       unarmed strikes as well as natural weapons. */
+    const fromItems = this.getActiveWornEffects()
+      .reduce((total, e) => total + (Number(e.stats?.[statKey]?.[0]) || 0), 0);
+    return fromPotions + fromItems;
   }
 
   /** How many size categories the running potions move this character. */
@@ -5533,10 +5974,16 @@ class Player {
   getPotionStackingWarnings() {
     const seen = new Map();
     this.getStatEffects().forEach((effect) => {
+      const counted = new Set();
       Object.entries(effect.stats).forEach(([stat, [, type]]) => {
         if (!type) return; // untyped bonuses always stack
-        const key = `${stat}::${type}`;
-        if (!seen.has(key)) seen.set(key, { stat, type, labels: [] });
+        const normalised = stackingStatKey(stat);
+        const key = `${normalised}::${type}`;
+        /* Two potions of shield of faith overlap once, not three times: the
+           deflection bonus is one bonus written under three AC keys. */
+        if (counted.has(key)) return;
+        counted.add(key);
+        if (!seen.has(key)) seen.set(key, { stat: normalised, type, labels: [] });
         seen.get(key).labels.push(effect.label);
       });
     });
@@ -5967,7 +6414,8 @@ class Player {
     }
 
     return result + this.getSkillConditionModifier(skillName)
-      + this.getPotionBonus(`skill:${skillName}`);
+      + this.getPotionBonus(`skill:${skillName}`)
+      + this.getWornBonus(`skill:${skillName}`);
   }
 
   /**
@@ -6143,6 +6591,39 @@ class Player {
     }
   }
 
+  /**
+   * Spend one or more of a carried item, matched the way the *inventory* knows
+   * it rather than the way a caller happens to spell it.
+   *
+   * `removeInventoryItem` matches on the full magical identity — link,
+   * masterwork, enhancement bonus, named effects, overrides — which is right
+   * when the caller is the inventory page and holds all of it. It is wrong for
+   * a consumable: the potions card knows a potion only by its name, and the
+   * effect table knows the *bare* link (`fly`) while the inventory row stores
+   * the full ref (`items/Potion/fly`). Those two never matched, so a potion was
+   * drunk and never left the bag.
+   *
+   * @param {{name: string, type: string, link?: string}} match - `link`, when
+   *   given, must equal the row's own Link; it is how two same-named scrolls
+   *   are told apart.
+   * @param {number} [count=1]
+   * @returns {boolean} whether a row was found and decremented
+   */
+  consumeInventoryItem(match, count = 1) {
+    if (!Array.isArray(this.inventory)) return false;
+    const { name, type, link } = match || {};
+    const index = this.inventory.findIndex((row) => (
+      row?.ItemType === type
+      && row?.Name === name
+      && (link === undefined || (row.Link || '') === link)
+    ));
+    if (index === -1) return false;
+    const row = this.inventory[index];
+    row.Number = Math.max(0, (Number(row.Number) || 0) - Math.max(1, Math.floor(count)));
+    if (row.Number <= 0) this.inventory.splice(index, 1);
+    return true;
+  }
+
   removeInventoryItem(name, type, number, opts = {}) {
     if (!Array.isArray(this.inventory)) return;
 
@@ -6273,6 +6754,55 @@ class Player {
    * Replace the overrides map on an equipment slot entry. Passing an empty
    * or null map clears the field.
    */
+  /**
+   * Attune an equipped item to a choice its data cannot supply — the energy a
+   * ring of energy resistance protects against.
+   *
+   * The choice is normally made when the item is added to the bag, which is
+   * the only moment the form has the player's attention. This is the way back
+   * for a ring that is already worn: without it the only answer was "remove it
+   * and add it again", which is not an answer.
+   *
+   * Written to the **inventory row as well as the equipped entry**. The two are
+   * matched on the identity `sameInventoryEntry` compares — overrides included
+   * — so changing one and not the other would make the worn ring stop finding
+   * its own row, and its carried count fall back to 1.
+   *
+   * @param {string} slot equipment slot key
+   * @param {string} key the choice's name, e.g. 'energy'
+   * @param {string} value the chosen value; empty clears it
+   * @returns {boolean} whether an equipped item was found to change
+   */
+  setWornItemChoice(slot, key, value) {
+    if (!slot || !key) return false;
+    const entry = this.getEquipment()[slot];
+    if (!entry || typeof entry !== 'object') return false;
+
+    const before = entry.overrides || null;
+    const next = { ...(before || {}) };
+    if (value) next[key] = String(value);
+    else delete next[key];
+    const normalized = normalizeOverrides(next);
+
+    /* Found *before* the entry changes, or the comparison would be against
+       the overrides we are about to write. */
+    const row = (Array.isArray(this.inventory) ? this.inventory : []).find((item) => (
+      item.Name === (entry.name ?? '')
+      && (item.Link || '') === (entry.link || '')
+      && !!item.masterwork === !!entry.masterwork
+      && (item.bonus || 0) === (entry.bonus || 0)
+      && stableOverrides(item.overrides) === stableOverrides(before)
+    ));
+
+    if (normalized) entry.overrides = normalized;
+    else delete entry.overrides;
+    if (row) {
+      if (normalized) row.overrides = normalized;
+      else delete row.overrides;
+    }
+    return true;
+  }
+
   setEquipmentSlotOverrides(slot, overrides) {
     if (!slot || !this.equipment || typeof this.equipment !== 'object') return;
     const entry = this.equipment[slot];

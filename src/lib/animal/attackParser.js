@@ -129,12 +129,18 @@ export function recomputeAttack(line, deltas = {}) {
   const babDelta = Number(deltas.babDelta) || 0;
   const strModDelta = Number(deltas.strModDelta) || 0;
   const sizeModDelta = Number(deltas.sizeModDelta) || 0;
+  /* An enhancement bonus on the natural weapons themselves — magic fang, an
+     amulet of mighty fists. It reaches attack and damage alike and, unlike
+     Strength, is **not halved on a secondary attack**: the halving is a
+     property of the Strength modifier, not of the weapon. */
+  const enhancementDelta = Number(deltas.enhancementDelta) || 0;
+  const enhancementDamage = Number(deltas.enhancementDamage) || 0;
 
   const isSecondary = line.type === 'secondary';
-  const bonusDelta = babDelta + strModDelta + sizeModDelta;
+  const bonusDelta = babDelta + strModDelta + sizeModDelta + enhancementDelta;
   const newBonus = (line.bonus == null ? null : line.bonus + bonusDelta);
 
-  const dmgDelta = isSecondary ? Math.floor(strModDelta / 2) : strModDelta;
+  const dmgDelta = (isSecondary ? Math.floor(strModDelta / 2) : strModDelta) + enhancementDamage;
   let newDamage = line.damage;
   const parsed = parseDamage(line.damage);
   if (parsed && parsed.raw === undefined && dmgDelta !== 0) {

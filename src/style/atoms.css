@@ -600,6 +600,15 @@
   overflow: auto;
   padding-bottom: max(var(--space-5), env(safe-area-inset-bottom, 0));
 }
+
+/* The sheet itself spans the viewport, which is right on a phone and wrong for
+   the text inside it on a wide screen: a paragraph 1600 px long is unreadable
+   and a row of controls strung across the full width looks broken. So the
+   sheet stays full-bleed and its *content* is a centred column. */
+.sh-sheet-scroll > * {
+  max-width: 40rem;
+  margin-inline: auto;
+}
 @keyframes sh-slide-up { from { transform: translateY(100%); } to { transform: translateY(0); } }
 .sh-sheet .handle {
   width: 2.5rem; height: 0.25rem;

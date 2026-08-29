@@ -1,0 +1,51 @@
+/* What a worn magic item does, under its name on the equipment card
+   (equipped_items_card.jsx). All sizing is in rem per the CSS convention in
+   CLAUDE.md. */
+
+.worn-item-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+/* The bonus line. Slightly stronger than the note below it: this is the
+   number the player came to check. */
+.worn-item-effect {
+  font-size: 0.8em;
+  line-height: 1.35;
+}
+
+/* An item whose bonuses do not apply to this character keeps its line and
+   loses its weight — struck through rather than hidden, so "why is my AC not
+   moving" has an answer on the page. */
+.worn-item-effect--inert {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+.worn-item-note {
+  font-size: 0.75em;
+  line-height: 1.35;
+  opacity: 0.8;
+}
+
+.worn-item-warn {
+  font-size: 0.75em;
+  line-height: 1.35;
+}
+
+/* The one question an item's data cannot answer for itself: which energy a
+   ring of energy resistance is attuned to. Asked when the ring is added, and
+   answerable again here for one that is already worn. */
+.worn-item-choice {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-top: 0.15rem;
+}
+
+.worn-item-choice-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}

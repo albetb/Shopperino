@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, within } from '@testing-library/react';
 import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
 import monsterBookReducer from '../../store/slices/monsterBookSlice';
@@ -303,6 +303,23 @@ describe('the health card on the sheet', () => {
     expect(container.querySelectorAll('.monster-hp-row')).toHaveLength(2);
     expect(screen.getByRole('button', { name: 'Decrease HP of #1' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Increase HP of #2' })).toBeInTheDocument();
+  });
+
+  test('removing is the roster card’s job, never the sheet’s', () => {
+    /* The same action in two places, and one of them able to pull the page
+       out from under the reader. Deleting lives on the roster, where the
+       whole encounter is visible. */
+    const ref = CREATURES[0].ref;
+    const store = storeWith(ref, ref);
+    store.dispatch(onOpenRosterEntry(0));
+    const { container } = renderIn(store, <MonsterBookPage />);
+    const sheetRows = [...container.querySelectorAll('.monster-hp-row')];
+    expect(sheetRows).toHaveLength(2);
+    sheetRows.forEach((row) => {
+      expect(within(row).queryByRole('button', { name: /^Remove/ })).toBeNull();
+    });
+    // The roster card above it still has one per individual.
+    expect(screen.getAllByRole('button', { name: /^Remove .* #\d/ })).toHaveLength(2);
   });
 
   test('a single creature keeps the plain unnumbered controls', () => {

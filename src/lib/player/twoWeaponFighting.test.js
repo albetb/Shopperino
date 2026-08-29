@@ -61,6 +61,42 @@ describe('when the line appears at all', () => {
     expect(p.getTwoWeaponFighting()).toBe(null);
   });
 
+  test('not with a wand in the off hand — a wand is not a weapon', () => {
+    /* A wand occupies a hand, so without the check it made the character
+       count as fighting with two weapons: an extra attack line and a penalty
+       on both hands, for holding a stick. */
+    const p = fighter();
+    equip(p, 'rh1', 'items/Weapon/longsword');
+    equip(p, 'lh1', 'items/Wand/detect-magic');
+    expect(p.getTwoWeaponFighting()).toBe(null);
+    expect(p.isFightingWithTwoWeapons()).toBe(false);
+  });
+
+  test('nor a rod, nor a staff, nor two wands', () => {
+    const rod = fighter();
+    equip(rod, 'rh1', 'items/Weapon/longsword');
+    equip(rod, 'lh1', 'items/Rod/rod-of-metamagic-enlarge');
+    expect(rod.getTwoWeaponFighting()).toBe(null);
+
+    const staff = fighter();
+    equip(staff, 'rh1', 'items/Weapon/longsword');
+    equip(staff, 'lh1', 'items/Staff/staff-of-charming');
+    expect(staff.getTwoWeaponFighting()).toBe(null);
+
+    const bothWands = fighter();
+    equip(bothWands, 'rh1', 'items/Wand/detect-magic');
+    equip(bothWands, 'lh1', 'items/Wand/detect-magic');
+    expect(bothWands.getTwoWeaponFighting()).toBe(null);
+  });
+
+  test('a wand in the main hand does not suppress the off-hand weapon either', () => {
+    // Neither hand is an attack, so there is no line — and no crash.
+    const p = fighter();
+    equip(p, 'rh1', 'items/Wand/detect-magic');
+    equip(p, 'lh1', 'items/Weapon/sword-short');
+    expect(p.getTwoWeaponFighting()).toBe(null);
+  });
+
   test('with a weapon in each hand, whether or not the feat was taken', () => {
     expect(dualWielder().getTwoWeaponFighting()).toBeTruthy();
     expect(dualWielder(12, ['Two-weapon fighting']).getTwoWeaponFighting()).toBeTruthy();

@@ -173,6 +173,25 @@ export function isMobile() {
   return window.innerWidth <= 760;
 }
 
+/**
+ * A modifier with its sign always shown: `+4`, `-4`, `+0`.
+ *
+ * A d20 modifier is written signed, so the sign belongs to the *number* rather
+ * than to the label beside it. Hardcoding a `+` in the markup and interpolating
+ * the value is correct exactly until the value goes negative — an inventory row
+ * for a weapon the character is not proficient with printed `+-4`.
+ *
+ * Zero reads `+0`, not `0`: it is a bonus that happens to be nothing, which is
+ * a different statement from the absence of one.
+ *
+ * @param {number} value
+ * @returns {string}
+ */
+export function signed(value) {
+  const n = Number(value) || 0;
+  return n >= 0 ? `+${n}` : String(n);
+}
+
 /** Format a number with thousands separator (') and optional decimals (e.g. 1'234.5). */
 export function formatNumber(num) {
   const n = parseFloat(num);
@@ -318,7 +337,8 @@ export function calculateWeaponAttackBonus(player, weaponData) {
   // A running potion (heroism, haste, good hope) and any oil applied to this
   // particular slot. The oil is slot-scoped on purpose: an oil of magic weapon
   // on the longsword must not raise the dagger in the other hand.
-  const potionBonus = player.getPotionBonus?.('attack') ?? 0;
+  const potionBonus = (player.getPotionBonus?.('attack') ?? 0)
+    + (player.getWornBonus?.('attack') ?? 0);
   const oilBonus = player.getOilBonus?.(weaponData.slot, 'attack') ?? 0;
 
   return bab + abilityMod + weaponBonus + enhBonus + conditionMod + featBonus
@@ -426,7 +446,8 @@ export function calculateWeaponDamage(player, weaponData) {
   damageBonus += player.getPowerAttackDamageBonus?.(weaponData) ?? 0;
 
   // A running potion (good hope) and any oil applied to this slot.
-  damageBonus += player.getPotionBonus?.('damage') ?? 0;
+  damageBonus += (player.getPotionBonus?.('damage') ?? 0)
+    + (player.getWornBonus?.('damage') ?? 0);
   damageBonus += player.getOilBonus?.(weaponData.slot, 'damage') ?? 0;
 
   // Format the damage string

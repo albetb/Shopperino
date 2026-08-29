@@ -4756,7 +4756,7 @@
       "Link": "staff-of-size-alteration",
       "Name": "Staff of Size alteration",
       "Cost": 29000,
-      "Description": "<p>Stout and sturdy, this staff of dark wood allows use of the following spells:</p>  <ul> <li><a href=\"spells#enlarge-person\">Enlarge person</a> (1 charge)</li> <li><a href=\"spells#reduce-person\">Reduce person</a> (1 charge)</li> <li><a href=\"spells#shrink-item\">Shrink item</a> (1 charge)</li> <li>Enlarge person, mass (1 charge)</li> <li>Reduce person, mass (1 charge)</li> </ul> <p>Faint conjuration; CL 8th; Craft Staff, enlarge person, mass enlarge person, reduce person, mass reduce person, shrink item; Price 29,000 gp.</p>",
+      "Description": "<p>Stout and sturdy, this staff of dark wood allows use of the following spells:</p>  <ul> <li><a href=\"spells#enlarge-person\">Enlarge person</a> (1 charge)</li> <li><a href=\"spells#reduce-person\">Reduce person</a> (1 charge)</li> <li><a href=\"spells#shrink-item\">Shrink item</a> (1 charge)</li> <li><a href=\"spells#mass-enlarge-person\">Enlarge person, mass</a> (1 charge)</li> <li><a href=\"spells#mass-reduce-person\">Reduce person, mass</a> (1 charge)</li> </ul> <p>Faint conjuration; CL 8th; Craft Staff, enlarge person, mass enlarge person, reduce person, mass reduce person, shrink item; Price 29,000 gp.</p>",
       "id": 430
     },
     {

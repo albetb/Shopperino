@@ -156,12 +156,58 @@ describe('what each category casts', () => {
       parsed += spells.length;
       spells.forEach((s) => expect(known.has(s.link)).toBe(true));
     });
-    expect(linksInData).toBe(98);
-    expect(parsed).toBe(98);
+    /* 100, not the 98 this once asserted: the staff of size alteration listed
+       its two mass spells as plain text, so they were neither links in the
+       data nor spells the parser could see. Both counts moved together, which
+       is the point — a link in the data that the parser drops is the failure
+       this test is for. */
+    expect(linksInData).toBe(100);
+    expect(parsed).toBe(100);
   });
 
   test('a rod casts no spells at all — it has powers, not spells', () => {
     items().Rod.forEach((rod) => expect(getHeldItemSpells(rod, 'Rod')).toEqual([]));
+  });
+});
+
+describe('every spell a staff names is reachable', () => {
+  const staffs = () => loadFile('items')?.Staff || [];
+
+  test('the staff of size alteration casts all five, mass spells included', () => {
+    /* Two of its five entries carried no anchor at all — plain text where the
+       other three had links. The description showed them as dead words and the
+       parser, which pairs a spell with its cost through the `<a>`, dropped them
+       entirely: the staff offered three spells instead of five. */
+    const raw = staffs().find((r) => r.Link === 'staff-of-size-alteration');
+    const spells = getHeldItemSpells(raw, 'Staff');
+    expect(spells.map((s) => s.link)).toEqual([
+      'enlarge-person', 'reduce-person', 'shrink-item',
+      'mass-enlarge-person', 'mass-reduce-person',
+    ]);
+    spells.forEach((spell) => expect(spell.charges).toBe(1));
+  });
+
+  test('no staff lists a spell as unlinked text', () => {
+    /* The guard on the class of bug: an entry with no anchor is invisible to
+       the parser and dead in the description, and nothing else would notice. */
+    const orphans = [];
+    staffs().forEach((raw) => {
+      (String(raw.Description || '').match(/<li>[\s\S]*?<\/li>/gi) || []).forEach((li) => {
+        if (!/<a /i.test(li)) orphans.push(`${raw.Name}: ${li.replace(/<[^>]+>/g, '').trim()}`);
+      });
+    });
+    expect(orphans).toEqual([]);
+  });
+
+  test('every spell href on every staff resolves to a real spell', () => {
+    const known = new Set((loadFile('spells') || []).map((s) => s.Link));
+    const broken = [];
+    staffs().forEach((raw) => {
+      [...String(raw.Description || '').matchAll(/<a href="spells#([^"]+)"/gi)].forEach((m) => {
+        if (!known.has(m[1])) broken.push(`${raw.Name}: ${m[1]}`);
+      });
+    });
+    expect(broken).toEqual([]);
   });
 });
 

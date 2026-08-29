@@ -118,6 +118,13 @@ class Spellbook {
         // Read defensively and left out of REQUIRED_KEYS: it is additive, and a
         // save written before it existed is still a valid spellbook.
         this.SpellSwapsUsed = Math.max(0, Math.floor(Number(data.SpellSwapsUsed) || 0));
+        /* Spell levels a worn ring of wizardry doubles. Derived from the
+           character's equipment rather than stored, so it is read defensively
+           and never serialized — a spellbook with no player behind it simply
+           has none. */
+        this.DoubledSpellLevels = Array.isArray(data.DoubledSpellLevels)
+            ? data.DoubledSpellLevels.map(Number).filter((n) => Number.isInteger(n) && n > 0)
+            : [];
 
         return this;
     }
@@ -485,6 +492,13 @@ class Spellbook {
         bonus = bonus.map((v, i) => base[i] < 0 ? 0 : v);
 
         let spellNumberArray = base.map((v, i) => v < 0 ? 0 : v);
+        /* A ring of wizardry doubles the base slots at one level. Applied
+           before the ability bonus is added, because the ring's own text says
+           bonus spells from a high ability score or from specialization are
+           not doubled. */
+        (this.DoubledSpellLevels || []).forEach((level) => {
+            if (level < spellNumberArray.length) spellNumberArray[level] *= 2;
+        });
         spellNumberArray = spellNumberArray.map((slots, i) => slots + bonus[i])
         return spellNumberArray.map((v, i) => i >= this.Characteristic - 9 ? 0 : v);
     }

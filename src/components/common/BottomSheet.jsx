@@ -1,7 +1,22 @@
 import { useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import IconButton from './IconButton';
 
 /**
+ * A sheet that slides up from the bottom of the **viewport**.
+ *
+ * Rendered into `document.body` through a portal rather than where it is
+ * written. A `position: fixed` overlay left deep in the tree is at the mercy
+ * of whatever sizes its parent's children: the potions card returns a fragment,
+ * so its sheet became a direct child of `.combat-page-wrap`, which sets
+ * `width: 92%` on its children for the card column — and the sheet stopped
+ * being as wide as the screen. An ancestor with a `transform` or `filter` would
+ * break it the same way, by becoming the containing block for `fixed`.
+ *
+ * The portal costs nothing else: React still bubbles events through the React
+ * tree, the theme lives on `<body>` so it still applies, and every `.sh-sheet`
+ * CSS rule targets the sheet or its descendants rather than its ancestors.
+ *
  * @param {boolean} [fixedHeight] pin the sheet to its maximum height instead of
  *   letting it shrink to its content. Use it where the body is filtered live:
  *   a shrinking sheet walks its own controls under a phone keyboard.
@@ -23,7 +38,7 @@ export default function BottomSheet({ open, onClose, title, eyebrow, subheader, 
 
   if (!open) return null;
 
-  return (
+  return createPortal(
     <>
       <div className="sh-scrim" onClick={onClose} role="presentation" />
       <div
@@ -47,6 +62,7 @@ export default function BottomSheet({ open, onClose, title, eyebrow, subheader, 
         {subheader && <div className="sh-sheet-sub">{subheader}</div>}
         <div className="sh-sheet-scroll">{children}</div>
       </div>
-    </>
+    </>,
+    document.body
   );
 }

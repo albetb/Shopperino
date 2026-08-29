@@ -383,12 +383,9 @@ export function getSituationalFeatNames(statKey) {
  * unarmed defender but concern *incoming ranged* attacks, so they sit under
  * ranged rather than melee.
  *
- * Two of the twenty are deliberately absent. **Leadership** is a note on
+ * One of the nineteen is deliberately absent: **Leadership** is a note on
  * Diplomacy (see `SITUATIONAL_FEAT_STATS` above) rather than an action taken in
- * a round. **Improved familiar** is not a pill at all: every creature it grants
- * — imp, quasit, pseudodragon, the eight mephits, homunculus, shocker lizard,
- * stirge and the Small elementals — is already in monsters.json, so it is a
- * real feature waiting to be built rather than a reminder.
+ * a round, so it carries no pill of its own.
  */
 export const ACTION_FEAT_GROUPS = Object.freeze({
   // —— Melee ——

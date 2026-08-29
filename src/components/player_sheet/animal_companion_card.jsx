@@ -150,7 +150,11 @@ export default function AnimalCompanionCard() {
   const acTouch = companion.getContactAC();
   const acFlat = companion.getFlatFootedAC();
   const init = companion.getInitiative();
-  const speed = companion.getSpeed();
+  /* Horseshoes of speed are worn by the character and fit the *animal*, so
+     the bonus is read off the master and shown here rather than on his own
+     speed, where it would be wrong. */
+  const shoeBonus = player.getCompanionSpeedBonus?.() ?? 0;
+  const speed = companion.getSpeed() + shoeBonus;
   const fort = companion.getFortSave();
   const reflex = companion.getReflexSave();
   const will = companion.getWillSave();
@@ -371,7 +375,9 @@ export default function AnimalCompanionCard() {
               className="sh-stat-pill--sm"
               label="Speed"
               value={`${speed} ft`}
-              sub={companion.speedBonus ? `bonus ${fmtBonus(companion.speedBonus)}` : null}
+              sub={(companion.speedBonus || shoeBonus)
+                ? `bonus ${fmtBonus(companion.speedBonus + shoeBonus)}`
+                : null}
               editing={editBonus === 'speedBonus'}
               onEdit={() => toggleEditBonus('speedBonus')}
             />

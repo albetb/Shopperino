@@ -6,6 +6,10 @@ import { setCombatPageCardCollapsed } from '../../store/slices/playerSheetSlice'
 import { addCardByLink } from '../../store/slices/appSlice';
 import { formatItemName } from '../../lib/item/formatItemName';
 import { getEffectById } from '../../lib/item/effectsUtils';
+import Icon from '../common/Icon';
+import { formatWornEffectSummary, ENERGY_TYPES } from '../../lib/item/wornEffects';
+import { onSetWornItemChoice } from '../../store/thunks/playerSheetThunks';
+import '../../style/worn_effects.css';
 
 /**
  * What the character wears beyond weapon and armor: the four free equipment
@@ -31,6 +35,14 @@ export default function EquippedItemsCard() {
 
   const items = player?.getEquippedAccessories?.() ?? [];
   if (items.length === 0) return null;
+
+  /* What each slot is actually doing, keyed by slot so a row can find its own.
+     Before this the card was a list of names: a cloak of resistance +3 looked
+     exactly like a cloak, and the +3 was nowhere. */
+  const effectBySlot = Object.fromEntries(
+    (player?.getWornEffects?.() ?? []).map((effect) => [effect.slot, effect])
+  );
+  const stackingWarnings = player?.getWornStackingWarnings?.() ?? [];
 
   /* The info sidebar wants the item and its effects together, so a flaming
      wand opens both cards — the same links the equipment page opens. */
@@ -67,34 +79,97 @@ export default function EquippedItemsCard() {
               bonus: item.bonus,
               effectIds: item.effectIds,
             });
+            const effect = effectBySlot[item.slot] || null;
+            const summary = effect ? formatWornEffectSummary(effect) : '';
             return (
               <div
                 key={item.slot}
-                className="sh-row-h sh-spread"
+                className="worn-item-row"
                 style={idx === 0
-                  ? { gap: 'var(--space-3)' }
-                  : { gap: 'var(--space-3)', borderTop: '1px solid var(--border-soft)', paddingTop: 'var(--space-2)' }}
+                  ? undefined
+                  : { borderTop: '1px solid var(--border-soft)', paddingTop: 'var(--space-2)' }}
               >
-                <span className="sh-row-h equipped-item-label">
-                  {item.link ? (
-                    <button
-                      type="button"
-                      className="button-link equipped-item-name"
-                      onClick={() => openCard(item)}
-                      title={displayName}
-                    >
-                      {displayName}
-                    </button>
-                  ) : (
-                    <span className="equipped-item-name" title={displayName}>{displayName}</span>
-                  )}
-                </span>
-                {/* The count only earns its place when there is more than one —
-                    an "x1" on every line is noise. */}
-                {item.number > 1 && <Pill tone="ghost">x{item.number}</Pill>}
+                <div className="sh-row-h sh-spread" style={{ gap: 'var(--space-3)' }}>
+                  <span className="sh-row-h equipped-item-label">
+                    {item.link ? (
+                      <button
+                        type="button"
+                        className="button-link equipped-item-name"
+                        onClick={() => openCard(item)}
+                        title={displayName}
+                      >
+                        {displayName}
+                      </button>
+                    ) : (
+                      <span className="equipped-item-name" title={displayName}>{displayName}</span>
+                    )}
+                  </span>
+                  {/* The count only earns its place when there is more than one —
+                      an "x1" on every line is noise. */}
+                  {item.number > 1 && <Pill tone="ghost">x{item.number}</Pill>}
+                </div>
+
+                {/* What it does, in one line. The arithmetic itself lives in
+                    each stat's own breakdown box; this only answers whether
+                    the item is doing anything at all. */}
+                {summary && (
+                  <div className={`sh-faint worn-item-effect${effect.inert ? ' worn-item-effect--inert' : ''}`}>
+                    {summary}
+                  </div>
+                )}
+                {effect?.situational && (
+                  <div className="sh-faint worn-item-note">{effect.situational}</div>
+                )}
+                {/* Two states worth interrupting for: an item doing nothing
+                    for this character, and one still missing its choice. */}
+                {effect?.inert && (
+                  <div className="sh-warn-strip worn-item-warn">
+                    <Icon name="warning" size={14} />
+                    {effect.arcaneOnly
+                      ? 'Only an arcane caster gains this.'
+                      : `A ${effect.raceExcept} gains none of this.`}
+                  </div>
+                )}
+                {/* Normally answered when the item is added; this is the way
+                    back for a ring that is already worn. Shown once chosen too,
+                    because a ring can be re-attuned and a choice you cannot
+                    see is a choice you cannot correct. */}
+                {effect?.needsChoice === 'energy' && (
+                  <div className="worn-item-choice">
+                    <span className="sh-eyebrow">
+                      {effect.choice ? 'Resists' : 'Pick the energy it resists'}
+                    </span>
+                    <div className="worn-item-choice-chips">
+                      {ENERGY_TYPES.map((energy) => (
+                        <button
+                          type="button"
+                          key={energy}
+                          className={['sh-chip', effect.choice === energy && 'is-on'].filter(Boolean).join(' ')}
+                          onClick={() => dispatch(onSetWornItemChoice(
+                            item.slot, 'energy', effect.choice === energy ? '' : energy
+                          ))}
+                        >
+                          {energy}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             );
           })}
+
+          {/* Computed, never enforced: two items of the same bonus type are
+              both added and the overlap is reported, exactly as it is for
+              two potions. Two rings of protection in two slots is the case
+              that makes this real. */}
+          {stackingWarnings.map((w) => (
+            <div className="sh-warn-strip worn-item-warn" key={`${w.stat}:${w.type}`}>
+              <Icon name="warning" size={14} />
+              {w.labels.join(' and ')} both give a {w.type} bonus — in 3.5 only the
+              larger applies, but both are counted here.
+            </div>
+          ))}
         </div>
       )}
     </Card>

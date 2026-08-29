@@ -169,3 +169,32 @@ describe('granted feats', () => {
     expect(screen.getByText(data.shortDescription)).toBeInTheDocument();
   });
 });
+
+describe('a feat name the data no longer carries', () => {
+  /* Improved familiar was removed from feats.json — it is a Complete Warrior
+     feat and this app covers core 3.5. A character who had already taken it
+     still has the name on their sheet, and the page must survive it: a data
+     deletion is the one change that reaches saves nobody can migrate. */
+  const GONE = 'Improved familiar';
+
+  test('is no longer offered by the picker', () => {
+    expect((loadFile('feats') || []).some((f) => f.Name === GONE)).toBe(false);
+  });
+
+  test('still renders on a character who already had it, without its description', () => {
+    const p = makePlayer();
+    p.feats = [GONE, 'Toughness'];
+    expect(() => renderFeatsPage(p)).not.toThrow();
+    // The name survives; only the one-liner behind it is gone.
+    expect(screen.getByText(GONE)).toBeInTheDocument();
+    expect(screen.getByText('Toughness')).toBeInTheDocument();
+  });
+
+  test('the model reports it as held and gives it no bonuses', () => {
+    const p = makePlayer();
+    p.feats = [GONE];
+    expect(p.hasFeatNamed(GONE)).toBe(true);
+    expect(p.getFeatShortDescription(GONE)).toBe('');
+    expect(p.getActionFeats('melee')).toEqual([]);
+  });
+});

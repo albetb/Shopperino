@@ -93,6 +93,39 @@ export function resolveHeldItem(entry) {
   return itemType ? { raw: byRef.raw, itemType } : null;
 }
 
+/**
+ * Whether something occupying a hand is a weapon you could attack with.
+ *
+ * A wand, rod or staff takes a hand but is not an attack: it should not get an
+ * attack line, and — the bug this was written for — **it must not make the
+ * character count as fighting with two weapons**. A wand in the off hand was
+ * producing a two-weapon section, penalties and all.
+ *
+ * The test is narrow on purpose, and both halves matter:
+ *
+ * - It applies **only to the three held categories**. Every one of the 34
+ *   `Specific Weapon` rows lacks `Dmg (M)` too — a holy avenger carries its
+ *   damage on the base weapon its `Specific.Base` names — so a blanket
+ *   "no damage dice means not a weapon" would silently disarm every magic
+ *   weapon in the game.
+ * - Within those categories it asks for **damage dice** rather than trusting
+ *   the category, because some rods double as weapons in their own text (the
+ *   rod of alertness is a +1 light mace). None of the 138 wands, rods and
+ *   staffs in items.json carries damage dice today, so the test excludes all
+ *   of them — but a rod that really is a weapon keeps its row the day one is
+ *   given the fields.
+ *
+ * @param {object} raw - the items.json row
+ * @param {string} [itemType] - the category when the caller knows it
+ * @returns {boolean}
+ */
+export function handItemIsWeapon(raw, itemType) {
+  if (!raw) return false;
+  const type = itemType || heldTypeOfRaw(raw);
+  if (!isHeldItemType(type)) return true;
+  return Boolean(raw['Dmg (M)']);
+}
+
 /** Which of the three categories an items.json entry belongs to, if any. */
 export function heldTypeOfRaw(raw) {
   if (!raw) return '';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { getItemByRef, calculateWeaponAttackBonus, calculateWeaponDamage, applyItemOverrides } from '../../../lib/utils';
+import { getItemByRef, calculateWeaponAttackBonus, calculateWeaponDamage, applyItemOverrides, signed } from '../../../lib/utils';
 import formatItemName from '../../../lib/item/formatItemName';
 import { getEffectById } from '../../../lib/item/effectsUtils';
 import '../../../style/equipment_grid.css';
@@ -172,7 +172,7 @@ function EquipmentSlotBox({ slotKey, dataSlot, config, entry, onUnequip, onOpenC
           })()}
           {attackBonus !== null && damage !== null && (
             <div className="slot-weapon-stats">
-              <span className="slot-attack">+{attackBonus}</span>
+              <span className="slot-attack">{signed(attackBonus)}</span>
               <span className="slot-damage">{damage}</span>
             </div>
           )}
