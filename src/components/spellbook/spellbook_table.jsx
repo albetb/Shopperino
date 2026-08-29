@@ -55,6 +55,7 @@ import {
 } from '../../store/thunks/playerSheetThunks';
 import '../../style/shop_inventory.css';
 import '../../style/wild_shape.css';
+import { spellResistanceInfo } from '../../lib/spellbook/spellsUtils';
 
 /** The seven classes that get a spellbook at all — mirrors the hook's own list. */
 const CASTER_CLASSES = ['Sorcerer', 'Wizard', 'Cleric', 'Druid', 'Bard', 'Ranger', 'Paladin'];
@@ -207,6 +208,29 @@ export default function SpellbookTable({ source = 'app' }) {
     };
   };
 
+  /* The caster level check against spell resistance, for the spells where
+     resistance can apply at all. Player-only for the same reason as the DC. */
+  const getSpellResistance = (spell) => {
+    if (isApp || !player) return null;
+    const info = spellResistanceInfo(spell);
+    if (!info.applies) return null;
+    const check = player.getCasterLevelCheck?.() ?? 0;
+    if (check <= 0) return null;
+    return {
+      ...info,
+      check,
+      penetration: player.getSpellPenetrationBonus?.() ?? 0,
+      contributions: player.getCasterLevelCheckContributions?.() ?? [],
+    };
+  };
+
+  /* Augment Summoning: +4 Strength and Constitution on whatever the spell
+     brings. Like the save DC it is a player-only answer — a standalone
+     spellbook has no character behind it, so it has no feats. */
+  const getSummonBonus = (spell) => (
+    isApp ? null : (player?.getAugmentSummoningEffect?.(spell) ?? null)
+  );
+
   const castingBlocked = !isApp && player?.canCastSpells?.() === false;
   const castingBlockedReason = 'No speech in animal form — Natural Spell removes this';
 
@@ -302,6 +326,8 @@ export default function SpellbookTable({ source = 'app' }) {
           spellsPerDay={spellsPerDay}
           charBonus={charBonus}
           getSaveDC={getSaveDC}
+          getSummonBonus={getSummonBonus}
+          getSpellResistance={getSpellResistance}
           showShortDescriptions={showShortDescriptions}
           castingBlocked={castingBlocked}
           castingBlockedReason={castingBlockedReason}

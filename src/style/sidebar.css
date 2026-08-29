@@ -406,6 +406,38 @@ p {
   color: var(--accent);
 }
 
+/* The caster level check against spell resistance, on the spells resistance
+   can stop. Sits beside the save DC and is styled to match it — two different
+   numbers in one row want one visual language, not two. */
+.spell-sr-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+/* Only the first group at the right edge claims the free space; a spell that
+   has both a save DC and spell resistance keeps them together rather than
+   letting two auto margins split the row between them. */
+.spell-save-dc-group ~ .spell-sr-group {
+  margin-left: 0.375rem;
+}
+
+.spell-sr {
+  font-size: 0.85em;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Spell penetration is the only feat that moves this one, exactly as Spell
+   focus is for the DC above, so it says so the same way. */
+.spell-sr.is-focused {
+  color: var(--accent);
+}
+
 .spell-table-cell-desc {
   margin-top: 0.15rem;
   font-size: 0.85em;

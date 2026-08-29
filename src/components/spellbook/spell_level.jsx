@@ -1,5 +1,7 @@
 import PropTypes from 'prop-types';
 import StatInfo from '../common/StatInfo';
+import InfoPopover from '../common/InfoPopover';
+import { AUGMENT_SUMMONING_ABILITY_NAMES } from '../../lib/player/augmentSummoning';
 import { isMobile, trimLine } from '../../lib/utils';
 import { addCardByLink } from '../../store/slices/appSlice';
 import SpontaneousSpells from './spontaneous_spells';
@@ -20,6 +22,8 @@ export default function SpellLevelCard({
   spellsPerDay,
   charBonus,
   getSaveDC,
+  getSummonBonus,
+  getSpellResistance,
   actions,
   dispatch,
   showShortDescriptions,
@@ -308,6 +312,59 @@ export default function SpellLevelCard({
                           </span>
                         );
                       })()}
+                      {(() => {
+                        /* The caster level check against spell resistance, on
+                           the 277 spells resistance can stop. The check is
+                           1d20 + this; Spell penetration is the only thing
+                           that has ever been able to move it. */
+                        const sr = getSpellResistance?.(item);
+                        if (!sr) return null;
+                        const label = sr.qualifier
+                          ? `SR ${sr.qualifier}`
+                          : 'SR';
+                        return (
+                          <span className="spell-sr-group">
+                            <span
+                              className={'spell-sr' + (sr.penetration > 0 ? ' is-focused' : '')}
+                              title={`${label} — roll 1d20+${sr.check} against the creature's spell resistance`}
+                            >
+                              {label} +{sr.check}
+                            </span>
+                            <StatInfo
+                              label={`${item.Name} caster level check`}
+                              value={sr.check}
+                              primaryLabel="Caster level check"
+                              contributions={sr.contributions ?? []}
+                            />
+                          </span>
+                        );
+                      })()}
+                      {(() => {
+                        /* Augment Summoning does not change this spell — it
+                           changes what the spell brings — so it is a note on
+                           the row rather than a number in it. Absent unless
+                           the caster has the feat and the spell summons
+                           something with a Strength score. */
+                        const summon = getSummonBonus?.(item);
+                        if (!summon) return null;
+                        return (
+                          <span className="spell-summon-bonus">
+                            <InfoPopover label="Augment summoning">
+                              <p>
+                                Every creature this spell summons gains{' '}
+                                <b>+{summon.bonus} {summon.type}</b> to{' '}
+                                {summon.abilities.map((k) => AUGMENT_SUMMONING_ABILITY_NAMES[k] ?? k).join(' and ')},
+                                for the whole duration.
+                              </p>
+                              <p>
+                                That is +{Math.floor(summon.bonus / 2)} to melee attack
+                                and damage rolls, to Fortitude saves, and to the
+                                creature's hit points per Hit Die.
+                              </p>
+                            </InfoPopover>
+                          </span>
+                        );
+                      })()}
                     </div>
                     {showShortDescriptions && item['Short Description'] && (
                       <div className="spell-table-cell-desc">
@@ -356,6 +413,8 @@ SpellLevelCard.propTypes = {
   charBonus: PropTypes.number.isRequired,
   /** (level, spell) -> { dc, focused } for spells that allow a save, else null. */
   getSaveDC: PropTypes.func,
+  getSummonBonus: PropTypes.func,
+  getSpellResistance: PropTypes.func,
   actions: PropTypes.shape({
     onLearnUnlearnSpell: PropTypes.func,
     onPrepareSpell: PropTypes.func,

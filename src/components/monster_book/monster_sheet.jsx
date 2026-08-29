@@ -22,6 +22,7 @@ import {
 } from '../../store/thunks/monsterBookThunks';
 import '../../style/menu_cards.css';
 import '../../style/monster_book.css';
+import AugmentSummoningNote from '../common/AugmentSummoningNote';
 
 const fmt = (n) => `${n >= 0 ? '+' : ''}${n}`;
 const ABILITY_KEYS = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
@@ -258,6 +259,10 @@ export default function MonsterSheetView() {
             );
           })}
         </div>
+        {/* A summoned creature is stronger than its entry says, and nothing
+            here can know one was summoned — so the note states the arithmetic
+            and leaves the printed scores alone. */}
+        <AugmentSummoningNote />
       </Card>
 
       {/* Defence row */}

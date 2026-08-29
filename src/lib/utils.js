@@ -236,18 +236,26 @@ export function applyItemOverrides(raw, overrides) {
 /**
  * Get weapon type details (melee, ranged, two-handed, etc.)
  * @param {Object} weaponItem - The weapon data from items.json
- * @returns {Object} { isMelee, isRanged, isTwoHanded, isCompositeRanged }
+ * @returns {Object} { isMelee, isRanged, isTwoHanded, isLight, isCompositeRanged }
  */
 export function getWeaponType(weaponItem) {
-  if (!weaponItem) return { isMelee: false, isRanged: false, isTwoHanded: false, isCompositeRanged: false };
+  if (!weaponItem) {
+    return {
+      isMelee: false, isRanged: false, isTwoHanded: false,
+      isLight: false, isCompositeRanged: false,
+    };
+  }
 
   const subtype = (weaponItem.Subtype || '').toLowerCase();
   const isMelee = subtype.includes('melee');
   const isRanged = subtype.includes('ranged');
   const isTwoHanded = subtype.includes('two-handed');
+  // Power Attack turns on this one: a light weapon takes the attack penalty
+  // and gains no damage at all (combat.md).
+  const isLight = subtype.includes('light');
   const isCompositeRanged = isRanged && (weaponItem.Name || '').toLowerCase().includes('composite');
 
-  return { isMelee, isRanged, isTwoHanded, isCompositeRanged };
+  return { isMelee, isRanged, isTwoHanded, isLight, isCompositeRanged };
 }
 
 /**
@@ -301,7 +309,13 @@ export function calculateWeaponAttackBonus(player, weaponData) {
   // is which; this only adds what it reports.
   const proficiencyPenalty = player.getProficiencyAttackPenalty?.(weaponItem) ?? 0;
 
-  return bab + abilityMod + weaponBonus + enhBonus + conditionMod + featBonus + proficiencyPenalty;
+  // Power Attack and Combat Expertise, whatever the player declared this
+  // round. Melee only — the model decides which, so the rule stays in one
+  // place and this and getWeaponAttackContributions cannot disagree.
+  const stancePenalty = player.getStanceAttackPenalty?.(weaponItem) ?? 0;
+
+  return bab + abilityMod + weaponBonus + enhBonus + conditionMod + featBonus
+    + proficiencyPenalty + stancePenalty;
 }
 
 /**
@@ -313,7 +327,7 @@ export function calculateWeaponAttackBonus(player, weaponData) {
 export function calculateWeaponDamage(player, weaponData) {
   if (!player || !weaponData) return '0';
 
-  const { weaponItem, isTwoHanded, itemData } = weaponData;
+  const { weaponItem, isTwoHanded, isOffHand, itemData } = weaponData;
   const weaponType = getWeaponType(weaponItem);
 
   // Get the base damage for medium creatures (or small if player is small)
@@ -328,6 +342,10 @@ export function calculateWeaponDamage(player, weaponData) {
     if (isTwoHanded) {
       // Two-handed weapons get 1.5x STR modifier (rounded down)
       damageBonus = Math.floor(strMod * 1.5);
+    } else if (isOffHand) {
+      // The off-hand weapon of a two-weapon pair gets half Strength, rounded
+      // down. A penalty is never halved, so a negative modifier applies whole.
+      damageBonus = strMod >= 0 ? Math.floor(strMod / 2) : strMod;
     } else {
       // One-handed weapons get full STR modifier
       damageBonus = strMod;
@@ -352,6 +370,9 @@ export function calculateWeaponDamage(player, weaponData) {
 
   // Weapon Specialization / Greater Weapon Specialization, for this weapon only.
   damageBonus += player.getWeaponFeatDamageBonus?.(weaponItem) ?? 0;
+
+  // Power Attack: doubled in two hands, and nothing at all for a light weapon.
+  damageBonus += player.getPowerAttackDamageBonus?.(weaponData) ?? 0;
 
   // Format the damage string
   if (damageBonus === 0) {

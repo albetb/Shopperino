@@ -1,0 +1,52 @@
+/* Power Attack and Combat Expertise steppers at the foot of the attacks card
+   (combat_stances_row.jsx). All sizing is in rem per the CSS convention in
+   CLAUDE.md. */
+
+.combat-stances {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  border-top: 0.0625rem solid var(--border-soft);
+  padding-top: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.combat-stance-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.combat-stance-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.combat-stance-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* The declared number, between its two buttons. Wide enough that stepping from
+   9 to 10 does not shift the buttons under the reader's finger. */
+.combat-stance-value {
+  min-width: 1.5rem;
+  text-align: center;
+  font-size: var(--font-size-lg);
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Past what the rules allow: flagged, never blocked. */
+.combat-stance-value.is-over {
+  color: var(--warn, #d98b2b);
+  font-weight: 600;
+}
+
+.combat-stance-over {
+  flex-basis: 100%;
+}

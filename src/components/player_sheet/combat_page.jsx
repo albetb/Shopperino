@@ -30,6 +30,7 @@ import SpellLink from '../common/spell_link';
 import Card from '../common/Card';
 import StatPill from '../common/StatPill';
 import StatInfo from '../common/StatInfo';
+import CombatStancesRow from './combat_stances_row';
 import InfoPopover from '../common/InfoPopover';
 import Bar from '../common/Bar';
 import Pill from '../common/Pill';
@@ -275,6 +276,17 @@ export default function CombatPage() {
   // penalty on every attack. Only unarmed strikes and monk weapons qualify,
   // so each equipped weapon is tested individually by the model.
   const flurry = player.getFlurryOfBlows?.() ?? { extraAttacks: 0, penalty: 0 };
+  /* A weapon in each hand: an extra off-hand attack, and a penalty on both
+     that the sheet never applied. The model decides whether the pair
+     qualifies and what each hand swings at. */
+  const twoWeapon = player.getTwoWeaponFighting?.() ?? null;
+
+  /* Attacks of opportunity. Everyone gets one, which needs no saying, so the
+     row appears only for a character with Combat Reflexes — the feat is the
+     only thing that makes the number worth reading, and it had nowhere at all
+     to show itself before this. */
+  const hasCombatReflexes = player.hasFeatNamed?.('Combat reflexes') ?? false;
+  const attacksOfOpportunity = player.getAttacksOfOpportunity?.() ?? 1;
   const flurryWeapons = equippedWeapons.filter((w) =>
     player.isFlurryWeapon?.({ weaponItem: w.weaponItem, isTwoHanded: w.isTwoHanded }) ?? false);
   // A monk holding only monk weapons — or nothing — can still strike unarmed,
@@ -825,10 +837,7 @@ export default function CombatPage() {
                           label: 'Damage bonus',
                           contributions: player.getWeaponDamageContributions?.(wd) ?? [],
                         }}
-                        situational={[
-                          ...(player.getSituationalContributions?.('attack') ?? []),
-                          ...(player.getSituationalContributions?.('damage') ?? []),
-                        ]}
+                        situational={player.getWeaponSituationalContributions?.() ?? []}
                       />
                     </span>
                   </div>
@@ -867,6 +876,89 @@ export default function CombatPage() {
                 <span className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
                   <Pill tone={attackTone(player.getPunchAttackDeviation?.() ?? 0)}>{punchAttack >= 0 ? '+' : ''}{punchAttack}</Pill>
                   <Pill tone={punchDmgAffected ? 'warn' : 'default'}>{punchDamage}</Pill>
+                </span>
+              </div>
+            </div>
+          )}
+          {hasCombatReflexes && (
+            <div
+              className="sh-row-h sh-spread"
+              style={{
+                gap: 'var(--space-3)',
+                borderTop: '0.0625rem solid var(--border-soft)',
+                paddingTop: 'var(--space-2)',
+                marginTop: 'var(--space-2)',
+              }}
+            >
+              <span className="sh-display">Attacks of opportunity</span>
+              <span className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
+                <Pill tone="accent">
+                  {attacksOfOpportunity} / round
+                </Pill>
+                {statInfo(
+                  'Attacks of opportunity',
+                  attacksOfOpportunity,
+                  player.getAttacksOfOpportunityContributions?.(),
+                  'attacksOfOpportunity'
+                )}
+              </span>
+            </div>
+          )}
+          {twoWeapon && (
+            <div
+              className="sh-stack"
+              style={{
+                gap: 'var(--space-1)',
+                borderTop: '0.0625rem solid var(--border-soft)',
+                paddingTop: 'var(--space-2)',
+                marginTop: 'var(--space-2)',
+              }}
+            >
+              <div className="sh-row-h sh-spread" style={{ gap: 'var(--space-3)' }}>
+                <span className="sh-display">Two-weapon attack</span>
+                <span className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
+                  <Pill tone={twoWeapon.hasFeat ? 'success' : 'warn'}>
+                    {twoWeapon.penalties.main} / {twoWeapon.penalties.offHand}
+                  </Pill>
+                  <InfoPopover label="Two-weapon attack">
+                    <p>
+                      A <b>full-round action</b>. A weapon in each hand grants one
+                      extra attack with the off hand, and both hands take a
+                      penalty for the round:{' '}
+                      <b>{twoWeapon.penalties.main}</b> on every main-hand attack
+                      and <b>{twoWeapon.penalties.offHand}</b> on the off-hand one.
+                    </p>
+                    <p>
+                      {twoWeapon.offHandIsLight
+                        ? 'Your off-hand weapon is light, which is two better on both.'
+                        : 'A light weapon in the off hand would be two better on both.'}
+                      {twoWeapon.hasFeat
+                        ? ' Two-Weapon Fighting is already counted here.'
+                        : ' Two-Weapon Fighting would bring the off hand up to match the main one.'}
+                    </p>
+                    <p>
+                      The off-hand weapon adds only <b>half</b> your Strength
+                      modifier to damage.
+                    </p>
+                  </InfoPopover>
+                </span>
+              </div>
+              <div className="sh-row-h sh-spread sh-faint" style={{ gap: 'var(--space-3)' }}>
+                <span>{twoWeapon.main.name}</span>
+                <span className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
+                  <Pill tone="ghost">
+                    {twoWeapon.main.attack >= 0 ? '+' : ''}{twoWeapon.main.attack}
+                  </Pill>
+                  <Pill tone="ghost">{twoWeapon.main.damage}</Pill>
+                </span>
+              </div>
+              <div className="sh-row-h sh-spread sh-faint" style={{ gap: 'var(--space-3)' }}>
+                <span>{twoWeapon.offHand.name} (off hand)</span>
+                <span className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
+                  {twoWeapon.offHand.attacks.map((n, i) => (
+                    <Pill key={`offhand-${i}`} tone="ghost">{n >= 0 ? '+' : ''}{n}</Pill>
+                  ))}
+                  <Pill tone="ghost">{twoWeapon.offHand.damage}</Pill>
                 </span>
               </div>
             </div>
@@ -978,6 +1070,9 @@ export default function CombatPage() {
           )}
           </>
         )}
+          {/* The two feats that are a decision rather than a bonus. Last in
+              the card because every number above it moves when they change. */}
+          <CombatStancesRow />
       </Card>
 
       {/* What is in the four free slots — absent when they are empty. */}

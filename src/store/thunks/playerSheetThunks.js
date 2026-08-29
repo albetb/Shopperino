@@ -594,6 +594,24 @@ export const onSetHealthModifier = (value) => (dispatch, getState) => {
   persistPlayer(dispatch, getState, player);
 };
 
+/* Power Attack and Combat Expertise: the number the character is trading away
+   this round. A stance rather than a resource, so it persists like rage does
+   and a rest leaves it alone. Over the legal cap is stored as entered and
+   flagged on the card, per the non-enforcing rule. */
+export const onSetPowerAttack = (value) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player) return;
+  player.setPowerAttack?.(value);
+  persistPlayer(dispatch, getState, player);
+};
+
+export const onSetCombatExpertise = (value) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player) return;
+  player.setCombatExpertise?.(value);
+  persistPlayer(dispatch, getState, player);
+};
+
 // Combat bonuses
 export const onSetSpeedBonus = (value) => (dispatch, getState) => {
   const player = getState().playerSheet?.player;

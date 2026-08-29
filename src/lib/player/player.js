@@ -7,7 +7,13 @@
  */
 
 import { loadFile } from '../loadFile';
-import { getItemByRef, calculateWeaponAttackBonus, calculateWeaponDamage, getWeaponType } from '../utils';
+import {
+  getItemByRef,
+  applyItemOverrides,
+  calculateWeaponAttackBonus,
+  calculateWeaponDamage,
+  getWeaponType,
+} from '../utils';
 import { getCarryingCapacity as capacityFromStr, classifyLoad } from './carryingCapacity';
 import { aggregateConditionEffects, sumContributions } from './conditionEffects';
 import { getClassProgression, getProgressionValue, hasFeatureAtLevel, resolveAtLevel } from './classProgression';
@@ -37,6 +43,7 @@ import {
   getWeaponRangeIncrement,
   hasRunFeat,
   getStunningFistFeatUses,
+  getSituationalFeatNames,
   STUNNING_FIST_FEAT_DC,
 } from './featEffects';
 import {
@@ -54,6 +61,11 @@ import {
 } from './proficiency';
 import { contribution, situational, compactContributions, BONUS_TYPES } from './contributions';
 import {
+  isAugmentableSummon,
+  AUGMENT_SUMMONING_BONUS,
+  AUGMENT_SUMMONING_ABILITIES,
+} from './augmentSummoning';
+import {
   getFlatRacialSkillBonus,
   getFlatRacialSaveBonus,
   getRacialIllusionDcBonus,
@@ -69,6 +81,15 @@ import Familiar from './familiar';
 import SpecialMount from './specialMount';
 
 const ABILITY_KEYS = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
+
+/** Combat Expertise never trades more than 5, however high the attack bonus. */
+const COMBAT_EXPERTISE_CAP = 5;
+
+/** Spell penetration and its Greater form each add this, and they stack. */
+const SPELL_PENETRATION_BONUS = 2;
+
+/** One attack of opportunity a round, before Combat Reflexes buys more. */
+const BASE_ATTACKS_OF_OPPORTUNITY = 1;
 
 /**
  * Which saving throws a conditional racial save bonus applies to.
@@ -360,6 +381,13 @@ class Player {
        condition: it grants bonuses instead of penalties and ends by choice, so
        it is not part of the condition subsystem. Its aftermath (Fatigued) is. */
     this.raging = false;
+    /* Power Attack and Combat Expertise: how much attack bonus the character
+       is trading away this round. A stance the player declares, like rage, not
+       a per-day resource — so they live here rather than in classFeatureUses,
+       and a long rest must not clear them. Both default to 0, which is a
+       character who is not using the feat, so no version bump. */
+    this.powerAttack = 0;
+    this.combatExpertise = 0;
     /* Ranger favored enemies, in selection order. Each entry is
        { type, subtype?, bonus }; the bonus rises in steps of 2 when a later
        slot is spent raising an existing enemy rather than naming a new one. */
@@ -557,6 +585,9 @@ class Player {
 
     if (data.raging !== undefined) this.raging = !!data.raging;
 
+    if (data.powerAttack !== undefined) this.setPowerAttack(data.powerAttack);
+    if (data.combatExpertise !== undefined) this.setCombatExpertise(data.combatExpertise);
+
     if (typeof data.combatStyle === 'string' && data.combatStyle.trim() !== '') {
       this.combatStyle = data.combatStyle.trim();
     }
@@ -723,6 +754,8 @@ class Player {
       classFeatureUses: this.classFeatureUses && typeof this.classFeatureUses === 'object' ? { ...this.classFeatureUses } : {},
       spellSwapsUsed: Math.max(0, Math.floor(Number(this.spellSwapsUsed) || 0)),
       raging: !!this.raging,
+      powerAttack: this.getPowerAttack(),
+      combatExpertise: this.getCombatExpertise(),
       favoredEnemies: Array.isArray(this.favoredEnemies)
         ? this.favoredEnemies.map((e) => ({ ...e }))
         : [],
@@ -981,6 +1014,8 @@ class Player {
     clone._ignoreConditions = true;
     clone._ignoreTemporary = true;
     clone.raging = false;
+    clone.powerAttack = 0;
+    clone.combatExpertise = 0;
     clone.wildShapeRef = '';
     this._temporaryBaselineCache = clone;
     return clone;
@@ -1510,7 +1545,7 @@ class Player {
 
   /** Whether the character holds the Natural Spell feat. */
   hasNaturalSpell() {
-    return this.getFeats().some((f) => getBaseFeatName(f).toLowerCase() === 'natural spell');
+    return this.hasFeatNamed('Natural spell');
   }
 
   /** Master context fed to the familiar so its derived stats resolve. */
@@ -2182,6 +2217,7 @@ class Player {
     const abilityMod = hasWeaponFinesse(this.getFeats()) ? Math.max(strMod, dexMod) : strMod;
     return this.getBaseAttackBonus() + abilityMod + this.getAttackConditionModifier()
       + getFeatUnarmedAttackBonus(this.getFeats())
+      + this.getStanceAttackPenalty()
       + this.getPunchProficiencyPenalty();
   }
 
@@ -2195,7 +2231,8 @@ class Player {
     const dice = this.getPunchDamageDice();
     const bonus = this.getStrMod()
       + this.getDamageConditionModifier()
-      + getFeatUnarmedDamageBonus(this.getFeats());
+      + getFeatUnarmedDamageBonus(this.getFeats())
+      + this.getPowerAttackDamageBonus();
     if (bonus === 0) return dice;
     return bonus > 0 ? `${dice}+${bonus}` : `${dice}${bonus}`;
   }
@@ -3138,6 +3175,111 @@ class Player {
     return this.getFlurryOfBlows().extraAttacks > 0;
   }
 
+  /* —— Two-weapon fighting ——
+     A weapon in each hand grants an extra attack with the off-hand, at a
+     penalty to both. Nothing on the sheet applied that penalty before, so
+     both weapons showed their full attack bonus and the three Two-Weapon
+     Fighting feats had nothing to reduce. Rules: combat-maneuvers.md. */
+
+  /**
+   * One hand's weapon, as the attack calculators want it, or `null` when the
+   * hand is empty, holds a shield, or holds something items.json does not
+   * know about.
+   *
+   * @param {string} slot - 'rh1', 'lh1', 'rh2', 'lh2'.
+   */
+  getHandWeapon(slot) {
+    const entry = this.equipment?.[slot];
+    if (!entry?.link) return null;
+    // Shields live in hand slots but are not attacks.
+    if (/\/(Shield|Specific Shield)\//.test(entry.link)) return null;
+    const raw = getItemByRef(entry.baseLink || entry.link)?.raw;
+    if (!raw) return null;
+    return {
+      slot,
+      name: entry.overrides?.Name ?? entry.name,
+      link: entry.link,
+      weaponItem: applyItemOverrides(raw, entry.overrides),
+      isTwoHanded: entry.twoHanded === true,
+      itemData: entry,
+    };
+  }
+
+  /**
+   * The penalty each hand takes for fighting with two weapons.
+   *
+   * The whole table in four numbers: −6/−10 normally, two better on both when
+   * the off-hand weapon is light, and Two-Weapon Fighting bringing the off
+   * hand up to match the main one.
+   *
+   * @param {boolean} offHandIsLight
+   * @returns {{main: number, offHand: number}}
+   */
+  getTwoWeaponPenalties(offHandIsLight) {
+    const light = !!offHandIsLight;
+    if (this.hasFeatNamed('Two-weapon fighting')) {
+      return light ? { main: -2, offHand: -2 } : { main: -4, offHand: -4 };
+    }
+    return light ? { main: -4, offHand: -8 } : { main: -6, offHand: -10 };
+  }
+
+  /**
+   * The two-weapon attack line, or `null` when the character is not fighting
+   * with two weapons — one hand empty, a shield in it, or a two-handed weapon
+   * spanning both.
+   *
+   * The off-hand attack is repeated by Improved and Greater Two-Weapon
+   * Fighting, each five worse than the last, and its damage carries only half
+   * the Strength modifier. Every number here is the one that would actually be
+   * rolled, penalties included.
+   *
+   * @returns {object|null}
+   */
+  getTwoWeaponFighting() {
+    const main = this.getHandWeapon('rh1');
+    const offHand = this.getHandWeapon('lh1');
+    if (!main || !offHand) return null;
+    if (main.isTwoHanded || offHand.isTwoHanded) return null;
+    // A ranged weapon is not held in one hand alongside another weapon in any
+    // way this sheet models, so the line is a melee one.
+    if (getWeaponType(main.weaponItem).isRanged || getWeaponType(offHand.weaponItem).isRanged) {
+      return null;
+    }
+
+    const offHandIsLight = getWeaponType(offHand.weaponItem).isLight;
+    const penalties = this.getTwoWeaponPenalties(offHandIsLight);
+    const offData = { ...offHand, isOffHand: true };
+
+    const extraOffHandAttacks = (this.hasFeatNamed('Improved two-weapon fighting') ? 1 : 0)
+      + (this.hasFeatNamed('Greater two-weapon fighting') ? 1 : 0);
+    const offBase = calculateWeaponAttackBonus(this, offHand) + penalties.offHand;
+
+    return {
+      hasFeat: this.hasFeatNamed('Two-weapon fighting'),
+      offHandIsLight,
+      penalties,
+      main: {
+        name: main.name,
+        link: main.link,
+        attack: calculateWeaponAttackBonus(this, main) + penalties.main,
+        damage: calculateWeaponDamage(this, main),
+      },
+      offHand: {
+        name: offHand.name,
+        link: offHand.link,
+        // One attack, plus one more for each of the two follow-up feats, each
+        // five worse than the one before it.
+        attacks: Array.from({ length: 1 + extraOffHandAttacks }, (_, i) => offBase - i * 5),
+        damage: calculateWeaponDamage(this, offData),
+      },
+    };
+  }
+
+  /** Whether the two-weapon line has anything to show. */
+  isFightingWithTwoWeapons() {
+    return this.getTwoWeaponFighting() !== null;
+  }
+
   /**
    * Whether the unarmed strike is available right now — the gate on showing
    * the punch and flurry lines in the attacks card.
@@ -3247,7 +3389,7 @@ class Player {
    */
   hasStunningFist() {
     if (this.getChosenClassBonusFeats().some((e) => e.feat === 'Stunning Fist')) return true;
-    return this.getFeats().some((f) => getBaseFeatName(f).toLowerCase() === 'stunning fist');
+    return this.hasFeatNamed('Stunning fist');
   }
 
   // —— The high monk abilities (12th to 19th) ——
@@ -3548,7 +3690,8 @@ class Player {
   getArmorClass() {
     const ac = 10 + this.getAcDexMod() + this.getArmorBonus() + this.getShieldBonus()
       + this.getMonkAcBonus() + this.getWildShapeNaturalArmor() + this.getSizeAcModifier();
-    return ac + Number(this.acBonus || 0) + this.getAcConditionModifier() + this.getRageAcModifier();
+    return ac + Number(this.acBonus || 0) + this.getAcConditionModifier() + this.getRageAcModifier()
+      + this.getCombatExpertise();
   }
 
   /**
@@ -3559,7 +3702,8 @@ class Player {
     // Natural armor is excluded from touch AC; the size modifier is not.
     const ac = 10 + this.getAcDexMod() + this.getMonkAcBonus() + this.getSizeAcModifier();
     return ac + Number(this.acBonus || 0) + Number(this.acTouchBonus || 0)
-      + this.getAcConditionModifier() + this.getRageAcModifier();
+      + this.getAcConditionModifier() + this.getRageAcModifier()
+      + this.getCombatExpertise();
   }
 
   /**
@@ -3853,6 +3997,34 @@ class Player {
   }
 
   /**
+   * Whether this character has one feat, by its feats.json name.
+   *
+   * Asks the granted and combat-style lists as well as the selected one, which
+   * is the whole reason this exists: a ranger's Endurance arrives at 3rd
+   * through `grantedFeats` and her Two-Weapon Fighting through the combat
+   * style, and neither is part of `getFeats()` — so a lookup that searched
+   * only the selected feats would silently miss every ranger.
+   *
+   * The comparison drops any parenthesised choice, so "Skill Focus (Tumble)"
+   * answers to "Skill Focus".
+   *
+   * @param {string} name
+   * @returns {boolean}
+   */
+  hasFeatNamed(name) {
+    const wanted = String(name || '').toLowerCase();
+    if (!wanted) return false;
+    const matches = (feat) => getBaseFeatName(feat).toLowerCase() === wanted;
+    if (this.getFeats().some(matches)) return true;
+    if (this.getGrantedFeats().some((entry) => matches(entry.feat))) return true;
+    /* A ranger's combat-style feats are real feats, charged to no budget and
+       free of their prerequisites — but they work only in light armor or
+       none, so a ranger in a breastplate has them and cannot use them. */
+    if (this.isCombatStyleSuppressed()) return false;
+    return this.getCombatStyleFeats().some((entry) => matches(entry.feat));
+  }
+
+  /**
    * Append a feat. Repeatable feats can appear multiple times; the model
    * doesn't enforce uniqueness (the page already filters duplicates for
    * non-repeatable feats).
@@ -3870,6 +4042,105 @@ class Player {
   /** Damage bonus from Weapon Specialization / Greater Weapon Specialization. */
   getWeaponFeatDamageBonus(weaponItem) {
     return getFeatWeaponDamageBonus(this.getFeats(), weaponItem?.Name);
+  }
+
+  /* —— Power Attack and Combat Expertise ——
+     Neither is a bonus the sheet can work out: each is a number the player
+     declares at the start of a round, trading attack bonus for damage or for
+     armor class. So they are stored, and once stored they are contributions
+     like any other — the attack and damage on the card should be the numbers
+     actually being rolled, not the ones before the choice. Rules: feats.md. */
+
+  /**
+   * How much attack bonus Power Attack is giving up this round.
+   *
+   * Zero for a character without the feat, whatever is stored: dropping the
+   * feat should stop the trade rather than leave a silent penalty behind.
+   */
+  getPowerAttack() {
+    if (!this.hasFeatNamed('Power attack')) return 0;
+    return Math.max(0, Math.floor(Number(this.powerAttack) || 0));
+  }
+
+  /** Set the Power Attack trade. Over the legal cap is accepted and flagged. */
+  setPowerAttack(value) {
+    this.powerAttack = Math.max(0, Math.floor(Number(value) || 0));
+  }
+
+  /** The same for Combat Expertise, which buys dodge AC rather than damage. */
+  getCombatExpertise() {
+    if (!this.hasFeatNamed('Combat expertise')) return 0;
+    return Math.max(0, Math.floor(Number(this.combatExpertise) || 0));
+  }
+
+  setCombatExpertise(value) {
+    this.combatExpertise = Math.max(0, Math.floor(Number(value) || 0));
+  }
+
+  /**
+   * The most Power Attack may legally trade: the base attack bonus. There is
+   * no cap of 5 — that belongs to Combat Expertise — so a 12th-level fighter
+   * may take the whole −12.
+   */
+  getPowerAttackMax() {
+    return Math.max(0, this.getBaseAttackBonus());
+  }
+
+  /** Combat Expertise stops at 5, or at the base attack bonus when it is lower. */
+  getCombatExpertiseMax() {
+    return Math.max(0, Math.min(COMBAT_EXPERTISE_CAP, this.getBaseAttackBonus()));
+  }
+
+  /** Whether either trade is past what the rules allow, so the card can say so. */
+  isPowerAttackOverCap() {
+    return this.getPowerAttack() > this.getPowerAttackMax();
+  }
+
+  isCombatExpertiseOverCap() {
+    return this.getCombatExpertise() > this.getCombatExpertiseMax();
+  }
+
+  /**
+   * The attack penalty both stances impose on one weapon, as a negative number.
+   * Ranged attacks are untouched by either feat; an unarmed strike (no weapon
+   * item at all) is melee and takes it.
+   */
+  getStanceAttackPenalty(weaponItem) {
+    if (weaponItem && getWeaponType(weaponItem).isRanged) return 0;
+    const traded = this.getPowerAttack() + this.getCombatExpertise();
+    return traded === 0 ? 0 : -traded;
+  }
+
+  /**
+   * The damage Power Attack adds to one weapon.
+   *
+   * Two-handed doubles it — either a two-handed weapon or a one-handed one
+   * held in both hands, which is why the grip from `weaponData` counts as much
+   * as the weapon's own category. A **light** weapon gains nothing at all
+   * while still taking the full attack penalty, which is the trap in this
+   * feat; an unarmed strike is the exception and does get the damage.
+   */
+  getPowerAttackDamageBonus(weaponData) {
+    const n = this.getPowerAttack();
+    if (n === 0) return 0;
+    const data = weaponData?.weaponItem ? weaponData : { weaponItem: weaponData };
+    const { weaponItem, isTwoHanded } = data;
+    const type = getWeaponType(weaponItem);
+    if (weaponItem && !type.isMelee) return 0;
+    if (type.isLight) return 0;
+    return (type.isTwoHanded || isTwoHanded) ? n * 2 : n;
+  }
+
+  /**
+   * Whether this weapon takes the Power Attack penalty and gets nothing back.
+   * Worth saying out loud on the card, since the rule reads as a bonus.
+   */
+  isPowerAttackWasted(weaponData) {
+    return this.getPowerAttack() > 0
+      && this.getStanceAttackPenalty(
+        (weaponData?.weaponItem ? weaponData : { weaponItem: weaponData }).weaponItem
+      ) < 0
+      && this.getPowerAttackDamageBonus(weaponData) === 0;
   }
 
   /**
@@ -4215,6 +4486,7 @@ class Player {
       contribution('size', `${this.getSize()} size`, this.getSizeAcModifier(), BONUS_TYPES.SIZE),
       contribution('manual', 'manual bonus', Number(this.acBonus || 0)),
       contribution('rage', 'rage', this.getRageAcModifier(), BONUS_TYPES.MORALE),
+      contribution('combatExpertise', 'Combat expertise', this.getCombatExpertise(), BONUS_TYPES.DODGE),
       contribution('conditions', 'conditions', this.getAcConditionModifier()),
     ]);
   }
@@ -4229,6 +4501,7 @@ class Player {
       contribution('manual', 'manual bonus', Number(this.acBonus || 0)),
       contribution('manualTouch', 'touch bonus', Number(this.acTouchBonus || 0)),
       contribution('rage', 'rage', this.getRageAcModifier(), BONUS_TYPES.MORALE),
+      contribution('combatExpertise', 'Combat expertise', this.getCombatExpertise(), BONUS_TYPES.DODGE),
       contribution('conditions', 'conditions', this.getAcConditionModifier()),
     ]);
   }
@@ -4359,6 +4632,8 @@ class Player {
       contribution('feats', 'Weapon Focus', this.getWeaponFeatAttackBonus(weaponItem)),
       contribution('proficiency', 'not proficient', this.isProficientWithWeapon(weaponItem) ? 0 : NON_PROFICIENT_ATTACK_PENALTY),
       contribution('armorProficiency', 'untrained armor', armorPenalty, BONUS_TYPES.ARMOR),
+      contribution('powerAttack', 'Power attack', ranged ? 0 : -this.getPowerAttack()),
+      contribution('combatExpertise', 'Combat expertise', ranged ? 0 : -this.getCombatExpertise()),
       contribution('conditions', 'conditions', this.getAttackConditionModifier()),
     ]);
   }
@@ -4370,7 +4645,7 @@ class Player {
    */
   getWeaponDamageContributions(weaponData) {
     const data = weaponData?.weaponItem ? weaponData : { weaponItem: weaponData };
-    const { weaponItem, isTwoHanded, itemData } = data;
+    const { weaponItem, isTwoHanded, isOffHand, itemData } = data;
     if (!weaponItem) return [];
     const type = getWeaponType(weaponItem);
     const strMod = this.getStrMod();
@@ -4378,8 +4653,15 @@ class Player {
     let strValue = 0;
     let strLabel = 'Strength';
     if (type.isMelee) {
-      strValue = isTwoHanded ? Math.floor(strMod * 1.5) : strMod;
-      if (isTwoHanded) strLabel = 'Strength (two-handed)';
+      if (isTwoHanded) {
+        strValue = Math.floor(strMod * 1.5);
+        strLabel = 'Strength (two-handed)';
+      } else if (isOffHand) {
+        strValue = strMod >= 0 ? Math.floor(strMod / 2) : strMod;
+        strLabel = 'Strength (off-hand)';
+      } else {
+        strValue = strMod;
+      }
     } else if (type.isCompositeRanged) {
       strValue = Math.max(0, strMod);
     }
@@ -4391,6 +4673,11 @@ class Player {
       contribution('perfect', 'perfect weapon', perfect, BONUS_TYPES.ENHANCEMENT),
       contribution('enhancement', `+${itemData?.bonus || 0} weapon`, itemData?.bonus || 0, BONUS_TYPES.ENHANCEMENT),
       contribution('feats', 'Weapon Specialization', this.getWeaponFeatDamageBonus(weaponItem)),
+      contribution(
+        'powerAttack',
+        isTwoHanded || type.isTwoHanded ? 'Power attack (two-handed)' : 'Power attack',
+        this.getPowerAttackDamageBonus(data)
+      ),
       contribution('conditions', 'conditions', this.getDamageConditionModifier()),
     ]);
   }
@@ -4523,6 +4810,14 @@ class Player {
     }
     if (statKey === 'will' && hasFeatureAtLevel(cls, 'indomitableWillLevel', level)) {
       out.push(situational('indomitableWill', 'Indomitable Will', '+4 against enchantment while raging'));
+    }
+    /* The other half of Combat Reflexes: pass/fail, so it is a note rather
+       than part of the count above it. */
+    if (statKey === 'attacksOfOpportunity' && this.hasFeatNamed('Combat reflexes')) {
+      out.push(situational(
+        'feat:Combat reflexes', 'Combat reflexes',
+        'You may take attacks of opportunity while flat-footed'
+      ));
     }
     if (statKey === 'ac' && hasFeatureAtLevel(cls, 'improvedUncannyDodgeLevel', level)) {
       out.push(situational('improvedUncannyDodge', 'Improved Uncanny Dodge', 'Cannot be flanked'));
@@ -4704,7 +4999,145 @@ class Player {
       }
     }
 
+    /* —— Feats whose bonus only exists in a situation ——
+       Which feat speaks to which stat is `SITUATIONAL_FEAT_STATS`; what it
+       says is the feat's own shortDescription, read from feats.json here so
+       the sheet cannot drift from the reference text a player reads on the
+       feats page. */
+    getSituationalFeatNames(statKey)
+      .filter((feat) => this.hasFeatNamed(feat))
+      .forEach((feat) => {
+        out.push(situational(`feat:${feat}`, feat, this.getFeatShortDescription(feat)));
+      });
+
     return out;
+  }
+
+  /**
+   * Everything situational that belongs in a weapon's box.
+   *
+   * That box carries the attack roll and the damage roll as two groups of one
+   * list, so it needs one merged set of notes. Deduplicated by source: Point
+   * blank shot speaks to both stats, and without this it would say the same
+   * sentence twice in the same popover.
+   *
+   * @returns {Array<{source: string, label: string, note: string}>}
+   */
+  getWeaponSituationalContributions() {
+    const seen = new Set();
+    return [
+      ...this.getSituationalContributions('attack'),
+      ...this.getSituationalContributions('damage'),
+    ].filter((entry) => {
+      if (seen.has(entry.source)) return false;
+      seen.add(entry.source);
+      return true;
+    });
+  }
+
+  /**
+   * A feat's one-line benefit, straight from feats.json. Empty when the feat
+   * is unknown, so a rename in the data file shows as a missing note rather
+   * than as a wrong one.
+   *
+   * @param {string} name
+   * @returns {string}
+   */
+  getFeatShortDescription(name) {
+    const feats = loadFile('feats');
+    if (!Array.isArray(feats)) return '';
+    const wanted = String(name || '').toLowerCase();
+    const found = feats.find((f) => String(f?.Name || '').toLowerCase() === wanted);
+    return found?.shortDescription || '';
+  }
+
+  /** Whether this character has Augment Summoning. */
+  hasAugmentSummoning() {
+    return this.hasFeatNamed('Augment summoning');
+  }
+
+  /**
+   * What Augment Summoning does to the creature one spell brings, or `null`
+   * when it does nothing — the character lacks the feat, or the spell summons
+   * no creature to improve.
+   *
+   * Returned as data rather than as prose so the spell row and the creature's
+   * own stat block can each say it their own way, and so the +4 can be applied
+   * to a score rather than only described beside it.
+   *
+   * @param {object|string} spell
+   * @returns {{bonus: number, abilities: string[], type: string}|null}
+   */
+  getAugmentSummoningEffect(spell) {
+    if (!this.hasAugmentSummoning()) return null;
+    if (!isAugmentableSummon(spell)) return null;
+    return {
+      bonus: AUGMENT_SUMMONING_BONUS,
+      abilities: [...AUGMENT_SUMMONING_ABILITIES],
+      type: BONUS_TYPES.ENHANCEMENT,
+    };
+  }
+
+  /* —— Attacks of opportunity ——
+     Everyone gets one a round; Combat Reflexes buys more. This is an
+     *allowance* rather than a derived stat like AC — how many you actually
+     take depends on who provokes, which the sheet can never know — so what it
+     reports is how many you may take. Rules: attacks-of-opportunity.md. */
+
+  /**
+   * Attacks of opportunity available in a round.
+   *
+   * One without Combat Reflexes. With it, one plus the Dexterity bonus — and
+   * a Dexterity *penalty* takes nothing away, because the feat grants
+   * additional attacks rather than modifying the one everybody has.
+   */
+  getAttacksOfOpportunity() {
+    if (!this.hasFeatNamed('Combat reflexes')) return BASE_ATTACKS_OF_OPPORTUNITY;
+    return BASE_ATTACKS_OF_OPPORTUNITY + Math.max(0, this.getDexMod());
+  }
+
+  /** What makes up that allowance, for the breakdown box. */
+  getAttacksOfOpportunityContributions() {
+    const extra = this.getAttacksOfOpportunity() - BASE_ATTACKS_OF_OPPORTUNITY;
+    return compactContributions([
+      contribution('base', 'everyone gets one', BASE_ATTACKS_OF_OPPORTUNITY),
+      contribution('feats', 'Combat reflexes (Dexterity)', extra),
+    ]);
+  }
+
+  /* —— Spell penetration ——
+     A caster level check beats a creature's spell resistance: 1d20 + caster
+     level against its SR. The model has known the caster level all along and
+     nothing ever asked it for this, so the two feats that raise the check had
+     nothing to raise. Rules: dnd-rules/spell-resistance.md. */
+
+  /**
+   * The bonus Spell penetration and its Greater form add to a caster level
+   * check. They **stack**, so a caster with both is at +4.
+   */
+  getSpellPenetrationBonus() {
+    return (this.hasFeatNamed('Spell penetration') ? SPELL_PENETRATION_BONUS : 0)
+      + (this.hasFeatNamed('Greater spell penetration') ? SPELL_PENETRATION_BONUS : 0);
+  }
+
+  /**
+   * What a caster adds to the d20 when rolling against spell resistance.
+   * Zero for a non-caster, who has no caster level to check with.
+   */
+  getCasterLevelCheck() {
+    if (this.getCasterLevel() <= 0) return 0;
+    return this.getCasterLevel() + this.getSpellPenetrationBonus();
+  }
+
+  /** What makes up that check: the caster level, and the two feats. */
+  getCasterLevelCheckContributions() {
+    if (this.getCasterLevel() <= 0) return [];
+    return compactContributions([
+      contribution('casterLevel', 'caster level', this.getCasterLevel()),
+      contribution(
+        'feats', 'Spell penetration', this.getSpellPenetrationBonus()
+      ),
+    ]);
   }
 
   /** Spell Focus / Greater Spell Focus bonus for one school, on its own. */

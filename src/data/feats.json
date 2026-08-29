@@ -833,7 +833,7 @@
       ],
       "Prerequisites": "Int 13, <a href=\"feats#combat-expertise\">Combat expertise</a>.",
       "Description": "<p><b>Benefit:</b> You do not provoke an attack of opportunity when you attempt to trip an opponent while you are unarmed. You also gain a +4 bonus on your Strength check to trip your opponent.</p>\n<p>If you trip an opponent in melee combat, you immediately get a melee attack against that opponent as if you hadn’t used your attack for the trip attempt.</p>\n<p><b>Normal:</b> Without this feat, you provoke an attack of opportunity when you attempt to trip an opponent while you are unarmed.</p>\n<p><b>Special:</b> At 6th level, a monk may select Improved Trip as a bonus feat, even if she does not have the prerequisites.</p>",
-      "shortDescription": "You do not provoke an attack of opportunity when you attempt to trip an opponent while you are unarmed.",
+      "shortDescription": "No attack of opportunity when you trip an opponent while unarmed; +4 on the opposed check, and a free melee attack if the target falls.",
       "suggestedClass": [
         "Fighter",
         "Monk",

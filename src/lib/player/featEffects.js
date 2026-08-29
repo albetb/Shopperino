@@ -299,3 +299,57 @@ export function getStunningFistFeatUses(level) {
 export function hasRunFeat(feats) {
   return countFeat(feats, 'Run') > 0;
 }
+
+/**
+ * Feats whose benefit is a real bonus that only exists in a situation the
+ * sheet cannot know it is in — "+4 dodge AC against attacks of opportunity
+ * provoked by moving", "no −4 for shooting into melee". None of them may move
+ * a headline number, so each becomes one `situational()` note against the stat
+ * a player is looking at when the question actually comes up.
+ *
+ * Keyed by the exact feats.json name; the value is the stat keys
+ * `Player.getSituationalContributions` speaks. **The note text is not here** —
+ * it is the feat's own `shortDescription` in feats.json, so a correction to
+ * the data reaches the sheet and there is never a second copy to disagree
+ * with it.
+ *
+ * The four *Improved* maneuver feats land on `attack` because a bull rush,
+ * overrun, sunder or disarm resolves with an opposed roll the sheet has no
+ * separate home for; if a maneuver display is ever built they move there.
+ */
+export const SITUATIONAL_FEAT_STATS = Object.freeze({
+  'Combat casting': ['skill:concentration'],
+  'Endurance': ['fortitude'],
+  'Mobility': ['ac'],
+  'Two-weapon defense': ['ac'],
+  'Improved shield bash': ['ac'],
+  'Point blank shot': ['attack', 'damage'],
+  'Precise shot': ['attack'],
+  'Mounted archery': ['attack'],
+  'Improved precise shot': ['attack'],
+  'Blind-fight': ['attack'],
+  'Spirited charge': ['damage'],
+  'Improved bull rush': ['attack'],
+  'Improved overrun': ['attack'],
+  'Improved sunder': ['attack'],
+  'Improved disarm': ['attack'],
+  'Improved trip': ['attack'],
+  'Diehard': ['maxHp'],
+  'Mounted combat': ['skill:ride'],
+});
+
+/**
+ * The feats that have something to say about one stat, by feats.json name.
+ * The stat key is matched case-insensitively, as `skill:` keys carry the
+ * skill's own capitalisation.
+ *
+ * @param {string} statKey
+ * @returns {string[]}
+ */
+export function getSituationalFeatNames(statKey) {
+  const wanted = String(statKey || '').toLowerCase();
+  if (!wanted) return [];
+  return Object.keys(SITUATIONAL_FEAT_STATS)
+    .filter((feat) => SITUATIONAL_FEAT_STATS[feat]
+      .some((key) => key.toLowerCase() === wanted));
+}

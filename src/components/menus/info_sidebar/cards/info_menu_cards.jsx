@@ -10,9 +10,18 @@ import {
   onUpdateEquipmentSlotMagic,
 } from '../../../../store/thunks/playerSheetThunks';
 import EquipBonusControls from '../../../player_sheet/inventory/EquipBonusControls';
+import AugmentSummoningNote from '../../../common/AugmentSummoningNote';
 import '../../../../style/menu_cards.css';
 
 const HIDDEN_KEYS = new Set(['Short Description', 'id', 'Link', 'editable', 'editKey']);
+
+/* The three creature files, by the prefix their refs carry. A card built from
+   one of them is a stat block rather than an item or a spell, which is the
+   only kind that has ability scores a summoning feat could raise. */
+const CREATURE_REF = /^(animals|monsters|vermin)\//;
+
+const isCreatureCard = (card) =>
+  CREATURE_REF.test(String(card?.Link || card?.link || ''));
 
 function composeNameWithEffect(name, effect) {
   const suffixMatch = (name || '').match(/(,perfect|\+[1-5])$/);
@@ -237,6 +246,7 @@ export default function InfoMenuCards({ cardsData, closeCard }) {
             </div>
             {!state.collapsed && (
               <div className="card-content">
+                {!isEditing && isCreatureCard(data) && <AugmentSummoningNote />}
                 {isEditing && editEntryLink && (
                   <div className="info-card-row info-card-edit-row info-card-edit-row--block">
                     <EquipBonusControls
