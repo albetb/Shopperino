@@ -21,6 +21,11 @@ const initialState = {
   currentTab: 100,
   mainColor: null,
   sharedShop: null, // { name, gold, stock } when viewing a scanned shop (read-only)
+  /* Whether the scanned shop's buying drawer is open on the player sheet.
+     In the store rather than in the card because the scan handler in the top
+     menu opens it: scanning while the sheet is already in front of you puts
+     the shop there directly, with no tab change and nothing to press. */
+  sharedShopSheetOpen: false,
   isMasterMode: false, // false = Player (hide Shop/Loot), true = Master (show all)
   theme: 'dark',      // 'dark' | 'light' — drives body.theme-* class
   accent: 'crimson',  // accent hue name — drives body.accent-* class
@@ -251,6 +256,11 @@ export const appSlice = createSlice({
 
     clearSharedShop(state) {
       state.sharedShop = null;
+      state.sharedShopSheetOpen = false;
+    },
+
+    setSharedShopSheetOpen(state, action) {
+      state.sharedShopSheetOpen = !!action.payload;
     },
 
     /**
@@ -329,6 +339,7 @@ export const {
   resetMainColor,
   setSharedShop,
   clearSharedShop,
+  setSharedShopSheetOpen,
   buySharedShopItem,
   setMasterMode,
   setTheme,

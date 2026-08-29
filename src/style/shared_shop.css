@@ -134,11 +134,20 @@
   color: var(--danger);
 }
 
-/* --- the pointer on the Shop tab ---
-   A scan still lands on tab 1, and buying happens on the sheet beside the
-   purse, so the read-only view has to say where to go. */
+/* The row is a name-and-price button plus an info button, so the two share a
+   line and the button keeps the width it had. */
+.shared-shop-row-line {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding-right: var(--space-2);
+}
 
-.shared-shop-goto {
-  margin: var(--space-2) auto 0;
-  display: block;
+.shared-shop-row-line > .shared-shop-row-head {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.shared-shop-row-info {
+  flex-shrink: 0;
 }

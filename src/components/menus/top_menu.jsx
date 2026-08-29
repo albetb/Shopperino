@@ -3,9 +3,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import logo from '../../data/logo-shopperino.png';
 import { downloadLocalStorage, handleFileUpload } from '../../lib/storage';
 import { isMobile } from '../../lib/utils';
-import { setMasterMode, setSharedShop, setStateCurrentTab, setUnits, selectUnits } from '../../store/slices/appSlice';
+import { setMasterMode, setSharedShop, setSharedShopSheetOpen, setStateCurrentTab, setUnits, selectUnits } from '../../store/slices/appSlice';
+import { setPlayerSheetMainView } from '../../store/slices/playerSheetSlice';
 import { UNIT_MODES, UNIT_MODE_LABELS, UNIT_MODE_HINTS } from '../../lib/units';
 import { ScanShopScanner } from '../shop/ShareShopModal';
+import { scanLanding } from '../../lib/shop';
 import ColorPicker from './colorPicker';
 import IconButton from '../common/IconButton';
 import BottomSheet from '../common/BottomSheet';
@@ -32,6 +34,7 @@ export default function TopMenu() {
   const currentTab = useSelector(state => state.app.currentTab);
   const sharedShop = useSelector(state => state.app.sharedShop);
   const units = useSelector(selectUnits);
+  const hasCharacter = useSelector(state => !!state.playerSheet?.player);
   const isMasterMode = useSelector(state => state.app.isMasterMode);
 
   const [navOpen, setNavOpen] = useState(false);
@@ -63,9 +66,22 @@ export default function TopMenu() {
     setShowScan(true);
     setSettingsOpen(false);
   };
+  /* Where a scanned shop lands depends on what you were already looking at.
+     Scanning with your own sheet in front of you means you are about to buy
+     something, so the shop opens right there as the drawer over the Inventory
+     page — no tab change, nothing further to press. Scanning from anywhere else
+     opens the read-only list on the Shop tab, as it always has. */
   const handleScanSuccess = shop => {
     dispatch(setSharedShop(shop));
-    dispatch(setStateCurrentTab(1));
+    const { openOnSheet, goToTab } = scanLanding({ currentTab, hasCharacter });
+    if (openOnSheet) {
+      /* The drawer is rendered by a card on the Inventory page, so that page
+         has to be the one showing for the sheet to appear at all. */
+      dispatch(setPlayerSheetMainView('inventory'));
+      dispatch(setSharedShopSheetOpen(true));
+    } else {
+      dispatch(setStateCurrentTab(goToTab));
+    }
     setShowScan(false);
   };
 

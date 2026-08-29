@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { clearSharedShop } from '../../../store/slices/appSlice';
+import { addCardByLink, clearSharedShop, setSharedShopSheetOpen } from '../../../store/slices/appSlice';
 import { onBuyFromSharedShop } from '../../../store/thunks/playerSheetThunks';
+import { getEffectById } from '../../../lib/utils';
 import {
   sharedStockToDisplayItems,
   unitPrice,
@@ -41,7 +42,7 @@ const formatGp = (value) => {
  * healing potion, or the party haggles. The edited number is what leaves the
  * purse.
  */
-function ShopRow({ item, gold, onBuy }) {
+function ShopRow({ item, gold, onBuy, onOpenCard }) {
   const [open, setOpen] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [price, setPrice] = useState('');
@@ -69,22 +70,38 @@ function ShopRow({ item, gold, onBuy }) {
 
   return (
     <li className={'shared-shop-row' + (open ? ' is-open' : '')}>
-      <button
-        type="button"
-        className="shared-shop-row-head"
-        onClick={() => setOpen((v) => !v)}
-        aria-expanded={open}
-      >
-        <span className="shared-shop-row-name">
-          {item.Name}
-          <span className="shared-shop-row-type">{item.ItemType}</span>
-        </span>
-        <span className="shared-shop-row-right">
-          <span className="shared-shop-row-left-count">{available} left</span>
-          <span className="shared-shop-row-price">{formatGp(unitPrice(item))} g</span>
-          <Icon name={open ? 'expand_less' : 'add_shopping_cart'} size={18} />
-        </span>
-      </button>
+      <div className="shared-shop-row-line">
+        <button
+          type="button"
+          className="shared-shop-row-head"
+          onClick={() => setOpen((v) => !v)}
+          aria-expanded={open}
+        >
+          <span className="shared-shop-row-name">
+            {item.Name}
+            <span className="shared-shop-row-type">{item.ItemType}</span>
+          </span>
+          <span className="shared-shop-row-right">
+            <span className="shared-shop-row-left-count">{available} left</span>
+            <span className="shared-shop-row-price">{formatGp(unitPrice(item))} g</span>
+            <Icon name={open ? 'expand_less' : 'add_shopping_cart'} size={18} />
+          </span>
+        </button>
+        {/* Buying blind is the thing to avoid: a scanned row is a name and a
+            price, and what the item actually does lives in the info sidebar the
+            rest of the app already opens. Only rows that resolve to a real item
+            get one — a master's hand-written row has nothing to show. */}
+        {item.Link && (
+          <IconButton
+            ghost
+            size="sm"
+            icon="info"
+            className="shared-shop-row-info"
+            onClick={() => onOpenCard(item)}
+            aria-label={`What is ${item.Name}?`}
+          />
+        )}
+      </div>
 
       {open && (
         <div className="shared-shop-buy">
@@ -137,6 +154,7 @@ ShopRow.propTypes = {
   item: PropTypes.object.isRequired,
   gold: PropTypes.number.isRequired,
   onBuy: PropTypes.func.isRequired,
+  onOpenCard: PropTypes.func.isRequired,
 };
 
 /**
@@ -151,7 +169,10 @@ ShopRow.propTypes = {
 export default function SharedShopCard({ player }) {
   const dispatch = useDispatch();
   const sharedShop = useSelector((state) => state.app.sharedShop);
-  const [open, setOpen] = useState(false);
+  /* In the store rather than local state so a scan can open it: scanning a code
+     with this sheet already in front of you puts the shop here directly. */
+  const open = useSelector((state) => state.app.sharedShopSheetOpen);
+  const setOpen = (value) => dispatch(setSharedShopSheetOpen(value));
 
   if (!sharedShop || !player) return null;
 
@@ -162,6 +183,20 @@ export default function SharedShopCard({ player }) {
   const close = () => {
     setOpen(false);
     dispatch(clearSharedShop());
+  };
+
+  /* The same card the rest of the app opens for an item. Named effects travel
+     as extra links rather than as ids — that is what `addCardByLink` reads, and
+     it is how ShopItemRow already does it — so a +1 flaming longsword opens as
+     the sword and the flame rather than as a plain longsword. */
+  const openCard = (item) => {
+    const effectLinks = (Array.isArray(item.effectIds) ? item.effectIds : [])
+      .map((id) => getEffectById(id)?.Link)
+      .filter(Boolean);
+    dispatch(addCardByLink({
+      links: effectLinks.length ? [item.Link, ...effectLinks] : item.Link,
+      bonus: item.Bonus || 0,
+    }));
   };
 
   return (
@@ -219,6 +254,7 @@ export default function SharedShopCard({ player }) {
                 item={item}
                 gold={gold}
                 onBuy={(...args) => dispatch(onBuyFromSharedShop(...args))}
+                onOpenCard={openCard}
               />
             ))}
           </ul>

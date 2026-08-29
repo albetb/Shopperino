@@ -12,5 +12,6 @@ export {
   purchaseCost,
   inventoryArgsFor,
 } from './shopPurchase';
+export { scanLanding } from './scanLanding';
 export { generateShop } from './generateShop';
 export { encodeShopPayloadToBase64Url, decodeShopPayloadFromBase64Url } from './shopParamsCodec';

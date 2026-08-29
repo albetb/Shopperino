@@ -1,7 +1,7 @@
-import { render, screen, fireEvent, within } from '@testing-library/react';
+import { render, screen, fireEvent, within, act } from '@testing-library/react';
 import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
-import appReducer from '../../../store/slices/appSlice';
+import appReducer, { setSharedShopSheetOpen } from '../../../store/slices/appSlice';
 import Player from '../../../lib/player';
 import SharedShopCard from './SharedShopCard';
 
@@ -17,6 +17,9 @@ const STOCK = [
   { Name: 'Dagger', Number: 4, Cost: 2, isCustom: true, ItemType: 'Weapon' },
   { Name: 'Rope, hempen', Number: 2, Cost: 1, isCustom: true, ItemType: 'Good' },
   { Name: 'Sold out thing', Number: 0, Cost: 5, isCustom: true, ItemType: 'Good' },
+  /* A row that resolves to a real item, so it has a description to open. The
+     three above are the master's own rows and have none. */
+  { Number: 1, Cost: 300, link: 'items/Weapon/longsword' },
 ];
 
 function pc(gold = 100) {
@@ -63,8 +66,8 @@ describe('the card', () => {
   test('names the shop and counts what is left in it', () => {
     renderCard();
     expect(screen.getByText('Gundren')).toBeInTheDocument();
-    // The sold-out row is not one of the two.
-    expect(screen.getByText('2 items')).toBeInTheDocument();
+    // The sold-out row is not one of the three.
+    expect(screen.getByText('3 items')).toBeInTheDocument();
   });
 
   test('putting the shop down clears it', () => {
@@ -156,5 +159,44 @@ describe('a purchase you cannot afford', () => {
     const box = rowBox('Dagger');
     expect(within(box).getByText(/Leaves you/i)).toBeInTheDocument();
     expect(within(box).queryByText(/more than you carry/i)).not.toBeInTheDocument();
+  });
+});
+
+describe('reading an item before buying it', () => {
+  test('a row that resolves to a real item offers its description', () => {
+    /* A scanned row is a name and a price. What the thing actually does lives
+       in the info sidebar the rest of the app already opens. */
+    const { store } = renderCard();
+    openDrawer();
+    fireEvent.click(screen.getByRole('button', { name: /^What is / }));
+    expect(store.getState().app.infoCards.length).toBe(1);
+  });
+
+  test('a row the master typed by hand does not, because there is nothing to show', () => {
+    renderCard();
+    openDrawer();
+    const buttons = screen.getAllByRole('button', { name: /^What is / });
+    expect(buttons).toHaveLength(1);
+    expect(buttons[0]).not.toHaveAccessibleName(/Dagger/);
+  });
+});
+
+describe('a scan can open the drawer without anyone pressing anything', () => {
+  test('the drawer follows the store, so the scan handler can open it', () => {
+    /* Scanning a code with this sheet already in front of you puts the shop
+       here directly — which is only possible because the open state is in the
+       store rather than inside this card. */
+    const { store } = renderCard();
+    expect(screen.queryByText(/in the purse/)).not.toBeInTheDocument();
+    act(() => { store.dispatch(setSharedShopSheetOpen(true)); });
+    expect(screen.getByText(/in the purse/)).toBeInTheDocument();
+  });
+
+  test('putting the shop down closes the drawer with it', () => {
+    const { store } = renderCard();
+    act(() => { store.dispatch(setSharedShopSheetOpen(true)); });
+    fireEvent.click(screen.getByLabelText('Put this shop down'));
+    expect(store.getState().app.sharedShop).toBeNull();
+    expect(store.getState().app.sharedShopSheetOpen).toBe(false);
   });
 });
