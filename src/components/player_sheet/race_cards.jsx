@@ -11,6 +11,7 @@ import { onSetCharacterRace } from '../../store/thunks/playerSheetThunks';
 import { setIsPlayerSheetSidebarCollapsed } from '../../store/slices/playerSheetSlice';
 import '../../style/menu_cards.css';
 import '../../style/race_cards.css';
+import { useUnits } from '../hooks/useUnits';
 
 /**
  * The race picker, rendered from [races.json](../../data/races.json).
@@ -41,6 +42,7 @@ function asSentence(items) {
 }
 
 function RaceCard({ name, isCurrent, onSelect }) {
+  const u = useUnits();
   const [collapsed, setCollapsed] = useState(true);
   const traits = useMemo(() => getRaceTraits(name), [name]);
   const summary = useMemo(() => getRaceSummary(name), [name]);
@@ -74,13 +76,13 @@ function RaceCard({ name, isCurrent, onSelect }) {
           <div className="race-card-facts">
             {summary.size && <span className="race-fact">{summary.size}</span>}
             {summary.landSpeed > 0 && (
-              <span className="race-fact">{summary.landSpeed} ft speed</span>
+              <span className="race-fact">{u.distance(summary.landSpeed)} speed</span>
             )}
             {summary.favoredClass && (
               <span className="race-fact">favored class: {summary.favoredClass}</span>
             )}
           </div>
-          {summary.speedNote && <p className="race-card-note">{summary.speedNote}</p>}
+          {summary.speedNote && <p className="race-card-note">{u.text(summary.speedNote)}</p>}
 
           {traits.map((trait) => (
             <p key={trait.name || trait.description} className="text-left">

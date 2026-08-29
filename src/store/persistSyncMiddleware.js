@@ -11,6 +11,7 @@ import {
   setMasterMode,
   setTheme,
   setAccent,
+  setUnits,
   setDiceMultiplierMask,
   setDiceLastRoll,
 } from './slices/appSlice';
@@ -27,6 +28,7 @@ const PREF_ACTIONS = [
   setMasterMode.type,
   setTheme.type,
   setAccent.type,
+  setUnits.type,
   setDiceMultiplierMask.type,
   setDiceLastRoll.type,
   'spellbook/setIsSpellTableCollapsed',
@@ -78,6 +80,9 @@ export function persistSyncMiddleware(store) {
         break;
       case setTheme.type:
         nextPersist = { ...nextPersist, th: action.payload === 'light' ? 'light' : 'dark' };
+        break;
+      case setUnits.type:
+        nextPersist = { ...nextPersist, un: app.units };
         break;
       case setAccent.type:
         nextPersist = { ...nextPersist, ac: typeof action.payload === 'string' && action.payload ? action.payload : 'crimson' };

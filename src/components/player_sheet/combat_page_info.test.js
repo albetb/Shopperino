@@ -98,7 +98,7 @@ describe('the speed box', () => {
     renderCombat(equipped());
     fireEvent.click(infoButton('speed'));
     const box = screen.getByRole('dialog', { name: 'Speed' });
-    expect(within(box).getByText(/a full-round run covers \d+ ft/i)).toBeInTheDocument();
+    expect(within(box).getByText(/a full-round run covers \d+ m/i)).toBeInTheDocument();
     expect(within(box).getByText(/dexterity bonus to ac while running/i)).toBeInTheDocument();
   });
 
@@ -106,10 +106,10 @@ describe('the speed box', () => {
      mid-turn, so it lives in the box with the rest of the speed's story. */
   test('the run distance is in the box and no longer crowds the pill', () => {
     renderCombat(equipped());
-    expect(screen.queryByText(/^run \d+ ft/i)).toBe(null);
+    expect(screen.queryByText(/^run \d+ m/i)).toBe(null);
     fireEvent.click(infoButton('speed'));
     const box = screen.getByRole('dialog', { name: 'Speed' });
-    expect(within(box).getByText(/a full-round run covers \d+ ft \(×\d\)/i)).toBeInTheDocument();
+    expect(within(box).getByText(/a full-round run covers \d+ m \(×\d\)/i)).toBeInTheDocument();
   });
 });
 

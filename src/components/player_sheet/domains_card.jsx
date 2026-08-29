@@ -6,6 +6,7 @@ import useCardCollapse from './hooks/useCardCollapse';
 import { onSetPlayerSpellOption } from '../../store/thunks/playerSheetThunks';
 import { loadFile } from '../../lib/loadFile';
 import '../../style/domains_card.css';
+import { useUnits } from '../hooks/useUnits';
 
 /**
  * Cleric domain granted powers.
@@ -21,6 +22,7 @@ import '../../style/domains_card.css';
  * as absent.
  */
 export default function DomainsCard() {
+  const u = useUnits();
   const dispatch = useDispatch();
   const player = useSelector((state) => state.playerSheet?.player);
   const [collapsed, collapseToggle] = useCardCollapse('domains', 'domain powers');
@@ -61,7 +63,7 @@ export default function DomainsCard() {
             {name && (
               <div className="domains-card-power">
                 {powers[name]
-                  ? parse(powers[name])
+                  ? parse(u.prose(powers[name]))
                   : <span className="sh-faint">No granted power recorded for this domain.</span>}
               </div>
             )}

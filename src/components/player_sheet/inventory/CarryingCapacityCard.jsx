@@ -1,4 +1,5 @@
 import 'style/carrying_capacity.css';
+import { useUnits } from '../../hooks/useUnits';
 
 /* Static per-tier effects from equipment.md "Load effects". Speeds are
    handled per-character below (the base depends on race). */
@@ -20,6 +21,7 @@ function fmtKg(n) {
 }
 
 export default function CarryingCapacityCard({ player, collapsed, setCollapsed }) {
+  const u = useUnits();
   if (!player) return null;
 
   const capacity = player.getCarryingCapacity?.() ?? { light: 0, medium: 0, heavy: 0 };
@@ -41,7 +43,7 @@ export default function CarryingCapacityCard({ player, collapsed, setCollapsed }
         onClick={() => setCollapsed((c) => !c)}
       >
         <h3 className="card-title">Carrying capacity</h3>
-        <span className="carry-title-readout sh-mono">{fmtKg(weight)} / {cap.heavy} kg</span>
+        <span className="carry-title-readout sh-mono">{u.weight(fmtKg(weight))} / {u.weight(cap.heavy)}</span>
         <button type="button" className="collapse-button" aria-label="Toggle carrying capacity">
           <span className="material-symbols-outlined">
             {collapsed ? 'expand_more' : 'expand_less'}
@@ -62,7 +64,7 @@ export default function CarryingCapacityCard({ player, collapsed, setCollapsed }
             </div>
             {(['light', 'medium', 'heavy']).map(tier => {
               const info = TIER_INFO[tier];
-              const speed = tier === 'light' ? `${baseSpeed} ft` : `${reduced} ft`;
+              const speed = u.distance(tier === 'light' ? baseSpeed : reduced);
               const active = status === tier;
               return (
                 <div
@@ -71,7 +73,7 @@ export default function CarryingCapacityCard({ player, collapsed, setCollapsed }
                   className={`carry-row ${active ? 'carry-row--active' : ''}`}
                 >
                   <span className="carry-tier-label">{info.label}</span>
-                  <span className="sh-mono">{cap[tier]} kg</span>
+                  <span className="sh-mono">{u.weight(cap[tier])}</span>
                   <span className="sh-mono">{info.maxDex}</span>
                   <span className="sh-mono">{info.acp}</span>
                   <span className="sh-mono">{info.run}</span>
@@ -84,15 +86,15 @@ export default function CarryingCapacityCard({ player, collapsed, setCollapsed }
           <div className="carry-lift">
             <div className="carry-lift-row">
               <span>Lift overhead</span>
-              <span className="sh-mono">{cap.heavy} kg</span>
+              <span className="sh-mono">{u.weight(cap.heavy)}</span>
             </div>
             <div className="carry-lift-row">
               <span>Lift off ground <span className="sh-faint">(×2)</span></span>
-              <span className="sh-mono">{fmtKg(capacity.heavy * 2)} kg</span>
+              <span className="sh-mono">{u.weight(fmtKg(capacity.heavy * 2))}</span>
             </div>
             <div className="carry-lift-row">
               <span>Push or drag <span className="sh-faint">(×5)</span></span>
-              <span className="sh-mono">{fmtKg(capacity.heavy * 5)} kg</span>
+              <span className="sh-mono">{u.weight(fmtKg(capacity.heavy * 5))}</span>
             </div>
           </div>
         </div>

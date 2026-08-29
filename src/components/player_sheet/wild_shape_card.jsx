@@ -17,6 +17,7 @@ import InfoPopover from '../common/InfoPopover';
 import EmptyState from '../common/EmptyState';
 import Icon from '../common/Icon';
 import '../../style/wild_shape.css';
+import { useUnits } from '../hooks/useUnits';
 
 /**
  * The two wild shape allowances, as card configuration. They share every
@@ -273,6 +274,7 @@ function ShapeCard({ pool }) {
  * abilities you do not have is noise on a card you read mid-fight.
  */
 function ShapedBody({ player, form, dispatch }) {
+  const u = useUnits();
   const [combatOpen, setCombatOpen] = useState(false);
   const specialAttacks = player.getWildShapeSpecialAttacks();
   const specialQualities = player.getWildShapeSpecialQualities();
@@ -312,7 +314,7 @@ function ShapedBody({ player, form, dispatch }) {
         <Pill tone="accent" icon="straighten">{form?.size}</Pill>
         {naturalArmor > 0 && <Pill tone="accent" icon="security">+{naturalArmor} natural</Pill>}
         {modes.map(({ mode, speed }) => (
-          <Pill key={mode} tone="default" icon="directions_run">{mode} {speed} ft</Pill>
+          <Pill key={mode} tone="default" icon="directions_run">{mode} {u.distance(speed)}</Pill>
         ))}
       </div>
 
@@ -353,7 +355,7 @@ function ShapedBody({ player, form, dispatch }) {
             <Icon name={combatOpen ? 'expand_less' : 'expand_more'} size={16} />
             Creature notes
           </button>
-          {combatOpen && <div className="wild-shape-combat-text">{parse(form.combat)}</div>}
+          {combatOpen && <div className="wild-shape-combat-text">{parse(u.prose(form.combat))}</div>}
         </div>
       )}
     </>

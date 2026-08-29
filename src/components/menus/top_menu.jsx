@@ -3,13 +3,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import logo from '../../data/logo-shopperino.png';
 import { downloadLocalStorage, handleFileUpload } from '../../lib/storage';
 import { isMobile } from '../../lib/utils';
-import { setMasterMode, setSharedShop, setStateCurrentTab } from '../../store/slices/appSlice';
+import { setMasterMode, setSharedShop, setStateCurrentTab, setUnits, selectUnits } from '../../store/slices/appSlice';
+import { UNIT_MODES, UNIT_MODE_LABELS, UNIT_MODE_HINTS } from '../../lib/units';
 import { ScanShopScanner } from '../shop/ShareShopModal';
 import ColorPicker from './colorPicker';
 import IconButton from '../common/IconButton';
 import BottomSheet from '../common/BottomSheet';
 import Button from '../common/Button';
 import DiceRollerSheet from '../common/DiceRollerSheet';
+import InfoPopover from '../common/InfoPopover';
 
 /* Listed in the order they are used at the table, not by tab id: reference
    first, the master's generators next, the character's own pages last. The
@@ -29,6 +31,7 @@ export default function TopMenu() {
   const dispatch = useDispatch();
   const currentTab = useSelector(state => state.app.currentTab);
   const sharedShop = useSelector(state => state.app.sharedShop);
+  const units = useSelector(selectUnits);
   const isMasterMode = useSelector(state => state.app.isMasterMode);
 
   const [navOpen, setNavOpen] = useState(false);
@@ -109,6 +112,29 @@ export default function TopMenu() {
     </div>
   );
 
+  /* Three positions rather than a switch, because "squares" is a real third
+     answer and not a variant of either: a master running a grid counts in
+     squares and wants neither feet nor metres. Built like the master/player
+     toggle above so the settings sheet has one visual language.
+
+     The explanation is behind an info button rather than in a `title`, per the
+     project rule — there is no hover on a phone, which is where this control is
+     mostly used. */
+  const unitToggle = (
+    <div className="sh-mode-toggle sh-unit-toggle" role="group" aria-label="Units">
+      {UNIT_MODES.map(mode => (
+        <button
+          key={mode}
+          type="button"
+          aria-pressed={units === mode}
+          onClick={() => dispatch(setUnits(mode))}
+        >
+          {UNIT_MODE_LABELS[mode]}
+        </button>
+      ))}
+    </div>
+  );
+
   const settingsMenuItems = (
     <>
       {mobile && (
@@ -125,6 +151,29 @@ export default function TopMenu() {
       <div className="sh-row-h sh-spread" style={{ marginTop: 'var(--space-2)' }}>
         <span className="sh-eyebrow">Accent &amp; theme</span>
         <ColorPicker />
+      </div>
+
+      <div className="sh-units-row">
+        <span className="sh-eyebrow sh-units-label">
+          Units
+          <InfoPopover label="units">
+            <p>
+              Which units every distance and weight is read out in — the speeds
+              and ranges the sheet computes <b>and</b> the measurements inside
+              spell, item and monster descriptions.
+            </p>
+            <ul>
+              {UNIT_MODES.map(mode => (
+                <li key={mode}><b>{UNIT_MODE_LABELS[mode]}</b> — {UNIT_MODE_HINTS[mode]}</li>
+              ))}
+            </ul>
+            <p>
+              The numbers follow the manual&apos;s own round values rather than
+              a calculator: 5 ft is 1.5 m exactly, and a pound is half a kilo.
+            </p>
+          </InfoPopover>
+        </span>
+        {unitToggle}
       </div>
     </>
   );

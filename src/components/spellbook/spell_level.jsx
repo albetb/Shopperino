@@ -12,6 +12,7 @@ import MetamagicPills from './metamagic_pills';
 import MetamagicPrepareButton from './metamagic_prepare';
 import MetamagicCastButton from './metamagic_cast';
 import '../../style/metamagic.css';
+import { useUnits } from '../hooks/useUnits';
 
 export default function SpellLevelCard({
   level,
@@ -35,6 +36,7 @@ export default function SpellLevelCard({
   castingBlockedReason = '',
   metamagicRods = []
 }) {
+  const u = useUnits();
 
   const key = classKeyMap[inst.Class] || '';
 
@@ -192,7 +194,7 @@ export default function SpellLevelCard({
                     </button>
                     {showShortDescriptions && item['Short Description'] && (
                       <div className="spell-table-cell-desc">
-                        {item['Short Description']}
+                        {u.text(item['Short Description'])}
                       </div>
                     )}
                   </td>
@@ -394,7 +396,7 @@ export default function SpellLevelCard({
                     </div>
                     {showShortDescriptions && item['Short Description'] && (
                       <div className="spell-table-cell-desc">
-                        {item['Short Description']}
+                        {u.text(item['Short Description'])}
                       </div>
                     )}
                   </td>

@@ -25,6 +25,7 @@ import { MAX_INDIVIDUALS } from '../../lib/monster/monsterRoster';
 import '../../style/menu_cards.css';
 import '../../style/monster_book.css';
 import AugmentSummoningNote from '../common/AugmentSummoningNote';
+import { useUnits } from '../hooks/useUnits';
 
 const fmt = (n) => `${n >= 0 ? '+' : ''}${n}`;
 const ABILITY_KEYS = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
@@ -114,6 +115,7 @@ function MonsterHpRow({ individual, count, onAdjust }) {
  * a row per goblin instead.
  */
 export default function MonsterSheetView() {
+  const u = useUnits();
   const dispatch = useDispatch();
   const roster = useSelector((state) => state.monsterBook.roster);
   const openIndex = useSelector((state) => state.monsterBook.openIndex);
@@ -364,7 +366,7 @@ export default function MonsterSheetView() {
         />
         <StatPill
           label="Speed"
-          value={`${sheet.getSpeed()} ft`}
+          value={u.distance(sheet.getSpeed())}
           sub={bonusSub('speed')}
           editing={editBonus === 'speed'}
           onEdit={() => toggleEditBonus('speed')}
@@ -433,7 +435,7 @@ export default function MonsterSheetView() {
               <Pill tone="ghost" icon="straighten">{sheet.getSpaceReach()}</Pill>
             )}
             {sheet.getSpeedLine() && (
-              <Pill tone="ghost" icon="directions_run">{sheet.getSpeedLine()}</Pill>
+              <Pill tone="ghost" icon="directions_run">{u.text(sheet.getSpeedLine())}</Pill>
             )}
           </div>
         </div>
@@ -447,7 +449,7 @@ export default function MonsterSheetView() {
               <div className="sh-stack" style={{ gap: 'var(--space-1)' }}>
                 <Filigree>Attacks</Filigree>
                 <div className="sh-row-h" style={{ gap: 'var(--space-2)', flexWrap: 'wrap' }}>
-                  {specialAttacks.map((s) => <Pill key={s} tone="accent">{s}</Pill>)}
+                  {specialAttacks.map((s) => <Pill key={s} tone="accent">{u.text(s)}</Pill>)}
                 </div>
               </div>
             )}
@@ -455,7 +457,7 @@ export default function MonsterSheetView() {
               <div className="sh-stack" style={{ gap: 'var(--space-1)' }}>
                 <Filigree>Qualities</Filigree>
                 <div className="sh-row-h" style={{ gap: 'var(--space-2)', flexWrap: 'wrap' }}>
-                  {specialQualities.map((s) => <Pill key={s} tone="success">{s}</Pill>)}
+                  {specialQualities.map((s) => <Pill key={s} tone="success">{u.text(s)}</Pill>)}
                 </div>
               </div>
             )}
@@ -499,7 +501,7 @@ export default function MonsterSheetView() {
             {sheet.getCombatHtml() && (
               <div className="monster-detail-prose">
                 <Filigree>Combat</Filigree>
-                {parse(sheet.getCombatHtml())}
+                {parse(u.prose(sheet.getCombatHtml()))}
               </div>
             )}
           </div>

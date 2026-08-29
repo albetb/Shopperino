@@ -44,6 +44,7 @@ import IconButton from '../common/IconButton';
 import Stepper from '../common/Stepper';
 import EmptyState from '../common/EmptyState';
 import Icon from '../common/Icon';
+import { useUnits } from 'components/hooks/useUnits';
 
 function formatBaseAttackBonus(bab) {
   const b = Number(bab) || 0;
@@ -78,6 +79,7 @@ const BONUS_THUNK = {
 };
 
 export default function CombatPage() {
+  const u = useUnits();
   const dispatch = useDispatch();
   const player = useSelector(state => state.playerSheet?.player);
   const collapsed = useSelector(state => state.playerSheet?.combatPageCardsCollapsed ?? { player: false, combat: false, items: false });
@@ -320,7 +322,7 @@ export default function CombatPage() {
      where the difference went. */
   const speedReduced = !!speedInfo?.hasReduction;
   const currentSpeed = speedReduced ? speedInfo.reducedSpeed : primaryMovement.speed;
-  const speedDisplay = `${currentSpeed} ft`;
+  const speedDisplay = u.distance(currentSpeed);
   // Only a non-walking mode earns a label; a walk is the unremarkable default.
   const speedModeLabel = primaryMovement.mode === 'land' ? null : primaryMovement.mode.toUpperCase();
 
@@ -696,8 +698,8 @@ export default function CombatPage() {
             source: 'run',
             label: 'Running',
             note: hasRun
-              ? `A full-round run covers ${runSpeed} ft (×${runMultiplier}), and the Run feat keeps your Dexterity bonus to AC while running.`
-              : `A full-round run covers ${runSpeed} ft (×${runMultiplier}), and you lose your Dexterity bonus to AC while running.`,
+              ? `A full-round run covers ${u.distance(runSpeed)} (×${runMultiplier}), and the Run feat keeps your Dexterity bonus to AC while running.`
+              : `A full-round run covers ${u.distance(runSpeed)} (×${runMultiplier}), and you lose your Dexterity bonus to AC while running.`,
           }])}
           cond={condDeltas.speed || 0}
           sub={
@@ -858,7 +860,7 @@ export default function CombatPage() {
                             {crit && range.feet > 0 && ' · '}
                             {range.feet > 0 && (
                               <span className={range.extended ? 'is-feat-boosted' : undefined}>
-                                {range.feet} ft.
+                                {u.distance(range.feet)}
                               </span>
                             )}
                             {untrained && (crit || range.feet > 0) && ' · '}
@@ -1100,7 +1102,7 @@ export default function CombatPage() {
                   <p>
                     Applies when the target is <b>denied its Dexterity bonus</b>{' '}
                     to AC, or when you are <b>flanking</b> it
-                    {sneakAttackRange > 0 && <> — with a ranged weapon, only within <b>{sneakAttackRange} ft</b></>}.
+                    {sneakAttackRange > 0 && <> — with a ranged weapon, only within <b>{u.distance(sneakAttackRange)}</b></>}.
                   </p>
                   <p>
                     The dice are added on a critical hit but are{' '}

@@ -25,8 +25,10 @@ import Filigree from '../common/Filigree';
 import EmptyState from '../common/EmptyState';
 import BottomSheet from '../common/BottomSheet';
 import Icon from '../common/Icon';
+import { useUnits } from '../hooks/useUnits';
 
 export default function FeatsPage() {
+  const u = useUnits();
   const dispatch = useDispatch();
   const player = useSelector(state => state.playerSheet?.player);
   const [isSelection, setIsSelection] = useState(false);
@@ -213,7 +215,7 @@ export default function FeatsPage() {
                     </span>
                     {data?.shortDescription && (
                       <div className="sh-faint" style={{ fontSize: 'var(--font-size-xs)', marginTop: 'var(--space-1)' }}>
-                        {data.shortDescription}
+                        {u.text(data.shortDescription)}
                       </div>
                     )}
                   </div>

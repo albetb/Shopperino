@@ -12,6 +12,7 @@ import {
 import EquipBonusControls from '../../../player_sheet/inventory/EquipBonusControls';
 import AugmentSummoningNote from '../../../common/AugmentSummoningNote';
 import '../../../../style/menu_cards.css';
+import { useUnits } from '../../../hooks/useUnits';
 
 const HIDDEN_KEYS = new Set(['Short Description', 'id', 'Link', 'editable', 'editKey']);
 
@@ -53,6 +54,7 @@ function resolveBaseCard(entry, { applyBonus = true } = {}) {
 }
 
 export default function InfoMenuCards({ cardsData, closeCard }) {
+  const u = useUnits();
   const dispatch = useDispatch();
   const player = useSelector((state) => state.playerSheet?.player);
 
@@ -339,10 +341,10 @@ export default function InfoMenuCards({ cardsData, closeCard }) {
                         )}
                         {key === 'Description' ? (
                           <div className="info-value info-card description-content">
-                            {parse(value, descriptionOptions)}
+                            {parse(u.prose(value), descriptionOptions)}
                           </div>
                         ) : ['Name'].includes(key) ? null : (
-                          <span className="info-value info-card">{value}</span>
+                          <span className="info-value info-card">{u.text(value)}</span>
                         )}
                       </div>
                     );

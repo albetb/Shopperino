@@ -34,6 +34,7 @@ import IconButton from '../common/IconButton';
 import Filigree from '../common/Filigree';
 import Icon from '../common/Icon';
 import '../../style/animal_companion.css';
+import { useUnits } from '../hooks/useUnits';
 
 /** Single-value bonus thunks keyed by the companion field they edit. */
 const BONUS_THUNK = {
@@ -47,6 +48,7 @@ const BONUS_THUNK = {
 const fmtBonus = (n) => `${n >= 0 ? '+' : ''}${n}`;
 
 export default function AnimalCompanionCard() {
+  const u = useUnits();
   const dispatch = useDispatch();
   const player = useSelector((state) => state.playerSheet?.player);
   const collapsed = useSelector((state) => state.playerSheet?.combatPageCardsCollapsed?.animalCompanion ?? false);
@@ -374,7 +376,7 @@ export default function AnimalCompanionCard() {
             <StatPill
               className="sh-stat-pill--sm"
               label="Speed"
-              value={`${speed} ft`}
+              value={u.distance(speed)}
               sub={(companion.speedBonus || shoeBonus)
                 ? `bonus ${fmtBonus(companion.speedBonus + shoeBonus)}`
                 : null}
@@ -495,7 +497,7 @@ export default function AnimalCompanionCard() {
                 <Icon name={combatOpen ? 'expand_less' : 'expand_more'} size={16} />
                 Combat
               </button>
-              {combatOpen && <div className="companion-combat-text">{parse(combatHtml)}</div>}
+              {combatOpen && <div className="companion-combat-text">{parse(u.prose(combatHtml))}</div>}
             </div>
           )}
         </div>

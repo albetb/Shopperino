@@ -73,7 +73,8 @@ describe('an opened card is the data file, not a copy of it', () => {
     renderCards(make());
     openCard('Halfling');
     expect(screen.getByText('Small')).toBeInTheDocument();
-    expect(screen.getByText('20 ft speed')).toBeInTheDocument();
+    // Metric is the default, and 20 ft is 6 m on the manual's own round values.
+    expect(screen.getByText('6 m speed')).toBeInTheDocument();
     expect(screen.getByText(/favored class: Rogue/)).toBeInTheDocument();
   });
 

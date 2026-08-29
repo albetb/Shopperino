@@ -16,6 +16,7 @@ import {
   resetNote,
   resolveTrapSpell,
 } from '../../lib/trap';
+import { useUnits } from '../hooks/useUnits';
 
 /**
  * One trap, its diagram, and the two numbers that price it.
@@ -30,6 +31,7 @@ import {
  * the character sheet accepts more skill points than the rules allow.
  */
 export default function TrapSheet({ trap, onChange }) {
+  const u = useUnits();
   const dispatch = useDispatch();
   if (!trap) return null;
 
@@ -213,7 +215,7 @@ export default function TrapSheet({ trap, onChange }) {
         )}
         {trap.poison && (
           <p className="trap-line">
-            <b>Poison:</b> {trap.poison.name}
+            <b>Poison:</b> {u.text(trap.poison.name)}
             {trap.poison.saveDC ? ` — DC ${trap.poison.saveDC} ${trap.poison.save || 'Fortitude'}` : ''}
             {trap.poison.initial ? `, ${trap.poison.initial} initial` : ''}
             {trap.poison.secondary ? `, ${trap.poison.secondary} secondary` : ''}
@@ -234,17 +236,17 @@ export default function TrapSheet({ trap, onChange }) {
                 </button>
               ) : (resolved?.name || sp.spell)}
               {' '}(caster level {sp.casterLevel}, {sp.casterClass})
-              {sp.effect ? ` — ${sp.effect}` : ''}
+              {sp.effect ? ` — ${u.text(sp.effect)}` : ''}
             </p>
           );
         })}
         {trap.multipleTargets && (
-          <p className="trap-line"><b>Targets:</b> {trap.multipleTargets}</p>
+          <p className="trap-line"><b>Targets:</b> {u.text(trap.multipleTargets)}</p>
         )}
         {trap.multipleTraps && (
-          <p className="trap-line is-note"><b>Really two traps:</b> {trap.multipleTraps}</p>
+          <p className="trap-line is-note"><b>Really two traps:</b> {u.text(trap.multipleTraps)}</p>
         )}
-        {trap.note && <p className="trap-line is-note">{trap.note}</p>}
+        {trap.note && <p className="trap-line is-note">{u.text(trap.note)}</p>}
       </div>
 
       <div className="card trap-card">

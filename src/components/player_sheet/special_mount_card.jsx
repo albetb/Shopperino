@@ -34,6 +34,7 @@ import IconButton from '../common/IconButton';
 import Filigree from '../common/Filigree';
 import Icon from '../common/Icon';
 import '../../style/animal_companion.css';
+import { useUnits } from '../hooks/useUnits';
 
 /** Single-value bonus thunks keyed by the mount field they edit. */
 const BONUS_THUNK = {
@@ -56,6 +57,7 @@ const fmtBonus = (n) => `${n >= 0 ? '+' : ''}${n}`;
  * one when the table says so.
  */
 export default function SpecialMountCard() {
+  const u = useUnits();
   const dispatch = useDispatch();
   const player = useSelector((state) => state.playerSheet?.player);
   const collapsed = useSelector((state) => state.playerSheet?.combatPageCardsCollapsed?.specialMount ?? false);
@@ -412,7 +414,7 @@ export default function SpecialMountCard() {
             <StatPill
               className="sh-stat-pill--sm"
               label="Speed"
-              value={`${speed} ft`}
+              value={u.distance(speed)}
               sub={mount.speedBonus ? `bonus ${fmtBonus(mount.speedBonus)}` : null}
               editing={editBonus === 'speedBonus'}
               onEdit={() => toggleEditBonus('speedBonus')}
@@ -516,7 +518,7 @@ export default function SpecialMountCard() {
                 <Icon name={combatOpen ? 'expand_less' : 'expand_more'} size={16} />
                 Combat
               </button>
-              {combatOpen && <div className="companion-combat-text">{parse(combatHtml)}</div>}
+              {combatOpen && <div className="companion-combat-text">{parse(u.prose(combatHtml))}</div>}
             </div>
           )}
         </div>

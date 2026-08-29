@@ -176,7 +176,7 @@ describe('the diagram', () => {
   test('draws the squares the trap catches', () => {
     renderPage({ trap: { ...getTrapByRef('traps/cr4/poisoned-dart-trap') } });
     expect(document.querySelectorAll('.trap-cell.is-effect')).toHaveLength(4);
-    expect(screen.getByText(/An area 10 ft\. by 10 ft\./)).toBeInTheDocument();
+    expect(screen.getByText(/An area 3 m by 3 m/)).toBeInTheDocument();
   });
 
   test('a room gets walls and says everything inside is caught', () => {

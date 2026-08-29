@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { getCreatureByLink, getCompanionAbilityByLink, getFamiliarAbilityByLink, getConditionByLink, getEffectByLink, getFeatByLink, getItemByLink, getItemByRef, getSkillByLink, getSpellByLink, isMobile } from '../../lib/utils';
 import { applyColors } from '../../lib/colorUtils';
 import { normalizeMultiplierMask } from '../../lib/dice';
+import { normalizeUnits } from '../../lib/units';
 
 const DEFAULT_BLUE = '#238f8b';
 const DEFAULT_BLUE_T = '#238f8bb3';
@@ -23,6 +24,9 @@ const initialState = {
   isMasterMode: false, // false = Player (hide Shop/Loot), true = Master (show all)
   theme: 'dark',      // 'dark' | 'light' — drives body.theme-* class
   accent: 'crimson',  // accent hue name — drives body.accent-* class
+  /* Units the numbers and the prose are shown in. The models stay in feet
+     and kilograms; this only decides how they are read out. */
+  units: 'metric',    // 'metric' | 'imperial' | 'squares'
   /* Dice roller. Not tied to a character — it opens over any tab — so its
      state lives here rather than on the player sheet. The mask is one bit per
      count button; the roll is { sides, rolls, total } or null. */
@@ -270,6 +274,10 @@ export const appSlice = createSlice({
       state.isMasterMode = !!action.payload;
     },
 
+    setUnits(state, action) {
+      state.units = normalizeUnits(action.payload);
+    },
+
     setTheme(state, action) {
       const v = action.payload;
       state.theme = (v === 'light' || v === 'dark') ? v : 'dark';
@@ -303,6 +311,10 @@ function composeNameWithEffect(name, effect) {
 export const selectMainColor = state => state.app.mainColor;
 export const selectTheme = state => state.app.theme ?? 'dark';
 export const selectAccent = state => state.app.accent ?? 'crimson';
+/* Optional chaining because `useUnits` is now called from a dozen cards, and
+   a store that has no reason to care about units should not have to declare
+   an `app` slice to render one. */
+export const selectUnits = state => normalizeUnits(state.app?.units);
 
 export const {
   toggleSidebar,
@@ -321,6 +333,7 @@ export const {
   setMasterMode,
   setTheme,
   setAccent,
+  setUnits,
   setDiceMultiplierMask,
   setDiceLastRoll,
 } = appSlice.actions;

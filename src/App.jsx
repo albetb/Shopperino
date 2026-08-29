@@ -28,6 +28,7 @@ import {
   setInfoSidebarCollapsed,
   setTheme,
   setAccent,
+  setUnits,
   setDiceMultiplierMask,
   setDiceLastRoll,
   selectTheme,
@@ -78,6 +79,7 @@ export default function App() {
     dispatch(setMainColor(db.getMainColor(app)));
     dispatch(setTheme(db.getTheme(app)));
     dispatch(setAccent(db.getAccent(app)));
+    dispatch(setUnits(db.getUnits(app)));
     dispatch(setDiceMultiplierMask(db.getDiceMultiplierMask(app)));
     dispatch(setDiceLastRoll(db.getDiceLastRoll(app)));
     /* The bestiary is a lazy chunk (see loadFile.js). Start it now, so it is in

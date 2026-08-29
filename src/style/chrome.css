@@ -200,3 +200,31 @@
     height: calc(100vh - 3.75rem);
   }
 }
+
+/* --- UNITS (settings sheet) ---------------------------------
+   Three positions rather than two, so the row stacks: three labels do not fit
+   beside an eyebrow in a 16rem popover. */
+.sh-units-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.sh-units-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.sh-unit-toggle {
+  display: flex;
+  width: 100%;
+}
+
+.sh-unit-toggle button {
+  flex: 1 1 0;
+  min-width: 0;
+  padding-left: var(--space-2);
+  padding-right: var(--space-2);
+}

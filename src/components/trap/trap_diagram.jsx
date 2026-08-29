@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import { trapGrid, footprintCaveat, TRIGGER_SHAPE_NOTE } from '../../lib/trap';
+import { useUnits } from '../hooks/useUnits';
 
 /**
  * The trap on the board.
@@ -15,6 +16,7 @@ import { trapGrid, footprintCaveat, TRIGGER_SHAPE_NOTE } from '../../lib/trap';
  * trap carries a free-text note, the diagram is genuinely not the whole story.
  */
 export default function TrapDiagram({ trap }) {
+  const u = useUnits();
   if (!trap) return null;
   const grid = trapGrid(trap);
   const caveat = footprintCaveat(trap);
@@ -72,7 +74,7 @@ export default function TrapDiagram({ trap }) {
       </div>
 
       <p className="trap-diagram-caption">
-        {grid.caption} Each square is {grid.cellFt} ft.
+        {u.text(grid.caption)} Each square is {u.distance(grid.cellFt)}.
       </p>
       <p className="trap-diagram-caption trap-diagram-trigger-note">
         {TRIGGER_SHAPE_NOTE[grid.triggerShape]}

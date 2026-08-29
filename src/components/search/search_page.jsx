@@ -6,6 +6,7 @@ import { loadFile, isMobile } from '../../lib/utils';
 import SpellLink from '../common/spell_link';
 import '../../style/sidebar.css';
 import '../../style/menu_cards.css';
+import { useUnits } from '../hooks/useUnits';
 
 const TYPE_OPTIONS = ['', 'Spells', 'Items', 'Feats', 'Skills'];
 const SPELL_CLASS_OPTIONS = ['All', 'Sorcerer', 'Wizard', 'Cleric', 'Druid', 'Bard', 'Ranger', 'Paladin', 'Domains'];
@@ -67,6 +68,7 @@ function slugify(name) {
 }
 
 export default function SearchPage() {
+  const u = useUnits();
   const dispatch = useDispatch();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [searchType, setSearchType] = useState('');
@@ -391,7 +393,7 @@ export default function SearchPage() {
                         </button>
                         {searchType === 'Spells' && spellClassFilter === 'All' && r['Short Description'] && (
                           <div className="desc-muted">
-                            {r['Short Description']}
+                            {u.text(r['Short Description'])}
                           </div>
                         )}
                       </td>
@@ -399,7 +401,7 @@ export default function SearchPage() {
                         <td>{r.Level}</td>
                       )}
                       {searchType === 'Spells' && spellClassFilter !== 'All' && (
-                        <td>{r['Short Description'] || ''}</td>
+                        <td>{u.text(r['Short Description'] || '')}</td>
                       )}
                       {searchType === 'Feats' && (
                         <td>
@@ -476,7 +478,7 @@ export default function SearchPage() {
                                           {spell.Name}
                                         </button>
                                         {spell['Short Description'] && (
-                                          <div className="search-spell-short-desc">{spell['Short Description']}</div>
+                                          <div className="search-spell-short-desc">{u.text(spell['Short Description'])}</div>
                                         )}
                                       </td>
                                     </tr>
@@ -503,7 +505,7 @@ export default function SearchPage() {
                                           {spell.Name}
                                         </button>
                                       </td>
-                                      <td>{spell['Short Description'] || ''}</td>
+                                      <td>{u.text(spell['Short Description'] || '')}</td>
                                     </tr>
                                   ))}
                                 </tbody>
@@ -564,7 +566,7 @@ export default function SearchPage() {
                                           {spell.Name}
                                         </button>
                                         {spell['Short Description'] && (
-                                          <div className="search-spell-short-desc">{spell['Short Description']}</div>
+                                          <div className="search-spell-short-desc">{u.text(spell['Short Description'])}</div>
                                         )}
                                       </td>
                                     </tr>
@@ -591,7 +593,7 @@ export default function SearchPage() {
                                           {spell.Name}
                                         </button>
                                       </td>
-                                      <td>{spell['Short Description'] || ''}</td>
+                                      <td>{u.text(spell['Short Description'] || '')}</td>
                                     </tr>
                                   ))}
                                 </tbody>
