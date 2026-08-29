@@ -1,5 +1,6 @@
 import { loadFile } from './loadFile';
 import { slug } from './slugUtils';
+import { shiftSize } from './item/potionEffects';
 
 export { loadFile };
 export { itemTypes, getItemByRef, getItemByLink, getItemById, getItemIdByRef } from './item/itemsUtils';
@@ -314,8 +315,14 @@ export function calculateWeaponAttackBonus(player, weaponData) {
   // place and this and getWeaponAttackContributions cannot disagree.
   const stancePenalty = player.getStanceAttackPenalty?.(weaponItem) ?? 0;
 
+  // A running potion (heroism, haste, good hope) and any oil applied to this
+  // particular slot. The oil is slot-scoped on purpose: an oil of magic weapon
+  // on the longsword must not raise the dagger in the other hand.
+  const potionBonus = player.getPotionBonus?.('attack') ?? 0;
+  const oilBonus = player.getOilBonus?.(weaponData.slot, 'attack') ?? 0;
+
   return bab + abilityMod + weaponBonus + enhBonus + conditionMod + featBonus
-    + proficiencyPenalty + stancePenalty;
+    + proficiencyPenalty + stancePenalty + potionBonus + oilBonus;
 }
 
 /**
@@ -324,15 +331,59 @@ export function calculateWeaponAttackBonus(player, weaponData) {
  * @param {Object} weaponData - { itemData: equipment item, weaponItem: weapon from items.json }
  * @returns {string} The damage string (e.g., "1d8+2")
  */
+/**
+ * A weapon's damage die, one size category up or down.
+ *
+ * items.json only carries the Small and Medium columns, so a character whom
+ * *enlarge person* has pushed to Large has no column to read. The progression
+ * is the standard one (PHB, Table: Tiny and Large Weapon Damage) and is
+ * bidirectional, so the same table serves *reduce person*.
+ *
+ * Anything not in the ladder is returned unchanged rather than guessed at.
+ */
+const DAMAGE_STEP_UP = {
+  '1': '1d2', '1d2': '1d3', '1d3': '1d4', '1d4': '1d6', '1d6': '1d8',
+  '1d8': '2d6', '1d10': '2d8', '2d4': '2d6', '2d6': '3d6', '2d8': '3d8',
+  '2d10': '4d8', '3d6': '4d6', '3d8': '4d8',
+};
+/* Written out rather than inverted from the table above: the ladder is not a
+   bijection. Both 1d8 and 2d4 step up to 2d6, so inverting it would silently
+   pick whichever happened to be declared last and send an enlarged longsword
+   back down to 2d4. Stepping down from 2d6 is 1d8; from 2d4 it is 1d6. */
+const DAMAGE_STEP_DOWN = {
+  '1d2': '1', '1d3': '1d2', '1d4': '1d3', '1d6': '1d4', '1d8': '1d6',
+  '1d10': '1d8', '2d4': '1d6', '2d6': '1d8', '2d8': '1d10', '2d10': '2d8',
+  '3d6': '2d6', '3d8': '2d8', '4d6': '3d6', '4d8': '3d8',
+};
+
+export function stepDamageDie(dice, steps) {
+  const count = Number(steps) || 0;
+  if (!dice || count === 0) return dice;
+  const table = count > 0 ? DAMAGE_STEP_UP : DAMAGE_STEP_DOWN;
+  let out = String(dice).trim();
+  for (let i = 0; i < Math.abs(count); i += 1) {
+    const next = table[out];
+    if (!next) return out; // off the end of the ladder: leave it alone
+    out = next;
+  }
+  return out;
+}
+
 export function calculateWeaponDamage(player, weaponData) {
   if (!player || !weaponData) return '0';
 
   const { weaponItem, isTwoHanded, isOffHand, itemData } = weaponData;
   const weaponType = getWeaponType(weaponItem);
 
-  // Get the base damage for medium creatures (or small if player is small)
+  // Get the base damage for medium creatures (or small if player is small).
+  // A potion that shifted the size category is unwound first, so the column
+  // still comes from the character's real size, and then re-applied through
+  // the damage ladder — items.json has no column past Small and Medium.
+  const potionStep = player.getPotionSizeStep?.() ?? 0;
   const size = player.getSize?.() ?? 'Medium';
-  const baseDamage = size === 'Small' ? (weaponItem['Dmg (S)'] || '1d4') : (weaponItem['Dmg (M)'] || '1d6');
+  const naturalSize = potionStep ? shiftSize(size, -potionStep) : size;
+  const column = naturalSize === 'Small' ? (weaponItem['Dmg (S)'] || '1d4') : (weaponItem['Dmg (M)'] || '1d6');
+  const baseDamage = stepDamageDie(column, potionStep);
 
   // Calculate damage bonus
   let damageBonus = 0;
@@ -373,6 +424,10 @@ export function calculateWeaponDamage(player, weaponData) {
 
   // Power Attack: doubled in two hands, and nothing at all for a light weapon.
   damageBonus += player.getPowerAttackDamageBonus?.(weaponData) ?? 0;
+
+  // A running potion (good hope) and any oil applied to this slot.
+  damageBonus += player.getPotionBonus?.('damage') ?? 0;
+  damageBonus += player.getOilBonus?.(weaponData.slot, 'damage') ?? 0;
 
   // Format the damage string
   if (damageBonus === 0) {

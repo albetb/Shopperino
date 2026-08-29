@@ -35,11 +35,15 @@ describe('the four free equipment slots', () => {
   });
 
   test('the count comes from the matching inventory row', () => {
+    /* Used to be asserted with a potion in an accessory slot, which is not a
+       thing that happens: a potion is carried, never equipped, and lives on
+       the potions card instead. The rule under test is the counting, so any
+       stackable accessory shows it. */
     const p = make();
-    carryAndEquip(p, 'other1', { name: 'Potion of cure light wounds', type: 'Potion', number: 5 });
-    const [potion] = p.getEquippedAccessories();
-    expect(potion.number).toBe(5);
-    expect(potion.name).toBe('Potion of cure light wounds');
+    carryAndEquip(p, 'other1', { name: 'Everburning torch', type: 'Wondrous Item', number: 5 });
+    const [item] = p.getEquippedAccessories();
+    expect(item.number).toBe(5);
+    expect(item.name).toBe('Everburning torch');
   });
 
   test('two otherwise identical items are told apart by their enhancement bonus', () => {

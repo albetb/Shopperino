@@ -1,7 +1,8 @@
 import { useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addCardByLink } from '../../store/slices/appSlice';
-import { onAddCondition, onRemoveCondition } from '../../store/thunks/playerSheetThunks';
+import { onAddCondition, onRemoveCondition, onRemovePotionEffect } from '../../store/thunks/playerSheetThunks';
+import { ActiveEffectPills } from './potions_card';
 import { getAllConditions, conditionSlug } from '../../lib/utils';
 import IconButton from '../common/IconButton';
 import BottomSheet from '../common/BottomSheet';
@@ -196,6 +197,12 @@ export default function ConditionsSection() {
           {manual.map(c => renderPill(c, { removable: true }))}
         </div>
       )}
+
+      {/* Potions and oils currently running. They sit here rather than on the
+          potions card because a running effect is the same kind of fact as a
+          condition — temporarily true about the character, and wanted beside
+          the hit points it may be propping up. */}
+      <ActiveEffectPills onRemove={(index) => dispatch(onRemovePotionEffect(index))} />
 
       <BottomSheet
         open={pickerOpen}

@@ -13,6 +13,7 @@ import {
 import { setPersist } from '../slices/persistSlice';
 import { addCardByLink } from '../slices/appSlice';
 import { getEffectById } from '../../lib/item/effectsUtils';
+import { getPotionByName, resolvePotionEffect } from '../../lib/item/potionEffects';
 import AnimalCompanion from '../../lib/player/animalCompanion';
 import Familiar from '../../lib/player/familiar';
 import { getAnimalBaseByRef } from '../../lib/utils';
@@ -425,6 +426,10 @@ export const onPlayerRest = () => (dispatch, getState) => {
     player.resetClassFeatureUses();
     // A rod's allowance is per day and comes back; a wand's 50 charges do not.
     player.resetHeldItemsOnRest();
+    /* Every potion is over. Nothing in the set outlasts a night, and rest is
+       the only moment the sheet can be sure of — there is no combat clock for
+       a "1 min./level" duration to tick against. */
+    player.resetPotionEffectsOnRest();
     // A night's natural healing: 1 HP per character level, never past the
     // maximum (combat.md). healAsIfRested floors damage at 0, which is the
     // same cap expressed the other way round.
@@ -628,6 +633,66 @@ export const onResetHeldItemCharges = (id) => (dispatch, getState) => {
   const player = getState().playerSheet?.player;
   if (!player) return;
   player.resetHeldItemCharges?.(id);
+  persistPlayer(dispatch, getState, player);
+};
+
+/**
+ * Drink a potion, or apply an oil.
+ *
+ * One thunk for both because the bookkeeping is identical — the carried count
+ * drops by one and something starts running — and only the effect table knows
+ * which of the two it was. What varies is what the effect then does:
+ *
+ * - `heal` adds the rolled hit points, through the same path as a manual heal
+ *   so the readout reports it the way it reports everything else.
+ * - `cure` clears the conditions it is able to clear, and *lesser restoration*
+ *   repairs the rolled points of ability damage.
+ * - `condition` adds the real condition when the sheet already models one
+ *   (*invisibility* → Invisible), and otherwise becomes a named pill.
+ * - everything else starts a stat effect, which the breakdown box picks up.
+ *
+ * `roll` is what the dice showed — rolled for the player but editable, so a
+ * table using physical dice records what actually happened.
+ */
+export const onUsePotion = (name, { target = '', roll = null } = {}) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player) return;
+  const raw = getPotionByName(name);
+  const effect = raw ? resolvePotionEffect(raw) : null;
+  if (!effect) return;
+
+  player.removeInventoryItem(name, 'Potion', 1, { link: effect.link });
+
+  const rolled = Number(roll);
+  const amount = Number.isFinite(rolled) ? rolled : 0;
+
+  if (effect.kind === 'heal') {
+    /* Healing lowers the running damage total rather than raising a current-HP
+       field, and is clamped the same way onAdjustCurrentHp clamps it: never
+       past the maximum, never below -10. */
+    const maxHp = player.getMaxLife?.() ?? 0;
+    const currentDamage = player.getDamage?.() ?? 0;
+    player.setDamage?.(Math.max(0, Math.min(maxHp + 10, currentDamage - amount)));
+  } else if (effect.kind === 'cure') {
+    effect.clears.forEach((condition) => player.removeCondition?.(condition, null));
+    if (effect.repairs) player.repairAbilityDamage(amount, target || null);
+    /* A cure with a lingering rider — remove fear's +4 for 10 minutes — still
+       needs to be visible after the drink, so it runs like any other effect. */
+    if (effect.situational) player.addPotionEffect(name, { roll: amount });
+  } else if (effect.adds) {
+    player.addCondition?.({ name: effect.adds });
+  } else {
+    player.addPotionEffect(name, { target, roll: Number.isFinite(rolled) ? rolled : null });
+  }
+
+  persistPlayer(dispatch, getState, player);
+};
+
+/** End one running effect, by the index getResolvedEffects reported. */
+export const onRemovePotionEffect = (index) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player) return;
+  player.removePotionEffect(index);
   persistPlayer(dispatch, getState, player);
 };
 

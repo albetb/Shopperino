@@ -8,9 +8,12 @@ import { formatItemName } from '../../lib/item/formatItemName';
 import { getEffectById } from '../../lib/item/effectsUtils';
 
 /**
- * What the character carries ready to hand: the four free equipment slots,
- * the ones that are neither weapon nor armor — a wondrous item, a wand, a
- * potion kept within reach.
+ * What the character wears beyond weapon and armor: the four free equipment
+ * slots — a cloak, a ring, a wondrous item.
+ *
+ * Not potions, which are carried rather than worn and have their own card
+ * below this one; and not wands, rods or staffs, which are held in a hand and
+ * appear on the attacks card.
  *
  * It sits under the attacks card because it answers the same question in
  * combat: what can I reach for this round. The slots themselves are edited on

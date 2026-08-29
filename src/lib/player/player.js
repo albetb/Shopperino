@@ -13,6 +13,7 @@ import {
   calculateWeaponAttackBonus,
   calculateWeaponDamage,
   getWeaponType,
+  stepDamageDie,
 } from '../utils';
 import { getCarryingCapacity as capacityFromStr, classifyLoad } from './carryingCapacity';
 import { aggregateConditionEffects, sumContributions } from './conditionEffects';
@@ -22,6 +23,11 @@ import { parseAttacks, recomputeAttack } from '../animal/attackParser';
 import { getBaseFeatName, UNARMED_STRIKE } from '../featChoices';
 import { spellAllowsSave } from '../spellbook/spellsUtils';
 import { DOMAINS, CLASSSPELLKEY } from '../spellbook/spellbook';
+import {
+  resolvePotionEffect,
+  getPotionByName,
+  shiftSize,
+} from '../item/potionEffects';
 import {
   resolveHeldItem,
   getHeldItemSpells,
@@ -218,8 +224,12 @@ function sameInventoryEntry(a, b) {
 }
 
 /* The four free slots at the bottom of the equipment grid. Not hands, not
-   armor: whatever the character keeps to hand — a wondrous item, a wand, a
-   potion belt. Order is display order. */
+   armor: worn and carried gear — a cloak, a ring, a wondrous item. Order is
+   display order.
+
+   Deliberately not potions: a potion is carried rather than worn, competes for
+   no slot, and has its own card on the combat page (potions_card.jsx). Nor
+   wands, rods or staffs, which are held in a hand (see HELD_TYPES). */
 const OTHER_SLOTS = ['other1', 'other2', 'other3', 'other4'];
 
 /** Fallback when race is not in races.json. Unknown races default to "Medium". */
@@ -461,6 +471,16 @@ class Player {
        no sub-model, only a reference. Uses per day live in classFeatureUses
        under 'wildShape', so Rest clears them with everything else. */
     this.wildShapeRef = '';
+    /* Potions and oils currently running. Each entry is
+       `{ name, target?, roll? }` — the item's own Name (unique across the 107
+       potions, so it is the identity), the equipment slot an oil was applied
+       to, and the number a dice effect rolled.
+
+       Nothing expires on its own: the app has no combat clock, so a duration
+       of "1 min./level" cannot tick. An effect ends when the player removes it
+       or when they rest, which is the one moment everything is certainly
+       over. See resetPotionEffectsOnRest. */
+    this.activeEffects = [];
   }
 
   /**
@@ -545,6 +565,15 @@ class Player {
     if (typeof data.ethicalAlignment === 'string') this.ethicalAlignment = data.ethicalAlignment;
     if (typeof data.deity === 'string') this.deity = data.deity;
     if (typeof data.wildShapeRef === 'string') this.wildShapeRef = data.wildShapeRef;
+    if (Array.isArray(data.activeEffects)) {
+      this.activeEffects = data.activeEffects
+        .filter((e) => e && typeof e.name === 'string')
+        .map((e) => ({
+          name: e.name,
+          ...(e.target ? { target: e.target } : {}),
+          ...(Number.isFinite(Number(e.roll)) ? { roll: Number(e.roll) } : {}),
+        }));
+    }
 
     if (Array.isArray(data.spells)) {
       this.spells = normalizePlayerSpells(data.spells);
@@ -804,6 +833,8 @@ class Player {
       familiar: this.familiar ? this.familiar.serialize() : null,
       specialMount: this.specialMount ? this.specialMount.serialize() : null,
       wildShapeRef: this.wildShapeRef || '',
+      activeEffects: Array.isArray(this.activeEffects)
+        ? this.activeEffects.map((e) => ({ ...e })) : [],
     };
   }
 
@@ -852,6 +883,37 @@ class Player {
   }
 
   /** Remove a condition by name (and ability, if it carries one). */
+  /**
+   * Repair points of ability damage, the way *lesser restoration* does.
+   *
+   * Ability damage is stored as one `Ability Damaged` condition per ability,
+   * carrying the number of points. Repairing reduces that number and drops the
+   * condition once it reaches zero. With no ability named, the worst-damaged
+   * one is repaired — which is what a player reaching for the potion means.
+   *
+   * @param {number} points - how many points the roll repaired
+   * @param {string|null} ability - 'Str', 'Dex', … or null for the worst
+   * @returns {{ability: string, repaired: number}|null} what was actually done
+   */
+  repairAbilityDamage(points, ability = null) {
+    const amount = Math.max(0, Math.floor(Number(points) || 0));
+    if (amount === 0 || !Array.isArray(this.conditions)) return null;
+    const damaged = this.conditions.filter((c) => c.name === 'Ability Damaged');
+    if (damaged.length === 0) return null;
+
+    const target = ability
+      ? damaged.find((c) => c.ability === ability)
+      : damaged.reduce((worst, c) => ((c.amount || 0) > (worst.amount || 0) ? c : worst));
+    if (!target) return null;
+
+    const repaired = Math.min(amount, Number(target.amount) || 0);
+    target.amount = (Number(target.amount) || 0) - repaired;
+    if (target.amount <= 0) {
+      this.conditions = this.conditions.filter((c) => c !== target);
+    }
+    return { ability: target.ability || '', repaired };
+  }
+
   removeCondition(name, ability = null) {
     if (!Array.isArray(this.conditions)) return;
     const ab = ability || null;
@@ -909,10 +971,10 @@ class Player {
     const rage = this.getRageAbilityBonus(abilityKey);
     if (shaped && SHAPE_REPLACED_ABILITIES.includes(abilityKey)) {
       const score = this.getWildShapeForm()?.abilities?.[abilityKey];
-      if (Number.isFinite(Number(score))) return Number(score) + rage;
+      if (Number.isFinite(Number(score))) return Number(score) + rage + this.getPotionBonus(abilityKey);
     }
     return this.getAbilityBase(abilityKey) + this.getAbilityBonus(abilityKey)
-      + this.getRaceAbilityModifier(abilityKey) + rage;
+      + this.getRaceAbilityModifier(abilityKey) + rage + this.getPotionBonus(abilityKey);
   }
 
   /**
@@ -1626,8 +1688,12 @@ class Player {
    */
   getSize() {
     const form = this.getWildShapeForm();
-    if (form?.size) return form.size;
-    return this.getTrueSize();
+    const base = form?.size || this.getTrueSize();
+    /* Enlarge/reduce person shift the category itself rather than handing out
+       modifiers, so AC, attack rolls, unarmed damage and carrying capacity —
+       every one of which already reads this method — all move together. */
+    const step = this.getPotionSizeStep();
+    return step ? shiftSize(base, step) : base;
   }
 
   /** The character's own size, ignoring any assumed form. */
@@ -2092,7 +2158,7 @@ class Player {
    * Total speed = base speed + speedBonus.
    */
   getTotalSpeed() {
-    const speed = this.getBaseSpeed() + Number(this.speedBonus || 0);
+    const speed = this.getBaseSpeed() + Number(this.speedBonus || 0) + this.getPotionBonus('speed');
     // Half-speed conditions (Blinded/Exhausted/Entangled/Disabled) apply once.
     return this.isHalfSpeed() ? Math.floor(speed / 2) : speed;
   }
@@ -3742,7 +3808,8 @@ class Player {
     }
     if (val === undefined || val === null) return 0;
     const base = parseInt(String(val).replace('+', ''), 10) || 0;
-    return base + (entry?.bonus || 0);
+    // An oil of magic vestment applied to this armor raises its enhancement.
+    return base + (entry?.bonus || 0) + this.getOilBonus('armor', 'armorBonus');
   }
 
   /**
@@ -3854,7 +3921,7 @@ class Player {
     const ac = 10 + this.getAcDexMod() + this.getArmorBonus() + this.getShieldBonus()
       + this.getMonkAcBonus() + this.getWildShapeNaturalArmor() + this.getSizeAcModifier();
     return ac + Number(this.acBonus || 0) + this.getAcConditionModifier() + this.getRageAcModifier()
-      + this.getCombatExpertise();
+      + this.getCombatExpertise() + this.getPotionBonus('ac');
   }
 
   /**
@@ -3866,7 +3933,7 @@ class Player {
     const ac = 10 + this.getAcDexMod() + this.getMonkAcBonus() + this.getSizeAcModifier();
     return ac + Number(this.acBonus || 0) + Number(this.acTouchBonus || 0)
       + this.getAcConditionModifier() + this.getRageAcModifier()
-      + this.getCombatExpertise();
+      + this.getCombatExpertise() + this.getPotionBonus('acTouch');
   }
 
   /**
@@ -3877,7 +3944,8 @@ class Player {
     const ac = 10 + this.getArmorBonus() + this.getMonkAcBonus()
       + this.getWildShapeNaturalArmor() + this.getSizeAcModifier();
     return ac + Number(this.acBonus || 0) + Number(this.acFlatBonus || 0)
-      + this.getAcConditionModifier() + this.getRageAcModifier();
+      + this.getAcConditionModifier() + this.getRageAcModifier()
+      + this.getPotionBonus('acFlat');
   }
 
   /**
@@ -3934,20 +4002,20 @@ class Player {
     return this.getFortitudeSave() + Number(this.fortBonus || 0)
       + this.getFamiliarStatBonuses().fort + this.getDivineGraceBonus()
       + getFeatSaveBonus(this.getFeats(), 'fortitude')
-      + this.getFlatRacialSaveBonus();
+      + this.getFlatRacialSaveBonus() + this.getPotionBonus('fortitude');
   }
 
   getTotalReflexSave() {
     return this.getReflexSave() + Number(this.reflexBonus || 0)
       + this.getFamiliarStatBonuses().reflex + this.getDivineGraceBonus()
       + getFeatSaveBonus(this.getFeats(), 'reflex')
-      + this.getFlatRacialSaveBonus();
+      + this.getFlatRacialSaveBonus() + this.getPotionBonus('reflex');
   }
 
   getTotalWillSave() {
     return this.getWillSave() + Number(this.willBonus || 0) + this.getDivineGraceBonus()
       + getFeatSaveBonus(this.getFeats(), 'will')
-      + this.getFlatRacialSaveBonus();
+      + this.getFlatRacialSaveBonus() + this.getPotionBonus('will');
   }
 
   /**
@@ -4548,6 +4616,7 @@ class Player {
       ));
     }
     rows.push(contribution('rage', 'rage', this.getRageAbilityBonus(abilityKey), BONUS_TYPES.MORALE));
+    rows.push(...this.getPotionContributions(abilityKey));
     this.getAbilityConditionContributions(abilityKey).forEach((c) => {
       rows.push(contribution(c.source, c.label, c.value));
     });
@@ -4598,6 +4667,7 @@ class Player {
     if (which === 'will') {
       rows.push(contribution('rage', 'rage', this.getRageWillBonus(), BONUS_TYPES.MORALE));
     }
+    rows.push(...this.getPotionContributions(which));
     return compactContributions(rows);
   }
 
@@ -4651,6 +4721,7 @@ class Player {
       contribution('rage', 'rage', this.getRageAcModifier(), BONUS_TYPES.MORALE),
       contribution('combatExpertise', 'Combat expertise', this.getCombatExpertise(), BONUS_TYPES.DODGE),
       contribution('conditions', 'conditions', this.getAcConditionModifier()),
+      ...this.getPotionContributions('ac'),
     ]);
   }
 
@@ -4666,6 +4737,7 @@ class Player {
       contribution('rage', 'rage', this.getRageAcModifier(), BONUS_TYPES.MORALE),
       contribution('combatExpertise', 'Combat expertise', this.getCombatExpertise(), BONUS_TYPES.DODGE),
       contribution('conditions', 'conditions', this.getAcConditionModifier()),
+      ...this.getPotionContributions('acTouch'),
     ]);
   }
 
@@ -4682,6 +4754,7 @@ class Player {
       contribution('manualFlat', 'flat-footed bonus', Number(this.acFlatBonus || 0)),
       contribution('rage', 'rage', this.getRageAcModifier(), BONUS_TYPES.MORALE),
       contribution('conditions', 'conditions', this.getAcConditionModifier()),
+      ...this.getPotionContributions('acFlat'),
     ]);
   }
 
@@ -4704,7 +4777,8 @@ class Player {
       rows.push(contribution('class', 'fast movement', this.getBaseSpeed() - racial));
     }
     rows.push(contribution('manual', 'manual bonus', Number(this.speedBonus || 0)));
-    const raw = this.getBaseSpeed() + Number(this.speedBonus || 0);
+    rows.push(...this.getPotionContributions('speed'));
+    const raw = this.getBaseSpeed() + Number(this.speedBonus || 0) + this.getPotionBonus('speed');
     if (this.isHalfSpeed()) {
       rows.push(contribution('conditions', 'halved by conditions', Math.floor(raw / 2) - raw));
     }
@@ -4764,6 +4838,7 @@ class Player {
       const multiplier = skillName === 'Swim' ? 2 : 1;
       rows.push(contribution('armorCheck', 'armor check penalty', -penalty * multiplier, BONUS_TYPES.ARMOR));
     }
+    rows.push(...this.getPotionContributions(`skill:${skillName}`));
     return compactContributions(rows);
   }
 
@@ -4798,6 +4873,8 @@ class Player {
       contribution('powerAttack', 'Power attack', ranged ? 0 : -this.getPowerAttack()),
       contribution('combatExpertise', 'Combat expertise', ranged ? 0 : -this.getCombatExpertise()),
       contribution('conditions', 'conditions', this.getAttackConditionModifier()),
+      ...this.getPotionContributions('attack'),
+      ...this.getOilContributions(data.slot, 'attack'),
     ]);
   }
 
@@ -4842,15 +4919,24 @@ class Player {
         this.getPowerAttackDamageBonus(data)
       ),
       contribution('conditions', 'conditions', this.getDamageConditionModifier()),
+      ...this.getPotionContributions('damage'),
+      ...this.getOilContributions(data.slot, 'damage'),
     ]);
   }
 
   /** The dice a weapon rolls, before any bonus — sized for this character. */
   getWeaponDamageDice(weaponItem) {
     if (!weaponItem) return '';
-    return this.getSize() === 'Small'
+    /* The size a potion moved is unwound to pick the column, then re-applied
+       through the damage ladder — items.json carries only Small and Medium, so
+       an enlarged character has no column of their own. Mirrors
+       calculateWeaponDamage in lib/utils.js; the two must not disagree. */
+    const step = this.getPotionSizeStep();
+    const natural = step ? shiftSize(this.getSize(), -step) : this.getSize();
+    const column = natural === 'Small'
       ? (weaponItem['Dmg (S)'] || '1d4')
       : (weaponItem['Dmg (M)'] || '1d6');
+    return stepDamageDie(column, step);
   }
 
   /**
@@ -5173,7 +5259,281 @@ class Player {
         out.push(situational(`feat:${feat}`, feat, this.getFeatShortDescription(feat)));
       });
 
+    /* —— Running potions and applied oils ——
+       A potion earns a note here when its table row carries a `situational`
+       string and it speaks to this stat: protection from evil moves AC and the
+       saves, but only against evil, so the number is real and the caveat has
+       to travel with it. An oil whose effect is not a number at all — keen
+       edge, bless weapon — is only ever a note. */
+    this.getResolvedEffects().forEach((effect) => {
+      if (!effect.situational) return;
+      const speaks = Boolean(effect.stats[statKey])
+        || (String(statKey).startsWith('skill:') && Boolean(effect.stats.skillsAll))
+        || (effect.kind === 'oil' && effect.target && ['attack', 'damage'].includes(statKey))
+        || (effect.size !== 0 && ['ac', 'attack', 'damage'].includes(statKey));
+      if (!speaks) return;
+      out.push(situational(`potion:${effect.index}`, effect.label, effect.situational));
+    });
+
     return out;
+  }
+
+  // —— Potions and oils ——
+  //
+  // A drunk potion becomes one entry in `activeEffects`, and everything below
+  // reads that list. The bonuses are ordinary contributions, so a potion shows
+  // up in the same breakdown box as armor or a feat rather than in a channel
+  // of its own — which is the point: a player asking "why is my AC 21" should
+  // not have to know that one of the rows came from a bottle.
+  //
+  // Effects are never enforced. Two potions of the same enhancement bonus do
+  // not stack in 3.5, and the sheet says so beside the number rather than
+  // silently dropping one; see getPotionStackingWarnings.
+
+  /**
+   * The potions and oils in the bag, with what each one does already resolved.
+   *
+   * Read from the inventory rather than from an equipment slot: a potion is
+   * carried, not worn, and it competes for no slot at all. The carried count
+   * comes straight off the inventory row.
+   *
+   * @returns {Array<object>} one entry per inventory row, in inventory order
+   */
+  getCarriedPotions() {
+    return this.getInventory()
+      .filter((row) => row?.ItemType === 'Potion' && (Number(row.Number) || 0) > 0)
+      .map((row) => {
+        const raw = getPotionByName(row.Name);
+        const effect = raw ? resolvePotionEffect(raw) : null;
+        return effect ? { ...effect, number: Number(row.Number) || 0 } : null;
+      })
+      .filter(Boolean);
+  }
+
+  hasCarriedPotions() {
+    return this.getCarriedPotions().length > 0;
+  }
+
+  /**
+   * The equipped things an oil of this kind could be applied to.
+   *
+   * An oil is useless until it has a target, and which targets are legal
+   * depends entirely on the oil: *magic weapon* wants a weapon, *magic
+   * vestment* wants armor or a shield, *magic stone* and *flame arrow* want
+   * ammunition, and the two light-emitting oils will take anything.
+   *
+   * Ammunition is read from the bag rather than from a slot, because arrows are
+   * carried by the bundle and never equipped.
+   *
+   * @param {string} kind - 'weapon', 'armor', 'ammo' or 'any'
+   * @returns {Array<{slot: string, name: string}>}
+   */
+  getOilTargets(kind) {
+    const equipment = this.getEquipment();
+    const nameAt = (slot) => {
+      const entry = equipment[slot];
+      return entry?.overrides?.Name ?? entry?.name ?? '';
+    };
+    const handsHolding = (test) => Player.HAND_SLOTS
+      .filter((slot) => equipment[slot] && nameAt(slot))
+      .filter((slot) => {
+        const raw = getItemByRef(equipment[slot].link)?.raw;
+        return raw ? test(raw) : false;
+      })
+      .map((slot) => ({ slot, name: nameAt(slot) }));
+
+    if (kind === 'weapon') {
+      return handsHolding((raw) => Boolean(raw['Dmg (M)'] || raw['Dmg (S)']));
+    }
+    if (kind === 'armor') {
+      const out = [];
+      if (nameAt('armor')) out.push({ slot: 'armor', name: nameAt('armor') });
+      return out.concat(handsHolding((raw) => raw['Armor/Shield Bonus'] !== undefined));
+    }
+    if (kind === 'ammo') {
+      return this.getInventory()
+        .filter((row) => row?.ItemType === 'Ammo' && (Number(row.Number) || 0) > 0)
+        .map((row) => ({ slot: `ammo:${row.Name}`, name: row.Name }));
+    }
+    // 'any' — every occupied slot on the sheet.
+    return [...Player.HAND_SLOTS, 'armor', ...OTHER_SLOTS]
+      .filter((slot) => nameAt(slot))
+      .map((slot) => ({ slot, name: nameAt(slot) }));
+  }
+
+  /** The raw entries, as stored. */
+  getActiveEffects() {
+    return Array.isArray(this.activeEffects) ? this.activeEffects.map((e) => ({ ...e })) : [];
+  }
+
+  /**
+   * The active effects with their table entry resolved, in the order they were
+   * drunk. Each carries the stored entry's `target` and `roll` alongside the
+   * descriptor, plus the array `index` that identifies it for removal.
+   */
+  getResolvedEffects() {
+    return this.getActiveEffects().map((entry, index) => {
+      const raw = getPotionByName(entry.name);
+      const effect = raw ? resolvePotionEffect(raw) : null;
+      if (!effect) return null;
+      /* An applied oil carries the name of what it is on, so two oils on two
+         different weapons stay tellable apart on their pills. */
+      const targetName = entry.target ? this.describeOilTarget(entry.target) : '';
+      return { ...effect, ...entry, index, targetName };
+    }).filter(Boolean);
+  }
+
+  /** A readable name for an oil's target slot. */
+  describeOilTarget(slot) {
+    if (!slot) return '';
+    if (String(slot).startsWith('ammo:')) return String(slot).slice('ammo:'.length);
+    const entry = this.getEquipment()[slot];
+    return entry?.overrides?.Name ?? entry?.name ?? slot;
+  }
+
+  hasActiveEffects() {
+    return this.getResolvedEffects().length > 0;
+  }
+
+  /**
+   * Start an effect. `target` is the equipment slot an oil was applied to;
+   * `roll` is the number a dice effect produced, which is stored because the
+   * player may have typed what their own dice showed.
+   */
+  addPotionEffect(name, { target = '', roll = null } = {}) {
+    if (!getPotionByName(name)) return false;
+    if (!Array.isArray(this.activeEffects)) this.activeEffects = [];
+    const entry = { name };
+    if (target) entry.target = target;
+    if (Number.isFinite(Number(roll))) entry.roll = Number(roll);
+    this.activeEffects.push(entry);
+    return true;
+  }
+
+  /** End one effect, by the index getResolvedEffects reported. */
+  removePotionEffect(index) {
+    if (!Array.isArray(this.activeEffects)) return false;
+    const at = Number(index);
+    if (!Number.isInteger(at) || at < 0 || at >= this.activeEffects.length) return false;
+    this.activeEffects.splice(at, 1);
+    return true;
+  }
+
+  /**
+   * Rest ends everything. No potion in the set lasts more than a few hours,
+   * and rest is the only moment the sheet can be certain of, so it is the one
+   * automatic expiry rather than a clock nobody would keep wound.
+   */
+  resetPotionEffectsOnRest() {
+    this.activeEffects = [];
+  }
+
+  /**
+   * Effects that move one of the sheet's numbers, excluding oils that have not
+   * been applied to anything yet. An oil on the shelf does nothing.
+   */
+  getStatEffects() {
+    return this.getResolvedEffects().filter((e) => e.kind === 'buff' && (!e.oil || e.target));
+  }
+
+  /**
+   * What the running potions add to one stat, as contribution rows.
+   *
+   * The `statKey` vocabulary is the one every other contribution method uses:
+   * 'ac', 'acTouch', 'acFlat', the three saves, 'speed', 'attack', 'damage',
+   * an ability key, or `skill:<Name>`. A potion granting a bonus to every
+   * skill (heroism, good hope) answers to any `skill:` key through the
+   * 'skillsAll' entry in its table row.
+   */
+  getPotionContributions(statKey) {
+    if (!statKey) return [];
+    const isSkill = String(statKey).startsWith('skill:');
+    const rows = [];
+    this.getStatEffects().forEach((effect) => {
+      const pick = effect.stats[statKey] || (isSkill ? effect.stats.skillsAll : null);
+      if (!pick) return;
+      const [value, type] = pick;
+      rows.push(contribution(`potion:${effect.index}`, effect.label, value, type));
+    });
+    return compactContributions(rows);
+  }
+
+  /** The net number the running potions add to one stat. */
+  getPotionBonus(statKey) {
+    return sumContributions(this.getPotionContributions(statKey));
+  }
+
+  /**
+   * What an applied oil adds to one equipped item, by slot.
+   *
+   * Separate from getPotionBonus because it is scoped to a single weapon or
+   * piece of armor rather than to the character: an oil of magic weapon on the
+   * longsword must not raise the dagger in the other hand.
+   *
+   * @param {string} slot - an equipment slot key ('rh1', 'armor', …)
+   * @param {string} statKey - 'attack', 'damage' or 'armorBonus'
+   */
+  getOilBonus(slot, statKey) {
+    if (!slot || !statKey) return 0;
+    return this.getResolvedEffects()
+      .filter((e) => e.kind === 'oil' && e.target === slot)
+      .reduce((total, e) => total + (Number(e.item?.[statKey]?.[0]) || 0), 0);
+  }
+
+  /** The oils applied to one slot, for the item's own breakdown box. */
+  getOilContributions(slot, statKey) {
+    if (!slot || !statKey) return [];
+    return compactContributions(
+      this.getResolvedEffects()
+        .filter((e) => e.kind === 'oil' && e.target === slot)
+        .map((e) => {
+          const pick = e.item?.[statKey];
+          return contribution(`oil:${e.index}`, e.label, pick ? pick[0] : 0, pick ? pick[1] : '');
+        })
+    );
+  }
+
+  /**
+   * The bonus a *magic fang* potion lends a natural weapon.
+   *
+   * Natural weapons belong to a wild-shaped druid's assumed form and to the
+   * animal companion, and by the companion's **share spells** trait the same
+   * dose reaches both (animal-companion.md). Nothing else on a character sheet
+   * has a natural weapon, so this is deliberately not folded into the ordinary
+   * attack and damage channels.
+   *
+   * @param {string} statKey - 'naturalAttack' or 'naturalDamage'
+   */
+  getNaturalWeaponBonus(statKey) {
+    return this.getResolvedEffects()
+      .filter((e) => e.natural)
+      .reduce((total, e) => total + (Number(e.stats?.[statKey]?.[0]) || 0), 0);
+  }
+
+  /** How many size categories the running potions move this character. */
+  getPotionSizeStep() {
+    return this.getStatEffects().reduce((step, e) => step + (Number(e.size) || 0), 0);
+  }
+
+  /**
+   * Bonuses of the same named type do not stack in 3.5 — the largest applies
+   * and the rest are wasted. The sheet adds them all anyway, per the project's
+   * rule of computing without enforcing, and reports the overlap here so the
+   * number can be shown as suspect rather than quietly wrong.
+   *
+   * @returns {Array<{stat: string, type: string, labels: string[]}>}
+   */
+  getPotionStackingWarnings() {
+    const seen = new Map();
+    this.getStatEffects().forEach((effect) => {
+      Object.entries(effect.stats).forEach(([stat, [, type]]) => {
+        if (!type) return; // untyped bonuses always stack
+        const key = `${stat}::${type}`;
+        if (!seen.has(key)) seen.set(key, { stat, type, labels: [] });
+        seen.get(key).labels.push(effect.label);
+      });
+    });
+    return [...seen.values()].filter((row) => row.labels.length > 1);
   }
 
   /**
@@ -5472,7 +5832,8 @@ class Player {
       result -= penalty * multiplier;
     }
 
-    return result + this.getSkillConditionModifier(skillName);
+    return result + this.getSkillConditionModifier(skillName)
+      + this.getPotionBonus(`skill:${skillName}`);
   }
 
   /**
