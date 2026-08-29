@@ -18,6 +18,7 @@ import InventoryOptionsPopup from './inventory/InventoryOptionsPopup';
 import EquipmentCard from './inventory/EquipmentCard';
 import CarryingCapacityCard from './inventory/CarryingCapacityCard';
 import MoneyCard from './inventory/MoneyCard';
+import SharedShopCard from './inventory/SharedShopCard';
 import Card from '../common/Card';
 import Filigree from '../common/Filigree';
 import Pill from '../common/Pill';
@@ -168,6 +169,11 @@ export default function InventoryPage() {
       </div>
 
       <MoneyCard player={player} />
+
+      {/* Only present while a scanned shop is being held. It sits directly
+          under the purse because buying is the one thing on this page that
+          spends it. */}
+      <SharedShopCard player={player} />
 
       <EquipmentCard
         equipment={equipment}

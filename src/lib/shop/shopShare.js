@@ -254,7 +254,13 @@ export function parseSharedShop(encodedString) {
 }
 
 /**
- * Turn shared shop stock into display items: [{ Name, Number, Cost, Link?, Bonus?, ItemType?, effectIds? }].
+ * Turn shared shop stock into display items: [{ Name, Number, Cost, stockIndex, Link?, Bonus?, ItemType?, effectIds? }].
+ *
+ * `stockIndex` points back at the row in `stock` this came from. Buying has to
+ * decrement that row, and it cannot find it by position: sold-out rows are
+ * skipped here and the caller sorts what is left, so the two arrays do not
+ * line up. It cannot find it by name either — a shop can stock the same item
+ * twice at different prices.
  */
 export function sharedStockToDisplayItems(stock) {
   if (!Array.isArray(stock)) return [];
@@ -272,6 +278,7 @@ export function sharedStockToDisplayItems(stock) {
           Number: num,
           Cost: cost,
           ItemType: entry.ItemType ?? 'Custom',
+          stockIndex: i,
         });
         continue;
       }
@@ -294,6 +301,7 @@ export function sharedStockToDisplayItems(stock) {
           Cost: cost,
           Link: entry.link,
           ItemType: itemType,
+          stockIndex: i,
         };
         if (bonus != null) display.Bonus = bonus;
         if (Array.isArray(entry.effectIds) && entry.effectIds.length) display.effectIds = entry.effectIds;
@@ -304,6 +312,7 @@ export function sharedStockToDisplayItems(stock) {
           Number: num,
           Cost: cost,
           ItemType: entry.ItemType ?? 'Custom',
+          stockIndex: i,
         });
       }
     } catch (_) {}

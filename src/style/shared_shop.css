@@ -1,0 +1,144 @@
+/* --- THE SCANNED SHOP, ON THE CHARACTER SHEET ----------------------
+   The card on the Inventory page and the drawer it opens. All sizing in rem
+   per the CSS convention in CLAUDE.md. */
+
+.shared-shop-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  width: 100%;
+}
+
+/* --- the drawer --- */
+
+.shared-shop-purse {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: var(--font-size-sm);
+  color: var(--ink);
+}
+
+.shared-shop-purse-label {
+  color: var(--ink-muted);
+}
+
+.shared-shop-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+.shared-shop-row {
+  border-bottom: 0.0625rem solid var(--border-soft);
+}
+
+.shared-shop-row.is-open {
+  background: var(--surface-1);
+}
+
+.shared-shop-row-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: none;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.shared-shop-row-name {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+  font-size: var(--font-size-sm);
+}
+
+.shared-shop-row-type {
+  font-size: var(--font-size-xs);
+  color: var(--ink-muted);
+}
+
+.shared-shop-row-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+.shared-shop-row-left-count,
+.shared-shop-row-price {
+  font-size: var(--font-size-xs);
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.shared-shop-row-price {
+  color: var(--ink);
+}
+
+/* --- the haggle, expanded in place --- */
+
+.shared-shop-buy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: 0 var(--space-3) var(--space-3);
+}
+
+.shared-shop-buy-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-3);
+}
+
+.shared-shop-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.shared-shop-field-label {
+  font-size: var(--font-size-xs);
+  color: var(--ink-muted);
+}
+
+.shared-shop-price-input {
+  max-width: 7rem;
+}
+
+.shared-shop-buy-note {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  line-height: 1.45;
+  color: var(--ink-muted);
+}
+
+/* Not a refusal — the purchase still goes through. The number is shown before
+   the press so the shortfall is a thing the table agreed to rather than a
+   thing discovered afterwards, per the rule that the app computes and displays
+   and never enforces. */
+.shared-shop-buy-note .is-short {
+  color: var(--danger);
+}
+
+/* --- the pointer on the Shop tab ---
+   A scan still lands on tab 1, and buying happens on the sheet beside the
+   purse, so the read-only view has to say where to go. */
+
+.shared-shop-goto {
+  margin: var(--space-2) auto 0;
+  display: block;
+}

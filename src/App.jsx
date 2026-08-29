@@ -171,11 +171,11 @@ export default function App() {
     document.body.className = cls.join(' ');
   }, [theme, accent]);
 
-  useEffect(() => {
-    if (currentTab !== 1 && sharedShop) {
-      dispatch(clearSharedShop());
-    }
-  }, [currentTab, sharedShop, dispatch]);
+  /* A scanned shop used to be destroyed the moment you left tab 1, which made
+     stepping over to your sheet to check your gold lose the shop you were
+     reading. It is now held until you close it or scan another — and it is
+     still cleared on load above, since `sharedShop` is not persisted, so it
+     never outlives the session that scanned it. */
 
   const mainPage = <>
     <header className="app-header">

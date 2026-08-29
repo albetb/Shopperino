@@ -11,13 +11,14 @@ import {
   setPlayer,
 } from '../slices/playerSheetSlice';
 import { setPersist } from '../slices/persistSlice';
-import { addCardByLink } from '../slices/appSlice';
+import { addCardByLink, buySharedShopItem } from '../slices/appSlice';
 import { getEffectById } from '../../lib/item/effectsUtils';
 import { getPotionByName, resolvePotionEffect, potionItemType } from '../../lib/item/potionEffects';
 import { resolveScroll } from '../../lib/item/scrolls';
 import AnimalCompanion from '../../lib/player/animalCompanion';
 import Familiar from '../../lib/player/familiar';
 import { getAnimalBaseByRef } from '../../lib/utils';
+import { inventoryArgsFor } from '../../lib/shop/shopPurchase';
 
 function hydratePlayerSheet(dispatch, app) {
   dispatch(setCharactersList(db.getPlayerSheetCharactersList(app)));
@@ -833,6 +834,35 @@ export const onAddInventoryItem = (name, type, number, link, opts) => (dispatch,
   if (!player) return;
   player.addInventoryItem(name, type, number, link, opts);
   persistPlayer(dispatch, getState, player);
+};
+
+/**
+ * Buy one row out of the scanned shop, at the price the table agreed on.
+ *
+ * One press is one act, so it is one thunk: the item lands in the bag, the
+ * gold leaves the purse, and the shop's shelf goes down by what was taken.
+ *
+ * The purchase is never refused for want of money. `Player.setGold` floors at
+ * zero, so an unaffordable buy empties the purse rather than going negative —
+ * the drawer says how far short it is *before* the press, which is the flag
+ * the "computed and displayed, never enforced" rule asks for. A master saying
+ * "you can owe me" is a real table moment and the app should not be the thing
+ * that stops it.
+ *
+ * @param {object} item      a display row, carrying its own `stockIndex`
+ * @param {number} quantity  how many, clamped to what the shop lists
+ * @param {number} price     what actually leaves the purse, after haggling
+ */
+export const onBuyFromSharedShop = (item, quantity, price) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player || !item) return;
+  const { name, type, number, link, opts } = inventoryArgsFor(item, quantity);
+  player.addInventoryItem(name, type, number, link, opts);
+  player.adjustGold(-Math.max(0, Number(price) || 0));
+  persistPlayer(dispatch, getState, player);
+  if (Number.isInteger(item.stockIndex)) {
+    dispatch(buySharedShopItem({ stockIndex: item.stockIndex, quantity: number }));
+  }
 };
 
 export const onRemoveInventoryItem = (name, type, number, opts) => (dispatch, getState) => {

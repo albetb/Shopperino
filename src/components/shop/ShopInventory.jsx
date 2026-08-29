@@ -3,7 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import Shop from 'lib/shop';
 import { sharedStockToDisplayItems } from 'lib/shop';
 import { formatNumber, getEffectById } from 'lib/utils';
-import { addCardByLink, clearSharedShop } from 'store/slices/appSlice';
+import { addCardByLink, clearSharedShop, setStateCurrentTab } from 'store/slices/appSlice';
+import { setPlayerSheetMainView } from 'store/slices/playerSheetSlice';
 import { updateShop } from 'store/thunks/shopThunks';
 import useLongPress from 'components/hooks/useLongPress';
 import { useSortedItems } from './hooks/useSortedItems';
@@ -13,6 +14,7 @@ import ShopTableBody from './ShopTableBody';
 import ShopTableHeader from './ShopTableHeader';
 import AddItemForm from './AddItemForm';
 import 'style/shop_inventory.css';
+import 'style/shared_shop.css';
 
 const LONGPRESS_TIME = 400;
 
@@ -39,6 +41,7 @@ export default function ShopInventory() {
     : (rawShop?.getInventory?.() ?? []);
   const shopName = isViewOnly ? (sharedShop.name ?? 'Shared shop') : (rawShop?.Name || '');
   const gold = isViewOnly ? (Number(sharedShop.gold) || 0) : (rawShop?.Gold ?? 0);
+  const player = useSelector((state) => state.playerSheet?.player);
   const cityFromRedux = useSelector((state) => state.city.city?.Name) || '';
   const cityName = isViewOnly ? '' : cityFromRedux;
 
@@ -125,6 +128,19 @@ export default function ShopInventory() {
             </h4>
           </div>
         )}
+
+      {isViewOnly && hasItems && player && (
+        <button
+          type="button"
+          className="modern-button small-long shared-shop-goto"
+          onClick={() => {
+            dispatch(setStateCurrentTab(5));
+            dispatch(setPlayerSheetMainView('inventory'));
+          }}
+        >
+          <b>Buy on {player.getName?.() || 'your sheet'}</b>
+        </button>
+      )}
 
       {isViewOnly && !hasItems && <p className="empty-state-message">No items in this shop.</p>}
       {!isViewOnly && !hasItems && (

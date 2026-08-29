@@ -249,6 +249,23 @@ export const appSlice = createSlice({
       state.sharedShop = null;
     },
 
+    /**
+     * Take one row of a scanned shop off the shelf.
+     *
+     * Local to this phone, and deliberately so: the scan is a snapshot, so two
+     * players each see the full stock and neither sees the other's purchases.
+     * It is dishonest about "this is what is left" and honest about "I bought
+     * this", which is the half that stops the last healing potion being bought
+     * three times by accident. The master reconciles at the table either way.
+     */
+    buySharedShopItem(state, action) {
+      const { stockIndex, quantity } = action.payload ?? {};
+      const entry = state.sharedShop?.stock?.[stockIndex];
+      if (!entry) return;
+      const taken = Math.max(0, Math.floor(Number(quantity) || 0));
+      entry.Number = Math.max(0, (Number(entry.Number) || 0) - taken);
+    },
+
     setMasterMode(state, action) {
       state.isMasterMode = !!action.payload;
     },
@@ -300,6 +317,7 @@ export const {
   resetMainColor,
   setSharedShop,
   clearSharedShop,
+  buySharedShopItem,
   setMasterMode,
   setTheme,
   setAccent,
