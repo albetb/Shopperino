@@ -44,7 +44,7 @@ describe('critical profiles, and Improved Critical widening them', () => {
   test('the profile shows unchanged without the feat', () => {
     const p = make();
     expect(p.getWeaponCritical(weapon('longsword'))).toEqual({ text: '19-20/x2', improved: false });
-    expect(p.getWeaponCritical(weapon('warhammer'))).toEqual({ text: '20/x3', improved: false });
+    expect(p.getWeaponCritical(weapon('warhammer'))).toEqual({ text: 'x3', improved: false });
   });
 
   test('Improved Critical widens only the weapon it names', () => {

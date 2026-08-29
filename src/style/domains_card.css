@@ -25,6 +25,17 @@
   gap: var(--space-2);
 }
 
+/* The "Not chosen" flag belongs at the row's far edge, where every other
+   status pill on this page sits — beside the name it read as part of it. */
+.domains-card-head > .sh-pill {
+  margin-left: auto;
+}
+
+.domains-card-select {
+  width: 100%;
+  box-sizing: border-box;
+}
+
 .domains-card-name {
   font-size: var(--font-size-sm);
   font-weight: 600;

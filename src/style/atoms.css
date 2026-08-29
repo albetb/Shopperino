@@ -203,7 +203,10 @@
 .sh-select,
 .sh-textarea {
   width: 100%;
-  height: var(--tap-target);
+  /* The small tap target rather than the full one: a full-height select reads
+     as a button beside the compact rows it sits in. Kept on the shared rule so
+     a select and an input in the same row stay the same height. */
+  height: var(--tap-target-sm);
   background: var(--bg);
   color: var(--ink);
   border: 1px solid var(--border);
@@ -289,6 +292,65 @@
 .sh-switch[aria-checked="true"] { background: var(--accent); border-color: var(--accent-strong); }
 .sh-switch[aria-checked="true"]::after { transform: translateX(1rem); background: var(--accent-fg); }
 .sh-switch:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* --- TRI-SWITCH ---------------------------------------------- */
+/* Three positions rather than two: left option, neither, right option. The
+   knob slides between them; the three buttons above it are invisible hit
+   areas, each one a full tap target tall so a thumb can reach any position. */
+.sh-tri-switch {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  width: 4.5rem;
+  height: 1.5rem;
+  background: var(--surface-3);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-pill);
+  flex-shrink: 0;
+  transition: background var(--t-base) var(--ease), border-color var(--t-base) var(--ease);
+}
+
+.sh-tri-switch-knob {
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 50%;
+  background: var(--ink);
+  transition: transform var(--t-base) var(--ease), background var(--t-base) var(--ease);
+}
+
+/* The track is 4.5rem wide with a 1.25rem knob, so the centre and right rest
+   at a third and two thirds of the travel. */
+.sh-tri-switch.is-center .sh-tri-switch-knob { transform: translateX(1.5rem); }
+.sh-tri-switch.is-right  .sh-tri-switch-knob { transform: translateX(3rem); }
+
+/* A side position is a made choice, so the track takes the accent; the centre
+   stays neutral, because "not decided yet" is not an achievement. */
+.sh-tri-switch.is-left,
+.sh-tri-switch.is-right {
+  background: var(--accent);
+  border-color: var(--accent-strong);
+}
+
+.sh-tri-switch.is-left .sh-tri-switch-knob,
+.sh-tri-switch.is-right .sh-tri-switch-knob { background: var(--accent-fg); }
+
+.sh-tri-switch-slot {
+  position: relative;
+  z-index: 1;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  /* Taller than the track so the tap target clears the 1.5rem visual height. */
+  height: var(--tap-target-sm);
+  margin: calc((1.5rem - var(--tap-target-sm)) / 2) 0;
+}
+
+.sh-tri-switch-slot:disabled { cursor: not-allowed; }
+.sh-tri-switch:has(.sh-tri-switch-slot:disabled) { opacity: 0.5; }
 
 /* --- TICKBOX ------------------------------------------------- */
 .sh-tickbox {
@@ -425,6 +487,12 @@
   background: linear-gradient(180deg, var(--accent-soft), transparent 75%), var(--surface-1);
 }
 .sh-stat-pill .sub { font-size: var(--font-size-2xs); color: var(--ink-faint); font-family: var(--font-mono); }
+
+/* A value that is lower than it should be by something permanent — armor or a
+   heavy load on the speed. Not the condition tint: that one glows the whole
+   pill for a temporary effect, and this is simply the number the character
+   moves at. */
+.sh-stat-value-reduced { color: var(--danger); }
 
 /* --- BAR (HP / XP / encumbrance) ----------------------------- */
 .sh-bar {
@@ -816,3 +884,7 @@ button.sh-portrait:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
+
+/* Pushes an element to the far edge of the flex row it sits in — a status pill
+   after the name it qualifies, rather than crowding it. */
+.sh-push-right { margin-left: auto; }

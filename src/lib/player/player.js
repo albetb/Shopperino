@@ -15,6 +15,7 @@ import { listAnimals, getCreatureBaseByRef } from '../animal/animalsUtils';
 import { parseAttacks, recomputeAttack } from '../animal/attackParser';
 import { getBaseFeatName, UNARMED_STRIKE } from '../featChoices';
 import { spellAllowsSave } from '../spellbook/spellsUtils';
+import { DOMAINS } from '../spellbook/spellbook';
 import {
   getFeatSkillBonus,
   getFeatSaveBonus,
@@ -344,6 +345,9 @@ class Player {
        derived from class progression, never stored here, and over-cap values are
        kept as entered per the non-enforcing rule. Cleared by resetClassFeatureUses. */
     this.classFeatureUses = {};
+    /* Spontaneous casters earn a spell swap at fixed levels; this is how many
+       have been spent. Additive with a 0 default, so no version bump. */
+    this.spellSwapsUsed = 0;
     /* Whether a barbarian rage is currently running. A stance rather than a
        condition: it grants bonuses instead of penalties and ends by choice, so
        it is not part of the condition subsystem. Its aftermath (Fatigued) is. */
@@ -531,6 +535,9 @@ class Player {
       });
     }
 
+    if (Number.isFinite(Number(data.spellSwapsUsed))) {
+      this.spellSwapsUsed = Math.max(0, Math.floor(Number(data.spellSwapsUsed)));
+    }
     if (data.classFeatureUses && typeof data.classFeatureUses === 'object') {
       this.classFeatureUses = {};
       Object.entries(data.classFeatureUses).forEach(([key, n]) => {
@@ -706,6 +713,7 @@ class Player {
       gnomeSpellUses: this.gnomeSpellUses && typeof this.gnomeSpellUses === 'object' ? { ...this.gnomeSpellUses } : {},
       abilityIncreaseAcked: this.abilityIncreaseAcked || 0,
       classFeatureUses: this.classFeatureUses && typeof this.classFeatureUses === 'object' ? { ...this.classFeatureUses } : {},
+      spellSwapsUsed: Math.max(0, Math.floor(Number(this.spellSwapsUsed) || 0)),
       raging: !!this.raging,
       favoredEnemies: Array.isArray(this.favoredEnemies)
         ? this.favoredEnemies.map((e) => ({ ...e }))
@@ -1005,6 +1013,36 @@ class Player {
   /** @deprecated Use getTemporaryBaseline — kept for existing callers. */
   getConditionBaseline() {
     return this.getTemporaryBaseline();
+  }
+
+  /**
+   * How far a weapon's attack bonus sits from the plain one — base attack bonus
+   * plus the ability modifier this character has with nothing temporary
+   * running. Everything else is a deviation: a magic or masterwork weapon,
+   * Weapon Focus, the non-proficiency penalty, ability damage, a condition.
+   *
+   * The sheet colours the attack pill by the sign of this, so "why is this
+   * number not the one my class and Strength give me" is answerable at a
+   * glance. Zero means the pill stays neutral.
+   */
+  getWeaponAttackDeviation(weaponData) {
+    const data = weaponData?.weaponItem ? weaponData : { weaponItem: weaponData };
+    if (!data.weaponItem) return 0;
+    const baseline = this.getTemporaryBaseline() ?? this;
+    const ranged = getWeaponType(data.weaponItem).isRanged;
+    const finesse = baseline.usesWeaponFinesse(data.weaponItem);
+    const key = ranged || (finesse && baseline.getDexMod() > baseline.getStrMod()) ? 'dex' : 'str';
+    const plain = this.getBaseAttackBonus() + baseline.getModifier(key);
+    return calculateWeaponAttackBonus(this, data) - plain;
+  }
+
+  /** The same question for the unarmed strike, which has no weapon to read. */
+  getPunchAttackDeviation() {
+    const baseline = this.getTemporaryBaseline() ?? this;
+    const abilityMod = hasWeaponFinesse(baseline.getFeats())
+      ? Math.max(baseline.getStrMod(), baseline.getDexMod())
+      : baseline.getStrMod();
+    return this.getPunchAttackBonus() - (this.getBaseAttackBonus() + abilityMod);
   }
 
   /** Temporary-effect change to a weapon's attack bonus (vs baseline). */
@@ -1726,6 +1764,24 @@ class Player {
     if (!Number.isFinite(n)) return;
     if (!this.classFeatureUses || typeof this.classFeatureUses !== 'object') this.classFeatureUses = {};
     this.classFeatureUses[key] = Math.max(0, n);
+  }
+
+  /**
+   * Whether a long rest would actually change anything: a spent class-feature
+   * use, a used gnome racial spell, or damage still to heal. The spellbook's
+   * rest button greys out when nothing is left to refresh, and it now performs
+   * the same full rest as the combat page's, so it has to ask the same
+   * question. Spell slots are the spellbook's own business and are tested
+   * alongside this, not here.
+   */
+  needsRest() {
+    if (Object.values(this.getClassFeatureUses()).some((n) => Number(n) > 0)) return true;
+    const gnome = this.gnomeSpellUses;
+    if (gnome && typeof gnome === 'object' && Object.values(gnome).some((n) => Number(n) > 0)) return true;
+    if (this.getRestHealAmount() > 0) return true;
+    // A wounded companion, mount or familiar is reason enough to rest.
+    return [this.companion, this.specialMount, this.familiar]
+      .some((creature) => (creature?.getRestHealAmount?.() ?? 0) > 0);
   }
 
   /** Clear every class-feature counter (rest). */
@@ -2951,6 +3007,25 @@ class Player {
    * the punch is simply the fallback when nothing at all is equipped, which
    * the attacks card handles on its own.
    */
+  /**
+   * Whether a hand is free to punch with.
+   *
+   * Only the primary set counts: `rh2`/`lh2` is an alternate weapon set the
+   * character would have to swap to, not a third and fourth hand. A two-handed
+   * weapon occupies both, and a shield occupies the hand holding it.
+   *
+   * This is the gate on showing the punch line at all — every class can throw
+   * one, and a fighter with a sword in one hand and nothing in the other has a
+   * real attack the sheet was not offering.
+   */
+  hasFreeHand() {
+    const held = ['rh1', 'lh1']
+      .map((slot) => this.equipment?.[slot])
+      .filter((entry) => entry?.link);
+    if (held.some((entry) => entry.twoHanded === true)) return false;
+    return held.length < 2;
+  }
+
   canUseUnarmedStrike() {
     const prog = getClassProgression(this.class);
     if (!Array.isArray(prog.monkWeapons)) return false;
@@ -3654,7 +3729,8 @@ class Player {
   getPunchCritical() {
     const improved = hasImprovedCritical(this.getFeats(), UNARMED_STRIKE);
     const low = improved ? widenThreatRange(20) : 20;
-    return { text: `${low >= 20 ? '20' : `${low}-20`}/x2`, improved };
+    // Same rule as a weapon's: a bare natural 20 is the default and goes unsaid.
+    return { text: low >= 20 ? 'x2' : `${low}-20/x2`, improved };
   }
 
   /**
@@ -3671,8 +3747,11 @@ class Player {
     if (!parsed) return null;
     const improved = hasImprovedCritical(this.getFeats(), weaponItem?.Name);
     const low = improved ? widenThreatRange(parsed.low) : parsed.low;
-    const range = low >= 20 ? '20' : `${low}-20`;
-    return { text: `${range}/${parsed.multiplier}`, improved };
+    /* A threat range of a natural 20 alone is every weapon's default, so it is
+       left unsaid — only a range that is actually wider is worth the space.
+       The multiplier always shows, because that one does differ per weapon. */
+    const text = low >= 20 ? parsed.multiplier : `${low}-20/${parsed.multiplier}`;
+    return { text, improved };
   }
 
   /**
@@ -3699,6 +3778,24 @@ class Player {
     const encumbered = armor === 'heavy' || load === 'heavy' || load === 'over';
     const base = encumbered ? 3 : 4;
     return hasRunFeat(this.getFeats()) ? base + 1 : base;
+  }
+
+  /**
+   * The domains this cleric may still pick for one slot.
+   *
+   * Mirrors the spellbook's own rule so the two dropdowns offer the same list:
+   * a cleric cannot take the domain opposed to their alignment, and cannot
+   * take the same domain twice.
+   *
+   * @param {1|2} slot which domain slot the list is for.
+   */
+  getPossibleDomains(slot) {
+    const opposed = [
+      { Lawful: 'Chaos', Chaotic: 'Law' }[this.ethicalAlignment],
+      { Good: 'Evil', Evil: 'Good' }[this.moralAlignment],
+    ];
+    const taken = slot === 1 ? this.domain2 : this.domain1;
+    return DOMAINS.filter((d) => !opposed.includes(d) && d !== taken);
   }
 
   /** Whether the Run feat is held — it also keeps Dex to AC while running. */
@@ -3935,6 +4032,17 @@ class Player {
     if (this.isHalfSpeed()) {
       rows.push(contribution('conditions', 'halved by conditions', Math.floor(raw / 2) - raw));
     }
+    /* Armor and encumbrance land last, on the speed everything else produced.
+       This is a real row rather than a situational note because the sheet now
+       shows the reduced speed as *the* speed — so it has to be a number the
+       breakdown adds up to, not a remark beside a total that disagrees. */
+    const armorSpeed = this.getArmorSpeedInfo();
+    if (armorSpeed?.hasReduction) {
+      rows.push(contribution(
+        'armorSpeed', 'armor and load',
+        armorSpeed.reducedSpeed - armorSpeed.originalSpeed
+      ));
+    }
     return compactContributions(rows);
   }
 
@@ -4129,12 +4237,17 @@ class Player {
         `Your armor caps the Dexterity bonus at +${this.getMaxDexBonus()}`
       ));
     }
+    /* Slow fall is a movement ability with no counter of its own, so it rode
+       along on the stunning fist card, which is not where anyone asks how far
+       a monk moves. It belongs with the speed it qualifies. */
     if (statKey === 'speed') {
-      const info = this.getArmorSpeedInfo();
-      if (info?.hasReduction) {
+      const slowFall = this.getSlowFallDistance();
+      if (slowFall > 0) {
         out.push(situational(
-          'armorSpeed', 'armor and load',
-          `Reduced to ${info.reducedSpeed} ft while encumbered`
+          'slowFall', 'Slow fall',
+          slowFall === Infinity
+            ? 'Falling within arm’s reach of a wall costs you no damage, from any height'
+            : `Falling within arm’s reach of a wall counts as ${slowFall} ft shorter`
         ));
       }
     }

@@ -175,6 +175,33 @@ export default class SpecialMount {
     return num(this.getBase()?.abilities?.int, 2);
   }
 
+  /**
+   * The six ability scores as the sheet shows them. A mount advances only its
+   * Strength, and its Intelligence is replaced outright by the table's value
+   * as the paladin levels — the other four are the base creature's.
+   */
+  getAbilities() {
+    const base = this.getBase()?.abilities ?? {};
+    const score = (key, bonus = 0) => {
+      const raw = base[key];
+      return Number.isFinite(Number(raw)) ? Number(raw) + bonus : null;
+    };
+    return {
+      str: score('str', this.getStrAdj()),
+      dex: score('dex'),
+      con: score('con'),
+      int: this.getIntelligence(),
+      wis: score('wis'),
+      cha: score('cha'),
+    };
+  }
+
+  /** The modifier for one ability, or null when the creature has no such score. */
+  getAbilityMod(key) {
+    const score = this.getAbilities()[key];
+    return score == null ? null : abilityMod(score);
+  }
+
   // —— Hit points ——
   /** Default max HP = base creature HP + bonusHD × (avg d10 + Con mod). */
   getDefaultMaxLife() {
@@ -322,6 +349,21 @@ export default class SpecialMount {
   setName(name) {
     this.name = typeof name === 'string' ? name : '';
     return this;
+  }
+
+  /**
+   * A night's natural healing: 1 hit point per Hit Die, or whatever damage is
+   * left when that is less — the creature version of the character rule in
+   * combat.md, where a character heals 1 per level. Split from
+   * `healAsIfRested` so the sheet can report the amount before applying it.
+   */
+  getRestHealAmount() {
+    return Math.min(this.getDamage(), this.getTotalHD());
+  }
+
+  /** Apply that night's healing. */
+  healAsIfRested() {
+    this.setDamage(this.getDamage() - this.getRestHealAmount());
   }
 
   setDamage(value) {

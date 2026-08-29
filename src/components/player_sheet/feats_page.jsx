@@ -39,10 +39,16 @@ export default function FeatsPage() {
   const playerClass = player?.getClass?.() ?? '';
 
   const featsData = useMemo(() => loadFile('feats') || [], []);
+  /* Keyed by lower-cased name: classes.json and feats.json disagree about the
+     capitalisation of several feats ("Stunning Fist" against "Stunning fist"),
+     and an exact-match lookup silently returned nothing for those — which is
+     why granted feats showed no description. */
   const featMap = useMemo(() => {
     const m = {};
-    featsData.forEach(f => { if (f?.Name) m[f.Name] = f; });
-    return m;
+    featsData.forEach(f => { if (f?.Name) m[f.Name.toLowerCase()] = f; });
+    return new Proxy(m, {
+      get: (target, key) => (typeof key === 'string' ? target[key.toLowerCase()] : target[key]),
+    });
   }, [featsData]);
 
   const playerFeats = useMemo(() => player?.getFeats?.() ?? [], [player]);
@@ -196,14 +202,14 @@ export default function FeatsPage() {
                 <div className="sh-row-h" style={{ gap: 'var(--space-3)', alignItems: 'flex-start' }}>
                   <Icon name="workspace_premium" className="sh-accent-text" />
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    {/* Pill first, so it starts every line at the same x and the
-                        column reads as a list of grants rather than a ragged
-                        badge trailing each name. */}
+                    {/* The feat's name leads — it is what the reader is looking
+                        for — and the grant badge sits at the row's far edge,
+                        where every other status pill on this page sits. */}
                     <span className="sh-row-h" style={{ gap: 'var(--space-2)', flexWrap: 'wrap' }}>
-                      <Pill tone="accent">granted · lv {level}</Pill>
                       <SpellLink link={`feats#${slug(getBaseFeatName(feat))}`}>
                         <span className="sh-display" style={{ fontSize: 'var(--font-size-lg)' }}>{feat}</span>
                       </SpellLink>
+                      <Pill tone="accent" className="sh-push-right">granted · lv {level}</Pill>
                     </span>
                     {data?.shortDescription && (
                       <div className="sh-faint" style={{ fontSize: 'var(--font-size-xs)', marginTop: 'var(--space-1)' }}>

@@ -6,10 +6,12 @@ describe('class feature card registry', () => {
   test('druids get an animal companion at any level, wild shape at 5th, elemental at 16th', () => {
     expect(keysFor('Druid', 1)).toEqual(['animalCompanion']);
     expect(keysFor('Druid', 4)).toEqual(['animalCompanion']);
-    expect(keysFor('Druid', 5)).toEqual(['wildShape', 'animalCompanion']);
-    expect(keysFor('Druid', 15)).toEqual(['wildShape', 'animalCompanion']);
-    expect(keysFor('Druid', 16)).toEqual(['wildShape', 'elementalWildShape', 'animalCompanion']);
-    expect(keysFor('Druid', 20)).toEqual(['wildShape', 'elementalWildShape', 'animalCompanion']);
+    // The companion leads: it is a creature in the fight, while the shape lists
+    // are a reference consulted only when changing form.
+    expect(keysFor('Druid', 5)).toEqual(['animalCompanion', 'wildShape']);
+    expect(keysFor('Druid', 15)).toEqual(['animalCompanion', 'wildShape']);
+    expect(keysFor('Druid', 16)).toEqual(['animalCompanion', 'wildShape', 'elementalWildShape']);
+    expect(keysFor('Druid', 20)).toEqual(['animalCompanion', 'wildShape', 'elementalWildShape']);
   });
 
   test('ranger cards arrive one at a time, each at its own level', () => {

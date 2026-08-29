@@ -98,6 +98,7 @@
   display: inline-flex;
   align-items: baseline;
   gap: 0.35rem;
+  flex: 0 1 auto;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -155,12 +156,61 @@
   color: var(--ink-muted);
 }
 
-/* In the bottom sheet the box has the whole width, so the rows can breathe. */
+/* In the bottom sheet the box has the whole width, so the rows can breathe.
+   No horizontal padding of its own: .sh-sheet already carries space-4 on each
+   side, and a width:100% child adding its own pushed the body two gutters
+   wider than the sheet — which is where the sideways scrollbar came from. */
 .sh-sheet .stat-info-body {
-  padding: 0 var(--space-4) var(--space-4);
+  padding: 0 0 var(--space-4);
+  overflow-x: hidden;
+}
+
+/* A long source name wraps here rather than ellipsing: the sheet has the room,
+   and on a phone the truncated half of "armor check penalty" is the half that
+   says what it is. */
+.sh-sheet .stat-info-row-label {
+  white-space: normal;
+  overflow: visible;
+  flex: 1 1 auto;
 }
 
 .sh-sheet .stat-info-row,
 .sh-sheet .stat-info-notes li {
+  font-size: var(--font-size-md);
+}
+
+/* --- INFO POPOVER (InfoPopover.jsx) ------------------------------- */
+
+/* Prose rather than a table of numbers, so it gets a wider box and room to
+   breathe — a rules explanation read once is worth the extra width. */
+.info-popover {
+  width: 22rem;
+}
+
+.info-popover-prose {
+  gap: var(--space-2);
+  font-size: var(--font-size-sm);
+  line-height: 1.45;
+  color: var(--ink-muted);
+}
+
+.info-popover-prose p {
+  margin: 0;
+}
+
+.info-popover-prose strong,
+.info-popover-prose b {
+  color: var(--ink);
+}
+
+.info-popover-prose ul {
+  margin: 0;
+  padding-left: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.sh-sheet .info-popover-prose {
   font-size: var(--font-size-md);
 }

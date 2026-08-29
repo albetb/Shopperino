@@ -1003,20 +1003,28 @@
 .attack-row-name {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   min-width: 0;
   gap: 0.1rem;
 }
 
+/* Left, under the name it describes. Stated rather than left to the default:
+   the row it sits in is a spread flex row, and the profile reads as part of
+   the weapon's name, not as a counterweight to the pills on the right. */
 .attack-row-meta {
   font-size: var(--font-size-xs);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
+  text-align: left;
+  align-self: flex-start;
 }
 
-/* A value a feat moved. The whole point of showing these is that Improved
-   Critical and Far Shot had nowhere to appear, so the changed one is marked. */
+/* A value a feat raised — Improved Critical widening a threat range, Far Shot
+   extending an increment. Green, never the accent: the accent is whatever
+   colour the player picked, and a red one made an ordinary range increment
+   read as a penalty. Green says "something improved this" in every theme. */
 .attack-row-meta .is-feat-boosted {
-  color: var(--accent);
+  color: var(--success);
 }
 
 /* Non-proficiency. The -4 is already inside the attack number; this says where

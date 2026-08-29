@@ -1,0 +1,55 @@
+/* The six ability scores of a bonded creature (creature_abilities.jsx).
+   Sizing in rem per CLAUDE.md.
+
+   Imported by the component itself rather than by one of the three cards that
+   use it — a shared component that borrows another card's stylesheet works
+   only for as long as that card happens to be on the page. */
+
+/* Sits directly under the hit-point block, because the two are read together:
+   how hurt it is, and what it is made of. The grid classes are shared with the
+   monster sheet so the two read identically, but the rules are restated here
+   scoped to this block rather than borrowed from menu_cards.css — a component
+   should not depend on another component's stylesheet having been imported. */
+.creature-abilities {
+  padding: var(--space-2) var(--space-3);
+  border: 0.0625rem solid var(--border-soft);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+}
+
+.creature-abilities .ability-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.2rem 0.4rem;
+  width: 100%;
+}
+
+.creature-abilities .ability-grid-scores {
+  margin-top: 0.35rem;
+}
+
+.creature-abilities .ability-grid-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.creature-abilities .ability-label-cell {
+  font-weight: 500;
+  font-size: var(--font-size-xs);
+  color: var(--ink-muted);
+}
+
+.creature-abilities .ability-score-cell {
+  flex-direction: column;
+  gap: 0.15rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.creature-abilities .ability-modifier {
+  font-size: var(--font-size-xs);
+  font-weight: 400;
+  color: var(--ink-muted);
+}

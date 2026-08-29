@@ -114,6 +114,12 @@ export default function ConditionsSection() {
     return player.hasCondition(name);
   };
 
+  /* A plain on/off condition toggles from the list — the same tap that added
+     it takes it back. The parameterised ones (Ability Damaged, Energy Drained)
+     do not: there is more than one of each active at a time, so a second tap
+     has to mean "add another", and they are removed from their own pill. */
+  const isToggleable = name => !ABILITY_PARAM.has(name) && !AMOUNT_PARAM.has(name);
+
   const pickCondition = name => {
     if (ABILITY_PARAM.has(name)) {
       const firstFree = ABILITIES.find(a => !player.hasCondition(name, a.key));
@@ -122,6 +128,10 @@ export default function ConditionsSection() {
     }
     if (AMOUNT_PARAM.has(name)) {
       setConfig({ name, ability: null, amount: 1 });
+      return;
+    }
+    if (player.hasCondition(name)) {
+      dispatch(onRemoveCondition(name, null));
       return;
     }
     dispatch(onAddCondition({ name }));
@@ -253,20 +263,23 @@ export default function ConditionsSection() {
             ) : (
               filtered.map(c => {
                 const exhausted = isExhausted(c.name);
+                const canToggle = isToggleable(c.name);
+                /* Only a condition that cannot be toggled off gets disabled —
+                   a taken toggleable one stays live so the tap can remove it. */
+                const locked = exhausted && !canToggle;
                 return (
                   <button
                     type="button"
                     key={c.slug}
                     className="cond-list-item"
-                    disabled={exhausted}
+                    disabled={locked}
+                    aria-pressed={canToggle ? exhausted : undefined}
                     onClick={() => pickCondition(c.name)}
                   >
                     <span className="cond-list-name">
                       {c.name}
                       {exhausted && <Icon name="check" size={14} />}
-                      {(ABILITY_PARAM.has(c.name) || AMOUNT_PARAM.has(c.name)) && !exhausted && (
-                        <Icon name="tune" size={14} />
-                      )}
+                      {!exhausted && !canToggle && <Icon name="tune" size={14} />}
                     </span>
                     <span className="cond-list-desc">{c.description}</span>
                   </button>

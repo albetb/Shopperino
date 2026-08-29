@@ -3,7 +3,9 @@
 .cond-wrap {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  /* Tight: the heading and its pills are one thing being read, and a full
+     space-3 between them made the count look detached from what it counts. */
+  gap: var(--space-1);
 }
 
 .cond-pills {
@@ -68,7 +70,6 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-2);
-  min-height: 1.75rem;
 }
 
 .cond-head-actions {
@@ -107,6 +108,15 @@
 
 .cond-list-item:disabled { opacity: 0.45; cursor: default; }
 
+/* Already on the character, and tapping again takes it back off. Tinted rather
+   than dimmed: it is a live control, not a spent one. */
+.cond-list-item[aria-pressed='true'] {
+  border-color: var(--accent-muted);
+  background: var(--accent-soft);
+}
+
+.cond-list-item[aria-pressed='true'] .cond-list-name { color: var(--accent); }
+
 .cond-list-name {
   display: flex;
   align-items: center;
@@ -140,10 +150,26 @@
   gap: var(--space-2);
 }
 
+/* The amount stepper keeps its natural pill width, centred under its label
+   rather than stretched to the sheet's full width. */
+.cond-config-block > .sh-stepper {
+  align-self: center;
+}
+
 .cond-chips {
   display: flex;
-  flex-wrap: wrap;
   gap: var(--space-2);
+}
+
+/* Six abilities, one row, equal shares of it: the ability being picked is a
+   choice between six equivalents, and six chips of six different widths read
+   as a list rather than as a set of options. */
+.cond-chips .sh-chip {
+  flex: 1 1 0;
+  min-width: 0;
+  justify-content: center;
+  padding-left: var(--space-1);
+  padding-right: var(--space-1);
 }
 
 .cond-config-actions {

@@ -145,6 +145,30 @@ export default class Familiar {
     return this.getAdvancement().int;
   }
 
+  /**
+   * The six ability scores as the sheet shows them. A familiar keeps the base
+   * animal's physical and mental scores except Intelligence, which the
+   * advancement table replaces outright as the master gains levels.
+   */
+  getAbilities() {
+    const base = this.getBase()?.abilities ?? {};
+    const score = (key) => (Number.isFinite(Number(base[key])) ? Number(base[key]) : null);
+    return {
+      str: score('str'),
+      dex: score('dex'),
+      con: score('con'),
+      int: this.getInt(),
+      wis: score('wis'),
+      cha: score('cha'),
+    };
+  }
+
+  /** The modifier for one ability, or null when the creature has no such score. */
+  getAbilityMod(key) {
+    const score = this.getAbilities()[key];
+    return score == null ? null : abilityMod(score);
+  }
+
   // —— Hit points ——
   /** Default max HP = ⌊master max HP ÷ 2⌋ (excluding temp HP). */
   getDefaultMaxLife() {
@@ -259,6 +283,21 @@ export default class Familiar {
   setName(name) {
     this.name = typeof name === 'string' ? name : '';
     return this;
+  }
+
+  /**
+   * A night's natural healing: 1 hit point per Hit Die, or whatever damage is
+   * left when that is less — the creature version of the character rule in
+   * combat.md, where a character heals 1 per level. Split from
+   * `healAsIfRested` so the sheet can report the amount before applying it.
+   */
+  getRestHealAmount() {
+    return Math.min(this.getDamage(), this.getEffectiveHD());
+  }
+
+  /** Apply that night's healing. */
+  healAsIfRested() {
+    this.setDamage(this.getDamage() - this.getRestHealAmount());
   }
 
   setDamage(value) {

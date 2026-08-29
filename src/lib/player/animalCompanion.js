@@ -140,6 +140,35 @@ export default class AnimalCompanion {
     return abilityMod(this.getBase()?.abilities?.con);
   }
 
+  /**
+   * The six ability scores as the sheet shows them, with the advancement
+   * adjustment already applied — it raises **both** Strength and Dexterity
+   * (animal-companion.md), and nothing else. A score the base block omits
+   * comes back null, which is how an animal with no Intelligence entry reads.
+   */
+  getAbilities() {
+    const base = this.getBase()?.abilities ?? {};
+    const adj = this.getAdvancement().abilityAdj;
+    const score = (key, bonus = 0) => {
+      const raw = base[key];
+      return Number.isFinite(Number(raw)) ? Number(raw) + bonus : null;
+    };
+    return {
+      str: score('str', adj),
+      dex: score('dex', adj),
+      con: score('con'),
+      int: score('int'),
+      wis: score('wis'),
+      cha: score('cha'),
+    };
+  }
+
+  /** The modifier for one ability, or null when the creature has no such score. */
+  getAbilityMod(key) {
+    const score = this.getAbilities()[key];
+    return score == null ? null : abilityMod(score);
+  }
+
   /** Net change in the Dex modifier caused by the Str/Dex advancement adjustment. */
   getDexModDelta() {
     return this.getDexMod() - this.getBaseDexMod();
@@ -273,6 +302,21 @@ export default class AnimalCompanion {
   setName(name) {
     this.name = typeof name === 'string' ? name : '';
     return this;
+  }
+
+  /**
+   * A night's natural healing: 1 hit point per Hit Die, or whatever damage is
+   * left when that is less — the creature version of the character rule in
+   * combat.md, where a character heals 1 per level. Split from
+   * `healAsIfRested` so the sheet can report the amount before applying it.
+   */
+  getRestHealAmount() {
+    return Math.min(this.getDamage(), this.getTotalHD());
+  }
+
+  /** Apply that night's healing. */
+  healAsIfRested() {
+    this.setDamage(this.getDamage() - this.getRestHealAmount());
   }
 
   setDamage(value) {

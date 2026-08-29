@@ -30,6 +30,7 @@ import SpellLink from '../common/spell_link';
 import Card from '../common/Card';
 import StatPill from '../common/StatPill';
 import StatInfo from '../common/StatInfo';
+import InfoPopover from '../common/InfoPopover';
 import Bar from '../common/Bar';
 import Pill from '../common/Pill';
 import Filigree from '../common/Filigree';
@@ -44,6 +45,19 @@ function formatBaseAttackBonus(bab) {
   const parts = [];
   for (let k = 0; b - 5 * k >= 1; k += 1) parts.push(`+${b - 5 * k}`);
   return parts.join(' / ');
+}
+
+/**
+ * Colour for an attack pill, from how far the bonus sits off the plain one the
+ * character's class and ability score alone would give. Neutral when nothing
+ * else is acting on it, green when something raised it — a magic weapon,
+ * Weapon Focus, a spell — and red when something took it away, whether that is
+ * ability damage or holding a weapon you were never trained for.
+ */
+function attackTone(deviation) {
+  if (deviation > 0) return 'success';
+  if (deviation < 0) return 'danger';
+  return 'default';
 }
 
 const BONUS_THUNK = {
@@ -255,7 +269,6 @@ export default function CombatPage() {
   const acDelta = condDeltas.ac || condDeltas.acFlat || condDeltas.acTouch || 0;
   const acCondAffected = !!(condDeltas.ac || condDeltas.acTouch || condDeltas.acFlat);
   const condBaseline = player.getTemporaryBaseline?.() ?? null;
-  const punchAtkAffected = condBaseline ? condBaseline.getPunchAttackBonus() !== punchAttack : false;
   const punchDmgAffected = condBaseline ? condBaseline.getPunchDamage() !== punchDamage : false;
 
   // Flurry of blows: an extra attack at the highest BAB, with a blanket
@@ -268,7 +281,11 @@ export default function CombatPage() {
   // so the punch line joins the weapon list rather than replacing it. The
   // model owns the "does this whole set qualify" question.
   const unarmedAvailable = player.canUseUnarmedStrike?.() ?? false;
-  const showsPunch = equippedWeapons.length === 0 || unarmedAvailable;
+  /* Anyone with a hand free can punch, whatever their class — a fighter
+     holding one sword has a real attack the sheet used to hide. A monk whose
+     whole set qualifies for the flurry keeps the line even with both hands
+     full, since an unarmed strike is what the flurry is for. */
+  const showsPunch = (player.hasFreeHand?.() ?? equippedWeapons.length === 0) || unarmedAvailable;
   const flurryUnarmed = flurry.extraAttacks > 0 && unarmedAvailable;
 
   const speedInfo = player.getArmorSpeedInfo?.();
@@ -276,9 +293,13 @@ export default function CombatPage() {
   // only flies, so its land speed is 0 and the walk would read "0 ft". The
   // model picks the fastest mode that crosses ground and names it.
   const primaryMovement = player.getPrimaryMovement?.() ?? { mode: 'land', speed: 30 };
-  const speedDisplay = speedInfo?.hasReduction
-    ? `${speedInfo.reducedSpeed} / ${speedInfo.originalSpeed} ft`
-    : `${primaryMovement.speed} ft`;
+  /* Armor or a heavy load slows the character: the speed they actually move at
+     is the only one worth reading at the table, so it stands alone and in red
+     rather than beside the speed they would have had. The breakdown box says
+     where the difference went. */
+  const speedReduced = !!speedInfo?.hasReduction;
+  const currentSpeed = speedReduced ? speedInfo.reducedSpeed : primaryMovement.speed;
+  const speedDisplay = `${currentSpeed} ft`;
   // Only a non-walking mode earns a label; a walk is the unremarkable default.
   const speedModeLabel = primaryMovement.mode === 'land' ? null : primaryMovement.mode.toUpperCase();
 
@@ -289,7 +310,7 @@ export default function CombatPage() {
      in the number. */
   const runMultiplier = player.getRunSpeedMultiplier?.() ?? 4;
   const hasRun = player.hasRunFeat?.() ?? false;
-  const runSpeed = (speedInfo?.hasReduction ? speedInfo.reducedSpeed : primaryMovement.speed) * runMultiplier;
+  const runSpeed = currentSpeed * runMultiplier;
 
   /* One breakdown box per stat. StatInfo renders nothing when both lists are
      empty, so "only when there is something to say" needs no test here — the
@@ -420,6 +441,10 @@ export default function CombatPage() {
       <Card
         title={`${currentHp} / ${maxHp} hp`}
         eyebrow="Health"
+        /* Tapping the head collapses the card. The breakdown and rest buttons
+           live in the action slot, which Card excludes from this handler, so
+           they keep behaving as themselves. */
+        onHeadClick={() => toggleCard('player')}
         action={
           <>
             {statInfo('Maximum hit points', maxHp, player.getMaxLifeContributions?.(), 'maxHp')}
@@ -597,13 +622,13 @@ export default function CombatPage() {
         />
         <StatPill
           label="Speed"
-          value={speedDisplay}
-          info={statInfo('Speed', primaryMovement.speed, player.getSpeedContributions?.(), 'speed', [{
+          value={speedReduced ? <span className="sh-stat-value-reduced">{speedDisplay}</span> : speedDisplay}
+          info={statInfo('Speed', currentSpeed, player.getSpeedContributions?.(), 'speed', [{
             source: 'run',
             label: 'Running',
             note: hasRun
-              ? `A full-round run covers ${runSpeed} ft, and the Run feat keeps your Dexterity bonus to AC while running.`
-              : `A full-round run covers ${runSpeed} ft, and you lose your Dexterity bonus to AC while running.`,
+              ? `A full-round run covers ${runSpeed} ft (×${runMultiplier}), and the Run feat keeps your Dexterity bonus to AC while running.`
+              : `A full-round run covers ${runSpeed} ft (×${runMultiplier}), and you lose your Dexterity bonus to AC while running.`,
           }])}
           cond={condDeltas.speed || 0}
           sub={
@@ -611,13 +636,12 @@ export default function CombatPage() {
               {speedModeLabel && (
                 <span className="sh-speed-mode" style={{ display: 'block' }}>{speedModeLabel}</span>
               )}
+              {/* The run distance is reference, not a number read mid-turn, so
+                  it lives in the breakdown box rather than crowding the pill. */}
               {withCond(
                 speedInfo?.hasReduction ? 'encumbered' : (speedBonus !== 0 ? `bonus +${speedBonus}` : null),
                 condDeltas.speed || 0
               )}
-              <span className={hasRun ? 'sh-accent-text' : undefined} style={{ display: 'block' }}>
-                run {runSpeed} ft (&times;{runMultiplier})
-              </span>
             </>
           }
           editing={editBonus === 'speedBonus'}
@@ -662,6 +686,7 @@ export default function CombatPage() {
       <Card
         eyebrow={`BAB ${bab_display}`}
         title="Attacks"
+        onHeadClick={() => toggleCard('combat')}
         action={
           <IconButton
             icon={collapsed.combat ? 'expand_more' : 'expand_less'}
@@ -724,7 +749,6 @@ export default function CombatPage() {
                 const wd = { weaponItem: w.weaponItem, isTwoHanded: w.isTwoHanded, itemData: w.itemData };
                 const ab = calculateWeaponAttackBonus(player, wd);
                 const dmg = calculateWeaponDamage(player, wd);
-                const atkAffected = (player.getWeaponAttackConditionDelta?.(wd) ?? 0) !== 0;
                 const dmgAffected = player.isWeaponDamageConditionAffected?.(wd) ?? false;
                 /* The weapon's own profile, which the sheet never showed: the
                    threat range Improved Critical widens, and the range
@@ -775,7 +799,7 @@ export default function CombatPage() {
                       </span>
                     </span>
                     <span className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
-                      <Pill tone={atkAffected ? 'warn' : 'accent'}>{ab >= 0 ? '+' : ''}{ab}</Pill>
+                      <Pill tone={attackTone(player.getWeaponAttackDeviation?.(wd) ?? 0)}>{ab >= 0 ? '+' : ''}{ab}</Pill>
                       <Pill tone={dmgAffected ? 'warn' : 'default'}>{dmg}</Pill>
                       {statInfo(`${w.name} attack`, ab, player.getWeaponAttackContributions?.(wd), 'attack')}
                     </span>
@@ -794,9 +818,9 @@ export default function CombatPage() {
                 marginTop: 'var(--space-2)',
               }}
             >
-              {equippedWeapons.length === 0 && (
-                <div className="sh-warn-strip"><Icon name="sports_mma" />No weapon equipped — defaulting to punch.</div>
-              )}
+              {/* No "defaulting to punch" strip: the punch is one of the
+                  character's attacks, listed beside the others, not a warning
+                  that something is missing. */}
               <div className="sh-row-h sh-spread" style={{ gap: 'var(--space-3)' }}>
                 <span className="sh-row-h attack-row-label">
                   {/* No weapon to draw — a fist. */}
@@ -813,7 +837,7 @@ export default function CombatPage() {
                   </span>
                 </span>
                 <span className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
-                  <Pill tone={punchAtkAffected ? 'warn' : 'accent'}>{punchAttack >= 0 ? '+' : ''}{punchAttack}</Pill>
+                  <Pill tone={attackTone(player.getPunchAttackDeviation?.() ?? 0)}>{punchAttack >= 0 ? '+' : ''}{punchAttack}</Pill>
                   <Pill tone={punchDmgAffected ? 'warn' : 'default'}>{punchDamage}</Pill>
                 </span>
               </div>
@@ -828,7 +852,6 @@ export default function CombatPage() {
                 paddingTop: 'var(--space-2)',
                 marginTop: 'var(--space-2)',
               }}
-              title="A full-round action. Every attack in the flurry, including the extra one, takes the listed penalty. Usable only with unarmed strikes and monk weapons — a quarterstaff qualifies only when wielded two-handed."
             >
               <div className="sh-row-h sh-spread" style={{ gap: 'var(--space-3)' }}>
                 <span className="sh-display">Flurry of blows</span>
@@ -839,7 +862,26 @@ export default function CombatPage() {
                   <Pill tone={flurry.penalty < 0 ? 'warn' : 'default'}>
                     {flurry.penalty === 0 ? 'no penalty' : `${flurry.penalty} to all`}
                   </Pill>
-                  <Icon name="info" />
+                  {/* Was a bare `info` glyph beside a title tooltip: it looked
+                      like a button, did nothing, and said nothing at all on a
+                      phone, where a hover title never appears. */}
+                  <InfoPopover label="Flurry of blows">
+                    <p>
+                      A <b>full-round action</b> granting{' '}
+                      {flurry.extraAttacks} extra attack
+                      {flurry.extraAttacks === 1 ? '' : 's'} at your highest base
+                      attack bonus.
+                      {flurry.penalty === 0
+                        ? ' At your level it costs no penalty at all.'
+                        : ` Every attack in the flurry, the extra one included, takes ${flurry.penalty}.`}
+                    </p>
+                    <p>
+                      Usable only with <b>unarmed strikes or monk weapons</b> —
+                      kama, nunchaku, sai, shuriken, siangham — and a single
+                      flurry may not mix the two. A quarterstaff qualifies only
+                      while wielded two-handed.
+                    </p>
+                  </InfoPopover>
                 </span>
               </div>
               {/* A monk wielding monk weapons can still strike unarmed, so both

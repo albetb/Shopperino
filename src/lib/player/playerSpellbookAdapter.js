@@ -38,5 +38,6 @@ export function playerToSpellbookData(player) {
     Specialized: player.specialized ?? '',
     Forbidden1: player.forbidden1 ?? '',
     Forbidden2: player.forbidden2 ?? '',
+    SpellSwapsUsed: Math.max(0, Math.floor(Number(player.spellSwapsUsed) || 0)),
   };
 }

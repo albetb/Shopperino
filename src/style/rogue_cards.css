@@ -21,8 +21,10 @@
   gap: var(--space-2);
 }
 
-.rogue-ability-field .sh-label {
-  flex: 0 0 30%;
+/* The level badge keeps its natural width so the dropdown takes the rest of
+   the row — the choice is the part that needs the space. */
+.rogue-ability-level {
+  flex: 0 0 auto;
 }
 
 .rogue-ability-field .sh-select {
@@ -35,3 +37,19 @@
   font-size: var(--font-size-xs);
   line-height: 1.45;
 }
+
+/* Opens the one description, and nothing else on the card moves. */
+.rogue-ability-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  align-self: flex-start;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink-muted);
+  font: 500 var(--font-size-xs)/1.2 var(--font-ui);
+  cursor: pointer;
+}
+
+.rogue-ability-toggle:hover { color: var(--accent); }

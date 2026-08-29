@@ -33,6 +33,7 @@ import {
   onUnprepareSpell,
   onUseSpell,
   onRefreshSpell,
+  onSetSpellSwapsUsed,
   onPrepareDomainSpell,
   onUnprepareDomainSpell,
   onUseDomainSpell,
@@ -45,7 +46,8 @@ import {
   onPlayerPrepareSpell,
   onPlayerUnprepareSpell,
   onPlayerUseSpell,
-  onPlayerRefreshSpell,
+  onPlayerRest,
+  onSetPlayerSpellSwapsUsed,
   onPlayerPrepareDomainSpell,
   onPlayerUnprepareDomainSpell,
   onPlayerUseDomainSpell,
@@ -89,7 +91,10 @@ export default function SpellbookTable({ source = 'app' }) {
   const data = isApp ? appData : playerData;
   const player = useSelector(state => state.playerSheet.player);
   const playerSpellbookPage = useSelector(state => state.playerSheet.playerSpellbookPage);
-  const hasUsedGnomeSpells = !isApp && player?.getRace?.() === 'Gnome' && Object.values(player.getGnomeSpellUses?.() ?? {}).some(n => n > 0);
+  /* What a long rest here would restore beyond the spell slots: a spent class
+     feature, a used racial spell, damage still to heal. The model answers it,
+     so the button greys out on exactly the state the rest would change. */
+  const playerNeedsRest = !isApp && (player?.needsRest?.() ?? false);
   const showShortDescriptions = useSelector(state =>
     isApp ? state.spellbook.showShortDescriptions : state.playerSheet.playerSpellbookShowShortDescriptions
   );
@@ -120,16 +125,23 @@ export default function SpellbookTable({ source = 'app' }) {
         onPrepareDomainSpell: (level, link) => dispatch(onPrepareDomainSpell(level, link)),
         onUnprepareDomainSpell: (level, link) => dispatch(onUnprepareDomainSpell(level, link)),
         onUseDomainSpell: (link) => dispatch(onUseDomainSpell(link)),
+        onSetSwapsUsed: (n) => dispatch(onSetSpellSwapsUsed(n)),
       }
     : {
         onLearnUnlearnSpell: (link) => dispatch(onPlayerLearnUnlearnSpell(link)),
         onPrepareSpell: (link) => dispatch(onPlayerPrepareSpell(link)),
         onUnprepareSpell: (link) => dispatch(onPlayerUnprepareSpell(link)),
         onUseSpell: (link) => dispatch(onPlayerUseSpell(link)),
-        onRefreshSpell: () => dispatch(onPlayerRefreshSpell()),
+        /* The player-sheet spellbook rests the whole character, exactly as the
+           combat page's own bed button does: spell slots, gnome racial spells,
+           every per-day class feature, and a night's natural healing. Two
+           buttons that both say "long rest" must not mean two different
+           things. */
+        onRefreshSpell: () => dispatch(onPlayerRest()),
         onPrepareDomainSpell: (level, link) => dispatch(onPlayerPrepareDomainSpell(level, link)),
         onUnprepareDomainSpell: (level, link) => dispatch(onPlayerUnprepareDomainSpell(level, link)),
         onUseDomainSpell: (link) => dispatch(onPlayerUseDomainSpell(link)),
+        onSetSwapsUsed: (n) => dispatch(onSetPlayerSpellSwapsUsed(n)),
       };
 
   const setPage = isApp
@@ -165,7 +177,7 @@ export default function SpellbookTable({ source = 'app' }) {
           {hint.pending && <p className="search-hint">{hint.text}</p>}
           <RestBox
             page={2}
-            hasUsedSpells={hasUsedGnomeSpells}
+            hasUsedSpells={playerNeedsRest}
             onRefreshSpell={actions.onRefreshSpell}
           />
           <GnomeSpellsCard />
@@ -213,7 +225,7 @@ export default function SpellbookTable({ source = 'app' }) {
 
       <RestBox
         page={page}
-        hasUsedSpells={hasUsedSpells || hasUsedGnomeSpells}
+        hasUsedSpells={hasUsedSpells || playerNeedsRest}
         onRefreshSpell={actions.onRefreshSpell}
       />
 
@@ -271,7 +283,9 @@ export default function SpellbookTable({ source = 'app' }) {
         </div>
       )}
 
-      {page === 0 && <SpellSwapNote inst={inst} />}
+      {page === 0 && (
+        <SpellSwapNote inst={inst} onSetSwapsUsed={actions.onSetSwapsUsed} />
+      )}
 
       {levels.map(lvl => (
         <SpellLevelCard

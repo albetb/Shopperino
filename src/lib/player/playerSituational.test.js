@@ -139,10 +139,19 @@ describe('caps and reductions that sit outside the total', () => {
     expect(notes(p, 'ac')).not.toMatch(/caps the Dexterity/i);
   });
 
-  test('the armor speed reduction is reported against speed', () => {
+  /* The armor speed reduction moved out of this group: the sheet now shows the
+     reduced speed as the speed, so the reduction has to be a counted row the
+     breakdown adds up to, not a remark beside a total that disagrees with it. */
+  test('the armor speed reduction is a counted row, not a situational note', () => {
     const p = make({ cls: 'Fighter', level: 8 });
     p.equipItem('armor', { link: 'items/Armor/full-plate' });
-    expect(notes(p, 'speed')).toMatch(/Reduced to \d+ ft while encumbered/);
+    const info = p.getArmorSpeedInfo();
+    expect(info.hasReduction).toBe(true);
+
+    expect(notes(p, 'speed')).not.toMatch(/encumbered/i);
+    const rows = p.getSpeedContributions();
+    expect(rows.some((r) => /armor and load/i.test(r.label))).toBe(true);
+    expect(sumContributions(rows)).toBe(info.reducedSpeed);
   });
 });
 

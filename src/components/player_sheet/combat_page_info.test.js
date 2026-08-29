@@ -102,10 +102,14 @@ describe('the speed box', () => {
     expect(within(box).getByText(/dexterity bonus to ac while running/i)).toBeInTheDocument();
   });
 
-  test('the run line on the pill itself no longer hides its meaning in a title', () => {
+  /* The run distance left the pill entirely: it is reference, not a number read
+     mid-turn, so it lives in the box with the rest of the speed's story. */
+  test('the run distance is in the box and no longer crowds the pill', () => {
     renderCombat(equipped());
-    const runLine = screen.getByText(/^run \d+ ft/i);
-    expect(runLine).not.toHaveAttribute('title');
+    expect(screen.queryByText(/^run \d+ ft/i)).toBe(null);
+    fireEvent.click(infoButton('speed'));
+    const box = screen.getByRole('dialog', { name: 'Speed' });
+    expect(within(box).getByText(/a full-round run covers \d+ ft \(×\d\)/i)).toBeInTheDocument();
   });
 });
 

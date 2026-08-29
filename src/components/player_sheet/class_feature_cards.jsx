@@ -36,9 +36,11 @@ const CLASS_FEATURE_CARDS = {
     { key: 'domains', Component: DomainsCard },
   ],
   Druid: [
+    // The companion is a creature the druid brings to every fight; the shape
+    // lists are a reference consulted when changing form. Companion first.
+    { key: 'animalCompanion', Component: AnimalCompanionCard },
     { key: 'wildShape', Component: WildShapeCard, minLevel: 5 },
     { key: 'elementalWildShape', Component: ElementalShapeCard, minLevel: 16 },
-    { key: 'animalCompanion', Component: AnimalCompanionCard },
   ],
   Monk: [
     { key: 'monkBonusFeats', Component: MonkBonusFeatsCard },

@@ -11,14 +11,17 @@ import BottomSheet from '../common/BottomSheet';
 import Button from '../common/Button';
 import DiceRollerSheet from '../common/DiceRollerSheet';
 
-const TABS = [
+/* Listed in the order they are used at the table, not by tab id: reference
+   first, the master's generators next, the character's own pages last. The
+   home tiles carry the same order minus Home itself. */
+export const TABS = [
   { id: 0, label: 'Home',         icon: 'home',          masterOnly: false },
-  { id: 1, label: 'Shop',         icon: 'shopping_cart', masterOnly: true  },
-  { id: 2, label: 'Spellbook',    icon: 'auto_stories',  masterOnly: false },
-  { id: 3, label: 'Loot',         icon: 'paid',          masterOnly: true  },
   { id: 4, label: 'Search',       icon: 'search',        masterOnly: false },
-  { id: 5, label: 'Player sheet - BETA', icon: 'badge',  masterOnly: false },
+  { id: 1, label: 'Shop',         icon: 'shopping_cart', masterOnly: true  },
+  { id: 3, label: 'Loot',         icon: 'paid',          masterOnly: true  },
   { id: 6, label: 'Monsters',     icon: 'skull',         masterOnly: true  },
+  { id: 2, label: 'Spellbook',    icon: 'auto_stories',  masterOnly: false },
+  { id: 5, label: 'Player sheet - BETA', icon: 'badge',  masterOnly: false },
 ];
 
 export default function TopMenu() {

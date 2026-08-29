@@ -4,6 +4,7 @@ import TrackerCard from './tracker_card';
 import useLongPress from '../hooks/useLongPress';
 import Pill from '../common/Pill';
 import IconButton from '../common/IconButton';
+import InfoPopover from '../common/InfoPopover';
 import SpellLink from '../common/spell_link';
 import { getFeatureSpell } from '../../lib/player/featureSpells';
 import {
@@ -31,6 +32,21 @@ export function SmiteEvilCard() {
       max={max}
       onUse={(delta) => dispatch(onUseClassFeature('smiteEvil', delta))}
       onReset={() => dispatch(onResetClassFeature('smiteEvil'))}
+      action={
+        <InfoPopover label="Smite evil">
+          <p>
+            Declared <b>before</b> the attack roll, as part of a single melee
+            attack. It adds <b>{fmt(player.getSmiteEvilAttackBonus())}</b> to the
+            attack — your Charisma modifier — and{' '}
+            <b>{fmt(player.getSmiteEvilDamageBonus())}</b> to the damage, one
+            point per paladin level.
+          </p>
+          <p>
+            The use is <b>spent either way</b>: it is wasted on a miss, and
+            wasted entirely on a target that turns out not to be evil.
+          </p>
+        </InfoPopover>
+      }
     >
       <div className="tracker-card-row tracker-card-meta">
         <Pill tone="accent" icon="swords">
@@ -38,9 +54,6 @@ export function SmiteEvilCard() {
         </Pill>
         <Pill tone="accent">{fmt(player.getSmiteEvilDamageBonus())} damage</Pill>
       </div>
-      <span className="sh-faint tracker-card-note">
-        Declared before the attack roll. Wasted on a miss or on a target that is not evil.
-      </span>
     </TrackerCard>
   );
 }
@@ -105,15 +118,23 @@ export function RemoveDiseaseCard() {
       max={max}
       onUse={(delta) => dispatch(onUseClassFeature('removeDisease', delta))}
       onReset={() => dispatch(onResetClassFeature('removeDisease'))}
-      note={
-        <>
-          Casts the spell{' '}
-          <SpellLink link={getFeatureSpell('remove disease').link}>
-            {getFeatureSpell('remove disease').name}
-          </SpellLink>
-          . These uses refresh weekly, not with a night’s rest — reset them by
-          hand when the week turns.
-        </>
+      action={
+        <InfoPopover label="Remove disease">
+          <p>
+            Casts the spell{' '}
+            {/* The link survives the move: the spell's own range, duration and
+                save are what a paladin actually needs from this card. */}
+            <SpellLink link={getFeatureSpell('remove disease').link}>
+              {getFeatureSpell('remove disease').name}
+            </SpellLink>
+            , at a caster level equal to your paladin level.
+          </p>
+          <p>
+            These uses refresh <b>weekly</b>, not with a night&apos;s rest, so a
+            long rest leaves the counter alone — reset it by hand when the week
+            turns.
+          </p>
+        </InfoPopover>
       }
     />
   );

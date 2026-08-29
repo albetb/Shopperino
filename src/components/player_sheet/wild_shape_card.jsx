@@ -13,6 +13,7 @@ import Card from '../common/Card';
 import Pill from '../common/Pill';
 import IconButton from '../common/IconButton';
 import Filigree from '../common/Filigree';
+import InfoPopover from '../common/InfoPopover';
 import EmptyState from '../common/EmptyState';
 import Icon from '../common/Icon';
 import '../../style/wild_shape.css';
@@ -76,6 +77,45 @@ export default WildShapeCard;
  * is active this card's transform buttons are disabled rather than hidden —
  * the list still reads as a reference.
  */
+/**
+ * What this allowance lets the druid become, and what carries across the
+ * change. Everything here is fixed by the rules (class-features.md) except the
+ * per-pool limits, which the pool config already knows how to describe.
+ */
+function ShapeRules({ pool, player, hours, max }) {
+  const elemental = pool.key === 'elementalWildShape';
+  return (
+    <>
+      <p>
+        A standard action, <b>{max} times per day</b>, each lasting up to{' '}
+        <b>{hours} hour{hours === 1 ? '' : 's'}</b> — or until you choose to
+        change back, which is free. Only one shape at a time.
+      </p>
+      <p><b>This pool offers:</b> {pool.describeLimits(player)}.</p>
+      <p>
+        Assuming a form works like <i>polymorph</i>: you take the creature&apos;s
+        physical scores, natural attacks, movement modes and natural armor, and
+        heal as though you had rested a night. You keep your own hit points,
+        Intelligence, Wisdom, Charisma, base attack bonus, saves, skills and
+        class features. Your gear melds into the new body and stops working.
+      </p>
+      {elemental ? (
+        <p>
+          Elemental forms are the exception to the usual limit: you <b>do</b>{' '}
+          gain the elemental&apos;s extraordinary, supernatural and spell-like
+          abilities and its feats, while staying your own creature type.
+        </p>
+      ) : (
+        <p>
+          You do <b>not</b> gain the animal&apos;s supernatural or spell-like
+          abilities — only its extraordinary ones. You cannot speak in form, so
+          spells with a verbal component fail unless you have Natural Spell.
+        </p>
+      )}
+    </>
+  );
+}
+
 function ShapeCard({ pool }) {
   const dispatch = useDispatch();
   const player = useSelector((state) => state.playerSheet?.player);
@@ -108,15 +148,24 @@ function ShapeCard({ pool }) {
   const toggleCollapsed = () =>
     dispatch(setCombatPageCardCollapsed({ key: pool.key, value: !collapsed }));
 
-  /* The title carries the collapse chevron only. Restoring the day's uses is
-     an action on the counter, so it sits with the counter in the body. */
+  /* The title carries the collapse chevron and the `info` button. Restoring the
+     day's uses is an action on the counter, so it sits with the counter in the
+     body. What the pool allows — types, sizes, the HD cap — used to sit as a
+     line of prose under a scrolling list, where it was easy to miss and easy
+     to scroll past; it belongs behind the info button with the rest of the
+     rules a druid reads once. */
   const cardAction = (
-    <IconButton
-      icon={collapsed ? 'expand_more' : 'expand_less'}
-      ghost size="sm"
-      onClick={toggleCollapsed}
-      aria-label={`Toggle ${pool.label}`}
-    />
+    <span className="sh-row-h" style={{ gap: 'var(--space-1)' }}>
+      <InfoPopover label={pool.label}>
+        <ShapeRules pool={pool} player={player} hours={hours} max={max} />
+      </InfoPopover>
+      <IconButton
+        icon={collapsed ? 'expand_more' : 'expand_less'}
+        ghost size="sm"
+        onClick={toggleCollapsed}
+        aria-label={`Toggle ${pool.label}`}
+      />
+    </span>
   );
 
   return (
@@ -207,9 +256,6 @@ function ShapeCard({ pool }) {
                 </div>
               )}
 
-              <div className="sh-faint" style={{ fontSize: 'var(--font-size-xs)' }}>
-                {pool.describeLimits(player)}.
-              </div>
             </>
           )}
         </div>

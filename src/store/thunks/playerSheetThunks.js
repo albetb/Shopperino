@@ -385,6 +385,21 @@ export const onPlayerUseSpell = (spell_link) => (dispatch, getState) => {
   if (player) persistPlayer(dispatch, getState, player);
 };
 
+/**
+ * Record how many spell swaps a spontaneous caster has spent. Never clamped to
+ * what the level has earned — going over is flagged in the note, not blocked.
+ */
+export const onSetPlayerSpellSwapsUsed = (value) => (dispatch, getState) => {
+  const app = getState().persist;
+  if (app.pss == null || app.pss < 0 || !app.psc?.[app.pss]) return;
+  const p = db.getPlayerByIndex(app, app.pss);
+  if (!p) return;
+  const n = Math.floor(Number(value));
+  if (!Number.isFinite(n)) return;
+  p.spellSwapsUsed = Math.max(0, n);
+  persistPlayer(dispatch, getState, p);
+};
+
 export const onPlayerUseGnomeSpell = (link) => (dispatch, getState) => {
   const app = getState().persist;
   if (app.pss == null || app.pss < 0 || !app.psc?.[app.pss]) return;
@@ -394,18 +409,14 @@ export const onPlayerUseGnomeSpell = (link) => (dispatch, getState) => {
   persistPlayer(dispatch, getState, p);
 };
 
-export const onPlayerRefreshSpell = () => (dispatch, getState) => {
-  const player = getState().playerSheet?.player;
-  if (player) player.resetGnomeSpellUses();
-  withPlayerSpellbook(getState, (s) => s.refreshSpell());
-  const playerAfter = getState().playerSheet?.player;
-  if (playerAfter) persistPlayer(dispatch, getState, playerAfter);
-};
-
 /**
  * A full day's rest. Refreshes spell slots, gnome racial spells and every
  * per-day class-feature counter (rage, smite, turn undead, lay on hands, …)
  * in a single action, then persists once.
+ *
+ * The bonded creatures rest alongside their master: a companion, mount or
+ * familiar left bleeding through the night was the character resting and the
+ * creature not, which is nobody's reading of "long rest".
  */
 export const onPlayerRest = () => (dispatch, getState) => {
   const player = getState().playerSheet?.player;
@@ -416,6 +427,9 @@ export const onPlayerRest = () => (dispatch, getState) => {
     // maximum (combat.md). healAsIfRested floors damage at 0, which is the
     // same cap expressed the other way round.
     player.healAsIfRested();
+    // The same rule per creature, counted in Hit Dice rather than levels.
+    [player.companion, player.specialMount, player.familiar]
+      .forEach((creature) => creature?.healAsIfRested?.());
   }
   withPlayerSpellbook(getState, (s) => s.refreshSpell());
   const playerAfter = getState().playerSheet?.player;

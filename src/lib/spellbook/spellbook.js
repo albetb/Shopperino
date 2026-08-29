@@ -89,6 +89,7 @@ class Spellbook {
         this.Specialized = "";
         this.Forbidden1 = "";
         this.Forbidden2 = "";
+        this.SpellSwapsUsed = 0;
     }
 
     load(data) {
@@ -114,8 +115,33 @@ class Spellbook {
         this.Specialized = typeof data.Specialized === 'number' ? enumToStr('SpellSchools', data.Specialized) : (data.Specialized || '');
         this.Forbidden1 = typeof data.Forbidden1 === 'number' ? enumToStr('SpellSchools', data.Forbidden1) : (data.Forbidden1 || '');
         this.Forbidden2 = typeof data.Forbidden2 === 'number' ? enumToStr('SpellSchools', data.Forbidden2) : (data.Forbidden2 || '');
+        // Read defensively and left out of REQUIRED_KEYS: it is additive, and a
+        // save written before it existed is still a valid spellbook.
+        this.SpellSwapsUsed = Math.max(0, Math.floor(Number(data.SpellSwapsUsed) || 0));
 
         return this;
+    }
+
+    /** How many of the earned spell swaps have been spent. */
+    getSpellSwapsUsed() {
+        return Math.max(0, Math.floor(Number(this.SpellSwapsUsed) || 0));
+    }
+
+    /** The swaps earned by level so far — one per level on the swap list. */
+    getSpellSwapsEarned() {
+        const current = Number(this.Level) || 0;
+        return this.getSpellSwapLevels().filter(lvl => lvl <= current).length;
+    }
+
+    /**
+     * Record swaps spent. Never clamped to what was earned: per the
+     * non-enforcing rule in CLAUDE.md going over is flagged in the UI, not
+     * blocked here.
+     */
+    setSpellSwapsUsed(value) {
+        const n = Math.floor(Number(value));
+        if (!Number.isFinite(n)) return;
+        this.SpellSwapsUsed = Math.max(0, n);
     }
 
     setClass(_class) {
@@ -652,7 +678,10 @@ class Spellbook {
             PreparedDomainSpells: this.PreparedDomainSpells,
             Specialized: strToEnum('SpellSchools', this.Specialized) >= 0 ? strToEnum('SpellSchools', this.Specialized) : -1,
             Forbidden1: strToEnum('SpellSchools', this.Forbidden1) >= 0 ? strToEnum('SpellSchools', this.Forbidden1) : -1,
-            Forbidden2: strToEnum('SpellSchools', this.Forbidden2) >= 0 ? strToEnum('SpellSchools', this.Forbidden2) : -1
+            Forbidden2: strToEnum('SpellSchools', this.Forbidden2) >= 0 ? strToEnum('SpellSchools', this.Forbidden2) : -1,
+            // Omitted while zero, which is the overwhelmingly common case — the
+            // storage budget is one ~5 MB key for every spellbook there is.
+            ...(this.getSpellSwapsUsed() > 0 ? { SpellSwapsUsed: this.getSpellSwapsUsed() } : {}),
         };
     }
 }

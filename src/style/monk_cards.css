@@ -15,15 +15,31 @@
   padding-top: var(--space-2);
 }
 
-.monk-bonus-option {
+/* One line per level: the two feats at the ends, the slider between them, so
+   the pair reads as the single either/or choice it is. */
+.monk-bonus-pair {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: var(--space-2);
-  min-height: 2rem;
+  min-height: 2.25rem;
 }
+
+.monk-bonus-side {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+/* The left name reads toward the slider it belongs to. */
+.monk-bonus-side--left { text-align: right; }
 
 .monk-bonus-option-name {
   font-family: var(--font-display);
-  font-size: var(--font-size-md);
+  font-size: var(--font-size-sm);
+  line-height: 1.2;
 }
+
+.monk-bonus-option-name.is-chosen { color: var(--accent); }
+
+/* The one not taken stays readable — it is what the choice cost, and a monk
+   rereading the card wants to see what the alternative was. */
+.monk-bonus-option-name.is-passed-over { opacity: 0.5; }

@@ -4,7 +4,8 @@ import TrackerCard from './tracker_card';
 import useLongPress from '../hooks/useLongPress';
 import Card from '../common/Card';
 import Pill from '../common/Pill';
-import Switch from '../common/Switch';
+import TriSwitch from '../common/TriSwitch';
+import InfoPopover from '../common/InfoPopover';
 import IconButton from '../common/IconButton';
 import SpellLink from '../common/spell_link';
 import { slug } from '../../lib/slugUtils';
@@ -21,10 +22,20 @@ import '../../style/monk_cards.css';
  * Monk bonus feats — one of two options at each of 1st, 2nd and 6th level,
  * taken without meeting the prerequisites and charged to no feat budget.
  *
- * The options at a level are mutually exclusive, so each is a switch: turning
- * one on turns the other off. Turning the active one off reopens the choice,
- * since nothing stops a monk from leaving it undecided on the sheet.
+ * A level's pair is one choice with three answers, so it is one control: a
+ * three-position slider, the two feats at its ends and "neither" in the middle.
+ * Two independent switches said the same thing less honestly — nothing in them
+ * showed that turning one on turns the other off, and "both off" read as an
+ * accident rather than as the legitimate undecided state it is.
  */
+/** The chosen half of a pair reads as chosen; the other dims out of the way. */
+function featNameClass(chosen, feat) {
+  if (!chosen) return 'monk-bonus-option-name';
+  return chosen === feat
+    ? 'monk-bonus-option-name is-chosen'
+    : 'monk-bonus-option-name is-passed-over';
+}
+
 export function MonkBonusFeatsCard() {
   const dispatch = useDispatch();
   const player = useSelector((state) => state.playerSheet?.player);
@@ -43,12 +54,25 @@ export function MonkBonusFeatsCard() {
       className="sh-card--head-spread"
       eyebrow={`${chosenCount} of ${levels.length} chosen`}
       action={
-        <IconButton
-          icon={collapsed ? 'expand_more' : 'expand_less'}
-          ghost size="sm"
-          onClick={() => dispatch(setCombatPageCardCollapsed({ key: 'monkBonusFeats', value: !collapsed }))}
-          aria-label="Toggle bonus feats"
-        />
+        <span className="sh-row-h" style={{ gap: 'var(--space-1)' }}>
+          <InfoPopover label="Monk bonus feats">
+            <p>
+              At 1st, 2nd and 6th level a monk takes one feat from a pair. They
+              are granted by the class: they <b>ignore their normal
+              prerequisites</b> and cost nothing from either feat budget.
+            </p>
+            <p>
+              The two options at a level are exclusive — one or the other, never
+              both. The middle position of each slider leaves the choice open.
+            </p>
+          </InfoPopover>
+          <IconButton
+            icon={collapsed ? 'expand_more' : 'expand_less'}
+            ghost size="sm"
+            onClick={() => dispatch(setCombatPageCardCollapsed({ key: 'monkBonusFeats', value: !collapsed }))}
+            aria-label="Toggle bonus feats"
+          />
+        </span>
       }
     >
       {!collapsed && (
@@ -56,29 +80,38 @@ export function MonkBonusFeatsCard() {
           {levels.map((level) => {
             const options = player.getMonkBonusFeatOptions(level);
             const chosen = player.getMonkBonusFeat(level);
+            /* Every level in the SRD offers exactly two. A malformed entry
+               would otherwise reach TriSwitch as an undefined side. */
+            if (options.length < 2) return null;
             return (
               <div key={level} className="monk-bonus-level">
                 <span className="sh-eyebrow">Level {level}</span>
-                {options.map((feat) => (
-                  <div key={feat} className="monk-bonus-option">
-                    <SpellLink link={`feats#${slug(feat)}`}>
-                      <span className="monk-bonus-option-name">{feat}</span>
+                <div className="monk-bonus-pair">
+                  {/* Wrapped: SpellLink sets text-align inline, so the side a
+                      name sits on has to be decided by its container. */}
+                  <span className="monk-bonus-side monk-bonus-side--left">
+                    <SpellLink link={`feats#${slug(options[0])}`}>
+                      <span className={featNameClass(chosen, options[0])}>{options[0]}</span>
                     </SpellLink>
-                    <Switch
-                      checked={chosen === feat}
-                      aria-label={`Take ${feat} at level ${level}`}
-                      onChange={(value) =>
-                        dispatch(onSetMonkBonusFeat(level, value ? feat : ''))}
-                    />
-                  </div>
-                ))}
+                  </span>
+                  <TriSwitch
+                    value={chosen}
+                    leftValue={options[0]}
+                    rightValue={options[1]}
+                    leftLabel={`Take ${options[0]} at level ${level}`}
+                    rightLabel={`Take ${options[1]} at level ${level}`}
+                    centerLabel={`Take neither at level ${level}`}
+                    onChange={(next) => dispatch(onSetMonkBonusFeat(level, next))}
+                  />
+                  <span className="monk-bonus-side">
+                    <SpellLink link={`feats#${slug(options[1])}`}>
+                      <span className={featNameClass(chosen, options[1])}>{options[1]}</span>
+                    </SpellLink>
+                  </span>
+                </div>
               </div>
             );
           })}
-          <span className="sh-faint tracker-card-note">
-            Granted by the class: they ignore their normal prerequisites and cost
-            nothing from the feat budget. The two options at a level are exclusive.
-          </span>
         </div>
       )}
     </Card>
@@ -100,7 +133,6 @@ export function StunningFistCard() {
   if (max <= 0) return null;
 
   const kiStrike = player.getKiStrikeTier();
-  const slowFall = player.getSlowFallDistance();
 
   return (
     <TrackerCard
@@ -110,6 +142,22 @@ export function StunningFistCard() {
       max={max}
       onUse={(delta) => dispatch(onUseClassFeature('stunningFist', delta))}
       onReset={() => dispatch(onResetClassFeature('stunningFist'))}
+      action={
+        <InfoPopover label="Stunning fist">
+          <p>
+            Declared <b>before</b> the attack roll, at most once per round, and
+            only on a melee attack. It costs one attempt whether or not the
+            attack lands.
+          </p>
+          <p>
+            On a hit, the target makes a <b>Fortitude save (DC {player.getStunningFistDc()})</b>{' '}
+            — 10 + half your monk level + your Wisdom modifier. On a failure it
+            is <b>stunned for one round</b>: it loses its next action, is denied
+            its Dexterity bonus to AC, and takes a further −2 to AC.
+          </p>
+          <p>The attack itself deals its damage normally either way.</p>
+        </InfoPopover>
+      }
     >
       <div className="tracker-card-row tracker-card-meta">
         <Pill tone="accent" icon="shield_person">
@@ -118,16 +166,7 @@ export function StunningFistCard() {
         {kiStrike && (
           <Pill tone="accent" icon="auto_awesome">Ki strike: {kiStrike}</Pill>
         )}
-        {slowFall > 0 && (
-          <Pill tone="success" icon="paragliding">
-            Slow fall {slowFall === Infinity ? 'any height' : `${slowFall} ft`}
-          </Pill>
-        )}
       </div>
-      <span className="sh-faint tracker-card-note">
-        A stunned target loses its next action, is denied its Dexterity bonus and
-        takes −2 AC for a round. One attempt per round, declared before the roll.
-      </span>
     </TrackerCard>
   );
 }

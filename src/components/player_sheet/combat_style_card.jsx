@@ -3,6 +3,7 @@ import Card from '../common/Card';
 import Pill from '../common/Pill';
 import Icon from '../common/Icon';
 import IconButton from '../common/IconButton';
+import InfoPopover from '../common/InfoPopover';
 import SpellLink from '../common/spell_link';
 import { slug } from '../../lib/slugUtils';
 import { setCombatPageCardCollapsed } from '../../store/slices/playerSheetSlice';
@@ -38,6 +39,22 @@ export default function CombatStyleCard() {
       eyebrow={style ? 'Permanent choice' : `Choose at level ${player.getCombatStyleChoiceLevel()}`}
       action={
         <span className="sh-row-h" style={{ gap: 'var(--space-1)' }}>
+          <InfoPopover label="Combat style">
+            <p>
+              A ranger picks one style at{' '}
+              {player.getCombatStyleChoiceLevel()}th level, and the choice is{' '}
+              <b>permanent</b> — it cannot be swapped later.
+            </p>
+            <p>
+              The feats it grants are given by the class: they cost nothing from
+              either feat budget and <b>ignore their normal prerequisites</b>,
+              so a ranger gets them whether or not the ability scores qualify.
+            </p>
+            <p>
+              They work only in <b>light armor or none</b>. In medium or heavy
+              armor the style is suppressed entirely.
+            </p>
+          </InfoPopover>
           {style && (
             <IconButton
               icon="restart_alt"
@@ -108,11 +125,6 @@ export default function CombatStyleCard() {
                 </li>
               ))}
             </ul>
-
-            <span className="sh-faint favored-enemy-empty">
-              These feats are granted by the class. They cost nothing from either
-              feat budget and ignore their normal prerequisites.
-            </span>
           </>
         )}
       </div>

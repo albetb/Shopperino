@@ -62,6 +62,9 @@ export default function TrackerCard({
       title={title}
       eyebrow={eyebrow}
       className="sh-card--head-spread"
+      /* The whole head is the target, not just the chevron — Card excludes the
+         action slot, so the use/reset buttons still do their own job. */
+      onHeadClick={collapseKey ? toggleCollapsed : undefined}
       action={
         <span className="sh-row-h" style={{ gap: 'var(--space-1)' }}>
           {action}

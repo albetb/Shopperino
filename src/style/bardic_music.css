@@ -42,13 +42,21 @@
   gap: 0.25rem;
   font-size: var(--font-size-sm);
   font-weight: 600;
+  min-width: 0;
 }
 
+/* Suggestion, mass suggestion and song of freedom carry an extra spell pill,
+   which pushes the tag group onto its own line. space-between then left-aligns
+   it, because it is the only thing on that line — margin-left:auto keeps it at
+   the right edge whether it wrapped or not, so every row's pills share an
+   edge. */
 .bardic-performance-tags {
   display: inline-flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: flex-end;
   gap: 0.25rem;
+  margin-left: auto;
 }
 
 .bardic-performance-summary {

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Card from '../common/Card';
 import Pill from '../common/Pill';
+import InfoPopover from '../common/InfoPopover';
 import Button from '../common/Button';
 import IconButton from '../common/IconButton';
 import useCardCollapse from './hooks/useCardCollapse';
@@ -56,7 +57,28 @@ export default function FavoredEnemyCard() {
       title="Favored enemies"
       className="sh-card--head-spread"
       eyebrow={`${used} of ${max} slots`}
-      action={collapseToggle}
+      action={
+        <span className="sh-row-h" style={{ gap: 'var(--space-1)' }}>
+          <InfoPopover label="Favored enemies">
+            <p>
+              A ranger picks a first favored enemy at 1st level and another
+              every five levels after. Each new slot may name a fresh enemy or{' '}
+              <b>raise an existing one by +2</b>.
+            </p>
+            <p>
+              The bonus applies to{' '}
+              <b>{player.getFavoredEnemySkills().join(', ')}</b> checks against
+              that enemy, and to <b>weapon damage</b> against it. It also passes
+              to anything the ranger&apos;s weapon damage would carry.
+            </p>
+            <p>
+              A type too broad to take whole — humanoids, outsiders — must be
+              narrowed to a subtype.
+            </p>
+          </InfoPopover>
+          {collapseToggle}
+        </span>
+      }
     >
       {!collapsed && (
       <div className="sh-stack favored-enemy">
@@ -138,11 +160,6 @@ export default function FavoredEnemyCard() {
             {type} is too broad to take whole — choose a subtype.
           </span>
         )}
-
-        <span className="sh-faint favored-enemy-empty">
-          The bonus applies to {player.getFavoredEnemySkills().join(', ')} checks
-          against that enemy, and to weapon damage against it.
-        </span>
       </div>
       )}
     </Card>

@@ -46,6 +46,7 @@ export default function EquippedItemsCard() {
     <Card
       title="Equipment"
       className="sh-card--head-spread"
+      onHeadClick={() => dispatch(setCombatPageCardCollapsed({ key: 'items', value: !collapsed }))}
       action={
         <IconButton
           icon={collapsed ? 'expand_more' : 'expand_less'}

@@ -23,6 +23,8 @@ import {
 import { getFamiliarSpecies } from '../../lib/utils';
 import { slug } from '../../lib/slugUtils';
 import useLongPress from '../hooks/useLongPress';
+import useHpFeedback from '../hooks/useHpFeedback';
+import CreatureAbilities from './creature_abilities';
 import Card from '../common/Card';
 import Bar from '../common/Bar';
 import Pill from '../common/Pill';
@@ -61,9 +63,14 @@ export default function FamiliarCard() {
   const [editAtk, setEditAtk] = useState(null); // attack line index | null
   const [tempAtk, setTempAtk] = useState({ bonus: 0, damage: '' });
 
+  /* The same "what just changed" readout the player's own hit points get, so a
+     hit applied in pieces still reads as one number. */
+  const { feedback: hpFeedback, show: showHpFeedback } = useHpFeedback();
+
   const handleHpDelta = useCallback((delta) => {
     dispatch(onAdjustFamiliarHp(delta));
-  }, [dispatch]);
+    showHpFeedback(delta);
+  }, [dispatch, showHpFeedback]);
 
   const longPressPlus = useLongPress(() => handleHpDelta(10), () => handleHpDelta(1), { delay: 400 });
   const longPressMinus = useLongPress(() => handleHpDelta(-10), () => handleHpDelta(-1), { delay: 400 });
@@ -290,7 +297,14 @@ export default function FamiliarCard() {
                 aria-label={hpAdvancedOpen ? 'Hide base max life' : 'Show base max life'}
               />
               <IconButton icon="remove" {...(minusDisabled ? {} : longPressMinus)} disabled={minusDisabled} aria-label="Decrease HP" />
-              <div className="familiar-hp-readout">{currentHp} / {maxHp}</div>
+              <div
+                className="familiar-hp-readout"
+                style={hpFeedback
+                  ? { color: hpFeedback.delta >= 0 ? 'var(--success)' : 'var(--danger)' }
+                  : undefined}
+              >
+                {hpFeedback?.text ?? `${currentHp} / ${maxHp}`}
+              </div>
               <IconButton icon="add" {...(plusDisabled ? {} : longPressPlus)} disabled={plusDisabled} aria-label="Increase HP" />
             </div>
             {hpAdvancedOpen && (
@@ -314,6 +328,9 @@ export default function FamiliarCard() {
               </div>
             )}
           </div>
+
+          {/* What the creature is made of, under how hurt it is. */}
+          <CreatureAbilities creature={familiar} />
 
           {/* Defense pills row */}
           <div className="sh-grid-3">
@@ -417,7 +434,7 @@ export default function FamiliarCard() {
                   <div key={line.index} className="sh-row-h sh-spread" style={{ gap: 'var(--space-3)' }}>
                     <span className="sh-display" style={{ fontSize: 'var(--font-size-lg)', textTransform: 'capitalize' }}>{labelName}</span>
                     <span className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
-                      <Pill tone={overridden ? 'warn' : 'accent'}>{fmtBonus(line.bonus ?? 0)}</Pill>
+                      <Pill tone={overridden ? 'warn' : 'default'}>{fmtBonus(line.bonus ?? 0)}</Pill>
                       {line.damage && <Pill tone={overridden ? 'warn' : 'default'}>{line.damage}</Pill>}
                       <IconButton icon="edit" ghost size="sm" onClick={() => startEditAtk(line)} aria-label={`Edit ${line.name} attack`} />
                     </span>

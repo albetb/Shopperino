@@ -1,6 +1,9 @@
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Card from '../common/Card';
 import Pill from '../common/Pill';
+import Icon from '../common/Icon';
+import InfoPopover from '../common/InfoPopover';
 import useCardCollapse from './hooks/useCardCollapse';
 import { onSetRogueSpecialAbility } from '../../store/thunks/playerSheetThunks';
 import '../../style/rogue_cards.css';
@@ -20,6 +23,12 @@ export default function RogueSpecialAbilitiesCard() {
   const dispatch = useDispatch();
   const player = useSelector((state) => state.playerSheet?.player);
   const [collapsed, collapseToggle] = useCardCollapse('rogueSpecialAbilities', 'special abilities');
+  /* Which descriptions are open, by level. Local rather than persisted: it is a
+     reading position, not a setting, and every slot starts closed so the card
+     reads as the list of picks it is. */
+  const [openLevels, setOpenLevels] = useState({});
+  const toggleLevel = (level) =>
+    setOpenLevels((prev) => ({ ...prev, [level]: !prev[level] }));
 
   const levels = player?.getRogueSpecialAbilityLevels?.() ?? [];
   if (levels.length === 0) return null;
@@ -33,17 +42,37 @@ export default function RogueSpecialAbilitiesCard() {
       title="Special abilities"
       className="sh-card--head-spread"
       eyebrow={`${chosen.length} of ${levels.length} chosen`}
-      action={collapseToggle}
+      action={
+        <span className="sh-row-h" style={{ gap: 'var(--space-1)' }}>
+          <InfoPopover label="Rogue special abilities">
+            <p>
+              At 10th level and every third level after, a rogue takes one
+              special ability. Each named ability may be taken{' '}
+              <b>only once</b>.
+            </p>
+            <p>
+              A pick may be traded for a <b>bonus feat</b> instead, and that
+              trade may be made more than once — each one widens the general
+              feat budget by a slot, with no restriction on what fills it.
+            </p>
+          </InfoPopover>
+          {collapseToggle}
+        </span>
+      }
     >
       {!collapsed && (
         <div className="sh-stack rogue-abilities">
           {levels.map((level) => {
             const current = player.getRogueSpecialAbility(level);
             const description = current ? player.getRogueSpecialAbilityDescription(current) : '';
+            const open = !!openLevels[level];
             return (
               <div key={level} className="rogue-ability-slot">
                 <label className="sh-field rogue-ability-field">
-                  <span className="sh-label">Level {level}</span>
+                  {/* The level leads the row as a compact badge: it is the one
+                      fixed thing about the slot, and a full "Level 10" label
+                      took a third of the row from the choice itself. */}
+                  <Pill tone="accent" className="rogue-ability-level">Lv {level}</Pill>
                   <select
                     className="sh-select"
                     value={current}
@@ -65,8 +94,21 @@ export default function RogueSpecialAbilitiesCard() {
                     })}
                   </select>
                 </label>
+                {/* Each description folds away on its own. Six of them open at
+                    once is a wall of prose on a card whose job is the picks. */}
                 {description && (
-                  <p className="sh-faint rogue-ability-description">{description}</p>
+                  <>
+                    <button
+                      type="button"
+                      className="rogue-ability-toggle"
+                      aria-expanded={open}
+                      onClick={() => toggleLevel(level)}
+                    >
+                      <Icon name={open ? 'expand_less' : 'expand_more'} size={16} />
+                      {open ? 'Hide' : 'What it does'}
+                    </button>
+                    {open && <p className="sh-faint rogue-ability-description">{description}</p>}
+                  </>
                 )}
               </div>
             );
@@ -79,11 +121,6 @@ export default function RogueSpecialAbilitiesCard() {
               </Pill>
             </div>
           )}
-
-          <span className="sh-faint tracker-card-note">
-            One pick at each level, and each named ability only once. Trading a
-            pick for a feat may be done more than once.
-          </span>
         </div>
       )}
     </Card>

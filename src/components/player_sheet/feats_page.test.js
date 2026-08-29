@@ -3,6 +3,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
 import Player from '../../lib/player';
 import FeatsPage from './feats_page';
+import { loadFile } from '../../lib/loadFile';
 
 /* The picker opens from inside the "Choose a feat" bottom sheet, so it has to
    clear the sheet's stacking context to be seen at all. These are the values
@@ -119,5 +120,52 @@ describe('a choice feat with nothing to choose', () => {
     openPicker('Greater spell focus');
 
     expect(screen.getByText(/already has greater spell focus/i)).toBeInTheDocument();
+  });
+});
+
+
+/* The granted-feat row: name first, badge at the far edge, and a description
+   that actually arrives. classes.json writes "Stunning Fist" while feats.json
+   has "Stunning fist", so the exact-match lookup silently missed and every
+   monk's granted feat showed no description at all. */
+describe('granted feats', () => {
+  function monk(level = 6) {
+    const p = new Player();
+    p.name = 'Test';
+    p.class = 'Monk';
+    p.level = level;
+    p.race = 'Human';
+    p.setAbilityBase('wis', 14);
+    return p;
+  }
+
+  const featData = (name) => {
+    const feats = loadFile('feats');
+    const list = Array.isArray(feats) ? feats : feats?.Feats;
+    return list.find((f) => f.Name.toLowerCase() === name.toLowerCase());
+  };
+
+  test('every granted feat resolves to its data, whatever the source spells it', () => {
+    const p = monk();
+    const granted = [
+      ...(p.getGrantedFeats?.() ?? []),
+      ...(p.getChosenClassBonusFeats?.() ?? []),
+    ];
+    // classes.json and feats.json disagree about capitalisation for several
+    // feats, so at least one granted name is not a byte-for-byte match.
+    granted.forEach(({ feat }) => expect(featData(feat)).toBeTruthy());
+  });
+
+  test('a chosen bonus feat shows its short description on the page', () => {
+    const p = monk();
+    const option = p.getMonkBonusFeatOptions(1)[0];
+    p.setMonkBonusFeat(1, option);
+    expect(p.getMonkBonusFeat(1)).toBe(option);
+
+    const data = featData(option);
+    expect(data?.shortDescription).toBeTruthy();
+
+    renderFeatsPage(p);
+    expect(screen.getByText(data.shortDescription)).toBeInTheDocument();
   });
 });

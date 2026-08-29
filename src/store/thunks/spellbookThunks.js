@@ -245,6 +245,15 @@ export const onUseSpell = spell_link => (dispatch, getState) => {
   persistSpellbook(dispatch, getState, s);
 };
 
+/** The standalone spellbook's own swap counter. See the player-sheet twin. */
+export const onSetSpellSwapsUsed = (value) => (dispatch, getState) => {
+  const app = getState().persist;
+  if (app.ssb == null || app.ssb < 0 || !app.sb?.[app.ssb]) return;
+  const s = db.getSpellbookByIndex(app, app.ssb);
+  s.setSpellSwapsUsed(value);
+  persistSpellbook(dispatch, getState, s);
+};
+
 export const onRefreshSpell = () => (dispatch, getState) => {
   const app = getState().persist;
   if (app.ssb == null || app.ssb < 0 || !app.sb?.[app.ssb]) return;
