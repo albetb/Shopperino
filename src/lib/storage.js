@@ -118,7 +118,7 @@ const COMBAT_PAGE_CARD_KEYS = [
   'animalCompanion', 'familiar', 'specialMount', 'wildShape', 'elementalWildShape',
   'rage', 'bardicMusic', 'turnUndead', 'domains', 'favoredEnemy', 'combatStyle',
   'smiteEvil', 'layOnHands', 'removeDisease',
-  'monkBonusFeats', 'stunningFist', 'wholenessOfBody', 'rogueSpecialAbilities',
+  'monkBonusFeats', 'stunningFist', 'monkAbilities', 'rogueSpecialAbilities',
 ];
 export function getCombatPageCardsCollapsed(app) {
   const raw = app?.pscombat && typeof app.pscombat === 'object' ? app.pscombat : {};

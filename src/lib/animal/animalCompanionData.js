@@ -15,6 +15,7 @@
  */
 
 import { getAnimalBaseByRef } from './animalsUtils';
+import { getClassProgression } from '../player/classProgression';
 
 /**
  * Companion lists keyed by level adjustment. Each entry: { ref, aquatic }.
@@ -142,14 +143,24 @@ function requiredLevelFor(adjustment) {
 
 /**
  * Effective druid level driving every companion characteristic.
- * Druid = class level; Ranger = floor(level / 2) (first companion at L4 → 2).
- * Any other class has no companion (effective level 0).
+ *
+ * Both halves come from `progression`: `animalCompanionLevel` is the class
+ * level the companion arrives at, and `animalCompanionLevelDivisor` is what
+ * the level is divided by afterwards. So a druid is 1 and undivided, a ranger
+ * is 4 and halved — first companion at ranger 4, at effective level 2. A class
+ * with no `animalCompanionLevel` has no companion (effective level 0).
+ *
+ * Reading the gate rather than only the divisor also settles a ranger of 3rd:
+ * halving alone made her effective level 1, which is a companion three levels
+ * before the class grants one.
  */
 export function effectiveCompanionLevel({ class: className, level } = {}) {
   const lvl = Math.max(0, Math.floor(Number(level) || 0));
-  if (className === 'Druid') return lvl;
-  if (className === 'Ranger') return Math.floor(lvl / 2);
-  return 0;
+  const progression = getClassProgression(className);
+  const gainedAt = Number(progression.animalCompanionLevel);
+  if (!Number.isFinite(gainedAt) || lvl < gainedAt) return 0;
+  const divisor = Number(progression.animalCompanionLevelDivisor) || 1;
+  return Math.floor(lvl / divisor);
 }
 
 /**

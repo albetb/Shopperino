@@ -101,7 +101,7 @@ describe('getProgressionValue', () => {
     expect(getProgressionValue('Monk', 'stunningFistUsesPerDay', undefined, null)).toBe(null);
   });
   test('other strings are not mistaken for the sentinel', () => {
-    expect(getProgressionValue('Monk', 'stunningFistDc', 10)).toBe('10 + floor(level/2) + wis');
+    expect(getProgressionValue('Cleric', 'turningDamageDice', 10)).toBe('2d6');
     expect(getProgressionValue('Monk', 'alignmentRequired', 10)).toBe('Lawful');
   });
   test('returns the fallback for missing keys and unknown classes', () => {

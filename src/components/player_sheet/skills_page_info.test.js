@@ -107,6 +107,54 @@ describe('the ability card', () => {
     expect(within(box).getByLabelText(`Total ${player.getAbilityTotal('dex')}`)).toBeInTheDocument();
   });
 
+  /* Wild shape *replaces* Str, Dex and Con with the form's scores rather than
+     adding to them, so a shaped druid's ability breakdown is exactly one row.
+     A gate that counted rows read that as "nothing to explain" and hid the
+     button on the three scores that had most changed — which is why the rule
+     asks what the row *is*, not how many there are. */
+  describe('a wild-shaped druid', () => {
+    function shapedDruid() {
+      const p = new Player();
+      p.name = 'Test';
+      p.class = 'Druid';
+      p.level = 9;
+      p.race = 'Human';
+      p.setAbilityBase('str', 10);
+      p.setAbilityBase('dex', 10);
+      p.setAbilityBase('con', 10);
+      const form = p.getWildShapeForms()[0];
+      expect(form).toBeTruthy();
+      expect(p.enterWildShape(form.ref)).toBe(true);
+      return p;
+    }
+
+    test('offers a breakdown on the scores the form replaced', () => {
+      const p = shapedDruid();
+      // Exactly one row: the form's score, standing in for the druid's own.
+      expect(p.getAbilityContributions('str')).toHaveLength(1);
+      renderWith(<MenuCardAbilityScores isCollapsed={false} onToggleCollapse={() => {}} />, p);
+      ['Str', 'Dex', 'Con'].forEach((label) =>
+        expect(infoButton(label)).toBeInTheDocument());
+    });
+
+    test('the box names the form and totals to the score in the cell', () => {
+      const p = shapedDruid();
+      renderWith(<MenuCardAbilityScores isCollapsed={false} onToggleCollapse={() => {}} />, p);
+      fireEvent.click(infoButton('Str'));
+      const box = screen.getByRole('dialog', { name: 'Str' });
+      expect(within(box).getByText(p.getWildShapeName())).toBeInTheDocument();
+      expect(within(box).getByLabelText(`Total ${p.getAbilityTotal('str')}`)).toBeInTheDocument();
+    });
+
+    test('a score the form does not replace still follows the ordinary rule', () => {
+      const p = shapedDruid();
+      renderWith(<MenuCardAbilityScores isCollapsed={false} onToggleCollapse={() => {}} />, p);
+      // Int, Wis and Cha stay the druid's own, so a plain 10 earns no button.
+      expect(p.getAbilityTotal('int')).toBe(10);
+      expect(infoButton('Int')).toBe(null);
+    });
+  });
+
   test('the edit controls and the level-up reminder still work', () => {
     const p = elfRogue();
     p.level = 8;
@@ -115,5 +163,41 @@ describe('the ability card', () => {
     expect(screen.getByText('+2 ability')).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: /edit ability scores/i }));
     expect(screen.getByRole('button', { name: /increase str base/i })).toBeInTheDocument();
+  });
+});
+
+
+/* A class feature that qualifies a skill without adding to it still earns the
+   button: Trapfinding changes what a Disable Device roll may attempt, which is
+   exactly the kind of thing the row could not say before. */
+describe('a class feature that only qualifies a skill', () => {
+  function humanRogue(level = 1) {
+    const p = new Player();
+    p.name = 'Test';
+    p.class = 'Rogue';
+    p.level = level;
+    p.race = 'Human';
+    p.setSkillRanks('Disable device', 4);
+    return p;
+  }
+
+  test('trapfinding alone opens a box on Disable Device', () => {
+    const player = humanRogue();
+    renderWith(<SkillsPage />, player);
+    const button = infoButton('Disable device');
+    expect(button).not.toBe(null);
+    fireEvent.click(button);
+    const box = screen.getByRole('dialog', { name: 'Disable device' });
+    expect(within(box).getByText('Trapfinding')).toBeInTheDocument();
+    // The sum is shown alongside the note, not replaced by it.
+    expect(within(box).getByLabelText(`Total ${player.getSkillTotal('Disable device')}`))
+      .toBeInTheDocument();
+  });
+
+  test('a fighter of the same level gets no button on that row', () => {
+    const p = humanRogue();
+    p.class = 'Fighter';
+    renderWith(<SkillsPage />, p);
+    expect(infoButton('Disable device')).toBe(null);
   });
 });

@@ -1,4 +1,5 @@
-import { getClassFeatureCards } from './class_feature_cards';
+import Player from '../../lib/player';
+import { getClassFeatureCards, getFeatFeatureCards } from './class_feature_cards';
 
 const keysFor = (cls, level) => getClassFeatureCards(cls, level).map((c) => c.key);
 
@@ -46,10 +47,16 @@ describe('class feature card registry', () => {
       .toEqual(['smiteEvil', 'layOnHands', 'turnUndead', 'specialMount', 'removeDisease']);
   });
 
-  test('monks pick bonus feats from the start and gain wholeness of body at 7th', () => {
-    expect(keysFor('Monk', 1)).toEqual(['monkBonusFeats', 'stunningFist']);
-    expect(keysFor('Monk', 6)).toEqual(['monkBonusFeats', 'stunningFist']);
-    expect(keysFor('Monk', 7)).toEqual(['monkBonusFeats', 'stunningFist', 'wholenessOfBody']);
+  test('monks pick bonus feats from the start and start spending at 7th', () => {
+    // Stunning fist is absent here on purpose: it follows the feat, not the
+    // class, so it comes from getFeatFeatureCards and only once actually taken.
+    expect(keysFor('Monk', 1)).toEqual(['monkBonusFeats']);
+    expect(keysFor('Monk', 6)).toEqual(['monkBonusFeats']);
+    // Wholeness of body arrives at 7th and shares the counters card with the
+    // three abilities that follow it, rather than taking one of its own.
+    expect(keysFor('Monk', 7)).toEqual(['monkBonusFeats', 'monkAbilities']);
+    expect(keysFor('Monk', 12)).toEqual(['monkBonusFeats', 'monkAbilities']);
+    expect(keysFor('Monk', 20)).toEqual(['monkBonusFeats', 'monkAbilities']);
   });
 
   test('rogues get a special-ability card only from 10th', () => {
@@ -84,5 +91,41 @@ describe('class feature card registry', () => {
     expect(getClassFeatureCards('', 10)).toEqual([]);
     expect(getClassFeatureCards(undefined, undefined)).toEqual([]);
     expect(keysFor('Druid', undefined)).toEqual(['animalCompanion']);
+  });
+});
+
+/* Stunning Fist is a general feat that a monk may take as a bonus feat and
+   anyone else may spend an ordinary feat on. The card has to follow the feat,
+   which is what the second registry is for. */
+describe('feat-granted cards', () => {
+  const make = (cls, level) => {
+    const p = new Player();
+    p.setRace('Human');
+    p.setClass(cls);
+    p.setLevel(level);
+    return p;
+  };
+  const featKeys = (player) => getFeatFeatureCards(player).map((c) => c.key);
+
+  test('nobody gets the card without the feat', () => {
+    expect(featKeys(make('Monk', 20))).toEqual([]);
+    expect(featKeys(make('Fighter', 20))).toEqual([]);
+  });
+
+  test('a fighter who spends a feat on it gets the card', () => {
+    const fighter = make('Fighter', 12);
+    fighter.addFeat('Stunning Fist');
+    expect(featKeys(fighter)).toEqual(['stunningFist']);
+  });
+
+  test('a monk who takes it as a bonus feat gets the same card', () => {
+    const monk = make('Monk', 6);
+    monk.setMonkBonusFeat(1, 'Stunning Fist');
+    expect(featKeys(monk)).toEqual(['stunningFist']);
+  });
+
+  test('a null player asks for nothing rather than throwing', () => {
+    expect(getFeatFeatureCards(null)).toEqual([]);
+    expect(getFeatFeatureCards(undefined)).toEqual([]);
   });
 });

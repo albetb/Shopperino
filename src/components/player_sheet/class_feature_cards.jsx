@@ -4,7 +4,7 @@ import FamiliarCard from './familiar_card';
 import RageCard from './rage_card';
 import TurnUndeadCard from './turn_undead_card';
 import { SmiteEvilCard, LayOnHandsCard, RemoveDiseaseCard } from './paladin_cards';
-import { MonkBonusFeatsCard, StunningFistCard, WholenessOfBodyCard } from './monk_cards';
+import { MonkBonusFeatsCard, StunningFistCard, MonkAbilitiesCard } from './monk_cards';
 import RogueSpecialAbilitiesCard from './rogue_cards';
 import BardicMusicCard from './bardic_music_card';
 import FavoredEnemyCard from './favored_enemy_card';
@@ -44,8 +44,11 @@ const CLASS_FEATURE_CARDS = {
   ],
   Monk: [
     { key: 'monkBonusFeats', Component: MonkBonusFeatsCard },
-    { key: 'stunningFist', Component: StunningFistCard },
-    { key: 'wholenessOfBody', Component: WholenessOfBodyCard, minLevel: 7 },
+    // Stunning fist is not here: it follows the feat, not the class, and lives
+    // in FEAT_FEATURE_CARDS below so a fighter who takes it gets it too.
+    // Everything the monk spends — wholeness of body at 7th, then abundant
+    // step, quivering palm and empty body — shares one card.
+    { key: 'monkAbilities', Component: MonkAbilitiesCard, minLevel: 7 },
   ],
   Paladin: [
     { key: 'smiteEvil', Component: SmiteEvilCard },
@@ -71,6 +74,30 @@ const CLASS_FEATURE_CARDS = {
 };
 
 /**
+ * Cards a **feat** grants, whatever the class holding it.
+ *
+ * Stunning Fist is the first: a monk takes it as a 1st-level bonus feat and a
+ * fighter spends an ordinary feat on it, and both need the same counter and the
+ * same save DC. Registering it per class would have meant an entry on all
+ * eleven; `when` asks the model instead.
+ */
+const FEAT_FEATURE_CARDS = [
+  {
+    key: 'stunningFist',
+    Component: StunningFistCard,
+    when: (player) => player?.hasStunningFist?.() ?? false,
+  },
+];
+
+/**
+ * The feat-granted cards this character has earned, in display order.
+ * Exported alongside the class list so a test can ask for either.
+ */
+export function getFeatFeatureCards(player) {
+  return FEAT_FEATURE_CARDS.filter((entry) => entry.when(player));
+}
+
+/**
  * The cards a class grants at a given level, in display order.
  * Exported for tests and for callers that need the list without rendering.
  */
@@ -84,7 +111,10 @@ export function getClassFeatureCards(className, level) {
 
 export default function ClassFeatureCards() {
   const player = useSelector((state) => state.playerSheet?.player);
-  const cards = getClassFeatureCards(player?.getClass?.() ?? '', player?.getLevel?.() ?? 1);
+  const cards = [
+    ...getClassFeatureCards(player?.getClass?.() ?? '', player?.getLevel?.() ?? 1),
+    ...getFeatFeatureCards(player),
+  ];
   if (cards.length === 0) return null;
   return (
     <>

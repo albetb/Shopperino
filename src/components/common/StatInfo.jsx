@@ -27,8 +27,18 @@ import '../../style/stat_info.css';
  *   must sum to `value`.
  * @param {Array} [situational] - `{ source, label, note }` entries that are
  *   tied to the stat but do not change it.
+ * @param {string} [primaryLabel] - An eyebrow above the main list. Only worth
+ *   giving when a `secondary` group shares the box and the two need telling
+ *   apart — a weapon's attack bonus from its damage bonus.
+ * @param {{label: string, value?: number, contributions: Array}} [secondary] -
+ *   A second list of contributions with its own heading and its own total.
+ *   Omit `value` when the sheet shows no plain number to check the sum
+ *   against, as with damage: the pill reads "1d8+3", not "3".
  */
-export default function StatInfo({ label, value, contributions = [], situational = [], className = '' }) {
+export default function StatInfo({
+  label, value, contributions = [], situational = [], className = '',
+  primaryLabel = '', secondary = null,
+}) {
   const [open, setOpen] = useState(false);
   const [coords, setCoords] = useState(null);
   const buttonRef = useRef(null);
@@ -77,38 +87,52 @@ export default function StatInfo({ label, value, contributions = [], situational
 
   const rows = Array.isArray(contributions) ? contributions : [];
   const notes = Array.isArray(situational) ? situational : [];
+  const extraRows = Array.isArray(secondary?.contributions) ? secondary.contributions : [];
   // Nothing beyond the plain value, so no affordance at all.
-  if (rows.length === 0 && notes.length === 0) return null;
+  if (rows.length === 0 && notes.length === 0 && extraRows.length === 0) return null;
 
   const total = sumContributions(rows);
   const numericValue = Number(value);
   // A mismatch means a source was added to the getter and not to its list. Say
   // so rather than showing a total that quietly disagrees with the sheet.
   const mismatch = rows.length > 0 && Number.isFinite(numericValue) && total !== numericValue;
+  const extraTotal = sumContributions(extraRows);
+  const extraNumeric = Number(secondary?.value);
+  const extraMismatch = extraRows.length > 0
+    && Number.isFinite(extraNumeric) && extraTotal !== extraNumeric;
+
+  /* One group of rows plus its total. Written once so the second group cannot
+     drift from the first — they are the same thing about a different number. */
+  const rowList = (list, sum, keyPrefix) => (
+    <ul className="stat-info-rows">
+      {list.map((row, i) => (
+        <li key={`${keyPrefix}-${row.source}-${i}`} className="stat-info-row">
+          <span className="stat-info-row-label">
+            {row.label}
+            {row.type ? <span className="stat-info-row-type">{row.type}</span> : null}
+          </span>
+          <span className="stat-info-row-value sh-num">
+            {row.value >= 0 ? `+${row.value}` : row.value}
+          </span>
+        </li>
+      ))}
+      {/* Labelled as one phrase so a screen reader reads "Total 19" rather
+          than two disconnected cells, and so a test can ask for the total
+          without reaching into the DOM for its row. */}
+      <li className="stat-info-row stat-info-row--total" aria-label={`Total ${sum}`}>
+        <span className="stat-info-row-label" aria-hidden="true">Total</span>
+        <span className="stat-info-row-value sh-num" aria-hidden="true">{sum}</span>
+      </li>
+    </ul>
+  );
 
   const body = (
     <div className="stat-info-body">
       {rows.length > 0 && (
-        <ul className="stat-info-rows">
-          {rows.map((row, i) => (
-            <li key={`${row.source}-${i}`} className="stat-info-row">
-              <span className="stat-info-row-label">
-                {row.label}
-                {row.type ? <span className="stat-info-row-type">{row.type}</span> : null}
-              </span>
-              <span className="stat-info-row-value sh-num">
-                {row.value >= 0 ? `+${row.value}` : row.value}
-              </span>
-            </li>
-          ))}
-          {/* Labelled as one phrase so a screen reader reads "Total 19" rather
-              than two disconnected cells, and so a test can ask for the total
-              without reaching into the DOM for its row. */}
-          <li className="stat-info-row stat-info-row--total" aria-label={`Total ${total}`}>
-            <span className="stat-info-row-label" aria-hidden="true">Total</span>
-            <span className="stat-info-row-value sh-num" aria-hidden="true">{total}</span>
-          </li>
-        </ul>
+        <div className="stat-info-group">
+          {primaryLabel && <span className="sh-eyebrow">{primaryLabel}</span>}
+          {rowList(rows, total, 'primary')}
+        </div>
       )}
 
       {mismatch && (
@@ -116,6 +140,19 @@ export default function StatInfo({ label, value, contributions = [], situational
           <Icon name="warning" size={14} />
           These add up to {total}, but the sheet shows {value}.
         </p>
+      )}
+
+      {extraRows.length > 0 && (
+        <div className="stat-info-group">
+          <span className="sh-eyebrow">{secondary.label}</span>
+          {rowList(extraRows, extraTotal, 'secondary')}
+          {extraMismatch && (
+            <p className="stat-info-mismatch" role="status">
+              <Icon name="warning" size={14} />
+              These add up to {extraTotal}, but the sheet shows {secondary.value}.
+            </p>
+          )}
+        </div>
       )}
 
       {notes.length > 0 && (

@@ -269,19 +269,27 @@ export default function MenuCardAbilityScores({ isCollapsed, onToggleCollapse })
                     delta > 0 ? 'ability-score-cell--up' : '',
                     delta < 0 ? 'ability-score-cell--down' : '',
                   ].filter(Boolean).join(' ');
-                  /* A score that is only its base has nothing to explain, and
-                     six cells in a narrow sidebar cannot afford six buttons
-                     that say "10 = 10". StatInfo drops itself when the list is
-                     empty, so the rule is simply not to filter here. */
+                  /* A score that is only the character's own base has nothing
+                     to explain, and six cells in a narrow sidebar cannot afford
+                     six buttons that say "10 = 10". Anything else earns one.
+
+                     Asked by source, not by counting rows: a wild-shaped druid
+                     has exactly *one* row — the form's score, which replaces
+                     Str, Dex and Con rather than adding to them — and that is
+                     the row most worth reading. Counting caught it as "nothing
+                     to explain" and hid the button. */
                   const contributions = player.getAbilityContributions?.(key) ?? [];
+                  const notes = player.getSituationalContributions?.(key) ?? [];
+                  const beyondTheBase = notes.length > 0
+                    || contributions.some(c => c.source !== 'base');
                   return (
                     <div key={key} className={cls}>
                       <span className="ability-score-info">
                         <StatInfo
                           label={ABILITY_LABELS[key]}
                           value={total}
-                          contributions={contributions.length > 1 ? contributions : []}
-                          situational={player.getSituationalContributions?.(key) ?? []}
+                          contributions={beyondTheBase ? contributions : []}
+                          situational={notes}
                         />
                       </span>
                       <div>{total}</div>

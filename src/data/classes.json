@@ -108,7 +108,6 @@
             "ac": -2
           }
         },
-        "rageTempHpPerLevel": 2,
         "rageDurationBase": 3,
         "tirelessRageLevel": 17,
         "indomitableWillLevel": 14,
@@ -162,7 +161,6 @@
         ],
         "uncannyDodgeLevel": 2,
         "improvedUncannyDodgeLevel": 5,
-        "illiterateByDefault": true,
         "alignmentForbidden": "Lawful"
       }
     },
@@ -220,7 +218,11 @@
       "progression": {
         "bardicMusicUsesPerDay": "level",
         "bardicKnowledgeAbility": "int",
-        "performanceSaveDc": "10 + floor(level/2) + cha",
+        "performanceSaveDc": {
+          "base": 10,
+          "halfLevel": true,
+          "ability": "cha"
+        },
         "inspireCourageBonus": [
           [
             1,
@@ -313,7 +315,8 @@
           14,
           17,
           20
-        ]
+        ],
+        "castingAbility": "cha"
       }
     },
     "Cleric": {
@@ -360,9 +363,6 @@
           "canRebuke": true
         },
         "turningDamageDice": "2d6",
-        "domainCount": 2,
-        "domainSlotsPerSpellLevel": 1,
-        "spontaneousCasting": "cure-or-inflict",
         "alignmentWithinOneStepOfDeity": true,
         "alignmentDomains": {
           "Law": {
@@ -383,7 +383,8 @@
           }
         },
         "usesDeity": true,
-        "deityDomainsRequired": true
+        "deityDomainsRequired": true,
+        "castingAbility": "wis"
       }
     },
     "Druid": {
@@ -439,7 +440,7 @@
         "[4] Resist Nature's Lure (Ex): +4 saving throws against spell-like abilities of fey.",
         "[5] Wild Shape (Su): once per day turn into Small or Medium animal, 1 hour per level. More uses at [6], [7], [10], [14], [18]. At [8] Large animal; [11] Tiny; [15] Huge. At [12] plant creature; [16] elemental once per day (more at [18], [20]). At [20] Huge elemental.",
         "[9] Venom Immunity (Ex): immunity to all poisons.",
-        "[13] A Thousand Faces (Su): change appearance at will as disguise self (normal form only).",
+        "[13] A Thousand Faces (Su): change appearance at will as alter self (normal form only).",
         "[15] Timeless Body (Ex): no ability penalties for aging; cannot be magically aged.",
         "Ex-Druids: ceasing to revere nature, prohibited alignment, or teaching Druidic to nondruid loses all spells and druid abilities until atonement."
       ],
@@ -550,10 +551,10 @@
         "venomImmunityLevel": 9,
         "aThousandFacesLevel": 13,
         "timelessBodyLevel": 15,
-        "metalArmorProhibited": true,
-        "spontaneousCasting": "summon-natures-ally",
         "alignmentRequiresNeutralAxis": true,
-        "usesDeity": true
+        "usesDeity": true,
+        "castingAbility": "wis",
+        "animalCompanionLevel": 1
       }
     },
     "Fighter": {
@@ -749,7 +750,11 @@
           "Unarmed strike"
         ],
         "stunningFistUsesPerDay": "level",
-        "stunningFistDc": "10 + floor(level/2) + wis",
+        "stunningFistDc": {
+          "base": 10,
+          "halfLevel": true,
+          "ability": "wis"
+        },
         "kiStrike": [
           [
             4,
@@ -838,7 +843,12 @@
             "Improved Trip"
           ]
         },
-        "bonusFeatLabel": "monk bonus"
+        "bonusFeatLabel": "monk bonus",
+        "quiveringPalmDc": {
+          "base": 10,
+          "halfLevel": true,
+          "ability": "wis"
+        }
       }
     },
     "Paladin": {
@@ -950,7 +960,6 @@
             5
           ]
         ],
-        "specialMountLevel": 5,
         "alignmentRequired": "Lawful Good",
         "hasCodeOfConduct": true,
         "usesDeity": true,
@@ -1008,7 +1017,8 @@
               "specials": []
             }
           ]
-        }
+        },
+        "castingAbility": "wis"
       }
     },
     "Ranger": {
@@ -1079,9 +1089,17 @@
           "Humanoid",
           "Outsider"
         ],
-        "trackLevel": 1,
+        "grantedFeats": [
+          [
+            1,
+            "Track"
+          ],
+          [
+            3,
+            "Endurance"
+          ]
+        ],
         "wildEmpathyAbility": "cha",
-        "enduranceLevel": 3,
         "combatStyle": {
           "chooseLevel": 2,
           "requiresLightArmor": true,
@@ -1165,7 +1183,8 @@
             "Water"
           ]
         },
-        "usesDeity": true
+        "usesDeity": true,
+        "castingAbility": "wis"
       }
     },
     "Rogue": {
@@ -1395,14 +1414,12 @@
       ],
       "progression": {
         "familiarLevel": 1,
-        "scribeScrollLevel": 1,
         "bonusFeatLevels": [
           5,
           10,
           15,
           20
         ],
-        "prohibitedSchoolCount": 2,
         "castingAbility": "int",
         "arcaneSpellFailureApplies": true,
         "bonusFeatTags": [

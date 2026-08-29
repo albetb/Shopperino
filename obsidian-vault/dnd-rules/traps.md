@@ -222,7 +222,7 @@ Modifiers: **proximity trigger +5**, **automatic reset +5**. Progress is one Cra
 - **`traps`** — 105 sample traps, CR 1–10, each with `ref`, `cr`, `type`, `trigger`, `reset`, `bypass`, `searchDC`, `disableDeviceDC`, `attacks`, `save`, `pit`, `poison`, `spellEffects`, `effect`, `multipleTargets`, `multipleTraps`, `neverMiss`, `onsetDelayRounds`, `gas`/`liquid`, `cost`, `note`, and a derived **`footprint`** (`single` · `squares` · `area` · `room` · `burst` · `multi`, with square counts) intended to drive the board diagram.
 - **`tables`** — the generator side: trigger/reset/bypass enums, visual-trigger spells, pit and spike constants, `crModifiers` (mechanical bands, poison list, magic rule), `costModifiers`, and `craftDC`.
 
-That covers both routes the trap generator could take — pick a sample by CR from `traps`, or compose one from `tables` — as described in [feature_backlog.md](../docs/feature_backlog.md) item 4.
+That covers both routes the trap generator could take — pick a sample by CR from `traps`, or compose one from `tables` — as described in [feature_backlog.md](../docs/feature_backlog.md) item 2.
 
 ## Related
 

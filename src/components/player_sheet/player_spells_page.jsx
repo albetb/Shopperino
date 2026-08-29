@@ -1,4 +1,5 @@
 import SpellbookTable from '../spellbook/spellbook_table';
+import ArcaneFailureNote from './arcane_failure_note';
 
 export default function PlayerSpellsPage() {
   // Plain flex column with align-items: center so the cards center the same
@@ -17,6 +18,8 @@ export default function PlayerSpellsPage() {
         paddingBottom: 'var(--space-8)',
       }}
     >
+      {/* Only ever visible for an arcane caster wearing something. */}
+      <ArcaneFailureNote />
       <SpellbookTable source="player" />
     </div>
   );

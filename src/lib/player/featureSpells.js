@@ -26,6 +26,8 @@ const FEATURE_SPELLS = {
   // Monk
   'abundant step': { name: 'Dimension door', link: 'spells#dimension-door' },
   'empty body': { name: 'Etherealness', link: 'spells#etherealness' },
+  // Druid — at will, and only while in her own form
+  'a thousand faces': { name: 'Alter self', link: 'spells#alter-self' },
 };
 
 /**

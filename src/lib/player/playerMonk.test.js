@@ -67,6 +67,132 @@ describe('stunning fist', () => {
     expect(other('Fighter', 20).getStunningFistMax()).toBe(0);
     expect(other('Fighter', 20).getStunningFistDc()).toBe(0);
   });
+
+  /* It is a general feat, not a monk feature. Anyone may spend a feat on it
+     and gets the feat's own smaller allowance: one attempt per four levels. */
+  test('a non-monk who takes the feat gets one attempt per four levels', () => {
+    const withFeat = (cls, level) => {
+      const p = other(cls, level, 14);
+      p.addFeat('Stunning Fist');
+      return p;
+    };
+    expect(withFeat('Fighter', 3).getStunningFistMax()).toBe(0);
+    expect(withFeat('Fighter', 4).getStunningFistMax()).toBe(1);
+    expect(withFeat('Fighter', 7).getStunningFistMax()).toBe(1);
+    expect(withFeat('Fighter', 8).getStunningFistMax()).toBe(2);
+    expect(withFeat('Ranger', 20).getStunningFistMax()).toBe(5);
+    // A monk of the same level has four times as many.
+    expect(stunningMonk(20).getStunningFistMax()).toBe(20);
+  });
+
+  test('the DC is the same formula whichever granted it', () => {
+    const fighter = other('Fighter', 12, 14);
+    fighter.addFeat('Stunning Fist');
+    expect(fighter.getStunningFistDc()).toBe(18);         // 10 + 6 + 2
+    expect(stunningMonk(12, 14).getStunningFistDc()).toBe(18);
+  });
+
+  test('the DC is known before the first attempt is earned', () => {
+    // Below 4th the feat grants no attempts, but the number it would use is
+    // still the honest answer — the card says so rather than hiding.
+    const early = other('Fighter', 2, 14);
+    early.addFeat('Stunning Fist');
+    expect(early.getStunningFistMax()).toBe(0);
+    expect(early.getStunningFistDc()).toBe(13);           // 10 + 1 + 2
+  });
+});
+
+describe('the high monk abilities', () => {
+  test('abundant step arrives at 12th, once a day, at half caster level', () => {
+    expect(monk(11).getAbundantStepMax()).toBe(0);
+    expect(monk(12).getAbundantStepMax()).toBe(1);
+    expect(monk(12).getAbundantStepCasterLevel()).toBe(6);
+    expect(monk(19).getAbundantStepCasterLevel()).toBe(9);
+    expect(monk(11).getAbundantStepCasterLevel()).toBe(0);
+  });
+
+  test('quivering palm arrives at 15th with its DC and its window', () => {
+    expect(monk(14).getQuiveringPalmMax()).toBe(0);
+    expect(monk(14, 16).getQuiveringPalmDc()).toBe(0);
+    expect(monk(15).getQuiveringPalmMax()).toBe(1);
+    expect(monk(15, 16).getQuiveringPalmDc()).toBe(20);   // 10 + 7 + 3
+    expect(monk(20, 20).getQuiveringPalmDc()).toBe(25);   // 10 + 10 + 5
+    expect(monk(15).getQuiveringPalmWindowDays()).toBe(15);
+  });
+
+  test('empty body arrives at 19th with one round per monk level', () => {
+    expect(monk(18).getEmptyBodyMax()).toBe(0);
+    expect(monk(19).getEmptyBodyMax()).toBe(19);
+    expect(monk(20).getEmptyBodyMax()).toBe(20);
+  });
+
+  test('tongue of the sun and moon arrives at 17th and has no counter', () => {
+    expect(monk(16).hasTongueOfSunAndMoon()).toBe(false);
+    expect(monk(17).hasTongueOfSunAndMoon()).toBe(true);
+    /* It contributes nothing to the counted three, which is why it is reported
+       on the language card instead: at 17th empty body is still unearned even
+       though the tongue is in hand. */
+    expect(monk(17).getEmptyBodyMax()).toBe(0);
+    expect(monk(17).getAbundantStepMax() + monk(17).getQuiveringPalmMax()).toBe(2);
+  });
+
+  test('the card exists from 7th, when the first counter arrives', () => {
+    // Wholeness of body is the earliest thing a monk spends.
+    expect(monk(6).hasMonkAbilities()).toBe(false);
+    expect(monk(7).hasMonkAbilities()).toBe(true);
+    expect(monk(20).hasMonkAbilities()).toBe(true);
+    ['Fighter', 'Rogue', 'Druid', 'Paladin'].forEach((cls) => {
+      expect(other(cls, 20).hasMonkAbilities()).toBe(false);
+    });
+  });
+
+  test('the daily uses clear on a rest', () => {
+    const p = monk(20);
+    p.useClassFeature('abundantStep', 1);
+    p.useClassFeature('emptyBody', 6);
+    p.useClassFeature('wholenessOfBody', 4);
+    expect(p.needsRest()).toBe(true);
+
+    p.resetClassFeatureUses();
+    expect(p.getClassFeatureUsed('abundantStep')).toBe(0);
+    expect(p.getClassFeatureUsed('emptyBody')).toBe(0);
+    expect(p.getClassFeatureUsed('wholenessOfBody')).toBe(0);
+  });
+
+  /* Quivering palm refreshes weekly, so a night's rest must not give it back —
+     and offering the rest button for it alone would be a lie about what the
+     button does. The paladin's remove disease is weekly for the same reason,
+     and its card had been promising this behaviour before it was true. */
+  test('a weekly counter survives the rest that clears the daily ones', () => {
+    const p = monk(20);
+    p.useClassFeature('quiveringPalm', 1);
+    p.useClassFeature('abundantStep', 1);
+
+    p.resetClassFeatureUses();
+    expect(p.getClassFeatureUsed('quiveringPalm')).toBe(1);
+    expect(p.getClassFeatureUsed('abundantStep')).toBe(0);
+  });
+
+  test('a spent weekly counter alone is not a reason to rest', () => {
+    const p = monk(20);
+    expect(p.needsRest()).toBe(false);
+    p.useClassFeature('quiveringPalm', 1);
+    expect(p.needsRest()).toBe(false);
+    p.useClassFeature('abundantStep', 1);
+    expect(p.needsRest()).toBe(true);
+  });
+
+  test('the same holds for the paladin remove disease its card describes', () => {
+    const paladin = other('Paladin', 20, 10);
+    paladin.useClassFeature('removeDisease', 1);
+    paladin.useClassFeature('smiteEvil', 1);
+    expect(paladin.needsRest()).toBe(true);
+
+    paladin.resetClassFeatureUses();
+    expect(paladin.getClassFeatureUsed('removeDisease')).toBe(1);
+    expect(paladin.getClassFeatureUsed('smiteEvil')).toBe(0);
+    expect(paladin.needsRest()).toBe(false);
+  });
 });
 
 describe('ki strike', () => {

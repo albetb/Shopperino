@@ -55,6 +55,7 @@ export default function FeaturesPage() {
   const toggleCard = key => setCollapsed(prev => ({ ...prev, [key]: !prev[key] }));
 
   const autoLangs = useMemo(() => player?.getAutomaticLanguages?.() ?? [], [player]);
+  const tongueOfSunAndMoon = player?.hasTongueOfSunAndMoon?.() ?? false;
   const learnedBonus = useMemo(() => player?.getBonusLanguagesLearned?.() ?? [], [player]);
   const allLangs = useMemo(() => [...autoLangs, ...learnedBonus], [autoLangs, learnedBonus]);
   const maxBonus = useMemo(() => player?.getMaxBonusLanguages?.() ?? 0, [player]);
@@ -321,14 +322,39 @@ export default function FeaturesPage() {
 
       <CollapsibleCard
         eyebrow="Languages"
-        title={`${learnedBonus.length} / ${maxBonus}`}
-        action={learnedBonus.length > maxBonus
-          ? <Pill tone="warn" icon="warning">+{(learnedBonus.length - maxBonus) * extraLangCost} SP</Pill>
-          : null}
+        /* The bonus-language count is beside the point once a monk can speak
+           with any living creature, so the tongue pill replaces it rather than
+           crowding in next to a number that no longer limits anything. */
+        title={tongueOfSunAndMoon ? '' : `${learnedBonus.length} / ${maxBonus}`}
+        /* The tongue pill sits in the head so it is readable with the card
+           collapsed — an alert nobody can see until they expand the thing it
+           is about is not an alert. The sentence explaining it is inside. */
+        action={
+          <>
+            {tongueOfSunAndMoon && (
+              <Pill tone="accent" icon="translate">Tongue of the sun and moon</Pill>
+            )}
+            {learnedBonus.length > maxBonus && (
+              <Pill tone="warn" icon="warning">+{(learnedBonus.length - maxBonus) * extraLangCost} SP</Pill>
+            )}
+          </>
+        }
         open={isOpen('languages')}
         onToggle={() => toggleCard('languages')}
       >
         <div className="sh-stack">
+          {/* Tongue of the sun and moon has no use to spend and no number, so
+              it earns no card — but it makes this whole list beside the point,
+              which is why it belongs here rather than in the class prose. */}
+          {tongueOfSunAndMoon && (
+            <div className="sh-warn-strip">
+              <Icon name="translate" />
+              <span>
+                You can speak with <b>any living creature</b>, whatever language
+                the list below holds.
+              </span>
+            </div>
+          )}
           {allLangs.length === 0
             ? <EmptyState icon="translate" title="No languages known" />
             : allLangs.map(lang => {

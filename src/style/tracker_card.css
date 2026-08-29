@@ -8,6 +8,13 @@
   gap: var(--space-2);
 }
 
+/* Names the counter when several share a card; a card counting one thing is
+   already named by its own title and passes no label. */
+.tracker-row-label {
+  font: 600 var(--font-size-sm)/1.2 var(--font-ui);
+  color: var(--ink);
+}
+
 .tracker-card-count {
   display: inline-flex;
   align-items: baseline;

@@ -12,8 +12,14 @@ describe('effectiveCompanionLevel', () => {
   });
   test('ranger uses floor(level / 2); first companion at L4 → 2', () => {
     expect(effectiveCompanionLevel({ class: 'Ranger', level: 4 })).toBe(2);
-    expect(effectiveCompanionLevel({ class: 'Ranger', level: 3 })).toBe(1);
     expect(effectiveCompanionLevel({ class: 'Ranger', level: 7 })).toBe(3);
+  });
+  test('a ranger below 4th has no companion at all, not a halved one', () => {
+    // Halving alone answered 1 here, three levels before the class grants one.
+    // The gate is `animalCompanionLevel` in classes.json, now actually read.
+    [1, 2, 3].forEach((level) => {
+      expect(effectiveCompanionLevel({ class: 'Ranger', level })).toBe(0);
+    });
   });
   test('other classes and missing input → 0', () => {
     expect(effectiveCompanionLevel({ class: 'Fighter', level: 20 })).toBe(0);

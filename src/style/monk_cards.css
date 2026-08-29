@@ -43,3 +43,19 @@
 /* The one not taken stays readable — it is what the choice cost, and a monk
    rereading the card wants to see what the alternative was. */
 .monk-bonus-option-name.is-passed-over { opacity: 0.5; }
+
+/* The high monk abilities (12th–19th) share one card, each with its own
+   counter. A rule between them keeps three trackers from reading as one. */
+.monk-abilities {
+  gap: var(--space-3);
+}
+
+.monk-ability + .monk-ability {
+  border-top: 0.0625rem solid var(--border-soft);
+  padding-top: var(--space-3);
+}
+
+.monk-ability-meta {
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}

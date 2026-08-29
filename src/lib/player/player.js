@@ -36,6 +36,8 @@ import {
   hasImprovedCritical,
   getWeaponRangeIncrement,
   hasRunFeat,
+  getStunningFistFeatUses,
+  STUNNING_FIST_FEAT_DC,
 } from './featEffects';
 import {
   NON_PROFICIENT_ATTACK_PENALTY,
@@ -1087,10 +1089,6 @@ class Player {
     return this.portrait || '';
   }
 
-  getEquipment() {
-    return this.equipment || {};
-  }
-
   /** The animal companion (AnimalCompanion instance) or null. */
   getCompanion() {
     if (this.companion) this.companion.setOwner({ class: this.class, level: this.level });
@@ -1523,7 +1521,7 @@ class Player {
 
   /** True when this class grants a familiar (wizard / sorcerer). */
   grantsFamiliar() {
-    return this.class === 'Wizard' || this.class === 'Sorcerer';
+    return hasFeatureAtLevel(this.class, 'familiarLevel', this.getLevel());
   }
 
   /** The familiar (Familiar instance) or null, with a fresh master context. */
@@ -1775,7 +1773,11 @@ class Player {
    * alongside this, not here.
    */
   needsRest() {
-    if (Object.values(this.getClassFeatureUses()).some((n) => Number(n) > 0)) return true;
+    /* A spent weekly counter is not a reason to rest: resting would not give
+       it back, so offering the button would be a lie about what it does. */
+    const daily = Object.entries(this.getClassFeatureUses())
+      .filter(([key]) => !Player.WEEKLY_FEATURE_KEYS.includes(key));
+    if (daily.some(([, n]) => Number(n) > 0)) return true;
     const gnome = this.gnomeSpellUses;
     if (gnome && typeof gnome === 'object' && Object.values(gnome).some((n) => Number(n) > 0)) return true;
     if (this.getRestHealAmount() > 0) return true;
@@ -1784,9 +1786,21 @@ class Player {
       .some((creature) => (creature?.getRestHealAmount?.() ?? 0) > 0);
   }
 
-  /** Clear every class-feature counter (rest). */
+  /**
+   * Counters that refresh **weekly** rather than daily, so a night's rest must
+   * leave them alone. Both cards already told the player as much; until this
+   * list existed the rest button quietly contradicted them.
+   */
+  static WEEKLY_FEATURE_KEYS = ['quiveringPalm', 'removeDisease'];
+
+  /** Clear every daily class-feature counter (rest). */
   resetClassFeatureUses() {
-    this.classFeatureUses = {};
+    const kept = {};
+    Player.WEEKLY_FEATURE_KEYS.forEach((key) => {
+      const used = this.getClassFeatureUsed(key);
+      if (used > 0) kept[key] = used;
+    });
+    this.classFeatureUses = kept;
     // The mount's summoning allowance is a daily pool too, but it lives on the
     // mount rather than in this map.
     if (this.specialMount) this.specialMount.resetSummonHours();
@@ -2192,6 +2206,21 @@ class Player {
     return getProgressionValue(this.class, 'sneakAttackDice', this.getLevel(), 0);
   }
 
+  /**
+   * How far a ranged sneak attack still reaches, in feet. Both this and the
+   * immune list sat in classes.json unread while the same numbers were typed
+   * into a hover tooltip on the combat page — which a phone could not show.
+   */
+  getSneakAttackRange() {
+    return getProgressionValue(this.class, 'sneakAttackRangeFeet', this.getLevel(), 0);
+  }
+
+  /** The creature types with no vitals to find, so no sneak attack lands. */
+  getSneakAttackImmuneTypes() {
+    const list = getClassProgression(this.class).sneakAttackImmuneTypes;
+    return Array.isArray(list) ? [...list] : [];
+  }
+
   // —— Rogue special abilities ——
 
   /**
@@ -2257,6 +2286,21 @@ class Player {
     return this.getRogueSpecialAbilityLevels()
       .map((level) => ({ level, ability: this.getRogueSpecialAbility(level) }))
       .filter((entry) => entry.ability !== '');
+  }
+
+  /** Whether the rogue took a particular special ability at any of her levels. */
+  hasRogueSpecialAbility(name) {
+    return this.getRogueSpecialAbilities().some((entry) => entry.ability === name);
+  }
+
+  /**
+   * Improved evasion: half damage even on a failed Reflex save. The monk gains
+   * it outright at the level in `progression`; a rogue may instead pick it as
+   * one of her special abilities, so both channels are asked.
+   */
+  hasImprovedEvasion() {
+    return hasFeatureAtLevel(this.class, 'improvedEvasionLevel', this.getLevel())
+      || this.hasRogueSpecialAbility('Improved Evasion');
   }
 
   /**
@@ -2337,6 +2381,13 @@ class Player {
     const out = [];
     const classDr = this.getDamageReduction();
     if (classDr > 0) out.push({ amount: classDr, bypass: '—', source: this.class });
+
+    /* Perfect Self turns the monk into an outsider with DR 10/magic. It has
+       no place in the barbarian's scaling table, so it is its own entry —
+       and DR belongs beside the hit points it protects, not on a feature card. */
+    if (hasFeatureAtLevel(this.class, 'perfectSelfLevel', this.getLevel())) {
+      out.push({ amount: 10, bypass: 'magic', source: 'Perfect Self' });
+    }
 
     this.getWildShapeSpecialQualities().forEach((quality) => {
       const match = String(quality).match(/damage reduction\s+(\d+)\s*\/\s*(\S[^,]*)/i);
@@ -2675,6 +2726,44 @@ class Player {
     return warnings;
   }
 
+  /**
+   * The druid's Nature Sense: a flat +2 to Knowledge (nature) and Survival,
+   * the same shape as the fifteen skill-pair feats. Which skills and how much
+   * are read from `progression.natureSense`, never restated here.
+   * @returns {number} 0 for a class or skill it does not touch.
+   */
+  getNatureSenseBonus(skillName) {
+    const table = getClassProgression(this.class).natureSense;
+    if (!table || typeof table !== 'object') return 0;
+    const wanted = String(skillName || '').trim().toLowerCase();
+    const entry = Object.entries(table).find(([name]) => name.toLowerCase() === wanted);
+    return entry ? Number(entry[1]) || 0 : 0;
+  }
+
+  /**
+   * Wild empathy: `1d20 + class level + Cha` to shift an animal's attitude,
+   * the druid's and ranger's version of a Diplomacy check. A magical beast of
+   * Intelligence 1–2 can be worked at −4. The ability comes from
+   * `progression.wildEmpathyAbility`; a class without one answers null, which
+   * is what distinguishes "no such feature" from "a bonus of +0".
+   * @returns {number|null}
+   */
+  getWildEmpathyBonus() {
+    const ability = getClassProgression(this.class).wildEmpathyAbility;
+    if (!ability) return null;
+    return this.getLevel() + this.getModifier(ability);
+  }
+
+  /**
+   * Spell resistance from a class feature: the monk's Diamond Soul, at
+   * `10 + monk level` from the level in `progression.diamondSoulLevel`.
+   * Zero for everyone else — the paladin's mount has its own, on its own card.
+   */
+  getSpellResistance() {
+    if (!hasFeatureAtLevel(this.class, 'diamondSoulLevel', this.getLevel())) return 0;
+    return 10 + this.getLevel();
+  }
+
   // —— Ranger ——
 
   /**
@@ -2881,7 +2970,7 @@ class Player {
   /** Save DC for the performances that allow one: `10 + half level + Cha`. */
   getPerformanceSaveDc() {
     if (!getClassProgression(this.class).performances) return 0;
-    return 10 + Math.floor(this.getLevel() / 2) + this.getChaMod();
+    return this.getFeatureSaveDc('performanceSaveDc');
   }
 
   /** The morale bonus inspire courage grants: +1, rising to +4 at 20th. */
@@ -2933,13 +3022,49 @@ class Player {
    */
   getStunningFistMax() {
     if (!this.hasStunningFist()) return 0;
-    return getProgressionValue(this.class, 'stunningFistUsesPerDay', this.getLevel(), 0);
+    const fromClass = getProgressionValue(this.class, 'stunningFistUsesPerDay', this.getLevel(), 0);
+    /* The monk's allowance equals her class level. Every other class holds the
+       feat's own, smaller one — one attempt per four levels — which is why a
+       fighter with Stunning Fist used to get a card that never appeared. */
+    return fromClass > 0 ? fromClass : getStunningFistFeatUses(this.getLevel());
   }
 
-  /** Stunning fist save DC: `10 + half monk level + Wisdom modifier`. */
+  /**
+   * A class feature's save DC, read from its descriptor in `progression`:
+   * `{ base, halfLevel | fullLevel, ability }`. Both features that have one
+   * are the familiar `10 + half level + ability`, and both used to state that
+   * formula twice — once as prose in classes.json and once in JavaScript here.
+   * @param {string} key e.g. 'stunningFistDc'
+   * @returns {number} 0 when the class has no such feature.
+   */
+  getFeatureSaveDc(key) {
+    return this.resolveSaveDc(getClassProgression(this.class)[key]);
+  }
+
+  /**
+   * The same arithmetic for a descriptor that does not come from `progression`
+   * — Stunning Fist taken as an ordinary feat has the monk's formula without
+   * the monk's class entry to hold it.
+   */
+  resolveSaveDc(spec) {
+    if (!spec || typeof spec !== 'object' || Array.isArray(spec)) return 0;
+    const level = this.getLevel();
+    const fromLevel = spec.halfLevel ? Math.floor(level / 2) : (spec.fullLevel ? level : 0);
+    return (Number(spec.base) || 0)
+      + fromLevel
+      + (spec.ability ? this.getModifier(spec.ability) : 0);
+  }
+
+  /**
+   * Stunning fist save DC: `10 + half level + Wisdom modifier`, which is the
+   * same formula whether the monk class or the feat granted it. Gated on
+   * holding the feat rather than on having attempts left, so a character below
+   * 4th who took it early still sees the number the attempt would use.
+   */
   getStunningFistDc() {
-    if (this.getStunningFistMax() <= 0) return 0;
-    return 10 + Math.floor(this.getLevel() / 2) + this.getWisMod();
+    if (!this.hasStunningFist()) return 0;
+    const spec = getClassProgression(this.class).stunningFistDc ?? STUNNING_FIST_FEAT_DC;
+    return this.resolveSaveDc(spec);
   }
 
   /**
@@ -3105,6 +3230,71 @@ class Player {
   hasStunningFist() {
     if (this.getChosenClassBonusFeats().some((e) => e.feat === 'Stunning Fist')) return true;
     return this.getFeats().some((f) => getBaseFeatName(f).toLowerCase() === 'stunning fist');
+  }
+
+  // —— The high monk abilities (12th to 19th) ——
+  //
+  // Each has a use to spend, which is what earns it a counter rather than a
+  // line of prose. Every one clears on `resetClassFeatureUses`, so the long
+  // rest button restores them along with everything else.
+
+  /** Abundant step: *dimension door* once a day, from 12th. */
+  getAbundantStepMax() {
+    return hasFeatureAtLevel(this.class, 'abundantStepLevel', this.getLevel()) ? 1 : 0;
+  }
+
+  /** The caster level abundant step works at: half the monk's own. */
+  getAbundantStepCasterLevel() {
+    return this.getAbundantStepMax() > 0 ? Math.floor(this.getLevel() / 2) : 0;
+  }
+
+  /**
+   * Quivering palm: once a *week*, from 15th. The sheet tracks it with the
+   * per-day counters because it is the only counter there is — a rest restores
+   * it early, which is the non-enforcing rule doing its job rather than a bug.
+   */
+  getQuiveringPalmMax() {
+    return hasFeatureAtLevel(this.class, 'quiveringPalmLevel', this.getLevel()) ? 1 : 0;
+  }
+
+  /** The Fortitude DC to survive a declared quivering palm. */
+  getQuiveringPalmDc() {
+    return this.getQuiveringPalmMax() > 0 ? this.getFeatureSaveDc('quiveringPalmDc') : 0;
+  }
+
+  /** How long the victim stays vulnerable, in days: one per monk level. */
+  getQuiveringPalmWindowDays() {
+    return this.getQuiveringPalmMax() > 0 ? this.getLevel() : 0;
+  }
+
+  /** Empty body: rounds of *etherealness* a day, one per monk level, from 19th. */
+  getEmptyBodyMax() {
+    return hasFeatureAtLevel(this.class, 'emptyBodyLevel', this.getLevel()) ? this.getLevel() : 0;
+  }
+
+  /** Detect evil at will, from the level in `progression`. */
+  hasDetectEvil() {
+    return hasFeatureAtLevel(this.class, 'detectEvilLevel', this.getLevel());
+  }
+
+  /** Tongue of the sun and moon: speak with any living creature, from 17th. */
+  hasTongueOfSunAndMoon() {
+    return hasFeatureAtLevel(this.class, 'tongueOfSunAndMoonLevel', this.getLevel());
+  }
+
+  /**
+   * Whether any monk ability with a use to spend has been reached, so the card
+   * that holds them all knows whether to exist. Wholeness of body is the first
+   * at 7th; the rest arrive between 12th and 19th.
+   *
+   * Tongue of the sun and moon is not among them: it has nothing to spend, so
+   * it is reported on the language card instead.
+   */
+  hasMonkAbilities() {
+    return this.getWholenessOfBodyMax() > 0
+      || this.getAbundantStepMax() > 0
+      || this.getQuiveringPalmMax() > 0
+      || this.getEmptyBodyMax() > 0;
   }
 
   /**
@@ -3284,6 +3474,36 @@ class Player {
     const val = armor['Armor Check Penalty'];
     if (!val || val === '—') return 0;
     return Math.abs(parseInt(String(val), 10)) || 0;
+  }
+
+  /**
+   * Arcane spell failure: the percentage chance that an arcane spell with a
+   * somatic component fizzles because of what is being worn. The armor's and
+   * the shield's percentages add (equipment.md → Arcane spell failure), and
+   * proficiency does not reduce it — only the bard's light-armor exemption does.
+   *
+   * Which classes it touches is read from `progression`; divine casters are
+   * unaffected, and both flags there had no reader at all until now, so a
+   * wizard in a chain shirt was told nothing.
+   * @returns {number} 0 when nothing applies.
+   */
+  getArcaneSpellFailure() {
+    const progression = getClassProgression(this.class);
+    const lightArmorExempt = progression.noArcaneSpellFailureInLightArmor === true;
+    if (!progression.arcaneSpellFailureApplies && !lightArmorExempt) return 0;
+    if (this.isEquipmentMelded()) return 0;
+
+    const chance = (item) => {
+      const raw = item?.['Arcane Spell Failure Chance'];
+      if (!raw || raw === '—') return 0;
+      return Math.abs(parseInt(String(raw), 10)) || 0;
+    };
+
+    const armor = this.getEquippedArmorRaw();
+    // A bard casts freely in light armor, but a shield costs the normal amount.
+    const exempt = lightArmorExempt
+      && String(armor?.Category || '').toLowerCase() === 'light';
+    return (exempt ? 0 : chance(armor)) + chance(this.getEquippedShieldRaw());
   }
 
   /**
@@ -3830,13 +4050,15 @@ class Player {
     return getRacialIllusionDcBonus(this.getRace());
   }
 
-  /** Which ability powers this class's spells, or '' for a non-caster. */
+  /**
+   * Which ability powers this class's spells, or '' for a non-caster. Read
+   * from `progression.castingAbility`, which every casting class now carries;
+   * the class→ability map that used to live here was the same knowledge kept
+   * in a second place, free to disagree with the first.
+   */
   getCastingAbility() {
-    const cls = this.getClass();
-    if (cls === 'Wizard') return 'int';
-    if (['Cleric', 'Druid', 'Ranger', 'Paladin'].includes(cls)) return 'wis';
-    if (['Sorcerer', 'Bard'].includes(cls)) return 'cha';
-    return '';
+    const ability = getClassProgression(this.class).castingAbility;
+    return typeof ability === 'string' ? ability : '';
   }
 
   // —— Stat breakdown ——
@@ -4072,6 +4294,7 @@ class Player {
       contribution('race', this.getRace() || 'race', getFlatRacialSkillBonus(this.getRace(), skillName), BONUS_TYPES.RACIAL),
       contribution('familiar', 'familiar', this.getFamiliarStatBonuses().skills[skillName] || 0),
       contribution('feats', 'feats', getFeatSkillBonus(this.getFeats(), skillName)),
+      contribution('classFeature', 'Nature Sense', this.getNatureSenseBonus(skillName)),
       contribution('conditions', 'conditions', this.getSkillConditionModifier(skillName)),
     ];
 
@@ -4223,6 +4446,19 @@ class Player {
       });
     }
 
+    /* Weapon damage against a favored enemy. It shares the weapon's box with
+       the attack bonus, so it needs its own key to stay on the right list —
+       favored enemy adds to damage and never to the attack roll. */
+    if (statKey === 'damage') {
+      this.getFavoredEnemies().forEach((enemy) => {
+        const name = enemy.subtype ? `${enemy.type} (${enemy.subtype})` : enemy.type;
+        out.push(situational(
+          `favoredEnemy:${name}`, 'Favored enemy',
+          `+${enemy.bonus} to weapon damage against ${String(name).toLowerCase()}`
+        ));
+      });
+    }
+
     if (statKey.startsWith('skill:')) {
       const skillName = statKey.slice('skill:'.length);
       getRacialSkillBonuses(race)
@@ -4268,6 +4504,167 @@ class Player {
     }
     if (isSave && hasFeatureAtLevel(cls, 'resistNaturesLureLevel', level)) {
       out.push(situational('resistNaturesLure', "Resist Nature's Lure", '+4 against the spell-like abilities of fey'));
+    }
+
+    /* —— Pass/fail class features, each on the number it qualifies ——
+       None of these move a total, so none can be a contribution; each is one
+       note against the stat a player is looking at when the question comes up,
+       rather than prose three pages away on the features list. Levels are read
+       from the `progression` block, never restated here. Mechanics:
+       dnd-rules/class-features.md. */
+    if (statKey === 'reflex') {
+      if (hasFeatureAtLevel(cls, 'evasionLevel', level)) {
+        out.push(situational(
+          'evasion', 'Evasion',
+          'No damage at all on a successful save against an effect that allows half. Light or no armor only'
+        ));
+      }
+      if (this.hasImprovedEvasion()) {
+        out.push(situational(
+          'improvedEvasion', 'Improved Evasion',
+          'Half damage even when the save fails, and still none when it succeeds'
+        ));
+      }
+      if (this.hasRogueSpecialAbility('Defensive Roll')) {
+        out.push(situational(
+          'defensiveRoll', 'Defensive Roll',
+          'Once a day, a blow that would drop you to 0 hp allows a save against a DC equal to the damage, for half'
+        ));
+      }
+    }
+
+    if (statKey === 'ac' && hasFeatureAtLevel(cls, 'uncannyDodgeLevel', level)) {
+      out.push(situational(
+        'uncannyDodge', 'Uncanny Dodge',
+        'Keeps your Dexterity bonus to AC against an unseen attacker and while flat-footed'
+      ));
+    }
+
+    if (statKey === 'fortitude') {
+      if (hasFeatureAtLevel(cls, 'venomImmunityLevel', level)) {
+        out.push(situational('venomImmunity', 'Venom Immunity', 'Immune to every poison, natural and magical'));
+      }
+      if (hasFeatureAtLevel(cls, 'diamondBodyLevel', level)) {
+        out.push(situational('diamondBody', 'Diamond Body', 'Immune to every poison'));
+      }
+      if (hasFeatureAtLevel(cls, 'divineHealthLevel', level)) {
+        out.push(situational('divineHealth', 'Divine Health', 'Immune to every disease, magical and mundane'));
+      }
+      if (hasFeatureAtLevel(cls, 'purityOfBodyLevel', level)) {
+        out.push(situational('purityOfBody', 'Purity of Body', 'Immune to every disease that is not magical'));
+      }
+    }
+
+    if (statKey === 'will') {
+      if (hasFeatureAtLevel(cls, 'auraOfCourageLevel', level)) {
+        out.push(situational(
+          'auraOfCourage', 'Aura of Courage',
+          'Immune to fear, and allies within 10 ft gain +4 morale against it'
+        ));
+      }
+      if (this.hasRogueSpecialAbility('Slippery Mind')) {
+        out.push(situational(
+          'slipperyMind', 'Slippery Mind',
+          'A failed save against an enchantment may be attempted once more, a round later'
+        ));
+      }
+    }
+
+    if (statKey === 'speed') {
+      if (hasFeatureAtLevel(cls, 'woodlandStrideLevel', level)) {
+        out.push(situational(
+          'woodlandStride', 'Woodland Stride',
+          'Natural difficult terrain costs no extra movement and deals no damage; magic such as entangle still does'
+        ));
+      }
+      if (hasFeatureAtLevel(cls, 'tracklessStepLevel', level)) {
+        out.push(situational(
+          'tracklessStep', 'Trackless Step',
+          'Leaves no trail in natural terrain, unless you choose to'
+        ));
+      }
+    }
+
+    /* Aging penalties fall on the physical scores only, so Int, Wis and Cha
+       have nothing to report — they improve with age either way. */
+    if (['str', 'dex', 'con'].includes(statKey) && hasFeatureAtLevel(cls, 'timelessBodyLevel', level)) {
+      out.push(situational(
+        'timelessBody', 'Timeless Body',
+        'No aging penalty to this score, though you still die of old age on schedule'
+      ));
+    }
+
+    /* Skills a class feature qualifies without adding to: the number is
+       unchanged, but what the roll is allowed to attempt is not. */
+    if (statKey.startsWith('skill:')) {
+      /* Compared case-insensitively, as the racial block above does:
+         skills.json spells them 'Disable device' and 'Handle animal', and a
+         mismatched capital is a silent miss rather than an error. */
+      const skill = statKey.slice('skill:'.length).toLowerCase();
+      const trapfinding = hasFeatureAtLevel(cls, 'trapfindingLevel', level);
+      if (trapfinding && skill === 'search') {
+        out.push(situational(
+          'trapfinding', 'Trapfinding',
+          'Can find traps with a DC above 20, which no other class may attempt'
+        ));
+      }
+      if (trapfinding && skill === 'disable device') {
+        out.push(situational(
+          'trapfinding', 'Trapfinding',
+          'Can disarm magic traps, against a DC of 25 plus the spell’s level'
+        ));
+      }
+      if (skill === 'survival' && hasFeatureAtLevel(cls, 'swiftTrackerLevel', level)) {
+        out.push(situational(
+          'swiftTracker', 'Swift Tracker',
+          'Follow tracks at full speed for −10 instead of −20, or at double speed for −20 instead of −40'
+        ));
+      }
+      if (skill === 'hide' && hasFeatureAtLevel(cls, 'camouflageLevel', level)) {
+        out.push(situational(
+          'camouflage', 'Camouflage',
+          'Can hide in any natural terrain, even where it offers no cover or concealment'
+        ));
+      }
+      if (skill === 'hide' && hasFeatureAtLevel(cls, 'hideInPlainSightLevel', level)) {
+        out.push(situational(
+          'hideInPlainSight', 'Hide in Plain Sight',
+          'Can hide in natural terrain even while being observed'
+        ));
+      }
+      /* Favored enemy: a real +2 (or more), but only against that creature,
+         so it is a note rather than a contribution. The model knew both the
+         skill list and the per-enemy bonus already; nothing asked it. */
+      if (this.appliesFavoredEnemyBonusToSkill(skill)) {
+        this.getFavoredEnemies().forEach((enemy) => {
+          const name = enemy.subtype ? `${enemy.type} (${enemy.subtype})` : enemy.type;
+          out.push(situational(
+            `favoredEnemy:${name}`, 'Favored enemy',
+            `+${enemy.bonus} against ${String(name).toLowerCase()}`
+          ));
+        });
+      }
+      if (skill === 'handle animal') {
+        const empathy = this.getWildEmpathyBonus();
+        if (empathy !== null) {
+          out.push(situational(
+            'wildEmpathy', 'Wild empathy',
+            `1d20${empathy >= 0 ? '+' : ''}${empathy} to change an animal’s attitude, as a Diplomacy check. A magical beast of Intelligence 1–2 at −4`
+          ));
+        }
+      }
+      if (skill === 'disguise' && hasFeatureAtLevel(cls, 'aThousandFacesLevel', level)) {
+        out.push(situational(
+          'aThousandFaces', 'A Thousand Faces',
+          'Change your appearance at will, as alter self — but only while in your own form'
+        ));
+      }
+      if (this.hasRogueSpecialAbility('Skill Mastery')) {
+        out.push(situational(
+          'skillMastery', 'Skill Mastery',
+          'If this is one of the skills you chose, you may take 10 even under stress'
+        ));
+      }
     }
 
     return out;
@@ -4387,11 +4784,13 @@ class Player {
     const familiarSkillBonus = this.getFamiliarStatBonuses().skills[skillName] || 0;
     // Acrobatic, Stealthy, Skill Focus and the rest of the flat skill feats.
     const featBonus = getFeatSkillBonus(this.getFeats(), skillName);
+    // A flat class bonus of the same shape: the druid's Nature Sense.
+    const classBonus = this.getNatureSenseBonus(skillName);
     // An elf's +2 on Listen, a halfling's +2 on Move Silently. Only the
     // unconditional ones — a dwarf's +2 on Appraise applies to stonework alone
     // and is reported beside the total rather than inside it.
     const racialBonus = getFlatRacialSkillBonus(this.getRace(), skillName);
-    let result = mod + ranks + bonus + familiarSkillBonus + featBonus + racialBonus;
+    let result = mod + ranks + bonus + familiarSkillBonus + featBonus + classBonus + racialBonus;
 
     // Apply armor check penalty if skill has ArmorPenalty flag
     const penalty = this.getArmorCheckPenalty();

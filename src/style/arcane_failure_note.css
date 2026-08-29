@@ -1,0 +1,15 @@
+/* Arcane spell failure strip (arcane_failure_note.jsx). Sizing in rem per CLAUDE.md. */
+
+.arcane-failure-note {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+}
+
+/* The pill carries the number; the info button trails it at the right edge so
+   the strip reads as one line rather than two competing controls. */
+.arcane-failure-note .stat-info-button {
+  margin-left: auto;
+}

@@ -52,5 +52,6 @@ describe('features that cast a spell', () => {
     expect(getFeatureSpell(nameOf(named('Monk', 'empty body')))).not.toBeNull();
     expect(getFeatureSpell(nameOf(named('Paladin', 'detect evil')))).not.toBeNull();
     expect(getFeatureSpell(nameOf(named('Paladin', 'remove disease')))).not.toBeNull();
+    expect(getFeatureSpell(nameOf(named('Druid', 'a thousand faces')))).not.toBeNull();
   });
 });

@@ -131,6 +131,20 @@
   color: var(--warn);
 }
 
+/* One labelled list of rows. A box with only one group carries no eyebrow, so
+   the rule stays invisible until a second group needs telling from the first —
+   a weapon's attack bonus from its damage bonus. */
+.stat-info-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.stat-info-group + .stat-info-group {
+  padding-top: 0.4rem;
+  border-top: 0.0625rem solid var(--border-soft);
+}
+
 .stat-info-situational {
   display: flex;
   flex-direction: column;

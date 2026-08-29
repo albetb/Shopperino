@@ -140,13 +140,18 @@ export default function SkillsPage() {
        manual bonus, a condition — earns one, and the whole list is shown then,
        because the reader wants the ranks and the ability in the sum too. */
     const skillRows = player.getSkillContributions?.(skill.Name) ?? [];
-    const beyondTheBasics = skillRows.some(c => c.source !== 'ranks' && c.source !== 'ability');
+    const skillNotes = player.getSituationalContributions?.(`skill:${skill.Name}`) ?? [];
+    /* A situational note also earns the button — Trapfinding changes what a
+       Search roll may attempt without changing the number — and once the box
+       is open the sum belongs in it too, so the same gate feeds both lists. */
+    const beyondTheBasics = skillNotes.length > 0
+      || skillRows.some(c => c.source !== 'ranks' && c.source !== 'ability');
     const info = (
       <StatInfo
         label={skill.Name}
         value={total}
         contributions={beyondTheBasics ? skillRows : []}
-        situational={player.getSituationalContributions?.(`skill:${skill.Name}`) ?? []}
+        situational={skillNotes}
       />
     );
 

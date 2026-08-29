@@ -141,22 +141,73 @@ describe('the weapon rows', () => {
     return p;
   }
 
+  /** The two labelled groups inside one weapon's box, by their eyebrows. */
+  const groupsOf = (box) => {
+    const named = (text) => Array.from(box.querySelectorAll('.stat-info-group'))
+      .find((g) => g.querySelector('.sh-eyebrow')?.textContent === text);
+    return { attack: named('Attack bonus'), damage: named('Damage bonus') };
+  };
+
   test('the box lists base attack, the ability and any feat, and totals to the pill', () => {
     const player = equipped();
     player.feats = [...player.feats, 'Weapon focus (Longsword)'];
     player.equipItem('rh1', { link: 'items/Weapon/longsword', name: 'Longsword' });
     renderCombat(player);
-    fireEvent.click(infoButton('longsword attack'));
-    const box = screen.getByRole('dialog', { name: /longsword attack/i });
-    expect(within(box).getByText('base attack bonus')).toBeInTheDocument();
-    expect(within(box).getByText('Strength')).toBeInTheDocument();
-    expect(within(box).getByText('Weapon Focus')).toBeInTheDocument();
+    fireEvent.click(infoButton('longsword'));
+    const box = screen.getByRole('dialog', { name: /^longsword$/i });
+    const { attack } = groupsOf(box);
+    expect(within(attack).getByText('base attack bonus')).toBeInTheDocument();
+    expect(within(attack).getByText('Strength')).toBeInTheDocument();
+    expect(within(attack).getByText('Weapon Focus')).toBeInTheDocument();
+    // Each group carries its own total, so neither is read against the other.
+    expect(within(attack).getByText('Total')).toBeInTheDocument();
+  });
+
+  /* Damage used to have no box at all: getWeaponDamageContributions existed in
+     the model and no component called it, so the number after the dice was the
+     one part of a weapon row nothing could explain. */
+  test('the same box explains the damage bonus in its own group', () => {
+    const player = equipped();
+    player.feats = [...player.feats, 'Weapon specialization (Longsword)'];
+    player.equipItem('rh1', { link: 'items/Weapon/longsword', name: 'Longsword' });
+    renderCombat(player);
+    fireEvent.click(infoButton('longsword'));
+    const { attack, damage } = groupsOf(screen.getByRole('dialog', { name: /^longsword$/i }));
+    expect(damage).toBeDefined();
+    expect(within(damage).getByText('Strength')).toBeInTheDocument();
+    expect(within(damage).getByText('Weapon Specialization')).toBeInTheDocument();
+    // Base attack belongs to the attack roll and must not leak into damage.
+    expect(within(damage).queryByText('base attack bonus')).toBe(null);
+    expect(within(attack).queryByText('Weapon Specialization')).toBe(null);
+  });
+
+  test('there is still one button on the row, not one per number', () => {
+    const player = equipped();
+    player.equipItem('rh1', { link: 'items/Weapon/longsword', name: 'Longsword' });
+    renderCombat(player);
+    expect(screen.getAllByRole('button', { name: /what makes up longsword/i })).toHaveLength(1);
+  });
+
+  test("a ranger's favored enemy damage is situational, not a damage row", () => {
+    const player = equipped();
+    player.class = 'Ranger';
+    player.level = 5;
+    player.addFavoredEnemy('Giant');
+    player.equipItem('rh1', { link: 'items/Weapon/longsword', name: 'Longsword' });
+    renderCombat(player);
+    fireEvent.click(infoButton('longsword'));
+    const box = screen.getByRole('dialog', { name: /^longsword$/i });
+    const { damage } = groupsOf(box);
+    expect(within(box).getByText('Favored enemy')).toBeInTheDocument();
+    expect(within(box).getByText(/weapon damage against giant/)).toBeInTheDocument();
+    // It only applies against that creature, so it is not inside the sum.
+    expect(within(damage).queryByText('Favored enemy')).toBe(null);
   });
 
   test('the -4 for an untrained weapon is a row in the box, not a hover tooltip', () => {
     renderCombat(untrainedWizard());
-    fireEvent.click(infoButton('greatsword attack'));
-    const box = screen.getByRole('dialog', { name: /greatsword attack/i });
+    fireEvent.click(infoButton('greatsword'));
+    const box = screen.getByRole('dialog', { name: /^greatsword$/i });
     expect(within(box).getByText('not proficient')).toBeInTheDocument();
     expect(within(box).getByText('-4')).toBeInTheDocument();
     expect(within(box).getByText('untrained armor')).toBeInTheDocument();
@@ -166,5 +217,46 @@ describe('the weapon rows', () => {
     renderCombat(untrainedWizard());
     // The box is closed, so this is the meta-line marker on the weapon row.
     expect(screen.getByText('not proficient')).not.toHaveAttribute('title');
+  });
+});
+
+/* Diamond Soul and Perfect Self both land in the health card, beside the hit
+   points they protect, rather than on a class-feature card of their own. */
+describe('the monk defenses reach the health card', () => {
+  function monk(level) {
+    const p = new Player();
+    p.name = 'Monk';
+    p.class = 'Monk';
+    p.level = level;
+    p.race = 'Human';
+    p.maxLife = 90;
+    return p;
+  }
+
+  test('spell resistance shows from 13th and not before', () => {
+    const { unmount } = renderCombat(monk(12));
+    expect(screen.queryByText(/^SR /)).toBe(null);
+    unmount();
+
+    renderCombat(monk(13));
+    expect(screen.getByText('SR 23')).toBeInTheDocument();
+  });
+
+  test('perfect self shows its damage reduction at 20th', () => {
+    const { unmount } = renderCombat(monk(19));
+    expect(screen.queryByText(/^DR /)).toBe(null);
+    unmount();
+
+    renderCombat(monk(20));
+    expect(screen.getByText('DR 10/magic')).toBeInTheDocument();
+    expect(screen.getByText('SR 30')).toBeInTheDocument();
+  });
+
+  test('a fighter of the same level shows neither', () => {
+    const p = monk(20);
+    p.class = 'Fighter';
+    renderCombat(p);
+    expect(screen.queryByText(/^SR /)).toBe(null);
+    expect(screen.queryByText(/^DR /)).toBe(null);
   });
 });

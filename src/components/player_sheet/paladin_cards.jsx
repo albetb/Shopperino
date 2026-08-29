@@ -17,12 +17,20 @@ const fmt = (n) => `${n >= 0 ? '+' : ''}${n}`;
 /**
  * Smite evil — a per-day use counter that also states what a smite is worth,
  * since the bonuses scale with level and Charisma and are easy to misremember.
+ *
+ * **Detect evil rides along here.** It is at-will from 1st level, so it has no
+ * counter and would never have earned a card; but it is the ability a paladin
+ * uses to answer the one question a smite depends on — *is this thing evil?* —
+ * and a smite spent on a target that turns out not to be is simply lost. The
+ * two belong on the same card for that reason and no other.
  */
 export function SmiteEvilCard() {
   const dispatch = useDispatch();
   const player = useSelector((state) => state.playerSheet?.player);
   const max = player?.getSmiteEvilMax?.() ?? 0;
   if (max <= 0) return null;
+
+  const detectEvil = player.hasDetectEvil?.() ? getFeatureSpell('Detect evil') : null;
 
   return (
     <TrackerCard
@@ -54,6 +62,17 @@ export function SmiteEvilCard() {
         </Pill>
         <Pill tone="accent">{fmt(player.getSmiteEvilDamageBonus())} damage</Pill>
       </div>
+
+      {detectEvil && (
+        /* Name on the left as a link into the spell, allowance on the right —
+           the same shape the granted-feat rows use. */
+        <div className="tracker-card-row sh-spread paladin-detect-evil">
+          <SpellLink link={detectEvil.link}>
+            <Pill tone="accent" icon="visibility">{detectEvil.name}</Pill>
+          </SpellLink>
+          <span className="sh-faint">at will</span>
+        </div>
+      )}
     </TrackerCard>
   );
 }

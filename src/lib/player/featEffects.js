@@ -279,6 +279,23 @@ export function getWeaponRangeIncrement(feats, weaponItem) {
 }
 
 /** Whether the character has the Run feat. */
+/**
+ * Stunning Fist taken as an ordinary feat rather than granted by the monk
+ * class: **one attempt per day for every four levels**, and a save DC of
+ * `10 + half character level + Wisdom`. The monk's own allowance is larger and
+ * comes from `progression` — this is the floor everyone else gets.
+ *
+ * The DC formula is identical to the monk's, so it is written in the same
+ * descriptor shape `Player.getFeatureSaveDc` reads.
+ */
+export const STUNNING_FIST_FEAT_DC = Object.freeze({ base: 10, halfLevel: true, ability: 'wis' });
+
+/** One attempt per four levels, so the first arrives at 4th. */
+export function getStunningFistFeatUses(level) {
+  const lvl = Math.floor(Number(level) || 0);
+  return lvl > 0 ? Math.floor(lvl / 4) : 0;
+}
+
 export function hasRunFeat(feats) {
   return countFeat(feats, 'Run') > 0;
 }

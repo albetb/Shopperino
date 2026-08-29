@@ -403,7 +403,13 @@ export default function CombatPage() {
 
   const bab_display = formatBaseAttackBonus(bab);
   const sneakAttackDice = player.getSneakAttackDice?.() ?? 0;
+  const sneakAttackRange = player.getSneakAttackRange?.() ?? 0;
+  const sneakAttackImmuneTypes = player.getSneakAttackImmuneTypes?.() ?? [];
   const damageReductions = player.getDamageReductions?.() ?? [];
+  /* The monk's Diamond Soul. Spell resistance is a defense, so it sits with
+     damage reduction beside the hit points both protect — the paladin's mount
+     already showed its own SR while the monk who has it showed nothing. */
+  const spellResistance = player.getSpellResistance?.() ?? 0;
   const isShaped = player.isWildShaped?.() ?? false;
   const wildShapeAttacks = isShaped ? (player.getWildShapeAttacks?.() ?? []) : [];
 
@@ -469,7 +475,7 @@ export default function CombatPage() {
         {!collapsed.player && (
           <div className="sh-stack">
             <Bar value={hpRatio} variant={hpBarVariant} />
-            {(condDeltas.maxHp || damageReductions.length > 0) ? (
+            {(condDeltas.maxHp || damageReductions.length > 0 || spellResistance > 0) ? (
               <div className="sh-row-h" style={{ gap: 'var(--space-2)', flexWrap: 'wrap' }}>
                 {condDeltas.maxHp ? (
                   <Pill tone="warn" icon="warning">Conditions: {fmtDelta(condDeltas.maxHp)} max HP</Pill>
@@ -484,6 +490,11 @@ export default function CombatPage() {
                     DR {amount}/{bypass}
                   </Pill>
                 ))}
+                {spellResistance > 0 && (
+                  <Pill tone="success" icon="security" title="A caster must beat this with a caster level check to affect you">
+                    SR {spellResistance}
+                  </Pill>
+                )}
               </div>
             ) : null}
             {(() => {
@@ -801,7 +812,24 @@ export default function CombatPage() {
                     <span className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
                       <Pill tone={attackTone(player.getWeaponAttackDeviation?.(wd) ?? 0)}>{ab >= 0 ? '+' : ''}{ab}</Pill>
                       <Pill tone={dmgAffected ? 'warn' : 'default'}>{dmg}</Pill>
-                      {statInfo(`${w.name} attack`, ab, player.getWeaponAttackContributions?.(wd), 'attack')}
+                      {/* One box per weapon, not two: the damage bonus shares
+                          it as a second labelled group, so a dense row keeps a
+                          single button and the reader still gets the number
+                          after the dice explained. */}
+                      <StatInfo
+                        label={w.name}
+                        value={ab}
+                        primaryLabel="Attack bonus"
+                        contributions={player.getWeaponAttackContributions?.(wd) ?? []}
+                        secondary={{
+                          label: 'Damage bonus',
+                          contributions: player.getWeaponDamageContributions?.(wd) ?? [],
+                        }}
+                        situational={[
+                          ...(player.getSituationalContributions?.('attack') ?? []),
+                          ...(player.getSituationalContributions?.('damage') ?? []),
+                        ]}
+                      />
                     </span>
                   </div>
                 );
@@ -920,11 +948,31 @@ export default function CombatPage() {
                 paddingTop: 'var(--space-2)',
                 marginTop: 'var(--space-2)',
               }}
-              title="Applies when the target is denied its Dex bonus or you are flanking (ranged: within 30 ft). Added on a critical hit but never multiplied. No effect on oozes, plants, undead, constructs, incorporeal creatures, or anything immune to critical hits."
             >
               <span className="sh-display">Sneak attack</span>
               <span className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
                 <Pill tone="accent">+{sneakAttackDice}d6</Pill>
+                {/* Was a title attribute, which a phone never shows, and which
+                    restated a range and an immunity list classes.json already
+                    held. Both now come from the model. */}
+                <InfoPopover label="Sneak attack">
+                  <p>
+                    Applies when the target is <b>denied its Dexterity bonus</b>{' '}
+                    to AC, or when you are <b>flanking</b> it
+                    {sneakAttackRange > 0 && <> — with a ranged weapon, only within <b>{sneakAttackRange} ft</b></>}.
+                  </p>
+                  <p>
+                    The dice are added on a critical hit but are{' '}
+                    <b>never multiplied</b>, and any concealment at all negates
+                    them.
+                  </p>
+                  {sneakAttackImmuneTypes.length > 0 && (
+                    <p>
+                      No effect on {sneakAttackImmuneTypes.join(', ').toLowerCase()}{' '}
+                      creatures, or anything else immune to critical hits.
+                    </p>
+                  )}
+                </InfoPopover>
               </span>
             </div>
           )}
