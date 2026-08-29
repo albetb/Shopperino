@@ -132,3 +132,91 @@ export function getRacialImmunities(race) {
 export function getRacialIllusionDcBonus(race) {
   return Number(getRaceEntry(race)?.illusionDCBonus) || 0;
 }
+
+/** Every race the app offers, in the order races.json lists them. */
+export function getRaceNames() {
+  const data = loadFile('races');
+  const races = data?.races ?? data;
+  return races && typeof races === 'object' ? Object.keys(races) : [];
+}
+
+/**
+ * The written traits of a race, as `{ name, description }`.
+ *
+ * This is the prose the race card shows. It used to be hand-typed into
+ * `RACE_INFO` in race_cards.jsx — a third copy of facts races.json already
+ * held twice, and the copy a player actually read, so a correction to the data
+ * never reached the screen.
+ */
+export function getRaceTraits(race) {
+  const list = getRaceEntry(race)?.traits;
+  if (!Array.isArray(list)) return [];
+  return list
+    .filter((entry) => entry && (entry.name || entry.description))
+    .map((entry) => ({
+      name: String(entry.name ?? ''),
+      description: String(entry.description ?? ''),
+    }));
+}
+
+/**
+ * The facts the sheet reads at a glance, for the head of the race card: the
+ * ability modifiers, size and land speed. Every one comes from a structured
+ * key the model already computes with, so the card cannot disagree with the
+ * numbers on the sheet.
+ *
+ * @returns {{abilityModifiers: Array<{key: string, value: number}>,
+ *   size: string, landSpeed: number, speedNote: string, favoredClass: string}}
+ */
+export function getRaceSummary(race) {
+  const entry = getRaceEntry(race) ?? {};
+  const modifiers = entry.abilityModifiers && typeof entry.abilityModifiers === 'object'
+    ? entry.abilityModifiers
+    : {};
+  return {
+    abilityModifiers: Object.entries(modifiers)
+      .filter(([, value]) => Number(value) !== 0)
+      .map(([key, value]) => ({ key, value: Number(value) })),
+    size: String(entry.size ?? ''),
+    landSpeed: Number(entry.landSpeed) || 0,
+    speedNote: String(entry.speedNote ?? ''),
+    favoredClass: String(entry.favoredClass ?? ''),
+  };
+}
+
+/**
+ * Which categories of a race's traits the sheet applies to its numbers on its
+ * own, so the card can say so rather than leaving a player to guess which of
+ * the prose lines below are already in their totals.
+ *
+ * Derived from the structured keys the race actually carries — a race with no
+ * `racialACBonuses` never claims one.
+ *
+ * @returns {string[]} human-readable category names, possibly empty.
+ */
+export function getAppliedRacialCategories(race) {
+  const entry = getRaceEntry(race);
+  if (!entry) return [];
+  const applied = [];
+  const has = (key) => {
+    const value = entry[key];
+    return Array.isArray(value) ? value.length > 0 : value !== undefined && value !== null;
+  };
+  if (Object.values(entry.abilityModifiers ?? {}).some((v) => Number(v) !== 0)) {
+    applied.push('ability modifiers');
+  }
+  if (has('size')) applied.push('size');
+  if (has('landSpeed')) applied.push('speed');
+  if (has('racialSkillBonuses')) applied.push('skill bonuses');
+  if (has('racialSaveBonuses')) applied.push('save bonuses');
+  if (has('racialAttackBonuses')) applied.push('attack bonuses');
+  if (has('racialACBonuses')) applied.push('armor class');
+  if (has('immunities')) applied.push('immunities');
+  if (has('illusionDCBonus')) applied.push('illusion save DC');
+  if (has('weaponFamiliarity') || has('weaponProficiency')) applied.push('weapon proficiency');
+  if (has('extraFeatAtFirstLevel')) applied.push('the extra feat');
+  if (has('extraSkillPointsPerLevel') || has('extraSkillPointsFirstLevel')) {
+    applied.push('skill points');
+  }
+  return applied;
+}

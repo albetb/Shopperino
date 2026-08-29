@@ -40,6 +40,12 @@ import {
   STUNNING_FIST_FEAT_DC,
 } from './featEffects';
 import {
+  getSynergiesInto,
+  getSynergiesIntoCheck,
+  synergyBonus,
+  synergyRanks,
+} from './skillSynergy';
+import {
   NON_PROFICIENT_ATTACK_PENALTY,
   isProficientWithWeapon,
   isProficientWithArmor,
@@ -2528,11 +2534,18 @@ class Player {
       + getFeatTurnUndeadLevelBonus(this.getFeats()));
   }
 
-  /** The bonus added to the d20 turning check: the Charisma modifier. */
+  /**
+   * The bonus added to the d20 turning check: the Charisma modifier, plus the
+   * synergy from five ranks of Knowledge (religion). The synergy is on the
+   * *check* only — the turning damage roll does not get it, which is why
+   * `getTurnUndeadDamage` adds the ability modifier itself rather than
+   * borrowing this number as it used to.
+   */
   getTurnUndeadCheckBonus() {
     const config = this.getTurnUndeadConfig();
     if (!config) return 0;
-    return this.getModifier(config.attemptsAbility || 'cha');
+    return this.getModifier(config.attemptsAbility || 'cha')
+      + this.getCheckSynergyBonus('turnUndead');
   }
 
   /**
@@ -2560,7 +2573,8 @@ class Player {
     const config = this.getTurnUndeadConfig();
     if (!config) return { dice: '', bonus: 0, formula: '' };
     const dice = getClassProgression(this.class).turningDamageDice || '2d6';
-    const bonus = this.getTurnUndeadEffectiveLevel() + this.getTurnUndeadCheckBonus();
+    const bonus = this.getTurnUndeadEffectiveLevel()
+      + this.getModifier(config.attemptsAbility || 'cha');
     return { dice, bonus, formula: `${dice}${bonus >= 0 ? '+' : ''}${bonus}` };
   }
 
@@ -2751,7 +2765,9 @@ class Player {
   getWildEmpathyBonus() {
     const ability = getClassProgression(this.class).wildEmpathyAbility;
     if (!ability) return null;
-    return this.getLevel() + this.getModifier(ability);
+    // Five ranks of Handle animal help here as well as on Ride.
+    return this.getLevel() + this.getModifier(ability)
+      + this.getCheckSynergyBonus('wildEmpathy');
   }
 
   /**
@@ -2964,7 +2980,9 @@ class Player {
   getBardicKnowledgeBonus() {
     const ability = getClassProgression(this.class).bardicKnowledgeAbility;
     if (!ability) return 0;
-    return this.getLevel() + this.getModifier(ability);
+    // Five ranks of Knowledge (history) help a bard remember.
+    return this.getLevel() + this.getModifier(ability)
+      + this.getCheckSynergyBonus('bardicKnowledge');
   }
 
   /** Save DC for the performances that allow one: `10 + half level + Cha`. */
@@ -4298,6 +4316,13 @@ class Player {
       contribution('conditions', 'conditions', this.getSkillConditionModifier(skillName)),
     ];
 
+    /* One row per source rather than one lumped total: which skill paid for
+       the bonus is the part a reader wants, and two synergies into the same
+       skill only stack because they come from different sources. */
+    this.getSkillSynergies(skillName).forEach(({ from, bonus: value }) => {
+      rows.push(contribution(`synergy:${from}`, `${from} (5 ranks)`, value, BONUS_TYPES.SYNERGY));
+    });
+
     const penalty = this.getArmorCheckPenalty();
     if (penalty > 0 && skill?.ArmorPenalty) {
       const multiplier = skillName === 'Swim' ? 2 : 1;
@@ -4653,6 +4678,18 @@ class Player {
           ));
         }
       }
+      /* A synergy that applies to one use of the skill rather than all of it:
+         five ranks of Use rope help you climb a rope and nothing else. Real,
+         but wrong to fold into the number the row shows. */
+      getSynergiesInto(statKey.slice('skill:'.length)).conditional
+        .filter((entry) => this.hasEarnedSynergy(entry))
+        .forEach((entry) => {
+          out.push(situational(
+            `synergy:${entry.from}`, `${entry.from} (5 ranks)`,
+            `+${synergyBonus(entry)} ${entry.when}`
+          ));
+        });
+
       if (skill === 'disguise' && hasFeatureAtLevel(cls, 'aThousandFacesLevel', level)) {
         out.push(situational(
           'aThousandFaces', 'A Thousand Faces',
@@ -4746,6 +4783,43 @@ class Player {
     return s && typeof s.bonus === 'number' ? s.bonus : 0;
   }
 
+  /** Whether a synergy entry's source skill has enough ranks to grant it. */
+  hasEarnedSynergy(entry) {
+    return this.getSkillRanks(entry?.from) >= synergyRanks(entry);
+  }
+
+  /**
+   * Synergies actually earned into one skill, as `{ from, bonus }` rows ready
+   * to become contributions. Only the unconditional ones: a synergy that
+   * applies to a single use of the skill is reported beside the total instead.
+   */
+  getSkillSynergies(skillName) {
+    return getSynergiesInto(skillName).flat
+      .filter((entry) => this.hasEarnedSynergy(entry))
+      .map((entry) => ({ from: entry.from, bonus: synergyBonus(entry) }));
+  }
+
+  /**
+   * The flat synergy bonus to one skill. Sources are distinct by construction,
+   * so they stack — Diplomacy really can carry +6, from Bluff, Knowledge
+   * (nobility and royalty) and Sense motive at once.
+   */
+  getSkillSynergyBonus(skillName) {
+    return this.getSkillSynergies(skillName)
+      .reduce((total, row) => total + row.bonus, 0);
+  }
+
+  /**
+   * The synergy bonus to a class check rather than a skill row: wild empathy,
+   * bardic knowledge, a turning check.
+   * @param {string} checkKey 'wildEmpathy' | 'bardicKnowledge' | 'turnUndead'
+   */
+  getCheckSynergyBonus(checkKey) {
+    return getSynergiesIntoCheck(checkKey)
+      .filter((entry) => this.hasEarnedSynergy(entry))
+      .reduce((total, entry) => total + synergyBonus(entry), 0);
+  }
+
   /** Whether this skill is a class skill for the player's current class. */
   isClassSkill(skillName) {
     const list = getClassSkillsListFromString(getClassData(this.class)?.classSkills ?? '');
@@ -4790,7 +4864,10 @@ class Player {
     // unconditional ones — a dwarf's +2 on Appraise applies to stonework alone
     // and is reported beside the total rather than inside it.
     const racialBonus = getFlatRacialSkillBonus(this.getRace(), skillName);
-    let result = mod + ranks + bonus + familiarSkillBonus + featBonus + classBonus + racialBonus;
+    // Five ranks in a related skill: the pairings are in skills.json.
+    const synergyBonusTotal = this.getSkillSynergyBonus(skillName);
+    let result = mod + ranks + bonus + familiarSkillBonus + featBonus + classBonus
+      + racialBonus + synergyBonusTotal;
 
     // Apply armor check penalty if skill has ArmorPenalty flag
     const penalty = this.getArmorCheckPenalty();

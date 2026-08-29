@@ -1,0 +1,47 @@
+/* Race picker cards (race_cards.jsx). Sizing in rem per CLAUDE.md. */
+
+/* The ability modifiers sit in the head so a collapsed card still answers the
+   question a race is chosen on. They push to the right of the name. */
+.race-card-glance {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-left: auto;
+  padding-right: var(--space-2);
+  font: 600 var(--font-size-xs)/1.2 var(--font-ui);
+}
+
+.race-mod.is-up { color: var(--success); }
+.race-mod.is-down { color: var(--danger); }
+
+.race-card-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.race-fact {
+  padding: 0.15rem 0.45rem;
+  border: 0.0625rem solid var(--border-soft);
+  border-radius: 0.35rem;
+  font-size: var(--font-size-xs);
+  color: var(--ink-muted);
+}
+
+.race-card-note {
+  margin: 0 0 var(--space-2);
+  font-size: var(--font-size-xs);
+  color: var(--ink-muted);
+}
+
+/* Which of the prose above is already in the sheet's numbers. Set apart so it
+   reads as a statement about the app rather than another racial trait. */
+.race-card-applied {
+  margin-top: var(--space-3);
+  padding-top: var(--space-2);
+  border-top: 0.0625rem solid var(--border-soft);
+  font-size: var(--font-size-xs);
+  line-height: 1.4;
+  color: var(--ink-muted);
+}

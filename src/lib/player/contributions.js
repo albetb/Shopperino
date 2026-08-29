@@ -46,6 +46,7 @@ export const BONUS_TYPES = {
   PROFANE: 'profane',
   CIRCUMSTANCE: 'circumstance',
   ALCHEMICAL: 'alchemical',
+  SYNERGY: 'synergy',
 };
 
 const TYPE_VALUES = new Set(Object.values(BONUS_TYPES));

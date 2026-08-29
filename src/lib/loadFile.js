@@ -86,7 +86,7 @@ function creatureFile(key) {
 
 /**
  * Load a data file by name. Returns the parsed content or null.
- * Supported: 'items' | 'scrolls' | 'tables' | 'spells' | 'feats' | 'skills' | 'races' | 'classes' | 'animals' | 'monsters' | 'vermin' | 'deities'
+ * Supported: 'items' | 'scrolls' | 'tables' | 'spells' | 'feats' | 'skills' | 'skillsynergies' | 'races' | 'classes' | 'animals' | 'monsters' | 'vermin' | 'deities'
  */
 export function loadFile(fileName) {
   try {
@@ -103,6 +103,8 @@ export function loadFile(fileName) {
         return featsData?.Feats || [];
       case 'skills':
         return skillsData?.Skills || [];
+      case 'skillsynergies':
+        return skillsData?.Synergies || [];
       case 'races':
         return racesData?.races ?? {};
       case 'classes':

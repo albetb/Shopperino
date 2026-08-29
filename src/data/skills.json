@@ -252,5 +252,124 @@
       "TrainedOnly": false,
       "ArmorPenalty": false
     }
+  ],
+  "Synergies": [
+    {
+      "from": "Bluff",
+      "to": "Diplomacy"
+    },
+    {
+      "from": "Bluff",
+      "to": "Intimidate"
+    },
+    {
+      "from": "Bluff",
+      "to": "Sleight of hand"
+    },
+    {
+      "from": "Handle animal",
+      "to": "Ride"
+    },
+    {
+      "from": "Knowledge (arcana)",
+      "to": "Spellcraft"
+    },
+    {
+      "from": "Knowledge (local)",
+      "to": "Gather information"
+    },
+    {
+      "from": "Knowledge (nobility and royalty)",
+      "to": "Diplomacy"
+    },
+    {
+      "from": "Sense motive",
+      "to": "Diplomacy"
+    },
+    {
+      "from": "Survival",
+      "to": "Knowledge (nature)"
+    },
+    {
+      "from": "Tumble",
+      "to": "Balance"
+    },
+    {
+      "from": "Tumble",
+      "to": "Jump"
+    },
+    {
+      "from": "Bluff",
+      "to": "Disguise",
+      "when": "when you know you are being observed and you try to act in character"
+    },
+    {
+      "from": "Craft",
+      "to": "Appraise",
+      "when": "on items made with that Craft skill"
+    },
+    {
+      "from": "Decipher script",
+      "to": "Use magic device",
+      "when": "involving scrolls"
+    },
+    {
+      "from": "Escape artist",
+      "to": "Use rope",
+      "when": "to bind someone"
+    },
+    {
+      "from": "Knowledge (architecture and engineering)",
+      "to": "Search",
+      "when": "to find secret doors or hidden compartments"
+    },
+    {
+      "from": "Knowledge (dungeoneering)",
+      "to": "Survival",
+      "when": "while underground"
+    },
+    {
+      "from": "Knowledge (geography)",
+      "to": "Survival",
+      "when": "to keep from getting lost or to avoid natural hazards"
+    },
+    {
+      "from": "Knowledge (nature)",
+      "to": "Survival",
+      "when": "in aboveground natural environments"
+    },
+    {
+      "from": "Knowledge (the planes)",
+      "to": "Survival",
+      "when": "while on other planes"
+    },
+    {
+      "from": "Search",
+      "to": "Survival",
+      "when": "to find or follow tracks"
+    },
+    {
+      "from": "Spellcraft",
+      "to": "Use magic device",
+      "when": "related to scrolls"
+    },
+    {
+      "from": "Use rope",
+      "to": "Climb",
+      "when": "to climb a rope, a knotted rope, or a rope-and-wall combination"
+    },
+    {
+      "from": "Handle animal",
+      "toCheck": "wildEmpathy"
+    },
+    {
+      "from": "Knowledge (history)",
+      "toCheck": "bardicKnowledge"
+    },
+    {
+      "from": "Knowledge (religion)",
+      "toCheck": "turnUndead",
+      "when": "against undead"
+    }
   ]
 }

@@ -91,13 +91,14 @@ The DM sets the DC, optionally adjusting by ±2 for favorable/unfavorable circum
 ## Synergy bonuses
 
 - Having **≥ 5 ranks** in skill X grants a `+2` synergy bonus to checks with related skill Y. Sometimes the bonus is conditional (only for a specific use of Y).
-- The full synergy mapping is in [src/data/skills.json](../../src/data/skills.json) (Table 4-5 in the rulebook). Examples of the pattern:
+- The full mapping is the **`Synergies` array** in [src/data/skills.json](../../src/data/skills.json) (Table 4-5 in the rulebook), beside the `Skills` array whose `Description` prose still describes each one in words. Every core entry is "5 ranks, +2", so neither number is stored per entry. Examples of the pattern:
   - 5 ranks in **Tumble** → +2 to Balance, +2 to Jump.
-  - 5 ranks in **Bluff** → +2 to Diplomacy, Intimidate, Sleight of Hand, and Disguise (when acting).
+  - 5 ranks in **Bluff** → +2 to Diplomacy, Intimidate, Sleight of hand, and Disguise (when acting in character while observed).
   - 5 ranks in **Knowledge (arcana)** → +2 to Spellcraft.
-  - 5 ranks in **Handle Animal** → +2 to Ride; +2 to wild empathy class checks.
-  - 5 ranks in **Survival** → +2 to Knowledge (nature) when following tracks.
-- Synergy bonuses are a **named bonus** type — multiple +2 synergies to the same skill stack only if they come from *different* source skills.
+  - 5 ranks in **Handle animal** → +2 to Ride; +2 to wild empathy class checks.
+  - 5 ranks in **Survival** → +2 to Knowledge (nature), unconditionally. It is **Search** that helps Survival, and only *to find or follow tracks*.
+- A target is not always a skill: Handle animal feeds **wild empathy**, Knowledge (history) feeds **bardic knowledge**, and Knowledge (religion) feeds a **turning check** — the check only, never the turning damage roll.
+- Synergy bonuses are a **named bonus** type — multiple +2 synergies to the same skill stack only if they come from *different* source skills. Diplomacy can reach +6, from Bluff, Knowledge (nobility and royalty) and Sense motive at once.
 
 ## Ability checks (no applicable skill)
 
