@@ -1,0 +1,409 @@
+/* --- TRAP GENERATOR ------------------------------------------------
+   The roll controls, the trap sheet, the two breakdown boxes, and the
+   board diagram. All sizing in rem per the CSS convention in CLAUDE.md. */
+
+.trap-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+}
+
+.trap-card {
+  width: 100%;
+  max-width: 42rem;
+}
+
+.trap-sheet {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+}
+
+/* --- the roll controls, in the sidebar and inline on a phone --- */
+
+.trap-roll {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+}
+
+.trap-roll-button {
+  margin-top: 0.25rem;
+  width: 100%;
+}
+
+/* --- fields --- */
+
+.trap-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: var(--space-2);
+  width: 100%;
+}
+
+.trap-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.trap-field-inline {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.trap-field-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: var(--font-size-xs);
+  color: var(--ink-muted);
+}
+
+.trap-number {
+  max-width: 6rem;
+}
+
+.trap-toggles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
+.trap-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: var(--font-size-sm);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+/* --- the sheet head --- */
+
+.trap-sheet-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  width: 100%;
+}
+
+.trap-name {
+  flex: 1 1 12rem;
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+}
+
+.trap-sheet-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.trap-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.15rem 0.5rem;
+  border: 0.0625rem solid var(--border-soft);
+  border-radius: 0.6rem;
+  font-size: var(--font-size-xs);
+  color: var(--ink-muted);
+  white-space: nowrap;
+}
+
+.trap-badge-cr {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.trap-badge.is-warn {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.trap-sheet-mismatch,
+.trap-line {
+  margin: var(--space-2) 0 0;
+  font-size: var(--font-size-sm);
+  line-height: 1.45;
+  color: var(--ink-muted);
+}
+
+.trap-line.is-note {
+  padding: var(--space-2);
+  border-left: 0.15rem solid var(--border-soft);
+  background: var(--surface-1);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+
+.trap-card-title {
+  margin: 0 0 var(--space-2);
+}
+
+/* --- breakdown boxes --- */
+
+.trap-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  width: 100%;
+}
+
+.trap-breakdown + .trap-breakdown {
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 0.0625rem solid var(--border-soft);
+}
+
+.trap-breakdown-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.trap-breakdown-title {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.trap-breakdown-total {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.trap-breakdown-rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.trap-breakdown-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.12rem 0;
+  font-size: var(--font-size-sm);
+  color: var(--ink-muted);
+}
+
+.trap-breakdown-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.trap-breakdown-value {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--ink);
+}
+
+.trap-breakdown-value.is-down {
+  color: var(--ink-muted);
+}
+
+.trap-breakdown-note {
+  margin: 0.2rem 0 0;
+  font-size: var(--font-size-xs);
+  line-height: 1.4;
+  color: var(--ink-muted);
+}
+
+/* --- the board diagram --- */
+
+.trap-diagram {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+}
+
+.trap-diagram-svg {
+  width: 100%;
+  max-width: 22rem;
+  height: auto;
+}
+
+.trap-cell {
+  fill: var(--surface-1);
+  stroke: var(--border-soft);
+  stroke-width: 0.05rem;
+}
+
+/* The squares the trap catches, and the trigger, are told apart by value
+   rather than by hue — the accent is whatever colour the player picked, so it
+   cannot carry meaning here. */
+.trap-cell.is-effect {
+  fill: var(--ink-muted);
+  opacity: 0.45;
+}
+
+.trap-cell.is-trigger {
+  fill: var(--danger);
+  opacity: 0.55;
+}
+
+.trap-cell.is-effect.is-trigger {
+  fill: var(--danger);
+  opacity: 0.8;
+}
+
+.trap-cell.is-wall {
+  fill: var(--ink);
+  opacity: 0.75;
+}
+
+.trap-diagram-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+}
+
+.trap-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: var(--font-size-xs);
+  color: var(--ink-muted);
+}
+
+.trap-swatch {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 0.15rem;
+  border: 0.0625rem solid var(--border-soft);
+}
+
+.trap-swatch.is-effect {
+  background: var(--ink-muted);
+  opacity: 0.45;
+}
+
+.trap-swatch.is-trigger {
+  background: var(--danger);
+  opacity: 0.55;
+}
+
+.trap-swatch.is-wall {
+  background: var(--ink);
+  opacity: 0.75;
+}
+
+.trap-diagram-caption {
+  margin: 0;
+  text-align: center;
+  font-size: var(--font-size-xs);
+  color: var(--ink-muted);
+}
+
+.trap-diagram-trigger-note {
+  font-style: italic;
+}
+
+.trap-diagram-caveat {
+  margin: 0;
+  text-align: center;
+  font-size: var(--font-size-xs);
+  line-height: 1.4;
+  color: var(--danger);
+}
+
+/* --- the catalogue --- */
+
+.trap-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.trap-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 22rem;
+  overflow-y: auto;
+}
+
+.trap-list-row {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  width: 100%;
+  padding: 0.3rem 0.4rem;
+  border: none;
+  border-bottom: 0.0625rem solid var(--border-soft);
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: var(--font-size-sm);
+  text-align: left;
+  cursor: pointer;
+}
+
+.trap-list-row:hover,
+.trap-list-row.is-current {
+  background: var(--surface-2, var(--surface-1));
+}
+
+.trap-list-cr {
+  flex: 0 0 3.2rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-muted);
+}
+
+.trap-list-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.trap-list-type {
+  flex: 0 0 auto;
+  font-size: var(--font-size-xs);
+  color: var(--ink-muted);
+}
+
+/* --- the empty state --- */
+
+.trap-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  text-align: center;
+  color: var(--ink-muted);
+}
+
+.trap-empty-icon {
+  font-size: 2rem;
+  opacity: 0.5;
+}
+
+.trap-empty p {
+  margin: 0;
+  max-width: 26rem;
+  font-size: var(--font-size-sm);
+  line-height: 1.5;
+}

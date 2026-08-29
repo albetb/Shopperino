@@ -9,6 +9,7 @@ import classesData from '../data/classes.json';
 import deitiesData from '../data/deities.json';
 import companionAbilitiesData from '../data/companionAbilities.json';
 import familiarAbilitiesData from '../data/familiarAbilities.json';
+import trapsData from '../data/traps.json';
 
 /*
  * The three creature files are deliberately NOT imported here.
@@ -86,7 +87,7 @@ function creatureFile(key) {
 
 /**
  * Load a data file by name. Returns the parsed content or null.
- * Supported: 'items' | 'scrolls' | 'tables' | 'spells' | 'feats' | 'skills' | 'skillsynergies' | 'races' | 'classes' | 'animals' | 'monsters' | 'vermin' | 'deities'
+ * Supported: 'items' | 'scrolls' | 'tables' | 'spells' | 'feats' | 'skills' | 'skillsynergies' | 'races' | 'classes' | 'animals' | 'monsters' | 'vermin' | 'deities' | 'traps'
  */
 export function loadFile(fileName) {
   try {
@@ -115,6 +116,8 @@ export function loadFile(fileName) {
         return creatureFile('monsters');
       case 'vermin':
         return creatureFile('vermin');
+      case 'traps':
+        return trapsData ?? { traps: [], tables: {} };
       case 'deities':
         return deitiesData?.deities ?? [];
       case 'companionabilities':

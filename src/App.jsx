@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import MainPage from './components/main_page/main_page';
 import InfoSidebar from './components/menus/info_sidebar/info_sidebar';
 import LootSidebar from './components/menus/loot_sidebar/loot_sidebar';
+import TrapSidebar from './components/menus/trap_sidebar/trap_sidebar';
 import ShopSidebar from './components/menus/shop_sidebar/shop_sidebar';
 import SpellbookSidebar from './components/menus/spellbook_sidebar/spellbook_sidebar';
 import PlayerSheetSidebar from './components/menus/player_sheet_sidebar/player_sheet_sidebar';
@@ -13,6 +14,7 @@ import SpellbookTable from './components/spellbook/spellbook_table';
 import SearchPage from './components/search/search_page';
 import PlayerSheetPage from './components/player_sheet/player_sheet_page';
 import MonsterBookPage from './components/monster_book/monster_book_page';
+import TrapPage from './components/trap/trap_page';
 import * as db from './lib/storage';
 import { preloadCreatureData } from './lib/loadFile';
 import useCreatureData from './components/hooks/useCreatureData';
@@ -220,6 +222,15 @@ export default function App() {
     </header>
   </>;
 
+  /* Its own tab, alongside the Monster Book, and master-only: a player has no
+     use for the trap they are about to walk into. */
+  const traps = <>
+    <TrapSidebar />
+    <header className="app-header">
+      <TrapPage />
+    </header>
+  </>;
+
   const playerSheet = <>
     <PlayerSheetSidebar />
     <header className="app-header">
@@ -236,6 +247,7 @@ export default function App() {
     4: search,
     5: playerSheet,
     6: monsterBook,
+    7: traps,
   };
 
   const currentTabContent = tabPages[currentTab] ??

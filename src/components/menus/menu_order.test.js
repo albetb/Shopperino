@@ -1,12 +1,13 @@
 import { TABS } from './top_menu';
 import { TILES } from '../main_page/main_page';
 
-/* The nav list and the home grid are two hand-written lists of the same seven
+/* The nav list and the home grid are two hand-written lists of the same eight
    tabs, and CLAUDE.md already flags that they have to stay in step. This is the
    part a test can hold: that they agree on the order, so a tool is not third in
    one place and last in the other. */
 
-const order = [4, 1, 3, 6, 2, 5]; // search, shop, loot, monsters, spellbook, sheet
+// search, shop, loot, monsters, spellbook, traps, sheet
+const order = [4, 1, 3, 6, 2, 7, 5];
 
 test('the nav list opens on Home and then follows the shared order', () => {
   expect(TABS[0].id).toBe(0);

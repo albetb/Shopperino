@@ -3747,7 +3747,6 @@
         "baseCostGp": 1000,
         "formula": "(modified base cost x CR) + poison/alchemical extras",
         "minimumCostGp": "CR x 100",
-        "automaticResetMultiplier": 20,
         "automaticResetConsumableMultiplier": 20,
         "trigger": {
           "location": 0,

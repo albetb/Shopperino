@@ -165,7 +165,7 @@ base  = 1,000 gp
 floor = CR × 100 gp
 ```
 
-Apply every modifier below to the 1,000 gp base *before* multiplying by CR. **If the trap has automatic reset, multiply the whole thing by 20** — and multiply any poison or alchemical cost by 20 as well, to stock enough doses.
+Apply every modifier below to the 1,000 gp base *before* multiplying by CR. **An automatic reset multiplies the cost of the poison or alchemical item by 20** — enough doses to keep resetting the trap — and *only* that. It does **not** multiply the trap itself; an earlier reading of this page said it did, and put every automatic-reset sample price out by a factor of twenty.
 
 | Feature | Cost modifier |
 |---|---|
@@ -214,6 +214,17 @@ Price each component trap separately and add the results — for both dependent 
 | 7–10 | 30 |
 
 Modifiers: **proximity trigger +5**, **automatic reset +5**. Progress is one Craft check per week; see [skills-detail.md](skills-detail.md) for the Craft procedure.
+
+## What the samples do and do not confirm
+
+The 105 sample traps and the tables above were printed together, so every sample is a worked example of these rules — which makes them the only real test of an implementation. Measured (see [trapCR.test.js](../../src/lib/trap/trapCR.test.js)):
+
+- **92 of the 102 single-trap samples** reproduce their printed CR exactly from the tables. The ten that do not are the book disagreeing with itself: three fusillades charged for multiple targets in one entry and not the next, two pits whose printed CR no combination of bands reaches, and the *large net trap*, whose grapple rule is prose.
+- **Rounding an exact tie up is confirmed, not stylistic.** Rounding average damage down on a tie loses six of those 92.
+- **A magic trap's Search DC declares its spell level** (`25 + SL`), and that is the number its printed CR follows. Against spells.json the two disagree on exactly two of the 33 magic samples — *earthquake* and *power word stun* — and in both the DC wins.
+- **The poison names differ between the two halves of the book.** The samples write them out in full (*large monstrous scorpion venom*); the CR table keys them short (*large scorpion venom*).
+- **A spell effect's damage is dice.** *earthquake*'s effect reads `65-ft. radius`; reading a leading bare number as damage rates that trap two CR too high.
+- **Multiple-trap entries are not rated by these tables at all** — the three of them state their component CRs in prose, and combine like encounter levels.
 
 ## Data in the app
 
