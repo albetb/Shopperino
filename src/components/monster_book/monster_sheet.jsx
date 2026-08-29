@@ -17,9 +17,12 @@ import {
   onAdjustMonsterHp,
   onCloseMonsterSheet,
   onResetMonsterHp,
+  onAddIndividual,
+  onRemoveIndividual,
   onSetMonsterBonus,
   onSetMonsterMaxLife,
 } from '../../store/thunks/monsterBookThunks';
+import { MAX_INDIVIDUALS } from '../../lib/monster/monsterRoster';
 import '../../style/menu_cards.css';
 import '../../style/monster_book.css';
 import AugmentSummoningNote from '../common/AugmentSummoningNote';
@@ -38,13 +41,89 @@ const BONUS_LABEL = {
 };
 
 /**
+ * One individual's hit points: bar, the same big −/readout/+ the player sheet
+ * uses, and a delete.
+ *
+ * A component rather than a loop body because each row owns hooks — its own
+ * long-press timers and its own feedback readout — and hooks cannot be created
+ * inside a map. Which is the right shape anyway: the rows are independent, and
+ * hurting the third goblin should not flash a number on the first.
+ */
+function MonsterHpRow({ individual, count, name, onAdjust, onRemove }) {
+  const { feedback, show } = useHpFeedback();
+
+  const handle = useCallback((delta) => {
+    onAdjust(delta, individual.index);
+    show(delta);
+  }, [onAdjust, show, individual.index]);
+
+  const longPressPlus = useLongPress(() => handle(10), () => handle(1), { delay: 400 });
+  const longPressMinus = useLongPress(() => handle(-10), () => handle(-1), { delay: 400 });
+
+  const plusDisabled = individual.currentHp >= individual.maxHp;
+  const minusDisabled = individual.currentHp <= -10;
+
+  return (
+    <div className={`monster-hp-row${individual.isDying ? ' is-down' : ''}`}>
+      {/* The number is only worth showing when there is more than one of them. */}
+      {count > 1 && (
+        <span className="sh-faint monster-hp-index">#{individual.index + 1}</span>
+      )}
+      <div className="monster-hp-main">
+        <Bar value={individual.ratio} variant={individual.isDying ? 'danger' : 'hp'} />
+        <div className="sh-row-h monster-hp-controls">
+          <IconButton
+            icon="remove"
+            {...(minusDisabled ? {} : longPressMinus)}
+            disabled={minusDisabled}
+            aria-label={count > 1 ? `Decrease HP of #${individual.index + 1}` : 'Decrease HP'}
+          />
+          <div
+            className="monster-hp-readout"
+            style={{
+              color: feedback ? (feedback.delta >= 0 ? 'var(--success)' : 'var(--danger)') : 'var(--ink)',
+              transition: 'color var(--t-base) var(--ease)',
+            }}
+          >
+            {feedback?.text ?? `${individual.currentHp} / ${individual.maxHp}`}
+          </div>
+          <IconButton
+            icon="add"
+            {...(plusDisabled ? {} : longPressPlus)}
+            disabled={plusDisabled}
+            aria-label={count > 1 ? `Increase HP of #${individual.index + 1}` : 'Increase HP'}
+          />
+        </div>
+      </div>
+      <IconButton
+        icon="close"
+        ghost
+        size="sm"
+        onClick={() => onRemove(individual.index)}
+        aria-label={count === 1
+          ? `Remove ${name} from the roster`
+          : `Remove ${name} #${individual.index + 1}`}
+        title={count === 1 ? 'Remove from the roster' : 'Remove this one'}
+      />
+    </div>
+  );
+}
+
+/**
  * One monster, laid out as the player sheet's combat tab so a master reads the
  * two the same way: hit points with a bar and steppers, a defence row, a saves
  * row, then attacks. Every number comes from the MonsterSheet model.
+ *
+ * **One entry, many individuals.** Everything on this sheet except the hit
+ * points is shared by every creature of this kind in the fight — a master
+ * ruling "these goblins are all +2 AC" says it once, and the health card grows
+ * a row per goblin instead.
  */
 export default function MonsterSheetView() {
   const dispatch = useDispatch();
-  const sheet = useSelector((state) => state.monsterBook.sheet);
+  const roster = useSelector((state) => state.monsterBook.roster);
+  const openIndex = useSelector((state) => state.monsterBook.openIndex);
+  const sheet = openIndex == null ? null : roster[openIndex];
 
   const [editBonus, setEditBonus] = useState(null);
   const [tempBonus, setTempBonus] = useState(0);
@@ -53,29 +132,17 @@ export default function MonsterSheetView() {
   const [tempMaxLife, setTempMaxLife] = useState(0);
   const [notesOpen, setNotesOpen] = useState(false);
 
-  /* Same readout behaviour as the player sheet: what just changed, briefly,
-     in place of the hp/max line. */
-  const { feedback: hpFeedback, show: showHpFeedback } = useHpFeedback();
-
-  const handleHp = useCallback((delta) => {
-    dispatch(onAdjustMonsterHp(delta));
-    showHpFeedback(delta);
-  }, [dispatch, showHpFeedback]);
-  const longPressPlus = useLongPress(() => handleHp(10), () => handleHp(1), { delay: 400 });
-  const longPressMinus = useLongPress(() => handleHp(-10), () => handleHp(-1), { delay: 400 });
+  /* Each health row owns its own readout and timers, so the adjust call is
+     all this level has to hand down. */
+  const adjustHp = useCallback((delta, individualIndex) => {
+    dispatch(onAdjustMonsterHp(delta, individualIndex));
+  }, [dispatch]);
 
   if (!sheet) return null;
 
   const maxHp = sheet.getMaxLife();
-  const currentHp = sheet.getCurrentHp();
-  // Same two-mode bar as the player sheet: a normal gradient above 0, and a
-  // "dying" red bar from 0 down to −10.
-  const isDying = currentHp <= 0;
-  const hpRatio = isDying
-    ? Math.max(0, Math.min(1, (currentHp + 10) / 10))
-    : (maxHp > 0 ? Math.max(0, Math.min(1, currentHp / maxHp)) : 0);
-  const plusDisabled = currentHp >= maxHp;
-  const minusDisabled = currentHp <= -10;
+  const individuals = sheet.getIndividuals();
+  const atIndividualCap = individuals.length >= MAX_INDIVIDUALS;
 
   const attacks = sheet.getAttacks();
   const specialAttacks = sheet.getSpecialAttacks();
@@ -83,13 +150,9 @@ export default function MonsterSheetView() {
   const feats = sheet.getFeats();
   const skills = sheet.getSkills();
 
-  /* Back to full health heals whatever damage stands — reported the same way
-     a manual heal is. Read before the dispatch, which is what clears it. */
-  const handleResetHp = () => {
-    const healed = sheet.getDamage();
-    dispatch(onResetMonsterHp());
-    if (healed > 0) showHpFeedback(healed);
-  };
+  /* Back to full health, every individual at once — the point of the button is
+     reusing the entry on the next fight rather than nursing one creature. */
+  const anyDamage = individuals.some((i) => i.damage > 0);
 
   const toggleEditBonus = (key) => {
     if (editBonus === key) { setEditBonus(null); return; }
@@ -172,46 +235,65 @@ export default function MonsterSheetView() {
         </div>
       </Card>
 
-      {/* Health — the same controls as the player sheet, plus a reset for
-          reusing one stat block across several identical creatures. */}
+      {/* Health — one row per individual of this kind, each with the same
+          controls the player sheet uses. The plus in the header adds another
+          creature; the x on a row removes one, and removing the last takes the
+          whole entry off the roster with it. */}
       <Card
-        title={`${currentHp} / ${maxHp} hp`}
+        title={individuals.length === 1
+          ? `${individuals[0].currentHp} / ${maxHp} hp`
+          : `${individuals.length} creatures`}
         className="sh-card--head-spread"
         eyebrow="Health"
         action={
-          <IconButton
-            icon="restart_alt"
-            ghost size="sm"
-            onClick={handleResetHp}
-            disabled={sheet.getDamage() === 0}
-            aria-label="Back to full health"
-            title="Back to full health"
-          />
+          <span className="sh-row-h" style={{ gap: 'var(--space-1)' }}>
+            <IconButton
+              icon="restart_alt"
+              ghost size="sm"
+              onClick={() => dispatch(onResetMonsterHp())}
+              disabled={!anyDamage}
+              aria-label="Back to full health"
+              title="Every one of them back to full"
+            />
+            <IconButton
+              icon="add"
+              ghost size="sm"
+              onClick={() => dispatch(onAddIndividual(openIndex))}
+              disabled={atIndividualCap}
+              aria-label={`Add another ${sheet.getName()}`}
+              title={atIndividualCap
+                ? `${MAX_INDIVIDUALS} is as many as one entry holds`
+                : 'Add another one of these'}
+            />
+          </span>
         }
       >
         <div className="sh-stack">
-          <Bar value={hpRatio} variant={isDying ? 'danger' : 'hp'} />
-          <div className="sh-row-h" style={{ justifyContent: 'space-between', gap: 'var(--space-2)' }}>
+          <div className="monster-hp-rows">
+            {individuals.map((individual) => (
+              <MonsterHpRow
+                key={individual.index}
+                individual={individual}
+                count={individuals.length}
+                name={sheet.getName()}
+                onAdjust={adjustHp}
+                onRemove={(i) => dispatch(onRemoveIndividual(openIndex, i))}
+              />
+            ))}
+          </div>
+          <div className="sh-row-h" style={{ gap: 'var(--space-2)', flexWrap: 'wrap' }}>
+            <Pill tone="ghost">{sheet.getHitDiceLine()}</Pill>
+            {individuals.length > 1 && (
+              <Pill tone="ghost">
+                {individuals.filter((i) => !i.isDying).length} still up
+              </Pill>
+            )}
             <IconButton
               icon={hpAdvancedOpen ? 'expand_less' : 'expand_more'}
               ghost size="sm"
               onClick={() => setHpAdvancedOpen((v) => !v)}
               aria-label={hpAdvancedOpen ? 'Hide max hp' : 'Show max hp'}
             />
-            <IconButton icon="remove" {...(minusDisabled ? {} : longPressMinus)} disabled={minusDisabled} aria-label="Decrease HP" />
-            <div
-              className="monster-hp-readout"
-              style={{
-                color: hpFeedback ? (hpFeedback.delta >= 0 ? 'var(--success)' : 'var(--danger)') : 'var(--ink)',
-                transition: 'color var(--t-base) var(--ease)',
-              }}
-            >
-              {hpFeedback?.text ?? `${currentHp} / ${maxHp}`}
-            </div>
-            <IconButton icon="add" {...(plusDisabled ? {} : longPressPlus)} disabled={plusDisabled} aria-label="Increase HP" />
-          </div>
-          <div className="sh-row-h" style={{ gap: 'var(--space-2)', flexWrap: 'wrap' }}>
-            <Pill tone="ghost">{sheet.getHitDiceLine()}</Pill>
           </div>
           {hpAdvancedOpen && (
             <div className="sh-row-h sh-spread">

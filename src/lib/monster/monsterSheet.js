@@ -100,14 +100,30 @@ function dragonAttacks(base, strMod) {
 /** The stats a master can nudge, in the order the sheet lays them out. */
 export const BONUS_KEYS = ['ac', 'initiative', 'speed', 'fort', 'reflex', 'will'];
 
+/**
+ * How many of one creature a single roster entry may hold.
+ *
+ * Far past any real encounter — a mob of twenty goblins is already more than a
+ * table wants to track individually — and it exists to bound the saved blob
+ * rather than to referee the fight. Going over is flagged, never blocked, per
+ * the project's compute-but-do-not-enforce rule.
+ */
+export const MAX_INDIVIDUALS = 20;
+
 export default class MonsterSheet {
   constructor(ref = '') {
     this.ref = ref;
-    /* Damage taken, not current HP — the same shape the Player model uses, so
-       a change to max HP does not silently heal or hurt the creature. */
-    this.damage = 0;
+    /* Damage taken per individual, not current HP — the same shape the Player
+       model uses, so a change to max HP does not silently heal or hurt anyone.
+     *
+     * One entry per creature of this kind in the fight. Everything else on
+     * this object is *shared*: eight goblins are eight numbers in this array
+     * and one stat block, one max-HP override and one set of bonuses. That is
+     * the whole point of the roster — a master who rules "these goblins are
+     * all +2 AC" says it once. */
+    this.damages = [0];
     /* Overrides the stat block's rolled hit points when set. Null means "use
-       the average printed in the block". */
+       the average printed in the block". Shared by every individual. */
     this.maxLife = null;
     BONUS_KEYS.forEach((key) => { this[`${key}Bonus`] = 0; });
   }
@@ -145,28 +161,112 @@ export default class MonsterSheet {
     this.maxLife = value == null ? null : Math.max(1, Math.floor(Number(value) || 1));
   }
 
-  getDamage() {
-    return Math.max(0, Math.floor(Number(this.damage) || 0));
+  // —— Individuals ——
+  //
+  // A roster entry is one *kind* of creature and however many of it are in the
+  // fight. Everything below is indexed by individual; everything above is
+  // shared. An index that names nobody is treated as the first, so a caller
+  // that has not caught up with a deletion gets a wrong answer rather than a
+  // crash.
+
+  /** How many of this creature are in the fight. */
+  getCount() {
+    return Array.isArray(this.damages) ? this.damages.length : 0;
   }
 
-  getCurrentHp() {
-    return this.getMaxLife() - this.getDamage();
+  /** Clamp an index onto the individuals that exist. */
+  _at(index) {
+    const count = this.getCount();
+    if (count === 0) return 0;
+    const i = Math.floor(Number(index) || 0);
+    return Math.max(0, Math.min(count - 1, i));
+  }
+
+  getDamage(index = 0) {
+    return Math.max(0, Math.floor(Number(this.damages?.[this._at(index)]) || 0));
+  }
+
+  getCurrentHp(index = 0) {
+    return this.getMaxLife() - this.getDamage(index);
+  }
+
+  /** True once an individual is at or below 0 — it stays on the card either way. */
+  isDead(index = 0) {
+    return this.getCurrentHp(index) <= 0;
   }
 
   /**
-   * Heal (positive) or hurt (negative). Clamped between full health and −10,
-   * the point at which a creature is dead — the same bounds the player sheet
-   * uses, so the two HP controls behave identically.
+   * Heal (positive) or hurt (negative) one individual. Clamped between full
+   * health and −10, the point at which a creature is dead — the same bounds
+   * the player sheet uses, so the two HP controls behave identically.
    */
-  adjustHp(delta) {
+  adjustHp(delta, index = 0) {
+    if (this.getCount() === 0) return;
+    const at = this._at(index);
     const max = this.getMaxLife();
-    const next = this.getDamage() - Math.floor(Number(delta) || 0);
-    this.damage = Math.max(0, Math.min(max + 10, next));
+    const next = this.getDamage(at) - Math.floor(Number(delta) || 0);
+    this.damages[at] = Math.max(0, Math.min(max + 10, next));
   }
 
-  /** Back to full, for reusing a stat block on the next identical creature. */
-  resetHp() {
-    this.damage = 0;
+  /** One individual back to full. */
+  resetHp(index = 0) {
+    if (this.getCount() === 0) return;
+    this.damages[this._at(index)] = 0;
+  }
+
+  /** Every individual back to full, for reusing the entry on the next fight. */
+  resetAllHp() {
+    this.damages = this.damages.map(() => 0);
+  }
+
+  /**
+   * Another one of this creature, at full health.
+   *
+   * Refuses past `MAX_INDIVIDUALS` and says so by returning false, so the
+   * caller can flag the ceiling rather than silently doing nothing.
+   */
+  addIndividual() {
+    if (!Array.isArray(this.damages)) this.damages = [];
+    if (this.damages.length >= MAX_INDIVIDUALS) return false;
+    this.damages.push(0);
+    return true;
+  }
+
+  /**
+   * Remove one individual. The entry may be left empty — the roster drops an
+   * entry whose last individual has gone, which is what deleting the last
+   * health bar is meant to do.
+   */
+  removeIndividual(index) {
+    if (this.getCount() === 0) return false;
+    this.damages.splice(this._at(index), 1);
+    return true;
+  }
+
+  /**
+   * The individuals as rows ready to draw: current and maximum hit points, the
+   * bar ratio, and whether this one is down.
+   *
+   * The two-mode ratio matches the player sheet — a normal bar above 0, and a
+   * "dying" bar counting the ten points from 0 to −10 — so a master reads a
+   * monster's health the same way they read a character's.
+   */
+  getIndividuals() {
+    const max = this.getMaxLife();
+    return (this.damages || []).map((_, index) => {
+      const currentHp = this.getCurrentHp(index);
+      const dying = currentHp <= 0;
+      return {
+        index,
+        damage: this.getDamage(index),
+        currentHp,
+        maxHp: max,
+        isDying: dying,
+        ratio: dying
+          ? Math.max(0, Math.min(1, (currentHp + 10) / 10))
+          : (max > 0 ? Math.max(0, Math.min(1, currentHp / max)) : 0),
+      };
+    });
   }
 
   // —— Bonuses ——
@@ -182,7 +282,8 @@ export default class MonsterSheet {
 
   /** True when any bonus is set or damage taken — i.e. the sheet is dirty. */
   hasAdjustments() {
-    if (this.getDamage() !== 0) return true;
+    if ((this.damages || []).some((d) => (Number(d) || 0) !== 0)) return true;
+    if (this.getCount() > 1) return true;
     if (this.maxLife != null) return true;
     return BONUS_KEYS.some((key) => this.getBonus(key) !== 0);
   }
@@ -303,15 +404,19 @@ export default class MonsterSheet {
   // —— Persistence ——
 
   /**
-   * Compact tuple: `[ref, damage, maxLife, ...bonuses]`. maxLife is 0 when
-   * unset, since a real override is always at least 1.
+   * Compact tuple: `[ref, maxLife, ...bonuses, ...damages]`.
+   *
+   * The damages go **last** because they are the one variable-length part —
+   * everything before them sits at a fixed index, so reading the tuple needs
+   * no length arithmetic. maxLife is 0 when unset, since a real override is
+   * always at least 1.
    */
   serialize() {
     return [
       this.ref,
-      this.getDamage(),
       this.maxLife == null ? 0 : this.getMaxLife(),
       ...BONUS_KEYS.map((key) => this.getBonus(key)),
+      ...(this.damages || []).map((_, i) => this.getDamage(i)),
     ];
   }
 
@@ -321,10 +426,14 @@ export default class MonsterSheet {
     if (!ref) return null;
     const sheet = new MonsterSheet(ref);
     if (!sheet.isValid()) return null;
-    sheet.damage = Math.max(0, Math.floor(Number(tuple[1]) || 0));
-    const maxLife = Math.floor(Number(tuple[2]) || 0);
+    const maxLife = Math.floor(Number(tuple[1]) || 0);
     sheet.maxLife = maxLife > 0 ? maxLife : null;
-    BONUS_KEYS.forEach((key, i) => sheet.setBonus(key, tuple[3 + i]));
+    BONUS_KEYS.forEach((key, i) => sheet.setBonus(key, tuple[2 + i]));
+    const damages = tuple.slice(2 + BONUS_KEYS.length)
+      .map((d) => Math.max(0, Math.floor(Number(d) || 0)));
+    /* An entry with no individuals cannot exist — the roster drops it — so a
+       tuple that somehow carries none is read as a single healthy creature. */
+    sheet.damages = damages.length > 0 ? damages : [0];
     return sheet;
   }
 

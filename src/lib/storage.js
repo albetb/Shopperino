@@ -6,7 +6,7 @@ import Player from './player';
 import * as appState from './appState';
 import { normalizeMultiplierMask, rollFromTuple } from './dice';
 import { filtersFromTuple } from './monster/monsterFilters';
-import MonsterSheet from './monster/monsterSheet';
+import { rosterFromTuples } from './monster/monsterRoster';
 
 // Re-export appState so consumers can use db.loadApp, db.saveApp, etc.
 export const loadApp = appState.loadApp;
@@ -136,13 +136,18 @@ export function getDiceLastRoll(app) {
   return rollFromTuple(app?.dlr);
 }
 
-/* Monster book. The filters and the one open sheet are master-side tools with
-   no character attached, so they live on the root app object too. */
+/* Monster book. The filters and the roster are master-side tools with no
+   character attached, so they live on the root app object too. */
 export function getMonsterBookFilters(app) {
   return filtersFromTuple(app?.mbf);
 }
-export function getMonsterBookSheet(app) {
-  return MonsterSheet.load(app?.mbs);
+export function getMonsterRoster(app) {
+  return rosterFromTuples(app?.mbr);
+}
+/** Which roster entry has its sheet open, or null when the list is showing. */
+export function getMonsterOpenIndex(app) {
+  const index = Math.floor(Number(app?.mbo));
+  return Number.isFinite(index) && index >= 0 ? index : null;
 }
 
 export function setAppUIFlag(app, bit, value) {

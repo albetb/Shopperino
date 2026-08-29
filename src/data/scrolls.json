@@ -4484,7 +4484,7 @@
     },
     {
       "Chance": 3,
-      "Link": "remove-blindness/deafness",
+      "Link": "remove-blindness-deafness",
       "Name": "Scroll of Remove blindness/deafness",
       "Cost": 375,
       "Level": 3,

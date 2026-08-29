@@ -54,7 +54,7 @@ import { setShop, setShopGenerated } from './store/slices/shopSlice';
 import { setCity } from './store/slices/citySlice';
 import { setWorldsList, setSelectedWorldIndex, setWorld } from './store/slices/worldSlice';
 import { setCharactersList, setSelectedCharacterIndex, setPlayer, setIsPlayerSheetSidebarCollapsed, setPlayerSheetMainView, setPlayerSheetCardsCollapsed, setCombatPageCardsCollapsed } from './store/slices/playerSheetSlice';
-import { setMonsterFilters, setMonsterSheet } from './store/slices/monsterBookSlice';
+import { setMonsterFilters, setMonsterRoster, setMonsterOpenIndex } from './store/slices/monsterBookSlice';
 import { setPersist } from './store/slices/persistSlice';
 import './style/App.css';
 import './style/buttons.css';
@@ -78,12 +78,19 @@ export default function App() {
     dispatch(setAccent(db.getAccent(app)));
     dispatch(setDiceMultiplierMask(db.getDiceMultiplierMask(app)));
     dispatch(setDiceLastRoll(db.getDiceLastRoll(app)));
-    dispatch(setMonsterSheet(db.getMonsterBookSheet(app)));
     /* The bestiary is a lazy chunk (see loadFile.js). Start it now, so it is in
        place long before anything asks for a creature, and read the monster-book
-       filters only once it is — their CR bounds are derived from the data. */
+       filters only once it is — their CR bounds are derived from the data.
+
+       The roster waits for the same reason and a sharper one: MonsterSheet.load
+       validates its ref against the bestiary, so reading it any earlier throws
+       every saved creature away. */
     preloadCreatureData()
-      .then(() => dispatch(setMonsterFilters(db.getMonsterBookFilters(app))))
+      .then(() => {
+        dispatch(setMonsterFilters(db.getMonsterBookFilters(app)));
+        dispatch(setMonsterRoster(db.getMonsterRoster(app)));
+        dispatch(setMonsterOpenIndex(db.getMonsterOpenIndex(app)));
+      })
       .catch(() => {});
 
     const worlds = db.getWorldsList(app);

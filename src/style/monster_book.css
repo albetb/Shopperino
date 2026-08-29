@@ -162,3 +162,114 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* —— The roster card: what is in the fight right now —— */
+
+.roster-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.roster-entry {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+/* The entry whose sheet is showing, so the two views read as one thing. */
+.roster-entry.is-open .roster-entry-name {
+  font-weight: 600;
+}
+
+.roster-entry-head,
+.roster-entry-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.roster-entry-head {
+  justify-content: space-between;
+}
+
+.roster-entry-name {
+  min-width: 0;
+  text-align: left;
+}
+
+/* One line per individual: index, bar, numbers, delete. The bar is the only
+   part that flexes, so the numbers stay in a readable column down the card. */
+.roster-hp {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding-left: var(--space-2);
+}
+
+.roster-hp > .bar,
+.roster-hp > [class*='bar'] {
+  flex: 1 1 auto;
+  min-width: 3rem;
+}
+
+.roster-hp-index {
+  flex: 0 0 1.75rem;
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.roster-hp-numbers {
+  flex: 0 0 auto;
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Down, not gone: a creature at 0 stays on the roster until the master
+   clears it away, and reads as spent rather than disappearing. */
+.roster-hp.is-down {
+  opacity: 0.6;
+}
+
+/* —— The health card, one row per individual —— */
+
+.monster-hp-rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.monster-hp-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.monster-hp-row.is-down {
+  opacity: 0.7;
+}
+
+.monster-hp-index {
+  flex: 0 0 1.75rem;
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.monster-hp-main {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.monster-hp-controls {
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+/* With several rows on the card the oversized single-creature readout is too
+   loud, so it steps down a size once it is one of many. */
+.monster-hp-row .monster-hp-readout {
+  font-size: var(--font-size-xl);
+}

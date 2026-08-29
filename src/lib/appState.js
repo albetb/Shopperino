@@ -9,7 +9,7 @@ import Shop from './shop';
 import Spellbook from './spellbook';
 import Loot from './loot';
 
-const CURRENT_VERSION = 260608;
+const CURRENT_VERSION = 260609;
 const ROOT_KEY = 'app';
 
 //#region UI bitmask
@@ -81,7 +81,8 @@ export function getDefaultApp() {
     dcm: 1,         // dice roller: count-button selection, one bit per button
     dlr: [],        // dice roller: last roll as [sides, ...rolls]
     mbf: [],        // monster book filters: [srcMask, name, type, size, terrain, crMin, crMax]
-    mbs: [],        // monster book sheet: [ref, damage, maxLife, ...bonuses]
+    mbr: [],        // monster book roster: array of [ref, maxLife, ...bonuses, ...damages]
+    mbo: -1,        // monster book: index of the open roster entry, -1 for none
   };
 }
 
