@@ -423,6 +423,8 @@ export const onPlayerRest = () => (dispatch, getState) => {
   if (player) {
     player.resetGnomeSpellUses();
     player.resetClassFeatureUses();
+    // A rod's allowance is per day and comes back; a wand's 50 charges do not.
+    player.resetHeldItemsOnRest();
     // A night's natural healing: 1 HP per character level, never past the
     // maximum (combat.md). healAsIfRested floors damage at 0, which is the
     // same cap expressed the other way round.
@@ -609,6 +611,23 @@ export const onSetCombatExpertise = (value) => (dispatch, getState) => {
   const player = getState().playerSheet?.player;
   if (!player) return;
   player.setCombatExpertise?.(value);
+  persistPlayer(dispatch, getState, player);
+};
+
+/* Charges out of a held item — a wand, a staff, or a rod with a per-day
+   allowance. Keyed by the item rather than the slot, so moving it between
+   hands or unequipping it does not refill it. */
+export const onSpendHeldItemCharges = (id, amount = 1) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player) return;
+  player.spendHeldItemCharges?.(id, amount);
+  persistPlayer(dispatch, getState, player);
+};
+
+export const onResetHeldItemCharges = (id) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player) return;
+  player.resetHeldItemCharges?.(id);
   persistPlayer(dispatch, getState, player);
 };
 

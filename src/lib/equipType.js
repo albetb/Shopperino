@@ -4,18 +4,26 @@ const NON_EQUIPPABLE_TYPES = new Set(['Potion', 'Scroll', 'Ammo']);
 const ARMOR_TYPES = new Set(['Armor', 'Specific Armor', 'Magic Armor']);
 const SHIELD_TYPES = new Set(['Shield', 'Specific Shield']);
 const WEAPON_TYPES = new Set(['Weapon', 'Specific Weapon', 'Magic Weapon']);
+/* Wands, rods and staffs are **held**, not worn: they are absent from the
+   twelve body slots, and activating one requires it to be in a hand
+   (dnd-rules/magic-items.md). They used to fall off the end of the type
+   checks into 'other', which put them in the same four accessory slots as a
+   cloak — so a two-handed weapon and a wand could both be ready at once. */
+const HELD_TYPES = new Set(['Rod', 'Staff', 'Wand']);
 const TWO_HAND_SUBTYPES = new Set(['Two-Handed Melee Weapons', 'Ranged Weapons']);
 
 /**
  * Returns the equip category of an inventory item:
  *   'none'     — not equippable (Potion, Scroll, Ammo)
  *   'armor'    — goes in the armor slot
- *   'one-hand' — goes in a single hand slot (rh1/lh1/rh2/lh2)
+ *   'one-hand' — a weapon or shield in a single hand slot (rh1/lh1/rh2/lh2)
+ *   'held'     — a wand, rod or staff in a single hand slot: it occupies the
+ *                hand exactly as a weapon does, but has no attack of its own
  *   'two-hand' — goes in a full hand set (set1 or set2)
  *   'other'    — goes in an other slot (other1–other4)
  *
  * @param {{ ItemType: string, Link: string|null }} item
- * @returns {'none'|'armor'|'one-hand'|'two-hand'|'other'}
+ * @returns {'none'|'armor'|'one-hand'|'held'|'two-hand'|'other'}
  */
 export function getEquipType(item) {
   if (!item) return 'none';
@@ -24,6 +32,7 @@ export function getEquipType(item) {
   if (NON_EQUIPPABLE_TYPES.has(ItemType)) return 'none';
   if (ARMOR_TYPES.has(ItemType)) return 'armor';
   if (SHIELD_TYPES.has(ItemType)) return 'one-hand';
+  if (HELD_TYPES.has(ItemType)) return 'held';
   if (WEAPON_TYPES.has(ItemType)) {
     const ref = getItemByRef(Link);
     const subtype = ref?.raw?.Subtype || '';

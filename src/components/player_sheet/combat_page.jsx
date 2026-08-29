@@ -31,6 +31,8 @@ import Card from '../common/Card';
 import StatPill from '../common/StatPill';
 import StatInfo from '../common/StatInfo';
 import CombatStancesRow from './combat_stances_row';
+import HeldItemsRows from './held_items_rows';
+import { isHeldItemType, heldTypeOfRaw } from '../../lib/item/heldItems';
 import InfoPopover from '../common/InfoPopover';
 import Bar from '../common/Bar';
 import Pill from '../common/Pill';
@@ -200,6 +202,11 @@ export default function CombatPage() {
       if (/\/(Shield|Specific Shield)\//.test(w.link)) return;
       const rawItem = getItemByRef(w.baseLink || w.link)?.raw;
       if (!rawItem) return;
+      /* A wand, rod or staff occupies a hand but is not an attack. Some rods
+         double as light maces, so the test is whether the entry carries
+         weapon damage rather than what category it came from — a rod that
+         really is a weapon still earns its row. */
+      if (isHeldItemType(w.ItemType ?? heldTypeOfRaw(rawItem)) && !rawItem['Dmg (M)']) return;
       const item = applyItemOverrides(rawItem, w.overrides);
       const displayName = w.overrides?.Name ?? w.name;
       weapons.push({ slot, name: displayName, link: w.link, weaponItem: item, isTwoHanded: w.twoHanded === true, itemData: w });
@@ -880,6 +887,9 @@ export default function CombatPage() {
               </div>
             </div>
           )}
+          {/* Wands, rods and staffs: what the character can do with what is in
+              their hands, beside what they can swing. */}
+          <HeldItemsRows />
           {hasCombatReflexes && (
             <div
               className="sh-row-h sh-spread"

@@ -21,7 +21,15 @@ import { listAnimals, getCreatureBaseByRef } from '../animal/animalsUtils';
 import { parseAttacks, recomputeAttack } from '../animal/attackParser';
 import { getBaseFeatName, UNARMED_STRIKE } from '../featChoices';
 import { spellAllowsSave } from '../spellbook/spellsUtils';
-import { DOMAINS } from '../spellbook/spellbook';
+import { DOMAINS, CLASSSPELLKEY } from '../spellbook/spellbook';
+import {
+  resolveHeldItem,
+  getHeldItemSpells,
+  getHeldItemCasterLevel,
+  getHeldItemMaxCharges,
+  getRodMetamagicFeat,
+  refreshesOnRest,
+} from '../item/heldItems';
 import {
   getFeatSkillBonus,
   getFeatSaveBonus,
@@ -388,6 +396,12 @@ class Player {
        character who is not using the feat, so no version bump. */
     this.powerAttack = 0;
     this.combatExpertise = 0;
+    /* Charges spent out of held items — wands, staffs and the rods with a
+       per-day allowance — keyed by the item's items.json `id`.
+       Charges belong to the **item**, not the slot: moving a half-spent wand
+       from one hand to the other, or unequipping and re-equipping it, must not
+       refill it. Absent means nothing spent, so a newly found item is full. */
+    this.heldCharges = {};
     /* Ranger favored enemies, in selection order. Each entry is
        { type, subtype?, bonus }; the bonus rises in steps of 2 when a later
        slot is spent raising an existing enemy rather than naming a new one. */
@@ -585,6 +599,14 @@ class Player {
 
     if (data.raging !== undefined) this.raging = !!data.raging;
 
+    if (data.heldCharges && typeof data.heldCharges === 'object') {
+      this.heldCharges = {};
+      Object.entries(data.heldCharges).forEach(([id, n]) => {
+        const spent = Math.max(0, Math.floor(Number(n)));
+        if (Number.isFinite(spent) && spent > 0) this.heldCharges[id] = spent;
+      });
+    }
+
     if (data.powerAttack !== undefined) this.setPowerAttack(data.powerAttack);
     if (data.combatExpertise !== undefined) this.setCombatExpertise(data.combatExpertise);
 
@@ -754,6 +776,9 @@ class Player {
       classFeatureUses: this.classFeatureUses && typeof this.classFeatureUses === 'object' ? { ...this.classFeatureUses } : {},
       spellSwapsUsed: Math.max(0, Math.floor(Number(this.spellSwapsUsed) || 0)),
       raging: !!this.raging,
+      heldCharges: this.heldCharges && typeof this.heldCharges === 'object'
+        ? { ...this.heldCharges }
+        : {},
       powerAttack: this.getPowerAttack(),
       combatExpertise: this.getCombatExpertise(),
       favoredEnemies: Array.isArray(this.favoredEnemies)
@@ -3173,6 +3198,144 @@ class Player {
   /** Whether the character has flurry of blows at all. */
   hasFlurryOfBlows() {
     return this.getFlurryOfBlows().extraAttacks > 0;
+  }
+
+  /* —— Held items: wands, rods and staffs ——
+     They occupy a hand rather than one of the twelve body slots, so they
+     compete with weapons and shields — which is the point. Everything the
+     item itself knows is read by lib/item/heldItems.js; what is here is what
+     needs the character: whether they can activate it, and what is left in
+     it. Rules: dnd-rules/magic-items.md. */
+
+  /** The four hand slots, primary set first. */
+  static HAND_SLOTS = ['rh1', 'lh1', 'rh2', 'lh2'];
+
+  /** The second hand set is the one you would have to swap to. */
+  static SECONDARY_HAND_SLOTS = ['rh2', 'lh2'];
+
+  /**
+   * Every held item currently in a hand, resolved and costed.
+   *
+   * Each entry carries what the card needs to draw a row: the spells it casts
+   * with their charge cost, what is left of its charges, and whether the
+   * character can actually activate it.
+   */
+  getHeldItems() {
+    return Player.HAND_SLOTS
+      .map((slot) => {
+        const entry = this.equipment?.[slot];
+        if (!entry?.link && !Number.isInteger(entry?.id)) return null;
+        const resolved = resolveHeldItem(entry);
+        if (!resolved || !['Wand', 'Rod', 'Staff'].includes(resolved.itemType)) return null;
+        const { raw, itemType } = resolved;
+        const spells = getHeldItemSpells(raw, itemType).map((spell) => ({
+          ...spell,
+          casterLevel: getHeldItemCasterLevel(raw, this.getSpellLevelForItem(spell.link)),
+          ...this.canActivateSpellTrigger(spell.link),
+        }));
+        const max = getHeldItemMaxCharges(raw, itemType);
+        const spent = this.getHeldItemSpent(raw.id);
+        return {
+          slot,
+          id: raw.id,
+          name: entry.overrides?.Name ?? entry.name ?? raw.Name,
+          link: raw.Link,
+          itemType,
+          spells,
+          maxCharges: max,
+          spent,
+          remaining: Math.max(0, max - spent),
+          refreshesOnRest: refreshesOnRest(itemType),
+          metamagicFeat: itemType === 'Rod' ? getRodMetamagicFeat(raw) : '',
+          /* The alternate hand set: still equipped, but you would have to
+             swap to it before using it, so the card shows it dimmed. */
+          isSecondarySet: Player.SECONDARY_HAND_SLOTS.includes(slot),
+        };
+      })
+      .filter(Boolean);
+  }
+
+  /** Whether any held item is in hand at all. */
+  hasHeldItems() {
+    return this.getHeldItems().length > 0;
+  }
+
+  /**
+   * The level a spell occupies on this character's own class list, or `null`
+   * when the spell is not on it at all. Domain and prestige tags are ignored:
+   * this asks the one question spell trigger asks.
+   */
+  getSpellLevelForItem(spellLink) {
+    const key = CLASSSPELLKEY[this.getClass()];
+    if (!key) return null;
+    const spell = (loadFile('spells') || []).find((s) => s.Link === spellLink);
+    if (!spell) return null;
+    /* No escaping needed: the six keys are 'Sor/Wiz', 'Clr', 'Drd', 'Brd',
+       'Rgr' and 'Pal', and none carries a regex metacharacter. */
+    const match = String(spell.Level || '').match(new RegExp(`${key}\\s+(\\d+)`, 'i'));
+    return match ? Number(match[1]) : null;
+  }
+
+  /**
+   * Whether this character can activate a wand or staff holding one spell.
+   *
+   * Spell trigger is gated on the spell being **on your class's spell list**
+   * and on nothing else — not on having it prepared, not on knowing it, and
+   * **not on your level**. The rules make the last point explicitly: the
+   * ability extends to a character who cannot cast at all, naming a 3rd-level
+   * paladin. So a 1st-level wizard fires a wand of fireball normally.
+   *
+   * Per the non-enforcing rule this is only ever reported, never blocked, and
+   * the reason names Use Magic Device because a rogue with ranks in it really
+   * can fire the wand anyway.
+   *
+   * @returns {{usable: boolean, reason: string}}
+   */
+  canActivateSpellTrigger(spellLink) {
+    if (this.getSpellLevelForItem(spellLink) !== null) return { usable: true, reason: '' };
+    const cls = this.getClass() || 'your class';
+    return {
+      usable: false,
+      reason: `Not on the ${cls} spell list — you would need a Use Magic Device check (DC 20)`,
+    };
+  }
+
+  /** Charges already spent out of one held item. */
+  getHeldItemSpent(id) {
+    if (!Number.isInteger(id)) return 0;
+    return Math.max(0, Math.floor(Number(this.heldCharges?.[id]) || 0));
+  }
+
+  /**
+   * Spend charges out of a held item, or give them back with a negative
+   * amount. Going past what the item holds is accepted and flagged by the
+   * card, per the non-enforcing rule — the table is the authority on what is
+   * left in a looted wand.
+   */
+  spendHeldItemCharges(id, amount = 1) {
+    if (!Number.isInteger(id)) return;
+    if (!this.heldCharges || typeof this.heldCharges !== 'object') this.heldCharges = {};
+    const next = Math.max(0, this.getHeldItemSpent(id) + Math.floor(Number(amount) || 0));
+    if (next === 0) delete this.heldCharges[id];
+    else this.heldCharges[id] = next;
+  }
+
+  /** Refill one held item — the button beside its counter. */
+  resetHeldItemCharges(id) {
+    if (this.heldCharges) delete this.heldCharges[id];
+  }
+
+  /**
+   * A night's rest refills the rods, and nothing else.
+   *
+   * A rod's allowance is **per day**; a wand's and a staff's 50 charges are
+   * spent for good. So this walks the held items rather than clearing the
+   * whole map, which would silently refill every wand in the party.
+   */
+  resetHeldItemsOnRest() {
+    this.getHeldItems()
+      .filter((item) => item.refreshesOnRest)
+      .forEach((item) => this.resetHeldItemCharges(item.id));
   }
 
   /* —— Two-weapon fighting ——

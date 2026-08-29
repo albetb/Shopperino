@@ -3,6 +3,7 @@ import { getItemByRef, calculateWeaponAttackBonus, calculateWeaponDamage, applyI
 import formatItemName from '../../../lib/item/formatItemName';
 import { getEffectById } from '../../../lib/item/effectsUtils';
 import '../../../style/equipment_grid.css';
+import { resolveHeldItem } from '../../../lib/item/heldItems';
 
 const SLOT_CONFIG = {
   lh1: { label: 'Left Hand 1', icon: 'game_button_l1' },
@@ -80,7 +81,16 @@ function EquipmentSlotBox({ slotKey, dataSlot, config, entry, onUnequip, onOpenC
      "Armor/Shield Bonus" instead of attack + damage. */
   const isShield = isHandSlot && typeof entry?.link === 'string'
     && /\/(Shield|Specific Shield)\//.test(entry.link);
-  const isWeaponSlot = isHandSlot && !isShield;
+  /* A hand can hold three kinds of thing, not two. A shield was the first
+     non-weapon; a wand, rod or staff is the third, and it has no attack and no
+     damage — a stick rendered through the weapon calculators would show "+4"
+     and "1d6" for something that hits with neither. Some rods really are light
+     maces, so the test is whether the entry carries weapon damage rather than
+     which category it came from. */
+  const isHeld = isHandSlot
+    && !!resolveHeldItem(entry)
+    && !resolveHeldItem(entry).raw['Dmg (M)'];
+  const isWeaponSlot = isHandSlot && !isShield && !isHeld;
 
   let attackBonus = null;
   let damage = null;

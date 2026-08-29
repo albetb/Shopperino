@@ -10,6 +10,15 @@ const EQUIP_BUTTONS = {
     { slot: 'lh2', icon: 'game_button_l2' },
     { slot: 'rh2', icon: 'game_button_r2' },
   ],
+  /* A held item takes a hand exactly as a one-handed weapon does, so it
+     offers the same four slots. It is a separate category because nothing
+     downstream should mistake a wand for something that can attack. */
+  'held': [
+    { slot: 'lh1', icon: 'game_button_l1' },
+    { slot: 'rh1', icon: 'game_button_r1' },
+    { slot: 'lh2', icon: 'game_button_l2' },
+    { slot: 'rh2', icon: 'game_button_r2' },
+  ],
   'two-hand': [
     { slot: 'set1', icon: 'filter_1' },
     { slot: 'set2', icon: 'filter_2' },

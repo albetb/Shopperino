@@ -4747,7 +4747,7 @@
       "Link": "staff-of-healing",
       "Name": "Staff of Healing",
       "Cost": 27750,
-      "Description": "<p>This white ash staff, with inlaid silver runes, allows use of the following spells:</p>  <ul> <li><a href=\"spells#lesser-restoration\">Lesser restoration</a> (1 charge)</li> <li><a href=\"spells#cure-serious-wounds\">Cure serious wounds</a> (1 charge)</li> <li><a href=\"spells#remove-blindness/deafness\">Remove blindness/deafness</a> (2 charges)</li> <li><a href=\"spells#remove-disease\">Remove disease</a> (3 charges)</li> </ul> <p>Moderate conjuration; CL 8th; Craft Staff, cure serious wounds, lesser restoration, remove blindness/deafness, remove disease; Price 27,750 gp.</p>",
+      "Description": "<p>This white ash staff, with inlaid silver runes, allows use of the following spells:</p>  <ul> <li><a href=\"spells#lesser-restoration\">Lesser restoration</a> (1 charge)</li> <li><a href=\"spells#cure-serious-wounds\">Cure serious wounds</a> (1 charge)</li> <li><a href=\"spells#remove-blindness-deafness\">Remove blindness/deafness</a> (2 charges)</li> <li><a href=\"spells#remove-disease\">Remove disease</a> (3 charges)</li> </ul> <p>Moderate conjuration; CL 8th; Craft Staff, cure serious wounds, lesser restoration, remove blindness/deafness, remove disease; Price 27,750 gp.</p>",
       "id": 429
     },
     {

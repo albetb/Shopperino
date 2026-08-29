@@ -1,0 +1,86 @@
+/* Wands, rods and staffs at the foot of the attacks card
+   (held_items_rows.jsx). All sizing is in rem per the CSS convention in
+   CLAUDE.md. */
+
+.held-items {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  border-top: 0.0625rem solid var(--border-soft);
+  padding-top: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.held-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+/* The alternate hand set: still equipped, but it would have to be swapped in
+   before it could be used, so it reads as secondary rather than ready. */
+.held-item.is-stowed {
+  opacity: 0.55;
+}
+
+.held-item-head,
+.held-item-spell {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.held-item-name,
+.held-item-spell-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  min-width: 0;
+}
+
+/* The spells sit under the item that casts them, indented so the block reads
+   as one thing rather than as a flat list of unrelated rows. */
+.held-item-spell {
+  padding-left: 1.5rem;
+  font-size: var(--font-size-sm);
+}
+
+.held-item-spell-meta,
+.held-item-charges {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.held-item-count {
+  font-size: var(--font-size-lg);
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+
+.held-item-sep {
+  opacity: 0.5;
+  padding: 0 0.1rem;
+}
+
+/* Spent past what the item holds: flagged, never blocked. */
+.held-item-count.is-over {
+  color: var(--warn, #d98b2b);
+  font-weight: 600;
+}
+
+.held-item-cl,
+.held-item-note {
+  font-size: 0.85em;
+}
+
+.held-item-stowed-note {
+  font-size: 0.8em;
+  text-transform: lowercase;
+}
+
+.held-item-warn {
+  margin-left: 1.5rem;
+}
