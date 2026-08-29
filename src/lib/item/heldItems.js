@@ -277,3 +277,17 @@ export function getRodMetamagicFeat(raw) {
   if (!m) return '';
   return m[1].replace(/-/g, ' ').replace(/^./, (c) => c.toUpperCase());
 }
+
+/**
+ * The highest spell level a metamagic rod will work on, or 0 for anything
+ * that is not one.
+ *
+ * This is the **only** mechanical difference between the three tiers - lesser
+ * reaches 3rd level, normal 6th, greater 9th - and the SRD states it once in
+ * the category's own preamble rather than in each rod's entry, so it was
+ * missing from every one of the eighteen rows and all three tiers behaved
+ * identically. It now sits on the row as `metamagicMaxSpellLevel`.
+ */
+export function getRodMetamagicMaxLevel(raw) {
+  return Math.max(0, Math.floor(Number(raw?.metamagicMaxSpellLevel) || 0));
+}

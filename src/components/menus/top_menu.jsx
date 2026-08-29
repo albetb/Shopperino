@@ -21,7 +21,7 @@ export const TABS = [
   { id: 3, label: 'Loot',         icon: 'paid',          masterOnly: true  },
   { id: 6, label: 'Monsters',     icon: 'skull',         masterOnly: true  },
   { id: 2, label: 'Spellbook',    icon: 'auto_stories',  masterOnly: false },
-  { id: 5, label: 'Player sheet - BETA', icon: 'badge',  masterOnly: false },
+  { id: 5, label: 'Player sheet', icon: 'badge',  masterOnly: false },
 ];
 
 export default function TopMenu() {

@@ -221,27 +221,27 @@ export const onUnlearnSpell = spell_link => (dispatch, getState) => {
   persistSpellbook(dispatch, getState, s);
 };
 
-export const onPrepareSpell = spell_link => (dispatch, getState) => {
+export const onPrepareSpell = (spell_link, mm = 0) => (dispatch, getState) => {
   const app = getState().persist;
   if (app.ssb == null || app.ssb < 0 || !app.sb?.[app.ssb]) return;
   const s = db.getSpellbookByIndex(app, app.ssb);
-  s.prepareSpell(spell_link);
+  s.prepareSpell(spell_link, mm);
   persistSpellbook(dispatch, getState, s);
 };
 
-export const onUnprepareSpell = spell_link => (dispatch, getState) => {
+export const onUnprepareSpell = (spell_link, mm = 0) => (dispatch, getState) => {
   const app = getState().persist;
   if (app.ssb == null || app.ssb < 0 || !app.sb?.[app.ssb]) return;
   const s = db.getSpellbookByIndex(app, app.ssb);
-  s.unprepareSpell(spell_link);
+  s.unprepareSpell(spell_link, mm);
   persistSpellbook(dispatch, getState, s);
 };
 
-export const onUseSpell = spell_link => (dispatch, getState) => {
+export const onUseSpell = (spell_link, mm = 0) => (dispatch, getState) => {
   const app = getState().persist;
   if (app.ssb == null || app.ssb < 0 || !app.sb?.[app.ssb]) return;
   const s = db.getSpellbookByIndex(app, app.ssb);
-  s.useSpell(spell_link);
+  s.useSpell(spell_link, mm);
   persistSpellbook(dispatch, getState, s);
 };
 

@@ -369,22 +369,38 @@ export const onPlayerLearnUnlearnSpell = (spell_link) => (dispatch, getState) =>
   if (player) persistPlayer(dispatch, getState, player);
 };
 
-export const onPlayerPrepareSpell = (spell_link) => (dispatch, getState) => {
-  withPlayerSpellbook(getState, (s) => s.prepareSpell(spell_link));
+export const onPlayerPrepareSpell = (spell_link, mm = 0) => (dispatch, getState) => {
+  withPlayerSpellbook(getState, (s) => s.prepareSpell(spell_link, mm));
   const player = getState().playerSheet?.player;
   if (player) persistPlayer(dispatch, getState, player);
 };
 
-export const onPlayerUnprepareSpell = (spell_link) => (dispatch, getState) => {
-  withPlayerSpellbook(getState, (s) => s.unprepareSpell(spell_link));
+export const onPlayerUnprepareSpell = (spell_link, mm = 0) => (dispatch, getState) => {
+  withPlayerSpellbook(getState, (s) => s.unprepareSpell(spell_link, mm));
   const player = getState().playerSheet?.player;
   if (player) persistPlayer(dispatch, getState, player);
 };
 
-export const onPlayerUseSpell = (spell_link) => (dispatch, getState) => {
-  withPlayerSpellbook(getState, (s) => s.useSpell(spell_link));
+export const onPlayerUseSpell = (spell_link, mm = 0) => (dispatch, getState) => {
+  withPlayerSpellbook(getState, (s) => s.useSpell(spell_link, mm));
   const player = getState().playerSheet?.player;
   if (player) persistPlayer(dispatch, getState, player);
+};
+
+/**
+ * Cast a prepared spell through a metamagic rod.
+ *
+ * One thunk rather than two dispatches because it is one act with two costs:
+ * the spell's own slot, at its **normal** level - a rod applies its feat
+ * without raising it, which is the entire reason to own one - and one of the
+ * rod's three charges for the day.
+ */
+export const onPlayerUseSpellWithRod = (spell_link, rodId, mm = 0) => (dispatch, getState) => {
+  withPlayerSpellbook(getState, (s) => s.useSpell(spell_link, mm));
+  const player = getState().playerSheet?.player;
+  if (!player) return;
+  player.spendHeldItemCharges?.(rodId, 1);
+  persistPlayer(dispatch, getState, player);
 };
 
 /**

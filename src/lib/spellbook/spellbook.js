@@ -2,6 +2,11 @@ import { loadFile } from '../utils';
 import { strToEnum, enumToStr } from '../storageFormat';
 import { getClassProgression } from '../player/classProgression';
 import { spellAllowsSave } from './spellsUtils';
+import {
+    METAMAGIC_FEATS,
+    modifiedSpellLevel,
+    effectiveSpellLevel,
+} from './metamagic';
 
 const ALL_SPELLS = loadFile("spells");
 
@@ -18,14 +23,31 @@ function getSpellIdByLink(link) {
     return s != null && typeof s.id === 'number' ? s.id : -1;
 }
 
-/** Normalize Spells to [[id, prepared, used], ...]. */
+/**
+ * Normalize Spells to `[[id, prepared, used, mm?], ...]`.
+ *
+ * The fourth element is the metamagic applied to *this* preparation, and it is
+ * dropped while it is zero — which is what makes a three-element save written
+ * before metamagic existed load unchanged rather than needing a migration.
+ */
 function normalizeSpells(raw) {
     if (!Array.isArray(raw)) return [];
     return raw.map(slot => {
-        if (Array.isArray(slot) && slot.length >= 3)
-            return [Number(slot[0]), Number(slot[1]) || 0, Number(slot[2]) || 0];
-        return null;
+        if (!Array.isArray(slot) || slot.length < 3) return null;
+        const base = [Number(slot[0]), Number(slot[1]) || 0, Number(slot[2]) || 0];
+        const mm = Math.max(0, Math.floor(Number(slot[3]) || 0));
+        return mm > 0 ? [...base, mm] : base;
     }).filter(Boolean);
+}
+
+/** The metamagic on one stored tuple. */
+function mmOf(slot) {
+    return Math.max(0, Math.floor(Number(slot?.[3]) || 0));
+}
+
+/** Build a tuple, omitting the metamagic element while it is zero. */
+function tuple(id, prepared, used, mm) {
+    return mm > 0 ? [id, prepared, used, mm] : [id, prepared, used];
 }
 
 const REQUIRED_KEYS = ['Name', 'Class', 'Level', 'Characteristic', 'Spells',
@@ -90,6 +112,8 @@ class Spellbook {
         this.Forbidden1 = "";
         this.Forbidden2 = "";
         this.SpellSwapsUsed = 0;
+        this.DoubledSpellLevels = [];
+        this.MetamagicFeats = METAMAGIC_FEATS.slice();
     }
 
     load(data) {
@@ -125,6 +149,13 @@ class Spellbook {
         this.DoubledSpellLevels = Array.isArray(data.DoubledSpellLevels)
             ? data.DoubledSpellLevels.map(Number).filter((n) => Number.isInteger(n) && n > 0)
             : [];
+        /* Which metamagic feats may be offered. Absent means "no character
+           behind this book" — the standalone Spellbook tab, which has no feats
+           to check and so offers all nine and says so. An empty array is a
+           different answer: a character who has none. */
+        this.MetamagicFeats = Array.isArray(data.MetamagicFeats)
+            ? data.MetamagicFeats.filter((name) => METAMAGIC_FEATS.includes(name))
+            : METAMAGIC_FEATS.slice();
 
         return this;
     }
@@ -220,6 +251,60 @@ class Spellbook {
         this.Spells = [...this.Spells, [id, 0, 0]];
     }
 
+    /** The metamagic feats this book may offer, in the order it lists them. */
+    getAvailableMetamagic() {
+        const available = Array.isArray(this.MetamagicFeats) ? this.MetamagicFeats : [];
+        return METAMAGIC_FEATS.filter((name) => available.includes(name));
+    }
+
+    /** True when there is any metamagic to offer at all. */
+    hasMetamagic() {
+        return this.getAvailableMetamagic().length > 0;
+    }
+
+    /**
+     * True for a class that chooses its metamagic at the moment of casting
+     * rather than at preparation - the sorcerer and the bard, who have a list
+     * of spells *known* with nothing to attach a choice to ahead of time.
+     */
+    isSpontaneous() {
+        return ["Sorcerer", "Bard"].includes(this.Class);
+    }
+
+    /** The level a spell sits at on this class's own list, or null. */
+    getSpellBaseLevel(spell) {
+        const key = CLASSSPELLKEY[this.Class];
+        if (!key || !spell) return null;
+        const entry = String(spell.Level || '').split(',').map(p => p.trim())
+            .find(p => p.startsWith(`${key} `));
+        if (!entry) return null;
+        const lvl = parseInt(entry.slice(key.length).trim(), 10);
+        return Number.isFinite(lvl) ? lvl : null;
+    }
+
+    /** Same, by link. */
+    getSpellBaseLevelByLink(link) {
+        return this.getSpellBaseLevel(ALL_SPELLS.find(s => s.Link === link));
+    }
+
+    /** The slot a preparation of this spell with this metamagic occupies. */
+    getModifiedLevel(link, mm = 0) {
+        const base = this.getSpellBaseLevelByLink(link);
+        if (base === null) return null;
+        return modifiedSpellLevel(base, mm);
+    }
+
+    /**
+     * The level every level-dependent effect is calculated from - the save DC
+     * above all. Only Heighten moves it; every other metamagic leaves the spell
+     * working at its own level while occupying a bigger slot.
+     */
+    getEffectiveLevel(link, mm = 0) {
+        const base = this.getSpellBaseLevelByLink(link);
+        if (base === null) return null;
+        return effectiveSpellLevel(base, mm);
+    }
+
     unlearnSpell(spell_link) {
         const id = getSpellIdByLink(spell_link);
         const spell = getSpellById(id);
@@ -235,39 +320,51 @@ class Spellbook {
         else this.learnSpell(spell_link);
     }
 
-    prepareSpell(spell_link) {
+    prepareSpell(spell_link, mm = 0) {
         const id = getSpellIdByLink(spell_link);
         if (id < 0) return;
-        const slot = this.Spells.find(s => s[0] === id);
+        const meta = Math.max(0, Math.floor(Number(mm) || 0));
+        const slot = this.Spells.find(s => s[0] === id && mmOf(s) === meta);
         if (!slot) {
-            this.Spells = [...this.Spells, [id, 1, 0]];
+            this.Spells = [...this.Spells, tuple(id, 1, 0, meta)];
             return;
         }
         this.Spells = this.Spells.map(s =>
-            s[0] === id ? [id, (s[1] || 0) + 1, s[2] || 0] : s
+            s[0] === id && mmOf(s) === meta ? tuple(id, (s[1] || 0) + 1, s[2] || 0, meta) : s
         );
     }
 
-    unprepareSpell(spell_link) {
+    unprepareSpell(spell_link, mm = 0) {
         const id = getSpellIdByLink(spell_link);
+        const meta = Math.max(0, Math.floor(Number(mm) || 0));
         const removeWhenZero = ["Cleric", "Druid", "Bard", "Paladin"].includes(this.Class);
         this.Spells = this.Spells.map(s =>
-            s[0] === id ? [s[0], Math.max(0, (s[1] || 0) - 1), s[2] || 0] : s
+            s[0] === id && mmOf(s) === meta
+                ? tuple(s[0], Math.max(0, (s[1] || 0) - 1), s[2] || 0, meta)
+                : s
         );
         if (removeWhenZero)
             this.Spells = this.Spells.filter(s => (s[1] || 0) > 0);
+        /* A metamagic'd row is a preparation and nothing else - with nothing
+           prepared and nothing spent it is not a spell the book knows, it is a
+           dead tuple against the storage budget. The plain row is left alone,
+           because for a wizard that row *is* the spell being known. */
+        this.Spells = this.Spells.filter(s =>
+            mmOf(s) === 0 || (s[1] || 0) > 0 || (s[2] || 0) > 0
+        );
     }
 
-    useSpell(spell_link) {
+    useSpell(spell_link, mm = 0) {
         const id = getSpellIdByLink(spell_link);
         if (id < 0) return;
-        const slot = this.Spells.find(s => s[0] === id);
+        const meta = Math.max(0, Math.floor(Number(mm) || 0));
+        const slot = this.Spells.find(s => s[0] === id && mmOf(s) === meta);
         if (!slot) {
-            this.Spells = [...this.Spells, [id, 0, 1]];
+            this.Spells = [...this.Spells, tuple(id, 0, 1, meta)];
             return;
         }
         this.Spells = this.Spells.map(s =>
-            s[0] === id ? [s[0], s[1] || 0, (s[2] || 0) + 1] : s
+            s[0] === id && mmOf(s) === meta ? tuple(s[0], s[1] || 0, (s[2] || 0) + 1, meta) : s
         );
     }
 
@@ -318,7 +415,12 @@ class Spellbook {
     }
 
     refreshSpell() {
-        this.Spells = this.Spells.map(s => [s[0], s[1] || 0, 0]);
+        this.Spells = this.Spells
+            .map(s => tuple(s[0], s[1] || 0, 0, mmOf(s)))
+            /* A sorcerer's metamagic'd cast leaves a row behind that exists
+               only to record the spent slot. Once the day resets there is
+               nothing left in it to keep. */
+            .filter(s => mmOf(s) === 0 || (s[1] || 0) > 0);
         this.refreshDomainSpell();
     }
 
@@ -524,7 +626,13 @@ class Spellbook {
     }
 
     getLearnedSpells({ name, school, level } = {}) {
-        const fromStorage = this.Spells.map(s => getSpellById(s[0])).filter(Boolean);
+        /* One entry per spell, not per stored tuple: a wizard holding an
+           ordinary and a maximized magic missile knows one spell, and it must
+           count once against spells known and appear once in the list. */
+        const seen = new Set();
+        const fromStorage = this.Spells
+            .filter(s => { if (seen.has(s[0])) return false; seen.add(s[0]); return true; })
+            .map(s => getSpellById(s[0])).filter(Boolean);
         if (this.Class === "Wizard") {
             const level0Ordered = this.getWizardLevel0Spells();
             const rest = fromStorage.filter(sp => !sp.Level.includes("Sor/Wiz 0"));
@@ -534,7 +642,13 @@ class Spellbook {
     }
 
     getPreparedSpells({ name, school, level } = {}) {
-        const withPrepared = this.Spells.filter(s => (s[1] || 0) > 0).map(s => getSpellById(s[0])).filter(Boolean);
+        /* Plain preparations only. A metamagic'd one is a row of its own under
+           the level whose slot it occupies - `getMetamagicEntries` supplies
+           those - and listing it here as well would put it under its base
+           level too, showing a 3rd-level preparation among the 1st-level
+           spells with nothing to cast. */
+        const withPrepared = this.Spells.filter(s => mmOf(s) === 0 && (s[1] || 0) > 0)
+            .map(s => getSpellById(s[0])).filter(Boolean);
         if (this.Class === "Wizard") {
             const level0Canonical = this.getWizardLevel0Spells();
             const level0Ids = new Set(level0Canonical.map(s => s.id));
@@ -546,10 +660,126 @@ class Spellbook {
     }
 
     /** Prepared/Used for a spell link; for Wizard level 0 not in storage returns { Prepared: 0, Used: 0 }. */
-    getSpellPreparedUsed(link) {
+    getSpellPreparedUsed(link, mm = 0) {
         const id = getSpellIdByLink(link);
-        const slot = this.Spells.find(s => s[0] === id);
+        const meta = Math.max(0, Math.floor(Number(mm) || 0));
+        const slot = this.Spells.find(s => s[0] === id && mmOf(s) === meta);
         return slot ? { Prepared: slot[1] || 0, Used: slot[2] || 0 } : { Prepared: 0, Used: 0 };
+    }
+
+    /**
+     * Every metamagic'd preparation of one spell, for the popover that made
+     * them. A plain preparation is not in here — it is the row the popover
+     * hangs off.
+     */
+    getMetamagicPreparations(link) {
+        const id = getSpellIdByLink(link);
+        if (id < 0) return [];
+        const base = this.getSpellBaseLevelByLink(link) ?? 0;
+        return this.Spells
+            .filter(s => s[0] === id && mmOf(s) > 0)
+            .map(s => ({
+                mm: mmOf(s),
+                Prepared: s[1] || 0,
+                Used: s[2] || 0,
+                level: modifiedSpellLevel(base, mmOf(s)),
+                effectiveLevel: effectiveSpellLevel(base, mmOf(s)),
+            }))
+            .sort((a, b) => a.level - b.level || a.mm - b.mm);
+    }
+
+    /**
+     * Every metamagic'd preparation in the book, as rows to draw at the level
+     * whose slot they actually occupy.
+     *
+     * This is why the same spell can appear under two different level cards:
+     * an empowered *magic missile* is a 3rd-level preparation and belongs in
+     * the 3rd-level card, beside the 3rd-level spells it is competing with for
+     * slots. `spell` is the spell itself, so the row reads the same as any
+     * other; `mm` is what makes it a different preparation.
+     */
+    getMetamagicEntries({ name, school } = {}) {
+        return this.Spells
+            .filter(s => mmOf(s) > 0 && (s[1] || 0) > 0)
+            .map(s => {
+                const spell = getSpellById(s[0]);
+                if (!spell) return null;
+                const base = this.getSpellBaseLevel(spell);
+                if (base === null) return null;
+                if (name && !spell.Name.toLowerCase().includes(name.toLowerCase())) return null;
+                if (school && !spell.School.toLowerCase().includes(school.toLowerCase())) return null;
+                const mm = mmOf(s);
+                return {
+                    spell,
+                    mm,
+                    baseLevel: base,
+                    level: modifiedSpellLevel(base, mm),
+                    effectiveLevel: effectiveSpellLevel(base, mm),
+                    Prepared: s[1] || 0,
+                    Used: s[2] || 0,
+                };
+            })
+            .filter(Boolean)
+            .sort((a, b) => a.level - b.level || a.spell.Name.localeCompare(b.spell.Name));
+    }
+
+    /**
+     * How many slots of one level are spoken for by prepared spells.
+     *
+     * Counted by the slot each preparation *occupies*, not by the spell's own
+     * level - which is the whole point of metamagic and the reason this moved
+     * out of the card heading and into the model.
+     */
+    getPreparedCountAtLevel(level, { school } = {}) {
+        const target = Number(level);
+        return this.Spells.reduce((sum, slot) => {
+            const prepared = slot[1] || 0;
+            if (prepared <= 0) return sum;
+            const spell = getSpellById(slot[0]);
+            if (!spell) return sum;
+            const base = this.getSpellBaseLevel(spell);
+            if (base === null) return sum;
+            if (modifiedSpellLevel(base, mmOf(slot)) !== target) return sum;
+            if (school && !spell.School.toLowerCase().includes(String(school).toLowerCase())) return sum;
+            return sum + prepared;
+        }, 0);
+    }
+
+    /**
+     * How many of a level's slots a spontaneous caster has spent today.
+     *
+     * A sorcerer's usage is pooled per level rather than per spell, and a
+     * metamagic'd cast spends a slot of the *modified* level - so an empowered
+     * magic missile comes out of the 3rd-level pool, not the 1st.
+     */
+    getSpontaneousUsedAtLevel(level) {
+        const target = Number(level);
+        return this.Spells.reduce((sum, slot) => {
+            const used = slot[2] || 0;
+            if (used <= 0) return sum;
+            const spell = getSpellById(slot[0]);
+            if (!spell) return sum;
+            const base = this.getSpellBaseLevel(spell);
+            if (base === null) return sum;
+            return modifiedSpellLevel(base, mmOf(slot)) === target ? sum + used : sum;
+        }, 0);
+    }
+
+    /**
+     * Casts left for one preparation: what is left of a prepared caster's own
+     * copies, or what is left of the spontaneous caster's pool at the level the
+     * cast would actually spend.
+     */
+    getRemainingFor(link, mm = 0) {
+        const base = this.getSpellBaseLevelByLink(link);
+        if (base === null) return 0;
+        const level = modifiedSpellLevel(base, mm);
+        if (this.isSpontaneous()) {
+            const perDay = this.getSpellsPerDay()[level] || 0;
+            return Math.max(0, perDay - this.getSpontaneousUsedAtLevel(level));
+        }
+        const { Prepared = 0, Used = 0 } = this.getSpellPreparedUsed(link, mm);
+        return Math.max(0, Prepared - Used);
     }
 
     getDomainSpells({ name, school, level } = {}) {

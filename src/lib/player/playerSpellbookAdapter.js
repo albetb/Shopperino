@@ -42,5 +42,10 @@ export function playerToSpellbookData(player) {
     /* A worn ring of wizardry doubles one level's arcane slots. Passed through
        here because slots are the spellbook's business, not the sheet's. */
     DoubledSpellLevels: player.getWornDoubledSpellLevels?.() ?? [],
+    /* Which metamagic the book may offer. Always supplied on this path, even
+       when it is empty - the absence of the key means "no character behind
+       this book", which is the standalone Spellbook tab's answer, not a
+       character who happens to have taken no metamagic feat. */
+    MetamagicFeats: player.getMetamagicFeats?.() ?? [],
   };
 }

@@ -18,6 +18,7 @@ import {
 import { getCarryingCapacity as capacityFromStr, classifyLoad } from './carryingCapacity';
 import { aggregateConditionEffects, sumContributions } from './conditionEffects';
 import { getClassProgression, getProgressionValue, hasFeatureAtLevel, resolveAtLevel } from './classProgression';
+import { METAMAGIC_FEATS } from '../spellbook/metamagic';
 import { listAnimals, getCreatureBaseByRef } from '../animal/animalsUtils';
 import { parseAttacks, recomputeAttack } from '../animal/attackParser';
 import { getBaseFeatName, UNARMED_STRIKE } from '../featChoices';
@@ -41,6 +42,7 @@ import {
   getHeldItemCasterLevel,
   getHeldItemMaxCharges,
   getRodMetamagicFeat,
+  getRodMetamagicMaxLevel,
   handItemIsWeapon,
   refreshesOnRest,
 } from '../item/heldItems';
@@ -364,10 +366,14 @@ function normalizePlayerSpells(raw) {
   if (!Array.isArray(raw)) return [];
   return raw
     .map((slot) => {
-      if (Array.isArray(slot) && slot.length >= 3) {
-        return [Number(slot[0]), Number(slot[1]) || 0, Number(slot[2]) || 0];
-      }
-      return null;
+      if (!Array.isArray(slot) || slot.length < 3) return null;
+      const base = [Number(slot[0]), Number(slot[1]) || 0, Number(slot[2]) || 0];
+      /* The metamagic applied to this preparation. Dropped while it is zero,
+         which is what makes a three-element save written before metamagic
+         existed load unchanged. The twin of normalizeSpells in spellbook.js -
+         both must read the same tuple the same way. */
+      const mm = Math.max(0, Math.floor(Number(slot[3]) || 0));
+      return mm > 0 ? [...base, mm] : base;
     })
     .filter(Boolean);
 }
@@ -3375,6 +3381,7 @@ class Player {
           remaining: Math.max(0, max - spent),
           refreshesOnRest: refreshesOnRest(itemType),
           metamagicFeat: itemType === 'Rod' ? getRodMetamagicFeat(raw) : '',
+          metamagicMaxLevel: itemType === 'Rod' ? getRodMetamagicMaxLevel(raw) : 0,
           /* The alternate hand set: still equipped, but you would have to
              swap to it before using it, so the card shows it dimmed. */
           isSecondarySet: Player.SECONDARY_HAND_SLOTS.includes(slot),
@@ -4636,6 +4643,50 @@ class Player {
     return 10 + level + this.getModifier(ability)
       + getFeatSpellDcBonus(this.getFeats(), school)
       + this.getRacialSpellDcBonus(school);
+  }
+
+  /**
+   * The metamagic feats this character actually has.
+   *
+   * Asked through `hasFeatNamed`, so a feat arriving by any route counts - a
+   * granted feat, or one a worn item confers - rather than only the ones
+   * chosen on the feats page.
+   */
+  getMetamagicFeats() {
+    return METAMAGIC_FEATS.filter((name) => this.hasFeatNamed(name));
+  }
+
+  /**
+   * Metamagic rods in hand, with what is left of the day's three charges.
+   *
+   * A rod applies its feat **without raising the slot level**, which is the
+   * whole point of owning one and the reason it belongs at the moment of
+   * casting rather than at preparation: a wizard prepares an ordinary spell
+   * and decides at the table to spend a rod charge on it.
+   *
+   * `maxLevel` is the tier's cap - 3rd for a lesser rod, 6th for a normal one,
+   * 9th for a greater. Per the non-enforcing rule a spell above it is still
+   * offered, flagged rather than refused.
+   */
+  getMetamagicRods() {
+    return this.getHeldItems()
+      .filter((item) => item.itemType === 'Rod' && item.metamagicFeat)
+      .map((item) => ({
+        slot: item.slot,
+        id: item.id,
+        name: item.name,
+        link: item.link,
+        feat: item.metamagicFeat,
+        maxLevel: item.metamagicMaxLevel,
+        remaining: item.remaining,
+        maxCharges: item.maxCharges,
+        isSecondarySet: item.isSecondarySet,
+      }));
+  }
+
+  /** Whether any metamagic rod is in hand at all. */
+  hasMetamagicRods() {
+    return this.getMetamagicRods().length > 0;
   }
 
   /**

@@ -55,6 +55,7 @@ The three categories that occupy a hand rather than a body slot. They differ in 
 - Activation varies per item and is given in the item's own description.
 - **Many double as light maces or clubs** thanks to their sturdy build, so "held" and "is a weapon" are not exclusive.
 - A rod **with** charges can never be intelligent.
+- **Metamagic rods** are the one rod family with a rule shared across the whole set: three uses per day, they apply their feat **without raising the spell's slot level**, and the three tiers differ *only* in the highest spell level they reach — lesser 3rd, normal 6th, greater 9th. See [metamagic.md](metamagic.md).
 
 ### Staff
 

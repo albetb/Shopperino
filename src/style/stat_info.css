@@ -202,6 +202,9 @@
 }
 
 .info-popover-prose {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
   gap: var(--space-2);
   font-size: var(--font-size-sm);
   line-height: 1.45;

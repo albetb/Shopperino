@@ -52,6 +52,7 @@ import {
   onPlayerUnprepareDomainSpell,
   onPlayerUseDomainSpell,
   onSetPlayerSpellOption,
+  onPlayerUseSpellWithRod,
 } from '../../store/thunks/playerSheetThunks';
 import '../../style/shop_inventory.css';
 import '../../style/wild_shape.css';
@@ -119,9 +120,9 @@ export default function SpellbookTable({ source = 'app' }) {
   const actions = isApp
     ? {
         onLearnUnlearnSpell: (link) => dispatch(onLearnUnlearnSpell(link)),
-        onPrepareSpell: (link) => dispatch(onPrepareSpell(link)),
-        onUnprepareSpell: (link) => dispatch(onUnprepareSpell(link)),
-        onUseSpell: (link) => dispatch(onUseSpell(link)),
+        onPrepareSpell: (link, mm) => dispatch(onPrepareSpell(link, mm)),
+        onUnprepareSpell: (link, mm) => dispatch(onUnprepareSpell(link, mm)),
+        onUseSpell: (link, mm) => dispatch(onUseSpell(link, mm)),
         onRefreshSpell: () => dispatch(onRefreshSpell()),
         onPrepareDomainSpell: (level, link) => dispatch(onPrepareDomainSpell(level, link)),
         onUnprepareDomainSpell: (level, link) => dispatch(onUnprepareDomainSpell(level, link)),
@@ -130,9 +131,12 @@ export default function SpellbookTable({ source = 'app' }) {
       }
     : {
         onLearnUnlearnSpell: (link) => dispatch(onPlayerLearnUnlearnSpell(link)),
-        onPrepareSpell: (link) => dispatch(onPlayerPrepareSpell(link)),
-        onUnprepareSpell: (link) => dispatch(onPlayerUnprepareSpell(link)),
-        onUseSpell: (link) => dispatch(onPlayerUseSpell(link)),
+        onPrepareSpell: (link, mm) => dispatch(onPlayerPrepareSpell(link, mm)),
+        onUnprepareSpell: (link, mm) => dispatch(onPlayerUnprepareSpell(link, mm)),
+        onUseSpell: (link, mm) => dispatch(onPlayerUseSpell(link, mm)),
+        /* One act with two costs: the spell's own slot at its normal level,
+           and one of the rod's charges. */
+        onUseSpellWithRod: (link, rodId, mm) => dispatch(onPlayerUseSpellWithRod(link, rodId, mm)),
         /* The player-sheet spellbook rests the whole character, exactly as the
            combat page's own bed button does: spell slots, gnome racial spells,
            every per-day class feature, and a night's natural healing. Two
@@ -230,6 +234,12 @@ export default function SpellbookTable({ source = 'app' }) {
   const getSummonBonus = (spell) => (
     isApp ? null : (player?.getAugmentSummoningEffect?.(spell) ?? null)
   );
+
+  /* Metamagic rods in hand. A rod applies its feat without raising the slot,
+     so it is a cast-time choice for *any* caster - including a wizard who
+     prepared the spell perfectly ordinarily at dawn. Player-only: a standalone
+     spellbook has no character, so it has no hands. */
+  const metamagicRods = isApp ? [] : (player?.getMetamagicRods?.() ?? []);
 
   const castingBlocked = !isApp && player?.canCastSpells?.() === false;
   const castingBlockedReason = 'No speech in animal form — Natural Spell removes this';
@@ -331,6 +341,7 @@ export default function SpellbookTable({ source = 'app' }) {
           showShortDescriptions={showShortDescriptions}
           castingBlocked={castingBlocked}
           castingBlockedReason={castingBlockedReason}
+          metamagicRods={metamagicRods}
           actions={actions}
           dispatch={dispatch}
         />

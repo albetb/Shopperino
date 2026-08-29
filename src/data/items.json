@@ -4393,6 +4393,7 @@
       "Medium": 7,
       "Major": 0,
       "Cost": 3000,
+      "metamagicMaxSpellLevel": 3,
       "Link": "rod-of-metamagic-enlarge",
       "Description": "<p>The wielder can cast up to three spells per day that are enlarged as though using the <a href=\"feats#enlarge-spell\">Enlarge Spell</a> feat.</p> <p>Strong (no school); CL 17th; Craft Rod, Enlarge Spell; Price 3,000 gp (lesser), 11,000 gp (normal), 24,500 gp (greater).</p>",
       "id": 390
@@ -4402,6 +4403,7 @@
       "Medium": 7,
       "Major": 0,
       "Cost": 3000,
+      "metamagicMaxSpellLevel": 3,
       "Link": "rod-of-metamagic-extend",
       "Description": "<p>The wielder can cast up to three spells per day that are extended as though using the <a href=\"feats#extend-spell\">Extend Spell</a> feat.</p> <p>Strong (no school); CL 17th; Craft Rod, Extend Spell; Price 3,000 gp (lesser), 11,000 gp (normal), 24,500 gp (greater).</p>",
       "id": 391
@@ -4411,6 +4413,7 @@
       "Medium": 7,
       "Major": 0,
       "Cost": 3000,
+      "metamagicMaxSpellLevel": 3,
       "Link": "rod-of-metamagic-silent",
       "Description": "<p>The wielder can cast up to three spells per day without verbal components as though using the <a href=\"feats#silent-spell\">Silent Spell</a> feat.</p> <p>Strong (no school); CL 17th; Craft Rod, Silent Spell; Price 3,000 gp (lesser), 11,000 gp (normal), 24,500 gp (greater).</p>",
       "id": 392
@@ -4429,6 +4432,7 @@
       "Medium": 7,
       "Major": 0,
       "Cost": 9000,
+      "metamagicMaxSpellLevel": 3,
       "Link": "rod-of-metamagic-empower",
       "Description": "<p>The wielder can cast up to three spells per day that are empowered as though using the <a href=\"feats#empower-spell\">Empower Spell</a> feat.</p> <p>Strong (no school); CL 17th; Craft Rod, Empower Spell; Price 9,000 gp (lesser), 32,500 gp (normal), 73,000 gp (greater).</p>",
       "id": 394
@@ -4456,6 +4460,7 @@
       "Medium": 4,
       "Major": 2,
       "Cost": 11000,
+      "metamagicMaxSpellLevel": 6,
       "Link": "rod-of-metamagic-enlarge",
       "Description": "<p>The wielder can cast up to three spells per day that are enlarged as though using the <a href=\"feats#enlarge-spell\">Enlarge Spell</a> feat.</p> <p>Strong (no school); CL 17th; Craft Rod, Enlarge Spell; Price 3,000 gp (lesser), 11,000 gp (normal), 24,500 gp (greater).</p>",
       "id": 397
@@ -4465,6 +4470,7 @@
       "Medium": 4,
       "Major": 2,
       "Cost": 11000,
+      "metamagicMaxSpellLevel": 6,
       "Link": "rod-of-metamagic-extend",
       "Description": "<p>The wielder can cast up to three spells per day that are extended as though using the <a href=\"feats#extend-spell\">Extend Spell</a> feat.</p> <p>Strong (no school); CL 17th; Craft Rod, Extend Spell; Price 3,000 gp (lesser), 11,000 gp (normal), 24,500 gp (greater).</p>",
       "id": 398
@@ -4474,6 +4480,7 @@
       "Medium": 4,
       "Major": 2,
       "Cost": 11000,
+      "metamagicMaxSpellLevel": 6,
       "Link": "rod-of-metamagic-silent",
       "Description": "<p>The wielder can cast up to three spells per day without verbal components as though using the <a href=\"feats#silent-spell\">Silent Spell</a> feat.</p> <p>Strong (no school); CL 17th; Craft Rod, Silent Spell; Price 3,000 gp (lesser), 11,000 gp (normal), 24,500 gp (greater).</p>",
       "id": 399
@@ -4501,6 +4508,7 @@
       "Medium": 4,
       "Major": 0,
       "Cost": 14000,
+      "metamagicMaxSpellLevel": 3,
       "Link": "rod-of-metamagic-maximize",
       "Description": "<p>The wielder can cast up to three spells per day that are maximized as though using the <a href=\"feats#maximize-spell\">Maximize Spell</a> feat.</p> <p>Strong (no school); CL 17th; Craft Rod, Maximize Spell feat; Price 14,000 gp (lesser), 54,000 gp (normal), 121,500 gp (greater).</p>",
       "id": 402
@@ -4537,6 +4545,7 @@
       "Medium": 0,
       "Major": 6,
       "Cost": 24500,
+      "metamagicMaxSpellLevel": 9,
       "Link": "rod-of-metamagic-enlarge",
       "Description": "<p>The wielder can cast up to three spells per day that are enlarged as though using the <a href=\"feats#enlarge-spell\">Enlarge Spell</a> feat.</p> <p>Strong (no school); CL 17th; Craft Rod, Enlarge Spell; Price 3,000 gp (lesser), 11,000 gp (normal), 24,500 gp (greater).</p>",
       "id": 406
@@ -4546,6 +4555,7 @@
       "Medium": 0,
       "Major": 6,
       "Cost": 24500,
+      "metamagicMaxSpellLevel": 9,
       "Link": "rod-of-metamagic-extend",
       "Description": "<p>The wielder can cast up to three spells per day that are extended as though using the <a href=\"feats#extend-spell\">Extend Spell</a> feat.</p> <p>Strong (no school); CL 17th; Craft Rod, Extend Spell; Price 3,000 gp (lesser), 11,000 gp (normal), 24,500 gp (greater).</p>",
       "id": 407
@@ -4555,6 +4565,7 @@
       "Medium": 0,
       "Major": 6,
       "Cost": 24500,
+      "metamagicMaxSpellLevel": 9,
       "Link": "rod-of-metamagic-silent",
       "Description": "<p>The wielder can cast up to three spells per day without verbal components as though using the <a href=\"feats#silent-spell\">Silent Spell</a> feat.</p> <p>Strong (no school); CL 17th; Craft Rod, Silent Spell; Price 3,000 gp (lesser), 11,000 gp (normal), 24,500 gp (greater).</p>",
       "id": 408
@@ -4582,6 +4593,7 @@
       "Medium": 2,
       "Major": 6,
       "Cost": 32500,
+      "metamagicMaxSpellLevel": 6,
       "Link": "rod-of-metamagic-empower",
       "Description": "<p>The wielder can cast up to three spells per day that are empowered as though using the <a href=\"feats#empower-spell\">Empower Spell</a> feat.</p> <p>Strong (no school); CL 17th; Craft Rod, Empower Spell; Price 9,000 gp (lesser), 32,500 gp (normal), 73,000 gp (greater).</p>",
       "id": 411
@@ -4600,6 +4612,7 @@
       "Medium": 1,
       "Major": 4,
       "Cost": 35000,
+      "metamagicMaxSpellLevel": 3,
       "Link": "rod-of-metamagic-quicken",
       "Description": "<p>The wielder can cast up to three spells per day that are quickened as though using the <a href=\"feats#quicken-spell\">Quicken Spell</a> feat.</p> <p>Strong (no school); CL 17th; Craft Rod, Quicken Spell; Price 35,000 gp (lesser), 75,500 gp (normal), 170,000 gp (greater).</p>",
       "id": 413
@@ -4636,6 +4649,7 @@
       "Medium": 0,
       "Major": 2,
       "Cost": 54000,
+      "metamagicMaxSpellLevel": 6,
       "Link": "rod-of-metamagic-maximize",
       "Description": "<p>The wielder can cast up to three spells per day that are maximized as though using the <a href=\"feats#maximize-spell\">Maximize Spell</a> feat.</p> <p>Strong (no school); CL 17th; Craft Rod, Maximize Spell feat; Price 14,000 gp (lesser), 54,000 gp (normal), 121,500 gp (greater).</p>",
       "id": 417
@@ -4672,6 +4686,7 @@
       "Medium": 0,
       "Major": 2,
       "Cost": 73000,
+      "metamagicMaxSpellLevel": 9,
       "Link": "rod-of-metamagic-empower",
       "Description": "<p>The wielder can cast up to three spells per day that are empowered as though using the <a href=\"feats#empower-spell\">Empower Spell</a> feat.</p> <p>Strong (no school); CL 17th; Craft Rod, Empower Spell; Price 9,000 gp (lesser), 32,500 gp (normal), 73,000 gp (greater).</p>",
       "id": 421
@@ -4681,6 +4696,7 @@
       "Medium": 0,
       "Major": 2,
       "Cost": 75500,
+      "metamagicMaxSpellLevel": 6,
       "Link": "rod-of-metamagic-quicken",
       "Description": "<p>The wielder can cast up to three spells per day that are quickened as though using the <a href=\"feats#quicken-spell\">Quicken Spell</a> feat.</p> <p>Strong (no school); CL 17th; Craft Rod, Quicken Spell; Price 35,000 gp (lesser), 75,500 gp (normal), 170,000 gp (greater).</p>",
       "id": 422
@@ -4699,6 +4715,7 @@
       "Medium": 0,
       "Major": 1,
       "Cost": 121500,
+      "metamagicMaxSpellLevel": 9,
       "Link": "rod-of-metamagic-maximize",
       "Description": "<p>The wielder can cast up to three spells per day that are maximized as though using the <a href=\"feats#maximize-spell\">Maximize Spell</a> feat.</p> <p>Strong (no school); CL 17th; Craft Rod, Maximize Spell feat; Price 14,000 gp (lesser), 54,000 gp (normal), 121,500 gp (greater).</p>",
       "id": 424
@@ -4708,6 +4725,7 @@
       "Medium": 0,
       "Major": 1,
       "Cost": 170000,
+      "metamagicMaxSpellLevel": 9,
       "Link": "rod-of-metamagic-quicken",
       "Description": "<p>The wielder can cast up to three spells per day that are quickened as though using the <a href=\"feats#quicken-spell\">Quicken Spell</a> feat.</p> <p>Strong (no school); CL 17th; Craft Rod, Quicken Spell; Price 35,000 gp (lesser), 75,500 gp (normal), 170,000 gp (greater).</p>",
       "id": 425

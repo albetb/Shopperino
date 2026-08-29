@@ -1,0 +1,242 @@
+/* --- METAMAGIC ---------------------------------------------------
+   The pills on a modified preparation, the wand button that makes one,
+   and the two popovers behind it. */
+
+/* --- the pills beside the spell name --- */
+
+.mm-pills {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+/* Neutral, like every other pill on the sheet. The accent is whatever colour
+   the player picked, so an accent-filled pill reads as a warning in a red
+   theme and as decoration in a green one. */
+.mm-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.1rem 0.4rem;
+  border-radius: 0.6rem;
+  background: transparent;
+  border: 0.0625rem solid var(--border-soft);
+  color: var(--ink-muted);
+  font-size: var(--font-size-2xs);
+  font-weight: 600;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+/* --- the button that opens either popover --- */
+
+.mm-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--ink-muted);
+  cursor: pointer;
+}
+
+.mm-trigger:hover,
+.mm-trigger.has-any {
+  color: var(--accent);
+}
+
+.mm-trigger .material-symbols-outlined {
+  font-size: 1rem;
+}
+
+/* --- the chooser, shared by both popovers --- */
+
+.mm-chooser {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.mm-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.mm-chip {
+  padding: 0.25rem 0.5rem;
+  min-height: auto;
+  gap: 0.3rem;
+}
+
+/* The slot cost, so the price of a chip is on the chip. */
+.mm-chip-cost {
+  opacity: 0.7;
+  font-variant-numeric: tabular-nums;
+}
+
+/* A choice the rules forbid outright is flagged, never hidden: per CLAUDE.md
+   the app computes and displays, and the table is the authority. */
+.mm-chip.is-warned {
+  background: var(--danger-bg);
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.mm-chip-level {
+  min-width: 1.9rem;
+  justify-content: center;
+}
+
+.mm-heighten {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.mm-heighten-label {
+  font-size: var(--font-size-xs);
+  color: var(--ink-muted);
+}
+
+.mm-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding-top: var(--space-2);
+  border-top: 0.0625rem solid var(--border-soft);
+}
+
+.mm-summary-line {
+  display: flex;
+  gap: 0.3rem;
+  align-items: baseline;
+  font-size: var(--font-size-sm);
+  color: var(--ink);
+}
+
+.mm-summary-note {
+  font-size: var(--font-size-xs);
+  line-height: 1.4;
+  color: var(--ink-muted);
+}
+
+.mm-summary-line.is-over,
+.mm-summary-note.is-over,
+.mm-hint.is-over {
+  color: var(--danger);
+}
+
+.mm-hint {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  line-height: 1.4;
+  color: var(--ink-muted);
+}
+
+/* --- preparing --- */
+
+.mm-prepare-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding-top: var(--space-2);
+}
+
+.mm-other-preps {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding-top: var(--space-2);
+  border-top: 0.0625rem solid var(--border-soft);
+}
+
+.mm-other-preps-title,
+.mm-rods-title {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--ink-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.mm-other-prep {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  width: 100%;
+  padding: 0.3rem 0.4rem;
+  border: 0.0625rem solid var(--border-soft);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+  cursor: pointer;
+}
+
+.mm-other-prep-count {
+  font-size: var(--font-size-xs);
+  color: var(--ink-muted);
+  white-space: nowrap;
+}
+
+/* --- casting --- */
+
+.mm-cast-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding-top: var(--space-2);
+}
+
+.mm-cast-remaining {
+  font-size: var(--font-size-xs);
+  color: var(--ink-muted);
+}
+
+.mm-cast-button {
+  padding: 0.3rem 0.9rem;
+}
+
+.mm-rods {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding-top: var(--space-2);
+  border-top: 0.0625rem solid var(--border-soft);
+}
+
+.mm-rod {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 0.4rem 0.5rem;
+  border: 0.0625rem solid var(--border-soft);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+}
+
+.mm-rod-head,
+.mm-rod-body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.mm-rod-name {
+  font-size: var(--font-size-sm);
+  color: var(--ink);
+}
+
+.mm-rod-charges,
+.mm-rod-feat {
+  font-size: var(--font-size-xs);
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums;
+}

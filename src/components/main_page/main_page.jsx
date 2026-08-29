@@ -12,7 +12,7 @@ export const TILES = [
   { id: 3, icon: 'paid',          title: 'Loot generator',  desc: 'Randomized loot scaled to the player level.',          masterOnly: true  },
   { id: 6, icon: 'skull',         title: 'Monster book',    desc: 'Browse the bestiary and track one creature in combat.', masterOnly: true  },
   { id: 2, icon: 'auto_stories',  title: 'Spellbook',       desc: 'Organize and track learned spells.',                   masterOnly: false },
-  { id: 5, icon: 'badge',         title: 'Player sheet - BETA',    desc: 'Preview - Not yet complete. A mostly automatic D&D 3.5 character sheet.',          masterOnly: false, primary: true },
+  { id: 5, icon: 'badge',         title: 'Player sheet',    desc: 'A mostly automatic D&D 3.5 character sheet.',          masterOnly: false, primary: true },
 ];
 
 export default function MainPage() {

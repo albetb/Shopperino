@@ -17,6 +17,7 @@
   - Effective level for caster-level interactions, dispel checks, antimagic, etc.
   - Counterspelling: a metamagic'd spell still counterspells (or is counterspelled by) its base spell normally. The metamagic feat does not change which spell counters it. (See [magic.md](magic.md) → counterspells when extracted.)
 - The spell **occupies** a slot of the higher modified level (base + sum of metamagic feat adjustments).
+- **Heighten Spell is the one exception to all of the above.** It *actually increases the effective level* of the spell, up to a maximum of 9th. Every effect that depends on spell level — **save DC**, penetrating a *lesser globe of invulnerability*, dispel checks — is calculated from the **heightened** level, not the base one. Its adjustment is therefore a **target level** rather than a fixed number: heightening a 2nd-level spell to 5th costs a 5th-level slot and gives DC 10 + 5 + ability mod.
 - Modifications only apply to spells the caster **casts directly** — applying metamagic to a spell on a scroll/wand/potion requires the metamagic to have been applied **at item creation time**, not at activation. (Item activator does not need the metamagic feat.)
 
 ## Application timing
@@ -49,6 +50,13 @@ Depends on casting style:
 
 - Silent Spell / Still Spell **do not eliminate** the AoO from threatening reach when casting (provoking-on-casting is tied to the act of casting in a threatened square, not to whether components are visible).
 - **Quicken Spell** is an exception: a quickened spell **does not provoke** an AoO (because it is cast as a free action, not a standard action).
+
+## Metamagic rods
+
+- A metamagic rod applies its feat to a spell **without raising the slot level** — the spell is cast out of the slot it is already in. That is the entire point of one, and it applies to **prepared casters too**: the choice is made at the moment of casting, not at preparation.
+- Three tiers, distinguished by **the highest spell level the rod will work on** and by nothing else: **lesser 3rd**, **normal 6th**, **greater 9th**.
+- **Three uses per day** each.
+- Using a rod does not require possessing the feat it applies.
 
 ## Item creation interaction
 

@@ -69,6 +69,24 @@ export default function useSpellbookData() {
         return acc;
     }, {});
 
+    /* A metamagic'd preparation belongs under the level whose slot it actually
+       takes, beside the spells it is competing with for that slot - so the same
+       spell can appear in two different level cards, which is correct and
+       surprising exactly once. Spontaneous casters have none: their choice is
+       made at the cast button, not held in the book. */
+    const metamagicEntries = (page === 1 || page === 2) && !inst.isSpontaneous()
+        ? inst.getMetamagicEntries({ name: nameFilter, school: schoolFilter })
+        : [];
+    metamagicEntries.forEach((entry) => {
+        if (!spellsByLevel[entry.level]) spellsByLevel[entry.level] = [];
+        spellsByLevel[entry.level].push({
+            ...entry.spell,
+            mm: entry.mm,
+            baseLevel: entry.baseLevel,
+            effectiveLevel: entry.effectiveLevel,
+        });
+    });
+
     const allLevelKeys = [
         ...Object.keys(spellsByLevel),
         ...Object.keys(spontaneousByLevel),

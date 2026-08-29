@@ -8,6 +8,10 @@ import SpontaneousSpells from './spontaneous_spells';
 import DomainSpells from './domain_spells';
 import { LearnTab, FusedStepper, StarOrbitCast } from './row_actions';
 import { CLASSSPELLKEY as classKeyMap } from '../../lib/spellbook/spellbook';
+import MetamagicPills from './metamagic_pills';
+import MetamagicPrepareButton from './metamagic_prepare';
+import MetamagicCastButton from './metamagic_cast';
+import '../../style/metamagic.css';
 
 export default function SpellLevelCard({
   level,
@@ -28,7 +32,8 @@ export default function SpellLevelCard({
   dispatch,
   showShortDescriptions,
   castingBlocked = false,
-  castingBlockedReason = ''
+  castingBlockedReason = '',
+  metamagicRods = []
 }) {
 
   const key = classKeyMap[inst.Class] || '';
@@ -40,18 +45,16 @@ export default function SpellLevelCard({
   const showDomainSpellbook = page === 2 && level !== 0 && preparedDomainSpells && preparedDomainSpells.length > 0 && !collapsed;
   const slotsAtLevel = (inst.PreparedDomainSpells && inst.PreparedDomainSpells[level]) || [];
 
-  const getRemaining = link => {
-    if (["Sorcerer", "Bard"].includes(inst.Class)) {
-      const spell = inst.getAllSpells().find(x => x.Link === link);
-      let lvl = parseInt(spell.Level.split(`${classKeyMap[inst.Class]} `)[1].split(',')[0], 10);
-      const totalUsed = inst.getLearnedSpells().filter(x => x.Level.includes(`${classKeyMap[inst.Class]} ${lvl}`))
-        .map(x => inst.getSpellPreparedUsed(x.Link).Used || 0)
-        .reduce((a, b) => a + b, 0);
-      return Math.max(0, spellsPerDay[lvl] - totalUsed);
-    }
-    const { Prepared = 0, Used = 0 } = inst.getSpellPreparedUsed(link);
-    return Math.max(0, Prepared - Used);
-  };
+  /* Casts left. The model answers it for both casting styles, because a
+     metamagic'd cast spends a slot of the *modified* level and the component
+     has no business knowing that. */
+  const getRemaining = (link, mm = 0) => inst.getRemainingFor(link, mm);
+
+  const availableMetamagic = inst.getAvailableMetamagic?.() ?? [];
+  const spontaneous = inst.isSpontaneous?.() ?? false;
+  const showPrepareMetamagic = page === 1 && availableMetamagic.length > 0;
+  const showCastMetamagic = page === 2
+    && ((spontaneous && availableMetamagic.length > 0) || metamagicRods.length > 0);
 
   const learned = inst.getLearnedSpells();
   const learnedLinks = new Set(learned.map(x => x.Link));
@@ -83,20 +86,13 @@ export default function SpellLevelCard({
           ? `Lv${lvl} (Wizards know all lv0 spells)`
           : `Lv${lvl} (${spellLength - learnedByLevel0Length}/${known} free in total)`;
       case (page === 1): {
-        const preparedList = learned.reduce((acc, sp) => {
-          const entry = sp.Level.split(',').map(p => p.trim()).find(p => p.startsWith(`${key} `));
-          const l = entry ? parseInt(entry.slice(key.length).trim(), 10) : null;
-          if (l != null) (acc[l] = acc[l] || []).push(sp);
-          return acc;
-        }, {});
-        const spellsFor = preparedList[lvl] || [];
-        let totalPrep = spellsFor
-          .map(x => (inst.getSpellPreparedUsed(x.Link).Prepared || 0))
-          .reduce((a, b) => a + b, 0);
-        let totalPrepSpec = spellsFor
-          .filter(x => x.School.toLowerCase().includes((inst.Specialized || '').toLowerCase()))
-          .map(x => (inst.getSpellPreparedUsed(x.Link).Prepared || 0))
-          .reduce((a, b) => a + b, 0);
+        /* Counted by the slot each preparation occupies rather than by the
+           spell's own level, so an empowered magic missile is charged to the
+           3rd-level allowance it actually spends. The model owns the sum. */
+        let totalPrep = inst.getPreparedCountAtLevel(lvl);
+        const totalPrepSpec = inst.Specialized
+          ? inst.getPreparedCountAtLevel(lvl, { school: inst.Specialized })
+          : 0;
 
         let mageSpec = "";
         const hasOneSpellOfSpec = totalPrepSpec > 0;
@@ -239,14 +235,15 @@ export default function SpellLevelCard({
                   )}
 
                   {page === 1 && (() => {
-                    const prepared = inst.getSpellPreparedUsed(item.Link).Prepared || 0;
+                    const mm = item.mm || 0;
+                    const prepared = inst.getSpellPreparedUsed(item.Link, mm).Prepared || 0;
                     return (
                       <td className={`${firstClass} col-btn-sm action-cell`}>
                         <FusedStepper
                           value={prepared}
                           onChange={(next) => {
-                            if (next > prepared) actions?.onPrepareSpell?.(item.Link);
-                            else if (next < prepared) actions?.onUnprepareSpell?.(item.Link);
+                            if (next > prepared) actions?.onPrepareSpell?.(item.Link, mm);
+                            else if (next < prepared) actions?.onUnprepareSpell?.(item.Link, mm);
                           }}
                         />
                       </td>
@@ -254,10 +251,11 @@ export default function SpellLevelCard({
                   })()}
 
                   {page === 2 && (() => {
-                    const remaining = getRemaining(item.Link);
-                    const total = ["Sorcerer", "Bard"].includes(inst.Class)
+                    const mm = item.mm || 0;
+                    const remaining = getRemaining(item.Link, mm);
+                    const total = spontaneous
                       ? (spellsPerDay[level] || 0)
-                      : (inst.getSpellPreparedUsed(item.Link).Prepared || 0);
+                      : (inst.getSpellPreparedUsed(item.Link, mm).Prepared || 0);
                     return (
                       <td className={`${firstClass} col-btn-sm-max action-cell`}>
                         <StarOrbitCast
@@ -265,7 +263,7 @@ export default function SpellLevelCard({
                           total={total}
                           blocked={castingBlocked}
                           blockedReason={castingBlockedReason}
-                          onClick={() => actions?.onUseSpell?.(item.Link)}
+                          onClick={() => actions?.onUseSpell?.(item.Link, mm)}
                         />
                       </td>
                     );
@@ -286,13 +284,41 @@ export default function SpellLevelCard({
                           {item.School.split(' ')[0]}
                         </span>
                       )}
+                      <MetamagicPills mm={item.mm || 0} />
+                      {showPrepareMetamagic && !item.mm && inst.getSpellBaseLevel(item) !== null && (
+                        <MetamagicPrepareButton
+                          spell={item}
+                          baseLevel={inst.getSpellBaseLevel(item)}
+                          available={availableMetamagic}
+                          preparations={inst.getMetamagicPreparations(item.Link)}
+                          preparedFor={(mm) => inst.getSpellPreparedUsed(item.Link, mm).Prepared || 0}
+                          onPrepare={(mm) => actions?.onPrepareSpell?.(item.Link, mm)}
+                          onUnprepare={(mm) => actions?.onUnprepareSpell?.(item.Link, mm)}
+                        />
+                      )}
+                      {showCastMetamagic && inst.getSpellBaseLevel(item) !== null && (
+                        <MetamagicCastButton
+                          spell={item}
+                          baseLevel={inst.getSpellBaseLevel(item)}
+                          spontaneous={spontaneous}
+                          available={availableMetamagic}
+                          rods={metamagicRods}
+                          remainingFor={(mm) => getRemaining(item.Link, mm)}
+                          blocked={castingBlocked}
+                          onCast={(mm) => actions?.onUseSpell?.(item.Link, mm)}
+                          onCastWithRod={(rodId) => actions?.onUseSpellWithRod?.(item.Link, rodId, item.mm || 0)}
+                        />
+                      )}
                       {(() => {
                         /* The DC a target rolls against, for the spells that
                            allow a save. Shown here rather than only in the
                            spell card because it is read every time the spell
                            is cast — and it is the only place Spell Focus has
                            ever been able to appear. */
-                        const save = getSaveDC?.(level, item);
+                        /* Heighten is the one metamagic that raises the
+                           spell's own level, so the DC is asked for the
+                           effective level rather than for the card's. */
+                        const save = getSaveDC?.(item.effectiveLevel ?? level, item);
                         if (!save) return null;
                         return (
                           <span className="spell-save-dc-group">
@@ -429,5 +455,8 @@ SpellLevelCard.propTypes = {
   /** True when the caster cannot cast at all right now (a wild-shaped druid
       without Natural Spell). Slot counts stay visible; only the button locks. */
   castingBlocked: PropTypes.bool,
-  castingBlockedReason: PropTypes.string
+  castingBlockedReason: PropTypes.string,
+  /** Metamagic rods in hand. Player-sheet only — a standalone spellbook has no
+      character, so it has no hands. */
+  metamagicRods: PropTypes.array
 };

@@ -34,7 +34,7 @@ The app runs in two modes, toggled on the home page:
 | **Monster book** | Master | The full bestiary — 559 creatures across monsters, animals and vermin — filtered by name, type, size, terrain and a challenge-rating range. Track one creature at a time in combat: hit points, damage taken and per-stat bonuses. |
 | **Spellbook** | Everyone | Per-character spell tracking: prepared/known spells, slots by level, domains, wizard schools, spontaneous casting and rest handling. |
 | **Search** | Everyone | Browse and cross-link spells, items, feats and skills. Descriptions are hyperlinked, so a spell reference in a feat takes you straight to it. |
-| **Player sheet** *(beta)* | Everyone | A mostly automatic D&amp;D 3.5 character sheet: abilities, BAB, saves, skills, feats, inventory and carrying capacity, class features (rage, bardic music, turn undead, wild shape, favored enemies, monk and paladin abilities…), animal companions and familiars, conditions, and a portrait editor. |
+| **Player sheet** | Everyone | A mostly automatic D&amp;D 3.5 character sheet: abilities, BAB, saves, skills, feats, inventory and carrying capacity, class features (rage, bardic music, turn undead, wild shape, favored enemies, monk and paladin abilities…), animal companions and familiars, conditions, and a portrait editor. |
 | **Dice roller** | Everyone | Reachable from every tab: d4–d100, stacking count buttons, and the last roll is remembered. |
 
 Two design rules run through the whole app:
