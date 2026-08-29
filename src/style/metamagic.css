@@ -9,6 +9,7 @@
   flex-wrap: wrap;
   gap: 0.25rem;
   align-items: center;
+  flex-shrink: 0;
 }
 
 /* Neutral, like every other pill on the sheet. The accent is whatever colour
@@ -34,6 +35,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
   width: 1.4rem;
   height: 1.4rem;
   padding: 0;

@@ -20,8 +20,8 @@ export const TABS = [
   { id: 1, label: 'Shop',         icon: 'shopping_cart', masterOnly: true  },
   { id: 3, label: 'Loot',         icon: 'paid',          masterOnly: true  },
   { id: 6, label: 'Monsters',     icon: 'skull',         masterOnly: true  },
+  { id: 7, label: 'Traps',        icon: 'crisis_alert',  masterOnly: true  },
   { id: 2, label: 'Spellbook',    icon: 'auto_stories',  masterOnly: false },
-  { id: 7, label: 'Traps',        icon: 'crisis_alert', masterOnly: true  },
   { id: 5, label: 'Player sheet', icon: 'badge',  masterOnly: false },
 ];
 

@@ -2,17 +2,57 @@
    The roll controls, the trap sheet, the two breakdown boxes, and the
    board diagram. All sizing in rem per the CSS convention in CLAUDE.md. */
 
+/* The page keeps its own gutter, the way the Monster book does — this tab has
+   no card wrapper of its own to inherit one from. */
 .trap-page {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: var(--space-3);
   width: 100%;
+  padding: var(--space-4) var(--space-4) var(--space-12);
+  box-sizing: border-box;
+  overflow-x: clip;
 }
 
+/* border-box matters: .card carries a 1px border, so a content-box card at
+   100% is two pixels wider than the page and scrolls the whole tab sideways. */
 .trap-card {
+  width: min(42rem, 100%);
+  padding: var(--space-3);
+  box-sizing: border-box;
+}
+
+/* .card is an unpadded shell everywhere else in the app — its children carry
+   the inset themselves (.card-content is 96% wide, .card-side-div 92%). The
+   trap cards are padded instead, so anything that already insets itself would
+   otherwise be inset twice. */
+.trap-card .card-expand-div,
+.trap-card .card-content,
+.trap-card .card-side-div {
   width: 100%;
-  max-width: 42rem;
+}
+
+/* The collapsible head keeps the card's padding rather than adding its own on
+   top of it, so the title and the chevron sit the same distance from the two
+   edges. */
+.trap-card .card-expand-div .card-title {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+/* Collapsed, the card is a fixed-height bar; vertical padding would push the
+   title out of it. */
+.trap-card.collapsed {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+/* A section heading sits with the content it heads, not centred over it — the
+   breakdown titles below are left-aligned and these have to match. */
+.trap-card > .card-title {
+  width: 100%;
+  margin: 0 0 var(--space-2);
 }
 
 .trap-sheet {
@@ -75,7 +115,8 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-3);
-  margin-top: var(--space-2);
+  width: 100%;
+  margin-top: var(--space-3);
 }
 
 .trap-toggle {
@@ -133,6 +174,7 @@
 
 .trap-sheet-mismatch,
 .trap-line {
+  width: 100%;
   margin: var(--space-2) 0 0;
   font-size: var(--font-size-sm);
   line-height: 1.45;
@@ -333,6 +375,7 @@
   flex-wrap: wrap;
   align-items: center;
   gap: var(--space-2);
+  width: 100%;
   margin-bottom: var(--space-2);
 }
 
@@ -340,6 +383,7 @@
   list-style: none;
   margin: 0;
   padding: 0;
+  width: 100%;
   max-height: 22rem;
   overflow-y: auto;
 }
@@ -387,11 +431,19 @@
 
 /* --- the empty state --- */
 
+@media (max-width: 48rem) {
+  .trap-page {
+    padding-left: var(--space-2);
+    padding-right: var(--space-2);
+  }
+}
+
 .trap-empty {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: var(--space-2);
+  padding: var(--space-6) var(--space-3);
   text-align: center;
   color: var(--ink-muted);
 }

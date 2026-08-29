@@ -365,11 +365,26 @@ p {
   color: var(--ink);
 }
 
+/* `.button-link` breaks a word at any character, which is right for a long
+   item name in a narrow shop cell and wrong here. A table column is sized from
+   its content's minimum width, and "break anywhere" makes that one letter — so
+   once the metamagic wand joined the pills and the DC in this row, the column
+   collapsed and spell names were set one letter per line. A word stays a word,
+   and the column cannot be narrower than the longest one. */
+.spell-table-cell-name-row .spell-table-cell-name {
+  flex: 1 1 auto;
+  word-break: normal;
+  overflow-wrap: break-word;
+}
+
+/* The row wraps rather than squeezing: on a phone the save DC drops to a line
+   of its own instead of taking the width away from the name. */
 .spell-table-cell-name-row {
   display: flex;
+  flex-wrap: wrap;
   align-items: baseline;
   justify-content: space-between;
-  gap: 0.5rem;
+  gap: 0.25rem 0.5rem;
   width: 100%;
 }
 
