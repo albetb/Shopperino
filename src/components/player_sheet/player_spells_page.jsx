@@ -1,5 +1,6 @@
 import SpellbookTable from '../spellbook/spellbook_table';
 import ArcaneFailureNote from './arcane_failure_note';
+import { SpellcastingActionFeats } from './action_feats_row';
 
 export default function PlayerSpellsPage() {
   // Plain flex column with align-items: center so the cards center the same
@@ -20,6 +21,9 @@ export default function PlayerSpellsPage() {
     >
       {/* Only ever visible for an arcane caster wearing something. */}
       <ArcaneFailureNote />
+      {/* Improved counterspell and Eschew materials change how a spell is
+          cast rather than what it does, so they belong beside the spells. */}
+      <SpellcastingActionFeats />
       <SpellbookTable source="player" />
     </div>
   );

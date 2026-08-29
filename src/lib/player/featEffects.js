@@ -336,6 +336,12 @@ export const SITUATIONAL_FEAT_STATS = Object.freeze({
   'Improved trip': ['attack'],
   'Diehard': ['maxHp'],
   'Mounted combat': ['skill:ride'],
+  /* Leadership grants no bonus at all — it attracts a cohort and followers,
+     and the score that governs it is a Charisma matter. It rides here because
+     the Diplomacy box is the one place on the sheet a player looks when they
+     are asking what their social weight is, and a note is the whole of what
+     the feat needs. */
+  'Leadership': ['skill:diplomacy'],
 });
 
 /**
@@ -352,4 +358,69 @@ export function getSituationalFeatNames(statKey) {
   return Object.keys(SITUATIONAL_FEAT_STATS)
     .filter((feat) => SITUATIONAL_FEAT_STATS[feat]
       .some((key) => key.toLowerCase() === wanted));
+}
+
+/**
+ * The feats that grant an **action** rather than a number, and where each one
+ * belongs on the sheet.
+ *
+ * These reached the sheet nowhere at all. The feat audit was right that they
+ * have no derived value to move — a feat that lets you make an extra attack
+ * when you drop a foe changes no total — but "no number to change" was read as
+ * "no presence", so a character with *Cleave* had nothing anywhere reminding
+ * them it exists. A pill that names the feat and links to its text is a memory
+ * aid, not a rules display, and it computes nothing.
+ *
+ * The group is **where the action happens**, which is where the pill belongs:
+ *
+ * - `melee` / `ranged` / `mounted` — three labelled rows at the foot of the
+ *   attacks card.
+ * - `spellbook` — the casting feats, on the spellbook page.
+ *
+ * Two placements are judgement rather than rule, and are called out because
+ * neither is obvious: **Quick draw** covers any weapon but matters most when
+ * closing to melee, and **Deflect / Snatch arrows** are performed by an
+ * unarmed defender but concern *incoming ranged* attacks, so they sit under
+ * ranged rather than melee.
+ *
+ * Two of the twenty are deliberately absent. **Leadership** is a note on
+ * Diplomacy (see `SITUATIONAL_FEAT_STATS` above) rather than an action taken in
+ * a round. **Improved familiar** is not a pill at all: every creature it grants
+ * — imp, quasit, pseudodragon, the eight mephits, homunculus, shocker lizard,
+ * stirge and the Small elementals — is already in monsters.json, so it is a
+ * real feature waiting to be built rather than a reminder.
+ */
+export const ACTION_FEAT_GROUPS = Object.freeze({
+  // —— Melee ——
+  'Cleave': 'melee',
+  'Great cleave': 'melee',
+  'Whirlwind attack': 'melee',
+  'Spring attack': 'melee',
+  'Improved feint': 'melee',
+  'Improved grapple': 'melee',
+  'Improved unarmed strike': 'melee',
+  'Quick draw': 'melee',
+  // —— Ranged ——
+  'Shot on the run': 'ranged',
+  'Rapid shot': 'ranged',
+  'Manyshot': 'ranged',
+  'Rapid reload': 'ranged',
+  'Deflect arrows': 'ranged',
+  'Snatch arrows': 'ranged',
+  // —— Mounted ——
+  'Ride-by attack': 'mounted',
+  'Trample': 'mounted',
+  // —— Spellcasting ——
+  'Improved counterspell': 'spellbook',
+  'Eschew materials': 'spellbook',
+});
+
+/** The groups on the attacks card, in the order they are drawn. */
+export const ATTACK_ACTION_GROUPS = Object.freeze(['melee', 'ranged', 'mounted']);
+
+/** Every action feat assigned to one group, in table order. */
+export function getActionFeatNames(group) {
+  const wanted = String(group || '');
+  if (!wanted) return [];
+  return Object.keys(ACTION_FEAT_GROUPS).filter((feat) => ACTION_FEAT_GROUPS[feat] === wanted);
 }

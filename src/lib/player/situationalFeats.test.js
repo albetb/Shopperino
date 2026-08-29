@@ -26,9 +26,12 @@ const notesFor = (player, key) => player.getSituationalContributions(key)
   .filter((n) => n.source.startsWith('feat:'));
 
 describe('the table itself', () => {
-  test('names eighteen feats, and every one of them is in feats.json', () => {
+  test('names nineteen feats, and every one of them is in feats.json', () => {
+    /* Eighteen carry a real bonus in a stated situation. The nineteenth is
+       Leadership, which carries no bonus at all — it rides this channel
+       because a note on Diplomacy is the whole of what the feat needs. */
     const names = Object.keys(SITUATIONAL_FEAT_STATS);
-    expect(names).toHaveLength(18);
+    expect(names).toHaveLength(19);
     const known = new Set(loadFile('feats').map((f) => f.Name));
     names.forEach((name) => expect(known.has(name)).toBe(true));
   });
@@ -43,7 +46,8 @@ describe('the table itself', () => {
 
   test('only stat keys the breakdown already speaks are used', () => {
     const allowed = new Set([
-      'ac', 'fortitude', 'attack', 'damage', 'maxHp', 'skill:concentration', 'skill:ride',
+      'ac', 'fortitude', 'attack', 'damage', 'maxHp',
+      'skill:concentration', 'skill:ride', 'skill:diplomacy',
     ]);
     Object.values(SITUATIONAL_FEAT_STATS).forEach((keys) => {
       keys.forEach((key) => expect(allowed.has(key)).toBe(true));

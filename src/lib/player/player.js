@@ -58,6 +58,8 @@ import {
   hasRunFeat,
   getStunningFistFeatUses,
   getSituationalFeatNames,
+  getActionFeatNames,
+  ATTACK_ACTION_GROUPS,
   STUNNING_FIST_FEAT_DC,
 } from './featEffects';
 import {
@@ -5572,6 +5574,28 @@ class Player {
     const wanted = String(name || '').toLowerCase();
     const found = feats.find((f) => String(f?.Name || '').toLowerCase() === wanted);
     return found?.shortDescription || '';
+  }
+
+  /**
+   * The action-granting feats this character has, for one group.
+   *
+   * These are the feats that move no number — *Cleave*, *Rapid shot*,
+   * *Whirlwind attack* — so they never appeared anywhere on the sheet. They
+   * are returned as data rather than rendered here: the attacks card draws
+   * them as linked pills and the spellbook draws its two its own way.
+   *
+   * @param {string} group - 'melee', 'ranged', 'mounted' or 'spellbook'
+   * @returns {Array<{name: string, description: string}>} in table order
+   */
+  getActionFeats(group) {
+    return getActionFeatNames(group)
+      .filter((feat) => this.hasFeatNamed(feat))
+      .map((feat) => ({ name: feat, description: this.getFeatShortDescription(feat) }));
+  }
+
+  /** True when any of the three attacks-card groups has something to show. */
+  hasAttackActionFeats() {
+    return ATTACK_ACTION_GROUPS.some((group) => this.getActionFeats(group).length > 0);
   }
 
   /** Whether this character has Augment Summoning. */

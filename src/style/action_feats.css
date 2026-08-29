@@ -1,0 +1,57 @@
+/* The action-granting feats, as linked pills (action_feats_row.jsx).
+   All sizing is in rem per the CSS convention in CLAUDE.md. */
+
+.action-feats {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  border-top: 0.0625rem solid var(--border-soft);
+  padding-top: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+/* On the spellbook these sit inside an existing block rather than closing off
+   a card, so they carry no rule above them. */
+.action-feats--inline {
+  border-top: 0;
+  padding-top: 0;
+  margin-top: var(--space-2);
+}
+
+/* Label and pills on one line, the label a fixed narrow column so the pills of
+   all three groups start at the same place and read as a table. */
+.action-feats-group {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+}
+
+.action-feats-label {
+  flex: 0 0 3.5rem;
+  font-size: 0.8em;
+  text-transform: lowercase;
+}
+
+.action-feats-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  min-width: 0;
+}
+
+/* Quieter than a stat pill: this is a reminder, not a number, and it must not
+   compete with the attack rows above it. */
+.action-feat-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.5rem;
+  border: 0.0625rem solid var(--border-soft);
+  border-radius: 1rem;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.action-feat-pill:hover {
+  border-color: var(--accent, currentColor);
+}

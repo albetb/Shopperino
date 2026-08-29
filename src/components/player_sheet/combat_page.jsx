@@ -32,6 +32,7 @@ import Card from '../common/Card';
 import StatPill from '../common/StatPill';
 import StatInfo from '../common/StatInfo';
 import CombatStancesRow from './combat_stances_row';
+import ActionFeatsRow from './action_feats_row';
 import HeldItemsRows from './held_items_rows';
 import { isHeldItemType, heldTypeOfRaw } from '../../lib/item/heldItems';
 import InfoPopover from '../common/InfoPopover';
@@ -1084,6 +1085,10 @@ export default function CombatPage() {
           {/* The two feats that are a decision rather than a bonus. Last in
               the card because every number above it moves when they change. */}
           <CombatStancesRow />
+
+          {/* The feats that grant an action rather than a number. Last in the
+              card because they change none of the figures above them. */}
+          <ActionFeatsRow />
       </Card>
 
       {/* What is in the four free slots — absent when they are empty. */}
