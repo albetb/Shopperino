@@ -1,6 +1,7 @@
 import { loadFile } from './loadFile';
 import { slug } from './slugUtils';
 import { shiftSize } from './item/potionEffects';
+import { tName } from './i18n';
 
 export { loadFile };
 export { itemTypes, getItemByRef, getItemByLink, getItemById, getItemIdByRef } from './item/itemsUtils';
@@ -82,7 +83,9 @@ export function getConditionByLink(link) {
     }
     if (!entry) return [];
     const [name, description] = entry;
-    return [{ Name: name, Description: description || '', Link: link }];
+    /* The card is display, so the title is Italian; `link` stays the English
+       slug it arrived as, because that is what the card is identified by. */
+    return [{ Name: tName('conditions', name), Description: description || '', Link: link }];
   } catch (err) {
     return [];
   }

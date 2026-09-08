@@ -37,11 +37,20 @@ function character() {
   return p;
 }
 
-const openPicker = () => fireEvent.click(screen.getByRole('button', { name: /add condition/i }));
+const openPicker = () => fireEvent.click(screen.getByRole('button', { name: /aggiungi condizione/i }));
+
+/* The model still speaks English — `addCondition({ name: 'Fatigued' })` is what
+   a saved character holds — while the screen speaks Italian. Every query below
+   therefore asks for the Italian name of a condition the player was given by
+   its English one, which is the whole point of keeping the two apart. */
+const IT = {
+  Fatigued: 'Affaticato',
+  'Ability Damaged': 'Caratteristica Danneggiata',
+};
 /* Scoped to the picker sheet: an active condition also renders a pill button
    carrying the same name in the section behind it. */
 const listItem = (name) =>
-  within(screen.getByRole('dialog')).getByRole('button', { name: new RegExp(`^${name}`, 'i') });
+  within(screen.getByRole('dialog')).getByRole('button', { name: new RegExp(`^${IT[name]}`, 'i') });
 
 describe('a plain on/off condition', () => {
   test('is offered as a live control once taken, not a disabled one', () => {

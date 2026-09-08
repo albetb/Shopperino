@@ -1,0 +1,59 @@
+{
+  "_readme": [
+    "Italian display names for things whose English name is their identity.",
+    "The English key is what src/data, the save files and the code all use; it must",
+    "match the data byte for byte. The Italian value is only ever shown on screen.",
+    "Read through src/lib/i18n/index.js — never import this file directly.",
+    "Every term here must agree with .claude/skills/translate-it/glossary.json."
+  ],
+
+  "abilities": {
+    "Strength": "Forza",
+    "Dexterity": "Destrezza",
+    "Constitution": "Costituzione",
+    "Intelligence": "Intelligenza",
+    "Wisdom": "Saggezza",
+    "Charisma": "Carisma"
+  },
+
+  "conditions": {
+    "Ability Damaged": "Caratteristica Danneggiata",
+    "Ability Drained": "Caratteristica Prosciugata",
+    "Blinded": "Accecato",
+    "Blown Away": "Spazzato Via",
+    "Checked": "Fermato",
+    "Confused": "Confuso",
+    "Cowering": "Terrorizzato",
+    "Dazed": "Frastornato",
+    "Dazzled": "Abbagliato",
+    "Dead": "Morto",
+    "Deafened": "Assordato",
+    "Disabled": "Inabilitato",
+    "Dying": "Morente",
+    "Energy Drained": "Risucchiato",
+    "Entangled": "Intralciato",
+    "Exhausted": "Esausto",
+    "Fascinated": "Affascinato",
+    "Fatigued": "Affaticato",
+    "Flat-Footed": "Colto alla Sprovvista",
+    "Frightened": "Spaventato",
+    "Grappling": "In Lotta",
+    "Helpless": "Indifeso",
+    "Incorporeal": "Incorporeo",
+    "Invisible": "Invisibile",
+    "Knocked Down": "Abbattuto",
+    "Nauseated": "Nauseato",
+    "Panicked": "In Preda al Panico",
+    "Paralyzed": "Paralizzato",
+    "Petrified": "Pietrificato",
+    "Pinned": "Bloccato",
+    "Prone": "Prono",
+    "Shaken": "Scosso",
+    "Sickened": "Indisposto",
+    "Stable": "Stabile",
+    "Staggered": "Barcollante",
+    "Stunned": "Stordito",
+    "Turned": "Scacciato",
+    "Unconscious": "Privo di Sensi"
+  }
+}

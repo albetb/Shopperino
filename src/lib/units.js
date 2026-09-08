@@ -118,6 +118,14 @@ const UNIT_WORDS = [
   'inches', 'inch', 'in\\.',
   'miles', 'mile',
   'pounds', 'pound', 'lbs\\.', 'lbs', 'lb\\.', 'lb',
+  /* The Italian words for the same units. The app's prose is translated, and a
+     translator writing "entro 9 metri" rather than "entro 30 feet" is writing
+     correct Italian — without these the switch would simply stop working on
+     that sentence, silently and with nothing on screen to show for it. Reading
+     both means the translation cannot break the feature by being good prose. */
+  'chilogrammi', 'chilogrammo', 'libbre', 'libbra',
+  'pollici', 'pollice', 'miglia', 'miglio',
+  'metri', 'metro', 'piedi', 'piede',
   'kg', 'km', 'cm', 'm',
 ];
 
@@ -137,14 +145,18 @@ const MEASURE = new RegExp(
  */
 function canonical(amount, word) {
   const w = word.toLowerCase();
-  if (w === 'feet' || w === 'foot' || w === 'ft.' || w === 'ft') return { system: 'imperial', kind: 'd', ft: amount };
-  if (w === 'inches' || w === 'inch' || w === 'in.') return { system: 'imperial', kind: 'd', ft: amount / 12 };
-  if (w === 'miles' || w === 'mile') return { system: 'imperial', kind: 'far', km: amount * KM_PER_MILE };
-  if (w === 'pounds' || w === 'pound' || w.startsWith('lb')) return { system: 'imperial', kind: 'w', kg: amount * KG_PER_LB };
-  if (w === 'kg') return { system: 'metric', kind: 'w', kg: amount };
+  if (w === 'feet' || w === 'foot' || w === 'ft.' || w === 'ft'
+    || w === 'piedi' || w === 'piede') return { system: 'imperial', kind: 'd', ft: amount };
+  if (w === 'inches' || w === 'inch' || w === 'in.'
+    || w === 'pollici' || w === 'pollice') return { system: 'imperial', kind: 'd', ft: amount / 12 };
+  if (w === 'miles' || w === 'mile'
+    || w === 'miglia' || w === 'miglio') return { system: 'imperial', kind: 'far', km: amount * KM_PER_MILE };
+  if (w === 'pounds' || w === 'pound' || w.startsWith('lb')
+    || w === 'libbre' || w === 'libbra') return { system: 'imperial', kind: 'w', kg: amount * KG_PER_LB };
+  if (w === 'kg' || w.startsWith('chilogramm')) return { system: 'metric', kind: 'w', kg: amount };
   if (w === 'km') return { system: 'metric', kind: 'far', km: amount };
   if (w === 'cm') return { system: 'metric', kind: 'd', ft: amount / 100 / M_PER_FT };
-  if (w === 'm') return { system: 'metric', kind: 'd', ft: amount / M_PER_FT };
+  if (w === 'm' || w === 'metri' || w === 'metro') return { system: 'metric', kind: 'd', ft: amount / M_PER_FT };
   return null;
 }
 

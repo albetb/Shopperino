@@ -4,6 +4,7 @@ import { addCardByLink } from '../../store/slices/appSlice';
 import { onAddCondition, onRemoveCondition, onRemovePotionEffect } from '../../store/thunks/playerSheetThunks';
 import { ActiveEffectPills } from './potions_card';
 import { getAllConditions, conditionSlug } from '../../lib/utils';
+import { tName } from '../../lib/i18n';
 import IconButton from '../common/IconButton';
 import BottomSheet from '../common/BottomSheet';
 import Button from '../common/Button';
@@ -32,19 +33,22 @@ function conditionTone(name) {
   return 'negative';
 }
 
+/* The keys stay English: 'Str' is what Player stores and what every modifier
+   lookup is keyed on. Only the label is read by a person. */
 const ABILITIES = [
-  { key: 'Str', label: 'Strength' },
-  { key: 'Dex', label: 'Dexterity' },
-  { key: 'Con', label: 'Constitution' },
-  { key: 'Int', label: 'Intelligence' },
-  { key: 'Wis', label: 'Wisdom' },
-  { key: 'Cha', label: 'Charisma' },
+  { key: 'Str', label: 'Forza' },
+  { key: 'Dex', label: 'Destrezza' },
+  { key: 'Con', label: 'Costituzione' },
+  { key: 'Int', label: 'Intelligenza' },
+  { key: 'Wis', label: 'Saggezza' },
+  { key: 'Cha', label: 'Carisma' },
 ];
 
 function formatConditionLabel(c) {
-  if (c.ability) return `${c.name} · ${c.ability}${Number.isFinite(c.amount) ? ` −${c.amount}` : ''}`;
-  if (Number.isFinite(c.amount)) return `${c.name} ×${c.amount}`;
-  return c.name;
+  const name = tName('conditions', c.name);
+  if (c.ability) return `${name} · ${c.ability}${Number.isFinite(c.amount) ? ` −${c.amount}` : ''}`;
+  if (Number.isFinite(c.amount)) return `${name} ×${c.amount}`;
+  return name;
 }
 
 /**
@@ -75,15 +79,22 @@ export default function ConditionsSection() {
   const derivedKeys = new Set(derived.map(c => `${c.name}::${c.ability ?? ''}`));
   const manual = manualAll.filter(c => !derivedKeys.has(`${c.name}::${c.ability ?? ''}`));
   // Conditions selectable in the picker — derived ones are excluded.
+  /* Carries the Italian name alongside the English one. The English stays
+     because every dispatch below is keyed on it; the Italian is what the list
+     is sorted by and searched on, since sorting an Italian list in English
+     order puts Affaticato under F. */
   const allConditions = useMemo(
-    () => getAllConditions().filter(c => !HP_DERIVED.has(c.name)),
+    () => getAllConditions()
+      .filter(c => !HP_DERIVED.has(c.name))
+      .map(c => ({ ...c, label: tName('conditions', c.name) }))
+      .sort((a, b) => a.label.localeCompare(b.label, 'it')),
     []
   );
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return allConditions;
-    return allConditions.filter(c => c.name.toLowerCase().includes(q));
+    return allConditions.filter(c => c.label.toLowerCase().includes(q));
   }, [allConditions, query]);
 
   if (!player) return null;
@@ -154,7 +165,7 @@ export default function ConditionsSection() {
         type="button"
         className="cond-pill-label"
         onClick={() => openDescription(c.name)}
-        title="Show description"
+        title="Mostra descrizione"
       >
         {formatConditionLabel(c)}
       </button>
@@ -163,12 +174,12 @@ export default function ConditionsSection() {
           type="button"
           className="cond-pill-x"
           onClick={() => removeCondition(c)}
-          aria-label={`Remove ${c.name}`}
+          aria-label={`Rimuovi ${tName('conditions', c.name)}`}
         >
           <Icon name="close" size={12} />
         </button>
       ) : (
-        <span className="cond-pill-auto" title="Applied automatically from HP">
+        <span className="cond-pill-auto" title="Applicata automaticamente dai punti ferita">
           <Icon name="deceased" size={12} />
         </span>
       )}
@@ -178,15 +189,15 @@ export default function ConditionsSection() {
   return (
     <div className="cond-wrap">
       <div className="cond-head">
-        <span className="sh-eyebrow">Conditions</span>
+        <span className="sh-eyebrow">Condizioni</span>
         <span className="cond-head-actions">
           {total > 0 && <span className="sh-faint cond-head-count">{total}</span>}
           <IconButton
             icon="add"
             ghost size="sm"
             onClick={openPicker}
-            title="Add condition"
-            aria-label="Add condition"
+            title="Aggiungi condizione"
+            aria-label="Aggiungi condizione"
           />
         </span>
       </div>
@@ -207,8 +218,8 @@ export default function ConditionsSection() {
       <BottomSheet
         open={pickerOpen}
         onClose={closePicker}
-        title={config ? config.name : 'Add condition'}
-        eyebrow="Conditions"
+        title={config ? tName('conditions', config.name) : 'Aggiungi condizione'}
+        eyebrow="Condizioni"
         /* Fixed height while browsing the list: it filters as you type, and a
            shrinking sheet drags its own search box under a phone keyboard.
            The sub-choice step is short and fixed, so it keeps its own size. */
@@ -217,7 +228,7 @@ export default function ConditionsSection() {
           <input
             type="text"
             className="sh-input"
-            placeholder="Search conditions…"
+            placeholder="Cerca condizioni…"
             value={query}
             onChange={e => setQuery(e.target.value)}
             autoFocus
@@ -228,7 +239,7 @@ export default function ConditionsSection() {
           <div className="cond-config">
             {isAbilityConfig && (
               <div className="cond-config-block">
-                <span className="sh-eyebrow">Ability</span>
+                <span className="sh-eyebrow">Caratteristica</span>
                 <div className="cond-chips">
                   {ABILITIES.map(a => {
                     const taken = player.hasCondition(config.name, a.key);
@@ -240,7 +251,7 @@ export default function ConditionsSection() {
                         className={['sh-chip', on && 'is-on'].filter(Boolean).join(' ')}
                         disabled={taken}
                         onClick={() => setConfig(prev => ({ ...prev, ability: a.key }))}
-                        title={taken ? 'Already active' : a.label}
+                        title={taken ? 'Già attiva' : a.label}
                       >
                         {a.key}
                       </button>
@@ -250,7 +261,7 @@ export default function ConditionsSection() {
               </div>
             )}
             <div className="cond-config-block">
-              <span className="sh-eyebrow">{isAbilityConfig ? 'Points' : 'Negative levels'}</span>
+              <span className="sh-eyebrow">{isAbilityConfig ? 'Punti' : 'Livelli negativi'}</span>
               <Stepper
                 value={config.amount}
                 min={1}
@@ -259,14 +270,14 @@ export default function ConditionsSection() {
               />
             </div>
             <div className="cond-config-actions">
-              <Button variant="ghost" icon="arrow_back" onClick={() => setConfig(null)}>Back</Button>
-              <Button variant="primary" icon="check" onClick={confirmConfig}>Add</Button>
+              <Button variant="ghost" icon="arrow_back" onClick={() => setConfig(null)}>Indietro</Button>
+              <Button variant="primary" icon="check" onClick={confirmConfig}>Aggiungi</Button>
             </div>
           </div>
         ) : (
           <div className="cond-list">
             {filtered.length === 0 ? (
-              <div className="sh-faint" style={{ padding: 'var(--space-3)' }}>No matches.</div>
+              <div className="sh-faint" style={{ padding: 'var(--space-3)' }}>Nessun risultato.</div>
             ) : (
               filtered.map(c => {
                 const exhausted = isExhausted(c.name);
@@ -284,7 +295,7 @@ export default function ConditionsSection() {
                     onClick={() => pickCondition(c.name)}
                   >
                     <span className="cond-list-name">
-                      {c.name}
+                      {c.label}
                       {exhausted && <Icon name="check" size={14} />}
                       {!exhausted && !canToggle && <Icon name="tune" size={14} />}
                     </span>

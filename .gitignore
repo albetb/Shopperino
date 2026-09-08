@@ -7,3 +7,6 @@ docs
 obsidian-vault/plans/done
 
 .claude/settings.local.json
+
+# Python bytecode from the translate-it skill's scripts
+__pycache__/
