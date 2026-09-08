@@ -12,6 +12,7 @@ import {
   setTheme,
   setAccent,
   setUnits,
+  setLang,
   setDiceMultiplierMask,
   setDiceLastRoll,
 } from './slices/appSlice';
@@ -29,6 +30,7 @@ const PREF_ACTIONS = [
   setTheme.type,
   setAccent.type,
   setUnits.type,
+  setLang.type,
   setDiceMultiplierMask.type,
   setDiceLastRoll.type,
   'spellbook/setIsSpellTableCollapsed',
@@ -83,6 +85,9 @@ export function persistSyncMiddleware(store) {
         break;
       case setUnits.type:
         nextPersist = { ...nextPersist, un: app.units };
+        break;
+      case setLang.type:
+        nextPersist = { ...nextPersist, lg: app.lang };
         break;
       case setAccent.type:
         nextPersist = { ...nextPersist, ac: typeof action.payload === 'string' && action.payload ? action.payload : 'crimson' };

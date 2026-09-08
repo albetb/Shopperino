@@ -6,8 +6,8 @@
         "General"
       ],
       "Prerequisites": "",
-      "Description": "<p><b>Beneficio:</b> Ottieni un bonus di +2 a tutte le prove di <a href=\"skills#jump\">Saltare</a> e a tutte le prove di <a href=\"skills#tumble\">Acrobazia</a>.</p>",
-      "shortDescription": "Ottieni un bonus di +2 a tutte le prove di Saltare e di Acrobazia.",
+      "Description": "<p><b>Benefit:</b> You get a +2 bonus on all <a href=\"skills#jump\">Jump</a> checks and <a href=\"skills#tumble\">Tumble</a> checks.</p>",
+      "shortDescription": "You get a +2 bonus on all Jump checks and Tumble checks.",
       "suggestedClass": [
         "Monk",
         "Rogue",
@@ -21,7 +21,7 @@
         "General"
       ],
       "Prerequisites": "",
-      "Description": "<p><b>Beneficio:</b> Ottieni un bonus di +2 a tutte le prove di <a href=\"skills#balance\">Equilibrio</a> e a tutte le prove di <a href=\"skills#escape-artist\">Artista della Fuga</a>.</p>",
+      "Description": "<p><b>Benefit:</b> You get a +2 bonus on all <a href=\"skills#balance\">Balance</a> checks and <a href=\"skills#escape-artist\">Escape artist</a> checks.</p>",
       "shortDescription": "You get a +2 bonus on all Balance checks and Escape artist checks.",
       "suggestedClass": [
         "Monk",

@@ -4,13 +4,13 @@ import { addCardByLink } from '../../store/slices/appSlice';
 import { onAddCondition, onRemoveCondition, onRemovePotionEffect } from '../../store/thunks/playerSheetThunks';
 import { ActiveEffectPills } from './potions_card';
 import { getAllConditions, conditionSlug } from '../../lib/utils';
-import { tName } from '../../lib/i18n';
 import IconButton from '../common/IconButton';
 import BottomSheet from '../common/BottomSheet';
 import Button from '../common/Button';
 import Stepper from '../common/Stepper';
 import Icon from '../common/Icon';
 import '../../style/conditions.css';
+import { t, tName } from '../../lib/i18n';
 
 /* Conditions that need a sub-choice when added. Ability Damaged/Drained
    target a single ability; Energy Drained carries a count of negative
@@ -33,17 +33,17 @@ function conditionTone(name) {
   return 'negative';
 }
 
-/* The keys stay English: 'Str' is what Player stores and what every modifier
-   lookup is keyed on. Only the label is read by a person. */
 const ABILITIES = [
-  { key: 'Str', label: 'Forza' },
-  { key: 'Dex', label: 'Destrezza' },
-  { key: 'Con', label: 'Costituzione' },
-  { key: 'Int', label: 'Intelligenza' },
-  { key: 'Wis', label: 'Saggezza' },
-  { key: 'Cha', label: 'Carisma' },
+  { key: 'Str', label: t('Strength') },
+  { key: 'Dex', label: t('Dexterity') },
+  { key: 'Con', label: t('Constitution') },
+  { key: 'Int', label: t('Intelligence') },
+  { key: 'Wis', label: t('Wisdom') },
+  { key: 'Cha', label: t('Charisma') },
 ];
 
+/* `c.name` is the English key the player stores and every set above compares
+   against; only what reaches the pill is translated. */
 function formatConditionLabel(c) {
   const name = tName('conditions', c.name);
   if (c.ability) return `${name} · ${c.ability}${Number.isFinite(c.amount) ? ` −${c.amount}` : ''}`;
@@ -79,15 +79,16 @@ export default function ConditionsSection() {
   const derivedKeys = new Set(derived.map(c => `${c.name}::${c.ability ?? ''}`));
   const manual = manualAll.filter(c => !derivedKeys.has(`${c.name}::${c.ability ?? ''}`));
   // Conditions selectable in the picker — derived ones are excluded.
-  /* Carries the Italian name alongside the English one. The English stays
-     because every dispatch below is keyed on it; the Italian is what the list
-     is sorted by and searched on, since sorting an Italian list in English
-     order puts Affaticato under F. */
+  /* Carries the displayed name beside the English one. Both are needed: every
+     dispatch below is keyed on the English, while the list is sorted and
+     searched on what the reader can actually see. Sorting an Italian list in
+     English order files Affaticato under F, and a search box that matches the
+     English is a search box that ignores what you typed. */
   const allConditions = useMemo(
     () => getAllConditions()
       .filter(c => !HP_DERIVED.has(c.name))
       .map(c => ({ ...c, label: tName('conditions', c.name) }))
-      .sort((a, b) => a.label.localeCompare(b.label, 'it')),
+      .sort((a, b) => a.label.localeCompare(b.label)),
     []
   );
 
@@ -165,7 +166,7 @@ export default function ConditionsSection() {
         type="button"
         className="cond-pill-label"
         onClick={() => openDescription(c.name)}
-        title="Mostra descrizione"
+        title={t('Show description')}
       >
         {formatConditionLabel(c)}
       </button>
@@ -174,12 +175,12 @@ export default function ConditionsSection() {
           type="button"
           className="cond-pill-x"
           onClick={() => removeCondition(c)}
-          aria-label={`Rimuovi ${tName('conditions', c.name)}`}
+          aria-label={`${t('Remove')} ${tName('conditions', c.name)}`}
         >
           <Icon name="close" size={12} />
         </button>
       ) : (
-        <span className="cond-pill-auto" title="Applicata automaticamente dai punti ferita">
+        <span className="cond-pill-auto" title={t('Applied automatically from HP')}>
           <Icon name="deceased" size={12} />
         </span>
       )}
@@ -189,15 +190,15 @@ export default function ConditionsSection() {
   return (
     <div className="cond-wrap">
       <div className="cond-head">
-        <span className="sh-eyebrow">Condizioni</span>
+        <span className="sh-eyebrow">{t('Conditions')}</span>
         <span className="cond-head-actions">
           {total > 0 && <span className="sh-faint cond-head-count">{total}</span>}
           <IconButton
             icon="add"
             ghost size="sm"
             onClick={openPicker}
-            title="Aggiungi condizione"
-            aria-label="Aggiungi condizione"
+            title={t('Add condition')}
+            aria-label={t('Add condition')}
           />
         </span>
       </div>
@@ -218,8 +219,8 @@ export default function ConditionsSection() {
       <BottomSheet
         open={pickerOpen}
         onClose={closePicker}
-        title={config ? tName('conditions', config.name) : 'Aggiungi condizione'}
-        eyebrow="Condizioni"
+        title={config ? tName('conditions', config.name) : t('Add condition')}
+        eyebrow={t('Conditions')}
         /* Fixed height while browsing the list: it filters as you type, and a
            shrinking sheet drags its own search box under a phone keyboard.
            The sub-choice step is short and fixed, so it keeps its own size. */
@@ -228,7 +229,7 @@ export default function ConditionsSection() {
           <input
             type="text"
             className="sh-input"
-            placeholder="Cerca condizioni…"
+            placeholder={t('Search conditions…')}
             value={query}
             onChange={e => setQuery(e.target.value)}
             autoFocus
@@ -239,7 +240,7 @@ export default function ConditionsSection() {
           <div className="cond-config">
             {isAbilityConfig && (
               <div className="cond-config-block">
-                <span className="sh-eyebrow">Caratteristica</span>
+                <span className="sh-eyebrow">{t('Ability')}</span>
                 <div className="cond-chips">
                   {ABILITIES.map(a => {
                     const taken = player.hasCondition(config.name, a.key);
@@ -251,7 +252,7 @@ export default function ConditionsSection() {
                         className={['sh-chip', on && 'is-on'].filter(Boolean).join(' ')}
                         disabled={taken}
                         onClick={() => setConfig(prev => ({ ...prev, ability: a.key }))}
-                        title={taken ? 'Già attiva' : a.label}
+                        title={taken ? t('Already active') : a.label}
                       >
                         {a.key}
                       </button>
@@ -261,7 +262,7 @@ export default function ConditionsSection() {
               </div>
             )}
             <div className="cond-config-block">
-              <span className="sh-eyebrow">{isAbilityConfig ? 'Punti' : 'Livelli negativi'}</span>
+              <span className="sh-eyebrow">{isAbilityConfig ? t('Points') : t('Negative levels')}</span>
               <Stepper
                 value={config.amount}
                 min={1}
@@ -270,14 +271,14 @@ export default function ConditionsSection() {
               />
             </div>
             <div className="cond-config-actions">
-              <Button variant="ghost" icon="arrow_back" onClick={() => setConfig(null)}>Indietro</Button>
-              <Button variant="primary" icon="check" onClick={confirmConfig}>Aggiungi</Button>
+              <Button variant="ghost" icon="arrow_back" onClick={() => setConfig(null)}>{t('Back')}</Button>
+              <Button variant="primary" icon="check" onClick={confirmConfig}>{t('Add')}</Button>
             </div>
           </div>
         ) : (
           <div className="cond-list">
             {filtered.length === 0 ? (
-              <div className="sh-faint" style={{ padding: 'var(--space-3)' }}>Nessun risultato.</div>
+              <div className="sh-faint" style={{ padding: 'var(--space-3)' }}>{t('No matches.')}</div>
             ) : (
               filtered.map(c => {
                 const exhausted = isExhausted(c.name);

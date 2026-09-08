@@ -3,6 +3,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
 import Player from '../../lib/player';
 import ConditionsSection from './conditions_section';
+import { setLanguage } from '../../lib/i18n';
 
 /* The picker's rule: a plain on/off condition toggles — the same tap that put
    it on takes it back off — while one that carries a choice does not, because
@@ -37,20 +38,11 @@ function character() {
   return p;
 }
 
-const openPicker = () => fireEvent.click(screen.getByRole('button', { name: /aggiungi condizione/i }));
-
-/* The model still speaks English — `addCondition({ name: 'Fatigued' })` is what
-   a saved character holds — while the screen speaks Italian. Every query below
-   therefore asks for the Italian name of a condition the player was given by
-   its English one, which is the whole point of keeping the two apart. */
-const IT = {
-  Fatigued: 'Affaticato',
-  'Ability Damaged': 'Caratteristica Danneggiata',
-};
+const openPicker = () => fireEvent.click(screen.getByRole('button', { name: /add condition/i }));
 /* Scoped to the picker sheet: an active condition also renders a pill button
    carrying the same name in the section behind it. */
 const listItem = (name) =>
-  within(screen.getByRole('dialog')).getByRole('button', { name: new RegExp(`^${IT[name]}`, 'i') });
+  within(screen.getByRole('dialog')).getByRole('button', { name: new RegExp(`^${name}`, 'i') });
 
 describe('a plain on/off condition', () => {
   test('is offered as a live control once taken, not a disabled one', () => {
@@ -114,5 +106,47 @@ describe('the ability chips in the sub-choice step', () => {
 
     fireEvent.click(within(sheet).getByRole('button', { name: 'Wis' }));
     expect(within(sheet).getByRole('button', { name: 'Wis' })).toHaveClass('is-on');
+  });
+});
+
+/* The bilingual contract, in one place.
+ *
+ * The player is given a condition by its English name — that is what
+ * Player.conditions stores and what every set in the component compares
+ * against — and the screen shows whichever language is selected. If these two
+ * ever have to agree, something has translated a key. */
+describe('the same sheet in two languages', () => {
+  afterEach(() => setLanguage('en'));
+
+  test('English is what it says by default', () => {
+    const p = character();
+    p.addCondition({ name: 'Fatigued' });
+    renderSection(p);
+    openPicker();
+    expect(within(screen.getByRole('dialog')).getByRole('button', { name: /^Fatigued/ }))
+      .toBeInTheDocument();
+  });
+
+  test('Italian shows Affaticato for the very same stored condition', () => {
+    setLanguage('it');
+    const p = character();
+    p.addCondition({ name: 'Fatigued' });
+    // The model is untouched by the language: it still holds the English.
+    expect(p.getConditions()[0].name).toBe('Fatigued');
+    renderSection(p);
+    fireEvent.click(screen.getByRole('button', { name: /aggiungi condizione/i }));
+    expect(within(screen.getByRole('dialog')).getByRole('button', { name: /^Affaticato/ }))
+      .toBeInTheDocument();
+  });
+
+  test('the search box matches what is on screen, not the English behind it', () => {
+    // Typing "affat" has to find Affaticato. Filtering on the English name
+    // would silently return nothing for every word an Italian reader types.
+    setLanguage('it');
+    renderSection(character());
+    fireEvent.click(screen.getByRole('button', { name: /aggiungi condizione/i }));
+    const sheet = screen.getByRole('dialog');
+    fireEvent.change(within(sheet).getByRole('textbox'), { target: { value: 'affat' } });
+    expect(within(sheet).getByRole('button', { name: /^Affaticato/ })).toBeInTheDocument();
   });
 });

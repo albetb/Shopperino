@@ -1,0 +1,7 @@
+{
+ "Feats/0/Description": "<p><b>Beneficio:</b> Ottieni un bonus di +2 a tutte le prove di <a href=\"skills#jump\">Saltare</a> e a tutte le prove di <a href=\"skills#tumble\">Acrobazia</a>.</p>",
+ "Feats/0/shortDescription": "Ottieni un bonus di +2 a tutte le prove di Saltare e di Acrobazia.",
+ "Feats/1/Description": "<p><b>Beneficio:</b> Ottieni un bonus di +2 a tutte le prove di <a href=\"skills#balance\">Equilibrio</a> e a tutte le prove di <a href=\"skills#escape-artist\">Artista della Fuga</a>.</p>",
+ "Feats/1/shortDescription": "Ottieni un bonus di +2 a tutte le prove di Equilibrio e di Artista della Fuga.",
+ "Feats/2/Description": "<p><b>Beneficio:</b> Ottieni un bonus di +2 a tutte le prove di <a href=\"skills#listen\">Ascoltare</a> e a tutte le prove di <a href=\"skills#spot\">Osservare</a>.</p>\n<p><b>Speciale:</b> Il padrone di un famiglio ottiene il beneficio del talento Vigilanza ogni volta che il famiglio si trova a portata di braccio.</p>"
+}

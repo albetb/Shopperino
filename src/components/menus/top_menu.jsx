@@ -3,9 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import logo from '../../data/logo-shopperino.png';
 import { downloadLocalStorage, handleFileUpload } from '../../lib/storage';
 import { isMobile } from '../../lib/utils';
-import { setMasterMode, setSharedShop, setSharedShopSheetOpen, setStateCurrentTab, setUnits, selectUnits } from '../../store/slices/appSlice';
+import { setMasterMode, setSharedShop, setSharedShopSheetOpen, setStateCurrentTab, setUnits, selectUnits, setLang, selectLang } from '../../store/slices/appSlice';
 import { setPlayerSheetMainView } from '../../store/slices/playerSheetSlice';
 import { UNIT_MODES, UNIT_MODE_LABELS, UNIT_MODE_HINTS } from '../../lib/units';
+import { LANGUAGES } from '../../lib/i18n';
 import { ScanShopScanner } from '../shop/ShareShopModal';
 import { scanLanding } from '../../lib/shop';
 import ColorPicker from './colorPicker';
@@ -34,6 +35,7 @@ export default function TopMenu() {
   const currentTab = useSelector(state => state.app.currentTab);
   const sharedShop = useSelector(state => state.app.sharedShop);
   const units = useSelector(selectUnits);
+  const lang = useSelector(selectLang);
   const hasCharacter = useSelector(state => !!state.playerSheet?.player);
   const isMasterMode = useSelector(state => state.app.isMasterMode);
 
@@ -151,6 +153,26 @@ export default function TopMenu() {
     </div>
   );
 
+  /* Two positions today, and a list rather than a switch so a third language
+     is one entry in LANGUAGES and nothing else. Each is written in its own
+     language: someone looking for Italian is looking for "Italiano", not for
+     the English word for it. */
+  const langToggle = (
+    <div className="sh-mode-toggle sh-lang-toggle" role="group" aria-label="Language">
+      {LANGUAGES.map(l => (
+        <button
+          key={l.code}
+          type="button"
+          lang={l.code}
+          aria-pressed={lang === l.code}
+          onClick={() => dispatch(setLang(l.code))}
+        >
+          {l.endonym}
+        </button>
+      ))}
+    </div>
+  );
+
   const settingsMenuItems = (
     <>
       {mobile && (
@@ -190,6 +212,25 @@ export default function TopMenu() {
           </InfoPopover>
         </span>
         {unitToggle}
+      </div>
+
+      <div className="sh-units-row">
+        <span className="sh-eyebrow sh-units-label">
+          Language
+          <InfoPopover label="language">
+            <p>
+              Which language the interface and the rules text are read in.
+              English is what the app is written in; anything not yet translated
+              is shown in English rather than left blank.
+            </p>
+            <p>
+              Names of things — items, spells, conditions — keep their English
+              name inside your saved characters whatever you pick here, so
+              switching language never touches a character sheet.
+            </p>
+          </InfoPopover>
+        </span>
+        {langToggle}
       </div>
     </>
   );

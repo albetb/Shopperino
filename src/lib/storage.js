@@ -4,6 +4,7 @@
  */
 import Player from './player';
 import { normalizeUnits } from './units';
+import { normalizeLang } from './i18n';
 import * as appState from './appState';
 import { normalizeMultiplierMask, rollFromTuple } from './dice';
 import { filtersFromTuple } from './monster/monsterFilters';
@@ -83,6 +84,7 @@ export function getMainColor(app) { return app?.mc ?? null; }
 export function getTheme(app) { return app?.th === 'light' ? 'light' : 'dark'; }
 export function getAccent(app) { return (typeof app?.ac === 'string' && app.ac) ? app.ac : 'crimson'; }
 export function getUnits(app) { return normalizeUnits(app?.un); }
+export function getLang(app) { return normalizeLang(app?.lg); }
 export function getIsMasterMode(app) { return appState.getUIFlag(app, appState.UI_FLAG.mm); }
 export function getIsShopSidebarCollapsed(app) { return appState.getUIFlag(app, appState.UI_FLAG.sbc); }
 export function getIsInfoSidebarCollapsed(app) { return appState.getUIFlag(app, appState.UI_FLAG.ibc); }

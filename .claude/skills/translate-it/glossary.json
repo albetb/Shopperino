@@ -1301,6 +1301,113 @@
         "competenza nelle armatur"
       ],
       "kind": "rules"
+    },
+    {
+      "en": "hp",
+      "it": "pf",
+      "strict": true,
+      "kind": "abbrev",
+      "en_case": true,
+      "note": "Abbreviation of hit points, shown on stat pills and HP bars."
+    },
+    {
+      "en": "DR",
+      "it": "RD",
+      "strict": true,
+      "kind": "abbrev",
+      "en_case": true,
+      "note": "Abbreviation of damage reduction (riduzione del danno)."
+    },
+    {
+      "en": "SR",
+      "it": "RI",
+      "strict": true,
+      "kind": "abbrev",
+      "en_case": true,
+      "note": "Abbreviation of spell resistance (resistenza agli incantesimi)."
+    },
+    {
+      "en": "flanking",
+      "it": "fiancheggiare",
+      "stem": "fiancheggi",
+      "strict": true,
+      "kind": "combat"
+    },
+    {
+      "en": "Two-Weapon Fighting",
+      "it": "Combattere con Due Armi",
+      "strict": true,
+      "kind": "rules",
+      "stems": [
+        "combattere con due arm",
+        "combattimento con due arm"
+      ],
+      "note": "The feat name, used both as prose and as a feat name in names.json when phase 3 reaches it."
+    },
+    {
+      "en": "Flurry of Blows",
+      "it": "Raffica di Colpi",
+      "strict": true,
+      "kind": "rules",
+      "stems": [
+        "raffica di colp"
+      ],
+      "note": "The monk class feature."
+    },
+    {
+      "en": "Lawful",
+      "it": "Legale",
+      "strict": true,
+      "kind": "alignment",
+      "en_case": true
+    },
+    {
+      "en": "Chaotic",
+      "it": "Caotico",
+      "strict": true,
+      "kind": "alignment",
+      "en_case": true
+    },
+    {
+      "en": "Good",
+      "it": "Buono",
+      "strict": true,
+      "kind": "alignment",
+      "en_case": true,
+      "note": "The moral-axis alignment word, not the general English adjective — en_case keeps it from firing on ordinary prose."
+    },
+    {
+      "en": "Evil",
+      "it": "Malvagio",
+      "strict": true,
+      "kind": "alignment",
+      "en_case": true
+    },
+    {
+      "en": "Neutral",
+      "it": "Neutrale",
+      "strict": true,
+      "kind": "alignment",
+      "en_case": true,
+      "note": "Either alignment axis. 'Neutral Good' -> 'Neutrale Buono'."
+    },
+    {
+      "en": "skill points",
+      "it": "punti abilità",
+      "strict": true,
+      "kind": "rules",
+      "stems": [
+        "punti abilit",
+        "punto abilit"
+      ]
+    },
+    {
+      "en": "SP",
+      "it": "PA",
+      "strict": true,
+      "kind": "abbrev",
+      "en_case": true,
+      "note": "Abbreviation of skill points (punti abilità)."
     }
   ]
 }

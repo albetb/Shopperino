@@ -45,6 +45,7 @@ import Stepper from '../common/Stepper';
 import EmptyState from '../common/EmptyState';
 import Icon from '../common/Icon';
 import { useUnits } from 'components/hooks/useUnits';
+import { t } from '../../lib/i18n';
 
 function formatBaseAttackBonus(bab) {
   const b = Number(bab) || 0;
@@ -231,7 +232,7 @@ export default function CombatPage() {
   if (!player) {
     return (
       <div className="sh-stack" style={{ padding: 'var(--space-4)' }}>
-        <EmptyState icon="badge" title="No character selected" hint="Pick or create one from the sidebar." />
+        <EmptyState icon="badge" title={t('No character selected')} hint={t('Pick or create one from the sidebar.')} />
       </div>
     );
   }
@@ -324,7 +325,11 @@ export default function CombatPage() {
   const currentSpeed = speedReduced ? speedInfo.reducedSpeed : primaryMovement.speed;
   const speedDisplay = u.distance(currentSpeed);
   // Only a non-walking mode earns a label; a walk is the unremarkable default.
-  const speedModeLabel = primaryMovement.mode === 'land' ? null : primaryMovement.mode.toUpperCase();
+  /* The mode itself stays the English key the speed model uses; only the
+     word on the pill is translated. */
+  const speedModeLabel = primaryMovement.mode === 'land'
+    ? null
+    : t(primaryMovement.mode.toUpperCase());
 
   /* Run: how far a full-round sprint covers. Normally four times speed, three
      in heavy armor or under a heavy load, and one multiple more with the Run
@@ -376,8 +381,8 @@ export default function CombatPage() {
         />
         {/* marginLeft auto pushes the save/cancel pair to the right edge
             of the row, matching the AC editor's footer layout. */}
-        <IconButton icon="check" size="sm" onClick={saveBonus} aria-label="Save bonus" style={{ marginLeft: 'auto' }} />
-        <IconButton icon="close" ghost size="sm" onClick={() => setEditBonus(null)} aria-label="Cancel" />
+        <IconButton icon="check" size="sm" onClick={saveBonus} aria-label={t('Save bonus')} style={{ marginLeft: 'auto' }} />
+        <IconButton icon="close" ghost size="sm" onClick={() => setEditBonus(null)} aria-label={t('Cancel')} />
       </div>
     </Card>
   );
@@ -385,11 +390,11 @@ export default function CombatPage() {
   const renderAcEditor = () => (
     <Card padding>
       <div className="sh-stack" style={{ gap: 'var(--space-2)' }}>
-        <Filigree>AC modifiers</Filigree>
+        <Filigree>{t('AC modifiers')}</Filigree>
         {[
-          { key: 'general', label: 'General', hint: 'AC + touch + flat' },
-          { key: 'touch',   label: 'Touch',   hint: 'touch only' },
-          { key: 'flat',    label: 'Flat',    hint: 'flat-footed only' },
+          { key: 'general', label: t('General'), hint: t('AC + touch + flat') },
+          { key: 'touch',   label: t('Touch'),   hint: t('touch only') },
+          { key: 'flat',    label: t('Flat'),    hint: t('flat-footed only') },
         ].map(({ key, label, hint }) => (
           <div key={key} className="sh-row-h sh-spread" style={{ gap: 'var(--space-2)' }}>
             <span className="sh-eyebrow">{label} <span className="sh-faint" style={{ textTransform: 'none', letterSpacing: 0 }}>({hint})</span></span>
@@ -402,8 +407,8 @@ export default function CombatPage() {
           </div>
         ))}
         <div className="sh-row-h" style={{ gap: 'var(--space-2)', justifyContent: 'flex-end' }}>
-          <IconButton icon="check" size="sm" onClick={saveBonus} aria-label="Save AC modifiers" />
-          <IconButton icon="close" ghost size="sm" onClick={() => setEditBonus(null)} aria-label="Cancel" />
+          <IconButton icon="check" size="sm" onClick={saveBonus} aria-label={t('Save AC modifiers')} />
+          <IconButton icon="close" ghost size="sm" onClick={() => setEditBonus(null)} aria-label={t('Cancel')} />
         </div>
       </div>
     </Card>
@@ -413,11 +418,11 @@ export default function CombatPage() {
      directly below the grid row that contains the active stat. */
   const renderActiveEditor = () => {
     if (editBonus === 'ac') return renderAcEditor();
-    if (editBonus === 'speedBonus')      return renderBonusEditor('Speed', 0, 99, 5);
-    if (editBonus === 'initiativeBonus') return renderBonusEditor('Init', -99, 99);
-    if (editBonus === 'fortBonus')       return renderBonusEditor('Fort', -99, 99);
-    if (editBonus === 'reflexBonus')     return renderBonusEditor('Ref',  -99, 99);
-    if (editBonus === 'willBonus')       return renderBonusEditor('Will', -99, 99);
+    if (editBonus === 'speedBonus')      return renderBonusEditor(t('Speed'), 0, 99, 5);
+    if (editBonus === 'initiativeBonus') return renderBonusEditor(t('Init'), -99, 99);
+    if (editBonus === 'fortBonus')       return renderBonusEditor(t('Fort'), -99, 99);
+    if (editBonus === 'reflexBonus')     return renderBonusEditor(t('Ref'),  -99, 99);
+    if (editBonus === 'willBonus')       return renderBonusEditor(t('Will'), -99, 99);
     return null;
   };
 
@@ -456,7 +461,7 @@ export default function CombatPage() {
             type="button"
             className="sh-portrait"
             onClick={() => setPortraitOpen(true)}
-            aria-label={characterPortrait ? 'Change portrait' : 'Add portrait'}
+            aria-label={characterPortrait ? t('Change portrait') : t('Add portrait')}
           >
             {characterPortrait
               ? <img src={characterPortrait} alt="" className="sh-portrait-img" />
@@ -465,7 +470,7 @@ export default function CombatPage() {
           <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 'var(--space-1)' }}>
             <Filigree>{characterClass || 'No class'} · level {characterLevel}</Filigree>
             <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 0 }}>
-              <div className="sh-display" style={{ fontSize: 'var(--font-size-2xl)' }}>{characterName || 'Unnamed'}</div>
+              <div className="sh-display" style={{ fontSize: 'var(--font-size-2xl)' }}>{characterName || t('Unnamed')}</div>
             </div>
           </div>
         </div>
@@ -476,27 +481,27 @@ export default function CombatPage() {
           state — Dead, Dying and Disabled are derived from the HP number. */}
       <Card
         title={`${currentHp} / ${maxHp} hp`}
-        eyebrow="Health"
+        eyebrow={t('Health')}
         /* Tapping the head collapses the card. The breakdown and rest buttons
            live in the action slot, which Card excludes from this handler, so
            they keep behaving as themselves. */
         onHeadClick={() => toggleCard('player')}
         action={
           <>
-            {statInfo('Maximum hit points', maxHp, player.getMaxLifeContributions?.(), 'maxHp')}
+            {statInfo(t('Maximum hit points'), maxHp, player.getMaxLifeContributions?.(), 'maxHp')}
             {/* A day's rest: refreshes spell slots, gnome racial spells and
                 every per-day class-feature counter in one action. */}
             <IconButton
               icon="bedtime"
               ghost size="sm"
-              aria-label="Rest: refresh spells and class feature uses"
-              title="Rest"
+              aria-label={t('Rest: refresh spells and class feature uses')}
+              title={t('Rest')}
               onClick={handleRest}
             />
             <IconButton
               icon={collapsed.player ? 'expand_more' : 'expand_less'}
               ghost size="sm"
-              aria-label="Toggle HP card"
+              aria-label={t('Toggle HP card')}
               onClick={() => toggleCard('player')}
             />
           </>
@@ -523,7 +528,7 @@ export default function CombatPage() {
                   </Pill>
                 ))}
                 {spellResistance > 0 && (
-                  <Pill tone="success" icon="security" title="A caster must beat this with a caster level check to affect you">
+                  <Pill tone="success" icon="security" title={t('A caster must beat this with a caster level check to affect you')}>
                     SR {spellResistance}
                   </Pill>
                 )}
@@ -541,7 +546,7 @@ export default function CombatPage() {
                   </Pill>
                 ))}
                 {missChance > 0 && (
-                  <Pill tone="success" icon="blur_on" title="Attacks against you must beat this miss chance">
+                  <Pill tone="success" icon="blur_on" title={t('Attacks against you must beat this miss chance')}>
                     {missChance}% miss chance
                   </Pill>
                 )}
@@ -570,13 +575,13 @@ export default function CombatPage() {
                     icon={hpAdvancedOpen ? 'expand_less' : 'expand_more'}
                     ghost size="sm"
                     onClick={() => setHpAdvancedOpen(v => !v)}
-                    aria-label={hpAdvancedOpen ? 'Hide advanced HP' : 'Show advanced HP'}
+                    aria-label={hpAdvancedOpen ? t('Hide advanced HP') : t('Show advanced HP')}
                   />
                   <IconButton
                     icon="remove"
                     {...(minusDisabled ? {} : longPressMinus)}
                     disabled={minusDisabled}
-                    aria-label="Decrease HP"
+                    aria-label={t('Decrease HP')}
                   />
                   <div style={{
                     flex: 1,
@@ -593,7 +598,7 @@ export default function CombatPage() {
                     icon="add"
                     {...(plusDisabled ? {} : longPressPlus)}
                     disabled={plusDisabled}
-                    aria-label="Increase HP"
+                    aria-label={t('Increase HP')}
                   />
                 </div>
               );
@@ -601,7 +606,7 @@ export default function CombatPage() {
             {hpAdvancedOpen && (
               <>
                 <div className="sh-row-h sh-spread">
-                  <span className="sh-eyebrow">Base max life</span>
+                  <span className="sh-eyebrow">{t('Base max life')}</span>
                   {editMaxLife ? (
                     <div className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
                       <Stepper
@@ -613,13 +618,13 @@ export default function CombatPage() {
                         max={999}
                         onChange={setTempMaxLife}
                       />
-                      <IconButton icon="check" size="sm" onClick={saveMaxLife} aria-label="Save max life" />
-                      <IconButton icon="close" ghost size="sm" onClick={() => setEditMaxLife(false)} aria-label="Cancel" />
+                      <IconButton icon="check" size="sm" onClick={saveMaxLife} aria-label={t('Save max life')} />
+                      <IconButton icon="close" ghost size="sm" onClick={() => setEditMaxLife(false)} aria-label={t('Cancel')} />
                     </div>
                   ) : (
                     <div className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
                       <span className="sh-mono sh-num sh-muted">{player.maxLife ?? maxHp}</span>
-                      <IconButton icon="edit" ghost size="sm" onClick={startEditMaxLife} aria-label="Edit max life" />
+                      <IconButton icon="edit" ghost size="sm" onClick={startEditMaxLife} aria-label={t('Edit max life')} />
                     </div>
                   )}
                 </div>
@@ -636,7 +641,7 @@ export default function CombatPage() {
                   return null;
                 })()}
                 <div className="sh-row-h sh-spread">
-                  <span className="sh-eyebrow">Bonus life</span>
+                  <span className="sh-eyebrow">{t('Bonus life')}</span>
                   {editBonusLife ? (
                     <div className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
                       <Stepper
@@ -645,13 +650,13 @@ export default function CombatPage() {
                         max={999}
                         onChange={setTempBonusLife}
                       />
-                      <IconButton icon="check" size="sm" onClick={saveBonusLife} aria-label="Save bonus life" />
-                      <IconButton icon="close" ghost size="sm" onClick={() => setEditBonusLife(false)} aria-label="Cancel" />
+                      <IconButton icon="check" size="sm" onClick={saveBonusLife} aria-label={t('Save bonus life')} />
+                      <IconButton icon="close" ghost size="sm" onClick={() => setEditBonusLife(false)} aria-label={t('Cancel')} />
                     </div>
                   ) : (
                     <div className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
                       <span className="sh-mono sh-num sh-muted">{(Number(player.healthModifier) || 0) >= 0 ? '+' : ''}{Number(player.healthModifier) || 0}</span>
-                      <IconButton icon="edit" ghost size="sm" onClick={startEditBonusLife} aria-label="Edit bonus life" />
+                      <IconButton icon="edit" ghost size="sm" onClick={startEditBonusLife} aria-label={t('Edit bonus life')} />
                     </div>
                   )}
                 </div>
@@ -668,9 +673,9 @@ export default function CombatPage() {
       <div className="sh-grid-3">
         <StatPill
           accent
-          label="AC"
+          label={t('AC')}
           value={ac}
-          info={statInfo('Armor Class', ac, player.getArmorClassContributions?.(), 'ac')}
+          info={statInfo(t('Armor Class'), ac, player.getArmorClassContributions?.(), 'ac')}
           cond={acDelta}
           sub={
             <>
@@ -683,20 +688,20 @@ export default function CombatPage() {
           onEdit={() => toggleEditBonus('ac')}
         />
         <StatPill
-          label="Init"
+          label={t('Init')}
           value={totalInitiative >= 0 ? `+${totalInitiative}` : `${totalInitiative}`}
-          info={statInfo('Initiative', totalInitiative, player.getInitiativeContributions?.(), 'initiative')}
+          info={statInfo(t('Initiative'), totalInitiative, player.getInitiativeContributions?.(), 'initiative')}
           cond={condDeltas.initiative || 0}
           sub={withCond(initiativeBonus !== 0 ? `bonus ${initiativeBonus >= 0 ? '+' : ''}${initiativeBonus}` : null, condDeltas.initiative || 0)}
           editing={editBonus === 'initiativeBonus'}
           onEdit={() => toggleEditBonus('initiativeBonus')}
         />
         <StatPill
-          label="Speed"
+          label={t('Speed')}
           value={speedReduced ? <span className="sh-stat-value-reduced">{speedDisplay}</span> : speedDisplay}
-          info={statInfo('Speed', currentSpeed, player.getSpeedContributions?.(), 'speed', [{
+          info={statInfo(t('Speed'), currentSpeed, player.getSpeedContributions?.(), 'speed', [{
             source: 'run',
-            label: 'Running',
+            label: t('Running'),
             note: hasRun
               ? `A full-round run covers ${u.distance(runSpeed)} (×${runMultiplier}), and the Run feat keeps your Dexterity bonus to AC while running.`
               : `A full-round run covers ${u.distance(runSpeed)} (×${runMultiplier}), and you lose your Dexterity bonus to AC while running.`,
@@ -710,7 +715,7 @@ export default function CombatPage() {
               {/* The run distance is reference, not a number read mid-turn, so
                   it lives in the breakdown box rather than crowding the pill. */}
               {withCond(
-                speedInfo?.hasReduction ? 'encumbered' : (speedBonus !== 0 ? `bonus +${speedBonus}` : null),
+                speedInfo?.hasReduction ? t('encumbered') : (speedBonus !== 0 ? `bonus +${speedBonus}` : null),
                 condDeltas.speed || 0
               )}
             </>
@@ -724,27 +729,27 @@ export default function CombatPage() {
       {/* Saves row */}
       <div className="sh-grid-3">
         <StatPill
-          label="Fort"
+          label={t('Fort')}
           value={totalFort >= 0 ? `+${totalFort}` : totalFort}
-          info={statInfo('Fortitude save', totalFort, player.getSaveContributions?.('fortitude'), 'fortitude')}
+          info={statInfo(t('Fortitude save'), totalFort, player.getSaveContributions?.('fortitude'), 'fortitude')}
           cond={condDeltas.fort || 0}
           sub={withCond(fortBonus ? `bonus ${fortBonus >= 0 ? '+' : ''}${fortBonus}` : null, condDeltas.fort || 0)}
           editing={editBonus === 'fortBonus'}
           onEdit={() => toggleEditBonus('fortBonus')}
         />
         <StatPill
-          label="Ref"
+          label={t('Ref')}
           value={totalRef >= 0 ? `+${totalRef}` : totalRef}
-          info={statInfo('Reflex save', totalRef, player.getSaveContributions?.('reflex'), 'reflex')}
+          info={statInfo(t('Reflex save'), totalRef, player.getSaveContributions?.('reflex'), 'reflex')}
           cond={condDeltas.reflex || 0}
           sub={withCond(reflexBonus ? `bonus ${reflexBonus >= 0 ? '+' : ''}${reflexBonus}` : null, condDeltas.reflex || 0)}
           editing={editBonus === 'reflexBonus'}
           onEdit={() => toggleEditBonus('reflexBonus')}
         />
         <StatPill
-          label="Will"
+          label={t('Will')}
           value={totalWill >= 0 ? `+${totalWill}` : totalWill}
-          info={statInfo('Will save', totalWill, player.getSaveContributions?.('will'), 'will')}
+          info={statInfo(t('Will save'), totalWill, player.getSaveContributions?.('will'), 'will')}
           cond={condDeltas.will || 0}
           sub={withCond(willBonus ? `bonus ${willBonus >= 0 ? '+' : ''}${willBonus}` : null, condDeltas.will || 0)}
           editing={editBonus === 'willBonus'}
@@ -756,14 +761,14 @@ export default function CombatPage() {
       {/* Attacks card */}
       <Card
         eyebrow={`BAB ${bab_display}`}
-        title="Attacks"
+        title={t('Attacks')}
         onHeadClick={() => toggleCard('combat')}
         action={
           <IconButton
             icon={collapsed.combat ? 'expand_more' : 'expand_less'}
             ghost size="sm"
             onClick={() => toggleCard('combat')}
-            aria-label="Toggle attacks"
+            aria-label={t('Toggle attacks')}
           />
         }
       >
@@ -809,8 +814,8 @@ export default function CombatPage() {
           {(untrainedArmor || untrainedShield) && (
             <div className="sh-warn-strip" style={{ marginBottom: 'var(--space-2)' }}>
               <Icon name="shield_with_heart" />
-              Not proficient with your {[untrainedArmor && 'armor', untrainedShield && 'shield']
-                .filter(Boolean).join(' or ')}
+              Not proficient with your {[untrainedArmor && t('armor'), untrainedShield && t('shield')]
+                .filter(Boolean).join(t(' or '))}
               {armorProficiencyPenalty !== 0 && `: ${armorProficiencyPenalty} on every attack roll`}
             </div>
           )}
@@ -864,7 +869,7 @@ export default function CombatPage() {
                               </span>
                             )}
                             {untrained && (crit || range.feet > 0) && ' · '}
-                            {untrained && <span className="is-untrained">not proficient</span>}
+                            {untrained && <span className="is-untrained">{t('not proficient')}</span>}
                           </span>
                         )}
                       </span>
@@ -879,10 +884,10 @@ export default function CombatPage() {
                       <StatInfo
                         label={w.name}
                         value={ab}
-                        primaryLabel="Attack bonus"
+                        primaryLabel={t('Attack bonus')}
                         contributions={player.getWeaponAttackContributions?.(wd) ?? []}
                         secondary={{
-                          label: 'Damage bonus',
+                          label: t('Damage bonus'),
                           contributions: player.getWeaponDamageContributions?.(wd) ?? [],
                         }}
                         situational={player.getWeaponSituationalContributions?.() ?? []}
@@ -911,13 +916,13 @@ export default function CombatPage() {
                   {/* No weapon to draw — a fist. */}
                   <Icon name="sports_mma" size={18} className="sh-faint attack-row-icon" />
                   <span className="attack-row-name">
-                    <span className="sh-display">Punch</span>
+                    <span className="sh-display">{t('Punch')}</span>
                     <span className="sh-faint attack-row-meta">
                       <span className={punchCrit.improved ? 'is-feat-boosted' : undefined}>
                         {punchCrit.text}
                       </span>
                       {punchUntrained && ' · '}
-                      {punchUntrained && <span className="is-untrained">not proficient</span>}
+                      {punchUntrained && <span className="is-untrained">{t('not proficient')}</span>}
                     </span>
                   </span>
                 </span>
@@ -941,13 +946,13 @@ export default function CombatPage() {
                 marginTop: 'var(--space-2)',
               }}
             >
-              <span className="sh-display">Attacks of opportunity</span>
+              <span className="sh-display">{t('Attacks of opportunity')}</span>
               <span className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
                 <Pill tone="accent">
                   {attacksOfOpportunity} / round
                 </Pill>
                 {statInfo(
-                  'Attacks of opportunity',
+                  t('Attacks of opportunity'),
                   attacksOfOpportunity,
                   player.getAttacksOfOpportunityContributions?.(),
                   'attacksOfOpportunity'
@@ -966,12 +971,12 @@ export default function CombatPage() {
               }}
             >
               <div className="sh-row-h sh-spread" style={{ gap: 'var(--space-3)' }}>
-                <span className="sh-display">Two-weapon attack</span>
+                <span className="sh-display">{t('Two-weapon attack')}</span>
                 <span className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
                   <Pill tone={twoWeapon.hasFeat ? 'success' : 'warn'}>
                     {twoWeapon.penalties.main} / {twoWeapon.penalties.offHand}
                   </Pill>
-                  <InfoPopover label="Two-weapon attack">
+                  <InfoPopover label={t('Two-weapon attack')}>
                     <p>
                       A <b>full-round action</b>. A weapon in each hand grants one
                       extra attack with the off hand, and both hands take a
@@ -981,14 +986,14 @@ export default function CombatPage() {
                     </p>
                     <p>
                       {twoWeapon.offHandIsLight
-                        ? 'Your off-hand weapon is light, which is two better on both.'
-                        : 'A light weapon in the off hand would be two better on both.'}
+                        ? t('Your off-hand weapon is light, which is two better on both.')
+                        : t('A light weapon in the off hand would be two better on both.')}
                       {twoWeapon.hasFeat
-                        ? ' Two-Weapon Fighting is already counted here.'
-                        : ' Two-Weapon Fighting would bring the off hand up to match the main one.'}
+                        ? t(' Two-Weapon Fighting is already counted here.')
+                        : t(' Two-Weapon Fighting would bring the off hand up to match the main one.')}
                     </p>
                     <p>
-                      The off-hand weapon adds only <b>half</b> your Strength
+                      The off-hand weapon adds only <b>{t('half')}</b> your Strength
                       modifier to damage.
                     </p>
                   </InfoPopover>
@@ -1025,25 +1030,25 @@ export default function CombatPage() {
               }}
             >
               <div className="sh-row-h sh-spread" style={{ gap: 'var(--space-3)' }}>
-                <span className="sh-display">Flurry of blows</span>
+                <span className="sh-display">{t('Flurry of blows')}</span>
                 <span className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
                   <Pill tone="accent">
                     +{flurry.extraAttacks} attack{flurry.extraAttacks === 1 ? '' : 's'}
                   </Pill>
                   <Pill tone={flurry.penalty < 0 ? 'warn' : 'default'}>
-                    {flurry.penalty === 0 ? 'no penalty' : `${flurry.penalty} to all`}
+                    {flurry.penalty === 0 ? t('no penalty') : `${flurry.penalty} to all`}
                   </Pill>
                   {/* Was a bare `info` glyph beside a title tooltip: it looked
                       like a button, did nothing, and said nothing at all on a
                       phone, where a hover title never appears. */}
-                  <InfoPopover label="Flurry of blows">
+                  <InfoPopover label={t('Flurry of blows')}>
                     <p>
                       A <b>full-round action</b> granting{' '}
                       {flurry.extraAttacks} extra attack
                       {flurry.extraAttacks === 1 ? '' : 's'} at your highest base
                       attack bonus.
                       {flurry.penalty === 0
-                        ? ' At your level it costs no penalty at all.'
+                        ? t(' At your level it costs no penalty at all.')
                         : ` Every attack in the flurry, the extra one included, takes ${flurry.penalty}.`}
                     </p>
                     <p>
@@ -1060,7 +1065,7 @@ export default function CombatPage() {
                   the sheet shows what each one would swing at. */}
               {flurryUnarmed && (
                 <div className="sh-row-h sh-spread sh-faint" style={{ gap: 'var(--space-3)' }}>
-                  <span>Punch</span>
+                  <span>{t('Punch')}</span>
                   <Pill tone="ghost">
                     {punchAttack + flurry.penalty >= 0 ? '+' : ''}{punchAttack + flurry.penalty}
                   </Pill>
@@ -1092,13 +1097,13 @@ export default function CombatPage() {
                 marginTop: 'var(--space-2)',
               }}
             >
-              <span className="sh-display">Sneak attack</span>
+              <span className="sh-display">{t('Sneak attack')}</span>
               <span className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
                 <Pill tone="accent">+{sneakAttackDice}d6</Pill>
                 {/* Was a title attribute, which a phone never shows, and which
                     restated a range and an immunity list classes.json already
                     held. Both now come from the model. */}
-                <InfoPopover label="Sneak attack">
+                <InfoPopover label={t('Sneak attack')}>
                   <p>
                     Applies when the target is <b>denied its Dexterity bonus</b>{' '}
                     to AC, or when you are <b>flanking</b> it

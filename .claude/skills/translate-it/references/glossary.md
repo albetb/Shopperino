@@ -123,6 +123,7 @@ as it is a game term (*a large room*, *reach the door*, *he will fall*).
 | domain | **dominio** | soft |  |
 | familiar | **famiglio** | **STRICT** |  |
 | feat | **talento** | **STRICT** |  |
+| Flurry of Blows | **Raffica di Colpi** | **STRICT** | The monk class feature. |
 | Hit Dice | **Dadi Vita** | **STRICT** |  |
 | hit points | **punti ferita** | **STRICT** |  |
 | initiative | **iniziativa** | **STRICT** |  |
@@ -137,6 +138,7 @@ as it is a game term (*a large room*, *reach the door*, *he will fall*).
 | saving throw | **tiro salvezza** | **STRICT** |  |
 | skill | **abilità** | **STRICT** |  |
 | skill check | **prova di abilità** | soft |  |
+| skill points | **punti abilità** | **STRICT** |  |
 | sneak attack | **attacco furtivo** | **STRICT** |  |
 | Special | **Speciale** | soft | Feat header. |
 | spell | **incantesimo** | **STRICT** |  |
@@ -144,6 +146,7 @@ as it is a game term (*a large room*, *reach the door*, *he will fall*).
 | spell slot | **slot incantesimo** | soft |  |
 | spellcaster | **incantatore** | **STRICT** |  |
 | turn undead | **scacciare non morti** | soft |  |
+| Two-Weapon Fighting | **Combattere con Due Armi** | **STRICT** | The feat name, used both as prose and as a feat name in names.json when phase 3 reaches it. |
 | undead | **non morti** | **STRICT** |  |
 | Weapon Proficiency | **Competenza nelle Armi** | soft |  |
 
@@ -153,6 +156,10 @@ as it is a game term (*a large room*, *reach the door*, *he will fall*).
 |---|---|---|---|
 | AC | **CA** | **STRICT** |  |
 | DC | **CD** | **STRICT** |  |
+| DR | **RD** | **STRICT** | Abbreviation of damage reduction (riduzione del danno). |
+| hp | **pf** | **STRICT** | Abbreviation of hit points, shown on stat pills and HP bars. |
+| SP | **PA** | **STRICT** | Abbreviation of skill points (punti abilità). |
+| SR | **RI** | **STRICT** | Abbreviation of spell resistance (resistenza agli incantesimi). |
 
 ## Actions
 
@@ -172,6 +179,7 @@ as it is a game term (*a large room*, *reach the door*, *he will fall*).
 | English | Italiano | | Note |
 |---|---|---|---|
 | charge | **carica** | soft |  |
+| flanking | **fiancheggiare** | **STRICT** |  |
 | grapple | **lotta** | **STRICT** |  |
 | melee | **mischia** | **STRICT** |  |
 | ranged | **a distanza** | **STRICT** |  |
@@ -251,6 +259,16 @@ as it is a game term (*a large room*, *reach the door*, *he will fall*).
 | Tumble | **Acrobazia** | **STRICT** |  |
 | Use Magic Device | **Utilizzare Oggetti Magici** | **STRICT** |  |
 | Use Rope | **Utilizzare Corde** | **STRICT** |  |
+
+## alignment
+
+| English | Italiano | | Note |
+|---|---|---|---|
+| Chaotic | **Caotico** | **STRICT** |  |
+| Evil | **Malvagio** | **STRICT** |  |
+| Good | **Buono** | **STRICT** | The moral-axis alignment word, not the general English adjective — en_case keeps it from firing on ordinary prose. |
+| Lawful | **Legale** | **STRICT** |  |
+| Neutral | **Neutrale** | **STRICT** | Either alignment axis. 'Neutral Good' -> 'Neutrale Buono'. |
 
 ## Adding a term
 

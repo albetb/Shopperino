@@ -7,6 +7,7 @@ import SpellLink from '../common/spell_link';
 import '../../style/sidebar.css';
 import '../../style/menu_cards.css';
 import { useUnits } from '../hooks/useUnits';
+import { t, tName } from '../../lib/i18n';
 
 const TYPE_OPTIONS = ['', 'Spells', 'Items', 'Feats', 'Skills'];
 const SPELL_CLASS_OPTIONS = ['All', 'Sorcerer', 'Wizard', 'Cleric', 'Druid', 'Bard', 'Ranger', 'Paladin', 'Domains'];
@@ -19,13 +20,13 @@ const DOMAINS = [
 ];
 
 const CHARACTERISTIC_FULL = {
-  Str: 'Strength',
-  Dex: 'Dexterity',
-  Con: 'Constitution',
-  Int: 'Intelligence',
-  Wis: 'Wisdom',
-  Cha: 'Charisma',
-  None: 'None',
+  Str: t('Strength'),
+  Dex: t('Dexterity'),
+  Con: t('Constitution'),
+  Int: t('Intelligence'),
+  Wis: t('Wisdom'),
+  Cha: t('Charisma'),
+  None: t('None'),
 };
 
 const linkParseOptions = {
@@ -247,7 +248,7 @@ export default function SearchPage() {
         className="card-side-div card-expand-div"
         onClick={() => setSearchCardCollapsed(prev => !prev)}
       >
-        <h3 className="card-title">Search</h3>
+        <h3 className="card-title">{t('Search')}</h3>
         <button className="collapse-button">
           <span className="material-symbols-outlined">
             {searchCardCollapsed ? 'expand_more' : 'expand_less'}
@@ -257,7 +258,7 @@ export default function SearchPage() {
       {!searchCardCollapsed && (
         <div className="card-content">
           <div className="card-side-div flex-gap-sm">
-            <label className="modern-label label-min-width">Type:</label>
+            <label className="modern-label label-min-width">{t('Type:')}</label>
             <select
               className="modern-dropdown small-long flex-1"
               value={searchType}
@@ -271,7 +272,7 @@ export default function SearchPage() {
             >
               {TYPE_OPTIONS.map(opt => (
                 <option key={opt || '-'} value={opt}>
-                  {opt || '-'}
+                  {opt ? t(opt) : '-'}
                 </option>
               ))}
             </select>
@@ -279,7 +280,7 @@ export default function SearchPage() {
 
           {searchType === 'Spells' && (
             <div className="card-side-div margin-top flex-gap-sm">
-              <label className="modern-label label-min-width">Class:</label>
+              <label className="modern-label label-min-width">{t('Class:')}</label>
               <select
                 className="modern-dropdown small-long flex-1"
                 value={spellClassFilter}
@@ -290,7 +291,7 @@ export default function SearchPage() {
               >
                 {SPELL_CLASS_OPTIONS.map(opt => (
                   <option key={opt} value={opt}>
-                    {opt}
+                    {opt === 'All' || opt === 'Domains' ? t(opt) : tName('classes', opt)}
                   </option>
                 ))}
               </select>
@@ -299,11 +300,11 @@ export default function SearchPage() {
 
           {searchType && (
             <div className="card-side-div margin-top flex-gap-sm">
-              <label className="modern-label label-min-width">Contains:</label>
+              <label className="modern-label label-min-width">{t('Contains:')}</label>
               <input
                 className="modern-dropdown small-long padding-left flex-1"
                 type="text"
-                placeholder="Filter by name"
+                placeholder={t('Filter by name')}
                 value={query}
                 onChange={e => setQuery(e.target.value)}
               />
@@ -372,12 +373,12 @@ export default function SearchPage() {
               <table className={`search-results-table ${searchType === 'Feats' ? 'feats-table' : ''} ${searchType === 'Skills' ? 'skills-table' : ''} ${searchType === 'Spells' && spellClassFilter === 'All' ? 'spells-all-table' : ''}`}>
                 <thead>
                   <tr>
-                    <th>Name</th>
-                    {searchType === 'Spells' && spellClassFilter === 'All' && <th>Class</th>}
-                    {searchType === 'Feats' && <th>Prerequisites</th>}
-                    {searchType === 'Skills' && <th>Characteristic</th>}
-                    {searchType === 'Items' && <th>Weight</th>}
-                    {searchType === 'Items' && <th>Price</th>}
+                    <th>{t('Name')}</th>
+                    {searchType === 'Spells' && spellClassFilter === 'All' && <th>{t('Class')}</th>}
+                    {searchType === 'Feats' && <th>{t('Prerequisites')}</th>}
+                    {searchType === 'Skills' && <th>{t('Characteristic')}</th>}
+                    {searchType === 'Items' && <th>{t('Weight')}</th>}
+                    {searchType === 'Items' && <th>{t('Price')}</th>}
                   </tr>
                 </thead>
                 <tbody>
@@ -489,8 +490,8 @@ export default function SearchPage() {
                               <table className="search-results-table">
                                 <thead>
                                   <tr>
-                                    <th>Name</th>
-                                    <th>Description</th>
+                                    <th>{t('Name')}</th>
+                                    <th>{t('Description')}</th>
                                   </tr>
                                 </thead>
                                 <tbody>
@@ -577,8 +578,8 @@ export default function SearchPage() {
                               <table className="search-results-table">
                                 <thead>
                                   <tr>
-                                    <th>Name</th>
-                                    <th>Description</th>
+                                    <th>{t('Name')}</th>
+                                    <th>{t('Description')}</th>
                                   </tr>
                                 </thead>
                                 <tbody>

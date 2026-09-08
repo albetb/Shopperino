@@ -228,3 +228,13 @@
   padding-left: var(--space-2);
   padding-right: var(--space-2);
 }
+
+/* The language switch, same shape as the units one it sits under. Two wide
+   buttons rather than three narrow ones, so the endonyms are not cramped. */
+.sh-lang-toggle {
+  flex: 0 0 auto;
+}
+
+.sh-lang-toggle button {
+  padding-inline: var(--space-3);
+}

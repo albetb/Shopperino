@@ -3,6 +3,7 @@ import { getCreatureByLink, getCompanionAbilityByLink, getFamiliarAbilityByLink,
 import { applyColors } from '../../lib/colorUtils';
 import { normalizeMultiplierMask } from '../../lib/dice';
 import { normalizeUnits } from '../../lib/units';
+import { normalizeLang, setLanguage } from '../../lib/i18n';
 
 const DEFAULT_BLUE = '#238f8b';
 const DEFAULT_BLUE_T = '#238f8bb3';
@@ -32,6 +33,7 @@ const initialState = {
   /* Units the numbers and the prose are shown in. The models stay in feet
      and kilograms; this only decides how they are read out. */
   units: 'metric',    // 'metric' | 'imperial' | 'squares'
+  lang: 'en',         // 'en' | 'it' — English is the source, always available
   /* Dice roller. Not tied to a character — it opens over any tab — so its
      state lives here rather than on the player sheet. The mask is one bit per
      count button; the roll is { sides, rolls, total } or null. */
@@ -284,6 +286,14 @@ export const appSlice = createSlice({
       state.isMasterMode = !!action.payload;
     },
 
+    setLang(state, action) {
+      const next = normalizeLang(action.payload);
+      state.lang = next;
+      /* Keep the module-level language in step, for the display strings that
+         are built outside React — see lib/i18n. */
+      setLanguage(next);
+    },
+
     setUnits(state, action) {
       state.units = normalizeUnits(action.payload);
     },
@@ -326,6 +336,9 @@ export const selectAccent = state => state.app.accent ?? 'crimson';
    an `app` slice to render one. */
 export const selectUnits = state => normalizeUnits(state.app?.units);
 
+/** The language everything reads in. Safe on a store with no app slice. */
+export const selectLang = state => normalizeLang(state.app?.lang);
+
 export const {
   toggleSidebar,
   toggleInfoSidebar,
@@ -345,6 +358,7 @@ export const {
   setTheme,
   setAccent,
   setUnits,
+  setLang,
   setDiceMultiplierMask,
   setDiceLastRoll,
 } = appSlice.actions;

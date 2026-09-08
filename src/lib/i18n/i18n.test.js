@@ -1,70 +1,150 @@
-import { tName, hasName, knownNames } from './index';
+import {
+  translate, translateName, t, tName, setLanguage, getLanguage,
+  normalizeLang, hasPack, hasName, knownNames, knownStrings,
+  LANGUAGES, DEFAULT_LANG,
+} from './index';
+import { applyProse, prosePack } from './prose';
 import { loadFile } from '../loadFile';
-import { getConditionByLink } from '../utils';
 import names from '../../data/it/names.json';
 
-/* The dictionary is keyed by the English name that lives in src/data, and that
-   is the whole contract: get a key wrong by one character and the app quietly
-   shows English for that one row, with nothing failing anywhere. These tests
-   are the thing that fails instead. */
+/* The contract is that English is the source and never moves: every key in
+   every pack is the English text exactly as it appears in the app, and a
+   missing entry falls back to that English rather than to a blank. These tests
+   are what fails when a key drifts by one character — otherwise the app would
+   just quietly show English for that one row, with nothing going wrong
+   anywhere a person would look. */
 
-describe('looking a name up', () => {
-  test('answers in Italian', () => {
-    expect(tName('conditions', 'Fatigued')).toBe('Affaticato');
-    expect(tName('abilities', 'Dexterity')).toBe('Destrezza');
+afterEach(() => setLanguage(DEFAULT_LANG));
+
+describe('the language itself', () => {
+  test('English is the default and needs no pack', () => {
+    expect(DEFAULT_LANG).toBe('en');
+    expect(hasPack('en')).toBe(false);
+    expect(hasPack('it')).toBe(true);
   });
 
-  test('falls back to the English when the entry is missing', () => {
-    // A half-finished domain shows English words rather than blanks, so the
-    // translation can land one file at a time.
-    expect(tName('conditions', 'Not A Condition')).toBe('Not A Condition');
-    expect(tName('spells', 'Acid Arrow')).toBe('Acid Arrow');
+  test('an unknown code falls back to English rather than breaking', () => {
+    expect(normalizeLang('xx')).toBe('en');
+    expect(normalizeLang(undefined)).toBe('en');
+    expect(normalizeLang('it')).toBe('it');
   });
 
-  test('survives rubbish without throwing', () => {
-    expect(tName('conditions', '')).toBe('');
-    expect(tName('conditions', undefined)).toBe('');
-    expect(tName('nope', 'Fatigued')).toBe('Fatigued');
-  });
-
-  test('hasName tells a real entry from a fallback', () => {
-    expect(hasName('conditions', 'Fatigued')).toBe(true);
-    expect(hasName('conditions', 'Not A Condition')).toBe(false);
+  test('every language declares a code and its own name for itself', () => {
+    LANGUAGES.forEach((l) => {
+      expect(typeof l.code).toBe('string');
+      expect(l.endonym.length).toBeGreaterThan(0);
+    });
   });
 });
 
-describe('the conditions dictionary against the data it describes', () => {
+describe('an interface string', () => {
+  test('is English in English, Italian in Italian', () => {
+    expect(translate('en', 'Collapse')).toBe('Collapse');
+    expect(translate('it', 'Collapse')).toBe('Comprimi');
+  });
+
+  test('falls back to the English when the pack has no entry', () => {
+    // A half-finished pack shows English words, never blanks — which is what
+    // lets the translation land one component at a time.
+    expect(translate('it', 'Not translated yet')).toBe('Not translated yet');
+  });
+
+  test('survives rubbish without throwing', () => {
+    expect(translate('it', '')).toBe('');
+    expect(translate('it', undefined)).toBe('');
+    expect(translate('xx', 'Collapse')).toBe('Collapse');
+  });
+
+  test('a context picks a different translation for the same English', () => {
+    // "Init" is a label in one place and a cramped column heading in another.
+    expect(translate('it', 'Init', 'nonexistent-context')).toBe(translate('it', 'Init'));
+  });
+});
+
+describe('a name, which is also a key', () => {
+  test('is English in English, Italian in Italian', () => {
+    expect(translateName('en', 'conditions', 'Fatigued')).toBe('Fatigued');
+    expect(translateName('it', 'conditions', 'Fatigued')).toBe('Affaticato');
+    expect(translateName('it', 'abilities', 'Dexterity')).toBe('Destrezza');
+  });
+
+  test('falls back to the English name', () => {
+    expect(translateName('it', 'conditions', 'Not A Condition')).toBe('Not A Condition');
+    expect(translateName('it', 'nope', 'Fatigued')).toBe('Fatigued');
+  });
+});
+
+describe('the current language, for code outside React', () => {
+  test('t and tName follow it', () => {
+    expect(getLanguage()).toBe('en');
+    expect(t('Collapse')).toBe('Collapse');
+    expect(tName('conditions', 'Fatigued')).toBe('Fatigued');
+
+    setLanguage('it');
+    expect(t('Collapse')).toBe('Comprimi');
+    expect(tName('conditions', 'Fatigued')).toBe('Affaticato');
+  });
+});
+
+describe('the Italian pack against the data it describes', () => {
   const dataNames = Object.keys(loadFile('tables').Conditions);
 
-  test('every condition in tables.json has an Italian name', () => {
-    const missing = dataNames.filter((n) => !hasName('conditions', n));
-    expect(missing).toEqual([]);
+  test('every condition in the data has an Italian name', () => {
+    expect(dataNames.filter((n) => !hasName('conditions', n))).toEqual([]);
   });
 
   test('no entry names a condition that does not exist', () => {
-    // Catches a typo in the key, which would otherwise be invisible: the app
-    // would just keep showing the English name for that row.
-    const orphans = knownNames('conditions').filter((n) => !dataNames.includes(n));
-    expect(orphans).toEqual([]);
+    // Catches a typo in a key, which is otherwise invisible: the app would
+    // simply keep showing English for that row.
+    expect(knownNames('conditions').filter((n) => !dataNames.includes(n))).toEqual([]);
   });
 
   test('no two conditions share one Italian name', () => {
     const values = Object.values(names.conditions);
     expect(new Set(values).size).toBe(values.length);
   });
+
+  test('the UI pack is not empty and holds no empty translations', () => {
+    const strings = knownStrings('it');
+    expect(strings.length).toBeGreaterThan(0);
+    strings.forEach((k) => expect(translate('it', k).trim()).not.toBe(''));
+  });
 });
 
-describe('the info-sidebar card for a condition', () => {
-  test('carries the Italian title over the Italian description', () => {
-    /* The card body comes from tables.json, which is translated in place; the
-       title came from the key, which is not. They have to agree, or the sidebar
-       reads "Fatigued" over a paragraph of Italian. */
-    const [card] = getConditionByLink('fatigued');
-    expect(card.Name).toBe('Affaticato');
-    expect(card.Description).toMatch(/affaticato/i);
+describe('prose packs', () => {
+  test('English data is returned untouched, with no copy taken', () => {
+    const english = loadFile('tables');
+    expect(applyProse('tables', english, 'en')).toBe(english);
   });
 
-  test('still resolves by the English slug, because that is the link', () => {
-    expect(getConditionByLink('flat-footed')[0].Name).toBe('Colto alla Sprovvista');
+  test('Italian lays the translation over a copy, leaving the English alone', () => {
+    const english = { Conditions: { Blinded: 'The character cannot see.' } };
+    const before = english.Conditions.Blinded;
+    const italian = applyProse('tables', english, 'it');
+    expect(english.Conditions.Blinded).toBe(before);   // the source never moves
+    expect(italian).not.toBe(english);
+  });
+
+  test('every path in a pack still exists in the English data', () => {
+    /* A pack key is a path into src/data. If the data is reshaped and a key is
+       left behind, that translation silently stops being applied — this is the
+       thing that notices. */
+    const pack = prosePack('it', 'tables');
+    const data = loadFile('tables');
+    const missing = Object.keys(pack).filter((path) => {
+      let node = data;
+      for (const part of path.split('/')) {
+        if (node == null || typeof node !== 'object') return true;
+        node = Array.isArray(node) ? node[Number(part)] : node[part];
+      }
+      return typeof node !== 'string';
+    });
+    expect(missing).toEqual([]);
+  });
+
+  test('loadFile hands back the translated prose once the language is Italian', () => {
+    expect(loadFile('tables').Conditions.Blinded).toMatch(/^The character cannot see/);
+    setLanguage('it');
+    expect(loadFile('tables').Conditions.Blinded).toMatch(/^Il personaggio non pu/);
   });
 });

@@ -10,6 +10,7 @@ import deitiesData from '../data/deities.json';
 import companionAbilitiesData from '../data/companionAbilities.json';
 import familiarAbilitiesData from '../data/familiarAbilities.json';
 import trapsData from '../data/traps.json';
+import { applyProse } from './i18n/prose';
 
 /*
  * The three creature files are deliberately NOT imported here.
@@ -91,39 +92,47 @@ function creatureFile(key) {
  */
 export function loadFile(fileName) {
   try {
+    /* Every file goes through `applyProse`, which lays the current language's
+       translated descriptions over a copy of the English. With no pack — which
+       is every file in English — it hands the original straight back, so the
+       English path costs nothing. The English data itself is never modified.
+
+       The translation is applied to the WHOLE parsed file before the slice
+       below, because a pack's keys are rooted at the file: feats.json is keyed
+       `Feats/0/Description` even though this returns the inner array. */
     switch (fileName.toLowerCase()) {
       case 'items':
-        return items;
+        return applyProse('items', items);
       case 'scrolls':
-        return scrolls;
+        return applyProse('scrolls', scrolls);
       case 'tables':
-        return tables;
+        return applyProse('tables', tables);
       case 'spells':
-        return spells;
+        return applyProse('spells', spells);
       case 'feats':
-        return featsData?.Feats || [];
+        return applyProse('feats', featsData)?.Feats || [];
       case 'skills':
-        return skillsData?.Skills || [];
+        return applyProse('skills', skillsData)?.Skills || [];
       case 'skillsynergies':
-        return skillsData?.Synergies || [];
+        return applyProse('skills', skillsData)?.Synergies || [];
       case 'races':
-        return racesData?.races ?? {};
+        return applyProse('races', racesData)?.races ?? {};
       case 'classes':
-        return classesData?.classes ?? {};
+        return applyProse('classes', classesData)?.classes ?? {};
       case 'animals':
-        return creatureFile('animals');
+        return applyProse('animals', creatureFile('animals'));
       case 'monsters':
-        return creatureFile('monsters');
+        return applyProse('monsters', creatureFile('monsters'));
       case 'vermin':
-        return creatureFile('vermin');
+        return applyProse('vermin', creatureFile('vermin'));
       case 'traps':
-        return trapsData ?? { traps: [], tables: {} };
+        return applyProse('traps', trapsData) ?? { traps: [], tables: {} };
       case 'deities':
-        return deitiesData?.deities ?? [];
+        return applyProse('deities', deitiesData)?.deities ?? [];
       case 'companionabilities':
-        return companionAbilitiesData ?? {};
+        return applyProse('companionAbilities', companionAbilitiesData) ?? {};
       case 'familiarabilities':
-        return familiarAbilitiesData ?? {};
+        return applyProse('familiarAbilities', familiarAbilitiesData) ?? {};
       default:
         return null;
     }

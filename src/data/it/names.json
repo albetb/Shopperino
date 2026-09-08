@@ -6,7 +6,6 @@
     "Read through src/lib/i18n/index.js — never import this file directly.",
     "Every term here must agree with .claude/skills/translate-it/glossary.json."
   ],
-
   "abilities": {
     "Strength": "Forza",
     "Dexterity": "Destrezza",
@@ -15,7 +14,28 @@
     "Wisdom": "Saggezza",
     "Charisma": "Carisma"
   },
-
+  "classes": {
+    "Barbarian": "Barbaro",
+    "Bard": "Bardo",
+    "Cleric": "Chierico",
+    "Druid": "Druido",
+    "Fighter": "Guerriero",
+    "Monk": "Monaco",
+    "Paladin": "Paladino",
+    "Ranger": "Ranger",
+    "Rogue": "Ladro",
+    "Sorcerer": "Stregone",
+    "Wizard": "Mago"
+  },
+  "races": {
+    "Dwarf": "Nano",
+    "Elf": "Elfo",
+    "Gnome": "Gnomo",
+    "Half-Elf": "Mezzelfo",
+    "Half-Orc": "Mezzorco",
+    "Halfling": "Halfling",
+    "Human": "Umano"
+  },
   "conditions": {
     "Ability Damaged": "Caratteristica Danneggiata",
     "Ability Drained": "Caratteristica Prosciugata",
@@ -55,5 +75,36 @@
     "Stunned": "Stordito",
     "Turned": "Scacciato",
     "Unconscious": "Privo di Sensi"
+  },
+  "alignments": {
+    "Lawful": "Legale",
+    "Neutral": "Neutrale",
+    "Chaotic": "Caotico",
+    "Good": "Buono",
+    "Evil": "Malvagio"
+  },
+  "domains": {
+    "Air": "Aria",
+    "Animal": "Animali",
+    "Chaos": "Caos",
+    "Death": "Morte",
+    "Destruction": "Distruzione",
+    "Earth": "Terra",
+    "Evil": "Male",
+    "Fire": "Fuoco",
+    "Good": "Bene",
+    "Healing": "Guarigione",
+    "Knowledge": "Conoscenza",
+    "Law": "Legge",
+    "Luck": "Fortuna",
+    "Magic": "Magia",
+    "Plant": "Piante",
+    "Protection": "Protezione",
+    "Strength": "Forza",
+    "Sun": "Sole",
+    "Travel": "Viaggi",
+    "Trickery": "Inganno",
+    "War": "Guerra",
+    "Water": "Acqua"
   }
 }

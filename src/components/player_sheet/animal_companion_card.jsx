@@ -35,6 +35,7 @@ import Filigree from '../common/Filigree';
 import Icon from '../common/Icon';
 import '../../style/animal_companion.css';
 import { useUnits } from '../hooks/useUnits';
+import { t } from '../../lib/i18n';
 
 /** Single-value bonus thunks keyed by the companion field they edit. */
 const BONUS_THUNK = {
@@ -98,14 +99,14 @@ export default function AnimalCompanionCard() {
       icon={collapsed ? 'expand_more' : 'expand_less'}
       ghost size="sm"
       onClick={toggleCollapsed}
-      aria-label="Toggle animal companion"
+      aria-label={t('Toggle animal companion')}
     />
   );
 
   // —— No companion: just the selector ——
   if (!companion) {
     return (
-      <Card title="Animal companion" className="sh-card--head-spread" eyebrow={`lv${effLevel}`} action={cardAction}>
+      <Card title={t('Animal companion')} className="sh-card--head-spread" eyebrow={`lv${effLevel}`} action={cardAction}>
         {!collapsed && (
           <div className="companion-card sh-stack">
             <span className="sh-eyebrow">Effective druid level {effLevel}</span>
@@ -118,12 +119,12 @@ export default function AnimalCompanionCard() {
                 className="companion-select"
                 value=""
                 onChange={(e) => { if (e.target.value) dispatch(onSetCompanion(e.target.value)); }}
-                aria-label="Select an animal companion"
+                aria-label={t('Select an animal companion')}
               >
-                <option value="">Select a companion…</option>
+                <option value="">{t('Select a companion…')}</option>
                 {selectable.map((c) => (
                   <option key={c.ref} value={c.ref}>
-                    {c.label}{c.aquatic ? ' (aquatic)' : ''}
+                    {c.label}{c.aquatic ? t(' (aquatic)') : ''}
                   </option>
                 ))}
               </select>
@@ -220,8 +221,8 @@ export default function AnimalCompanionCard() {
       <div className="sh-row-h" style={{ gap: 'var(--space-2)', flexWrap: 'wrap' }}>
         <span className="sh-eyebrow">{label} bonus</span>
         <Stepper value={tempBonus} min={min} max={max} step={step} onChange={setTempBonus} />
-        <IconButton icon="check" size="sm" onClick={saveBonus} aria-label="Save bonus" style={{ marginLeft: 'auto' }} />
-        <IconButton icon="close" ghost size="sm" onClick={() => setEditBonus(null)} aria-label="Cancel" />
+        <IconButton icon="check" size="sm" onClick={saveBonus} aria-label={t('Save bonus')} style={{ marginLeft: 'auto' }} />
+        <IconButton icon="close" ghost size="sm" onClick={() => setEditBonus(null)} aria-label={t('Cancel')} />
       </div>
     </Card>
   );
@@ -229,11 +230,11 @@ export default function AnimalCompanionCard() {
   const renderAcEditor = () => (
     <Card padding>
       <div className="sh-stack" style={{ gap: 'var(--space-2)' }}>
-        <Filigree>AC modifiers</Filigree>
+        <Filigree>{t('AC modifiers')}</Filigree>
         {[
-          { key: 'general', label: 'General', hint: 'AC + touch + flat' },
-          { key: 'touch', label: 'Touch', hint: 'touch only' },
-          { key: 'flat', label: 'Flat', hint: 'flat-footed only' },
+          { key: 'general', label: t('General'), hint: t('AC + touch + flat') },
+          { key: 'touch', label: t('Touch'), hint: t('touch only') },
+          { key: 'flat', label: t('Flat'), hint: t('flat-footed only') },
         ].map(({ key, label, hint }) => (
           <div key={key} className="sh-row-h sh-spread" style={{ gap: 'var(--space-2)' }}>
             <span className="sh-eyebrow">{label} <span className="sh-faint" style={{ textTransform: 'none', letterSpacing: 0 }}>({hint})</span></span>
@@ -241,8 +242,8 @@ export default function AnimalCompanionCard() {
           </div>
         ))}
         <div className="sh-row-h" style={{ gap: 'var(--space-2)', justifyContent: 'flex-end' }}>
-          <IconButton icon="check" size="sm" onClick={saveBonus} aria-label="Save AC modifiers" />
-          <IconButton icon="close" ghost size="sm" onClick={() => setEditBonus(null)} aria-label="Cancel" />
+          <IconButton icon="check" size="sm" onClick={saveBonus} aria-label={t('Save AC modifiers')} />
+          <IconButton icon="close" ghost size="sm" onClick={() => setEditBonus(null)} aria-label={t('Cancel')} />
         </div>
       </div>
     </Card>
@@ -250,11 +251,11 @@ export default function AnimalCompanionCard() {
 
   const renderActiveEditor = () => {
     if (editBonus === 'ac') return renderAcEditor();
-    if (editBonus === 'initBonus') return renderBonusEditor('Init', -99, 99);
-    if (editBonus === 'speedBonus') return renderBonusEditor('Speed', -99, 99, 5);
-    if (editBonus === 'fortBonus') return renderBonusEditor('Fort', -99, 99);
-    if (editBonus === 'reflexBonus') return renderBonusEditor('Ref', -99, 99);
-    if (editBonus === 'willBonus') return renderBonusEditor('Will', -99, 99);
+    if (editBonus === 'initBonus') return renderBonusEditor(t('Init'), -99, 99);
+    if (editBonus === 'speedBonus') return renderBonusEditor(t('Speed'), -99, 99, 5);
+    if (editBonus === 'fortBonus') return renderBonusEditor(t('Fort'), -99, 99);
+    if (editBonus === 'reflexBonus') return renderBonusEditor(t('Ref'), -99, 99);
+    if (editBonus === 'willBonus') return renderBonusEditor(t('Will'), -99, 99);
     return null;
   };
 
@@ -263,7 +264,7 @@ export default function AnimalCompanionCard() {
 
   return (
     <Card
-      title={name || 'Animal companion'}
+      title={name || t('Animal companion')}
       className="sh-card--head-spread"
       eyebrow={`lv${compEffLevel}`}
       action={cardAction}
@@ -280,10 +281,10 @@ export default function AnimalCompanionCard() {
                   value={tempName}
                   onChange={(e) => setTempName(e.target.value)}
                   autoFocus
-                  aria-label="Companion name"
+                  aria-label={t('Companion name')}
                 />
-                <IconButton icon="check" size="sm" onClick={saveName} aria-label="Save name" />
-                <IconButton icon="close" ghost size="sm" onClick={() => setEditingName(false)} aria-label="Cancel" />
+                <IconButton icon="check" size="sm" onClick={saveName} aria-label={t('Save name')} />
+                <IconButton icon="close" ghost size="sm" onClick={() => setEditingName(false)} aria-label={t('Cancel')} />
               </div>
             ) : (
               <>
@@ -291,13 +292,13 @@ export default function AnimalCompanionCard() {
                   type="button"
                   className="companion-combat-toggle"
                   onClick={() => dispatch(addCardByLink({ links: ref }))}
-                  title="Show base stat block"
+                  title={t('Show base stat block')}
                 >
                   <Icon name="menu_book" size={16} /> Stat block
                 </button>
                 <span className="sh-row-h" style={{ gap: 'var(--space-1)' }}>
-                  <IconButton icon="edit" ghost size="sm" onClick={startEditName} aria-label="Rename companion" />
-                  <IconButton icon="delete" ghost size="sm" onClick={() => dispatch(onClearCompanion())} aria-label="Remove companion" />
+                  <IconButton icon="edit" ghost size="sm" onClick={startEditName} aria-label={t('Rename companion')} />
+                  <IconButton icon="delete" ghost size="sm" onClick={() => dispatch(onClearCompanion())} aria-label={t('Remove companion')} />
                 </span>
               </>
             )}
@@ -311,9 +312,9 @@ export default function AnimalCompanionCard() {
                 icon={hpAdvancedOpen ? 'expand_less' : 'expand_more'}
                 ghost size="sm"
                 onClick={() => setHpAdvancedOpen((v) => !v)}
-                aria-label={hpAdvancedOpen ? 'Hide base max life' : 'Show base max life'}
+                aria-label={hpAdvancedOpen ? t('Hide base max life') : t('Show base max life')}
               />
-              <IconButton icon="remove" {...(minusDisabled ? {} : longPressMinus)} disabled={minusDisabled} aria-label="Decrease HP" />
+              <IconButton icon="remove" {...(minusDisabled ? {} : longPressMinus)} disabled={minusDisabled} aria-label={t('Decrease HP')} />
               <div
                 className="companion-hp-readout"
                 style={hpFeedback
@@ -322,24 +323,24 @@ export default function AnimalCompanionCard() {
               >
                 {hpFeedback?.text ?? `${currentHp} / ${maxHp}`}
               </div>
-              <IconButton icon="add" {...(plusDisabled ? {} : longPressPlus)} disabled={plusDisabled} aria-label="Increase HP" />
+              <IconButton icon="add" {...(plusDisabled ? {} : longPressPlus)} disabled={plusDisabled} aria-label={t('Increase HP')} />
             </div>
             {hpAdvancedOpen && (
               <div className="sh-row-h sh-spread">
-                <span className="sh-eyebrow">Base max life</span>
+                <span className="sh-eyebrow">{t('Base max life')}</span>
                 {editMaxLife ? (
                   <div className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
                     <Stepper value={tempMaxLife} min={0} max={999} onChange={setTempMaxLife} />
-                    <IconButton icon="check" size="sm" onClick={saveMaxLife} aria-label="Save max life" />
-                    <IconButton icon="restart_alt" ghost size="sm" onClick={resetMaxLife} aria-label="Reset to computed" />
-                    <IconButton icon="close" ghost size="sm" onClick={() => setEditMaxLife(false)} aria-label="Cancel" />
+                    <IconButton icon="check" size="sm" onClick={saveMaxLife} aria-label={t('Save max life')} />
+                    <IconButton icon="restart_alt" ghost size="sm" onClick={resetMaxLife} aria-label={t('Reset to computed')} />
+                    <IconButton icon="close" ghost size="sm" onClick={() => setEditMaxLife(false)} aria-label={t('Cancel')} />
                   </div>
                 ) : (
                   <div className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
                     <span className="sh-mono sh-num sh-muted">
                       {maxHp}{companion.maxLife == null ? '' : ' *'}
                     </span>
-                    <IconButton icon="edit" ghost size="sm" onClick={startEditMaxLife} aria-label="Edit max life" />
+                    <IconButton icon="edit" ghost size="sm" onClick={startEditMaxLife} aria-label={t('Edit max life')} />
                   </div>
                 )}
               </div>

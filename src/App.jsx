@@ -29,6 +29,8 @@ import {
   setTheme,
   setAccent,
   setUnits,
+  setLang,
+  selectLang,
   setDiceMultiplierMask,
   setDiceLastRoll,
   selectTheme,
@@ -65,6 +67,7 @@ import LootInventory from './components/loot/loot_inventory';
 
 export default function App() {
   const dispatch = useDispatch();
+  const lang = useSelector(selectLang);
 
   useEffect(() => {
     db.validateDb();
@@ -80,6 +83,7 @@ export default function App() {
     dispatch(setTheme(db.getTheme(app)));
     dispatch(setAccent(db.getAccent(app)));
     dispatch(setUnits(db.getUnits(app)));
+    dispatch(setLang(db.getLang(app)));
     dispatch(setDiceMultiplierMask(db.getDiceMultiplierMask(app)));
     dispatch(setDiceLastRoll(db.getDiceLastRoll(app)));
     /* The bestiary is a lazy chunk (see loadFile.js). Start it now, so it is in
@@ -256,7 +260,10 @@ export default function App() {
     <header className="app-header"></header>;
 
   return (
-    <div className="app">
+    /* Keyed on the language: changing it remounts everything below, which is
+       how a `t()` call that is not a hook still updates. See the note in
+       lib/i18n. */
+    <div className="app" key={lang}>
       <TopMenu />
       {currentTab !== 0 && <InfoSidebar />}
       {currentTabContent}

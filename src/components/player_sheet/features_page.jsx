@@ -16,6 +16,7 @@ import EmptyState from '../common/EmptyState';
 import Icon from '../common/Icon';
 import Switch from '../common/Switch';
 import '../../style/player_sheet.css';
+import { t, tName } from '../../lib/i18n';
 
 const FEATURE_CARD_KEYS = ['alignment', 'languages', 'weaponArmor', 'racialTraits', 'classTraits'];
 
@@ -28,7 +29,7 @@ function CollapsibleCard({ eyebrow, title, action, open, onToggle, children }) {
       ghost size="sm"
       icon={open ? 'expand_less' : 'expand_more'}
       onClick={onToggle}
-      aria-label={open ? 'Collapse' : 'Expand'}
+      aria-label={open ? t('Collapse') : t('Expand')}
     />
   );
   return (
@@ -75,12 +76,12 @@ export default function FeaturesPage() {
       ...(raceData?.weaponFamiliarity ?? []),
     ];
     const armorMap = {
-      light: ['Light armor'],
-      medium: ['Light armor', 'Medium armor'],
-      heavy: ['Light armor', 'Medium armor', 'Heavy armor'],
+      light: [t('Light armor')],
+      medium: [t('Light armor'), t('Medium armor')],
+      heavy: [t('Light armor'), t('Medium armor'), t('Heavy armor')],
       no: [],
     };
-    const armors = [...(armorMap[classData?.armorProficiency] ?? []), ...(classData?.shieldProficiency ? ['Shield'] : [])];
+    const armors = [...(armorMap[classData?.armorProficiency] ?? []), ...(classData?.shieldProficiency ? [t('Shield')] : [])];
     const rowCount = Math.max(weapons.length, armors.length, 1);
     return { weapons, armors, rowCount };
   }, [classData, raceData]);
@@ -131,9 +132,11 @@ export default function FeaturesPage() {
   const alignmentWarnings = player?.getAlignmentWarnings?.() ?? [];
   const hasCodeOfConduct = player?.hasCodeOfConduct?.() ?? false;
   const isExClass = player?.isExClass?.() ?? false;
+  /* The comparison is on the English keys the player stores; only what is
+     printed goes through the dictionary. */
   const alignmentTitle = currentMoral === 'Neutral' && currentEthical === 'Neutral'
-    ? 'Neutral'
-    : `${currentEthical} ${currentMoral}`;
+    ? tName('alignments', 'Neutral')
+    : `${tName('alignments', currentEthical)} ${tName('alignments', currentMoral)}`;
 
   // Deity: divine classes only. A name outside the SRD table is kept as free
   // text — the select then sits on the "Other" entry and reveals an input.
@@ -167,7 +170,7 @@ export default function FeaturesPage() {
   if (!player) {
     return (
       <div className="sh-stack" style={{ padding: 'var(--space-4)' }}>
-        <EmptyState icon="extension" title="No character selected" hint="Pick or create one from the sidebar." />
+        <EmptyState icon="extension" title={t('No character selected')} hint={t('Pick or create one from the sidebar.')} />
       </div>
     );
   }
@@ -190,14 +193,14 @@ export default function FeaturesPage() {
       }}
     >
       <div style={{ marginTop: 'var(--space-3)', marginBottom: 'var(--space-4)', textAlign: 'center' }}>
-        <Filigree>Class & race features</Filigree>
+        <Filigree>{t('Class & race features')}</Filigree>
         <div className="sh-display" style={{ fontSize: 'var(--font-size-2xl)' }}>
           {className || 'Classless'} · {raceName || 'No race'}
         </div>
       </div>
 
       <CollapsibleCard
-        eyebrow="Alignment"
+        eyebrow={t('Alignment')}
         title={alignmentTitle}
         open={isOpen('alignment')}
         onToggle={() => toggleCard('alignment')}
@@ -207,28 +210,28 @@ export default function FeaturesPage() {
             className="sh-field"
             style={{ flexDirection: 'row', alignItems: 'center', gap: 'var(--space-2)' }}
           >
-            <span className="sh-label" style={{ flex: '0 0 40%' }}>Ethics</span>
+            <span className="sh-label" style={{ flex: '0 0 40%' }}>{t('Ethics')}</span>
             <select
               className="sh-select"
               style={{ flex: '0 0 60%' }}
               value={currentEthical}
               onChange={e => setAlignment('ethicalAlignment', e.target.value)}
             >
-              {allowedEthics.map(e => <option key={e} value={e}>{e}</option>)}
+              {allowedEthics.map(e => <option key={e} value={e}>{tName('alignments', e)}</option>)}
             </select>
           </label>
           <label
             className="sh-field"
             style={{ flexDirection: 'row', alignItems: 'center', gap: 'var(--space-2)' }}
           >
-            <span className="sh-label" style={{ flex: '0 0 40%' }}>Moral</span>
+            <span className="sh-label" style={{ flex: '0 0 40%' }}>{t('Moral')}</span>
             <select
               className="sh-select"
               style={{ flex: '0 0 60%' }}
               value={currentMoral}
               onChange={e => setAlignment('moralAlignment', e.target.value)}
             >
-              {allowedMorals.map(m => <option key={m} value={m}>{m}</option>)}
+              {allowedMorals.map(m => <option key={m} value={m}>{tName('alignments', m)}</option>)}
             </select>
           </label>
 
@@ -238,18 +241,18 @@ export default function FeaturesPage() {
                 className="sh-field"
                 style={{ flexDirection: 'row', alignItems: 'center', gap: 'var(--space-2)' }}
               >
-                <span className="sh-label" style={{ flex: '0 0 40%' }}>Deity</span>
+                <span className="sh-label" style={{ flex: '0 0 40%' }}>{t('Deity')}</span>
                 <select
                   className="sh-select"
                   style={{ flex: '0 0 60%' }}
                   value={deityIsCustom ? CUSTOM_DEITY : deity}
                   onChange={e => handleDeitySelect(e.target.value)}
                 >
-                  <option value="">None</option>
+                  <option value="">{t('None')}</option>
                   {deities.map(d => (
                     <option key={d.name} value={d.name}>{d.name}</option>
                   ))}
-                  <option value={CUSTOM_DEITY}>Other…</option>
+                  <option value={CUSTOM_DEITY}>{t('Other…')}</option>
                 </select>
               </label>
 
@@ -258,13 +261,13 @@ export default function FeaturesPage() {
                   className="sh-field"
                   style={{ flexDirection: 'row', alignItems: 'center', gap: 'var(--space-2)' }}
                 >
-                  <span className="sh-label" style={{ flex: '0 0 40%' }}>Name</span>
+                  <span className="sh-label" style={{ flex: '0 0 40%' }}>{t('Name')}</span>
                   <input
                     className="sh-input"
                     style={{ flex: '0 0 60%' }}
                     type="text"
                     value={deity}
-                    placeholder="Patron or cause"
+                    placeholder={t('Patron or cause')}
                     onChange={e => dispatch(onSetPlayerDeity(e.target.value))}
                   />
                 </label>
@@ -299,7 +302,7 @@ export default function FeaturesPage() {
                 className="sh-field"
                 style={{ flexDirection: 'row', alignItems: 'center', gap: 'var(--space-2)' }}
               >
-                <span className="sh-label" style={{ flex: '0 0 40%' }}>Code broken</span>
+                <span className="sh-label" style={{ flex: '0 0 40%' }}>{t('Code broken')}</span>
                 <span style={{ flex: '0 0 60%' }}>
                   <Switch
                     checked={isExClass}
@@ -321,7 +324,7 @@ export default function FeaturesPage() {
       </CollapsibleCard>
 
       <CollapsibleCard
-        eyebrow="Languages"
+        eyebrow={t('Languages')}
         /* The bonus-language count is beside the point once a monk can speak
            with any living creature, so the tongue pill replaces it rather than
            crowding in next to a number that no longer limits anything. */
@@ -332,7 +335,7 @@ export default function FeaturesPage() {
         action={
           <>
             {tongueOfSunAndMoon && (
-              <Pill tone="accent" icon="translate">Tongue of the sun and moon</Pill>
+              <Pill tone="accent" icon="translate">{t('Tongue of the sun and moon')}</Pill>
             )}
             {learnedBonus.length > maxBonus && (
               <Pill tone="warn" icon="warning">+{(learnedBonus.length - maxBonus) * extraLangCost} SP</Pill>
@@ -350,13 +353,13 @@ export default function FeaturesPage() {
             <div className="sh-warn-strip">
               <Icon name="translate" />
               <span>
-                You can speak with <b>any living creature</b>, whatever language
+                You can speak with <b>{t('any living creature')}</b>, whatever language
                 the list below holds.
               </span>
             </div>
           )}
           {allLangs.length === 0
-            ? <EmptyState icon="translate" title="No languages known" />
+            ? <EmptyState icon="translate" title={t('No languages known')} />
             : allLangs.map(lang => {
                 const isAuto = autoLangs.includes(lang);
                 return (
@@ -380,9 +383,9 @@ export default function FeaturesPage() {
               style={{ flex: 1 }}
               value={selectedLang}
               onChange={e => setSelectedLang(e.target.value)}
-              aria-label="Choose language to add"
+              aria-label={t('Choose language to add')}
             >
-              <option value="">— choose —</option>
+              <option value="">{t('— choose —')}</option>
               {bonusOptions.map(lang => <option key={lang} value={lang}>{lang}</option>)}
             </select>
             <Button
@@ -391,20 +394,20 @@ export default function FeaturesPage() {
               disabled={!selectedLang.trim()}
               variant="primary"
               size="sm"
-            >Add</Button>
+            >{t('Add')}</Button>
           </div>
         </div>
       </CollapsibleCard>
 
       <CollapsibleCard
-        eyebrow="Weapons & armor"
-        title="Proficiency"
+        eyebrow={t('Weapons & armor')}
+        title={t('Proficiency')}
         open={isOpen('weaponArmor')}
         onToggle={() => toggleCard('weaponArmor')}
       >
         <table className="player-sheet-weapon-armor-table">
           <thead>
-            <tr><th>Weapons</th><th>Armors</th></tr>
+            <tr><th>{t('Weapons')}</th><th>{t('Armors')}</th></tr>
           </thead>
           <tbody>
             {Array.from({ length: weaponArmorTable.rowCount }, (_, i) => (
@@ -422,13 +425,13 @@ export default function FeaturesPage() {
       </CollapsibleCard>
 
       <CollapsibleCard
-        eyebrow="Race"
+        eyebrow={t('Race')}
         title={raceName ? `${raceName} traits` : 'Racial traits'}
         open={isOpen('racialTraits')}
         onToggle={() => toggleCard('racialTraits')}
       >
         {racialTraitsFiltered.length === 0
-          ? <EmptyState icon="auto_fix_high" title="No racial traits" />
+          ? <EmptyState icon="auto_fix_high" title={t('No racial traits')} />
           : (
             <div className="player-sheet-class-features">
               {racialTraitsFiltered.map((trait, i) => renderFeature(`${trait.name}: ${trait.description}`, i))}
@@ -437,26 +440,26 @@ export default function FeaturesPage() {
       </CollapsibleCard>
 
       <CollapsibleCard
-        eyebrow="Class"
+        eyebrow={t('Class')}
         title={className ? `${className} features` : 'Class features'}
         open={isOpen('classTraits')}
         onToggle={() => toggleCard('classTraits')}
       >
         {!classData
-          ? <EmptyState icon="extension" title="No class selected" />
+          ? <EmptyState icon="extension" title={t('No class selected')} />
           : (
             <>
               {classStats && (
                 <div className="player-sheet-class-bars">
-                  <StatBar label="Life" {...classStats.life} />
-                  <StatBar label="Attack" {...classStats.attack} />
-                  <StatBar label="Armor" {...classStats.armor} />
-                  <StatBar label="Abilities" {...classStats.abilities} />
-                  <StatBar label="Spells" {...classStats.spells} />
+                  <StatBar label={t('Life')} {...classStats.life} />
+                  <StatBar label={t('Attack')} {...classStats.attack} />
+                  <StatBar label={t('Armor')} {...classStats.armor} />
+                  <StatBar label={t('Abilities')} {...classStats.abilities} />
+                  <StatBar label={t('Spells')} {...classStats.spells} />
                   <div className="player-sheet-class-bars-saves">
-                    <StatBar label="Fortitude" {...classStats.fort} className="short" />
-                    <StatBar label="Reflex" {...classStats.reflex} className="short" />
-                    <StatBar label="Will" {...classStats.will} className="short" />
+                    <StatBar label={t('Fortitude')} {...classStats.fort} className="short" />
+                    <StatBar label={t('Reflex')} {...classStats.reflex} className="short" />
+                    <StatBar label={t('Will')} {...classStats.will} className="short" />
                   </div>
                 </div>
               )}
