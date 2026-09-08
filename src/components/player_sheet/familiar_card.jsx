@@ -35,6 +35,7 @@ import Filigree from '../common/Filigree';
 import Icon from '../common/Icon';
 import '../../style/familiar.css';
 import { useUnits } from '../hooks/useUnits';
+import { t, tName } from '../../lib/i18n';
 
 /** Single-value bonus thunks keyed by the familiar field they edit. */
 const BONUS_THUNK = {
@@ -95,25 +96,25 @@ export default function FamiliarCard() {
       icon={collapsed ? 'expand_more' : 'expand_less'}
       ghost size="sm"
       onClick={toggleCollapsed}
-      aria-label="Toggle familiar"
+      aria-label={t('Toggle familiar')}
     />
   );
 
   // —— No familiar: just the selector ——
   if (!familiar) {
     return (
-      <Card title="Familiar" className="sh-card--head-spread" eyebrow={`lv${lvl}`} action={cardAction}>
+      <Card title={t('Familiar')} className="sh-card--head-spread" eyebrow={`lv${lvl}`} action={cardAction}>
         {!collapsed && (
           <div className="familiar-card sh-stack">
             <select
               className="familiar-select"
               value=""
               onChange={(e) => { if (e.target.value) dispatch(onSetFamiliar(e.target.value)); }}
-              aria-label="Select a familiar"
+              aria-label={t('Select a familiar')}
             >
-              <option value="">Select a familiar…</option>
+              <option value="">{t('Select a familiar…')}</option>
               {species.map((s) => (
-                <option key={s.ref} value={s.ref}>{s.label}</option>
+                <option key={s.ref} value={s.ref}>{`${tName('creatures', s.name)} (${t(s.bonus.text)})`}</option>
               ))}
             </select>
           </div>
@@ -203,10 +204,10 @@ export default function FamiliarCard() {
   const renderBonusEditor = (label, min, max, step = 1) => (
     <Card padding>
       <div className="sh-row-h" style={{ gap: 'var(--space-2)', flexWrap: 'wrap' }}>
-        <span className="sh-eyebrow">{label} bonus</span>
+        <span className="sh-eyebrow">{label}</span>
         <Stepper value={tempBonus} min={min} max={max} step={step} onChange={setTempBonus} />
-        <IconButton icon="check" size="sm" onClick={saveBonus} aria-label="Save bonus" style={{ marginLeft: 'auto' }} />
-        <IconButton icon="close" ghost size="sm" onClick={() => setEditBonus(null)} aria-label="Cancel" />
+        <IconButton icon="check" size="sm" onClick={saveBonus} aria-label={t('Save bonus')} style={{ marginLeft: 'auto' }} />
+        <IconButton icon="close" ghost size="sm" onClick={() => setEditBonus(null)} aria-label={t('Cancel')} />
       </div>
     </Card>
   );
@@ -214,20 +215,20 @@ export default function FamiliarCard() {
   const renderAcEditor = () => (
     <Card padding>
       <div className="sh-stack" style={{ gap: 'var(--space-2)' }}>
-        <Filigree>AC modifiers</Filigree>
+        <Filigree>{t('AC modifiers')}</Filigree>
         {[
           { key: 'general', label: 'General', hint: 'AC + touch + flat' },
           { key: 'touch', label: 'Touch', hint: 'touch only' },
           { key: 'flat', label: 'Flat', hint: 'flat-footed only' },
         ].map(({ key, label, hint }) => (
           <div key={key} className="sh-row-h sh-spread" style={{ gap: 'var(--space-2)' }}>
-            <span className="sh-eyebrow">{label} <span className="sh-faint" style={{ textTransform: 'none', letterSpacing: 0 }}>({hint})</span></span>
+            <span className="sh-eyebrow">{t(label)} <span className="sh-faint" style={{ textTransform: 'none', letterSpacing: 0 }}>({t(hint)})</span></span>
             <Stepper value={tempAc[key]} min={-99} max={99} onChange={(v) => setTempAc((prev) => ({ ...prev, [key]: v }))} />
           </div>
         ))}
         <div className="sh-row-h" style={{ gap: 'var(--space-2)', justifyContent: 'flex-end' }}>
-          <IconButton icon="check" size="sm" onClick={saveBonus} aria-label="Save AC modifiers" />
-          <IconButton icon="close" ghost size="sm" onClick={() => setEditBonus(null)} aria-label="Cancel" />
+          <IconButton icon="check" size="sm" onClick={saveBonus} aria-label={t('Save AC modifiers')} />
+          <IconButton icon="close" ghost size="sm" onClick={() => setEditBonus(null)} aria-label={t('Cancel')} />
         </div>
       </div>
     </Card>
@@ -235,11 +236,11 @@ export default function FamiliarCard() {
 
   const renderActiveEditor = () => {
     if (editBonus === 'ac') return renderAcEditor();
-    if (editBonus === 'initBonus') return renderBonusEditor('Init', -99, 99);
-    if (editBonus === 'speedBonus') return renderBonusEditor('Speed', -99, 99, 5);
-    if (editBonus === 'fortBonus') return renderBonusEditor('Fort', -99, 99);
-    if (editBonus === 'reflexBonus') return renderBonusEditor('Ref', -99, 99);
-    if (editBonus === 'willBonus') return renderBonusEditor('Will', -99, 99);
+    if (editBonus === 'initBonus') return renderBonusEditor(t('Init bonus'), -99, 99);
+    if (editBonus === 'speedBonus') return renderBonusEditor(t('Speed bonus'), -99, 99, 5);
+    if (editBonus === 'fortBonus') return renderBonusEditor(t('Fort bonus'), -99, 99);
+    if (editBonus === 'reflexBonus') return renderBonusEditor(t('Ref bonus'), -99, 99);
+    if (editBonus === 'willBonus') return renderBonusEditor(t('Will bonus'), -99, 99);
     return null;
   };
 
@@ -248,7 +249,7 @@ export default function FamiliarCard() {
 
   return (
     <Card
-      title={name || 'Familiar'}
+      title={name || t('Familiar')}
       className="sh-card--head-spread"
       eyebrow={`lv${lvl}`}
       action={cardAction}
@@ -265,10 +266,10 @@ export default function FamiliarCard() {
                   value={tempName}
                   onChange={(e) => setTempName(e.target.value)}
                   autoFocus
-                  aria-label="Familiar name"
+                  aria-label={t('Familiar name')}
                 />
-                <IconButton icon="check" size="sm" onClick={saveName} aria-label="Save name" />
-                <IconButton icon="close" ghost size="sm" onClick={() => setEditingName(false)} aria-label="Cancel" />
+                <IconButton icon="check" size="sm" onClick={saveName} aria-label={t('Save name')} />
+                <IconButton icon="close" ghost size="sm" onClick={() => setEditingName(false)} aria-label={t('Cancel')} />
               </div>
             ) : (
               <>
@@ -276,13 +277,13 @@ export default function FamiliarCard() {
                   type="button"
                   className="familiar-combat-toggle"
                   onClick={() => dispatch(addCardByLink({ links: ref }))}
-                  title="Show base stat block"
+                  title={t('Show base stat block')}
                 >
-                  <Icon name="menu_book" size={16} /> Stat block
+                  <Icon name="menu_book" size={16} /> {t('Stat block')}
                 </button>
                 <span className="sh-row-h" style={{ gap: 'var(--space-1)' }}>
-                  <IconButton icon="edit" ghost size="sm" onClick={startEditName} aria-label="Rename familiar" />
-                  <IconButton icon="delete" ghost size="sm" onClick={() => dispatch(onClearFamiliar())} aria-label="Remove familiar" />
+                  <IconButton icon="edit" ghost size="sm" onClick={startEditName} aria-label={t('Rename familiar')} />
+                  <IconButton icon="delete" ghost size="sm" onClick={() => dispatch(onClearFamiliar())} aria-label={t('Remove familiar')} />
                 </span>
               </>
             )}
@@ -296,9 +297,9 @@ export default function FamiliarCard() {
                 icon={hpAdvancedOpen ? 'expand_less' : 'expand_more'}
                 ghost size="sm"
                 onClick={() => setHpAdvancedOpen((v) => !v)}
-                aria-label={hpAdvancedOpen ? 'Hide base max life' : 'Show base max life'}
+                aria-label={hpAdvancedOpen ? t('Hide base max life') : t('Show base max life')}
               />
-              <IconButton icon="remove" {...(minusDisabled ? {} : longPressMinus)} disabled={minusDisabled} aria-label="Decrease HP" />
+              <IconButton icon="remove" {...(minusDisabled ? {} : longPressMinus)} disabled={minusDisabled} aria-label={t('Decrease HP')} />
               <div
                 className="familiar-hp-readout"
                 style={hpFeedback
@@ -307,24 +308,24 @@ export default function FamiliarCard() {
               >
                 {hpFeedback?.text ?? `${currentHp} / ${maxHp}`}
               </div>
-              <IconButton icon="add" {...(plusDisabled ? {} : longPressPlus)} disabled={plusDisabled} aria-label="Increase HP" />
+              <IconButton icon="add" {...(plusDisabled ? {} : longPressPlus)} disabled={plusDisabled} aria-label={t('Increase HP')} />
             </div>
             {hpAdvancedOpen && (
               <div className="sh-row-h sh-spread">
-                <span className="sh-eyebrow">Base max life</span>
+                <span className="sh-eyebrow">{t('Base max life')}</span>
                 {editMaxLife ? (
                   <div className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
                     <Stepper value={tempMaxLife} min={0} max={999} onChange={setTempMaxLife} />
-                    <IconButton icon="check" size="sm" onClick={saveMaxLife} aria-label="Save max life" />
-                    <IconButton icon="restart_alt" ghost size="sm" onClick={resetMaxLife} aria-label="Reset to ½ master HP" />
-                    <IconButton icon="close" ghost size="sm" onClick={() => setEditMaxLife(false)} aria-label="Cancel" />
+                    <IconButton icon="check" size="sm" onClick={saveMaxLife} aria-label={t('Save max life')} />
+                    <IconButton icon="restart_alt" ghost size="sm" onClick={resetMaxLife} aria-label={t('Reset to ½ master HP')} />
+                    <IconButton icon="close" ghost size="sm" onClick={() => setEditMaxLife(false)} aria-label={t('Cancel')} />
                   </div>
                 ) : (
                   <div className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
                     <span className="sh-mono sh-num sh-muted">
                       {maxHp}{familiar.maxLife == null ? '' : ' *'}
                     </span>
-                    <IconButton icon="edit" ghost size="sm" onClick={startEditMaxLife} aria-label="Edit max life" />
+                    <IconButton icon="edit" ghost size="sm" onClick={startEditMaxLife} aria-label={t('Edit max life')} />
                   </div>
                 )}
               </div>
@@ -339,12 +340,12 @@ export default function FamiliarCard() {
             <StatPill
               className="sh-stat-pill--sm"
               accent
-              label="AC"
+              label={t('AC')}
               value={ac}
               sub={
                 <>
-                  <span style={{ display: 'block' }}>touch {acTouch}</span>
-                  <span style={{ display: 'block' }}>flat {acFlat}</span>
+                  <span style={{ display: 'block' }}>{t('touch')} {acTouch}</span>
+                  <span style={{ display: 'block' }}>{t('flat')} {acFlat}</span>
                 </>
               }
               editing={editBonus === 'ac'}
@@ -352,17 +353,17 @@ export default function FamiliarCard() {
             />
             <StatPill
               className="sh-stat-pill--sm"
-              label="Init"
+              label={t('Init')}
               value={fmtBonus(init)}
-              sub={familiar.initBonus ? `bonus ${fmtBonus(familiar.initBonus)}` : null}
+              sub={familiar.initBonus ? `${t('bonus')} ${fmtBonus(familiar.initBonus)}` : null}
               editing={editBonus === 'initBonus'}
               onEdit={() => toggleEditBonus('initBonus')}
             />
             <StatPill
               className="sh-stat-pill--sm"
-              label="Speed"
+              label={t('Speed')}
               value={u.distance(speed)}
-              sub={familiar.speedBonus ? `bonus ${fmtBonus(familiar.speedBonus)}` : null}
+              sub={familiar.speedBonus ? `${t('bonus')} ${fmtBonus(familiar.speedBonus)}` : null}
               editing={editBonus === 'speedBonus'}
               onEdit={() => toggleEditBonus('speedBonus')}
             />
@@ -373,25 +374,25 @@ export default function FamiliarCard() {
           <div className="sh-grid-3">
             <StatPill
               className="sh-stat-pill--sm"
-              label="Fort"
+              label={t('Fort')}
               value={fmtBonus(fort)}
-              sub={familiar.fortBonus ? `bonus ${fmtBonus(familiar.fortBonus)}` : null}
+              sub={familiar.fortBonus ? `${t('bonus')} ${fmtBonus(familiar.fortBonus)}` : null}
               editing={editBonus === 'fortBonus'}
               onEdit={() => toggleEditBonus('fortBonus')}
             />
             <StatPill
               className="sh-stat-pill--sm"
-              label="Ref"
+              label={t('Ref')}
               value={fmtBonus(reflex)}
-              sub={familiar.reflexBonus ? `bonus ${fmtBonus(familiar.reflexBonus)}` : null}
+              sub={familiar.reflexBonus ? `${t('bonus')} ${fmtBonus(familiar.reflexBonus)}` : null}
               editing={editBonus === 'reflexBonus'}
               onEdit={() => toggleEditBonus('reflexBonus')}
             />
             <StatPill
               className="sh-stat-pill--sm"
-              label="Will"
+              label={t('Will')}
               value={fmtBonus(will)}
-              sub={familiar.willBonus ? `bonus ${fmtBonus(familiar.willBonus)}` : null}
+              sub={familiar.willBonus ? `${t('bonus')} ${fmtBonus(familiar.willBonus)}` : null}
               editing={editBonus === 'willBonus'}
               onEdit={() => toggleEditBonus('willBonus')}
             />
@@ -401,7 +402,7 @@ export default function FamiliarCard() {
           {/* Attacks */}
           {attacks.length > 0 && (
             <div className="sh-stack" style={{ gap: 'var(--space-2)' }}>
-              <Filigree>Attacks</Filigree>
+              <Filigree>{t('Attacks')}</Filigree>
               {attacks.map((line) => {
                 const overridden = !!familiar.overrides?.[line.index];
                 const labelName = `${line.count > 1 ? `${line.count} ` : ''}${line.name}`;
@@ -410,23 +411,23 @@ export default function FamiliarCard() {
                     <Card key={line.index} padding>
                       <div className="sh-stack" style={{ gap: 'var(--space-2)' }}>
                         <div className="sh-row-h sh-spread">
-                          <span className="sh-eyebrow">{labelName} — attack</span>
+                          <span className="sh-eyebrow">{labelName} — {t('attack')}</span>
                           <Stepper value={tempAtk.bonus} min={-50} max={50} onChange={(v) => setTempAtk((p) => ({ ...p, bonus: v }))} />
                         </div>
                         <div className="sh-row-h sh-spread">
-                          <span className="sh-eyebrow">Damage</span>
+                          <span className="sh-eyebrow">{t('Damage')}</span>
                           <input
                             type="text"
                             className="familiar-name-input"
                             value={tempAtk.damage}
                             onChange={(e) => setTempAtk((p) => ({ ...p, damage: e.target.value }))}
-                            aria-label="Attack damage"
+                            aria-label={t('Attack damage')}
                           />
                         </div>
                         <div className="sh-row-h" style={{ gap: 'var(--space-2)', justifyContent: 'flex-end' }}>
-                          {overridden && <IconButton icon="restart_alt" ghost size="sm" onClick={() => resetAtk(line.index)} aria-label="Reset attack" />}
-                          <IconButton icon="check" size="sm" onClick={saveAtk} aria-label="Save attack" />
-                          <IconButton icon="close" ghost size="sm" onClick={() => setEditAtk(null)} aria-label="Cancel" />
+                          {overridden && <IconButton icon="restart_alt" ghost size="sm" onClick={() => resetAtk(line.index)} aria-label={t('Reset attack')} />}
+                          <IconButton icon="check" size="sm" onClick={saveAtk} aria-label={t('Save attack')} />
+                          <IconButton icon="close" ghost size="sm" onClick={() => setEditAtk(null)} aria-label={t('Cancel')} />
                         </div>
                       </div>
                     </Card>
@@ -438,7 +439,7 @@ export default function FamiliarCard() {
                     <span className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
                       <Pill tone={overridden ? 'warn' : 'default'}>{fmtBonus(line.bonus ?? 0)}</Pill>
                       {line.damage && <Pill tone={overridden ? 'warn' : 'default'}>{line.damage}</Pill>}
-                      <IconButton icon="edit" ghost size="sm" onClick={() => startEditAtk(line)} aria-label={`Edit ${line.name} attack`} />
+                      <IconButton icon="edit" ghost size="sm" onClick={() => startEditAtk(line)} aria-label={`${t('Edit')} ${line.name} ${t('attack')}`} />
                     </span>
                   </div>
                 );
@@ -449,10 +450,10 @@ export default function FamiliarCard() {
           {/* Int + natural armor + per-species master bonus */}
           <div className="sh-row-h" style={{ gap: 'var(--space-2)', flexWrap: 'wrap', alignItems: 'center' }}>
             <Pill tone="default" icon="psychology">Int {intScore}</Pill>
-            <Pill tone="default" icon="shield">Natural armor {fmtBonus(naturalArmorAdj)}</Pill>
+            <Pill tone="default" icon="shield">{t('Natural armor')} {fmtBonus(naturalArmorAdj)}</Pill>
             {speciesBonus && (
               <Pill tone="success" icon="auto_awesome">
-                Master: {speciesBonus.text}{speciesBonus.condition ? ` (${speciesBonus.condition})` : ''}
+                {t('Master')}: {t(speciesBonus.text)}{speciesBonus.condition ? ` (${t(speciesBonus.condition)})` : ''}
               </Pill>
             )}
           </div>
@@ -466,7 +467,7 @@ export default function FamiliarCard() {
                   type="button"
                   className="familiar-ability-btn"
                   onClick={() => dispatch(addCardByLink({ links: `familiarAbility#${slug(s)}` }))}
-                  title="Show description"
+                  title={t('Show description')}
                 >
                   <Pill tone="accent">{s}</Pill>
                 </button>
@@ -483,7 +484,7 @@ export default function FamiliarCard() {
                 onClick={() => setCombatOpen((v) => !v)}
               >
                 <Icon name={combatOpen ? 'expand_less' : 'expand_more'} size={16} />
-                Combat
+                {t('Combat')}
               </button>
               {combatOpen && <div className="familiar-combat-text">{parse(u.prose(combatHtml))}</div>}
             </div>

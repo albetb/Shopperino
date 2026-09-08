@@ -36,6 +36,8 @@
  * Nothing else in the app knows how many languages there are.
  */
 
+import { cloneElement, isValidElement } from 'react';
+
 import itUi from '../../data/it/ui.json';
 import itNames from '../../data/it/names.json';
 
@@ -105,7 +107,22 @@ export function translateName(lang, domain, en) {
   if (typeof en !== 'string' || !en) return '';
   const pack = PACKS[normalizeLang(lang)];
   if (!pack) return en;
-  return pack.names?.[domain]?.[en] ?? en;
+  const names = pack.names?.[domain];
+  if (!names) return en;
+  if (names[en] != null) return names[en];
+
+  /* The data does not always capitalise a name the way the pack keys it — a
+     trap's casterClass is 'cleric' where the pack holds 'Cleric'. Match it
+     anyway, and answer in the case the caller asked in, so the name still
+     reads as part of the sentence around it. */
+  const hit = Object.keys(names).find((k) => k.toLowerCase() === en.toLowerCase());
+  if (!hit) return en;
+  const it = names[hit];
+  const asked = en[0];
+  if (asked === asked.toLowerCase() && hit[0] !== hit[0].toLowerCase()) {
+    return it[0].toLowerCase() + it.slice(1);
+  }
+  return it;
 }
 
 /* ------------------------------------------------------------------------ *
@@ -132,6 +149,52 @@ export function getLanguage() {
 /** `translate` in the current language. For non-component code. */
 export function t(en, ctx) {
   return translate(current, en, ctx);
+}
+
+/**
+ * A whole sentence with holes in it.
+ *
+ * The alternative is chopping a sentence into fragments — `t('The book prints
+ * this as')` … `t('Its own tables add up to')` — and gluing them back together
+ * around the values. That freezes English word order into every other
+ * language: Italian may want the pieces in a different order, and a fragment as
+ * small as `t('of')` cannot carry the gender agreement its neighbour needs. So
+ * keep the sentence whole and mark the holes:
+ *
+ *     tx('The book prints this as {0}. Its own tables add up to {1}.',
+ *        <b>CR {trap.cr}</b>, cr)
+ *
+ * A translator is then free to write `Le sue tabelle danno {1}, non {0}.` —
+ * same holes, whatever order the language wants, each usable more than once or
+ * not at all.
+ *
+ * Returns a plain string when every value is text, so it works in a `title` or
+ * an `aria-label`. When any value is an element it returns an array of nodes
+ * instead, keyed and ready to be JSX children.
+ *
+ * @param {string} en - the English sentence, with `{0}`, `{1}` … holes.
+ * @param {...*} values - what goes in the holes, in order.
+ */
+export function tx(en, ...values) {
+  const parts = String(t(en)).split(/(\{\d+\})/g);
+  const fill = (part) => {
+    const m = /^\{(\d+)\}$/.exec(part);
+    if (!m) return part;
+    return values[Number(m[1])];
+  };
+
+  if (!values.some(isValidElement)) {
+    return parts.map((p) => {
+      const v = fill(p);
+      return v == null ? '' : String(v);
+    }).join('');
+  }
+
+  return parts.filter((p) => p !== '').map((p, i) => {
+    const v = fill(p);
+    if (v == null) return '';
+    return isValidElement(v) ? cloneElement(v, { key: `tx${i}` }) : String(v);
+  });
 }
 
 /** `translateName` in the current language. For non-component code. */

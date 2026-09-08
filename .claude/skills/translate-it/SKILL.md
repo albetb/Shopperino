@@ -5,25 +5,14 @@ description: Translate the Shopperino app into another language — Italian toda
 
 # Translating Shopperino
 
-The app is readable in more than one language. English is what it is written
-in; every other language is a **pack** that sits beside the English and is
-chosen at runtime.
+English is what the app is written in. Every other language is a **pack** beside
+it, chosen at run time. Translations need not match the Italian manuals — the
+meaning and the mechanics must survive, and one English term always becomes the
+same word.
 
-**The translation is not book-accurate, on purpose.** The user has said so:
-matching the Italian manuals word for word does not matter. What matters is
-that the meaning and the mechanics survive, and that one English term always
-becomes the same word in the target language.
+Use **Sonnet or better**. Haiku's terminology is not reliable enough here.
 
----
-
-## The one idea to understand first
-
-**English never leaves. Nothing is ever overwritten.**
-
-An earlier version of this skill translated over the English where it stood. It
-read fine and it was wrong: it made English unrecoverable, it left no way to
-offer both languages, and — worst — it put a translator's hands on the files
-the game rules live in. Everything below follows from not doing that again.
+## Where each kind of string goes
 
 | Kind of string | Stays where it is | Translation goes to |
 |---|---|---|
@@ -31,80 +20,49 @@ the game rules live in. Everything below follows from not doing that again.
 | A name that is also a key | English, in `src/data` | `src/data/<lang>/names.json` |
 | Prose in `src/data` | English, untouched | `src/data/<lang>/<file>.json` |
 
-Why the third row matters more than it looks. An English name in `src/data` is
-rarely just a name — it is the key everything hangs on:
-
-- `Player.conditions` stores `"Fatigued"` into the save file.
-- `conditionSlug("Flat-Footed")` builds the `#flat-footed` anchor.
-- `proficiency.js` reads a weapon's `Category` with `startsWith('martial')`.
-- `attackParser.js` splits `"2 claws +7 melee (1d6+5)"` on the word `melee`,
-  and every animal companion, familiar and wild shape is recomputed from it.
-
-None of that can break any more, because **a translator never opens those
-files**. The pack is keyed by JSON path and laid over a copy of the English at
-render time (`lib/i18n/prose.js`). The first gate in `verify.py` is simply
-*did `src/data` move?*
+**English never leaves and is never overwritten.** `t('X')` falls back to `X`,
+so the key must be the English literal character for character.
 
 ---
 
 ## If you were given no instructions
 
-`/translate-it` on its own is a complete instruction: **pick up where the work
-left off, do a session's worth, stop and report.**
+`/translate-it` alone means: pick up where the work left off, do a session's
+worth, stop and report.
 
 1. Run `progress.py`.
-2. **Pick the target.** If the user named a file or a phase, that is the
-   target. Otherwise take the first thing with work left, in phase order.
+2. **Pick the target.** If the user named a file or phase, that is the target.
+   Otherwise take the first thing with work left, in phase order.
 3. **Do a session's worth**, then stop:
    - data — **6 batches of 30 strings**, or the file finishes;
    - UI — **5 components**, each with its test.
-4. **Report**: what you translated, the `progress.py` numbers, anything you
-   left alone and why, and which files are ready to commit.
+4. **Report**: what you translated, the `progress.py` numbers, anything you left
+   alone and why, and which files are ready to commit.
 
 ### The three rules that are not yours to bend
 
 - **Never edit a file in `src/data/` that is not inside a language folder.**
-  The English is the source. If a gate complains, the fix goes in the pack.
-- **Never edit `fields.json` to quieten a gate.** That list is what stops a
-  translation from changing the rules.
+  If a gate complains, the fix goes in the pack.
+- **Never edit `fields.json` to quieten a gate.**
 - **You may ADD a term to `glossary.json`. You may never change one that is
-  already there.** Adding is how the vocabulary grows; changing is how
-  *Stregone* silently becomes *Incantatore* three weeks later.
+  already there.**
 
 If the same gate fails twice on the same string, stop and ask.
-
-### Which model should be doing this
-
-Measured, not guessed — the same 20 `feats.json` strings through both, one
-pass, no self-checking:
-
-| | Haiku | Sonnet |
-|---|---|---|
-| Hard gate failures | 17 | 6 |
-| Numbers, dice, HTML, hrefs | **0 errors** | **0 errors** |
-| Tokens | 37.9k | 74.8k |
-
-Mechanical fidelity is not the problem for either; terminology is. Haiku wrote
-*Vantaggio* for Benefit, *tiri* where a check is a *prova*, *famigliare* (a
-relative) for familiar, and slipped one Spanish word, `armadura`. The glossary
-gate catches most of that but not a language slip, and the retry rounds eat the
-token saving. **Use Sonnet.**
 
 ---
 
 ## The phases
 
 **Phase 1 — the UI.** ~1,260 strings across ~150 components, plus display
-strings in `src/lib`. This is what a person sees first.
+strings in `src/lib`.
 
-**Phase 2 — the data prose.** ~6,700 strings, 1.6 M characters. In order:
-
+**Phase 2 — the data prose.** ~6,700 strings, in this order:
 `tables.json` → `skills.json` → `feats.json` → `races.json` → `classes.json` →
 `traps.json` → `items.json` → `spells.json` → `animals.json` → `vermin.json` →
 `monsters.json`
 
 **Phase 3 — the names.** Item, spell, feat, skill and monster names into
-`src/data/<lang>/names.json`, and the display sites that call `tName()`.
+`names.json`, and the display sites that call `tName()`.
 
 ---
 
@@ -120,50 +78,71 @@ Do **one file and its test together**.
    -  aria-label={open ? 'Collapse' : 'Expand'}
    +  aria-label={open ? t('Collapse') : t('Expand')}
    ```
-   `import { t } from '<...>/lib/i18n';` — the plain function, not a hook. The
-   app is keyed on the language in `App.jsx`, so a change remounts the tree and
-   every `t()` runs again. That is why translating a component is one edit
-   rather than two.
-3. **Do not wrap**: `className`, `icon` names (`"add"`, `"expand_less"` — they
-   are Material Symbols ligatures), CSS variables, `key`s, action types, or any
+   `import { t } from '<...>/lib/i18n';` — the plain function, not a hook.
+3. **Do not wrap**: `className`, `icon` names (`"add"`, `"expand_less"` —
+   Material Symbols ligatures), CSS variables, `key`s, action types, or any
    string compared against data (`'Str'`, `'Simple Weapons'`, `'Neutral'`).
-   A useful test: if changing the string would change what the code *does*, it
-   is a key.
-4. A **name out of the data or the model** is not a literal — call
-   `tName('<domain>', name)` and put the entry in `names.json`.
-5. Add every wrapped string to `src/data/<lang>/ui.json`.
-6. **Check the three things a translation quietly breaks:**
+   If changing the string would change what the code *does*, it is a key.
+4. **A sentence stays one string.** Use `tx()` with numbered holes; never glue
+   fragments around a value. Keys like `t('of')` or `t('the reset')` freeze
+   English word order into every other language.
+   ```jsx
+   -  {t('The book prints this as')} <b>{t('CR')} {trap.cr}</b>. {t('Its own tables add up to')} {cr}
+   +  {tx('The book prints this as {0}. Its own tables add up to {1}', <b>{t('CR')} {trap.cr}</b>, cr)}
+   ```
+   `tx` returns a string when every value is text, so it works in a `title`.
+5. **Check what the sentence interpolates.** A wrapped sentence still reads
+   half-English if the value dropped into it is untranslated data:
+   `` `${trap.save.type} ${t('save DC')}` `` → "Reflex CD del tiro salvezza".
+   For each `${…}` inside translated text decide: a **name** → `tName(domain,
+   value)`; **prose from `src/data`** → the prose pack; a **slug or key** →
+   leave it.
+6. `tName('<domain>', name)` requires that `domain` already exists in
+   `names.json`. A domain that does not exist falls back to English silently
+   for every name — `verify.py` gates this.
+7. **A `t()` whose key is a variable** (`t(bonus.text)`) is invisible to
+   `progress.py`, which lists them separately. Put **every** value it can take
+   in the pack yourself, and say so in your report.
+8. Add every wrapped string to `src/data/<lang>/ui.json`.
+9. **Check the three things a translation quietly breaks:**
    - **Search boxes.** A filter on `c.name` searches English the reader cannot
      see. Filter on the displayed name.
-   - **Sorting.** An alphabetical list sorted by the English name is not
-     alphabetical in Italian. Sort on the displayed name.
-   - **Plurals and gender.** `{n} items` is not `{n} oggetti` when n is 1, and
-     Italian inflects adjectives: *attiva* / *attivo*.
-7. Update the co-located test, and make it assert **both** languages —
-   `setLanguage('it')` from `lib/i18n`. See
-   [conditions_section.test.js](../../../src/components/player_sheet/conditions_section.test.js):
-   the model is still driven in English (`addCondition({ name: 'Fatigued' })`)
-   while the screen is asserted in Italian. If those two ever have to agree,
-   something has translated a key.
-8. `CI=true npx react-scripts test --watchAll=false --testPathPattern=<name>`
-   (plain `npx jest` does not work here — no JSX transform outside
-   react-scripts).
+   - **Sorting.** Sort on the displayed name, not the English.
+   - **Plurals and gender.** `{n} items` is not `{n} oggetti` when n is 1;
+     Italian inflects adjectives (*attiva* / *attivo*).
+10. Watch for `t` being **shadowed** — `list.map((t) => …)` silently captures
+    the translate function. Rename the parameter.
+11. Update the co-located test to assert **both** languages via
+    `setLanguage('it')`. Drive the model in English, assert the screen in
+    Italian; see
+    [conditions_section.test.js](../../../src/components/player_sheet/conditions_section.test.js).
+12. Run the checks:
+    ```bash
+    CI=true npx react-scripts test --watchAll=false --testPathPattern=<name>
+    python .claude/skills/translate-it/scripts/en_drift.py    # English unmoved
+    python .claude/skills/translate-it/scripts/verify.py
+    ```
+    `en_drift.py` reports any wording an English reader would now see
+    differently. Restructuring a sentence shows up there too — read each line
+    and confirm the English still renders identically.
 
-### Not every display edge is a component
+### Display strings in `src/lib`
 
-Some of `src/lib` builds things a person reads, and those count as UI:
-`utils.js` (`getConditionByLink` and friends build the info-sidebar cards),
-`itemsUtils.js`, `scrolls.js`, `contributions.js`, `conditionEffects.js`,
-`trapCR.js`, `trapFootprint.js`, `monsterBook.js`, `shopShare.js`. They use the
-same plain `t()`. The test is not where the code lives but who reads the
-string: on screen it is translated, compared against it is English.
+Code that **builds something a person reads** counts as UI and uses the same
+`t()`: `utils.js`, `itemsUtils.js`, `scrolls.js`, `contributions.js`,
+`conditionEffects.js`, `trapCR.js`, `trapFootprint.js`, `monsterBook.js`,
+`shopShare.js`.
+
+**Do not import i18n into a pure model or math module.** Reading the current
+language makes it depend on hidden global state. Take the word as an argument
+and let the component pass `t('gp')` — see `formatGp` in `lib/trap/trapMath.js`.
 
 ---
 
 ## Workflow B — a data batch
 
-Never open `spells.json` in an editor. It is 865 KB and you need thirty strings
-from it.
+Never open `spells.json` in an editor — it is 865 KB and you need thirty
+strings from it.
 
 ```bash
 S=.claude/skills/translate-it/scripts
@@ -184,21 +163,22 @@ python $S/verify.py src/data/spells.json
 ```
 
 The batch hands strings out in document order, so a spell's Description, Range
-and Duration arrive together. Translate them as one unit: they are one spell.
+and Duration arrive together — translate them as one unit.
 
-**Progress lives in the pack.** A path with an entry is done. There is no
-ledger to keep in step, and committing changes nothing.
+**Progress lives in the pack.** A path with an entry is done. No ledger,
+and committing changes nothing.
 
 ### What verify.py refuses
 
 | Gate | Why it exists |
 |---|---|
-| **untouched** | `src/data/<file>.json` differs from `HEAD`. The English is the source; a translation never edits it. |
-| **paths** | A pack key no longer points at a string in the English data — the translation has silently stopped applying. |
+| **untouched** | `src/data/<file>.json` differs from `HEAD`. A translation never edits the English. |
+| **paths** | A pack key no longer points at a string in the English data. |
 | **scope** | A key is not on the translate list in `fields.json`. Default-deny. |
-| **numbers** | A number, die or modifier went missing. `2d6` stays `2d6`; `+2` cannot become `+3`. |
-| **markup** | An HTML tag or an `href` changed. Descriptions carry links the app parses. |
-| **glossary** | A strict term came out as something other than its one agreed word. |
+| **numbers** | A number, die or modifier went missing. `2d6` stays `2d6`. |
+| **markup** | An HTML tag or an `href` changed. |
+| **glossary** | A strict term came out as something other than its agreed word. |
+| **name domain** | A component calls `tName()` with a domain the pack lacks. |
 
 ---
 
@@ -207,18 +187,14 @@ ledger to keep in step, and committing changes nothing.
 **Numbers, dice and modifiers are copied, never recomputed.** `1d4`, `+2`,
 `DC 15`, `50%`, `01–10`. The en dash `–` in the data is not a hyphen.
 
-**Measurements keep their number and their system.**
-`10 feet` → `10 piedi` ✅ — `10 feet` → `3 metri` ❌. `units.js` already
-converts at render on the manual's own factors (1 ft = 0.3 m, 1 mile = 1.5 km)
-and reads Italian unit words too, so converting by hand either double-converts
-or fights the switch.
+**Measurements keep their number and their system.** `10 feet` → `10 piedi` ✅,
+→ `3 metri` ❌. `units.js` converts at render and reads Italian unit words;
+converting by hand double-converts.
 
-**Markup is copied exactly** — `<p>`, `<i>`, `<b>`, tables, and every
-`<a href="skills#jump">`. Translate the words between the tags. An `href` is a
-machine address; `heldItems.js` parses one out of an item description.
+**Markup is copied exactly** — `<p>`, `<i>`, `<b>`, tables, every
+`<a href="skills#jump">`. An `href` is a machine address.
 
-**Never bump `CURRENT_VERSION`.** Nothing here changes the save format — which
-is the point of keeping names in English.
+**Never bump `CURRENT_VERSION`.** Nothing here changes the save format.
 
 **Add every new term to the glossary in the same change**, then
 `python .claude/skills/translate-it/scripts/glossary.py --md`.
@@ -232,8 +208,7 @@ is the point of keeping names in English.
 3. One entry in `LANGUAGES`, with the language's own name for itself.
 4. Prose packs register in `src/lib/i18n/prose.js`.
 
-Nothing else in the app knows how many languages there are. Every script here
-takes `--lang`.
+Every script here takes `--lang`.
 
 ---
 
@@ -241,11 +216,12 @@ takes `--lang`.
 
 ```bash
 python .claude/skills/translate-it/scripts/verify.py --all    # no FAIL lines
+python .claude/skills/translate-it/scripts/en_drift.py        # English unmoved
 CI=true npx react-scripts test --watchAll=false               # all suites pass
 npm run build                                                 # compiles
 ```
 
-Baseline: **126 suites, 2064 tests, 4 pre-existing build warnings**
+Baseline: **126 suites, 2073 tests, 4 pre-existing build warnings**
 (`loot_inventory`, `ShopInventory` ×2, `spellbook_table`). A new warning is
 yours.
 
@@ -254,35 +230,27 @@ ready and let the user commit.
 
 ---
 
-## The worked example
+## Reference
 
-The conditions feature is the reference and touches all three layers:
+The conditions feature is the worked example and touches all three layers:
+[tables.json](../../../src/data/it/tables.json) (prose),
+[names.json](../../../src/data/it/names.json) (names),
+[conditions_section.jsx](../../../src/components/player_sheet/conditions_section.jsx)
+and its test (component, search and sort fixes, both languages),
+[i18n.test.js](../../../src/lib/i18n/i18n.test.js) (tests that keep a pack honest).
 
-- **Prose in a pack** — [src/data/it/tables.json](../../../src/data/it/tables.json),
-  keyed `Conditions/Blinded`, with the English untouched in `tables.json`.
-- **Names at the display edge** — [names.json](../../../src/data/it/names.json)
-  and [src/lib/i18n/index.js](../../../src/lib/i18n/index.js).
-- **A component and its test** —
-  [conditions_section.jsx](../../../src/components/player_sheet/conditions_section.jsx),
-  which also shows the search and sort fixes, and its test asserting both
-  languages.
-- **Tests that keep a pack honest** —
-  [i18n.test.js](../../../src/lib/i18n/i18n.test.js) fails if a condition has no
-  Italian name, if a name matches no condition, or if a pack key no longer
-  points at anything.
-
----
-
-## Files in this skill
+Why the design is as it is: [references/design-notes.md](references/design-notes.md).
 
 | File | What it is |
 |---|---|
 | `glossary.json` | The vocabulary. The only place a term is edited. |
 | `references/glossary.md` | Generated from it, for reading. |
+| `references/design-notes.md` | Why the rules above exist. Not needed to run the skill. |
 | `fields.json` | Which paths in `src/data` may be translated. Default-deny. |
 | `scripts/next_batch.py` | Hands out the next untranslated strings. |
 | `scripts/check_batch.py` | Grades a finished batch before it is filed. |
 | `scripts/json_tr.py` | Files a batch into the language pack. |
 | `scripts/verify.py` | The gates. |
+| `scripts/en_drift.py` | Proves wrapping did not change the English. |
 | `scripts/progress.py` | What is done, what is left. |
 | `scripts/glossary.py` | Look terms up; regenerate the markdown. |

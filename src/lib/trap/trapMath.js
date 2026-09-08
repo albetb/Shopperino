@@ -68,8 +68,15 @@ export function damageToCR(average) {
   return { rounded, cr: rounded / 7 };
 }
 
-/** A gold figure as the app writes it elsewhere: grouped, no decimals. */
-export function formatGp(value) {
+/**
+ * A gold figure as the app writes it elsewhere: grouped, no decimals.
+ *
+ * The unit is passed in rather than read from the current language, so this
+ * stays a pure function of its arguments — the same numbers out for the same
+ * numbers in, whatever the app is being read in. Callers that show it to a
+ * person hand it the translated word.
+ */
+export function formatGp(value, unit = 'gp') {
   const n = Math.round(Number(value) || 0);
-  return `${n.toLocaleString('en-US')} gp`;
+  return `${n.toLocaleString('en-US')} ${unit}`;
 }

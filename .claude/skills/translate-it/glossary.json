@@ -1408,6 +1408,47 @@
       "kind": "abbrev",
       "en_case": true,
       "note": "Abbreviation of skill points (punti abilità)."
+    },
+    {
+      "en": "HD",
+      "it": "DV",
+      "strict": true,
+      "kind": "abbrev",
+      "en_case": true,
+      "note": "Abbreviation of Hit Dice (Dadi Vita), shown on stat pills."
+    },
+    {
+      "en": "Challenge Rating",
+      "it": "Grado di Sfida",
+      "strict": true,
+      "kind": "rules",
+      "stems": [
+        "Grado di Sfid"
+      ]
+    },
+    {
+      "en": "CR",
+      "it": "GS",
+      "strict": true,
+      "kind": "abbrev",
+      "en_case": true,
+      "note": "Abbreviation of Challenge Rating (Grado di Sfida)."
+    },
+    {
+      "en": "gp",
+      "it": "mo",
+      "strict": true,
+      "kind": "abbrev",
+      "en_case": true,
+      "note": "Gold pieces (monete d'oro). formatGp() in trapMath.js emits this via t('gp')."
+    },
+    {
+      "en": "XP",
+      "it": "PE",
+      "strict": true,
+      "kind": "abbrev",
+      "en_case": true,
+      "note": "Experience points (Punti Esperienza)."
     }
   ]
 }

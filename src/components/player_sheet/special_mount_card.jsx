@@ -35,6 +35,7 @@ import Filigree from '../common/Filigree';
 import Icon from '../common/Icon';
 import '../../style/animal_companion.css';
 import { useUnits } from '../hooks/useUnits';
+import { t } from '../../lib/i18n';
 
 /** Single-value bonus thunks keyed by the mount field they edit. */
 const BONUS_THUNK = {
@@ -103,30 +104,28 @@ export default function SpecialMountCard() {
       icon={collapsed ? 'expand_more' : 'expand_less'}
       ghost size="sm"
       onClick={toggleCollapsed}
-      aria-label="Toggle special mount"
+      aria-label={t('Toggle special mount')}
     />
   );
 
   // —— No mount bonded yet ——
   if (!mount) {
     return (
-      <Card title="Special mount" className="sh-card--head-spread" eyebrow={`lv${grantedAt}`} action={cardAction}>
+      <Card title={t('Special mount')} className="sh-card--head-spread" eyebrow={`lv${grantedAt}`} action={cardAction}>
         {!collapsed && (
           <div className="companion-card sh-stack">
             {available ? (
               <>
                 <div className="sh-faint" style={{ fontSize: 'var(--font-size-sm)' }}>
-                  Calling the mount is a full-round action. It arrives as a
-                  magical beast bonded to you, and its statistics advance with
-                  your paladin level.
+                  {t('Calling the mount is a full-round action. It arrives as a magical beast bonded to you, and its statistics advance with your paladin level.')}
                 </div>
                 <Button variant="primary" icon="pets" onClick={() => dispatch(onCallSpecialMount())}>
-                  Call your mount
+                  {t('Call your mount')}
                 </Button>
               </>
             ) : (
               <div className="sh-faint" style={{ fontSize: 'var(--font-size-sm)' }}>
-                A paladin calls their special mount at level {grantedAt}.
+                {t('A paladin calls their special mount at level')} {grantedAt}.
               </div>
             )}
           </div>
@@ -221,10 +220,10 @@ export default function SpecialMountCard() {
   const renderBonusEditor = (label, min, max, step = 1) => (
     <Card padding>
       <div className="sh-row-h" style={{ gap: 'var(--space-2)', flexWrap: 'wrap' }}>
-        <span className="sh-eyebrow">{label} bonus</span>
+        <span className="sh-eyebrow">{label}</span>
         <Stepper value={tempBonus} min={min} max={max} step={step} onChange={setTempBonus} />
-        <IconButton icon="check" size="sm" onClick={saveBonus} aria-label="Save bonus" style={{ marginLeft: 'auto' }} />
-        <IconButton icon="close" ghost size="sm" onClick={() => setEditBonus(null)} aria-label="Cancel" />
+        <IconButton icon="check" size="sm" onClick={saveBonus} aria-label={t('Save bonus')} style={{ marginLeft: 'auto' }} />
+        <IconButton icon="close" ghost size="sm" onClick={() => setEditBonus(null)} aria-label={t('Cancel')} />
       </div>
     </Card>
   );
@@ -232,7 +231,7 @@ export default function SpecialMountCard() {
   const renderAcEditor = () => (
     <Card padding>
       <div className="sh-stack" style={{ gap: 'var(--space-2)' }}>
-        <Filigree>AC modifiers</Filigree>
+        <Filigree>{t('AC modifiers')}</Filigree>
         {[
           { key: 'general', label: 'General', hint: 'AC + touch + flat' },
           { key: 'touch', label: 'Touch', hint: 'touch only' },
@@ -240,15 +239,15 @@ export default function SpecialMountCard() {
         ].map(({ key, label, hint }) => (
           <div key={key} className="sh-row-h sh-spread" style={{ gap: 'var(--space-2)' }}>
             <span className="sh-eyebrow">
-              {label}{' '}
-              <span className="sh-faint" style={{ textTransform: 'none', letterSpacing: 0 }}>({hint})</span>
+              {t(label)}{' '}
+              <span className="sh-faint" style={{ textTransform: 'none', letterSpacing: 0 }}>({t(hint)})</span>
             </span>
             <Stepper value={tempAc[key]} min={-99} max={99} onChange={(v) => setTempAc((prev) => ({ ...prev, [key]: v }))} />
           </div>
         ))}
         <div className="sh-row-h" style={{ gap: 'var(--space-2)', justifyContent: 'flex-end' }}>
-          <IconButton icon="check" size="sm" onClick={saveBonus} aria-label="Save AC modifiers" />
-          <IconButton icon="close" ghost size="sm" onClick={() => setEditBonus(null)} aria-label="Cancel" />
+          <IconButton icon="check" size="sm" onClick={saveBonus} aria-label={t('Save AC modifiers')} />
+          <IconButton icon="close" ghost size="sm" onClick={() => setEditBonus(null)} aria-label={t('Cancel')} />
         </div>
       </div>
     </Card>
@@ -256,11 +255,11 @@ export default function SpecialMountCard() {
 
   const renderActiveEditor = () => {
     if (editBonus === 'ac') return renderAcEditor();
-    if (editBonus === 'initBonus') return renderBonusEditor('Init', -99, 99);
-    if (editBonus === 'speedBonus') return renderBonusEditor('Speed', -99, 99, 5);
-    if (editBonus === 'fortBonus') return renderBonusEditor('Fort', -99, 99);
-    if (editBonus === 'reflexBonus') return renderBonusEditor('Ref', -99, 99);
-    if (editBonus === 'willBonus') return renderBonusEditor('Will', -99, 99);
+    if (editBonus === 'initBonus') return renderBonusEditor(t('Init bonus'), -99, 99);
+    if (editBonus === 'speedBonus') return renderBonusEditor(t('Speed bonus'), -99, 99, 5);
+    if (editBonus === 'fortBonus') return renderBonusEditor(t('Fort bonus'), -99, 99);
+    if (editBonus === 'reflexBonus') return renderBonusEditor(t('Ref bonus'), -99, 99);
+    if (editBonus === 'willBonus') return renderBonusEditor(t('Will bonus'), -99, 99);
     return null;
   };
 
@@ -269,7 +268,7 @@ export default function SpecialMountCard() {
 
   return (
     <Card
-      title={name || 'Special mount'}
+      title={name || t('Special mount')}
       className="sh-card--head-spread"
       eyebrow={`${totalHD} HD · Int ${intelligence}`}
       action={cardAction}
@@ -286,10 +285,10 @@ export default function SpecialMountCard() {
                   value={tempName}
                   onChange={(e) => setTempName(e.target.value)}
                   autoFocus
-                  aria-label="Mount name"
+                  aria-label={t('Mount name')}
                 />
-                <IconButton icon="check" size="sm" onClick={saveName} aria-label="Save name" />
-                <IconButton icon="close" ghost size="sm" onClick={() => setEditingName(false)} aria-label="Cancel" />
+                <IconButton icon="check" size="sm" onClick={saveName} aria-label={t('Save name')} />
+                <IconButton icon="close" ghost size="sm" onClick={() => setEditingName(false)} aria-label={t('Cancel')} />
               </div>
             ) : (
               <>
@@ -297,13 +296,13 @@ export default function SpecialMountCard() {
                   type="button"
                   className="companion-combat-toggle"
                   onClick={() => dispatch(addCardByLink({ links: ref }))}
-                  title="Show base stat block"
+                  title={t('Show base stat block')}
                 >
-                  <Icon name="menu_book" size={16} /> Stat block
+                  <Icon name="menu_book" size={16} /> {t('Stat block')}
                 </button>
                 <span className="sh-row-h" style={{ gap: 'var(--space-1)' }}>
-                  <IconButton icon="edit" ghost size="sm" onClick={startEditName} aria-label="Rename mount" />
-                  <IconButton icon="delete" ghost size="sm" onClick={() => dispatch(onReleaseSpecialMount())} aria-label="Release mount" />
+                  <IconButton icon="edit" ghost size="sm" onClick={startEditName} aria-label={t('Rename mount')} />
+                  <IconButton icon="delete" ghost size="sm" onClick={() => dispatch(onReleaseSpecialMount())} aria-label={t('Release mount')} />
                 </span>
               </>
             )}
@@ -312,16 +311,16 @@ export default function SpecialMountCard() {
           {/* Summoning allowance: 2 hours per paladin level, per day */}
           <div className="sh-stack" style={{ gap: 'var(--space-2)' }}>
             <div className="sh-row-h sh-spread">
-              <Filigree>Summoning</Filigree>
+              <Filigree>{t('Summoning')}</Filigree>
               <span className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
                 <Pill tone={hoursOverCap ? 'warn' : 'accent'} icon={hoursOverCap ? 'warning' : 'schedule'}>
-                  {hoursLeft} of {hoursMax} h left
+                  {hoursLeft} {t('of')} {hoursMax} {t('h left')}
                 </Pill>
                 <IconButton
                   icon="restart_alt" ghost size="sm"
                   onClick={() => dispatch(onResetSpecialMountHours())}
                   disabled={hoursUsed === 0}
-                  aria-label="Reset summoning hours"
+                  aria-label={t('Reset summoning hours')}
                 />
               </span>
             </div>
@@ -330,13 +329,13 @@ export default function SpecialMountCard() {
                 icon="remove" size="sm"
                 onClick={() => dispatch(onUseSpecialMountHours(-1))}
                 disabled={hoursUsed === 0}
-                aria-label="Give back an hour"
+                aria-label={t('Give back an hour')}
               />
-              <span className="sh-mono sh-num sh-muted">{hoursUsed} h used</span>
+              <span className="sh-mono sh-num sh-muted">{hoursUsed} {t('h used')}</span>
               <IconButton
                 icon="add" size="sm"
                 onClick={() => dispatch(onUseSpecialMountHours(1))}
-                aria-label="Spend an hour"
+                aria-label={t('Spend an hour')}
               />
             </div>
           </div>
@@ -349,9 +348,9 @@ export default function SpecialMountCard() {
                 icon={hpAdvancedOpen ? 'expand_less' : 'expand_more'}
                 ghost size="sm"
                 onClick={() => setHpAdvancedOpen((v) => !v)}
-                aria-label={hpAdvancedOpen ? 'Hide base max life' : 'Show base max life'}
+                aria-label={hpAdvancedOpen ? t('Hide base max life') : t('Show base max life')}
               />
-              <IconButton icon="remove" {...(minusDisabled ? {} : longPressMinus)} disabled={minusDisabled} aria-label="Decrease HP" />
+              <IconButton icon="remove" {...(minusDisabled ? {} : longPressMinus)} disabled={minusDisabled} aria-label={t('Decrease HP')} />
               <div
                 className="companion-hp-readout"
                 style={hpFeedback
@@ -360,24 +359,24 @@ export default function SpecialMountCard() {
               >
                 {hpFeedback?.text ?? `${currentHp} / ${maxHp}`}
               </div>
-              <IconButton icon="add" {...(plusDisabled ? {} : longPressPlus)} disabled={plusDisabled} aria-label="Increase HP" />
+              <IconButton icon="add" {...(plusDisabled ? {} : longPressPlus)} disabled={plusDisabled} aria-label={t('Increase HP')} />
             </div>
             {hpAdvancedOpen && (
               <div className="sh-row-h sh-spread">
-                <span className="sh-eyebrow">Base max life</span>
+                <span className="sh-eyebrow">{t('Base max life')}</span>
                 {editMaxLife ? (
                   <div className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
                     <Stepper value={tempMaxLife} min={0} max={999} onChange={setTempMaxLife} />
-                    <IconButton icon="check" size="sm" onClick={saveMaxLife} aria-label="Save max life" />
-                    <IconButton icon="restart_alt" ghost size="sm" onClick={resetMaxLife} aria-label="Reset to computed" />
-                    <IconButton icon="close" ghost size="sm" onClick={() => setEditMaxLife(false)} aria-label="Cancel" />
+                    <IconButton icon="check" size="sm" onClick={saveMaxLife} aria-label={t('Save max life')} />
+                    <IconButton icon="restart_alt" ghost size="sm" onClick={resetMaxLife} aria-label={t('Reset to computed')} />
+                    <IconButton icon="close" ghost size="sm" onClick={() => setEditMaxLife(false)} aria-label={t('Cancel')} />
                   </div>
                 ) : (
                   <div className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
                     <span className="sh-mono sh-num sh-muted">
                       {maxHp}{mount.maxLife == null ? '' : ' *'}
                     </span>
-                    <IconButton icon="edit" ghost size="sm" onClick={startEditMaxLife} aria-label="Edit max life" />
+                    <IconButton icon="edit" ghost size="sm" onClick={startEditMaxLife} aria-label={t('Edit max life')} />
                   </div>
                 )}
               </div>
@@ -392,12 +391,12 @@ export default function SpecialMountCard() {
             <StatPill
               className="sh-stat-pill--sm"
               accent
-              label="AC"
+              label={t('AC')}
               value={ac}
               sub={
                 <>
-                  <span style={{ display: 'block' }}>touch {acTouch}</span>
-                  <span style={{ display: 'block' }}>flat {acFlat}</span>
+                  <span style={{ display: 'block' }}>{t('touch')} {acTouch}</span>
+                  <span style={{ display: 'block' }}>{t('flat')} {acFlat}</span>
                 </>
               }
               editing={editBonus === 'ac'}
@@ -405,17 +404,17 @@ export default function SpecialMountCard() {
             />
             <StatPill
               className="sh-stat-pill--sm"
-              label="Init"
+              label={t('Init')}
               value={fmtBonus(init)}
-              sub={mount.initBonus ? `bonus ${fmtBonus(mount.initBonus)}` : null}
+              sub={mount.initBonus ? `${t('bonus')} ${fmtBonus(mount.initBonus)}` : null}
               editing={editBonus === 'initBonus'}
               onEdit={() => toggleEditBonus('initBonus')}
             />
             <StatPill
               className="sh-stat-pill--sm"
-              label="Speed"
+              label={t('Speed')}
               value={u.distance(speed)}
-              sub={mount.speedBonus ? `bonus ${fmtBonus(mount.speedBonus)}` : null}
+              sub={mount.speedBonus ? `${t('bonus')} ${fmtBonus(mount.speedBonus)}` : null}
               editing={editBonus === 'speedBonus'}
               onEdit={() => toggleEditBonus('speedBonus')}
             />
@@ -426,25 +425,25 @@ export default function SpecialMountCard() {
           <div className="sh-grid-3">
             <StatPill
               className="sh-stat-pill--sm"
-              label="Fort"
+              label={t('Fort')}
               value={fmtBonus(fort)}
-              sub={mount.fortBonus ? `bonus ${fmtBonus(mount.fortBonus)}` : null}
+              sub={mount.fortBonus ? `${t('bonus')} ${fmtBonus(mount.fortBonus)}` : null}
               editing={editBonus === 'fortBonus'}
               onEdit={() => toggleEditBonus('fortBonus')}
             />
             <StatPill
               className="sh-stat-pill--sm"
-              label="Ref"
+              label={t('Ref')}
               value={fmtBonus(reflex)}
-              sub={mount.reflexBonus ? `bonus ${fmtBonus(mount.reflexBonus)}` : null}
+              sub={mount.reflexBonus ? `${t('bonus')} ${fmtBonus(mount.reflexBonus)}` : null}
               editing={editBonus === 'reflexBonus'}
               onEdit={() => toggleEditBonus('reflexBonus')}
             />
             <StatPill
               className="sh-stat-pill--sm"
-              label="Will"
+              label={t('Will')}
               value={fmtBonus(will)}
-              sub={mount.willBonus ? `bonus ${fmtBonus(mount.willBonus)}` : null}
+              sub={mount.willBonus ? `${t('bonus')} ${fmtBonus(mount.willBonus)}` : null}
               editing={editBonus === 'willBonus'}
               onEdit={() => toggleEditBonus('willBonus')}
             />
@@ -454,7 +453,7 @@ export default function SpecialMountCard() {
           {/* Attacks */}
           {attacks.length > 0 && (
             <div className="sh-stack" style={{ gap: 'var(--space-2)' }}>
-              <Filigree>Attacks</Filigree>
+              <Filigree>{t('Attacks')}</Filigree>
               {attacks.map((line) => {
                 const overridden = !!mount.overrides?.[line.index];
                 const labelName = `${line.count > 1 ? `${line.count} ` : ''}${line.name}`;
@@ -463,23 +462,23 @@ export default function SpecialMountCard() {
                     <Card key={line.index} padding>
                       <div className="sh-stack" style={{ gap: 'var(--space-2)' }}>
                         <div className="sh-row-h sh-spread">
-                          <span className="sh-eyebrow">{labelName} — attack</span>
+                          <span className="sh-eyebrow">{labelName} — {t('attack')}</span>
                           <Stepper value={tempAtk.bonus} min={-50} max={50} onChange={(v) => setTempAtk((p) => ({ ...p, bonus: v }))} />
                         </div>
                         <div className="sh-row-h sh-spread">
-                          <span className="sh-eyebrow">Damage</span>
+                          <span className="sh-eyebrow">{t('Damage')}</span>
                           <input
                             type="text"
                             className="companion-name-input"
                             value={tempAtk.damage}
                             onChange={(e) => setTempAtk((p) => ({ ...p, damage: e.target.value }))}
-                            aria-label="Attack damage"
+                            aria-label={t('Attack damage')}
                           />
                         </div>
                         <div className="sh-row-h" style={{ gap: 'var(--space-2)', justifyContent: 'flex-end' }}>
-                          {overridden && <IconButton icon="restart_alt" ghost size="sm" onClick={() => resetAtk(line.index)} aria-label="Reset attack" />}
-                          <IconButton icon="check" size="sm" onClick={saveAtk} aria-label="Save attack" />
-                          <IconButton icon="close" ghost size="sm" onClick={() => setEditAtk(null)} aria-label="Cancel" />
+                          {overridden && <IconButton icon="restart_alt" ghost size="sm" onClick={() => resetAtk(line.index)} aria-label={t('Reset attack')} />}
+                          <IconButton icon="check" size="sm" onClick={saveAtk} aria-label={t('Save attack')} />
+                          <IconButton icon="close" ghost size="sm" onClick={() => setEditAtk(null)} aria-label={t('Cancel')} />
                         </div>
                       </div>
                     </Card>
@@ -491,7 +490,7 @@ export default function SpecialMountCard() {
                     <span className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
                       <Pill tone={overridden ? 'warn' : 'default'}>{fmtBonus(line.bonus ?? 0)}</Pill>
                       {line.damage && <Pill tone={overridden ? 'warn' : 'default'}>{line.damage}</Pill>}
-                      <IconButton icon="edit" ghost size="sm" onClick={() => startEditAtk(line)} aria-label={`Edit ${line.name} attack`} />
+                      <IconButton icon="edit" ghost size="sm" onClick={() => startEditAtk(line)} aria-label={`${t('Edit')} ${line.name} ${t('attack')}`} />
                     </span>
                   </div>
                 );
@@ -501,9 +500,9 @@ export default function SpecialMountCard() {
 
           {/* Advancement summary + special abilities */}
           <div className="sh-row-h" style={{ gap: 'var(--space-2)', flexWrap: 'wrap', alignItems: 'center' }}>
-            <Pill tone="default" icon="add_circle">+{bonusHD} HD</Pill>
+            <Pill tone="default" icon="add_circle">+{bonusHD} {t('HD')}</Pill>
             <Pill tone="default" icon="psychology">Int {intelligence}</Pill>
-            {spellResistance > 0 && <Pill tone="accent" icon="shield">SR {spellResistance}</Pill>}
+            {spellResistance > 0 && <Pill tone="accent" icon="shield">{t('SR')} {spellResistance}</Pill>}
             {specials.map((s) => <Pill key={s} tone="accent">{s}</Pill>)}
           </div>
 
@@ -516,7 +515,7 @@ export default function SpecialMountCard() {
                 onClick={() => setCombatOpen((v) => !v)}
               >
                 <Icon name={combatOpen ? 'expand_less' : 'expand_more'} size={16} />
-                Combat
+                {t('Combat')}
               </button>
               {combatOpen && <div className="companion-combat-text">{parse(u.prose(combatHtml))}</div>}
             </div>

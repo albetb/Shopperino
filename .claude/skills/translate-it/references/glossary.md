@@ -110,6 +110,7 @@ as it is a game term (*a large room*, *reach the door*, *he will fall*).
 | base attack bonus | **bonus di attacco base** | **STRICT** |  |
 | Benefit | **Beneficio** | **STRICT** | The bold header on every feat description. Always this word, so the 109 feats read alike. |
 | caster level | **livello dell'incantatore** | soft |  |
+| Challenge Rating | **Grado di Sfida** | **STRICT** |  |
 | character | **personaggio** | **STRICT** |  |
 | check | **prova** | soft | A skill or ability check. 'Jump checks' -> 'prove di Saltare'. |
 | class feature | **privilegio di classe** | soft |  |
@@ -155,11 +156,15 @@ as it is a game term (*a large room*, *reach the door*, *he will fall*).
 | English | Italiano | | Note |
 |---|---|---|---|
 | AC | **CA** | **STRICT** |  |
+| CR | **GS** | **STRICT** | Abbreviation of Challenge Rating (Grado di Sfida). |
 | DC | **CD** | **STRICT** |  |
 | DR | **RD** | **STRICT** | Abbreviation of damage reduction (riduzione del danno). |
+| gp | **mo** | **STRICT** | Gold pieces (monete d'oro). formatGp() in trapMath.js emits this via t('gp'). |
+| HD | **DV** | **STRICT** | Abbreviation of Hit Dice (Dadi Vita), shown on stat pills. |
 | hp | **pf** | **STRICT** | Abbreviation of hit points, shown on stat pills and HP bars. |
 | SP | **PA** | **STRICT** | Abbreviation of skill points (punti abilità). |
 | SR | **RI** | **STRICT** | Abbreviation of spell resistance (resistenza agli incantesimi). |
+| XP | **PE** | **STRICT** | Experience points (Punti Esperienza). |
 
 ## Actions
 

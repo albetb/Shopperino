@@ -7,12 +7,19 @@
     "Every term here must agree with .claude/skills/translate-it/glossary.json."
   ],
   "abilities": {
-    "Strength": "Forza",
-    "Dexterity": "Destrezza",
+    "Charisma": "Carisma",
     "Constitution": "Costituzione",
+    "Dexterity": "Destrezza",
     "Intelligence": "Intelligenza",
-    "Wisdom": "Saggezza",
-    "Charisma": "Carisma"
+    "Strength": "Forza",
+    "Wisdom": "Saggezza"
+  },
+  "alignments": {
+    "Chaotic": "Caotico",
+    "Evil": "Malvagio",
+    "Good": "Buono",
+    "Lawful": "Legale",
+    "Neutral": "Neutrale"
   },
   "classes": {
     "Barbarian": "Barbaro",
@@ -26,15 +33,6 @@
     "Rogue": "Ladro",
     "Sorcerer": "Stregone",
     "Wizard": "Mago"
-  },
-  "races": {
-    "Dwarf": "Nano",
-    "Elf": "Elfo",
-    "Gnome": "Gnomo",
-    "Half-Elf": "Mezzelfo",
-    "Half-Orc": "Mezzorco",
-    "Halfling": "Halfling",
-    "Human": "Umano"
   },
   "conditions": {
     "Ability Damaged": "Caratteristica Danneggiata",
@@ -76,12 +74,17 @@
     "Turned": "Scacciato",
     "Unconscious": "Privo di Sensi"
   },
-  "alignments": {
-    "Lawful": "Legale",
-    "Neutral": "Neutrale",
-    "Chaotic": "Caotico",
-    "Good": "Buono",
-    "Evil": "Malvagio"
+  "creatures": {
+    "Bat": "Pipistrello",
+    "Cat": "Gatto",
+    "Hawk": "Falco",
+    "Lizard": "Lucertola",
+    "Owl": "Gufo",
+    "Rat": "Ratto",
+    "Raven": "Corvo",
+    "Snake": "Serpente",
+    "Toad": "Rospo",
+    "Weasel": "Donnola"
   },
   "domains": {
     "Air": "Aria",
@@ -106,5 +109,26 @@
     "Trickery": "Inganno",
     "War": "Guerra",
     "Water": "Acqua"
+  },
+  "races": {
+    "Dwarf": "Nano",
+    "Elf": "Elfo",
+    "Gnome": "Gnomo",
+    "Half-Elf": "Mezzelfo",
+    "Half-Orc": "Mezzorco",
+    "Halfling": "Halfling",
+    "Human": "Umano"
+  },
+  "saves": {
+    "Fortitude": "Tempra",
+    "Reflex": "Riflessi",
+    "Will": "Volontà"
+  },
+  "trapBypass": {
+    "hidden lock": "serratura nascosta",
+    "hidden switch": "interruttore nascosto",
+    "location": "posizione",
+    "lock": "serratura",
+    "magic device": "oggetto magico"
   }
 }

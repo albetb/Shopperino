@@ -3,6 +3,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
 import Player from '../../../../lib/player';
 import MenuCardAbilityScores from './menu_card_ability_scores';
+import { setLanguage } from '../../../../lib/i18n';
 
 /* The clearing rule is the whole feature and it is deliberately loose: the pill
    goes once the player has opened this card and moved *something*, whatever
@@ -98,6 +99,24 @@ describe('what clears it', () => {
     fireEvent.click(screen.getByRole('button', { name: /edit ability scores/i }));
     fireEvent.click(screen.getByRole('button', { name: /increase cha bonus/i }));
     fireEvent.click(screen.getByRole('button', { name: /^save$/i }));
+    expect(onAcknowledgeAbilityIncreases).toHaveBeenCalledTimes(1);
+  });
+});
+
+/* The model stays untouched by the language — Player never sees "caratteristica"
+   — only what the reader sees changes. See conditions_section.test.js for the
+   same contract on a different card. */
+describe('the same card in Italian', () => {
+  afterEach(() => setLanguage('en'));
+
+  test('the reminder pill and the editor controls read in Italian', () => {
+    setLanguage('it');
+    renderCard(4);
+    expect(screen.getByText('+1 caratteristica')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: /modifica i punteggi di caratteristica/i }));
+    fireEvent.click(screen.getByRole('button', { name: /aumenta str base/i }));
+    fireEvent.click(screen.getByRole('button', { name: /^salva$/i }));
     expect(onAcknowledgeAbilityIncreases).toHaveBeenCalledTimes(1);
   });
 });

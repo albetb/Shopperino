@@ -1,8 +1,10 @@
 import {
-  translate, translateName, t, tName, setLanguage, getLanguage,
+  translate, translateName, t, tName, tx, setLanguage, getLanguage,
   normalizeLang, hasPack, hasName, knownNames, knownStrings,
   LANGUAGES, DEFAULT_LANG,
 } from './index';
+import React from 'react';
+import { render } from '@testing-library/react';
 import { applyProse, prosePack } from './prose';
 import { loadFile } from '../loadFile';
 import names from '../../data/it/names.json';
@@ -146,5 +148,67 @@ describe('prose packs', () => {
     expect(loadFile('tables').Conditions.Blinded).toMatch(/^The character cannot see/);
     setLanguage('it');
     expect(loadFile('tables').Conditions.Blinded).toMatch(/^Il personaggio non pu/);
+  });
+});
+
+/* A sentence with holes, rather than fragments glued around the values. The
+   point of the holes is that a translation may put them in a different order,
+   so that is the case worth pinning down. */
+describe('tx — a whole sentence with holes', () => {
+  afterEach(() => setLanguage('en'));
+
+  test('fills the holes in order', () => {
+    expect(tx('{0} of {1}', 3, 7)).toBe('3 of 7');
+  });
+
+  test('a translation may reorder the holes', () => {
+    setLanguage('it');
+    const en = 'The book prints this as {0}. Its own tables add up to {1} — '
+      + 'one of the ten samples where the two disagree.';
+    const out = tx(en, 'GS 5', 3);
+    expect(out).toContain('GS 5');
+    expect(out).toContain('3');
+    expect(out).not.toContain('{0}');
+    expect(out).not.toContain('{1}');
+  });
+
+  test('an untranslated sentence still fills its holes', () => {
+    expect(tx('nothing here knows {0}', 'this')).toBe('nothing here knows this');
+  });
+
+  test('a hole with no value left for it renders empty, not "undefined"', () => {
+    expect(tx('{0} and {1}', 'one')).toBe('one and ');
+  });
+
+  test('returns nodes, not a string, once a value is an element', () => {
+    const out = tx('as {0} today', React.createElement('b', null, 'CR 5'));
+    expect(Array.isArray(out)).toBe(true);
+    expect(render(React.createElement('p', null, out)).container.textContent)
+      .toBe('as CR 5 today');
+  });
+});
+
+/* The data does not always capitalise a name the way the pack keys it: a
+   trap's casterClass is 'cleric' against a pack that holds 'Cleric'. */
+describe('tName and the data capitalisation', () => {
+  afterEach(() => setLanguage('en'));
+
+  test('matches a name the data spells in lower case', () => {
+    setLanguage('it');
+    expect(tName('classes', 'cleric')).toBe('chierico');
+    expect(tName('classes', 'Cleric')).toBe('Chierico');
+  });
+
+  test('an unknown name is still handed back unchanged', () => {
+    setLanguage('it');
+    expect(tName('classes', 'Warlock')).toBe('Warlock');
+  });
+
+  test('every tName domain a component asks for exists in the pack', () => {
+    // The fallback that makes a missing *name* harmless also hides a misspelt
+    // *domain*, which silently translates nothing at all.
+    const domains = ['alignments', 'classes', 'conditions', 'creatures',
+      'saves', 'trapBypass'];
+    domains.forEach((d) => expect(knownNames(d, 'it').length).toBeGreaterThan(0));
   });
 });
