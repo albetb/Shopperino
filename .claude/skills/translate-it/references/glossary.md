@@ -112,7 +112,7 @@ as it is a game term (*a large room*, *reach the door*, *he will fall*).
 | caster level | **livello dell'incantatore** | soft |  |
 | Challenge Rating | **Grado di Sfida** | **STRICT** |  |
 | character | **personaggio** | **STRICT** |  |
-| check | **prova** | soft | A skill or ability check. 'Jump checks' -> 'prove di Saltare'. |
+| check | **prova** | soft | A skill or ability check. 'Jump checks' -> 'prove di Saltare'. Not 'armor check penalty', which is 'penalità di armatura'. |
 | class feature | **privilegio di classe** | soft |  |
 | concealment | **occultamento** | soft |  |
 | coup de grace | **colpo di grazia** | soft |  |
@@ -122,6 +122,7 @@ as it is a game term (*a large room*, *reach the door*, *he will fall*).
 | deity | **divinità** | soft |  |
 | Difficulty Class | **Classe Difficoltà** | **STRICT** |  |
 | domain | **dominio** | soft |  |
+| Elemental Shape | **Forma Elementale** | **STRICT** | The elemental variant of the druid's Wild Shape (Complete Divine). |
 | familiar | **famiglio** | **STRICT** |  |
 | feat | **talento** | **STRICT** |  |
 | Flurry of Blows | **Raffica di Colpi** | **STRICT** | The monk class feature. |
@@ -150,6 +151,7 @@ as it is a game term (*a large room*, *reach the door*, *he will fall*).
 | Two-Weapon Fighting | **Combattere con Due Armi** | **STRICT** | The feat name, used both as prose and as a feat name in names.json when phase 3 reaches it. |
 | undead | **non morti** | **STRICT** |  |
 | Weapon Proficiency | **Competenza nelle Armi** | soft |  |
+| Wild Shape | **Forma Selvatica** | **STRICT** | The druid class feature. |
 
 ## Abbreviations
 
@@ -157,6 +159,7 @@ as it is a game term (*a large room*, *reach the door*, *he will fall*).
 |---|---|---|---|
 | AC | **CA** | **STRICT** |  |
 | Cha | **Car** | **STRICT** | Charisma ability score abbreviation. |
+| CL | **LI** | **STRICT** | Abbreviation of caster level (livello dell'incantatore), in item description aura blocks. |
 | Con | **Cos** | **STRICT** | Constitution ability score abbreviation. |
 | CR | **GS** | **STRICT** | Abbreviation of Challenge Rating (Grado di Sfida). |
 | DC | **CD** | **STRICT** |  |
@@ -203,19 +206,90 @@ as it is a game term (*a large room*, *reach the door*, *he will fall*).
 
 | English | Italiano | | Note |
 |---|---|---|---|
+| Acid resistance | **resistenza all'acido** | **STRICT** | Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. |
+| Acid resistance, greater | **resistenza all'acido, superiore** | **STRICT** | Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. |
+| Acid resistance, improved | **resistenza all'acido, migliorata** | **STRICT** | Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. |
+| anarchic | **anarchica** | **STRICT** | Magic weapon special ability (chaotic-aligned). |
+| Animated | **animato** | **STRICT** | Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. |
 | armor | **armatura** | **STRICT** |  |
+| Arrow catching | **attirare frecce** | **STRICT** | Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. |
+| Arrow deflection | **deviazione delle frecce** | **STRICT** | Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. |
+| axiomatic | **assiomatica** | **STRICT** | Magic weapon special ability (lawful-aligned). |
+| bane | **anatema** | **STRICT** | Magic weapon special ability (tables.json Magic Melee/Ranged Weapon). 'Un'arma anatema'. Official Italian D&D 3.5 term. Reuse verbatim when items.json reaches this property. |
+| Bashing | **sfondamento** | **STRICT** | Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. |
+| Blinding | **accecante** | **STRICT** | Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. |
+| brilliant energy | **energia luminosa** | **STRICT** | Magic weapon special ability. Official Italian D&D 3.5 term (per the game manual). |
+| Cold resistance | **resistenza al freddo** | **STRICT** | Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. |
+| Cold resistance, greater | **resistenza al freddo, superiore** | **STRICT** | Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. |
+| Cold resistance, improved | **resistenza al freddo, migliorata** | **STRICT** | Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. |
+| dancing | **danzante** | **STRICT** | Magic weapon special ability. |
+| defending | **difensiva** | **STRICT** | Magic weapon special ability. 'Un'arma difensiva'. |
+| disruption | **distruzione** | **STRICT** | Magic weapon special ability, 'weapon of disruption' -> 'arma della distruzione'. |
+| distance | **distanza** | **STRICT** | Magic ranged weapon special ability, 'weapon of distance' -> 'arma della distanza'. en_case scopes this to the capitalised game term; 'distance' as ordinary prose is common. |
+| Electricity resistance | **resistenza all'elettricità** | **STRICT** | Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. |
+| Electricity resistance, greater | **resistenza all'elettricità, superiore** | **STRICT** | Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. |
+| Electricity resistance, improved | **resistenza all'elettricità, migliorata** | **STRICT** | Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. |
+| Etherealness | **forma eterea** | **STRICT** | Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. en_case scopes this to the capitalised property name so it doesn't fire on the lowercase 'etherealness' spell name that appears as a prerequisite in unrelated entries. |
 | Exotic Weapons | **Armi Esotiche** | **STRICT** |  |
+| Fire resistance | **resistenza al fuoco** | **STRICT** | Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. |
+| Fire resistance, greater | **resistenza al fuoco, superiore** | **STRICT** | Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. |
+| Fire resistance, improved | **resistenza al fuoco, migliorata** | **STRICT** | Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. |
+| flaming | **infuocata** | **STRICT** | Magic weapon special ability. Official Italian D&D 3.5 term (per the game manual). |
+| flaming burst | **esplosione di fiamme** | **STRICT** | Magic weapon special ability. Official Italian D&D 3.5 term (per the game manual). |
+| Fortification, heavy | **fortificazione, pesante** | **STRICT** | Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. |
+| Fortification, light | **fortificazione, leggera** | **STRICT** | Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. |
+| Fortification, moderate | **fortificazione, moderata** | **STRICT** | Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. |
+| frost | **gelida** | **STRICT** | Magic weapon special ability. Official Italian D&D 3.5 term (per the game manual). |
+| ghost touch | **tocco fantasma** | **STRICT** | Magic weapon special ability. Official Italian D&D 3.5 term (per the game manual). |
+| Glamered | **mascheramento** | **STRICT** | Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. |
+| holy | **sacra** | **STRICT** | Magic weapon special ability (good-aligned). 'Holy' is common English prose too, but en_case scopes this to the capitalised game term. |
+| icy burst | **esplosione di ghiaccio** | **STRICT** | Magic weapon special ability. Official Italian D&D 3.5 term (per the game manual). |
+| Invulnerability | **invulnerabilità** | **STRICT** | Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. |
+| keen | **affilata** | **STRICT** | Magic weapon special ability. Official Italian D&D 3.5 term (per the game manual). |
+| ki focus | **focalizza ki** | **STRICT** | Magic weapon special ability. Official Italian D&D 3.5 term (per the game manual). |
 | Martial Weapons | **Armi da Guerra** | **STRICT** |  |
 | masterwork | **capolavoro** | **STRICT** |  |
+| merciful | **pietosa** | **STRICT** | Magic weapon special ability. Official Italian D&D 3.5 term (per the game manual). |
+| mighty cleaving | **incalzare rafforzato** | **STRICT** | Magic weapon special ability. Official Italian D&D 3.5 term (per the game manual). |
 | potion | **pozione** | **STRICT** |  |
+| Reflecting | **riflettente** | **STRICT** | Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. |
+| Returning | **ritornante** | **STRICT** | Magic ranged weapon special ability. Official Italian D&D 3.5 term. |
 | ring | **anello** | **STRICT** |  |
 | rod | **verga** | **STRICT** |  |
 | scroll | **pergamena** | **STRICT** |  |
+| Seeking | **ricercante** | **STRICT** | Magic ranged weapon special ability. Official Italian D&D 3.5 term. |
+| Shadow | **ombra** | **STRICT** | Magic armor special ability. en_case scopes this to the capitalised game term; a creature of the same name exists (monsters.json, later phase) and will need its own disambiguation when that phase is reached. |
+| Shadow, greater | **ombra, superiore** | **STRICT** | Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. |
+| Shadow, improved | **ombra, migliorata** | **STRICT** | Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. |
 | shield | **scudo** | **STRICT** |  |
+| shock | **folgorante** | **STRICT** | Magic weapon special ability (not the 'shocking burst' variant, which is its own term). |
+| shocking burst | **esplosione folgorante** | **STRICT** | Magic weapon special ability. Official Italian D&D 3.5 term (per the game manual). |
+| Silent moves | **movimento silenzioso** | **STRICT** | Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. |
+| Silent moves, greater | **movimento silenzioso, superiore** | **STRICT** | Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. |
+| Silent moves, improved | **movimento silenzioso, migliorato** | **STRICT** | Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. |
 | Simple Weapons | **Armi Semplici** | **STRICT** |  |
+| Slick | **scivolosa** | **STRICT** | Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. |
+| Slick, greater | **scivolosa, superiore** | **STRICT** | Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. |
+| Slick, improved | **scivolosa, migliorata** | **STRICT** | Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. |
+| Sonic resistance | **resistenza al suono** | **STRICT** | Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. |
+| Sonic resistance, greater | **resistenza al suono, superiore** | **STRICT** | Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. |
+| Sonic resistance, improved | **resistenza al suono, migliorata** | **STRICT** | Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. |
+| Spell resistance (13) | **resistenza agli incantesimi (13)** | **STRICT** | Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. |
+| Spell resistance (15) | **resistenza agli incantesimi (15)** | **STRICT** | Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. |
+| Spell resistance (17) | **resistenza agli incantesimi (17)** | **STRICT** | Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. |
+| Spell resistance (19) | **resistenza agli incantesimi (19)** | **STRICT** | Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. |
+| spell storing | **accumula incantesimi** | **STRICT** | Magic weapon special ability. Official Italian D&D 3.5 term (per the game manual). |
 | staff | **bastone** | **STRICT** |  |
+| throwing | **lancio** | **STRICT** | Magic weapon special ability. Official Italian D&D 3.5 term (per the game manual). |
+| thundering | **tonante** | **STRICT** | Magic weapon special ability. |
+| Undead controlling | **controllo dei morti** | **STRICT** | Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. |
+| unholy | **sacrilega** | **STRICT** | Magic weapon special ability. Official Italian D&D 3.5 term (per the game manual). |
+| vicious | **immorale** | **STRICT** | Magic weapon special ability. Official Italian D&D 3.5 term (per the game manual). |
+| vorpal | **vorpal** | **STRICT** | Magic weapon special ability. Kept as-is, as the Italian manuals do. |
 | wand | **bacchetta** | **STRICT** |  |
 | weapon | **arma** | **STRICT** |  |
+| Wild | **selvatico** | soft | Magic armor/shield special ability ('armatura selvatica' / 'scudo selvatico' — the stem covers both genders). Kept SOFT, not strict: 'Wild' is far too common an English word elsewhere (creature descriptions, flavor text) to enforce globally without constant false failures. |
+| wounding | **ferimento** | **STRICT** | Magic weapon special ability. Official Italian D&D 3.5 term (per the game manual). |
 
 ## Damage types
 
@@ -239,7 +313,7 @@ as it is a game term (*a large room*, *reach the door*, *he will fall*).
 | Bluff | **Raggirare** | **STRICT** |  |
 | Climb | **Scalare** | soft | Soft: the English word is ordinary prose as often as it is the game term. |
 | Concentration | **Concentrazione** | **STRICT** |  |
-| Craft | **Artigianato** | soft | Soft: the English word is ordinary prose as often as it is the game term. |
+| Craft | **Artigianato** | soft | Soft: the English word is ordinary prose as often as it is the game term, and 'Craft Magic Arms and Armor' etc. are item-creation feats whose Italian names do not contain Artigianato. |
 | Decipher Script | **Decifrare Scritture** | **STRICT** |  |
 | Diplomacy | **Diplomazia** | **STRICT** |  |
 | Disable Device | **Disattivare Congegni** | **STRICT** |  |
@@ -280,6 +354,24 @@ as it is a game term (*a large room*, *reach the door*, *he will fall*).
 | Good | **Buono** | **STRICT** | The moral-axis alignment word, not the general English adjective — en_case keeps it from firing on ordinary prose. |
 | Lawful | **Legale** | **STRICT** |  |
 | Neutral | **Neutrale** | **STRICT** | Either alignment axis. 'Neutral Good' -> 'Neutrale Buono'. |
+
+## creature-type
+
+| English | Italiano | | Note |
+|---|---|---|---|
+| Aberration | **Aberrazione** | **STRICT** |  |
+| Construct | **Costrutto** | **STRICT** |  |
+| Dragon | **Drago** | **STRICT** |  |
+| Elemental | **Elementale** | **STRICT** | The creature type, not the Elemental Shape class feature. |
+| Fey | **Fata** | **STRICT** |  |
+| Giant | **Gigante** | **STRICT** |  |
+| Humanoid | **Umanoide** | **STRICT** |  |
+| Magical Beast | **Bestia Magica** | **STRICT** |  |
+| Monstrous Humanoid | **Umanoide Mostruoso** | **STRICT** |  |
+| Ooze | **Melma** | **STRICT** |  |
+| Outsider | **Esterno** | **STRICT** |  |
+| Plant | **Pianta** | **STRICT** |  |
+| Vermin | **Verme** | **STRICT** |  |
 
 ## ui
 

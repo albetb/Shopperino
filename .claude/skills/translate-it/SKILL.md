@@ -1,6 +1,6 @@
 ---
 name: translate-it
-description: Translate the Shopperino app into another language — Italian today, any language the same way. Use whenever the user asks to translate part of the app, continue the translation, do the next batch, translate a component or a data file, add a language, or asks what is left to translate. Handles the glossary, the English source that must never be edited, and the verification that the game rules survived. Pass `continuous` to keep going without stopping after each session's worth.
+description: Translate the Shopperino app into another language — Italian today, any language the same way. Use whenever the user asks to translate part of the app, continue the translation, do the next batch, translate a component or a data file, add a language, or asks what is left to translate. Handles the glossary, the English source that must never be edited, and the verification that the game rules survived. Pass `continuous` to keep going without stopping after each session's worth, and `ui` or `data` to claim one lane so two agents can run at once.
 ---
 
 # Translating Shopperino
@@ -59,13 +59,57 @@ The user cannot have you commit; uncommitted work piling up is expected and
 breaks nothing, because the gates compare `src/data` against `HEAD` and you
 never write there.
 
+### Two agents at once
+
+The UI and the data divide cleanly, so they can run in parallel. Say which lane
+you are in — **`/translate-it ui`** or **`/translate-it data`** — and touch only
+your own files.
+
+| Lane | Writes | Never touches |
+|---|---|---|
+| `ui` | `src/components/**`, display code in `src/lib/**`, `src/data/<lang>/ui.json`, `names.json`, tests | any other `src/data/<lang>/*.json` |
+| `data` | `src/data/<lang>/<file>.json` for the file it is on | components, `ui.json`, `names.json` |
+
+**Neither lane writes `glossary.json`.** It is the one file both need, so both
+stay out: append what you coin to **`glossary.<lane>.json`** beside it, in the
+same shape (`{"terms": [ … ]}`). Every script reads the union, so the other lane
+sees your terms immediately.
+
+```bash
+S=.claude/skills/translate-it/scripts
+python $S/glossary.py --conflicts   # did the lanes render one term two ways?
+python $S/glossary.py --merge       # fold the inboxes in, empty them
+```
+
+Run `--merge` when both lanes are idle, then `--md`. A conflict is reported,
+never resolved silently — the two agents disagreeing about a term is exactly
+what the glossary exists to prevent.
+
+### Where an Italian term comes from
+
+Every term carries `source`:
+
+- **`manual`** — checked against the Italian manual, or given by the user.
+  **Never change one.**
+- **`coined`** — your own rendering. Plausible, unverified. It may be corrected
+  when the book says otherwise.
+
+**Mark what you coin as `coined`.** A guess written with the same confidence as
+a verified term is how 17 of 27 magic weapon properties were wrong for two
+sessions — *bane* was rendered *nemesi*, where the book says **Anatema** — and
+the only reason it surfaced is that the user happened to know one of them.
+
+`python $S/glossary.py --coined [kind]` lists everything nobody has checked, so
+the user can go through them with the book. If a term matters and you cannot
+verify it, say so in your report rather than burying it in the glossary.
+
 ### The three rules that are not yours to bend
 
 - **Never edit a file in `src/data/` that is not inside a language folder.**
   If a gate complains, the fix goes in the pack.
 - **Never edit `fields.json` to quieten a gate.**
-- **You may ADD a term to `glossary.json`. You may never change one that is
-  already there.**
+- **You may ADD a term. You may never change one whose `source` is `manual`.**
+  A `coined` term may be corrected against the book — say so in your report.
 
 If the same gate fails twice on the same string, stop and ask.
 
@@ -299,7 +343,8 @@ Why the design is as it is: [references/design-notes.md](references/design-notes
 
 | File | What it is |
 |---|---|
-| `glossary.json` | The vocabulary. The only place a term is edited. |
+| `glossary.json` | The vocabulary. Merged, not written directly while two lanes run. |
+| `glossary.<lane>.json` | A lane's inbox for terms it coined. |
 | `references/glossary.md` | Generated from it, for reading. |
 | `references/design-notes.md` | Why the rules above exist. Not needed to run the skill. |
 | `fields.json` | Which paths in `src/data` may be translated. Default-deny. |

@@ -44,49 +44,57 @@
       "en": "Strength",
       "it": "Forza",
       "strict": true,
-      "kind": "ability"
+      "kind": "ability",
+      "source": "coined"
     },
     {
       "en": "Dexterity",
       "it": "Destrezza",
       "strict": true,
-      "kind": "ability"
+      "kind": "ability",
+      "source": "coined"
     },
     {
       "en": "Constitution",
       "it": "Costituzione",
       "strict": true,
-      "kind": "ability"
+      "kind": "ability",
+      "source": "coined"
     },
     {
       "en": "Intelligence",
       "it": "Intelligenza",
       "strict": true,
-      "kind": "ability"
+      "kind": "ability",
+      "source": "coined"
     },
     {
       "en": "Wisdom",
       "it": "Saggezza",
       "strict": true,
-      "kind": "ability"
+      "kind": "ability",
+      "source": "coined"
     },
     {
       "en": "Charisma",
       "it": "Carisma",
       "strict": true,
-      "kind": "ability"
+      "kind": "ability",
+      "source": "coined"
     },
     {
       "en": "Barbarian",
       "it": "Barbaro",
       "strict": true,
-      "kind": "class"
+      "kind": "class",
+      "source": "coined"
     },
     {
       "en": "Bard",
       "it": "Bardo",
       "strict": true,
-      "kind": "class"
+      "kind": "class",
+      "source": "coined"
     },
     {
       "en": "Cleric",
@@ -96,19 +104,22 @@
       "stems": [
         "chierico",
         "chierici"
-      ]
+      ],
+      "source": "coined"
     },
     {
       "en": "Druid",
       "it": "Druido",
       "strict": true,
-      "kind": "class"
+      "kind": "class",
+      "source": "coined"
     },
     {
       "en": "Fighter",
       "it": "Guerriero",
       "strict": true,
-      "kind": "class"
+      "kind": "class",
+      "source": "coined"
     },
     {
       "en": "Monk",
@@ -118,26 +129,30 @@
       "stems": [
         "monaco",
         "monaci"
-      ]
+      ],
+      "source": "coined"
     },
     {
       "en": "Paladin",
       "it": "Paladino",
       "strict": true,
-      "kind": "class"
+      "kind": "class",
+      "source": "coined"
     },
     {
       "en": "Ranger",
       "it": "Ranger",
       "strict": true,
       "kind": "class",
-      "note": "Left as-is: the Italian manuals keep Ranger."
+      "note": "Left as-is: the Italian manuals keep Ranger.",
+      "source": "coined"
     },
     {
       "en": "Rogue",
       "it": "Ladro",
       "strict": true,
-      "kind": "class"
+      "kind": "class",
+      "source": "coined"
     },
     {
       "en": "Sorcerer",
@@ -149,7 +164,8 @@
       "never": [
         "incantatore",
         "sciamano"
-      ]
+      ],
+      "source": "coined"
     },
     {
       "en": "Wizard",
@@ -162,56 +178,65 @@
       "stems": [
         "mago",
         "maghi"
-      ]
+      ],
+      "source": "coined"
     },
     {
       "en": "Human",
       "it": "Umano",
       "strict": true,
-      "kind": "race"
+      "kind": "race",
+      "source": "coined"
     },
     {
       "en": "Dwarf",
       "it": "Nano",
       "strict": true,
-      "kind": "race"
+      "kind": "race",
+      "source": "coined"
     },
     {
       "en": "Elf",
       "it": "Elfo",
       "strict": true,
-      "kind": "race"
+      "kind": "race",
+      "source": "coined"
     },
     {
       "en": "Gnome",
       "it": "Gnomo",
       "strict": true,
-      "kind": "race"
+      "kind": "race",
+      "source": "coined"
     },
     {
       "en": "Half-Elf",
       "it": "Mezzelfo",
       "strict": true,
-      "kind": "race"
+      "kind": "race",
+      "source": "coined"
     },
     {
       "en": "Half-Orc",
       "it": "Mezzorco",
       "strict": true,
-      "kind": "race"
+      "kind": "race",
+      "source": "coined"
     },
     {
       "en": "Halfling",
       "it": "Halfling",
       "strict": true,
       "kind": "race",
-      "note": "Kept as-is, as the Italian manuals do."
+      "note": "Kept as-is, as the Italian manuals do.",
+      "source": "coined"
     },
     {
       "en": "Abjuration",
       "it": "Abiurazione",
       "strict": true,
-      "kind": "school"
+      "kind": "school",
+      "source": "coined"
     },
     {
       "en": "Conjuration",
@@ -221,19 +246,22 @@
       "note": "TRAP. Conjuration is Evocazione and Evocation is Invocazione. Swapping them mislabels every summoning spell.",
       "never": [
         "invocazione"
-      ]
+      ],
+      "source": "coined"
     },
     {
       "en": "Divination",
       "it": "Divinazione",
       "strict": true,
-      "kind": "school"
+      "kind": "school",
+      "source": "coined"
     },
     {
       "en": "Enchantment",
       "it": "Ammaliamento",
       "strict": true,
-      "kind": "school"
+      "kind": "school",
+      "source": "coined"
     },
     {
       "en": "Evocation",
@@ -243,31 +271,36 @@
       "note": "TRAP. See Conjuration. Never Evocazione.",
       "never": [
         "evocazione"
-      ]
+      ],
+      "source": "coined"
     },
     {
       "en": "Illusion",
       "it": "Illusione",
       "strict": true,
-      "kind": "school"
+      "kind": "school",
+      "source": "coined"
     },
     {
       "en": "Necromancy",
       "it": "Necromanzia",
       "strict": true,
-      "kind": "school"
+      "kind": "school",
+      "source": "coined"
     },
     {
       "en": "Transmutation",
       "it": "Trasmutazione",
       "strict": true,
-      "kind": "school"
+      "kind": "school",
+      "source": "coined"
     },
     {
       "en": "Universal",
       "it": "Universale",
       "strict": true,
-      "kind": "school"
+      "kind": "school",
+      "source": "coined"
     },
     {
       "en": "Fine",
@@ -275,14 +308,16 @@
       "strict": false,
       "kind": "size",
       "en_case": true,
-      "note": "Soft: the English word is ordinary prose as often as it is the game term."
+      "note": "Soft: the English word is ordinary prose as often as it is the game term.",
+      "source": "coined"
     },
     {
       "en": "Diminutive",
       "it": "Minuscolo",
       "strict": true,
       "kind": "size",
-      "en_case": true
+      "en_case": true,
+      "source": "coined"
     },
     {
       "en": "Tiny",
@@ -290,7 +325,8 @@
       "strict": false,
       "kind": "size",
       "en_case": true,
-      "note": "Soft: the English word is ordinary prose as often as it is the game term."
+      "note": "Soft: the English word is ordinary prose as often as it is the game term.",
+      "source": "coined"
     },
     {
       "en": "Small",
@@ -298,7 +334,8 @@
       "strict": false,
       "kind": "size",
       "en_case": true,
-      "note": "Soft: the English word is ordinary prose as often as it is the game term."
+      "note": "Soft: the English word is ordinary prose as often as it is the game term.",
+      "source": "coined"
     },
     {
       "en": "Medium",
@@ -306,7 +343,8 @@
       "strict": false,
       "kind": "size",
       "en_case": true,
-      "note": "Soft: the English word is ordinary prose as often as it is the game term."
+      "note": "Soft: the English word is ordinary prose as often as it is the game term.",
+      "source": "coined"
     },
     {
       "en": "Large",
@@ -314,7 +352,8 @@
       "strict": false,
       "kind": "size",
       "en_case": true,
-      "note": "Soft: the English word is ordinary prose as often as it is the game term."
+      "note": "Soft: the English word is ordinary prose as often as it is the game term.",
+      "source": "coined"
     },
     {
       "en": "Huge",
@@ -322,35 +361,40 @@
       "strict": false,
       "kind": "size",
       "en_case": true,
-      "note": "Soft: the English word is ordinary prose as often as it is the game term."
+      "note": "Soft: the English word is ordinary prose as often as it is the game term.",
+      "source": "coined"
     },
     {
       "en": "Gargantuan",
       "it": "Mastodontico",
       "strict": true,
       "kind": "size",
-      "en_case": true
+      "en_case": true,
+      "source": "coined"
     },
     {
       "en": "Colossal",
       "it": "Colossale",
       "strict": true,
       "kind": "size",
-      "en_case": true
+      "en_case": true,
+      "source": "coined"
     },
     {
       "en": "Fortitude",
       "it": "Tempra",
       "strict": true,
       "kind": "save",
-      "en_case": true
+      "en_case": true,
+      "source": "coined"
     },
     {
       "en": "Reflex",
       "it": "Riflessi",
       "strict": true,
       "kind": "save",
-      "en_case": true
+      "en_case": true,
+      "source": "coined"
     },
     {
       "en": "Will",
@@ -361,7 +405,8 @@
         "Volont"
       ],
       "en_case": true,
-      "en_match": "(?<![A-Za-z])Will(?![A-Za-z])"
+      "en_match": "(?<![A-Za-z])Will(?![A-Za-z])",
+      "source": "coined"
     },
     {
       "en": "saving throw",
@@ -370,7 +415,8 @@
       "kind": "rules",
       "stems": [
         "salvezz"
-      ]
+      ],
+      "source": "coined"
     },
     {
       "en": "Armor Class",
@@ -380,13 +426,15 @@
       "stems": [
         "Classe Armatur",
         "CA"
-      ]
+      ],
+      "source": "coined"
     },
     {
       "en": "AC",
       "it": "CA",
       "strict": true,
-      "kind": "abbrev"
+      "kind": "abbrev",
+      "source": "coined"
     },
     {
       "en": "Difficulty Class",
@@ -396,13 +444,15 @@
       "stems": [
         "Classe Difficolt",
         "CD"
-      ]
+      ],
+      "source": "coined"
     },
     {
       "en": "DC",
       "it": "CD",
       "strict": true,
-      "kind": "abbrev"
+      "kind": "abbrev",
+      "source": "coined"
     },
     {
       "en": "hit points",
@@ -412,7 +462,8 @@
       "stems": [
         "punti ferit",
         "punto ferit"
-      ]
+      ],
+      "source": "coined"
     },
     {
       "en": "Hit Dice",
@@ -422,7 +473,8 @@
       "stems": [
         "Dadi Vit",
         "Dado Vit"
-      ]
+      ],
+      "source": "coined"
     },
     {
       "en": "base attack bonus",
@@ -431,7 +483,8 @@
       "kind": "rules",
       "stems": [
         "attacco base"
-      ]
+      ],
+      "source": "coined"
     },
     {
       "en": "caster level",
@@ -441,7 +494,8 @@
         "livello dell’incantator",
         "livello dell'incantator",
         "livello incantator"
-      ]
+      ],
+      "source": "coined"
     },
     {
       "en": "spell resistance",
@@ -450,7 +504,8 @@
       "kind": "rules",
       "stems": [
         "resistenza agli incantesim"
-      ]
+      ],
+      "source": "coined"
     },
     {
       "en": "damage reduction",
@@ -459,7 +514,8 @@
       "kind": "rules",
       "stems": [
         "riduzione del danno"
-      ]
+      ],
+      "source": "coined"
     },
     {
       "en": "attack of opportunity",
@@ -468,7 +524,8 @@
       "kind": "rules",
       "stems": [
         "opportunit"
-      ]
+      ],
+      "source": "coined"
     },
     {
       "en": "critical hit",
@@ -476,7 +533,8 @@
       "kind": "rules",
       "stems": [
         "critic"
-      ]
+      ],
+      "source": "coined"
     },
     {
       "en": "coup de grace",
@@ -485,7 +543,8 @@
       "stems": [
         "colpo di grazia",
         "colpi di grazia"
-      ]
+      ],
+      "source": "coined"
     },
     {
       "en": "sneak attack",
@@ -494,7 +553,8 @@
       "kind": "rules",
       "stems": [
         "furtiv"
-      ]
+      ],
+      "source": "coined"
     },
     {
       "en": "nonlethal damage",
@@ -503,7 +563,8 @@
       "kind": "rules",
       "stems": [
         "non letal"
-      ]
+      ],
+      "source": "coined"
     },
     {
       "en": "negative level",
@@ -512,23 +573,27 @@
       "kind": "rules",
       "stems": [
         "negativ"
-      ]
+      ],
+      "source": "coined"
     },
     {
       "en": "concealment",
       "it": "occultamento",
-      "kind": "rules"
+      "kind": "rules",
+      "source": "coined"
     },
     {
       "en": "initiative",
       "it": "iniziativa",
       "strict": true,
-      "kind": "rules"
+      "kind": "rules",
+      "source": "coined"
     },
     {
       "en": "alignment",
       "it": "allineamento",
-      "kind": "rules"
+      "kind": "rules",
+      "source": "coined"
     },
     {
       "en": "turn undead",
@@ -538,14 +603,16 @@
         "scacciare non mort",
         "scacciato",
         "scacciati"
-      ]
+      ],
+      "source": "coined"
     },
     {
       "en": "undead",
       "it": "non morti",
       "stem": "non mort",
       "strict": true,
-      "kind": "rules"
+      "kind": "rules",
+      "source": "coined"
     },
     {
       "en": "feat",
@@ -555,7 +622,8 @@
       "kind": "rules",
       "never": [
         "abilità speciale"
-      ]
+      ],
+      "source": "coined"
     },
     {
       "en": "skill",
@@ -565,7 +633,8 @@
       "kind": "rules",
       "never": [
         "capacità"
-      ]
+      ],
+      "source": "coined"
     },
     {
       "en": "skill check",
@@ -573,20 +642,23 @@
       "kind": "rules",
       "stems": [
         "prov"
-      ]
+      ],
+      "source": "coined"
     },
     {
       "en": "rank",
       "it": "grado",
       "stem": "grad",
-      "kind": "rules"
+      "kind": "rules",
+      "source": "coined"
     },
     {
       "en": "spell",
       "it": "incantesimo",
       "stem": "incantesim",
       "strict": true,
-      "kind": "rules"
+      "kind": "rules",
+      "source": "coined"
     },
     {
       "en": "spell slot",
@@ -594,14 +666,16 @@
       "kind": "rules",
       "stems": [
         "slot"
-      ]
+      ],
+      "source": "coined"
     },
     {
       "en": "spellcaster",
       "it": "incantatore",
       "stem": "incantator",
       "strict": true,
-      "kind": "rules"
+      "kind": "rules",
+      "source": "coined"
     },
     {
       "en": "class feature",
@@ -609,7 +683,8 @@
       "kind": "rules",
       "stems": [
         "privilegi"
-      ]
+      ],
+      "source": "coined"
     },
     {
       "en": "prestige class",
@@ -617,20 +692,23 @@
       "kind": "rules",
       "stems": [
         "classe di prestigi"
-      ]
+      ],
+      "source": "coined"
     },
     {
       "en": "character",
       "it": "personaggio",
       "stem": "personagg",
       "strict": true,
-      "kind": "rules"
+      "kind": "rules",
+      "source": "coined"
     },
     {
       "en": "creature",
       "it": "creatura",
       "stem": "creatur",
-      "kind": "rules"
+      "kind": "rules",
+      "source": "coined"
     },
     {
       "en": "familiar",
@@ -641,7 +719,8 @@
       "never": [
         "famigliare",
         "famigliari"
-      ]
+      ],
+      "source": "coined"
     },
     {
       "en": "animal companion",
@@ -650,19 +729,22 @@
       "stems": [
         "compagno animal",
         "compagni animal"
-      ]
+      ],
+      "source": "coined"
     },
     {
       "en": "domain",
       "it": "dominio",
       "stem": "domin",
-      "kind": "rules"
+      "kind": "rules",
+      "source": "coined"
     },
     {
       "en": "deity",
       "it": "divinità",
       "stem": "divinit",
-      "kind": "rules"
+      "kind": "rules",
+      "source": "coined"
     },
     {
       "en": "standard action",
@@ -672,7 +754,8 @@
       "stems": [
         "azione standard",
         "azioni standard"
-      ]
+      ],
+      "source": "coined"
     },
     {
       "en": "move action",
@@ -681,7 +764,8 @@
       "kind": "action",
       "stems": [
         "moviment"
-      ]
+      ],
+      "source": "coined"
     },
     {
       "en": "full-round action",
@@ -690,7 +774,8 @@
       "kind": "action",
       "stems": [
         "round complet"
-      ]
+      ],
+      "source": "coined"
     },
     {
       "en": "free action",
@@ -699,7 +784,8 @@
       "kind": "action",
       "stems": [
         "gratuit"
-      ]
+      ],
+      "source": "coined"
     },
     {
       "en": "swift action",
@@ -708,7 +794,8 @@
       "kind": "action",
       "stems": [
         "veloc"
-      ]
+      ],
+      "source": "coined"
     },
     {
       "en": "immediate action",
@@ -717,20 +804,23 @@
       "kind": "action",
       "stems": [
         "immediat"
-      ]
+      ],
+      "source": "coined"
     },
     {
       "en": "round",
       "it": "round",
       "strict": true,
       "kind": "action",
-      "note": "Stays 'round' in Italian D&D. Never 'turno' — turn is a different thing."
+      "note": "Stays 'round' in Italian D&D. Never 'turno' — turn is a different thing.",
+      "source": "coined"
     },
     {
       "en": "turn",
       "it": "turno",
       "kind": "action",
-      "en_match": "(?<![A-Za-z])[Tt]urns?(?![A-Za-z])(?!\\s+undead)"
+      "en_match": "(?<![A-Za-z])[Tt]urns?(?![A-Za-z])(?!\\s+undead)",
+      "source": "coined"
     },
     {
       "en": "melee",
@@ -741,13 +831,15 @@
       "never": [
         "combattimento ravvicinato",
         "corpo a corpo"
-      ]
+      ],
+      "source": "coined"
     },
     {
       "en": "ranged",
       "it": "a distanza",
       "strict": true,
-      "kind": "combat"
+      "kind": "combat",
+      "source": "coined"
     },
     {
       "en": "touch attack",
@@ -755,148 +847,170 @@
       "kind": "combat",
       "stems": [
         "contatt"
-      ]
+      ],
+      "source": "coined"
     },
     {
       "en": "grapple",
       "it": "lotta",
       "stem": "lott",
       "strict": true,
-      "kind": "combat"
+      "kind": "combat",
+      "source": "coined"
     },
     {
       "en": "charge",
       "it": "carica",
       "stem": "caric",
-      "kind": "combat"
+      "kind": "combat",
+      "source": "coined"
     },
     {
       "en": "square",
       "it": "quadretto",
       "stem": "quadrett",
       "strict": true,
-      "kind": "combat"
+      "kind": "combat",
+      "source": "coined"
     },
     {
       "en": "reach",
       "it": "portata",
       "stem": "portat",
       "kind": "combat",
-      "en_match": "(?<![A-Za-z])reach(?![A-Za-z])"
+      "en_match": "(?<![A-Za-z])reach(?![A-Za-z])",
+      "source": "coined"
     },
     {
       "en": "speed",
       "it": "velocità",
       "stem": "velocit",
-      "kind": "combat"
+      "kind": "combat",
+      "source": "coined"
     },
     {
       "en": "weapon",
       "it": "arma",
       "stem": "arm",
       "strict": true,
-      "kind": "item"
+      "kind": "item",
+      "source": "coined"
     },
     {
       "en": "armor",
       "it": "armatura",
       "stem": "armatur",
       "strict": true,
-      "kind": "item"
+      "kind": "item",
+      "source": "coined"
     },
     {
       "en": "shield",
       "it": "scudo",
       "stem": "scud",
       "strict": true,
-      "kind": "item"
+      "kind": "item",
+      "source": "coined"
     },
     {
       "en": "potion",
       "it": "pozione",
       "stem": "pozion",
       "strict": true,
-      "kind": "item"
+      "kind": "item",
+      "source": "coined"
     },
     {
       "en": "scroll",
       "it": "pergamena",
       "stem": "pergamen",
       "strict": true,
-      "kind": "item"
+      "kind": "item",
+      "source": "coined"
     },
     {
       "en": "wand",
       "it": "bacchetta",
       "stem": "bacchett",
       "strict": true,
-      "kind": "item"
+      "kind": "item",
+      "source": "coined"
     },
     {
       "en": "staff",
       "it": "bastone",
       "stem": "baston",
       "strict": true,
-      "kind": "item"
+      "kind": "item",
+      "source": "coined"
     },
     {
       "en": "rod",
       "it": "verga",
       "stem": "verg",
       "strict": true,
-      "kind": "item"
+      "kind": "item",
+      "source": "coined"
     },
     {
       "en": "ring",
       "it": "anello",
       "stem": "anell",
       "strict": true,
-      "kind": "item"
+      "kind": "item",
+      "source": "coined"
     },
     {
       "en": "masterwork",
       "it": "capolavoro",
       "strict": true,
-      "kind": "item"
+      "kind": "item",
+      "source": "coined"
     },
     {
       "en": "Simple Weapons",
       "it": "Armi Semplici",
       "strict": true,
-      "kind": "item"
+      "kind": "item",
+      "source": "coined"
     },
     {
       "en": "Martial Weapons",
       "it": "Armi da Guerra",
       "strict": true,
-      "kind": "item"
+      "kind": "item",
+      "source": "coined"
     },
     {
       "en": "Exotic Weapons",
       "it": "Armi Esotiche",
       "strict": true,
-      "kind": "item"
+      "kind": "item",
+      "source": "coined"
     },
     {
       "en": "Bludgeoning",
       "it": "Contundenti",
       "strict": true,
       "kind": "damage",
-      "en_case": true
+      "en_case": true,
+      "source": "coined"
     },
     {
       "en": "Piercing",
       "it": "Perforanti",
       "strict": true,
       "kind": "damage",
-      "en_case": true
+      "en_case": true,
+      "source": "coined"
     },
     {
       "en": "Slashing",
       "it": "Taglienti",
       "strict": true,
       "kind": "damage",
-      "en_case": true
+      "en_case": true,
+      "source": "coined"
     },
     {
       "en": "Acid",
@@ -904,7 +1018,8 @@
       "strict": false,
       "kind": "damage",
       "en_case": true,
-      "note": "Soft: the English word is ordinary prose as often as it is the game term."
+      "note": "Soft: the English word is ordinary prose as often as it is the game term.",
+      "source": "coined"
     },
     {
       "en": "Cold",
@@ -912,7 +1027,8 @@
       "strict": false,
       "kind": "damage",
       "en_case": true,
-      "note": "Soft: the English word is ordinary prose as often as it is the game term."
+      "note": "Soft: the English word is ordinary prose as often as it is the game term.",
+      "source": "coined"
     },
     {
       "en": "Fire",
@@ -920,28 +1036,32 @@
       "strict": false,
       "kind": "damage",
       "en_case": true,
-      "note": "Soft: the English word is ordinary prose as often as it is the game term."
+      "note": "Soft: the English word is ordinary prose as often as it is the game term.",
+      "source": "coined"
     },
     {
       "en": "Electricity",
       "it": "Elettricità",
       "strict": true,
       "kind": "damage",
-      "en_case": true
+      "en_case": true,
+      "source": "coined"
     },
     {
       "en": "Sonic",
       "it": "Sonico",
       "strict": true,
       "kind": "damage",
-      "en_case": true
+      "en_case": true,
+      "source": "coined"
     },
     {
       "en": "Appraise",
       "it": "Valutare",
       "strict": true,
       "kind": "skill",
-      "en_case": true
+      "en_case": true,
+      "source": "coined"
     },
     {
       "en": "Balance",
@@ -949,14 +1069,16 @@
       "strict": false,
       "kind": "skill",
       "en_case": true,
-      "note": "Soft: the English word is ordinary prose as often as it is the game term."
+      "note": "Soft: the English word is ordinary prose as often as it is the game term.",
+      "source": "coined"
     },
     {
       "en": "Bluff",
       "it": "Raggirare",
       "strict": true,
       "kind": "skill",
-      "en_case": true
+      "en_case": true,
+      "source": "coined"
     },
     {
       "en": "Climb",
@@ -964,14 +1086,16 @@
       "strict": false,
       "kind": "skill",
       "en_case": true,
-      "note": "Soft: the English word is ordinary prose as often as it is the game term."
+      "note": "Soft: the English word is ordinary prose as often as it is the game term.",
+      "source": "coined"
     },
     {
       "en": "Concentration",
       "it": "Concentrazione",
       "strict": true,
       "kind": "skill",
-      "en_case": true
+      "en_case": true,
+      "source": "coined"
     },
     {
       "en": "Craft",
@@ -979,63 +1103,73 @@
       "strict": false,
       "kind": "skill",
       "en_case": true,
-      "note": "Soft: the English word is ordinary prose as often as it is the game term."
+      "note": "Soft: the English word is ordinary prose as often as it is the game term, and 'Craft Magic Arms and Armor' etc. are item-creation feats whose Italian names do not contain Artigianato.",
+      "en_match": "(?<![A-Za-z])Crafts?(?![A-Za-z])(?!\\s+(?:Magic|Wondrous|Wand|Rod|Staff|Construct|Arms))",
+      "source": "coined"
     },
     {
       "en": "Decipher Script",
       "it": "Decifrare Scritture",
       "strict": true,
       "kind": "skill",
-      "en_case": true
+      "en_case": true,
+      "source": "coined"
     },
     {
       "en": "Diplomacy",
       "it": "Diplomazia",
       "strict": true,
       "kind": "skill",
-      "en_case": true
+      "en_case": true,
+      "source": "coined"
     },
     {
       "en": "Disable Device",
       "it": "Disattivare Congegni",
       "strict": true,
       "kind": "skill",
-      "en_case": true
+      "en_case": true,
+      "source": "coined"
     },
     {
       "en": "Disguise",
       "it": "Camuffare",
       "strict": true,
       "kind": "skill",
-      "en_case": true
+      "en_case": true,
+      "source": "coined"
     },
     {
       "en": "Escape Artist",
       "it": "Artista della Fuga",
       "strict": true,
       "kind": "skill",
-      "en_case": true
+      "en_case": true,
+      "source": "coined"
     },
     {
       "en": "Forgery",
       "it": "Falsificare",
       "strict": true,
       "kind": "skill",
-      "en_case": true
+      "en_case": true,
+      "source": "coined"
     },
     {
       "en": "Gather Information",
       "it": "Raccogliere Informazioni",
       "strict": true,
       "kind": "skill",
-      "en_case": true
+      "en_case": true,
+      "source": "coined"
     },
     {
       "en": "Handle Animal",
       "it": "Addestrare Animali",
       "strict": true,
       "kind": "skill",
-      "en_case": true
+      "en_case": true,
+      "source": "coined"
     },
     {
       "en": "Heal",
@@ -1043,7 +1177,8 @@
       "strict": false,
       "kind": "skill",
       "en_case": true,
-      "note": "Soft: the English word is ordinary prose as often as it is the game term."
+      "note": "Soft: the English word is ordinary prose as often as it is the game term.",
+      "source": "coined"
     },
     {
       "en": "Hide",
@@ -1051,14 +1186,16 @@
       "strict": false,
       "kind": "skill",
       "en_case": true,
-      "note": "Soft: the English word is ordinary prose as often as it is the game term."
+      "note": "Soft: the English word is ordinary prose as often as it is the game term.",
+      "source": "coined"
     },
     {
       "en": "Intimidate",
       "it": "Intimidire",
       "strict": true,
       "kind": "skill",
-      "en_case": true
+      "en_case": true,
+      "source": "coined"
     },
     {
       "en": "Jump",
@@ -1066,14 +1203,16 @@
       "strict": false,
       "kind": "skill",
       "en_case": true,
-      "note": "Soft: the English word is ordinary prose as often as it is the game term."
+      "note": "Soft: the English word is ordinary prose as often as it is the game term.",
+      "source": "coined"
     },
     {
       "en": "Knowledge",
       "it": "Conoscenze",
       "strict": true,
       "kind": "skill",
-      "en_case": true
+      "en_case": true,
+      "source": "coined"
     },
     {
       "en": "Listen",
@@ -1081,21 +1220,24 @@
       "strict": false,
       "kind": "skill",
       "en_case": true,
-      "note": "Soft: the English word is ordinary prose as often as it is the game term."
+      "note": "Soft: the English word is ordinary prose as often as it is the game term.",
+      "source": "coined"
     },
     {
       "en": "Move Silently",
       "it": "Muoversi Silenziosamente",
       "strict": true,
       "kind": "skill",
-      "en_case": true
+      "en_case": true,
+      "source": "coined"
     },
     {
       "en": "Open Lock",
       "it": "Scassinare Serrature",
       "strict": true,
       "kind": "skill",
-      "en_case": true
+      "en_case": true,
+      "source": "coined"
     },
     {
       "en": "Perform",
@@ -1103,14 +1245,16 @@
       "strict": false,
       "kind": "skill",
       "en_case": true,
-      "note": "Soft: the English word is ordinary prose as often as it is the game term."
+      "note": "Soft: the English word is ordinary prose as often as it is the game term.",
+      "source": "coined"
     },
     {
       "en": "Profession",
       "it": "Professione",
       "strict": true,
       "kind": "skill",
-      "en_case": true
+      "en_case": true,
+      "source": "coined"
     },
     {
       "en": "Ride",
@@ -1118,7 +1262,8 @@
       "strict": false,
       "kind": "skill",
       "en_case": true,
-      "note": "Soft: the English word is ordinary prose as often as it is the game term."
+      "note": "Soft: the English word is ordinary prose as often as it is the game term.",
+      "source": "coined"
     },
     {
       "en": "Search",
@@ -1126,35 +1271,40 @@
       "strict": false,
       "kind": "skill",
       "en_case": true,
-      "note": "Soft: the English word is ordinary prose as often as it is the game term."
+      "note": "Soft: the English word is ordinary prose as often as it is the game term.",
+      "source": "coined"
     },
     {
       "en": "Sense Motive",
       "it": "Intuizione",
       "strict": true,
       "kind": "skill",
-      "en_case": true
+      "en_case": true,
+      "source": "coined"
     },
     {
       "en": "Sleight of Hand",
       "it": "Rapidità di Mano",
       "strict": true,
       "kind": "skill",
-      "en_case": true
+      "en_case": true,
+      "source": "coined"
     },
     {
       "en": "Speak Language",
       "it": "Parlare Linguaggio",
       "strict": true,
       "kind": "skill",
-      "en_case": true
+      "en_case": true,
+      "source": "coined"
     },
     {
       "en": "Spellcraft",
       "it": "Sapienza Magica",
       "strict": true,
       "kind": "skill",
-      "en_case": true
+      "en_case": true,
+      "source": "coined"
     },
     {
       "en": "Spot",
@@ -1162,14 +1312,16 @@
       "strict": false,
       "kind": "skill",
       "en_case": true,
-      "note": "Soft: the English word is ordinary prose as often as it is the game term."
+      "note": "Soft: the English word is ordinary prose as often as it is the game term.",
+      "source": "coined"
     },
     {
       "en": "Survival",
       "it": "Sopravvivenza",
       "strict": true,
       "kind": "skill",
-      "en_case": true
+      "en_case": true,
+      "source": "coined"
     },
     {
       "en": "Swim",
@@ -1177,28 +1329,32 @@
       "strict": false,
       "kind": "skill",
       "en_case": true,
-      "note": "Soft: the English word is ordinary prose as often as it is the game term."
+      "note": "Soft: the English word is ordinary prose as often as it is the game term.",
+      "source": "coined"
     },
     {
       "en": "Tumble",
       "it": "Acrobazia",
       "strict": true,
       "kind": "skill",
-      "en_case": true
+      "en_case": true,
+      "source": "coined"
     },
     {
       "en": "Use Magic Device",
       "it": "Utilizzare Oggetti Magici",
       "strict": true,
       "kind": "skill",
-      "en_case": true
+      "en_case": true,
+      "source": "coined"
     },
     {
       "en": "Use Rope",
       "it": "Utilizzare Corde",
       "strict": true,
       "kind": "skill",
-      "en_case": true
+      "en_case": true,
+      "source": "coined"
     },
     {
       "en": "Benefit",
@@ -1212,7 +1368,8 @@
       "note": "The bold header on every feat description. Always this word, so the 109 feats read alike.",
       "never": [
         "vantaggio"
-      ]
+      ],
+      "source": "coined"
     },
     {
       "en": "Normal",
@@ -1222,7 +1379,8 @@
       ],
       "kind": "rules",
       "en_case": true,
-      "note": "Feat header: what the rules say without the feat."
+      "note": "Feat header: what the rules say without the feat.",
+      "source": "coined"
     },
     {
       "en": "Special",
@@ -1232,7 +1390,8 @@
       ],
       "kind": "rules",
       "en_case": true,
-      "note": "Feat header."
+      "note": "Feat header.",
+      "source": "coined"
     },
     {
       "en": "Prerequisite",
@@ -1242,7 +1401,8 @@
       ],
       "strict": true,
       "kind": "rules",
-      "en_case": true
+      "en_case": true,
+      "source": "coined"
     },
     {
       "en": "check",
@@ -1251,7 +1411,9 @@
         "prov"
       ],
       "kind": "rules",
-      "note": "A skill or ability check. 'Jump checks' -> 'prove di Saltare'."
+      "note": "A skill or ability check. 'Jump checks' -> 'prove di Saltare'. Not 'armor check penalty', which is 'penalità di armatura'.",
+      "en_match": "(?<![A-Za-z])checks?(?![A-Za-z])(?<!armor check)",
+      "source": "coined"
     },
     {
       "en": "armor check penalty",
@@ -1267,7 +1429,8 @@
         "controllo dell’armatura",
         "controllo di quell'armatura"
       ],
-      "note": "NOT 'controllo dell'armatura' — controllo is an inspection. Both Haiku and Sonnet invented that in the calibration batch."
+      "note": "NOT 'controllo dell'armatura' — controllo is an inspection. Both Haiku and Sonnet invented that in the calibration batch.",
+      "source": "coined"
     },
     {
       "en": "miss chance",
@@ -1276,7 +1439,8 @@
         "di mancar",
         "probabilit"
       ],
-      "kind": "rules"
+      "kind": "rules",
+      "source": "coined"
     },
     {
       "en": "proficient",
@@ -1284,7 +1448,8 @@
       "stems": [
         "competen"
       ],
-      "kind": "rules"
+      "kind": "rules",
+      "source": "coined"
     },
     {
       "en": "Weapon Proficiency",
@@ -1292,7 +1457,8 @@
       "stems": [
         "competenza nelle arm"
       ],
-      "kind": "rules"
+      "kind": "rules",
+      "source": "coined"
     },
     {
       "en": "Armor Proficiency",
@@ -1300,7 +1466,8 @@
       "stems": [
         "competenza nelle armatur"
       ],
-      "kind": "rules"
+      "kind": "rules",
+      "source": "coined"
     },
     {
       "en": "hp",
@@ -1308,7 +1475,8 @@
       "strict": true,
       "kind": "abbrev",
       "en_case": true,
-      "note": "Abbreviation of hit points, shown on stat pills and HP bars."
+      "note": "Abbreviation of hit points, shown on stat pills and HP bars.",
+      "source": "coined"
     },
     {
       "en": "DR",
@@ -1316,7 +1484,8 @@
       "strict": true,
       "kind": "abbrev",
       "en_case": true,
-      "note": "Abbreviation of damage reduction (riduzione del danno)."
+      "note": "Abbreviation of damage reduction (riduzione del danno).",
+      "source": "coined"
     },
     {
       "en": "SR",
@@ -1324,14 +1493,16 @@
       "strict": true,
       "kind": "abbrev",
       "en_case": true,
-      "note": "Abbreviation of spell resistance (resistenza agli incantesimi)."
+      "note": "Abbreviation of spell resistance (resistenza agli incantesimi).",
+      "source": "coined"
     },
     {
       "en": "flanking",
       "it": "fiancheggiare",
       "stem": "fiancheggi",
       "strict": true,
-      "kind": "combat"
+      "kind": "combat",
+      "source": "coined"
     },
     {
       "en": "Two-Weapon Fighting",
@@ -1342,7 +1513,8 @@
         "combattere con due arm",
         "combattimento con due arm"
       ],
-      "note": "The feat name, used both as prose and as a feat name in names.json when phase 3 reaches it."
+      "note": "The feat name, used both as prose and as a feat name in names.json when phase 3 reaches it.",
+      "source": "coined"
     },
     {
       "en": "Flurry of Blows",
@@ -1352,21 +1524,188 @@
       "stems": [
         "raffica di colp"
       ],
-      "note": "The monk class feature."
+      "note": "The monk class feature.",
+      "source": "coined"
+    },
+    {
+      "en": "Wild Shape",
+      "it": "Forma Selvatica",
+      "strict": true,
+      "kind": "rules",
+      "stems": [
+        "forma selvatic"
+      ],
+      "note": "The druid class feature.",
+      "source": "coined"
+    },
+    {
+      "en": "Elemental Shape",
+      "it": "Forma Elementale",
+      "strict": true,
+      "kind": "rules",
+      "stems": [
+        "forma elemental"
+      ],
+      "note": "The elemental variant of the druid's Wild Shape (Complete Divine).",
+      "source": "coined"
+    },
+    {
+      "en": "Aberration",
+      "it": "Aberrazione",
+      "strict": true,
+      "kind": "creature-type",
+      "stems": [
+        "aberrazion"
+      ],
+      "source": "coined"
+    },
+    {
+      "en": "Construct",
+      "it": "Costrutto",
+      "strict": true,
+      "kind": "creature-type",
+      "stems": [
+        "costrutt"
+      ],
+      "source": "coined"
+    },
+    {
+      "en": "Dragon",
+      "it": "Drago",
+      "strict": true,
+      "kind": "creature-type",
+      "stems": [
+        "drag"
+      ],
+      "source": "coined"
+    },
+    {
+      "en": "Elemental",
+      "it": "Elementale",
+      "strict": true,
+      "kind": "creature-type",
+      "stems": [
+        "elemental"
+      ],
+      "note": "The creature type, not the Elemental Shape class feature.",
+      "source": "coined"
+    },
+    {
+      "en": "Fey",
+      "it": "Fata",
+      "strict": true,
+      "kind": "creature-type",
+      "stems": [
+        "fat"
+      ],
+      "source": "coined"
+    },
+    {
+      "en": "Giant",
+      "it": "Gigante",
+      "strict": true,
+      "kind": "creature-type",
+      "stems": [
+        "gigant"
+      ],
+      "source": "coined"
+    },
+    {
+      "en": "Humanoid",
+      "it": "Umanoide",
+      "strict": true,
+      "kind": "creature-type",
+      "stems": [
+        "umanoid"
+      ],
+      "source": "coined"
+    },
+    {
+      "en": "Magical Beast",
+      "it": "Bestia Magica",
+      "strict": true,
+      "kind": "creature-type",
+      "stems": [
+        "bestia magic",
+        "bestie magic"
+      ],
+      "source": "coined"
+    },
+    {
+      "en": "Monstrous Humanoid",
+      "it": "Umanoide Mostruoso",
+      "strict": true,
+      "kind": "creature-type",
+      "stems": [
+        "umanoide mostruos",
+        "umanoidi mostruos"
+      ],
+      "source": "coined"
+    },
+    {
+      "en": "Ooze",
+      "it": "Melma",
+      "strict": true,
+      "kind": "creature-type",
+      "stems": [
+        "melm"
+      ],
+      "source": "coined"
+    },
+    {
+      "en": "Outsider",
+      "it": "Esterno",
+      "strict": true,
+      "kind": "creature-type",
+      "stems": [
+        "estern"
+      ],
+      "source": "coined"
+    },
+    {
+      "en": "Plant",
+      "it": "Pianta",
+      "strict": true,
+      "kind": "creature-type",
+      "stems": [
+        "piant"
+      ],
+      "source": "coined"
+    },
+    {
+      "en": "Vermin",
+      "it": "Verme",
+      "strict": true,
+      "kind": "creature-type",
+      "stems": [
+        "verm"
+      ],
+      "source": "coined"
+    },
+    {
+      "en": "CL",
+      "it": "LI",
+      "strict": true,
+      "kind": "abbrev",
+      "en_case": true,
+      "note": "Abbreviation of caster level (livello dell'incantatore), in item description aura blocks.",
+      "source": "coined"
     },
     {
       "en": "Lawful",
       "it": "Legale",
       "strict": true,
       "kind": "alignment",
-      "en_case": true
+      "en_case": true,
+      "source": "coined"
     },
     {
       "en": "Chaotic",
       "it": "Caotico",
       "strict": true,
       "kind": "alignment",
-      "en_case": true
+      "en_case": true,
+      "source": "coined"
     },
     {
       "en": "Good",
@@ -1374,14 +1713,16 @@
       "strict": true,
       "kind": "alignment",
       "en_case": true,
-      "note": "The moral-axis alignment word, not the general English adjective — en_case keeps it from firing on ordinary prose."
+      "note": "The moral-axis alignment word, not the general English adjective — en_case keeps it from firing on ordinary prose.",
+      "source": "coined"
     },
     {
       "en": "Evil",
       "it": "Malvagio",
       "strict": true,
       "kind": "alignment",
-      "en_case": true
+      "en_case": true,
+      "source": "coined"
     },
     {
       "en": "Neutral",
@@ -1389,7 +1730,8 @@
       "strict": true,
       "kind": "alignment",
       "en_case": true,
-      "note": "Either alignment axis. 'Neutral Good' -> 'Neutrale Buono'."
+      "note": "Either alignment axis. 'Neutral Good' -> 'Neutrale Buono'.",
+      "source": "coined"
     },
     {
       "en": "skill points",
@@ -1399,7 +1741,8 @@
       "stems": [
         "punti abilit",
         "punto abilit"
-      ]
+      ],
+      "source": "coined"
     },
     {
       "en": "SP",
@@ -1407,7 +1750,8 @@
       "strict": true,
       "kind": "abbrev",
       "en_case": true,
-      "note": "Abbreviation of skill points (punti abilità)."
+      "note": "Abbreviation of skill points (punti abilità).",
+      "source": "coined"
     },
     {
       "en": "HD",
@@ -1415,7 +1759,8 @@
       "strict": true,
       "kind": "abbrev",
       "en_case": true,
-      "note": "Abbreviation of Hit Dice (Dadi Vita), shown on stat pills."
+      "note": "Abbreviation of Hit Dice (Dadi Vita), shown on stat pills.",
+      "source": "coined"
     },
     {
       "en": "Challenge Rating",
@@ -1424,7 +1769,8 @@
       "kind": "rules",
       "stems": [
         "Grado di Sfid"
-      ]
+      ],
+      "source": "coined"
     },
     {
       "en": "CR",
@@ -1432,7 +1778,8 @@
       "strict": true,
       "kind": "abbrev",
       "en_case": true,
-      "note": "Abbreviation of Challenge Rating (Grado di Sfida)."
+      "note": "Abbreviation of Challenge Rating (Grado di Sfida).",
+      "source": "coined"
     },
     {
       "en": "gp",
@@ -1440,7 +1787,8 @@
       "strict": true,
       "kind": "abbrev",
       "en_case": true,
-      "note": "Gold pieces (monete d'oro). formatGp() in trapMath.js emits this via t('gp')."
+      "note": "Gold pieces (monete d'oro). formatGp() in trapMath.js emits this via t('gp').",
+      "source": "coined"
     },
     {
       "en": "XP",
@@ -1448,84 +1796,884 @@
       "strict": true,
       "kind": "abbrev",
       "en_case": true,
-      "note": "Experience points (Punti Esperienza)."
+      "note": "Experience points (Punti Esperienza).",
+      "source": "coined"
     },
     {
       "en": "Str",
       "it": "For",
       "strict": true,
       "kind": "abbrev",
-      "note": "Strength ability score abbreviation."
+      "note": "Strength ability score abbreviation.",
+      "source": "coined"
     },
     {
       "en": "Dex",
       "it": "Des",
       "strict": true,
       "kind": "abbrev",
-      "note": "Dexterity ability score abbreviation."
+      "note": "Dexterity ability score abbreviation.",
+      "source": "coined"
     },
     {
       "en": "Con",
       "it": "Cos",
       "strict": true,
       "kind": "abbrev",
-      "note": "Constitution ability score abbreviation."
+      "note": "Constitution ability score abbreviation.",
+      "source": "coined"
     },
     {
       "en": "Wis",
       "it": "Sag",
       "strict": true,
       "kind": "abbrev",
-      "note": "Wisdom ability score abbreviation."
+      "note": "Wisdom ability score abbreviation.",
+      "source": "coined"
     },
     {
       "en": "Cha",
       "it": "Car",
       "strict": true,
       "kind": "abbrev",
-      "note": "Charisma ability score abbreviation."
+      "note": "Charisma ability score abbreviation.",
+      "source": "coined"
     },
     {
       "en": "Int",
       "it": "Int",
       "strict": true,
       "kind": "abbrev",
-      "note": "Intelligence ability score abbreviation (same in Italian)."
+      "note": "Intelligence ability score abbreviation (same in Italian).",
+      "source": "coined"
     },
     {
       "en": "Spellbook",
       "it": "Libro degli incantesimi",
       "strict": true,
       "kind": "ui",
-      "note": "App tab name: the per-character spell tracker."
+      "note": "App tab name: the per-character spell tracker.",
+      "source": "coined"
     },
     {
       "en": "Player sheet",
       "it": "Scheda del personaggio",
       "strict": true,
       "kind": "ui",
-      "note": "App tab name: the D&D 3.5 character sheet."
+      "note": "App tab name: the D&D 3.5 character sheet.",
+      "source": "coined"
     },
     {
       "en": "Master",
       "it": "Master",
       "kind": "ui",
       "en_case": true,
-      "never": ["Padrone", "Maestro"],
-      "note": "Game-master role in the Master/Player mode toggle, kept as the Italian tabletop loanword (as in 'Manuale del Master'). Soft: 'Master' is reused elsewhere in the app for the unrelated sense of a familiar's owner ('Padrone'), disambiguated at the call site via the i18n context param."
+      "never": [
+        "Padrone",
+        "Maestro"
+      ],
+      "note": "Game-master role in the Master/Player mode toggle, kept as the Italian tabletop loanword (as in 'Manuale del Master'). Soft: 'Master' is reused elsewhere in the app for the unrelated sense of a familiar's owner ('Padrone'), disambiguated at the call site via the i18n context param.",
+      "source": "coined"
     },
     {
       "en": "Player",
       "it": "Giocatore",
       "kind": "ui",
       "en_case": true,
-      "note": "Player role in the Master/Player mode toggle. Soft: 'player' is also ordinary prose elsewhere."
+      "note": "Player role in the Master/Player mode toggle. Soft: 'player' is also ordinary prose elsewhere.",
+      "source": "coined"
     },
     {
       "en": "Bestiary",
       "it": "Bestiario",
       "kind": "ui",
-      "note": "The monster book / creature browser."
+      "note": "The monster book / creature browser.",
+      "source": "coined"
+    },
+    {
+      "en": "bane",
+      "it": "anatema",
+      "strict": true,
+      "kind": "item",
+      "en_case": true,
+      "en_match": "(?<![A-Za-z])[Bb]ane(?![A-Za-z])",
+      "note": "Magic weapon special ability (tables.json Magic Melee/Ranged Weapon). 'Un'arma anatema'. Official Italian D&D 3.5 term. Reuse verbatim when items.json reaches this property.",
+      "source": "manual"
+    },
+    {
+      "en": "defending",
+      "it": "difensiva",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "difensiv"
+      ],
+      "note": "Magic weapon special ability. 'Un'arma difensiva'.",
+      "source": "manual"
+    },
+    {
+      "en": "flaming",
+      "it": "infuocata",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "infuocat"
+      ],
+      "note": "Magic weapon special ability. Official Italian D&D 3.5 term (per the game manual).",
+      "source": "manual"
+    },
+    {
+      "en": "frost",
+      "it": "gelida",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "gelid"
+      ],
+      "note": "Magic weapon special ability. Official Italian D&D 3.5 term (per the game manual).",
+      "source": "manual"
+    },
+    {
+      "en": "shock",
+      "it": "folgorante",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "folgorant"
+      ],
+      "note": "Magic weapon special ability (not the 'shocking burst' variant, which is its own term).",
+      "source": "manual"
+    },
+    {
+      "en": "ghost touch",
+      "it": "tocco fantasma",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "tocco fantasma"
+      ],
+      "note": "Magic weapon special ability. Official Italian D&D 3.5 term (per the game manual).",
+      "source": "manual"
+    },
+    {
+      "en": "keen",
+      "it": "affilata",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "affilat"
+      ],
+      "en_match": "(?<![A-Za-z])[Kk]een(?!\\s+edge)(?![A-Za-z])",
+      "note": "Magic weapon special ability. Official Italian D&D 3.5 term (per the game manual).",
+      "source": "manual"
+    },
+    {
+      "en": "ki focus",
+      "it": "focalizza ki",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "focalizza ki"
+      ],
+      "note": "Magic weapon special ability. Official Italian D&D 3.5 term (per the game manual).",
+      "source": "manual"
+    },
+    {
+      "en": "merciful",
+      "it": "pietosa",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "pietos"
+      ],
+      "note": "Magic weapon special ability. Official Italian D&D 3.5 term (per the game manual).",
+      "source": "manual"
+    },
+    {
+      "en": "mighty cleaving",
+      "it": "incalzare rafforzato",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "incalzare rafforzat"
+      ],
+      "note": "Magic weapon special ability. Official Italian D&D 3.5 term (per the game manual).",
+      "source": "manual"
+    },
+    {
+      "en": "spell storing",
+      "it": "accumula incantesimi",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "accumula incantesim"
+      ],
+      "note": "Magic weapon special ability. Official Italian D&D 3.5 term (per the game manual).",
+      "source": "manual"
+    },
+    {
+      "en": "throwing",
+      "it": "lancio",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "lanci"
+      ],
+      "note": "Magic weapon special ability. Official Italian D&D 3.5 term (per the game manual).",
+      "source": "manual"
+    },
+    {
+      "en": "thundering",
+      "it": "tonante",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "tonant"
+      ],
+      "note": "Magic weapon special ability.",
+      "source": "manual"
+    },
+    {
+      "en": "vicious",
+      "it": "immorale",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "immoral"
+      ],
+      "note": "Magic weapon special ability. Official Italian D&D 3.5 term (per the game manual).",
+      "source": "manual"
+    },
+    {
+      "en": "anarchic",
+      "it": "anarchica",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "anarchic"
+      ],
+      "note": "Magic weapon special ability (chaotic-aligned).",
+      "source": "manual"
+    },
+    {
+      "en": "axiomatic",
+      "it": "assiomatica",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "assiomatic"
+      ],
+      "note": "Magic weapon special ability (lawful-aligned).",
+      "source": "manual"
+    },
+    {
+      "en": "disruption",
+      "it": "distruzione",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "distruzion"
+      ],
+      "note": "Magic weapon special ability, 'weapon of disruption' -> 'arma della distruzione'.",
+      "source": "manual"
+    },
+    {
+      "en": "flaming burst",
+      "it": "esplosione di fiamme",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "esplosione di fiamm"
+      ],
+      "note": "Magic weapon special ability. Official Italian D&D 3.5 term (per the game manual).",
+      "source": "manual"
+    },
+    {
+      "en": "icy burst",
+      "it": "esplosione di ghiaccio",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "esplosione di ghiacci"
+      ],
+      "note": "Magic weapon special ability. Official Italian D&D 3.5 term (per the game manual).",
+      "source": "manual"
+    },
+    {
+      "en": "holy",
+      "it": "sacra",
+      "strict": true,
+      "kind": "item",
+      "en_case": true,
+      "stems": [
+        "sacr"
+      ],
+      "note": "Magic weapon special ability (good-aligned). 'Holy' is common English prose too, but en_case scopes this to the capitalised game term.",
+      "source": "manual"
+    },
+    {
+      "en": "shocking burst",
+      "it": "esplosione folgorante",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "esplosione folgorant"
+      ],
+      "note": "Magic weapon special ability. Official Italian D&D 3.5 term (per the game manual).",
+      "source": "manual"
+    },
+    {
+      "en": "unholy",
+      "it": "sacrilega",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "sacrileg"
+      ],
+      "note": "Magic weapon special ability. Official Italian D&D 3.5 term (per the game manual).",
+      "source": "manual"
+    },
+    {
+      "en": "wounding",
+      "it": "ferimento",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "feriment"
+      ],
+      "note": "Magic weapon special ability. Official Italian D&D 3.5 term (per the game manual).",
+      "source": "manual"
+    },
+    {
+      "en": "brilliant energy",
+      "it": "energia luminosa",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "energia luminosa"
+      ],
+      "note": "Magic weapon special ability. Official Italian D&D 3.5 term (per the game manual).",
+      "source": "manual"
+    },
+    {
+      "en": "dancing",
+      "it": "danzante",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "danzant"
+      ],
+      "note": "Magic weapon special ability.",
+      "source": "manual"
+    },
+    {
+      "en": "vorpal",
+      "it": "vorpal",
+      "strict": true,
+      "kind": "item",
+      "note": "Magic weapon special ability. Kept as-is, as the Italian manuals do.",
+      "source": "manual"
+    },
+    {
+      "en": "distance",
+      "it": "distanza",
+      "strict": true,
+      "kind": "item",
+      "en_case": true,
+      "stems": [
+        "distanz"
+      ],
+      "note": "Magic ranged weapon special ability, 'weapon of distance' -> 'arma della distanza'. en_case scopes this to the capitalised game term; 'distance' as ordinary prose is common.",
+      "source": "manual"
+    },
+    {
+      "en": "Glamered",
+      "it": "mascheramento",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "mascherament"
+      ],
+      "note": "Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term.",
+      "source": "manual"
+    },
+    {
+      "en": "Fortification, light",
+      "it": "fortificazione, leggera",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "fortificazione, legger"
+      ],
+      "note": "Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term.",
+      "source": "manual"
+    },
+    {
+      "en": "Slick",
+      "it": "scivolosa",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "scivolos"
+      ],
+      "note": "Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term.",
+      "source": "manual"
+    },
+    {
+      "en": "Shadow",
+      "it": "ombra",
+      "strict": true,
+      "kind": "item",
+      "en_case": true,
+      "stems": [
+        "ombr"
+      ],
+      "note": "Magic armor special ability. en_case scopes this to the capitalised game term; a creature of the same name exists (monsters.json, later phase) and will need its own disambiguation when that phase is reached.",
+      "source": "manual"
+    },
+    {
+      "en": "Silent moves",
+      "it": "movimento silenzioso",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "movimento silenzios"
+      ],
+      "note": "Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term.",
+      "source": "manual"
+    },
+    {
+      "en": "Spell resistance (13)",
+      "it": "resistenza agli incantesimi (13)",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "resistenza agli incantesimi (13)"
+      ],
+      "note": "Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term.",
+      "source": "manual"
+    },
+    {
+      "en": "Slick, improved",
+      "it": "scivolosa, migliorata",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "scivolosa, migliorat"
+      ],
+      "note": "Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term.",
+      "source": "manual"
+    },
+    {
+      "en": "Shadow, improved",
+      "it": "ombra, migliorata",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "ombra, migliorat"
+      ],
+      "note": "Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term.",
+      "source": "manual"
+    },
+    {
+      "en": "Silent moves, improved",
+      "it": "movimento silenzioso, migliorato",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "movimento silenzioso, migliorat"
+      ],
+      "note": "Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term.",
+      "source": "manual"
+    },
+    {
+      "en": "Acid resistance",
+      "it": "resistenza all'acido",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "resistenza all'acido"
+      ],
+      "note": "Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term.",
+      "source": "manual"
+    },
+    {
+      "en": "Cold resistance",
+      "it": "resistenza al freddo",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "resistenza al freddo"
+      ],
+      "note": "Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term.",
+      "source": "manual"
+    },
+    {
+      "en": "Electricity resistance",
+      "it": "resistenza all'elettricità",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "resistenza all'elettricit"
+      ],
+      "note": "Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term.",
+      "source": "manual"
+    },
+    {
+      "en": "Fire resistance",
+      "it": "resistenza al fuoco",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "resistenza al fuoco"
+      ],
+      "note": "Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term.",
+      "source": "manual"
+    },
+    {
+      "en": "Sonic resistance",
+      "it": "resistenza al suono",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "resistenza al suono"
+      ],
+      "note": "Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term.",
+      "source": "manual"
+    },
+    {
+      "en": "Invulnerability",
+      "it": "invulnerabilità",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "invulnerabilit"
+      ],
+      "note": "Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term.",
+      "source": "manual"
+    },
+    {
+      "en": "Fortification, moderate",
+      "it": "fortificazione, moderata",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "fortificazione, modera"
+      ],
+      "note": "Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term.",
+      "source": "manual"
+    },
+    {
+      "en": "Spell resistance (15)",
+      "it": "resistenza agli incantesimi (15)",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "resistenza agli incantesimi (15)"
+      ],
+      "note": "Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term.",
+      "source": "manual"
+    },
+    {
+      "en": "Wild",
+      "it": "selvatico",
+      "strict": false,
+      "kind": "item",
+      "en_case": true,
+      "stems": [
+        "selvatic"
+      ],
+      "note": "Magic armor/shield special ability ('armatura selvatica' / 'scudo selvatico' — the stem covers both genders). Kept SOFT, not strict: 'Wild' is far too common an English word elsewhere (creature descriptions, flavor text) to enforce globally without constant false failures.",
+      "source": "manual"
+    },
+    {
+      "en": "Slick, greater",
+      "it": "scivolosa, superiore",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "scivolosa, superior"
+      ],
+      "note": "Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term.",
+      "source": "manual"
+    },
+    {
+      "en": "Shadow, greater",
+      "it": "ombra, superiore",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "ombra, superior"
+      ],
+      "note": "Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term.",
+      "source": "manual"
+    },
+    {
+      "en": "Silent moves, greater",
+      "it": "movimento silenzioso, superiore",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "movimento silenzioso, superior"
+      ],
+      "note": "Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term.",
+      "source": "manual"
+    },
+    {
+      "en": "Acid resistance, improved",
+      "it": "resistenza all'acido, migliorata",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "resistenza all'acido, migliorat"
+      ],
+      "note": "Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term.",
+      "source": "manual"
+    },
+    {
+      "en": "Cold resistance, improved",
+      "it": "resistenza al freddo, migliorata",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "resistenza al freddo, migliorat"
+      ],
+      "note": "Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term.",
+      "source": "manual"
+    },
+    {
+      "en": "Electricity resistance, improved",
+      "it": "resistenza all'elettricità, migliorata",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "resistenza all'elettricit",
+        "migliorat"
+      ],
+      "note": "Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term.",
+      "source": "manual"
+    },
+    {
+      "en": "Fire resistance, improved",
+      "it": "resistenza al fuoco, migliorata",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "resistenza al fuoco, migliorat"
+      ],
+      "note": "Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term.",
+      "source": "manual"
+    },
+    {
+      "en": "Sonic resistance, improved",
+      "it": "resistenza al suono, migliorata",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "resistenza al suono, migliorat"
+      ],
+      "note": "Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term.",
+      "source": "manual"
+    },
+    {
+      "en": "Spell resistance (17)",
+      "it": "resistenza agli incantesimi (17)",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "resistenza agli incantesimi (17)"
+      ],
+      "note": "Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term.",
+      "source": "manual"
+    },
+    {
+      "en": "Etherealness",
+      "it": "forma eterea",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "forma eterea"
+      ],
+      "note": "Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. en_case scopes this to the capitalised property name so it doesn't fire on the lowercase 'etherealness' spell name that appears as a prerequisite in unrelated entries.",
+      "en_case": true,
+      "source": "manual"
+    },
+    {
+      "en": "Undead controlling",
+      "it": "controllo dei morti",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "controllo dei morti"
+      ],
+      "note": "Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term.",
+      "source": "manual"
+    },
+    {
+      "en": "Fortification, heavy",
+      "it": "fortificazione, pesante",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "fortificazione, pesant"
+      ],
+      "note": "Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term.",
+      "source": "manual"
+    },
+    {
+      "en": "Spell resistance (19)",
+      "it": "resistenza agli incantesimi (19)",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "resistenza agli incantesimi (19)"
+      ],
+      "note": "Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term.",
+      "source": "manual"
+    },
+    {
+      "en": "Acid resistance, greater",
+      "it": "resistenza all'acido, superiore",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "resistenza all'acido, superior"
+      ],
+      "note": "Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term.",
+      "source": "manual"
+    },
+    {
+      "en": "Cold resistance, greater",
+      "it": "resistenza al freddo, superiore",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "resistenza al freddo, superior"
+      ],
+      "note": "Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term.",
+      "source": "manual"
+    },
+    {
+      "en": "Electricity resistance, greater",
+      "it": "resistenza all'elettricità, superiore",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "resistenza all'elettricit",
+        "superior"
+      ],
+      "note": "Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term.",
+      "source": "manual"
+    },
+    {
+      "en": "Fire resistance, greater",
+      "it": "resistenza al fuoco, superiore",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "resistenza al fuoco, superior"
+      ],
+      "note": "Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term.",
+      "source": "manual"
+    },
+    {
+      "en": "Sonic resistance, greater",
+      "it": "resistenza al suono, superiore",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "resistenza al suono, superior"
+      ],
+      "note": "Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term.",
+      "source": "manual"
+    },
+    {
+      "en": "Arrow catching",
+      "it": "attirare frecce",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "attirare frecc"
+      ],
+      "note": "Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term.",
+      "source": "manual"
+    },
+    {
+      "en": "Bashing",
+      "it": "sfondamento",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "sfondament"
+      ],
+      "note": "Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term.",
+      "source": "manual"
+    },
+    {
+      "en": "Blinding",
+      "it": "accecante",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "accecant"
+      ],
+      "note": "Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term.",
+      "source": "manual"
+    },
+    {
+      "en": "Arrow deflection",
+      "it": "deviazione delle frecce",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "deviazione delle frecc"
+      ],
+      "note": "Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term.",
+      "source": "manual"
+    },
+    {
+      "en": "Animated",
+      "it": "animato",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "animat"
+      ],
+      "note": "Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term.",
+      "source": "manual"
+    },
+    {
+      "en": "Reflecting",
+      "it": "riflettente",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "riflettent"
+      ],
+      "note": "Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term.",
+      "source": "manual"
+    },
+    {
+      "en": "Returning",
+      "it": "ritornante",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "ritornant"
+      ],
+      "note": "Magic ranged weapon special ability. Official Italian D&D 3.5 term.",
+      "source": "manual"
+    },
+    {
+      "en": "Seeking",
+      "it": "ricercante",
+      "strict": true,
+      "kind": "item",
+      "stems": [
+        "ricercant"
+      ],
+      "note": "Magic ranged weapon special ability. Official Italian D&D 3.5 term.",
+      "source": "manual"
     }
   ]
 }

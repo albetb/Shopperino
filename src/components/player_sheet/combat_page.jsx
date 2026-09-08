@@ -45,7 +45,7 @@ import Stepper from '../common/Stepper';
 import EmptyState from '../common/EmptyState';
 import Icon from '../common/Icon';
 import { useUnits } from 'components/hooks/useUnits';
-import { t } from '../../lib/i18n';
+import { t, tx } from '../../lib/i18n';
 
 function formatBaseAttackBonus(bab) {
   const b = Number(bab) || 0;
@@ -468,7 +468,7 @@ export default function CombatPage() {
               : <Icon name="badge" />}
           </button>
           <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 'var(--space-1)' }}>
-            <Filigree>{characterClass || 'No class'} · level {characterLevel}</Filigree>
+            <Filigree>{tx('{0} · level {1}', characterClass || t('No class'), characterLevel)}</Filigree>
             <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 0 }}>
               <div className="sh-display" style={{ fontSize: 'var(--font-size-2xl)' }}>{characterName || t('Unnamed')}</div>
             </div>
@@ -515,7 +515,7 @@ export default function CombatPage() {
               || wornImmunities.length > 0 || grantedAbilities.length > 0) ? (
               <div className="sh-row-h" style={{ gap: 'var(--space-2)', flexWrap: 'wrap' }}>
                 {condDeltas.maxHp ? (
-                  <Pill tone="warn" icon="warning">Conditions: {fmtDelta(condDeltas.maxHp)} max HP</Pill>
+                  <Pill tone="warn" icon="warning">{tx('Conditions: {0} max HP', fmtDelta(condDeltas.maxHp))}</Pill>
                 ) : null}
                 {/* Damage reduction belongs with the hit points it protects,
                     and shows here only — never on the card of the feature that
@@ -523,13 +523,13 @@ export default function CombatPage() {
                     not stack: the best applies, or each applies on its own when
                     the bypass types differ. */}
                 {damageReductions.map(({ amount, bypass, source }) => (
-                  <Pill key={`${source}-${amount}-${bypass}`} tone="success" icon="shield" title={`From ${source}`}>
-                    DR {amount}/{bypass}
+                  <Pill key={`${source}-${amount}-${bypass}`} tone="success" icon="shield" title={tx('From {0}', source)}>
+                    {t('DR')} {amount}/{bypass}
                   </Pill>
                 ))}
                 {spellResistance > 0 && (
                   <Pill tone="success" icon="security" title={t('A caster must beat this with a caster level check to affect you')}>
-                    SR {spellResistance}
+                    {t('SR')} {spellResistance}
                   </Pill>
                 )}
                 {/* A ring of energy resistance is attuned to one energy type
@@ -540,23 +540,23 @@ export default function CombatPage() {
                     key={`${source}-${type}-${amount}`}
                     tone={type ? 'success' : 'warn'}
                     icon={type ? 'local_fire_department' : 'help'}
-                    title={`From ${source}`}
+                    title={tx('From {0}', source)}
                   >
-                    {type ? `Resist ${type.toLowerCase()} ${amount}` : `Resist ${amount} — pick an energy type`}
+                    {type ? tx('Resist {0} {1}', type.toLowerCase(), amount) : tx('Resist {0} — pick an energy type', amount)}
                   </Pill>
                 ))}
                 {missChance > 0 && (
                   <Pill tone="success" icon="blur_on" title={t('Attacks against you must beat this miss chance')}>
-                    {missChance}% miss chance
+                    {tx('{0}% miss chance', missChance)}
                   </Pill>
                 )}
                 {wornImmunities.map(({ what, source }) => (
-                  <Pill key={`${source}-${what}`} tone="success" icon="block" title={`From ${source}`}>
-                    Immune: {String(what).toLowerCase()}
+                  <Pill key={`${source}-${what}`} tone="success" icon="block" title={tx('From {0}', source)}>
+                    {tx('Immune: {0}', String(what).toLowerCase())}
                   </Pill>
                 ))}
                 {grantedAbilities.map(({ ability, source }) => (
-                  <Pill key={`${source}-${ability}`} tone="success" icon="auto_awesome" title={`From ${source}`}>
+                  <Pill key={`${source}-${ability}`} tone="success" icon="auto_awesome" title={tx('From {0}', source)}>
                     {ability}
                   </Pill>
                 ))}
@@ -634,7 +634,7 @@ export default function CombatPage() {
                   if (phbMax > 0 && current > phbMax) {
                     return (
                       <div className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
-                        <Pill tone="warn" icon="warning">Over PHB max ({phbMax})</Pill>
+                        <Pill tone="warn" icon="warning">{tx('Over {0} max ({1})', t('PHB'), phbMax)}</Pill>
                       </div>
                     );
                   }
@@ -703,8 +703,8 @@ export default function CombatPage() {
             source: 'run',
             label: t('Running'),
             note: hasRun
-              ? `A full-round run covers ${u.distance(runSpeed)} (×${runMultiplier}), and the Run feat keeps your Dexterity bonus to AC while running.`
-              : `A full-round run covers ${u.distance(runSpeed)} (×${runMultiplier}), and you lose your Dexterity bonus to AC while running.`,
+              ? tx('A full-round run covers {0} (×{1}), and the Run feat keeps your Dexterity bonus to AC while running.', u.distance(runSpeed), runMultiplier)
+              : tx('A full-round run covers {0} (×{1}), and you lose your Dexterity bonus to AC while running.', u.distance(runSpeed), runMultiplier),
           }])}
           cond={condDeltas.speed || 0}
           sub={
@@ -782,7 +782,7 @@ export default function CombatPage() {
               {wildShapeAttacks.length === 0 ? (
                 <div className="sh-warn-strip">
                   <Icon name="sports_mma" />
-                  This form has no natural attacks.
+                  {t('This form has no natural attacks.')}
                 </div>
               ) : wildShapeAttacks.map((line, idx) => (
                 <div
@@ -802,8 +802,7 @@ export default function CombatPage() {
                 </div>
               ))}
               <div className="sh-faint" style={{ fontSize: 'var(--font-size-xs)' }}>
-                Natural attacks of your form, computed with your own base attack
-                bonus and the form&apos;s Strength. Extra limbs grant no extra attacks.
+                {t("Natural attacks of your form, computed with your own base attack bonus and the form's Strength. Extra limbs grant no extra attacks.")}
               </div>
             </div>
           ) : (
@@ -814,9 +813,13 @@ export default function CombatPage() {
           {(untrainedArmor || untrainedShield) && (
             <div className="sh-warn-strip" style={{ marginBottom: 'var(--space-2)' }}>
               <Icon name="shield_with_heart" />
-              Not proficient with your {[untrainedArmor && t('armor'), untrainedShield && t('shield')]
-                .filter(Boolean).join(t(' or '))}
-              {armorProficiencyPenalty !== 0 && `: ${armorProficiencyPenalty} on every attack roll`}
+              {tx(
+                armorProficiencyPenalty !== 0
+                  ? 'Not proficient with your {0}: {1} on every attack roll'
+                  : 'Not proficient with your {0}',
+                [untrainedArmor && t('armor'), untrainedShield && t('shield')].filter(Boolean).join(t(' or ')),
+                armorProficiencyPenalty
+              )}
             </div>
           )}
           {equippedWeapons.length > 0 && (
@@ -978,11 +981,12 @@ export default function CombatPage() {
                   </Pill>
                   <InfoPopover label={t('Two-weapon attack')}>
                     <p>
-                      A <b>full-round action</b>. A weapon in each hand grants one
-                      extra attack with the off hand, and both hands take a
-                      penalty for the round:{' '}
-                      <b>{twoWeapon.penalties.main}</b> on every main-hand attack
-                      and <b>{twoWeapon.penalties.offHand}</b> on the off-hand one.
+                      {tx(
+                        'A {0}. A weapon in each hand grants one extra attack with the off hand, and both hands take a penalty for the round: {1} on every main-hand attack and {2} on the off-hand one.',
+                        <b>{t('full-round action')}</b>,
+                        <b>{twoWeapon.penalties.main}</b>,
+                        <b>{twoWeapon.penalties.offHand}</b>
+                      )}
                     </p>
                     <p>
                       {twoWeapon.offHandIsLight
@@ -993,8 +997,7 @@ export default function CombatPage() {
                         : t(' Two-Weapon Fighting would bring the off hand up to match the main one.')}
                     </p>
                     <p>
-                      The off-hand weapon adds only <b>{t('half')}</b> your Strength
-                      modifier to damage.
+                      {tx('The off-hand weapon adds only {0} your Strength modifier to damage.', <b>{t('half')}</b>)}
                     </p>
                   </InfoPopover>
                 </span>
@@ -1036,26 +1039,29 @@ export default function CombatPage() {
                     +{flurry.extraAttacks} attack{flurry.extraAttacks === 1 ? '' : 's'}
                   </Pill>
                   <Pill tone={flurry.penalty < 0 ? 'warn' : 'default'}>
-                    {flurry.penalty === 0 ? t('no penalty') : `${flurry.penalty} to all`}
+                    {flurry.penalty === 0 ? t('no penalty') : tx('{0} to all', flurry.penalty)}
                   </Pill>
                   {/* Was a bare `info` glyph beside a title tooltip: it looked
                       like a button, did nothing, and said nothing at all on a
                       phone, where a hover title never appears. */}
                   <InfoPopover label={t('Flurry of blows')}>
                     <p>
-                      A <b>full-round action</b> granting{' '}
-                      {flurry.extraAttacks} extra attack
-                      {flurry.extraAttacks === 1 ? '' : 's'} at your highest base
-                      attack bonus.
+                      {tx(
+                        flurry.extraAttacks === 1
+                          ? 'A {0} granting {1} extra attack at your highest base attack bonus.'
+                          : 'A {0} granting {1} extra attacks at your highest base attack bonus.',
+                        <b>{t('full-round action')}</b>,
+                        flurry.extraAttacks
+                      )}
                       {flurry.penalty === 0
                         ? t(' At your level it costs no penalty at all.')
-                        : ` Every attack in the flurry, the extra one included, takes ${flurry.penalty}.`}
+                        : tx(' Every attack in the flurry, the extra one included, takes {0}.', flurry.penalty)}
                     </p>
                     <p>
-                      Usable only with <b>unarmed strikes or monk weapons</b> —
-                      kama, nunchaku, sai, shuriken, siangham — and a single
-                      flurry may not mix the two. A quarterstaff qualifies only
-                      while wielded two-handed.
+                      {tx(
+                        'Usable only with {0} — kama, nunchaku, sai, shuriken, siangham — and a single flurry may not mix the two. A quarterstaff qualifies only while wielded two-handed.',
+                        <b>{t('unarmed strikes or monk weapons')}</b>
+                      )}
                     </p>
                   </InfoPopover>
                 </span>
@@ -1105,19 +1111,25 @@ export default function CombatPage() {
                     held. Both now come from the model. */}
                 <InfoPopover label={t('Sneak attack')}>
                   <p>
-                    Applies when the target is <b>denied its Dexterity bonus</b>{' '}
-                    to AC, or when you are <b>flanking</b> it
-                    {sneakAttackRange > 0 && <> — with a ranged weapon, only within <b>{u.distance(sneakAttackRange)}</b></>}.
+                    {sneakAttackRange > 0
+                      ? tx(
+                          'Applies when the target is {0} to AC, or when you are {1} it — with a ranged weapon, only within {2}.',
+                          <b>{t('denied its Dexterity bonus')}</b>,
+                          <b>{t('flanking')}</b>,
+                          <b>{u.distance(sneakAttackRange)}</b>
+                        )
+                      : tx(
+                          'Applies when the target is {0} to AC, or when you are {1} it.',
+                          <b>{t('denied its Dexterity bonus')}</b>,
+                          <b>{t('flanking')}</b>
+                        )}
                   </p>
                   <p>
-                    The dice are added on a critical hit but are{' '}
-                    <b>never multiplied</b>, and any concealment at all negates
-                    them.
+                    {tx('The dice are added on a critical hit but are {0}, and any concealment at all negates them.', <b>{t('never multiplied')}</b>)}
                   </p>
                   {sneakAttackImmuneTypes.length > 0 && (
                     <p>
-                      No effect on {sneakAttackImmuneTypes.join(', ').toLowerCase()}{' '}
-                      creatures, or anything else immune to critical hits.
+                      {tx('No effect on {0} creatures, or anything else immune to critical hits.', sneakAttackImmuneTypes.join(', ').toLowerCase())}
                     </p>
                   )}
                 </InfoPopover>

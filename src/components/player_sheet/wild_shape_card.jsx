@@ -18,6 +18,7 @@ import EmptyState from '../common/EmptyState';
 import Icon from '../common/Icon';
 import '../../style/wild_shape.css';
 import { useUnits } from '../hooks/useUnits';
+import { t, tx, tName } from '../../lib/i18n';
 
 /**
  * The two wild shape allowances, as card configuration. They share every
@@ -88,29 +89,33 @@ function ShapeRules({ pool, player, hours, max }) {
   return (
     <>
       <p>
-        A standard action, <b>{max} times per day</b>, each lasting up to{' '}
-        <b>{hours} hour{hours === 1 ? '' : 's'}</b> — or until you choose to
-        change back, which is free. Only one shape at a time.
+        {tx(
+          'A {0}, {1}, each lasting up to {2} — or until you choose to change back, which is free. Only one shape at a time.',
+          <b>{t('standard action')}</b>,
+          <b>{tx('{0} times per day', max)}</b>,
+          <b>{tx(hours === 1 ? '{0} hour' : '{0} hours', hours)}</b>
+        )}
       </p>
-      <p><b>This pool offers:</b> {pool.describeLimits(player)}.</p>
+      <p>{tx('{0} {1}.', <b>{t('This pool offers:')}</b>, pool.describeLimits(player))}</p>
       <p>
-        Assuming a form works like <i>polymorph</i>: you take the creature&apos;s
-        physical scores, natural attacks, movement modes and natural armor, and
-        heal as though you had rested a night. You keep your own hit points,
-        Intelligence, Wisdom, Charisma, base attack bonus, saves, skills and
-        class features. Your gear melds into the new body and stops working.
+        {tx(
+          "Assuming a form works like {0}: you take the creature's physical scores, natural attacks, movement modes and natural armor, and heal as though you had rested a night. You keep your own hit points, Intelligence, Wisdom, Charisma, base attack bonus, saves, skills and class features. Your gear melds into the new body and stops working.",
+          <i>polymorph</i>
+        )}
       </p>
       {elemental ? (
         <p>
-          Elemental forms are the exception to the usual limit: you <b>do</b>{' '}
-          gain the elemental&apos;s extraordinary, supernatural and spell-like
-          abilities and its feats, while staying your own creature type.
+          {tx(
+            "Elemental forms are the exception to the usual limit: you {0} gain the elemental's extraordinary, supernatural and spell-like abilities and its feats, while staying your own creature type.",
+            <b>{t('do')}</b>
+          )}
         </p>
       ) : (
         <p>
-          You do <b>not</b> gain the animal&apos;s supernatural or spell-like
-          abilities — only its extraordinary ones. You cannot speak in form, so
-          spells with a verbal component fail unless you have Natural Spell.
+          {tx(
+            "You do {0} gain the animal's supernatural or spell-like abilities — only its extraordinary ones. You cannot speak in form, so spells with a verbal component fail unless you have Natural Spell.",
+            <b>{t('not')}</b>
+          )}
         </p>
       )}
     </>
@@ -157,42 +162,47 @@ function ShapeCard({ pool }) {
      rules a druid reads once. */
   const cardAction = (
     <span className="sh-row-h" style={{ gap: 'var(--space-1)' }}>
-      <InfoPopover label={pool.label}>
+      <InfoPopover label={t(pool.label)}>
         <ShapeRules pool={pool} player={player} hours={hours} max={max} />
       </InfoPopover>
       <IconButton
         icon={collapsed ? 'expand_more' : 'expand_less'}
         ghost size="sm"
         onClick={toggleCollapsed}
-        aria-label={`Toggle ${pool.label}`}
+        aria-label={tx('Toggle {0}', t(pool.label))}
       />
     </span>
   );
 
   return (
     <Card
-      title={`${pool.label} - ${remaining}/${max} - ${hours}h`}
+      title={`${t(pool.label)} - ${remaining}/${max} - ${hours}h`}
       className="sh-card--head-spread"
       action={cardAction}
     >
       {!collapsed && (
         <div className="wild-shape-card sh-stack">
           <div className="sh-row-h sh-spread" style={{ gap: 'var(--space-2)' }}>
-            <Filigree>{remaining} of {max} left today</Filigree>
+            <Filigree>{tx('{0} of {1} left today', remaining, max)}</Filigree>
             <IconButton
               icon="restart_alt"
               ghost size="sm"
               onClick={() => dispatch(onResetWildShapeUses(pool.usesKey))}
               disabled={used === 0}
-              aria-label={`Restore ${pool.label} uses`}
-              title="Restore uses to maximum"
+              aria-label={tx('Restore {0} uses', t(pool.label))}
+              title={t('Restore uses to maximum')}
             />
           </div>
 
           {overCap && (
             <div className="sh-warn-strip">
               <Icon name="warning" />
-              {used - max} more transformation{used - max === 1 ? '' : 's'} than the day allows.
+              {tx(
+                (used - max) === 1
+                  ? '{0} more transformation than the day allows.'
+                  : '{0} more transformations than the day allows.',
+                used - max
+              )}
             </div>
           )}
 
@@ -203,8 +213,10 @@ function ShapeCard({ pool }) {
               {blockedByOther && (
                 <div className="sh-warn-strip">
                   <Icon name="block" />
-                  Already shaped as <b>{form?.name}</b>. Return to your true form
-                  first — only one shape at a time.
+                  {tx(
+                    'Already shaped as {0}. Return to your true form first — only one shape at a time.',
+                    <b>{tName('creatures', form?.name)}</b>
+                  )}
                 </div>
               )}
 
@@ -212,20 +224,20 @@ function ShapeCard({ pool }) {
                 <input
                   type="text"
                   className="sh-input"
-                  placeholder="Search forms…"
+                  placeholder={t('Search forms…')}
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  aria-label={`Search ${pool.label} forms`}
+                  aria-label={tx('Search {0} forms', t(pool.label))}
                 />
               )}
 
               {filtered.length === 0 ? (
                 <EmptyState
                   icon={pool.icon}
-                  title={forms.length === 0 ? 'No forms available' : 'Nothing matches'}
+                  title={forms.length === 0 ? t('No forms available') : t('Nothing matches')}
                   hint={forms.length === 0
-                    ? `Forms are limited to unlocked sizes and ${player.getWildShapeHdCap()} Hit Dice or fewer.`
-                    : 'Try clearing the search.'}
+                    ? tx('Forms are limited to unlocked sizes and {0} Hit Dice or fewer.', player.getWildShapeHdCap())
+                    : t('Try clearing the search.')}
                 />
               ) : (
                 <div className="wild-shape-list" role="list">
@@ -235,7 +247,7 @@ function ShapeCard({ pool }) {
                         type="button"
                         className="button-link wild-shape-name"
                         onClick={() => dispatch(addCardByLink({ links: creature.ref }))}
-                        title="Show stat block"
+                        title={t('Show stat block')}
                       >
                         {player.getFormDisplayName(creature)}
                       </button>
@@ -246,10 +258,10 @@ function ShapeCard({ pool }) {
                           size="sm"
                           disabled={blockedByOther}
                           onClick={() => dispatch(onEnterWildShape(creature.ref))}
-                          aria-label={`Transform into ${creature.name}`}
+                          aria-label={tx('Transform into {0}', tName('creatures', creature.name))}
                           title={blockedByOther
-                            ? 'Return to your true form first'
-                            : `Transform into ${creature.name}`}
+                            ? t('Return to your true form first')
+                            : tx('Transform into {0}', tName('creatures', creature.name))}
                         />
                       </span>
                     </div>
@@ -295,18 +307,18 @@ function ShapedBody({ player, form, dispatch }) {
           type="button"
           className="wild-shape-statblock"
           onClick={() => dispatch(addCardByLink({ links: player.getWildShapeRef() }))}
-          title="Show base stat block"
+          title={t('Show base stat block')}
         >
-          <Icon name="menu_book" size={16} /> Stat block
+          <Icon name="menu_book" size={16} /> {t('Stat block')}
         </button>
         <button
           type="button"
           className="wild-shape-revert"
           onClick={() => dispatch(onExitWildShape())}
-          title="Return to true form"
+          title={t('Return to true form')}
         >
           <Icon name="undo" size={14} />
-          True form
+          {t('True form')}
         </button>
       </div>
 
@@ -314,21 +326,20 @@ function ShapedBody({ player, form, dispatch }) {
         <Pill tone="accent" icon="straighten">{form?.size}</Pill>
         {naturalArmor > 0 && <Pill tone="accent" icon="security">+{naturalArmor} natural</Pill>}
         {modes.map(({ mode, speed }) => (
-          <Pill key={mode} tone="default" icon="directions_run">{mode} {u.distance(speed)}</Pill>
+          <Pill key={mode} tone="default" icon="directions_run">{t(mode.toUpperCase())} {u.distance(speed)}</Pill>
         ))}
       </div>
 
       {!canCast && (
         <div className="sh-warn-strip">
           <Icon name="auto_fix_off" />
-          No speech in this form, so verbal components fail — you cannot cast.
-          The Natural Spell feat removes this.
+          {t('No speech in this form, so verbal components fail — you cannot cast. The Natural Spell feat removes this.')}
         </div>
       )}
 
       {(specialAttacks.length > 0 || specialQualities.length > 0 || feats.length > 0) && (
         <div className="sh-stack" style={{ gap: 'var(--space-1)' }}>
-          <Filigree>Gained</Filigree>
+          <Filigree>{t('Gained')}</Filigree>
           <div className="sh-row-h" style={{ gap: 'var(--space-2)', flexWrap: 'wrap' }}>
             {specialAttacks.map((s) => <Pill key={`a-${s}`} tone="success">{s}</Pill>)}
             {specialQualities.map((s) => <Pill key={`q-${s}`} tone="success">{s}</Pill>)}
@@ -336,10 +347,7 @@ function ShapedBody({ player, form, dispatch }) {
           </div>
           {isElemental && (
             <div className="sh-faint" style={{ fontSize: 'var(--font-size-xs)' }}>
-              An elemental form is the exception to the usual rule: you gain all
-              of its extraordinary, supernatural and spell-like abilities, and
-              its feats, for as long as you hold the shape. Your own creature
-              type stays what it was.
+              {t('An elemental form is the exception to the usual rule: you gain all of its extraordinary, supernatural and spell-like abilities, and its feats, for as long as you hold the shape. Your own creature type stays what it was.')}
             </div>
           )}
         </div>
@@ -353,7 +361,7 @@ function ShapedBody({ player, form, dispatch }) {
             onClick={() => setCombatOpen((v) => !v)}
           >
             <Icon name={combatOpen ? 'expand_less' : 'expand_more'} size={16} />
-            Creature notes
+            {t('Creature notes')}
           </button>
           {combatOpen && <div className="wild-shape-combat-text">{parse(u.prose(form.combat))}</div>}
         </div>

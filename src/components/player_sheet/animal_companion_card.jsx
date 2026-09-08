@@ -35,7 +35,7 @@ import Filigree from '../common/Filigree';
 import Icon from '../common/Icon';
 import '../../style/animal_companion.css';
 import { useUnits } from '../hooks/useUnits';
-import { t } from '../../lib/i18n';
+import { t, tx } from '../../lib/i18n';
 
 /** Single-value bonus thunks keyed by the companion field they edit. */
 const BONUS_THUNK = {
@@ -112,7 +112,7 @@ export default function AnimalCompanionCard() {
             <span className="sh-eyebrow">Effective druid level {effLevel}</span>
             {selectable.length === 0 ? (
               <div className="sh-faint" style={{ fontSize: 'var(--font-size-sm)' }}>
-                No companions available at this level yet.
+                {t('No companions available at this level yet.')}
               </div>
             ) : (
               <select
@@ -355,7 +355,7 @@ export default function AnimalCompanionCard() {
             <StatPill
               className="sh-stat-pill--sm"
               accent
-              label="AC"
+              label={t('AC')}
               value={ac}
               sub={
                 <>
@@ -368,7 +368,7 @@ export default function AnimalCompanionCard() {
             />
             <StatPill
               className="sh-stat-pill--sm"
-              label="Init"
+              label={t('Init')}
               value={fmtBonus(init)}
               sub={companion.initBonus ? `bonus ${fmtBonus(companion.initBonus)}` : null}
               editing={editBonus === 'initBonus'}
@@ -376,7 +376,7 @@ export default function AnimalCompanionCard() {
             />
             <StatPill
               className="sh-stat-pill--sm"
-              label="Speed"
+              label={t('Speed')}
               value={u.distance(speed)}
               sub={(companion.speedBonus || shoeBonus)
                 ? `bonus ${fmtBonus(companion.speedBonus + shoeBonus)}`
@@ -391,7 +391,7 @@ export default function AnimalCompanionCard() {
           <div className="sh-grid-3">
             <StatPill
               className="sh-stat-pill--sm"
-              label="Fort"
+              label={t('Fort')}
               value={fmtBonus(fort)}
               sub={companion.fortBonus ? `bonus ${fmtBonus(companion.fortBonus)}` : null}
               editing={editBonus === 'fortBonus'}
@@ -399,7 +399,7 @@ export default function AnimalCompanionCard() {
             />
             <StatPill
               className="sh-stat-pill--sm"
-              label="Ref"
+              label={t('Ref')}
               value={fmtBonus(reflex)}
               sub={companion.reflexBonus ? `bonus ${fmtBonus(companion.reflexBonus)}` : null}
               editing={editBonus === 'reflexBonus'}
@@ -407,7 +407,7 @@ export default function AnimalCompanionCard() {
             />
             <StatPill
               className="sh-stat-pill--sm"
-              label="Will"
+              label={t('Will')}
               value={fmtBonus(will)}
               sub={companion.willBonus ? `bonus ${fmtBonus(companion.willBonus)}` : null}
               editing={editBonus === 'willBonus'}
@@ -419,7 +419,7 @@ export default function AnimalCompanionCard() {
           {/* Attacks */}
           {attacks.length > 0 && (
             <div className="sh-stack" style={{ gap: 'var(--space-2)' }}>
-              <Filigree>Attacks</Filigree>
+              <Filigree>{t('Attacks')}</Filigree>
               {attacks.map((line) => {
                 const overridden = !!companion.overrides?.[line.index];
                 const labelName = `${line.count > 1 ? `${line.count} ` : ''}${line.name}`;
@@ -428,23 +428,23 @@ export default function AnimalCompanionCard() {
                     <Card key={line.index} padding>
                       <div className="sh-stack" style={{ gap: 'var(--space-2)' }}>
                         <div className="sh-row-h sh-spread">
-                          <span className="sh-eyebrow">{labelName} — attack</span>
+                          <span className="sh-eyebrow">{tx('{0} — attack', labelName)}</span>
                           <Stepper value={tempAtk.bonus} min={-50} max={50} onChange={(v) => setTempAtk((p) => ({ ...p, bonus: v }))} />
                         </div>
                         <div className="sh-row-h sh-spread">
-                          <span className="sh-eyebrow">Damage</span>
+                          <span className="sh-eyebrow">{t('Damage')}</span>
                           <input
                             type="text"
                             className="companion-name-input"
                             value={tempAtk.damage}
                             onChange={(e) => setTempAtk((p) => ({ ...p, damage: e.target.value }))}
-                            aria-label="Attack damage"
+                            aria-label={t('Attack damage')}
                           />
                         </div>
                         <div className="sh-row-h" style={{ gap: 'var(--space-2)', justifyContent: 'flex-end' }}>
-                          {overridden && <IconButton icon="restart_alt" ghost size="sm" onClick={() => resetAtk(line.index)} aria-label="Reset attack" />}
-                          <IconButton icon="check" size="sm" onClick={saveAtk} aria-label="Save attack" />
-                          <IconButton icon="close" ghost size="sm" onClick={() => setEditAtk(null)} aria-label="Cancel" />
+                          {overridden && <IconButton icon="restart_alt" ghost size="sm" onClick={() => resetAtk(line.index)} aria-label={t('Reset attack')} />}
+                          <IconButton icon="check" size="sm" onClick={saveAtk} aria-label={t('Save attack')} />
+                          <IconButton icon="close" ghost size="sm" onClick={() => setEditAtk(null)} aria-label={t('Cancel')} />
                         </div>
                       </div>
                     </Card>
@@ -456,7 +456,7 @@ export default function AnimalCompanionCard() {
                     <span className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
                       <Pill tone={overridden ? 'warn' : 'default'}>{fmtBonus(line.bonus ?? 0)}</Pill>
                       {line.damage && <Pill tone={overridden ? 'warn' : 'default'}>{line.damage}</Pill>}
-                      <IconButton icon="edit" ghost size="sm" onClick={() => startEditAtk(line)} aria-label={`Edit ${line.name} attack`} />
+                      <IconButton icon="edit" ghost size="sm" onClick={() => startEditAtk(line)} aria-label={tx('Edit {0} attack', line.name)} />
                     </span>
                   </div>
                 );
@@ -470,9 +470,9 @@ export default function AnimalCompanionCard() {
               type="button"
               className="companion-ability-btn"
               onClick={() => dispatch(addCardByLink({ links: 'companionAbility#bonus-tricks' }))}
-              title="Show description"
+              title={t('Show description')}
             >
-              <Pill tone="default" icon="pets">Bonus tricks: {tricks}</Pill>
+              <Pill tone="default" icon="pets">{tx('Bonus tricks: {0}', tricks)}</Pill>
             </button>
             {specials.map((s) => (
               <button
@@ -480,7 +480,7 @@ export default function AnimalCompanionCard() {
                 type="button"
                 className="companion-ability-btn"
                 onClick={() => dispatch(addCardByLink({ links: `companionAbility#${slug(s)}` }))}
-                title="Show description"
+                title={t('Show description')}
               >
                 <Pill tone="accent">{s}</Pill>
               </button>
@@ -496,7 +496,7 @@ export default function AnimalCompanionCard() {
                 onClick={() => setCombatOpen((v) => !v)}
               >
                 <Icon name={combatOpen ? 'expand_less' : 'expand_more'} size={16} />
-                Combat
+                {t('Combat')}
               </button>
               {combatOpen && <div className="companion-combat-text">{parse(u.prose(combatHtml))}</div>}
             </div>

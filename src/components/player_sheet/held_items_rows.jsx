@@ -9,6 +9,7 @@ import {
   onResetHeldItemCharges,
 } from '../../store/thunks/playerSheetThunks';
 import '../../style/held_items.css';
+import { t, tx } from '../../lib/i18n';
 
 /**
  * Wands, rods and staffs at the foot of the attacks card.
@@ -41,8 +42,8 @@ function Charges({ item, onSpend, onReset }) {
         icon="add"
         ghost
         size="sm"
-        title={`Give back a charge to ${item.name}`}
-        aria-label={`Give back a charge to ${item.name}`}
+        title={tx('Give back a charge to {0}', item.name)}
+        aria-label={tx('Give back a charge to {0}', item.name)}
         disabled={item.spent === 0}
         onClick={() => onSpend(-1)}
       />
@@ -50,8 +51,8 @@ function Charges({ item, onSpend, onReset }) {
         icon="restart_alt"
         ghost
         size="sm"
-        title={`Refill ${item.name}`}
-        aria-label={`Refill ${item.name}`}
+        title={tx('Refill {0}', item.name)}
+        aria-label={tx('Refill {0}', item.name)}
         disabled={item.spent === 0}
         onClick={onReset}
       />
@@ -72,18 +73,21 @@ function SpellRow({ item, spell, onSpend }) {
           <span className="sh-faint held-item-cl">CL {spell.casterLevel}</span>
         )}
         {/* Only worth saying when it is not the usual one charge. */}
-        {spell.charges > 1 && <Pill tone="ghost">{spell.charges} charges</Pill>}
+        {spell.charges > 1 && <Pill tone="ghost">{tx('{0} charges', spell.charges)}</Pill>}
         {!spell.usable && (
-          <InfoPopover label="Not on your spell list">
+          <InfoPopover label={t('Not on your spell list')}>
             <p>{spell.reason}.</p>
             <p>
-              A wand or staff is a <b>spell trigger</b> item: anyone with the
-              spell on their class spell list can use it, whatever their level —
-              but the spell has to be on the list. Yours does not have it.
+              {tx(
+                'A wand or staff is a {0} item: anyone with the spell on their class spell list can use it, whatever their level — but the spell has to be on the list. Yours does not have it.',
+                <b>{t('spell trigger')}</b>
+              )}
             </p>
             <p>
-              <b>Use Magic Device</b> emulates the missing class, at DC 20. The
-              button still works: the table decides.
+              {tx(
+                '{0} emulates the missing class, at DC 20. The button still works: the table decides.',
+                <b>{t('Use Magic Device')}</b>
+              )}
             </p>
           </InfoPopover>
         )}
@@ -91,8 +95,8 @@ function SpellRow({ item, spell, onSpend }) {
           icon="bolt"
           ghost
           size="sm"
-          title={`Cast ${spell.name}`}
-          aria-label={`Cast ${spell.name} from ${item.name}`}
+          title={tx('Cast {0}', spell.name)}
+          aria-label={tx('Cast {0} from {1}', spell.name, item.name)}
           onClick={() => onSpend(spell.charges)}
         />
       </span>
@@ -111,7 +115,7 @@ function HeldItem({ item, onSpend, onReset }) {
             <span className="sh-display">{item.name}</span>
           </SpellLink>
           {item.isSecondarySet && (
-            <span className="sh-faint held-item-stowed-note">second set</span>
+            <span className="sh-faint held-item-stowed-note">{t('second set')}</span>
           )}
         </span>
         <Charges item={item} onSpend={onSpend} onReset={onReset} />
@@ -129,18 +133,20 @@ function HeldItem({ item, onSpend, onReset }) {
           <span className="held-item-spell-meta">
             <InfoPopover label={item.metamagicFeat}>
               <p>
-                Lets you apply <b>{item.metamagicFeat}</b> to a spell as you cast
-                it, <b>without raising the slot it uses</b> — which is the whole
-                point of a metamagic rod.
+                {tx(
+                  'Lets you apply {0} to a spell as you cast it, {1} — which is the whole point of a metamagic rod.',
+                  <b>{item.metamagicFeat}</b>,
+                  <b>{t('without raising the slot it uses')}</b>
+                )}
               </p>
-              <p>You need not have the feat, and the rod must be held.</p>
+              <p>{t('You need not have the feat, and the rod must be held.')}</p>
             </InfoPopover>
             <IconButton
               icon="bolt"
               ghost
               size="sm"
-              title={`Use ${item.name}`}
-              aria-label={`Use ${item.name}`}
+              title={tx('Use {0}', item.name)}
+              aria-label={tx('Use {0}', item.name)}
               onClick={() => onSpend(1)}
             />
           </span>
@@ -150,7 +156,7 @@ function HeldItem({ item, onSpend, onReset }) {
       {unusable && (
         <div className="sh-warn-strip held-item-warn">
           <Icon name="warning" />
-          Not on your spell list — a Use Magic Device check (DC 20) would be needed
+          {tx('Not on your spell list — a {0} check (DC 20) would be needed', t('Use Magic Device'))}
         </div>
       )}
     </div>
