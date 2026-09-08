@@ -173,9 +173,14 @@ main way this work goes slowly.
     python .claude/skills/translate-it/scripts/en_drift.py    # English unmoved
     python .claude/skills/translate-it/scripts/verify.py
     ```
-    `en_drift.py` reports any wording an English reader would now see
-    differently. Restructuring a sentence shows up there too — read each line
-    and confirm the English still renders identically.
+    `en_drift.py` exits non-zero and lists any wording an English reader would
+    now see differently. **Account for every line in your report.** A
+    restructure — a sentence folded into one `tx()`, a shadowed parameter
+    renamed — is fine and renders the same. A line that *adds or drops an
+    English word* is a defect, not a restructure: `label="units"` becoming
+    `t('the units')` makes an English reader see "How the units works". If the
+    Italian reads better with an article, put the article in the Italian, never
+    in the key.
 
 ### Display strings in `src/lib`
 

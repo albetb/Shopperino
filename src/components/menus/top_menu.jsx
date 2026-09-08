@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import logo from '../../data/logo-shopperino.png';
 import { downloadLocalStorage, handleFileUpload } from '../../lib/storage';
 import { isMobile } from '../../lib/utils';
+import { t, tx } from '../../lib/i18n';
 import { setMasterMode, setSharedShop, setSharedShopSheetOpen, setStateCurrentTab, setUnits, selectUnits, setLang, selectLang } from '../../store/slices/appSlice';
 import { setPlayerSheetMainView } from '../../store/slices/playerSheetSlice';
 import { UNIT_MODES, UNIT_MODE_LABELS, UNIT_MODE_HINTS } from '../../lib/units';
@@ -47,7 +48,7 @@ export default function TopMenu() {
   const settingsBtnRef = useRef(null);
   const settingsBoxRef = useRef(null);
 
-  const visibleTabs = TABS.filter(t => !t.masterOnly || isMasterMode);
+  const visibleTabs = TABS.filter(tab => !tab.masterOnly || isMasterMode);
   const mobile = isMobile();
   const showLeftMenu = mobile ? !sharedShop : false;
 
@@ -117,16 +118,16 @@ export default function TopMenu() {
   );
 
   const brand = (
-    <button type="button" className="sh-topbar-brand" onClick={() => gotoTab(0)} aria-label="Shopperino · home">
+    <button type="button" className="sh-topbar-brand" onClick={() => gotoTab(0)} aria-label={t('Shopperino · home')}>
       <img src={logo} alt="" className="sh-brand-logo" />
       <span className="sh-brand-word">Shopperino</span>
     </button>
   );
 
   const masterPlayerToggle = (
-    <div className="sh-mode-toggle" role="group" aria-label="Master / Player mode">
-      <button type="button" aria-pressed={isMasterMode}  onClick={() => dispatch(setMasterMode(true))}>Master</button>
-      <button type="button" aria-pressed={!isMasterMode} onClick={() => dispatch(setMasterMode(false))}>Player</button>
+    <div className="sh-mode-toggle" role="group" aria-label={t('Master / Player mode')}>
+      <button type="button" aria-pressed={isMasterMode}  onClick={() => dispatch(setMasterMode(true))}>{t('Master', 'mode')}</button>
+      <button type="button" aria-pressed={!isMasterMode} onClick={() => dispatch(setMasterMode(false))}>{t('Player')}</button>
     </div>
   );
 
@@ -139,7 +140,7 @@ export default function TopMenu() {
      project rule — there is no hover on a phone, which is where this control is
      mostly used. */
   const unitToggle = (
-    <div className="sh-mode-toggle sh-unit-toggle" role="group" aria-label="Units">
+    <div className="sh-mode-toggle sh-unit-toggle" role="group" aria-label={t('Units')}>
       {UNIT_MODES.map(mode => (
         <button
           key={mode}
@@ -147,7 +148,7 @@ export default function TopMenu() {
           aria-pressed={units === mode}
           onClick={() => dispatch(setUnits(mode))}
         >
-          {UNIT_MODE_LABELS[mode]}
+          {t(UNIT_MODE_LABELS[mode])}
         </button>
       ))}
     </div>
@@ -158,7 +159,7 @@ export default function TopMenu() {
      language: someone looking for Italian is looking for "Italiano", not for
      the English word for it. */
   const langToggle = (
-    <div className="sh-mode-toggle sh-lang-toggle" role="group" aria-label="Language">
+    <div className="sh-mode-toggle sh-lang-toggle" role="group" aria-label={t('Language')}>
       {LANGUAGES.map(l => (
         <button
           key={l.code}
@@ -177,37 +178,34 @@ export default function TopMenu() {
     <>
       {mobile && (
         <div className="sh-row-h sh-spread" style={{ marginBottom: 'var(--space-3)' }}>
-          <span className="sh-eyebrow">Mode</span>
+          <span className="sh-eyebrow">{t('Mode')}</span>
           {masterPlayerToggle}
         </div>
       )}
-      <Button block variant="ghost" icon="download"             onClick={handleDownloadClick}>Export save</Button>
-      <Button block variant="ghost" icon="drive_folder_upload"  onClick={handleUploadClick}  >Import save</Button>
+      <Button block variant="ghost" icon="download"             onClick={handleDownloadClick}>{t('Export save')}</Button>
+      <Button block variant="ghost" icon="drive_folder_upload"  onClick={handleUploadClick}  >{t('Import save')}</Button>
       {mobile && (
-        <Button block variant="ghost" icon="qr_code_scanner" onClick={handleScanClick}>Scan shop QR</Button>
+        <Button block variant="ghost" icon="qr_code_scanner" onClick={handleScanClick}>{t('Scan shop QR')}</Button>
       )}
       <div className="sh-row-h sh-spread" style={{ marginTop: 'var(--space-2)' }}>
-        <span className="sh-eyebrow">Accent &amp; theme</span>
+        <span className="sh-eyebrow">{t('Accent & theme')}</span>
         <ColorPicker />
       </div>
 
       <div className="sh-units-row">
         <span className="sh-eyebrow sh-units-label">
-          Units
-          <InfoPopover label="units">
+          {t('Units')}
+          <InfoPopover label={t('units')}>
             <p>
-              Which units every distance and weight is read out in — the speeds
-              and ranges the sheet computes <b>and</b> the measurements inside
-              spell, item and monster descriptions.
+              {tx('Which units every distance and weight is read out in — the speeds and ranges the sheet computes {0} the measurements inside spell, item and monster descriptions.', <b>{t('and')}</b>)}
             </p>
             <ul>
               {UNIT_MODES.map(mode => (
-                <li key={mode}><b>{UNIT_MODE_LABELS[mode]}</b> — {UNIT_MODE_HINTS[mode]}</li>
+                <li key={mode}><b>{t(UNIT_MODE_LABELS[mode])}</b> — {t(UNIT_MODE_HINTS[mode])}</li>
               ))}
             </ul>
             <p>
-              The numbers follow the manual&apos;s own round values rather than
-              a calculator: 5 ft is 1.5 m exactly, and a pound is half a kilo.
+              {t('The numbers follow the manual\'s own round values rather than a calculator: 5 ft is 1.5 m exactly, and a pound is half a kilo.')}
             </p>
           </InfoPopover>
         </span>
@@ -216,17 +214,13 @@ export default function TopMenu() {
 
       <div className="sh-units-row">
         <span className="sh-eyebrow sh-units-label">
-          Language
-          <InfoPopover label="language">
+          {t('Language')}
+          <InfoPopover label={t('language')}>
             <p>
-              Which language the interface and the rules text are read in.
-              English is what the app is written in; anything not yet translated
-              is shown in English rather than left blank.
+              {t('Which language the interface and the rules text are read in. English is what the app is written in; anything not yet translated is shown in English rather than left blank.')}
             </p>
             <p>
-              Names of things — items, spells, conditions — keep their English
-              name inside your saved characters whatever you pick here, so
-              switching language never touches a character sheet.
+              {t('Names of things — items, spells, conditions — keep their English name inside your saved characters whatever you pick here, so switching language never touches a character sheet.')}
             </p>
           </InfoPopover>
         </span>
@@ -242,8 +236,8 @@ export default function TopMenu() {
     <IconButton
       ghost
       icon="casino"
-      aria-label="Roll dice"
-      title="Roll dice"
+      aria-label={t('Roll dice')}
+      title={t('Roll dice')}
       onClick={() => setDiceOpen(true)}
     />
   );
@@ -253,8 +247,8 @@ export default function TopMenu() {
       <IconButton
         ghost
         icon="settings"
-        aria-label="Settings"
-        title="Settings"
+        aria-label={t('Settings')}
+        title={t('Settings')}
         onClick={() => setSettingsOpen(v => !v)}
       />
       {!mobile && settingsOpen && (
@@ -268,17 +262,17 @@ export default function TopMenu() {
   );
 
   const tabBar = (
-    <nav className="sh-tabs" aria-label="Primary">
-      {visibleTabs.map(t => (
+    <nav className="sh-tabs" aria-label={t('Primary')}>
+      {visibleTabs.map(tab => (
         <button
-          key={t.id}
+          key={tab.id}
           type="button"
           className="sh-tab"
-          aria-current={currentTab === t.id ? 'page' : undefined}
-          onClick={() => gotoTab(t.id)}
+          aria-current={currentTab === tab.id ? 'page' : undefined}
+          onClick={() => gotoTab(tab.id)}
         >
-          <span className="material-symbols-outlined">{t.icon}</span>
-          <span>{t.label}</span>
+          <span className="material-symbols-outlined">{tab.icon}</span>
+          <span>{t(tab.label)}</span>
         </button>
       ))}
     </nav>
@@ -305,7 +299,7 @@ export default function TopMenu() {
         {mobile && (
           <div className="sh-topbar-actions">
             {showLeftMenu && (
-              <IconButton ghost icon="menu" aria-label="Open navigation" onClick={() => setNavOpen(true)} />
+              <IconButton ghost icon="menu" aria-label={t('Open navigation')} onClick={() => setNavOpen(true)} />
             )}
             {diceButton}
             {settingsButton}
@@ -318,19 +312,19 @@ export default function TopMenu() {
         <BottomSheet
           open={navOpen}
           onClose={() => setNavOpen(false)}
-          eyebrow="Navigate"
-          title="Where to?"
+          eyebrow={t('Navigate')}
+          title={t('Where to?')}
         >
           <div className="sh-stack">
-            {visibleTabs.map(t => (
+            {visibleTabs.map(tab => (
               <Button
-                key={t.id}
+                key={tab.id}
                 block
-                variant={currentTab === t.id ? 'primary' : 'ghost'}
-                icon={t.icon}
-                onClick={() => gotoTab(t.id)}
+                variant={currentTab === tab.id ? 'primary' : 'ghost'}
+                icon={tab.icon}
+                onClick={() => gotoTab(tab.id)}
               >
-                {t.label}
+                {t(tab.label)}
               </Button>
             ))}
           </div>
@@ -342,8 +336,8 @@ export default function TopMenu() {
         <BottomSheet
           open={settingsOpen}
           onClose={() => setSettingsOpen(false)}
-          eyebrow="Preferences"
-          title="Settings"
+          eyebrow={t('Preferences')}
+          title={t('Settings')}
         >
           <div className="sh-stack">{settingsMenuItems}</div>
         </BottomSheet>

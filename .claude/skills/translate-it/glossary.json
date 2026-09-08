@@ -1491,6 +1491,41 @@
       "strict": true,
       "kind": "abbrev",
       "note": "Intelligence ability score abbreviation (same in Italian)."
+    },
+    {
+      "en": "Spellbook",
+      "it": "Libro degli incantesimi",
+      "strict": true,
+      "kind": "ui",
+      "note": "App tab name: the per-character spell tracker."
+    },
+    {
+      "en": "Player sheet",
+      "it": "Scheda del personaggio",
+      "strict": true,
+      "kind": "ui",
+      "note": "App tab name: the D&D 3.5 character sheet."
+    },
+    {
+      "en": "Master",
+      "it": "Master",
+      "kind": "ui",
+      "en_case": true,
+      "never": ["Padrone", "Maestro"],
+      "note": "Game-master role in the Master/Player mode toggle, kept as the Italian tabletop loanword (as in 'Manuale del Master'). Soft: 'Master' is reused elsewhere in the app for the unrelated sense of a familiar's owner ('Padrone'), disambiguated at the call site via the i18n context param."
+    },
+    {
+      "en": "Player",
+      "it": "Giocatore",
+      "kind": "ui",
+      "en_case": true,
+      "note": "Player role in the Master/Player mode toggle. Soft: 'player' is also ordinary prose elsewhere."
+    },
+    {
+      "en": "Bestiary",
+      "it": "Bestiario",
+      "kind": "ui",
+      "note": "The monster book / creature browser."
     }
   ]
 }

@@ -281,6 +281,16 @@ as it is a game term (*a large room*, *reach the door*, *he will fall*).
 | Lawful | **Legale** | **STRICT** |  |
 | Neutral | **Neutrale** | **STRICT** | Either alignment axis. 'Neutral Good' -> 'Neutrale Buono'. |
 
+## ui
+
+| English | Italiano | | Note |
+|---|---|---|---|
+| Bestiary | **Bestiario** | soft | The monster book / creature browser. |
+| Master | **Master** | soft | Game-master role in the Master/Player mode toggle, kept as the Italian tabletop loanword (as in 'Manuale del Master'). Soft: 'Master' is reused elsewhere in the app for the unrelated sense of a familiar's owner ('Padrone'), disambiguated at the call site via the i18n context param. |
+| Player | **Giocatore** | soft | Player role in the Master/Player mode toggle. Soft: 'player' is also ordinary prose elsewhere. |
+| Player sheet | **Scheda del personaggio** | **STRICT** | App tab name: the D&D 3.5 character sheet. |
+| Spellbook | **Libro degli incantesimi** | **STRICT** | App tab name: the per-character spell tracker. |
+
 ## Adding a term
 
 When a batch makes you choose an Italian word that is not here, add it to

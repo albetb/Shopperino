@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { setMasterMode, setStateCurrentTab } from '../../store/slices/appSlice';
+import { t } from '../../lib/i18n';
 import Filigree from '../common/Filigree';
 import Pill from '../common/Pill';
 import Icon from '../common/Icon';
@@ -20,49 +21,49 @@ export default function MainPage() {
   const dispatch = useDispatch();
   const isMasterMode = useSelector(state => state.app.isMasterMode);
 
-  const tiles = TILES.filter(t => !t.masterOnly || isMasterMode);
+  const tiles = TILES.filter(tile => !tile.masterOnly || isMasterMode);
 
   return (
     <div className="sh-stack sh-home" style={{ padding: 'var(--space-5) 0 var(--space-12)', width: '94%', maxWidth: '54rem', margin: '0 auto' }}>
       <div className="sh-home-hero">
-        <Filigree>{isMasterMode ? 'Welcome back, dungeon master' : 'Welcome back, adventurer'}</Filigree>
+        <Filigree>{isMasterMode ? t('Welcome back, dungeon master') : t('Welcome back, adventurer')}</Filigree>
         <h1 className="sh-display" style={{ fontSize: 'var(--font-size-3xl)', margin: 'var(--space-1) 0' }}>
           Shopperino
         </h1>
         <p className="sh-faint sh-home-tagline" style={{ fontSize: 'var(--font-size-sm)' }}>
-          A collection of tools for D&amp;D 3.5
+          {t('A collection of tools for D&D 3.5')}
         </p>
       </div>
 
-      <div className="sh-mode-toggle sh-home-toggle" role="group" aria-label="Master / Player mode">
-        <button type="button" aria-pressed={isMasterMode}  onClick={() => dispatch(setMasterMode(true))}>Master</button>
-        <button type="button" aria-pressed={!isMasterMode} onClick={() => dispatch(setMasterMode(false))}>Player</button>
+      <div className="sh-mode-toggle sh-home-toggle" role="group" aria-label={t('Master / Player mode')}>
+        <button type="button" aria-pressed={isMasterMode}  onClick={() => dispatch(setMasterMode(true))}>{t('Master', 'mode')}</button>
+        <button type="button" aria-pressed={!isMasterMode} onClick={() => dispatch(setMasterMode(false))}>{t('Player')}</button>
       </div>
 
       <div className="sh-home-grid">
-        {tiles.map(t => (
+        {tiles.map(tile => (
           <button
-            key={t.id}
+            key={tile.id}
             type="button"
-            className={`sh-tile ${t.primary ? 'sh-tile--master' : ''}`}
-            onClick={() => dispatch(setStateCurrentTab(t.id))}
+            className={`sh-tile ${tile.primary ? 'sh-tile--master' : ''}`}
+            onClick={() => dispatch(setStateCurrentTab(tile.id))}
           >
-            <Icon name={t.icon} />
-            <span className="t-name">{t.title}</span>
-            <span className="t-desc">{t.desc}</span>
-            {t.masterOnly && <Pill tone="accent" className="sh-tile-tag">Master</Pill>}
+            <Icon name={tile.icon} />
+            <span className="t-name">{t(tile.title)}</span>
+            <span className="t-desc">{t(tile.desc)}</span>
+            {tile.masterOnly && <Pill tone="accent" className="sh-tile-tag">{t('Master', 'mode')}</Pill>}
           </button>
         ))}
       </div>
 
       <p className="sh-faint" style={{ fontSize: 'var(--font-size-xs)', textAlign: 'center', marginTop: 'var(--space-6)' }}>
-        Bugs or inaccurate descriptions?{' '}
+        {t('Bugs or inaccurate descriptions?')}{' '}
         <a
           href="https://github.com/albetb/Shopperino/issues"
           target="_blank"
           rel="noopener noreferrer"
           style={{ color: 'var(--accent)' }}
-        >Open an issue on GitHub.</a>
+        >{t('Open an issue on GitHub.')}</a>
       </p>
     </div>
   );

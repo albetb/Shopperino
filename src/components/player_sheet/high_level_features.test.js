@@ -208,7 +208,7 @@ describe('the monk cards in Italian', () => {
     renderWith(<MonkAbilitiesCard />, make('Monk', 20, 20));
     ['Interezza del corpo', 'Passo abbondante', 'Palmo tremante', 'Corpo vuoto']
       .forEach((name) => expect(screen.getByText(name)).toBeInTheDocument());
-    fireEvent.click(screen.getByRole('button', { name: /Come funziona Palmo tremante/i }));
+    fireEvent.click(screen.getByRole('button', { name: /Come funziona: Palmo tremante/i }));
     const box = screen.getByRole('dialog', { name: 'Palmo tremante' });
     expect(within(box).getByText('20 giorni')).toBeInTheDocument();
     expect(within(box).getByText('settimanalmente')).toBeInTheDocument();
@@ -217,7 +217,7 @@ describe('the monk cards in Italian', () => {
   test('the caster level phrase translates with the number intact', () => {
     setLanguage('it');
     renderWith(<MonkAbilitiesCard />, make('Monk', 12));
-    fireEvent.click(screen.getByRole('button', { name: /Come funziona Passo abbondante/i }));
+    fireEvent.click(screen.getByRole('button', { name: /Come funziona: Passo abbondante/i }));
     const box = screen.getByRole('dialog', { name: 'Passo abbondante' });
     expect(within(box).getByText("livello dell'incantatore 6")).toBeInTheDocument();
   });
