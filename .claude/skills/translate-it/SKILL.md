@@ -1,6 +1,6 @@
 ---
 name: translate-it
-description: Translate the Shopperino app into another language — Italian today, any language the same way. Use whenever the user asks to translate part of the app, continue the translation, do the next batch, translate a component or a data file, add a language, or asks what is left to translate. Handles the glossary, the English source that must never be edited, and the verification that the game rules survived.
+description: Translate the Shopperino app into another language — Italian today, any language the same way. Use whenever the user asks to translate part of the app, continue the translation, do the next batch, translate a component or a data file, add a language, or asks what is left to translate. Handles the glossary, the English source that must never be edited, and the verification that the game rules survived. Pass `continuous` to keep going without stopping after each session's worth.
 ---
 
 # Translating Shopperino
@@ -34,10 +34,30 @@ worth, stop and report.
 2. **Pick the target.** If the user named a file or phase, that is the target.
    Otherwise take the first thing with work left, in phase order.
 3. **Do a session's worth**, then stop:
-   - data — **6 batches of 30 strings**, or the file finishes;
-   - UI — **5 components**, each with its test.
+   - data — **~180 strings**, or the file finishes;
+   - UI — **~120 strings**, however many files that takes.
+
+   Count strings, not files. Much of `common/` is one or two strings a file, so
+   a file budget spends an hour on fourteen strings. Take small files in a run
+   — read several, wrap them, add their strings to the pack in one pass.
 4. **Report**: what you translated, the `progress.py` numbers, anything you left
    alone and why, and which files are ready to commit.
+
+### Running continuously
+
+If the invocation carries **`continuous`** (or `forever`, `keep going`), do not
+stop after a session's worth. Loop: pick the next target, translate it, run the
+checks, say what you did in **one line**, pick the next.
+
+- No long report between cycles, and never ask whether to carry on.
+- Every ~150 strings, run the full suite, `en_drift.py` and `verify.py`, and
+  print the `progress.py` numbers as a checkpoint the user can commit.
+- Stop only when the phase is finished, or when a gate fails twice on the same
+  string, or when `progress.py` stops moving between cycles.
+
+The user cannot have you commit; uncommitted work piling up is expected and
+breaks nothing, because the gates compare `src/data` against `HEAD` and you
+never write there.
 
 ### The three rules that are not yours to bend
 
@@ -72,7 +92,9 @@ test written against that state bakes the defect in as an assertion.
 
 ## Workflow A — a component
 
-Do **one file and its test together**.
+Do one file at a time. **Most components need no new test** — see step 12
+before you write one; a test file to prove that a single string renders is the
+main way this work goes slowly.
 
 1. Read the component.
 2. Wrap every string a person reads in `t('…')`: JSX text, `title`,
@@ -122,11 +144,14 @@ Do **one file and its test together**.
       Italian inflects adjectives (*attiva* / *attivo*).
 11. Watch for `t` being **shadowed** — `list.map((t) => …)` silently captures
     the translate function. Rename the parameter.
-12. **Test only what a pack lookup cannot prove.** `progress.py` already
-    reports every literal key that is missing from the pack, and `i18n.test.js`
-    proves `t()` returns what the pack holds — so asserting that `t('Feats')`
-    renders "Talenti" re-tests the i18n module through a component. Skip it.
-    Write an Italian test when the component does something no gate can see:
+12. **Most components need no test at all.** `progress.py` reports every
+    literal key missing from the pack, and `i18n.test.js` proves `t()` returns
+    what the pack holds — so asserting that `t('Feats')` renders "Talenti"
+    re-tests the i18n module through a component. **Never create a new test
+    file just to have one**: an 18-line file proving one string is Italian is
+    pure cost. Add to an *existing* test file, or write nothing.
+
+    Write an Italian test only when the component does something no gate sees:
     - a **dynamic key** (`t(source.label)`) — cover every value it can take;
     - a value **interpolated into translated text**, to prove it goes through
       `tName` rather than arriving as bare English;

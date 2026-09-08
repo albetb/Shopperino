@@ -1,3 +1,4 @@
+import { t, tName } from '../../lib/i18n';
 import '../../style/menu_cards.css';
 
 /**
@@ -5,8 +6,9 @@ import '../../style/menu_cards.css';
  * Used for Race and Class selection on the Player sheet.
  * Parent is responsible for showing main-content cards when onOpenDisplay is called.
  *
- * @param {string} label - Row label (e.g. "Race", "Class")
- * @param {string[]} options - Dropdown options (e.g. race or class names)
+ * @param {string} label - Row label (e.g. "Race", "Class"). Caller translates it.
+ * @param {string[]} options - Dropdown options (e.g. race or class names, in English)
+ * @param {string} [nameDomain] - names.json domain to translate each option through (e.g. "races")
  * @param {string} value - Current selected value (controlled)
  * @param {function(string): void} onSelect - Called when selection changes (dropdown or card Select)
  * @param {function(): void} onOpenDisplay - Called when magnifying glass is clicked; parent shows cards in main area
@@ -15,6 +17,7 @@ import '../../style/menu_cards.css';
 const SelectDisplayComponent = ({
   label,
   options = [],
+  nameDomain,
   value,
   onSelect,
   onOpenDisplay,
@@ -39,13 +42,13 @@ const SelectDisplayComponent = ({
         <option value="">—</option>
         {options.map((opt) => (
           <option key={opt} value={opt}>
-            {opt}
+            {nameDomain ? tName(nameDomain, opt) : opt}
           </option>
         ))}
       </select>
       <button
         type="button"
-        title="View details"
+        title={t('View details')}
         className={`levels-button small${disableOpenButton ? ' opacity-50' : ''}`}
         onClick={handleMagnifyingGlassClick}
         disabled={disableOpenButton}

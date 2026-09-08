@@ -159,6 +159,28 @@ half-translated string is exactly what it currently does.
 So the rule is now: test the dynamic keys, the interpolated values, the
 search/sort/plural logic, and the names that must stay English. Nothing else.
 
+## Why the session budget counts strings
+
+Two rules written a day apart cancelled each other out. "Start with
+`src/components/common/`" sent the work to the files with the fewest strings in
+them, while the budget was still "5 components, each with its test". The result,
+measured:
+
+| Commit | Strings | Components | Test lines |
+|---|---|---|---|
+| `da6bd43` | 153 | 9 | 190 |
+| `0da04ba` | **15** | 5 | 257 |
+
+`BottomSheet.jsx` and `Drawer.jsx` are one wrapped string each, and each got an
+18-line test file to prove that string renders in Italian. The per-file overhead
+— read it, wrap it, stand up a render harness, write the test — is roughly fixed,
+so a file-counted budget spends the same effort on one string as on forty.
+
+Hence: budget in strings, batch the small files, and never create a test file
+just to have one. The narrowed test rule from the previous round was correct but
+not enough on its own, because the workflow still opened with "do one file **and
+its test** together" — which reads as an instruction to write one every time.
+
 ## Glossary gate history
 
 Tuning that took several passes, kept here so it is not undone:

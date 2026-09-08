@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import Icon from './Icon';
+import { t } from '../../lib/i18n';
 
 export default function Stepper({
   value,
@@ -41,7 +42,7 @@ export default function Stepper({
     <div className={cls}>
       <button
         type="button"
-        aria-label="Decrement"
+        aria-label={t('Decrement')}
         disabled={minusDisabled}
         onPointerDown={() => startHold(-1)}
         onPointerUp={endHold}
@@ -53,7 +54,7 @@ export default function Stepper({
       <span className="v">{value}</span>
       <button
         type="button"
-        aria-label="Increment"
+        aria-label={t('Increment')}
         disabled={plusDisabled}
         onPointerDown={() => startHold(+1)}
         onPointerUp={endHold}

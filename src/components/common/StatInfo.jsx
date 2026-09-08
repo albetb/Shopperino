@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { tx } from '../../lib/i18n';
+import { t, tx } from '../../lib/i18n';
 import Icon from './Icon';
 import BottomSheet from './BottomSheet';
 import { isMobile } from '../../lib/utils';
@@ -121,7 +121,7 @@ export default function StatInfo({
           than two disconnected cells, and so a test can ask for the total
           without reaching into the DOM for its row. */}
       <li className="stat-info-row stat-info-row--total" aria-label={tx('Total {0}', sum)}>
-        <span className="stat-info-row-label" aria-hidden="true">Total</span>
+        <span className="stat-info-row-label" aria-hidden="true">{t('Total')}</span>
         <span className="stat-info-row-value sh-num" aria-hidden="true">{sum}</span>
       </li>
     </ul>
@@ -139,7 +139,7 @@ export default function StatInfo({
       {mismatch && (
         <p className="stat-info-mismatch" role="status">
           <Icon name="warning" size={14} />
-          These add up to {total}, but the sheet shows {value}.
+          {tx('These add up to {0}, but the sheet shows {1}.', total, value)}
         </p>
       )}
 
@@ -150,7 +150,7 @@ export default function StatInfo({
           {extraMismatch && (
             <p className="stat-info-mismatch" role="status">
               <Icon name="warning" size={14} />
-              These add up to {extraTotal}, but the sheet shows {secondary.value}.
+              {tx('These add up to {0}, but the sheet shows {1}.', extraTotal, secondary.value)}
             </p>
           )}
         </div>
@@ -158,7 +158,7 @@ export default function StatInfo({
 
       {notes.length > 0 && (
         <div className="stat-info-situational">
-          <span className="sh-eyebrow">Situational</span>
+          <span className="sh-eyebrow">{t('Situational')}</span>
           <ul className="stat-info-notes">
             {notes.map((note, i) => (
               <li key={`${note.source}-${i}`}>

@@ -1,4 +1,17 @@
 import { useEffect, useRef, useState } from 'react';
+import { t } from '../../lib/i18n';
+
+/* tabName is always one of a small fixed set of English words (see callers).
+   Each combination is its own key so gender agrees in Italian ("nuova città"
+   vs "nuovo mondo") rather than being glued around a single translated hole. */
+const PLACEHOLDER_KEYS = {
+  world: 'Insert new world name',
+  city: 'Insert new city name',
+  shop: 'Insert new shop name',
+  player: 'Insert new player name',
+  character: 'Insert new character name',
+  note: 'Insert new note name',
+};
 
 const CreateComponent = ({ props }) => {
   const [name, setName] = useState('');
@@ -23,7 +36,8 @@ const CreateComponent = ({ props }) => {
   };
 
   const placeholder = () => {
-    return `Insert new ${props.tabName} name`;
+    const key = PLACEHOLDER_KEYS[props.tabName] ?? `Insert new ${props.tabName} name`;
+    return t(key);
   };
 
   return (

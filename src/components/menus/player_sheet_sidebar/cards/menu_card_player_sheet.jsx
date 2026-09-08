@@ -10,6 +10,7 @@ import {
   onSetCharacterRace,
 } from '../../../../store/thunks/playerSheetThunks';
 import { setIsPlayerSheetSidebarCollapsed, setPlayerSheetMainView } from '../../../../store/slices/playerSheetSlice';
+import { t } from '../../../../lib/i18n';
 import CreateComponent from '../../../common/create_component';
 import LevelComponent from '../../../common/level_component';
 import SelectComponent from '../../../common/select_component';
@@ -84,8 +85,9 @@ export default function MenuCardPlayerSheet() {
 
           {hasCharacter && (
             <SelectDisplayComponent
-              label="Race"
+              label={t('Race')}
               options={raceList}
+              nameDomain="races"
               value={race}
               onSelect={handleRaceSelect}
               onOpenDisplay={() => {
@@ -100,8 +102,9 @@ export default function MenuCardPlayerSheet() {
 
           {hasCharacter && !!race && (
             <SelectDisplayComponent
-              label="Class"
+              label={t('Class')}
               options={classList}
+              nameDomain="classes"
               value={_class}
               onSelect={handleClassSelect}
               onOpenDisplay={() => {
@@ -115,7 +118,7 @@ export default function MenuCardPlayerSheet() {
           )}
 
           {hasCharacter && !!race && !!_class && (
-            <LevelComponent props={{ level, levelName: 'Level', onLevelChange: handleLevelChange }} />
+            <LevelComponent props={{ level, levelName: t('Level'), onLevelChange: handleLevelChange }} />
           )}
         </>
       )}
