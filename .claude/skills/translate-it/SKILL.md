@@ -47,6 +47,56 @@ canonical value, and the edge decides what the reader sees.
 
 ---
 
+## If you were given no instructions
+
+`/translate-it` on its own is a complete instruction. It means: **pick up where
+the work left off, do a session's worth, stop and report.** Concretely:
+
+1. Run `progress.py`.
+2. **Pick the target.** If the user named a file or a phase, that is the target.
+   Otherwise take the first thing with work left, in phase order: a component
+   from the top of the `--ui` list, or else the next data file in the phase-2
+   order below.
+3. **Do a session's worth**, then stop:
+   - data — **6 batches of 30 strings**, or the file finishes, whichever first;
+   - UI — **5 files**, each with its test.
+4. **Report**: what you translated, the `progress.py` numbers, anything you left
+   alone and why, and which files are ready to commit.
+
+### The three rules that are not yours to bend
+
+- **A failing gate is fixed in the translation, never in the manifest.** Never
+  edit `fields.json` to make `verify.py` quiet. That file is what stops a
+  translation from changing the rules of the game.
+- **You may ADD a term to `glossary.json`. You may never change one that is
+  already there.** Adding is how the vocabulary grows; changing is how
+  *Stregone* silently becomes *Incantatore* three weeks later.
+- **If the same gate fails twice on the same string, stop and ask.** Two
+  attempts is a translation problem; three is a misunderstanding, and grinding
+  on it just produces confident nonsense.
+
+### Which model should be doing this
+
+Measured, not guessed — the same 20 `feats.json` strings through both, one pass,
+no self-checking:
+
+| | Haiku | Sonnet |
+|---|---|---|
+| Hard gate failures | 17 | 6 |
+| Numbers, dice, HTML, hrefs | **0 errors** | **0 errors** |
+| Tokens | 37.9k | 74.8k |
+
+Mechanical fidelity is not the problem for either. Terminology is. Haiku wrote
+*Vantaggio* for Benefit, *tiri* where a check is a *prova*, and *famigliare*
+(a relative) for familiar — and slipped one Spanish word, `armadura`. The
+glossary gate catches most of that, but not a language slip and not a plausible
+synonym, and the retry rounds eat the token saving.
+
+**Use Sonnet.** Haiku is only sensible on data prose you intend to have checked
+hard, and even then it converges slower than it saves.
+
+---
+
 ## Before you touch anything
 
 1. **Read the glossary**: [references/glossary.md](references/glossary.md).
@@ -160,13 +210,20 @@ python $S/next_batch.py src/data/spells.json --count 20 --out /tmp/batch.json
 
 # 2. translate every "it" field in /tmp/batch.json  (leave "path" and "en" alone)
 
-# 3. write it back — refuses blanks, stale batches and anything that would
-#    change more than the value at that path
+# 3. grade your own work before it touches the data — same gates, no writes
+python $S/check_batch.py /tmp/batch.json
+
+# 4. write it back — refuses blanks, stale batches and anything that would
+#    change more than the value at that path. Records the paths in the ledger.
 python $S/json_tr.py /tmp/batch.json
 
-# 4. prove nothing else moved
+# 5. prove nothing else moved
 python $S/verify.py src/data/spells.json
 ```
+
+Step 3 is the cheap one: `check_batch.py` runs the same gates on the batch file
+itself, so a dropped `<i>` or a lost `+2` costs you a re-edit rather than a
+revert.
 
 Repeat. Batches of 20–30 strings, or about 20 k characters, keep the work
 reviewable and the context small.
@@ -243,9 +300,22 @@ The baseline to beat: **126 suites, 2050 tests, 4 pre-existing build warnings**
 yours.
 
 You cannot commit — this project allows read-only git only. Tell the user which
-files are ready and let them commit. Committing matters: `next_batch.py` and
-`progress.py` treat *"still identical to `HEAD`"* as *"not yet translated"*, so
-`HEAD` is the English baseline the work is measured against.
+files are ready and let them commit.
+
+**Progress is recorded in `state/done.json`, not inferred from git.** `json_tr.py`
+writes a path there the moment it lands. The first version of this skill inferred
+it from git instead — a string still identical to `HEAD` had not been done — and
+that broke the first time the pilot was committed: the working tree then matched
+`HEAD` everywhere, `feats.json` reported `0/280`, and the next batch handed back
+three strings that were already Italian. Commit freely; the ledger does not care.
+
+If you ever translate a string without going through `json_tr.py`, record it
+yourself, or the next batch will hand it to you again:
+
+```python
+import sys; sys.path.insert(0, '.claude/skills/translate-it/scripts')
+import ledger; ledger.mark('src/data/feats.json', ['Feats/12/Description'])
+```
 
 ---
 
@@ -279,7 +349,10 @@ at the first attempt were all caught before anything shipped.
 | `references/glossary.md` | Generated from it, for reading. |
 | `fields.json` | Which paths in `src/data` may be translated. Default-deny. |
 | `scripts/next_batch.py` | Hands out the next untranslated strings. |
+| `scripts/check_batch.py` | Grades a finished batch before it is applied. |
 | `scripts/json_tr.py` | Writes them back without reformatting the file. |
-| `scripts/verify.py` | The gates. |
+| `scripts/verify.py` | The gates, run against the repo. |
+| `scripts/ledger.py` | The record of what is already translated. |
 | `scripts/progress.py` | What is done, what is left. |
 | `scripts/glossary.py` | Look terms up; regenerate the markdown. |
+| `state/done.json` | The ledger itself. Committed, so it survives a fresh clone. |

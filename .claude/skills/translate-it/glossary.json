@@ -19,6 +19,10 @@
     "            Fine, a save called Will.",
     "  en_match  optional regex, when a word boundary is not enough --",
     "            'turn undead' is not the noun 'turn'.",
+    "  never     optional list of Italian words that are WRONG for this term.",
+    "            Scoped to the term: 'Vantaggio' is only a failure where the",
+    "            English said 'Benefit'. Catches the case a stem check cannot —",
+    "            a plausible synonym sitting where the agreed word should be.",
     "  strict    optional, default false. true = a violation FAILS verification.",
     "            Reserve it for proper nouns and rules terms where a synonym is a",
     "            real bug: class names, schools, saves, abilities. Leave it soft",
@@ -88,7 +92,11 @@
       "en": "Cleric",
       "it": "Chierico",
       "strict": true,
-      "kind": "class"
+      "kind": "class",
+      "stems": [
+        "chierico",
+        "chierici"
+      ]
     },
     {
       "en": "Druid",
@@ -106,7 +114,11 @@
       "en": "Monk",
       "it": "Monaco",
       "strict": true,
-      "kind": "class"
+      "kind": "class",
+      "stems": [
+        "monaco",
+        "monaci"
+      ]
     },
     {
       "en": "Paladin",
@@ -133,13 +145,24 @@
       "stem": "Stregon",
       "strict": true,
       "kind": "class",
-      "note": "Never Incantatore (that is any spellcaster) and never Sciamano."
+      "note": "Never Incantatore (that is any spellcaster) and never Sciamano.",
+      "never": [
+        "incantatore",
+        "sciamano"
+      ]
     },
     {
       "en": "Wizard",
       "it": "Mago",
       "strict": true,
-      "kind": "class"
+      "kind": "class",
+      "never": [
+        "stregone"
+      ],
+      "stems": [
+        "mago",
+        "maghi"
+      ]
     },
     {
       "en": "Human",
@@ -195,7 +218,10 @@
       "it": "Evocazione",
       "strict": true,
       "kind": "school",
-      "note": "TRAP. Conjuration is Evocazione and Evocation is Invocazione. Swapping them mislabels every summoning spell."
+      "note": "TRAP. Conjuration is Evocazione and Evocation is Invocazione. Swapping them mislabels every summoning spell.",
+      "never": [
+        "invocazione"
+      ]
     },
     {
       "en": "Divination",
@@ -214,7 +240,10 @@
       "it": "Invocazione",
       "strict": true,
       "kind": "school",
-      "note": "TRAP. See Conjuration. Never Evocazione."
+      "note": "TRAP. See Conjuration. Never Evocazione.",
+      "never": [
+        "evocazione"
+      ]
     },
     {
       "en": "Illusion",
@@ -523,14 +552,20 @@
       "it": "talento",
       "stem": "talent",
       "strict": true,
-      "kind": "rules"
+      "kind": "rules",
+      "never": [
+        "abilità speciale"
+      ]
     },
     {
       "en": "skill",
       "it": "abilità",
       "stem": "abilit",
       "strict": true,
-      "kind": "rules"
+      "kind": "rules",
+      "never": [
+        "capacità"
+      ]
     },
     {
       "en": "skill check",
@@ -602,7 +637,11 @@
       "it": "famiglio",
       "stem": "famigli",
       "strict": true,
-      "kind": "rules"
+      "kind": "rules",
+      "never": [
+        "famigliare",
+        "famigliari"
+      ]
     },
     {
       "en": "animal companion",
@@ -698,7 +737,11 @@
       "it": "mischia",
       "stem": "mischi",
       "strict": true,
-      "kind": "combat"
+      "kind": "combat",
+      "never": [
+        "combattimento ravvicinato",
+        "corpo a corpo"
+      ]
     },
     {
       "en": "ranged",
@@ -1166,7 +1209,10 @@
       "strict": true,
       "kind": "rules",
       "en_case": true,
-      "note": "The bold header on every feat description. Always this word, so the 109 feats read alike."
+      "note": "The bold header on every feat description. Always this word, so the 109 feats read alike.",
+      "never": [
+        "vantaggio"
+      ]
     },
     {
       "en": "Normal",
@@ -1206,6 +1252,55 @@
       ],
       "kind": "rules",
       "note": "A skill or ability check. 'Jump checks' -> 'prove di Saltare'."
+    },
+    {
+      "en": "armor check penalty",
+      "it": "penalità di armatura",
+      "stems": [
+        "penalità di armatur",
+        "penalità di armatur"
+      ],
+      "strict": true,
+      "kind": "rules",
+      "never": [
+        "controllo dell'armatura",
+        "controllo dell’armatura",
+        "controllo di quell'armatura"
+      ],
+      "note": "NOT 'controllo dell'armatura' — controllo is an inspection. Both Haiku and Sonnet invented that in the calibration batch."
+    },
+    {
+      "en": "miss chance",
+      "it": "probabilità di mancare",
+      "stems": [
+        "di mancar",
+        "probabilit"
+      ],
+      "kind": "rules"
+    },
+    {
+      "en": "proficient",
+      "it": "competente",
+      "stems": [
+        "competen"
+      ],
+      "kind": "rules"
+    },
+    {
+      "en": "Weapon Proficiency",
+      "it": "Competenza nelle Armi",
+      "stems": [
+        "competenza nelle arm"
+      ],
+      "kind": "rules"
+    },
+    {
+      "en": "Armor Proficiency",
+      "it": "Competenza nelle Armature",
+      "stems": [
+        "competenza nelle armatur"
+      ],
+      "kind": "rules"
     }
   ]
 }

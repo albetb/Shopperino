@@ -103,7 +103,9 @@ as it is a game term (*a large room*, *reach the door*, *he will fall*).
 |---|---|---|---|
 | alignment | **allineamento** | soft |  |
 | animal companion | **compagno animale** | soft |  |
+| armor check penalty | **penalità di armatura** | **STRICT** | NOT 'controllo dell'armatura' — controllo is an inspection. Both Haiku and Sonnet invented that in the calibration batch. |
 | Armor Class | **Classe Armatura** | **STRICT** |  |
+| Armor Proficiency | **Competenza nelle Armature** | soft |  |
 | attack of opportunity | **attacco di opportunità** | **STRICT** |  |
 | base attack bonus | **bonus di attacco base** | **STRICT** |  |
 | Benefit | **Beneficio** | **STRICT** | The bold header on every feat description. Always this word, so the 109 feats read alike. |
@@ -124,11 +126,13 @@ as it is a game term (*a large room*, *reach the door*, *he will fall*).
 | Hit Dice | **Dadi Vita** | **STRICT** |  |
 | hit points | **punti ferita** | **STRICT** |  |
 | initiative | **iniziativa** | **STRICT** |  |
+| miss chance | **probabilità di mancare** | soft |  |
 | negative level | **livello negativo** | **STRICT** |  |
 | nonlethal damage | **danni non letali** | **STRICT** |  |
 | Normal | **Normale** | soft | Feat header: what the rules say without the feat. |
 | Prerequisite | **Prerequisito** | **STRICT** |  |
 | prestige class | **classe di prestigio** | soft |  |
+| proficient | **competente** | soft |  |
 | rank | **grado** | soft |  |
 | saving throw | **tiro salvezza** | **STRICT** |  |
 | skill | **abilità** | **STRICT** |  |
@@ -141,6 +145,7 @@ as it is a game term (*a large room*, *reach the door*, *he will fall*).
 | spellcaster | **incantatore** | **STRICT** |  |
 | turn undead | **scacciare non morti** | soft |  |
 | undead | **non morti** | **STRICT** |  |
+| Weapon Proficiency | **Competenza nelle Armi** | soft |  |
 
 ## Abbreviations
 
