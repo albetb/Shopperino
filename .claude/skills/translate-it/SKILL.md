@@ -122,10 +122,26 @@ Do **one file and its test together**.
       Italian inflects adjectives (*attiva* / *attivo*).
 11. Watch for `t` being **shadowed** — `list.map((t) => …)` silently captures
     the translate function. Rename the parameter.
-12. Update the co-located test to assert **both** languages via
-    `setLanguage('it')`. Drive the model in English, assert the screen in
-    Italian; see
+12. **Test only what a pack lookup cannot prove.** `progress.py` already
+    reports every literal key that is missing from the pack, and `i18n.test.js`
+    proves `t()` returns what the pack holds — so asserting that `t('Feats')`
+    renders "Talenti" re-tests the i18n module through a component. Skip it.
+    Write an Italian test when the component does something no gate can see:
+    - a **dynamic key** (`t(source.label)`) — cover every value it can take;
+    - a value **interpolated into translated text**, to prove it goes through
+      `tName` rather than arriving as bare English;
+    - **search, filter or sort** on a displayed name;
+    - a **plural or gender** branch;
+    - a name that must **stay English** (`Aggiungi Toughness`).
+
+    Drive the model in English, assert the screen in Italian; see
     [conditions_section.test.js](../../../src/components/player_sheet/conditions_section.test.js).
+    Two or three assertions is usually the whole of it.
+
+    **A test can freeze a defect.** One written against a half-translated
+    shared component recorded `/How Palmo tremante works/i` as correct, so the
+    bug had to be found by reading rather than by running. If an assertion
+    mixes two languages, that is the bug — do not encode it.
 13. Run the checks:
     ```bash
     CI=true npx react-scripts test --watchAll=false --testPathPattern=<name>

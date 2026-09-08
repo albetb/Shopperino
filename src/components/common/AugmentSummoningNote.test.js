@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import Player from '../../lib/player';
 import AugmentSummoningNote from './AugmentSummoningNote';
 import InfoMenuCards from '../menus/info_sidebar/cards/info_menu_cards';
+import { setLanguage } from '../../lib/i18n';
 
 /* The creature half of Augment Summoning. Nothing in the app links a monster
  * being read to the spell that might have conjured it, and a creature met in a
@@ -59,6 +60,18 @@ describe('what it says', () => {
     const { container } = withPlayer(caster(), <AugmentSummoningNote />);
     expect(container.textContent).toContain('If you summoned this creature');
     expect(container.textContent).toContain('the scores below are the unsummoned ones');
+  });
+});
+
+describe('the same note in two languages', () => {
+  afterEach(() => setLanguage('en'));
+
+  test('Italian carries the same conditional wording and the same bonus', () => {
+    setLanguage('it');
+    const { container } = withPlayer(caster(), <AugmentSummoningNote />);
+    expect(container.textContent).toContain('Se hai evocato questa creatura');
+    expect(container.textContent).toContain('i punteggi qui sotto sono quelli non evocati');
+    expect(screen.getByText('+4 Forza e Costituzione')).toBeInTheDocument();
   });
 });
 

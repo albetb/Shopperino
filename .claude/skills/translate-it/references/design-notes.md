@@ -128,6 +128,37 @@ translation, and both presented as green. When a component reports zero bare
 strings, check that the scanner can see the shapes that component actually
 uses before believing it.
 
+## How much testing the translation is worth
+
+Measured on the third run: **190 lines of test against 198 lines of component**
+— about half the wall-clock going into test code, five components in half an
+hour.
+
+Categorising one file's assertions (`monster_filters_card.test.js`, the largest
+at 63 lines) showed roughly 4 of 17 covering anything a gate could not:
+
+| Assertion | Already proved by |
+|---|---|
+| `t('Find a monster')` → "Trova un mostro" | `progress.py` (key present) + `i18n.test.js` (`t()` works) |
+| the three sources render in English | the pre-existing English tests |
+| `t(source.label)` → "Mostri", "Animali", "Insetti" | **nothing** — a dynamic key |
+| every terrain bucket option | **nothing** — a dynamic key |
+
+The redundant ones re-test the i18n module through a component. `progress.py`
+compares each literal key against the pack for all 151 files at once, so a test
+that a literal renders its pack entry can only fail when `progress.py` has
+already said so.
+
+Against that, one concrete harm: the Italian test written for `monk_cards`
+asserted `/How Palmo tremante works/i`, freezing the half-translated
+`InfoPopover` as correct. The test suite was green *because* of the defect. A
+broad "does it render in Italian" test is as likely to record a mixed-language
+string as to catch one — it asserts what the component currently does, and a
+half-translated string is exactly what it currently does.
+
+So the rule is now: test the dynamic keys, the interpolated values, the
+search/sort/plural logic, and the names that must stay English. Nothing else.
+
 ## Glossary gate history
 
 Tuning that took several passes, kept here so it is not undone:

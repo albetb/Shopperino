@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import IconButton from './IconButton';
+import { t } from '../../lib/i18n';
 
 /**
  * A sheet that slides up from the bottom of the **viewport**.
@@ -56,7 +57,7 @@ export default function BottomSheet({ open, onClose, title, eyebrow, subheader, 
               {eyebrow && <span className="sh-eyebrow" style={{ display: 'block' }}>{eyebrow}</span>}
               {title && <span className="ttl">{title}</span>}
             </div>
-            <IconButton icon="close" ghost size="sm" onClick={onClose} aria-label="Close" />
+            <IconButton icon="close" ghost size="sm" onClick={onClose} aria-label={t('Close')} />
           </div>
         )}
         {subheader && <div className="sh-sheet-sub">{subheader}</div>}

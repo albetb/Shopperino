@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import IconButton from './IconButton';
+import { t } from '../../lib/i18n';
 
 /**
  * Mobile sidebar drawer. Slides in from the left over a scrim.
@@ -26,7 +27,7 @@ export default function Drawer({ open, onClose, title, children }) {
         {title && (
           <div className="sh-drawer-head">
             <span className="ttl">{title}</span>
-            <IconButton icon="close" ghost size="sm" onClick={onClose} aria-label="Close menu" />
+            <IconButton icon="close" ghost size="sm" onClick={onClose} aria-label={t('Close menu')} />
           </div>
         )}
         <div className="sh-drawer-body">{children}</div>

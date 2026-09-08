@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { tx } from '../../lib/i18n';
+import { t, tx } from '../../lib/i18n';
 import { useDispatch, useSelector } from 'react-redux';
 import BottomSheet from './BottomSheet';
 import { setDiceMultiplierMask, setDiceLastRoll } from '../../store/slices/appSlice';
@@ -105,11 +105,13 @@ export default function DiceRollerSheet({ open, onClose }) {
   const faceSettled = rolling ? settled : faces.map(() => true);
 
   return (
-    <BottomSheet open={open} onClose={onClose} eyebrow="Roll dice">
+    <BottomSheet open={open} onClose={onClose} eyebrow={t('Roll dice')}>
       <div className="dice-roller">
         <div className="dice-section">
-          <span className="sh-eyebrow">How many · {count} {count === 1 ? 'die' : 'dice'}</span>
-          <div className="dice-pill-row" role="group" aria-label="Number of dice">
+          <span className="sh-eyebrow">
+            {tx('How many · {0} {1}', count, count === 1 ? t('die') : t('dice'))}
+          </span>
+          <div className="dice-pill-row" role="group" aria-label={t('Number of dice')}>
             {DICE_MULTIPLIERS.map((amount, index) => {
               const on = isMultiplierSelected(mask, index);
               return (
@@ -128,8 +130,8 @@ export default function DiceRollerSheet({ open, onClose }) {
         </div>
 
         <div className="dice-section">
-          <span className="sh-eyebrow">Which die</span>
-          <div className="dice-pill-row" role="group" aria-label="Die type">
+          <span className="sh-eyebrow">{t('Which die')}</span>
+          <div className="dice-pill-row" role="group" aria-label={t('Die type')}>
             {DICE_TYPES.map((sides) => (
               <button
                 key={sides}
@@ -146,7 +148,7 @@ export default function DiceRollerSheet({ open, onClose }) {
 
         <div className="dice-result" aria-live="polite">
           {!shown ? (
-            <span className="sh-faint dice-result-empty">Pick a die to roll.</span>
+            <span className="sh-faint dice-result-empty">{t('Pick a die to roll.')}</span>
           ) : (
             <>
               <span className="dice-result-label">{formatRollLabel(shown)}</span>

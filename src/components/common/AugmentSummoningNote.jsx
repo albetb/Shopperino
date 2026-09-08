@@ -5,6 +5,7 @@ import {
   AUGMENT_SUMMONING_ABILITY_NAMES,
   AUGMENT_SUMMONING_ABILITIES,
 } from '../../lib/player/augmentSummoning';
+import { t, tx } from '../../lib/i18n';
 import '../../style/augment_summoning_note.css';
 
 /**
@@ -29,16 +30,18 @@ export default function AugmentSummoningNote() {
   if (!player?.hasAugmentSummoning?.()) return null;
 
   const scores = AUGMENT_SUMMONING_ABILITIES
-    .map((key) => AUGMENT_SUMMONING_ABILITY_NAMES[key] ?? key)
-    .join(' and ');
+    .map((key) => t(AUGMENT_SUMMONING_ABILITY_NAMES[key] ?? key))
+    .join(` ${t('and')} `);
 
   return (
     <div className="augment-summoning-note">
       <Icon name="auto_awesome" size={16} />
       <span>
-        If you summoned this creature, <b>Augment summoning</b> gives it{' '}
-        <b>+{AUGMENT_SUMMONING_BONUS} {scores}</b> for the spell&rsquo;s duration
-        — the scores below are the unsummoned ones.
+        {tx(
+          'If you summoned this creature, {0} gives it {1} for the spell’s duration — the scores below are the unsummoned ones.',
+          <b>Augment summoning</b>,
+          <b>+{AUGMENT_SUMMONING_BONUS} {scores}</b>,
+        )}
       </span>
     </div>
   );

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { t } from '../../lib/i18n';
 import '../../style/menu_cards.css';
 
 const SelectComponent = ({ props }) => {
@@ -52,7 +53,7 @@ const SelectComponent = ({ props }) => {
   if (isSavedEmpty) {
     return (
       <div ref={selectRef} className="card-side-div justify-center">
-        <button title="New" className="modern-button small-long" onClick={handleNewClick}>
+        <button title={t('New')} className="modern-button small-long" onClick={handleNewClick}>
           <span className="material-symbols-outlined">
             new_window
           </span>
@@ -78,7 +79,7 @@ const SelectComponent = ({ props }) => {
         </select>
 
         {!confirmDelete && (
-          <button title="New" className="levels-button small-middle" onClick={handleNewClick}>
+          <button title={t('New')} className="levels-button small-middle" onClick={handleNewClick}>
             <span className="material-symbols-outlined">
               new_window
             </span>
@@ -87,19 +88,19 @@ const SelectComponent = ({ props }) => {
 
         {confirmDelete ? (
           <>
-            <button title="Confirm" className='levels-button small' onClick={handleDelete}>
+            <button title={t('Confirm')} className='levels-button small' onClick={handleDelete}>
               <span className="material-symbols-outlined">
                 delete
               </span>
             </button>
-            <button title="Back" className='levels-button small-middle' onClick={handleCancelClick}>
+            <button title={t('Back')} className='levels-button small-middle' onClick={handleCancelClick}>
               <span className="material-symbols-outlined">
                 close
               </span>
             </button>
           </>
         ) : (
-          <button title="Delete" className='levels-button small' onClick={handleConfirmClick}>
+          <button title={t('Delete')} className='levels-button small' onClick={handleConfirmClick}>
             <span className="material-symbols-outlined">
               delete
             </span>
