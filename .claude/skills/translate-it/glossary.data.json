@@ -1,6 +1,161 @@
 {
   "terms": [
     {
+      "en": "giant vermin",
+      "it": "parassita gigante",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 225, self-referenced in its own Short Description. Matches creatureTypes 'Vermin' -> 'Parassita' in names.json.",
+      "source": "coined"
+    },
+    {
+      "en": "glibness",
+      "it": "loquacità",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 226. Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "lesser geas",
+      "it": "costrizione minore",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 221, self-referenced in its own Description. Follows the manual-verified 'geas/quest' -> 'costrizione/cerca' rendering already in this file.",
+      "source": "coined",
+      "stems": [
+        "costrizione minor"
+      ]
+    },
+    {
+      "en": "gentle repose",
+      "it": "dolce riposo",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 222. Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "lesser planar ally",
+      "it": "alleato planare minore",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced from Gate (219).",
+      "source": "coined"
+    },
+    {
+      "en": "temporal stasis",
+      "it": "stasi temporale",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced from Freedom (215).",
+      "source": "coined"
+    },
+    {
+      "en": "petrification",
+      "it": "pietrificazione",
+      "strict": false,
+      "kind": "rules",
+      "note": "Matches the Petrified condition already in names.json (Pietrificato).",
+      "source": "coined"
+    },
+    {
+      "en": "freezing sphere",
+      "it": "sfera gelida",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 217, self-referenced in its own Description.",
+      "source": "coined"
+    },
+    {
+      "en": "solid fog",
+      "it": "nebbia densa",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced from Freedom of Movement (216).",
+      "source": "coined"
+    },
+    {
+      "en": "foresight",
+      "it": "preveggenza",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, self-referenced in its own Description (212).",
+      "source": "coined"
+    },
+    {
+      "en": "forbiddance",
+      "it": "Interdizione",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, self-referenced in its own Description (209).",
+      "source": "coined"
+    },
+    {
+      "en": "flaming sphere",
+      "it": "sfera infuocata",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 203. Rendered with 'infuocata' rather than 'fiammeggiante' to satisfy the strict 'flaming' magic-weapon-property term, which the description's ordinary use of the word 'flaming' also hits.",
+      "source": "coined"
+    },
+    {
+      "en": "flesh to stone",
+      "it": "carne in pietra",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 205.",
+      "source": "coined"
+    },
+    {
+      "en": "flame arrow",
+      "it": "freccia di fiamma",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 200, self-referenced in short description pattern.",
+      "source": "coined"
+    },
+    {
+      "en": "flame blade",
+      "it": "lama di fiamma",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, self-referenced in its own Description (201).",
+      "source": "coined"
+    },
+    {
+      "en": "flame strike",
+      "it": "colpo di fiamma",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, self-referenced in its own Description (202).",
+      "source": "coined"
+    },
+    {
+      "en": "fire seeds",
+      "it": "semi di fuoco",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, self-referenced in its own Description (195).",
+      "source": "coined"
+    },
+    {
+      "en": "splash weapon",
+      "it": "arma a spruzzo",
+      "strict": false,
+      "kind": "term",
+      "note": "specialAttacks#throw-splash-weapon link text, spell 195 (fire seeds). Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "fire storm",
+      "it": "tempesta di fuoco",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, self-referenced in its own Description (197).",
+      "source": "coined"
+    },
+    {
       "en": "Diligent",
       "it": "Diligente",
       "strict": false,
@@ -365,12 +520,12 @@
     },
     {
       "en": "Alertness",
-      "it": "Vigilanza",
+      "it": "Allerta",
       "strict": false,
       "kind": "feat",
       "en_case": true,
-      "note": "Feat name, referenced inline from skills.json (Listen) before feats.json is translated. Not yet checked against the manual.",
-      "source": "coined"
+      "note": "Feat name. Corrected from 'Vigilanza'. Manuale del Giocatore confirms 'il talento Allerta (pagina 89)' in the familiar-abilities section (word-for-word match to the Alertness familiar ability text).",
+      "source": "manual"
     },
     {
       "en": "bardic knowledge",
@@ -2281,8 +2436,9 @@
       "it": "Affascinare",
       "strict": true,
       "kind": "class",
-      "note": "Bard class feature, classes.json Bard/classFeatures/5. Read out of Manuale del Giocatore (\"Affascinare (Mag)\") — its own text matches word for word.",
-      "source": "manual",
+      "en_case": true,
+      "en_match": "(?<![A-Za-z])Fascinate(?![A-Za-z])",
+      "note": "Bard class feature, classes.json Bard/classFeatures/5. Read out of Manuale del Giocatore (\"Affascinare (Mag)\") — its own text matches word for word. en_case/en_match added by the data lane: ordinary spell prose uses the same English word as a lowercase (or sentence-initial capitalized) verb/adjective for the unrelated Fascinated CONDITION ('creatures that you fascinate', 'can be fascinated by this spell', 'Fascinates 2d6 HD of animals' -> 'affascini' / 'affascinata' / 'Affascina', names.json Fascinated -> Affascinato) and must not be forced into the class-feature infinitive; en_match excludes 'Fascinates'/'Fascinated' by requiring a non-letter right after the bare word.",
       "stems": [
         "Affascinare",
         "affascinare",
@@ -2318,7 +2474,8 @@
       "it": "Suggestione",
       "strict": true,
       "kind": "class",
-      "note": "Bard class feature / spell, classes.json Bard/classFeatures/8. Read out of Manuale del Giocatore (\"Suggestione (Mag)\") — its own text matches word for word.",
+      "en_case": true,
+      "note": "Bard class feature / spell, classes.json Bard/classFeatures/8. Read out of Manuale del Giocatore (\"Suggestione (Mag)\") — its own text matches word for word. en_case added so this doesn't fire on the ordinary lowercase plural 'suggestions' (e.g. 'diet suggestions').",
       "source": "manual",
       "stems": [
         "Suggestione",
@@ -2411,10 +2568,10 @@
       "it": "Aura",
       "strict": true,
       "kind": "class",
-      "note": "Cleric (and Paladin) class feature, classes.json Cleric/classFeatures/1. Read out of Manuale del Giocatore (\"Aura (Str)\") — its own text matches word for word.",
+      "note": "Cleric (and Paladin) class feature, classes.json Cleric/classFeatures/1. Read out of Manuale del Giocatore (\"Aura (Str)\") — its own text matches word for word. Stem lowercased by the data lane: it was 'Aura' (capital), which the checker compares against an already-lowercased translation and so could never match, hard-failing any spell prose using the ordinary generic word 'aura'/'auras' (e.g. detect magic, arcane sight — extremely common in spells.json). Since en/it are identical spellings for both the class feature and the generic word, lowering the stem fixes matching for both without changing the term's meaning.",
       "source": "manual",
       "stems": [
-        "Aura"
+        "aur"
       ]
     },
     {
@@ -2569,11 +2726,12 @@
       "it": "Compagno animale",
       "strict": true,
       "kind": "class",
-      "note": "Druid (and Ranger) class feature, classes.json Druid/classFeatures/5. Read out of Manuale del Giocatore (\"Compagno animale (Str)\") — its own text matches word for word.",
+      "note": "Druid (and Ranger) class feature, classes.json Druid/classFeatures/5. Read out of Manuale del Giocatore (\"Compagno animale (Str)\") — its own text matches word for word. Plural stem added when the data lane hit the generic plural 'animal companions' in spell prose (spells.json #7-11 batch): 'compagni animali'.",
       "source": "manual",
       "stems": [
         "Compagno animale",
-        "compagno animale"
+        "compagno animale",
+        "compagni animal"
       ]
     },
     {
@@ -2600,10 +2758,10 @@
     },
     {
       "en": "dire rat",
-      "it": "ratto famelico",
+      "it": "ratto crudele",
       "strict": false,
       "kind": "creature",
-      "note": "Creature name, referenced from classes.json (Druid Animal Companion list) before animals.json/monsters.json is translated. NOT checked against the manual — book.py found no match for 'famelico' or 'ratto gigante' in the core books. Uncertain — flag for correction once animals.json is reached.",
+      "note": "Corrected from 'ratto famelico'. Manuale dei Mostri I confirms the 'Dire X' -> 'X crudele' pattern for every other dire animal checked directly: leone/lupo/orso/cinghiale/tigre/tasso/pipistrello/gorilla/donnola/ghiottone/squalo crudele. No direct OCR hit for 'ratto crudele' itself (the Animals appendix scan may be missing this entry), but the pattern is unanimous across 11 other creatures.",
       "source": "coined"
     },
     {
@@ -2641,7 +2799,8 @@
       "it": "Eludere",
       "strict": true,
       "kind": "class",
-      "note": "Monk (and Rogue) class feature. Read out of Manuale del Giocatore Monk table/description (\"Eludere (Str): A partire dal 2° livello...\") word for word.",
+      "en_case": true,
+      "note": "Monk (and Rogue) class feature. Read out of Manuale del Giocatore Monk table/description (\"Eludere (Str): A partire dal 2° livello...\") word for word. en_case added by the data lane: ordinary prose uses the plural common noun 'evasions' for dodging the truth (spells.json Discern Lies #145, 'nor does it reveal evasions'), unrelated to the class feature.",
       "source": "manual",
       "stems": [
         "eluder"
@@ -3107,6 +3266,4231 @@
       "stems": [
         "incantesimo immobile"
       ]
+    },
+    {
+      "en": "heal (spell)",
+      "it": "guarire",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced from spells.json (Eyebite #184). Same rendering as the Heal skill (glossary.json).",
+      "source": "coined",
+      "stems": [
+        "guarire"
+      ]
+    },
+    {
+      "en": "faerie fire",
+      "it": "fuoco fatato",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, spells.json #186.",
+      "source": "coined",
+      "stems": [
+        "fuoco fatato"
+      ]
+    },
+    {
+      "en": "sepia snake sigil",
+      "it": "sigillo del serpente seppia",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, spells.json (Erase #179 links to it). Manuale del Giocatore p.197 spell list (\"Sigillo del serpente: Crea simboli di testo che immobilizzano il lettore\").",
+      "source": "manual",
+      "stems": [
+        "sigillo del serpente"
+      ]
+    },
+    {
+      "en": "illusory script",
+      "it": "scrittura illusoria",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced from spells.json (Erase #179).",
+      "source": "coined",
+      "stems": [
+        "scrittura illusoria"
+      ]
+    },
+    {
+      "en": "symbol",
+      "it": "simbolo",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name family, referenced from spells.json (Erase #179).",
+      "source": "coined",
+      "stems": [
+        "simbolo"
+      ]
+    },
+    {
+      "en": "arcane mark",
+      "it": "marchio arcano",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, spells.json #23 (already translated as self-reference) and referenced from #179 (Erase).",
+      "source": "coined",
+      "stems": [
+        "marchio arcano"
+      ]
+    },
+    {
+      "en": "enervation",
+      "it": "risucchio di energia",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, spells.json #172-173.",
+      "source": "coined",
+      "stems": [
+        "risucchio di energia"
+      ]
+    },
+    {
+      "en": "endure elements",
+      "it": "resistere agli elementi",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, spells.json #171.",
+      "source": "coined",
+      "stems": [
+        "resistere agli element"
+      ]
+    },
+    {
+      "en": "dispel evil",
+      "it": "dissolvi il male",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, spells.json #151, matches the established 'dissolvi X' pattern (dissolvi magie).",
+      "source": "coined",
+      "stems": [
+        "dissolvi il male"
+      ]
+    },
+    {
+      "en": "discern location",
+      "it": "scoprire posizione",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, spells.json #146.",
+      "source": "coined",
+      "stems": [
+        "scoprire posizion"
+      ]
+    },
+    {
+      "en": "mind blank",
+      "it": "mente vuota",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced from spells.json (Discern Location #146).",
+      "source": "coined",
+      "stems": [
+        "mente vuota"
+      ]
+    },
+    {
+      "en": "plant growth",
+      "it": "crescita vegetale",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, spells.json (Diminish Plants #144 links to it).",
+      "source": "coined",
+      "stems": [
+        "crescita vegetal"
+      ]
+    },
+    {
+      "en": "resurrection",
+      "it": "resurrezione",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, spells.json (Destruction #127 links to it).",
+      "source": "coined",
+      "stems": [
+        "resurrezion"
+      ]
+    },
+    {
+      "en": "true resurrection",
+      "it": "vera resurrezione",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, spells.json (Destruction #127 links to it).",
+      "source": "coined",
+      "stems": [
+        "vera resurrezion"
+      ]
+    },
+    {
+      "en": "detect evil",
+      "it": "individuazione del male",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, spells.json #129-131 link to it. Matches the established Good/Evil alignment rendering (Male) from glossary.json.",
+      "source": "coined",
+      "stems": [
+        "individuazione del male"
+      ]
+    },
+    {
+      "en": "sending",
+      "it": "invio",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, spells.json (Demand #125 links to it).",
+      "source": "coined",
+      "stems": [
+        "invio"
+      ]
+    },
+    {
+      "en": "good hope",
+      "it": "speranza propizia",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, spells.json (Crushing Despair #100 links to it, and Calm Emotions #55 already used this rendering).",
+      "source": "coined",
+      "stems": [
+        "speranza propizia"
+      ]
+    },
+    {
+      "en": "grasping hand",
+      "it": "mano prensile",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name (Bigby's hand series), spells.json (Crushing Hand #101 links to it).",
+      "source": "coined",
+      "stems": [
+        "mano prensile"
+      ]
+    },
+    {
+      "en": "shadow (creature)",
+      "it": "ombra",
+      "strict": false,
+      "kind": "creature",
+      "note": "Undead creature, spells.json (Create Greater Undead #96). Manuale del Giocatore p.10 sample encumbrance list (\"Ghoul, mummia, ombra\").",
+      "source": "manual",
+      "stems": [
+        "ombra",
+        "ombre"
+      ]
+    },
+    {
+      "en": "wraith",
+      "it": "spettro",
+      "strict": false,
+      "kind": "creature",
+      "note": "Undead creature, spells.json (Create Greater Undead #96). Not yet checked against the manual beyond the generic word 'spettro' at Manuale del Giocatore p.221 context.",
+      "source": "coined",
+      "stems": [
+        "spettro",
+        "spettri"
+      ]
+    },
+    {
+      "en": "spectre",
+      "it": "spettro maggiore",
+      "strict": false,
+      "kind": "creature",
+      "note": "Undead creature, spells.json (Create Greater Undead #96). Coined to disambiguate from wraith -> spettro. Not yet checked against the manual.",
+      "source": "coined",
+      "stems": [
+        "spettro maggior"
+      ]
+    },
+    {
+      "en": "devourer",
+      "it": "divoratore",
+      "strict": false,
+      "kind": "creature",
+      "note": "Undead creature (MM3), spells.json (Create Greater Undead #96). Not yet checked against the manual.",
+      "source": "coined",
+      "stems": [
+        "divoratore",
+        "divoratori"
+      ]
+    },
+    {
+      "en": "ghast",
+      "it": "necrofago",
+      "strict": false,
+      "kind": "creature",
+      "note": "Undead creature, spells.json (Create Undead #97). Not yet checked against the manual.",
+      "source": "coined",
+      "stems": [
+        "necrofago",
+        "necrofagi"
+      ]
+    },
+    {
+      "en": "mohrg",
+      "it": "mohrg",
+      "strict": false,
+      "kind": "creature",
+      "note": "Undead creature (MM2), spells.json (Create Undead #97). Kept as-is (obscure monster, no confirmed Italian rendering).",
+      "source": "coined"
+    },
+    {
+      "en": "blinding sickness",
+      "it": "infermità accecante",
+      "strict": false,
+      "kind": "rules",
+      "note": "Disease name, spells.json (Contagion, #87). Manuale del Dungeon Master p.294 table 8-2 (\"Infermità accecante: Si diffonde nell'acqua infetta\").",
+      "source": "manual",
+      "stems": [
+        "infermità accecante"
+      ]
+    },
+    {
+      "en": "cackle fever",
+      "it": "febbre da gallina",
+      "strict": false,
+      "kind": "rules",
+      "note": "Disease name, spells.json (Contagion, #87). Manuale del Dungeon Master p.294 (\"I sintomi includono febbre alta, disorientamento e frequenti esplosioni di risate incontrollabili\").",
+      "source": "manual",
+      "stems": [
+        "febbre da gallina"
+      ]
+    },
+    {
+      "en": "filth fever",
+      "it": "febbre lurida",
+      "strict": false,
+      "kind": "rules",
+      "note": "Disease name, spells.json (Contagion, #87). Manuale del Dungeon Master p.205/294/DMM p.18/43 (\"Malattia (Str): Febbre lurida — morso...\", damage 1d3 Des/1d3 Cos matches).",
+      "source": "manual",
+      "stems": [
+        "febbre lurida"
+      ]
+    },
+    {
+      "en": "mindfire",
+      "it": "fuoco mentale",
+      "strict": false,
+      "kind": "rules",
+      "note": "Disease name, spells.json (Contagion, #87). Manuale del Dungeon Master p.294 (\"Dà la sensazione che il cervello stia bruciando\").",
+      "source": "manual",
+      "stems": [
+        "fuoco mentale"
+      ]
+    },
+    {
+      "en": "red ache",
+      "it": "malattia rossa",
+      "strict": false,
+      "kind": "rules",
+      "note": "Disease name, spells.json (Contagion, #87). Manuale del Dungeon Master p.295 (\"La pelle diventa rossa, piena di vesciche e calda al tocco\").",
+      "source": "manual",
+      "stems": [
+        "malattia rossa"
+      ]
+    },
+    {
+      "en": "shakes",
+      "it": "tremarella",
+      "strict": false,
+      "kind": "rules",
+      "note": "Disease name, spells.json (Contagion, #87). Manuale del Dungeon Master p.295 (\"Provoca fitte, tremori e scatti involontari\").",
+      "source": "manual",
+      "stems": [
+        "tremarell"
+      ]
+    },
+    {
+      "en": "slimy doom",
+      "it": "devastazione vischiosa",
+      "strict": false,
+      "kind": "rules",
+      "note": "Disease name, spells.json (Contagion, #87). Manuale del Dungeon Master p.294 (\"L'infezione si diffonde dall'interno del corpo all'esterno, trasformando la vittima in una massa gelatinosa infetta\").",
+      "source": "manual",
+      "stems": [
+        "devastazione vischios"
+      ]
+    },
+    {
+      "en": "desecrate",
+      "it": "dissacrare",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, spells.json (Consecrate #85 links to it). Manuale del Giocatore p.205 (Animate Dead entry: \"l'incantesimo dissacrare raddoppia questo limite\").",
+      "source": "manual",
+      "stems": [
+        "dissacrar"
+      ]
+    },
+    {
+      "en": "interposing hand",
+      "it": "mano interposta",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name (Bigby's hand series), spells.json (Clenched Fist, #70 links to it).",
+      "source": "coined",
+      "stems": [
+        "mano interposta"
+      ]
+    },
+    {
+      "en": "forceful hand",
+      "it": "mano possente",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name (Bigby's hand series), spells.json (Clenched Fist, #70 links to it).",
+      "source": "coined",
+      "stems": [
+        "mano possente"
+      ]
+    },
+    {
+      "en": "confusion",
+      "it": "confusione",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced from spells.json (Cloak of Chaos, #71). Distinct from the Confused condition (names.json Confused -> Confuso).",
+      "source": "coined",
+      "stems": [
+        "confusion"
+      ]
+    },
+    {
+      "en": "slow",
+      "it": "lentezza",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, spells.json (Chaos Hammer #61 links to it). Manuale del Giocatore p.251 (\"...nega l'effetto di lentezza\").",
+      "source": "manual",
+      "stems": [
+        "lentezz"
+      ]
+    },
+    {
+      "en": "charm person",
+      "it": "charme su persone",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, spells.json #62-64 link to it. Manuale del Giocatore (\"charme su persone\", used repeatedly, e.g. p.30 \"si lancia di nascosto charme su persone su una creatura\").",
+      "source": "manual",
+      "stems": [
+        "charme su person"
+      ]
+    },
+    {
+      "en": "charm monster",
+      "it": "charme su mostri",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, spells.json #63-64. Matches the established pattern for charm person -> charme su persone.",
+      "source": "coined",
+      "stems": [
+        "charme su mostr"
+      ]
+    },
+    {
+      "en": "charm animal",
+      "it": "charme su animali",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, spells.json #62. Matches the established pattern for charm person -> charme su persone.",
+      "source": "coined",
+      "stems": [
+        "charme su animal"
+      ]
+    },
+    {
+      "en": "rage (barbarian)",
+      "it": "ira",
+      "strict": false,
+      "kind": "class",
+      "note": "Barbarian class feature, referenced in prose from spells.json (Calm Emotions, #55). Manuale del Giocatore p.26-27 (\"fase d'ira\", \"Il barbaro può interrompere volontariamente l'attacco...\", \"bonus morale di +2 ai tiri salvezza sulla Volontà\").",
+      "source": "manual",
+      "stems": [
+        "ira"
+      ]
+    },
+    {
+      "en": "inspire courage",
+      "it": "ispirare coraggio",
+      "strict": false,
+      "kind": "class",
+      "note": "Bard class feature, referenced in prose from spells.json (Calm Emotions, #55). Manuale del Giocatore p.28 (\"controcanto, affascinare, ispirare coraggio +1\", table of bardic music abilities by level).",
+      "source": "manual",
+      "stems": [
+        "ispirare coraggio"
+      ]
+    },
+    {
+      "en": "djinni",
+      "it": "gin",
+      "strict": false,
+      "kind": "creature",
+      "note": "Referenced in prose from spells.json (Call Lightning, #52). Standard D&D 3.5 Italian rendering of the genie subtype (as in 'gin' / genio dell'aria).",
+      "source": "coined",
+      "stems": [
+        "gin"
+      ]
+    },
+    {
+      "en": "call lightning",
+      "it": "invocare il fulmine",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, spells.json #52. Corrected from the earlier coined 'richiamare fulmini' to match the manual-verified rendering already in glossary.json (Manuale del Giocatore).",
+      "source": "manual",
+      "stems": [
+        "invocar"
+      ]
+    },
+    {
+      "en": "curse",
+      "it": "maledizione",
+      "strict": false,
+      "kind": "rules",
+      "note": "Manuale del Giocatore p.185/187 (Remove Curse spell list entry: \"Rimuovi maledizione: Libera un oggetto o una persona da una maledizione\").",
+      "source": "manual",
+      "stems": [
+        "maledizion"
+      ]
+    },
+    {
+      "en": "remove curse",
+      "it": "rimuovi maledizione",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, spells.json (Bestow Curse, #36). Manuale del Giocatore p.185/187.",
+      "source": "manual",
+      "stems": [
+        "rimuovi maledizion"
+      ]
+    },
+    {
+      "en": "bestow curse",
+      "it": "scagliare maledizione",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, spells.json #36. Manuale del Giocatore p.197 (\"Scagliare maledizione: -6 a un punteggio di caratteristica, -4 ai tiri...\") — matches this spell's own three-option effect list almost word for word.",
+      "source": "manual",
+      "stems": [
+        "scagliare maledizion"
+      ]
+    },
+    {
+      "en": "grapple check",
+      "it": "prova di lottare",
+      "strict": false,
+      "kind": "rules",
+      "note": "Manuale del Giocatore p.71/157 (\"prova di lottare\", \"Una prova di lottare è come un tiro per colpire in mischia\"). Not 'prova di lotta'.",
+      "source": "manual",
+      "stems": [
+        "prova di lottar",
+        "prove di lottar"
+      ]
+    },
+    {
+      "en": "spread",
+      "it": "propagazione",
+      "strict": false,
+      "kind": "rules",
+      "note": "Spell area shape. Manuale del Giocatore p.178 (\"Un incantesimo a propagazione si propaga come un'esplosione ma può girare dietro gli angoli\").",
+      "source": "manual",
+      "stems": [
+        "propagazion"
+      ]
+    },
+    {
+      "en": "suggestion",
+      "it": "suggestione",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced from spells.json (Binding, #37). Standard cognate rendering.",
+      "source": "coined",
+      "stems": [
+        "suggestion"
+      ]
+    },
+    {
+      "en": "dominate animal",
+      "it": "dominare animali",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced from spells.json (Binding, #37). Matches the established pattern for dominate person -> dominare persone.",
+      "source": "coined",
+      "stems": [
+        "dominare animal"
+      ]
+    },
+    {
+      "en": "dominate monster",
+      "it": "dominare mostri",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced from spells.json (Binding, #37). Matches the established pattern for dominate person -> dominare persone.",
+      "source": "coined",
+      "stems": [
+        "dominare mostr"
+      ]
+    },
+    {
+      "en": "Mage's disjunction",
+      "it": "disgiunzione del mago",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced from spells.json (Binding, #37). Composed from the already-coined 'disjunction' -> 'disgiunzione' plus 'Mage' -> 'Mago'.",
+      "source": "coined",
+      "stems": [
+        "disgiunzione del mago"
+      ]
+    },
+    {
+      "en": "binding",
+      "it": "vincolo",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, spells.json #37.",
+      "source": "coined",
+      "stems": [
+        "vincol"
+      ]
+    },
+    {
+      "en": "banishment",
+      "it": "esilio",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, spells.json #32. Manuale del Giocatore p.230 (\"Esilio\" heading; \"l'incantesimo esilio è una versione più potente dell'incantesimo congedo\" matches this spell's own opening line almost word for word).",
+      "source": "manual",
+      "stems": [
+        "esilio"
+      ]
+    },
+    {
+      "en": "dismissal",
+      "it": "congedo",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced from spells.json (Banishment, #32). Manuale del Giocatore p.187/197 (\"Congedo: Costringe una creatura a tornare al suo piano nativo\").",
+      "source": "manual",
+      "stems": [
+        "congedo"
+      ]
+    },
+    {
+      "en": "bless",
+      "it": "benedizione",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced in prose from spells.json (Bane, #31, 'counters and dispels bless'). Manuale del Giocatore p.173/186 (\"Benedizione: Gli alleati ottengono +1 ai tiri per colpire e +1 ai tiri...\").",
+      "source": "manual",
+      "stems": [
+        "benedizion"
+      ]
+    },
+    {
+      "en": "extraplanar",
+      "it": "extraplanare",
+      "strict": false,
+      "kind": "rules",
+      "note": "Creature descriptor, spells.json (Banishment #32, Bane list). Manuale del Giocatore p.185-186 (Summon Monster spell list, \"Richiama una creatura extraplanare che combatte...\").",
+      "source": "manual",
+      "stems": [
+        "extraplanar"
+      ]
+    },
+    {
+      "en": "shapechanger subtype",
+      "it": "sottotipo mutaforma",
+      "strict": false,
+      "kind": "rules",
+      "note": "Monster subtype, referenced in prose from spells.json (Baleful Polymorph, #30). Manuale del Giocatore p.258 (Polymorph): \"il sottotipo mutaforma (come un licantropo o un doppelganger) può ritornare alla sua forma naturale...\".",
+      "source": "manual",
+      "stems": [
+        "sottotipo mutaforma"
+      ]
+    },
+    {
+      "en": "lycanthrope",
+      "it": "licantropo",
+      "strict": false,
+      "kind": "creature",
+      "note": "Manuale del Giocatore p.258; also Manuale del Dungeon Master p.80-81 random encounter tables ('topo mannaro (licantropo)', etc.).",
+      "source": "manual",
+      "stems": [
+        "licantrop"
+      ]
+    },
+    {
+      "en": "geas/quest",
+      "it": "costrizione/cerca",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced in prose from spells.json (Atonement, #27). Manuale del Giocatore p.173: \"...l'incantesimo costrizione/cerca non nega lo charme...\" — confirms 'geas/quest' as a single hyphenated-style spell name is 'costrizione/cerca', matching the compulsion subschool term (costrizione) already in the glossary.",
+      "source": "manual",
+      "stems": [
+        "costrizione/cerca"
+      ]
+    },
+    {
+      "en": "Personal",
+      "it": "Personale",
+      "strict": false,
+      "kind": "rules",
+      "en_case": true,
+      "note": "Spell Range category. Manuale del Giocatore p.176 (Raggio di azione section): \"Personale: L'incantesimo ha effetto solo sull'incantatore.\"",
+      "source": "manual"
+    },
+    {
+      "en": "blindsense",
+      "it": "percezione cieca",
+      "strict": false,
+      "kind": "rules",
+      "note": "Creature special quality, referenced in prose from spells.json (Alter Self, #7). Not yet checked against the manual.",
+      "source": "coined",
+      "stems": [
+        "percezione ciec"
+      ]
+    },
+    {
+      "en": "blindsight",
+      "it": "vista cieca",
+      "strict": false,
+      "kind": "rules",
+      "note": "Creature special quality, referenced in prose from spells.json (Alter Self, #7). Not yet checked against the manual.",
+      "source": "coined",
+      "stems": [
+        "vista ciec"
+      ]
+    },
+    {
+      "en": "fast healing",
+      "it": "guarigione accelerata",
+      "strict": false,
+      "kind": "rules",
+      "note": "Creature special quality, referenced in prose from spells.json (Alter Self, #7). Not yet checked against the manual.",
+      "source": "coined",
+      "stems": [
+        "guarigione accelerat"
+      ]
+    },
+    {
+      "en": "regeneration",
+      "it": "rigenerazione",
+      "strict": false,
+      "kind": "rules",
+      "note": "Creature special quality, referenced in prose from spells.json (Alter Self, #7). Fairly standard rendering.",
+      "source": "coined",
+      "stems": [
+        "rigenerazion"
+      ]
+    },
+    {
+      "en": "scent",
+      "it": "olfatto",
+      "strict": false,
+      "kind": "rules",
+      "note": "Creature special quality, referenced in prose from spells.json (Alter Self, #7). Not yet checked against the manual.",
+      "source": "coined",
+      "stems": [
+        "olfatto"
+      ]
+    },
+    {
+      "en": "alternate form",
+      "it": "forma alternativa",
+      "strict": false,
+      "kind": "rules",
+      "note": "Monster special ability linked from spells.json (Animal Shapes, #11). Not yet checked against the manual.",
+      "source": "coined",
+      "stems": [
+        "forma alternativ"
+      ]
+    },
+    {
+      "en": "template",
+      "it": "template",
+      "strict": false,
+      "kind": "rules",
+      "note": "Kept as the English loanword, referenced in prose from spells.json (Alter Self, #7). Not yet checked against the manual (DMG-defined creature modification concept).",
+      "source": "coined"
+    },
+    {
+      "en": "Touch",
+      "it": "Contatto",
+      "strict": false,
+      "kind": "rules",
+      "en_case": true,
+      "note": "Spell Range category. Manuale del Giocatore p.176: \"Contatto: È necessario toccare una creatura o un oggetto perché l'incantesimo abbia effetto su di esso.\"",
+      "source": "manual"
+    },
+    {
+      "en": "Close",
+      "it": "Vicino",
+      "strict": false,
+      "kind": "rules",
+      "en_case": true,
+      "note": "Spell Range category, e.g. 'Close (25 ft. + 5 ft./2 levels)' -> 'Vicino (25 piedi + 5 piedi/2 livelli)'. Manuale del Giocatore p.176: \"Vicino: L'incantesimo può arrivare fino a 7,5 metri dall'incantatore...\" (masculine, agreeing with 'raggio di azione'). Feet stay feet per the app's unit convention -- do not convert to meters.",
+      "source": "manual"
+    },
+    {
+      "en": "Medium",
+      "it": "Medio",
+      "strict": false,
+      "kind": "rules",
+      "en_case": true,
+      "note": "Spell Range category (distinct from the size 'Medium'/kind size in glossary.json, same Italian word). Manuale del Giocatore p.176: \"Medio: L'incantesimo può arrivare fino a 30 metri + 3 metri per ogni livello dell'incantatore.\"",
+      "source": "manual"
+    },
+    {
+      "en": "Long",
+      "it": "Lungo",
+      "strict": false,
+      "kind": "rules",
+      "en_case": true,
+      "note": "Spell Range category. Manuale del Giocatore p.176: \"Lungo: L'incantesimo può arrivare fino a 120 metri + 12 metri per ogni livello dell'incantatore.\"",
+      "source": "manual"
+    },
+    {
+      "en": "Unlimited",
+      "it": "Illimitato",
+      "strict": false,
+      "kind": "rules",
+      "en_case": true,
+      "note": "Spell Range category. Manuale del Giocatore p.176: \"Illimitato: L'incantesimo può arrivare ovunque sullo stesso piano di esistenza.\"",
+      "source": "manual"
+    },
+    {
+      "en": "Instantaneous",
+      "it": "Istantanea",
+      "strict": false,
+      "kind": "rules",
+      "en_case": true,
+      "note": "Spell Duration category. Manuale del Giocatore p.178: \"Istantanea: L'energia dell'incantesimo viene e va nell'istante in cui si lancia l'incantesimo...\"",
+      "source": "manual"
+    },
+    {
+      "en": "Permanent",
+      "it": "Permanente",
+      "strict": false,
+      "kind": "rules",
+      "en_case": true,
+      "note": "Spell Duration category. Manuale del Giocatore p.178: \"Permanente: L'energia rimane per tutto il tempo in cui dura l'effetto...\"",
+      "source": "manual"
+    },
+    {
+      "en": "Concentration",
+      "it": "Concentrazione",
+      "strict": false,
+      "kind": "rules",
+      "en_case": true,
+      "note": "Spell Duration category, same word already used for the skill (glossary.json). Manuale del Giocatore p.178: \"Concentrazione: L'incantesimo dura per tutto il tempo in cui ci si concentra su di esso.\"",
+      "source": "manual"
+    },
+    {
+      "en": "Negates",
+      "it": "nega",
+      "strict": false,
+      "kind": "rules",
+      "note": "Saving Throw field verb, e.g. 'Will negates' -> 'Volontà nega'. Manuale del Giocatore p.179 defines the category as 'Negare'; actual spell entries conjugate it, confirmed at p.207/230/251/257/262 ('...nega l'effetto', 'Tempra nega l'effetto').",
+      "source": "manual",
+      "stems": [
+        "nega"
+      ]
+    },
+    {
+      "en": "Half",
+      "it": "dimezza",
+      "strict": false,
+      "kind": "rules",
+      "note": "Saving Throw field verb, e.g. 'Reflex half' -> 'Riflessi dimezza'. Manuale del Giocatore p.179 ('Dimezza: ...un tiro salvezza riuscito dimezza i danni subiti'), confirmed in running spell text p.230/247/251 ('dimezza i danni').",
+      "source": "manual",
+      "stems": [
+        "dimezza"
+      ]
+    },
+    {
+      "en": "Partial",
+      "it": "parziale",
+      "strict": false,
+      "kind": "rules",
+      "note": "Saving Throw field adjective, e.g. 'Will partial' -> 'Volontà parziale'. Manuale del Giocatore p.179: \"Parziale: L'incantesimo provoca un effetto sul suo soggetto...Un tiro salvezza riuscito significa che si verifica qualche altro effetto minore.\"",
+      "source": "manual",
+      "stems": [
+        "parzial"
+      ]
+    },
+    {
+      "en": "harmless",
+      "it": "innocuo",
+      "strict": false,
+      "kind": "rules",
+      "note": "Saving Throw / Spell Resistance qualifier, e.g. 'Yes (harmless)' -> 'Sì (innocuo)'. Manuale del Giocatore p.179: \"(innocuo): L'incantesimo di solito è benefico, non dannoso, ma una creatura mirata può tentare un tiro salvezza se lo desidera.\"",
+      "source": "manual",
+      "stems": [
+        "innocu"
+      ]
+    },
+    {
+      "en": "(object)",
+      "it": "(oggetto)",
+      "strict": false,
+      "kind": "rules",
+      "note": "Saving Throw qualifier appended in parentheses. Manuale del Giocatore p.179: \"(oggetto): L'incantesimo può essere lanciato su oggetti, che ottengono tiri salvezza solo se sono magici o se sono custoditi...\"",
+      "source": "manual"
+    },
+    {
+      "en": "Dismissible",
+      "it": "Interrompere",
+      "strict": false,
+      "kind": "rules",
+      "note": "Duration suffix marker: '(D)' in English becomes '(I)' in Italian. Manuale del Giocatore p.178: \"(I) Interrompere: Se la voce 'Durata' termina con '(I)', l'incantatore può interrompere l'incantesimo a piacere.\" When a Duration value ends in '(D)', translate the marker letter to '(I)', not '(D)'.",
+      "source": "manual"
+    },
+    {
+      "en": "Arcane Material Component",
+      "it": "Componente Materiale Arcana",
+      "strict": false,
+      "kind": "spell-component",
+      "note": "Variant of Material Component used when arcane/divine versions differ.",
+      "source": "coined"
+    },
+    {
+      "en": "Focus",
+      "it": "Focus",
+      "strict": false,
+      "kind": "spell-component",
+      "note": "Manuale del Giocatore p.176: \"Focus (F): Una componente focus è un sostegno/propulsore...\" — kept as \"Focus\", not translated, per the book heading \"Focus (F)\".",
+      "source": "manual"
+    },
+    {
+      "en": "Divine Focus",
+      "it": "Focus Divina",
+      "strict": false,
+      "kind": "spell-component",
+      "note": "Manuale del Giocatore p.176: \"Focus Divina (FD): Una componente focus divina...\"",
+      "source": "manual"
+    },
+    {
+      "en": "size bonus",
+      "it": "bonus di taglia",
+      "strict": false,
+      "kind": "rules",
+      "source": "coined"
+    },
+    {
+      "en": "size penalty",
+      "it": "penalità di taglia",
+      "strict": false,
+      "kind": "rules",
+      "source": "coined"
+    },
+    {
+      "en": "size category",
+      "it": "categoria di taglia",
+      "strict": false,
+      "kind": "rules",
+      "source": "coined"
+    },
+    {
+      "en": "natural armor bonus",
+      "it": "bonus di armatura naturale",
+      "strict": false,
+      "kind": "rules",
+      "source": "coined"
+    },
+    {
+      "en": "resistance bonus",
+      "it": "bonus di resistenza",
+      "strict": false,
+      "kind": "rules",
+      "source": "coined"
+    },
+    {
+      "en": "artifact",
+      "it": "manufatto",
+      "strict": false,
+      "kind": "rules",
+      "note": "Magic item rarity category above legendary. Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "treant",
+      "it": "treante",
+      "strict": true,
+      "kind": "creature-type",
+      "note": "Standard D&D 3.5 Italian rendering; not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "disjunction",
+      "it": "disgiunzione",
+      "strict": false,
+      "kind": "spell",
+      "source": "coined"
+    },
+    {
+      "en": "telekinesis",
+      "it": "telecinesi",
+      "strict": false,
+      "kind": "spell",
+      "source": "coined"
+    },
+    {
+      "en": "extradimensional",
+      "it": "extradimensionale",
+      "strict": false,
+      "kind": "rules",
+      "source": "coined"
+    },
+    {
+      "en": "figment",
+      "it": "simulacro",
+      "strict": false,
+      "kind": "rules",
+      "note": "Illusion sub-school effect type. Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "mage's sword",
+      "it": "spada di Mordenkainen",
+      "strict": false,
+      "kind": "spell",
+      "source": "manual",
+      "note": "Confirmed already in glossary.json main file too; kept here for the data-lane inbox trail."
+    },
+    {
+      "en": "sphere of annihilation",
+      "it": "sfera d'annientamento",
+      "strict": false,
+      "kind": "item",
+      "source": "coined"
+    },
+    {
+      "en": "rod of cancellation",
+      "it": "verga di annullamento",
+      "strict": false,
+      "kind": "item",
+      "source": "coined"
+    },
+    {
+      "en": "deflection bonus",
+      "it": "bonus di deviazione",
+      "strict": false,
+      "kind": "rules",
+      "source": "coined"
+    },
+    {
+      "en": "force damage",
+      "it": "danno da forza",
+      "strict": false,
+      "kind": "rules",
+      "source": "coined"
+    },
+    {
+      "en": "protection from evil",
+      "it": "protezione dal male",
+      "strict": false,
+      "kind": "spell",
+      "source": "coined"
+    },
+    {
+      "en": "protection from good",
+      "it": "protezione dal bene",
+      "strict": false,
+      "kind": "spell",
+      "source": "coined"
+    },
+    {
+      "en": "protection from law",
+      "it": "protezione dalla legge",
+      "strict": false,
+      "kind": "spell",
+      "source": "coined"
+    },
+    {
+      "en": "protection from chaos",
+      "it": "protezione dal caos",
+      "strict": false,
+      "kind": "spell",
+      "source": "coined"
+    },
+    {
+      "en": "magic circle against evil",
+      "it": "cerchio magico contro il male",
+      "strict": false,
+      "kind": "spell",
+      "source": "coined"
+    },
+    {
+      "en": "magic fang",
+      "it": "zanna magica",
+      "strict": false,
+      "kind": "spell",
+      "source": "coined"
+    },
+    {
+      "en": "magic aura",
+      "it": "aura magica",
+      "strict": false,
+      "kind": "spell",
+      "source": "coined"
+    },
+    {
+      "en": "planar binding",
+      "it": "vincolo planare",
+      "strict": false,
+      "kind": "spell",
+      "source": "coined"
+    },
+    {
+      "en": "lesser planar binding",
+      "it": "vincolo planare minore",
+      "strict": false,
+      "kind": "spell",
+      "source": "coined"
+    },
+    {
+      "en": "greater planar binding",
+      "it": "vincolo planare maggiore",
+      "strict": false,
+      "kind": "spell",
+      "source": "coined"
+    },
+    {
+      "en": "astral projection",
+      "it": "proiezione astrale",
+      "strict": false,
+      "kind": "spell",
+      "source": "coined"
+    },
+    {
+      "en": "gate",
+      "it": "portale",
+      "strict": false,
+      "kind": "spell",
+      "source": "coined"
+    },
+    {
+      "en": "plane shift",
+      "it": "spostamento planare",
+      "strict": false,
+      "kind": "spell",
+      "source": "coined"
+    },
+    {
+      "en": "shadow walk",
+      "it": "cammino nell'ombra",
+      "strict": false,
+      "kind": "spell",
+      "source": "coined"
+    },
+    {
+      "en": "teleport",
+      "it": "teletrasporto",
+      "strict": false,
+      "kind": "spell",
+      "note": "Attested as \"teletrasporto\" in the Manuale del Giocatore touch-range description.",
+      "source": "manual"
+    },
+    {
+      "en": "identify",
+      "it": "identificare",
+      "strict": false,
+      "kind": "spell",
+      "source": "coined"
+    },
+    {
+      "en": "oathbow",
+      "it": "arco del giuramento",
+      "strict": false,
+      "kind": "item",
+      "note": "Specific weapon flavor name (Oathbow), items.json Specific Weapon/21. Own item name kept English in names.json; this is the common-noun rendering used inline in its own description text.",
+      "source": "coined"
+    },
+    {
+      "en": "sun blade",
+      "it": "lama solare",
+      "strict": false,
+      "kind": "item",
+      "note": "Specific weapon flavor name (Sun Blade), items.json Specific Weapon/26.",
+      "source": "coined"
+    },
+    {
+      "en": "frost brand",
+      "it": "marchio di gelo",
+      "strict": false,
+      "kind": "item",
+      "note": "Specific weapon flavor name (Frost Brand), items.json Specific Weapon/27.",
+      "source": "coined"
+    },
+    {
+      "en": "harm",
+      "it": "Danno",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name (cleric touch attack, Constitution/hp drain), referenced from items.json Specific Weapon/25. Not found in the searchable manual text; coined pending verification.",
+      "source": "coined"
+    },
+    {
+      "en": "daylight",
+      "it": "Luce del giorno",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced from items.json Specific Weapon/26. Not found in the searchable manual text; coined pending verification.",
+      "source": "coined"
+    },
+    {
+      "en": "disintegrate",
+      "it": "Disintegrazione",
+      "strict": false,
+      "kind": "spell",
+      "stems": [
+        "disintegrazion"
+      ],
+      "note": "Spell name. Manuale del Giocatore (Disintegrazione: Fa svanire una creatura...).",
+      "source": "manual"
+    },
+    {
+      "en": "fear",
+      "it": "Paura",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name. Manuale del Giocatore (Paura: I soggetti all'interno del cono...).",
+      "source": "manual"
+    },
+    {
+      "en": "bull's strength",
+      "it": "Forza del toro",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name. Manuale del Giocatore (Forza del toro: Il soggetto ottiene +4...).",
+      "source": "manual"
+    },
+    {
+      "en": "divine power",
+      "it": "Potere divino",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name. Manuale del Giocatore (Potere divino: l'incantatore ottiene un...).",
+      "source": "manual"
+    },
+    {
+      "en": "fly",
+      "it": "Volare",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name. Manuale del Giocatore (Volare: il soggetto vola con una velocita...).",
+      "source": "manual"
+    },
+    {
+      "en": "freedom of movement",
+      "it": "Libertà di movimento",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name. Manuale del Giocatore (Liberta di movimento: Il soggetto si muove...).",
+      "source": "manual"
+    },
+    {
+      "en": "water breathing",
+      "it": "Respirare sott'acqua",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name. Manuale del Giocatore (Respirare sott'acqua: il soggetto puo r...).",
+      "source": "manual"
+    },
+    {
+      "en": "tongues",
+      "it": "Linguaggi",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name. Manuale del Giocatore (Linguaggi: Permette di parlare qualsiasi linguaggio.).",
+      "source": "manual"
+    },
+    {
+      "en": "protection from energy",
+      "it": "Protezione dall'energia",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced from items.json Specific Weapon/27. Not found in the searchable manual text; coined pending verification.",
+      "source": "coined"
+    },
+    {
+      "en": "greater dispel magic",
+      "it": "Dissolvi magie superiore",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name. Manuale del Giocatore (Dissolvi magie superiore: Come dissolvi...).",
+      "source": "manual"
+    },
+    {
+      "en": "holy aura",
+      "it": "Aura sacra",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, composed from established terms holy->sacra and Aura->Aura. Not independently checked against the manual text.",
+      "source": "coined"
+    },
+    {
+      "en": "chain shirt",
+      "it": "camicia di maglia",
+      "strict": false,
+      "kind": "item",
+      "note": "Armor type, items.json Armor/3 etc.",
+      "source": "coined"
+    },
+    {
+      "en": "chainmail",
+      "it": "cotta di maglia",
+      "strict": false,
+      "kind": "item",
+      "note": "Armor type, items.json Specific Armor/2, /7.",
+      "source": "coined"
+    },
+    {
+      "en": "full plate",
+      "it": "corazza di piastre",
+      "strict": false,
+      "kind": "item",
+      "note": "Armor type. Manuale del Giocatore mentions corazza di piastre (locked gauntlet cross-reference).",
+      "source": "manual"
+    },
+    {
+      "en": "breastplate",
+      "it": "corazza",
+      "strict": false,
+      "kind": "item",
+      "note": "Armor type. Manuale del Giocatore Gauntlet entry: Armature medie e pesanti (tranne la corazza)...",
+      "source": "manual"
+    },
+    {
+      "en": "hide armor",
+      "it": "armatura di pelle",
+      "strict": false,
+      "kind": "item",
+      "note": "Armor type, items.json Specific Armor/3.",
+      "source": "coined"
+    },
+    {
+      "en": "banded mail",
+      "it": "armatura a bande",
+      "strict": false,
+      "kind": "item",
+      "note": "Armor type, items.json Specific Armor/6.",
+      "source": "coined"
+    },
+    {
+      "en": "greaves",
+      "it": "gambali",
+      "strict": false,
+      "kind": "item",
+      "note": "Armor piece, items.json Armor/7.",
+      "source": "coined"
+    },
+    {
+      "en": "gauntlets",
+      "it": "guanti d'arme",
+      "strict": false,
+      "kind": "item",
+      "note": "Armor piece, plural of Guanto d'arme (see gauntlet item entry).",
+      "source": "manual"
+    },
+    {
+      "en": "warhammer",
+      "it": "martello da guerra",
+      "strict": false,
+      "kind": "item",
+      "note": "Weapon name. Manuale del Giocatore (Martello da guerra: Quest'arma, preferita dai nani...).",
+      "source": "manual"
+    },
+    {
+      "en": "heavy mace",
+      "it": "mazza pesante",
+      "strict": false,
+      "kind": "item",
+      "note": "Weapon name. Manuale del Giocatore (Mazza leggera o pesante: Una mazza e fatta di metallo...).",
+      "source": "manual"
+    },
+    {
+      "en": "scimitar",
+      "it": "scimitarra",
+      "strict": false,
+      "kind": "item",
+      "note": "Weapon name. Manuale del Giocatore druid weapon list (...randello e scimitarra).",
+      "source": "manual"
+    },
+    {
+      "en": "rapier",
+      "it": "stocco",
+      "strict": false,
+      "kind": "item",
+      "note": "Weapon name. Manuale del Giocatore Arma Accurata feat text example (lo stocco e...).",
+      "source": "manual"
+    },
+    {
+      "en": "greataxe",
+      "it": "ascia bipenne",
+      "strict": false,
+      "kind": "item",
+      "note": "Weapon name. Manuale del Giocatore (Ascia bipenne: Quest'ascia veramente pesante...).",
+      "source": "manual"
+    },
+    {
+      "en": "quarterstaff",
+      "it": "bastone ferrato",
+      "strict": false,
+      "kind": "item",
+      "note": "Weapon name. Manuale del Giocatore monk weapon list (bastone ferrato, kama, nunchaku, sai, shuriken e siangham).",
+      "source": "manual"
+    },
+    {
+      "en": "dwarven waraxe",
+      "it": "ascia da guerra nanica",
+      "strict": false,
+      "kind": "item",
+      "note": "Weapon name. Manuale del Giocatore (Ascia da guerra nanica: Un'ascia da guerra nanica e tropp...).",
+      "source": "manual"
+    },
+    {
+      "en": "spiked chain",
+      "it": "catena chiodata",
+      "strict": false,
+      "kind": "item",
+      "note": "Weapon name. Manuale del Giocatore, Weapon Finesse feat benefit text (una catena chiodata, una frusta o uno stocco).",
+      "source": "manual"
+    },
+    {
+      "en": "dire flail",
+      "it": "mazzafrusto doppio",
+      "strict": false,
+      "kind": "item",
+      "note": "Weapon name (the double-headed flail). Manuale del Giocatore (Mazzafrusto doppio: Il mazzafrusto doppio e un'arma doppia...) matches the dire flail's double-weapon/disarm/trip text exactly.",
+      "source": "manual"
+    },
+    {
+      "en": "flail",
+      "it": "mazzafrusto",
+      "strict": false,
+      "kind": "item",
+      "note": "Weapon name, base form of Mazzafrusto doppio (dire flail).",
+      "source": "manual"
+    },
+    {
+      "en": "glaive",
+      "it": "roncone",
+      "strict": false,
+      "kind": "item",
+      "note": "Weapon name. Standard historical/fantasy Italian term; not found in the searchable manual text (OCR gap in the polearm section).",
+      "source": "coined"
+    },
+    {
+      "en": "guisarme",
+      "it": "guisarma",
+      "strict": false,
+      "kind": "item",
+      "note": "Weapon name. Not found in the searchable manual text (OCR gap in the polearm section); coined by transliteration.",
+      "source": "coined"
+    },
+    {
+      "en": "ranseur",
+      "it": "ranseur",
+      "strict": false,
+      "kind": "item",
+      "note": "Weapon name, kept as the English/French loanword. Not found in the searchable manual text (OCR gap in the polearm section).",
+      "source": "coined"
+    },
+    {
+      "en": "bastard sword",
+      "it": "spada bastarda",
+      "strict": false,
+      "kind": "item",
+      "note": "Weapon name. Manuale del Giocatore item-creation example (una spada bastarda perfetta costa 335 mo).",
+      "source": "manual"
+    },
+    {
+      "en": "hand crossbow",
+      "it": "balestra a mano",
+      "strict": false,
+      "kind": "item",
+      "note": "Weapon name, coined extension of the established balestra leggera/pesante pattern.",
+      "source": "coined"
+    },
+    {
+      "en": "repeating crossbow",
+      "it": "balestra a ripetizione",
+      "strict": false,
+      "kind": "item",
+      "note": "Weapon name. Manuale del Giocatore Ammo/1 cross-reference (o 5, per una balestra a ripetizione).",
+      "source": "manual"
+    },
+    {
+      "en": "net",
+      "it": "rete",
+      "strict": false,
+      "kind": "item",
+      "note": "Weapon name, matches the established Rete da pesca (fishing net) pattern in the equipment table.",
+      "source": "manual"
+    },
+    {
+      "en": "magic missile",
+      "it": "missile magico",
+      "strict": false,
+      "kind": "spell",
+      "source": "coined"
+    },
+    {
+      "en": "magic jar",
+      "it": "giara magica",
+      "strict": false,
+      "kind": "spell",
+      "source": "coined"
+    },
+    {
+      "en": "magic mouth",
+      "it": "bocca magica",
+      "strict": false,
+      "kind": "spell",
+      "source": "coined"
+    },
+    {
+      "en": "magic stone",
+      "it": "pietra magica",
+      "strict": false,
+      "kind": "spell",
+      "source": "coined"
+    },
+    {
+      "en": "line of effect",
+      "it": "linea d'effetto",
+      "strict": false,
+      "kind": "rules",
+      "source": "coined"
+    },
+    {
+      "en": "line of sight",
+      "it": "linea di vista",
+      "strict": false,
+      "kind": "rules",
+      "source": "coined"
+    },
+    {
+      "en": "command word",
+      "it": "parola di comando",
+      "strict": false,
+      "kind": "rules",
+      "source": "coined"
+    },
+    {
+      "en": "sling bullet",
+      "it": "proiettile da fionda",
+      "strict": false,
+      "kind": "item",
+      "source": "coined"
+    },
+    {
+      "en": "minor creation",
+      "it": "creazione minore",
+      "strict": false,
+      "kind": "spell",
+      "source": "coined"
+    },
+    {
+      "en": "major creation",
+      "it": "creazione maggiore",
+      "strict": false,
+      "kind": "spell",
+      "source": "coined"
+    },
+    {
+      "en": "silent image",
+      "it": "immagine silenziosa",
+      "strict": false,
+      "kind": "spell",
+      "note": "Matches glossary.ui.json \"Silent\" -> \"Silenzioso\" (Silent Spell metamagic, PHB p.99).",
+      "source": "coined"
+    },
+    {
+      "en": "major image",
+      "it": "immagine maggiore",
+      "strict": false,
+      "kind": "spell",
+      "source": "coined"
+    },
+    {
+      "en": "mending",
+      "it": "aggiustare",
+      "strict": false,
+      "kind": "spell",
+      "source": "coined"
+    },
+    {
+      "en": "cold iron",
+      "it": "ferro freddo",
+      "strict": false,
+      "kind": "item",
+      "source": "coined"
+    },
+    {
+      "en": "adamantine",
+      "it": "adamantio",
+      "strict": false,
+      "kind": "item",
+      "source": "coined"
+    },
+    {
+      "en": "alchemical silver",
+      "it": "argento alchemico",
+      "strict": false,
+      "kind": "item",
+      "source": "coined"
+    },
+    {
+      "en": "mithral",
+      "it": "mithral",
+      "strict": false,
+      "kind": "item",
+      "source": "coined"
+    },
+    {
+      "en": "meld into stone",
+      "it": "fondersi con la pietra",
+      "strict": false,
+      "kind": "spell",
+      "source": "coined"
+    },
+    {
+      "en": "maze",
+      "it": "labirinto",
+      "strict": false,
+      "kind": "spell",
+      "source": "coined"
+    },
+    {
+      "en": "meteor swarm",
+      "it": "sciame di meteore",
+      "strict": false,
+      "kind": "spell",
+      "source": "coined"
+    },
+    {
+      "en": "message",
+      "it": "messaggio",
+      "strict": false,
+      "kind": "spell",
+      "source": "coined"
+    },
+    {
+      "en": "warp wood",
+      "it": "deformare il legno",
+      "strict": false,
+      "kind": "spell",
+      "source": "coined"
+    },
+    {
+      "en": "stone to flesh",
+      "it": "pietra in carne",
+      "strict": false,
+      "kind": "spell",
+      "source": "coined"
+    },
+    {
+      "en": "stone shape",
+      "it": "forma della pietra",
+      "strict": false,
+      "kind": "spell",
+      "source": "coined"
+    },
+    {
+      "en": "transmute rock to mud",
+      "it": "trasmutare roccia in fango",
+      "strict": false,
+      "kind": "spell",
+      "source": "coined"
+    },
+    {
+      "en": "passwall",
+      "it": "passamuro",
+      "strict": false,
+      "kind": "spell",
+      "source": "coined"
+    },
+    {
+      "en": "fireball",
+      "it": "palla di fuoco",
+      "strict": false,
+      "kind": "spell",
+      "source": "coined"
+    },
+    {
+      "en": "minotaur",
+      "it": "minotauro",
+      "strict": false,
+      "kind": "creature",
+      "source": "coined"
+    },
+    {
+      "en": "mass charm monster",
+      "it": "charme di massa su mostri",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Specific Armor/9. Corrected to match the established charm monster -> charme su mostri family (was coined as 'Ammaliare mostri di massa' before that pattern was found; items.json Specific Armor/9 and Rod/28 updated to match.).",
+      "source": "coined"
+    },
+    {
+      "en": "haste",
+      "it": "Accelerare",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Specific Armor/10.",
+      "source": "coined"
+    },
+    {
+      "en": "contagion",
+      "it": "Contagio",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Specific Armor/11.",
+      "source": "coined"
+    },
+    {
+      "en": "buckler",
+      "it": "brocchiero",
+      "strict": false,
+      "kind": "item",
+      "note": "Shield type, items.json Shield/0.",
+      "source": "coined"
+    },
+    {
+      "en": "light shield",
+      "it": "scudo leggero",
+      "strict": false,
+      "kind": "item",
+      "note": "Shield type, items.json Shield/1-2.",
+      "source": "coined"
+    },
+    {
+      "en": "heavy shield",
+      "it": "scudo pesante",
+      "strict": false,
+      "kind": "item",
+      "note": "Shield type, items.json Shield/3-4.",
+      "source": "coined"
+    },
+    {
+      "en": "tower shield",
+      "it": "scudo torre",
+      "strict": false,
+      "kind": "item",
+      "note": "Shield type, items.json Shield/5.",
+      "source": "coined"
+    },
+    {
+      "en": "darkwood",
+      "it": "legno nero",
+      "strict": false,
+      "kind": "item",
+      "note": "Material name, items.json Specific Shield/0-1.",
+      "source": "coined"
+    },
+    {
+      "en": "feather fall",
+      "it": "Caduta piumata",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Ring/1.",
+      "source": "coined"
+    },
+    {
+      "en": "create food and water",
+      "it": "Creare cibo e acqua",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Ring/2.",
+      "source": "coined"
+    },
+    {
+      "en": "detect thoughts",
+      "it": "Individuare pensieri",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Ring/7.",
+      "source": "coined"
+    },
+    {
+      "en": "discern lies",
+      "it": "Scoprire le menzogne",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Ring/7.",
+      "source": "coined"
+    },
+    {
+      "en": "nondetection",
+      "it": "Non individuazione",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Ring/7.",
+      "source": "coined"
+    },
+    {
+      "en": "wall of force",
+      "it": "Muro di forza",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Ring/9.",
+      "source": "coined"
+    },
+    {
+      "en": "imbue with spell ability",
+      "it": "Infondere potere magico",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Ring/6.",
+      "source": "coined"
+    },
+    {
+      "en": "shield of faith",
+      "it": "Scudo della fede",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Ring/0.",
+      "source": "coined"
+    },
+    {
+      "en": "ring of the ram",
+      "it": "anello dell'ariete",
+      "strict": false,
+      "kind": "item",
+      "note": "Specific ring flavor name, items.json Ring/10.",
+      "source": "coined"
+    },
+    {
+      "en": "improved invisibility",
+      "it": "invisibilità superiore",
+      "strict": false,
+      "kind": "spell",
+      "source": "coined"
+    },
+    {
+      "en": "glamer",
+      "it": "vezzo",
+      "strict": false,
+      "kind": "rules",
+      "note": "Illusion sub-school. Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "clairaudience/clairvoyance",
+      "it": "chiaroudienza/chiaroveggenza",
+      "strict": false,
+      "kind": "spell",
+      "source": "coined"
+    },
+    {
+      "en": "augury",
+      "it": "presagio",
+      "strict": false,
+      "kind": "spell",
+      "source": "coined"
+    },
+    {
+      "en": "insight bonus",
+      "it": "bonus di intuizione",
+      "strict": false,
+      "kind": "rules",
+      "source": "coined"
+    },
+    {
+      "en": "cantrip",
+      "it": "trucchetto",
+      "strict": false,
+      "kind": "rules",
+      "source": "coined"
+    },
+    {
+      "en": "charm",
+      "it": "ammaliare",
+      "strict": false,
+      "kind": "spell",
+      "source": "coined"
+    },
+    {
+      "en": "mount",
+      "it": "cavalcatura",
+      "strict": false,
+      "kind": "spell",
+      "note": "The Mount spell. Not the generic UI/rules word for a creature ridden.",
+      "source": "coined"
+    },
+    {
+      "en": "misdirection",
+      "it": "depistaggio",
+      "strict": false,
+      "kind": "spell",
+      "source": "coined"
+    },
+    {
+      "en": "mislead",
+      "it": "sviare",
+      "strict": false,
+      "kind": "spell",
+      "source": "coined"
+    },
+    {
+      "en": "mnemonic enhancer",
+      "it": "potenziatore mnemonico",
+      "strict": false,
+      "kind": "spell",
+      "source": "coined"
+    },
+    {
+      "en": "moment of prescience",
+      "it": "momento di prescienza",
+      "strict": false,
+      "kind": "spell",
+      "source": "coined"
+    },
+    {
+      "en": "energy resistance",
+      "it": "resistenza all'energia",
+      "strict": false,
+      "kind": "item",
+      "note": "Ring type noun form, items.json Ring/15, parallel to Fire resistance -> resistenza al fuoco.",
+      "source": "coined"
+    },
+    {
+      "en": "water walk",
+      "it": "Camminare sulle acque",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Ring/17.",
+      "source": "coined"
+    },
+    {
+      "en": "jump",
+      "it": "Salto",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name (distinct from the Jump skill), items.json Ring/22.",
+      "source": "coined"
+    },
+    {
+      "en": "wizardry",
+      "it": "stregoneria",
+      "strict": false,
+      "kind": "item",
+      "note": "Ring of wizardry family, items.json Ring/21 etc.",
+      "source": "coined"
+    },
+    {
+      "en": "shield other",
+      "it": "Scudo altrui",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Ring/30.",
+      "source": "coined"
+    },
+    {
+      "en": "ball lightning",
+      "it": "palla di fulmini",
+      "strict": false,
+      "kind": "spell",
+      "note": "Ring of shooting stars special function, items.json Ring/32.",
+      "source": "coined"
+    },
+    {
+      "en": "shooting stars",
+      "it": "stelle cadenti",
+      "strict": false,
+      "kind": "item",
+      "note": "Ring of shooting stars special function / flavor name, items.json Ring/32.",
+      "source": "coined"
+    },
+    {
+      "en": "regenerate",
+      "it": "Rigenerare",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Ring/36.",
+      "source": "coined"
+    },
+    {
+      "en": "friend shield ring",
+      "it": "anello scudo dell'amico",
+      "strict": false,
+      "kind": "item",
+      "note": "Specific ring flavor name (paired rings), items.json Ring/30.",
+      "source": "coined"
+    },
+    {
+      "en": "elemental command",
+      "it": "comando elementale",
+      "strict": false,
+      "kind": "item",
+      "note": "Ring of elemental command family, items.json Ring/41-42.",
+      "source": "coined"
+    },
+    {
+      "en": "locate object",
+      "it": "Localizzare oggetti",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Rod/5.",
+      "source": "coined"
+    },
+    {
+      "en": "stinking cloud",
+      "it": "Nube nauseabonda",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Rod/10.",
+      "source": "coined"
+    },
+    {
+      "en": "burning hands",
+      "it": "Mani infuocate",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Rod/13.",
+      "source": "coined"
+    },
+    {
+      "en": "rod of wonder",
+      "it": "verga delle meraviglie",
+      "strict": false,
+      "kind": "item",
+      "note": "Specific rod flavor name, items.json Rod/10.",
+      "source": "coined"
+    },
+    {
+      "en": "python rod",
+      "it": "verga pitone",
+      "strict": false,
+      "kind": "item",
+      "note": "Specific rod flavor name, items.json Rod/11.",
+      "source": "coined"
+    },
+    {
+      "en": "rod of withering",
+      "it": "verga d'appassimento",
+      "strict": false,
+      "kind": "item",
+      "note": "Specific rod flavor name, items.json Rod/20.",
+      "source": "coined"
+    },
+    {
+      "en": "rod of absorption",
+      "it": "verga di assorbimento",
+      "strict": false,
+      "kind": "item",
+      "note": "Specific rod flavor name, items.json Rod/25.",
+      "source": "coined"
+    },
+    {
+      "en": "charm elemental",
+      "it": "ammaliare l'elementale",
+      "strict": false,
+      "kind": "spell",
+      "note": "Referenced inline in items.json Ring/41-44 (elemental command rings), distinct from charm monster.",
+      "source": "coined"
+    },
+    {
+      "en": "wall of fire",
+      "it": "Muro di fuoco",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name. Manuale del Giocatore (Muro di fuoco: Infligge 2d4 danni...).",
+      "source": "manual"
+    },
+    {
+      "en": "summon swarm",
+      "it": "Evocare sciame",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Staff/2.",
+      "source": "coined"
+    },
+    {
+      "en": "insect plague",
+      "it": "Piaga di insetti",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name. Manuale del Giocatore (Piaga degli insetti: Sciami di locuste...).",
+      "source": "manual"
+    },
+    {
+      "en": "lesser restoration",
+      "it": "Ripristino minore",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Staff/3.",
+      "source": "coined"
+    },
+    {
+      "en": "cure serious wounds",
+      "it": "Cura ferite gravi",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Staff/3. Corrected to match the manual's imperative form (cure light wounds -> cura ferite leggere), not the infinitive.",
+      "source": "coined"
+    },
+    {
+      "en": "remove blindness/deafness",
+      "it": "Rimuovere cecità/sordità",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, parallel to established blindness/deafness -> cecità/sordità.",
+      "source": "coined"
+    },
+    {
+      "en": "enlarge person",
+      "it": "Ingrandire persone",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name. Manuale del Giocatore (Ingrandire persone : Una creat...).",
+      "source": "manual"
+    },
+    {
+      "en": "reduce person",
+      "it": "Rimpicciolire persone",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Staff/4.",
+      "source": "coined"
+    },
+    {
+      "en": "shrink item",
+      "it": "Rimpicciolire oggetto",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Staff/4.",
+      "source": "coined"
+    },
+    {
+      "en": "flare",
+      "it": "Bagliore",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Staff/5.",
+      "source": "coined"
+    },
+    {
+      "en": "sunburst",
+      "it": "Esplosione solare",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Staff/5.",
+      "source": "coined"
+    },
+    {
+      "en": "wall of ice",
+      "it": "Muro di ghiaccio",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Staff/6.",
+      "source": "coined"
+    },
+    {
+      "en": "cone of cold",
+      "it": "Cono di freddo",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Staff/6.",
+      "source": "coined"
+    },
+    {
+      "en": "shield of law",
+      "it": "Scudo della legge",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Staff/7. Parallel to Scudo della fede/Scudo altrui.",
+      "source": "coined"
+    },
+    {
+      "en": "lesser globe of invulnerability",
+      "it": "Globo di invulnerabilità minore",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Staff/8.",
+      "source": "coined"
+    },
+    {
+      "en": "repulsion",
+      "it": "Repulsione",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Staff/8.",
+      "source": "coined"
+    },
+    {
+      "en": "unseen servant",
+      "it": "Servitore invisibile",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Staff/9.",
+      "source": "coined"
+    },
+    {
+      "en": "cloudkill",
+      "it": "Nube di morte",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Staff/9.",
+      "source": "coined"
+    },
+    {
+      "en": "summon monster vi",
+      "it": "Evocare mostri VI",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Staff/9. Parallel to established summon monster -> evocare mostri.",
+      "source": "coined"
+    },
+    {
+      "en": "sleep",
+      "it": "Sonno",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name. Manuale del Giocatore (Sonno: Fa cadere 4 DV di creature in un sonno magico.).",
+      "source": "manual"
+    },
+    {
+      "en": "hideous laughter",
+      "it": "Risata orrenda",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Staff/10.",
+      "source": "coined"
+    },
+    {
+      "en": "crushing despair",
+      "it": "Disperazione opprimente",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Staff/10.",
+      "source": "coined"
+    },
+    {
+      "en": "mind fog",
+      "it": "Nebbia mentale",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Staff/10.",
+      "source": "coined"
+    },
+    {
+      "en": "shatter",
+      "it": "Frantumare",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Specific Weapon/9, Staff/11.",
+      "source": "coined"
+    },
+    {
+      "en": "chain lightning",
+      "it": "Catena di fulmini",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Staff/11.",
+      "source": "coined"
+    },
+    {
+      "en": "mirror image",
+      "it": "Immagine speculare",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Staff/12.",
+      "source": "coined"
+    },
+    {
+      "en": "rainbow pattern",
+      "it": "Motivo arcobaleno",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Staff/12.",
+      "source": "coined"
+    },
+    {
+      "en": "persistent image",
+      "it": "Immagine persistente",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Staff/12.",
+      "source": "coined"
+    },
+    {
+      "en": "project image",
+      "it": "Proiettare immagine",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Staff/12.",
+      "source": "coined"
+    },
+    {
+      "en": "cause fear",
+      "it": "Causare paura",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Staff/13.",
+      "source": "coined"
+    },
+    {
+      "en": "ghoul touch",
+      "it": "Tocco del ghoul",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Staff/13.",
+      "source": "coined"
+    },
+    {
+      "en": "halt undead",
+      "it": "Fermare i non morti",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Staff/13.",
+      "source": "coined"
+    },
+    {
+      "en": "waves of fatigue",
+      "it": "Onde di affaticamento",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Staff/13.",
+      "source": "coined"
+    },
+    {
+      "en": "expeditious retreat",
+      "it": "Ritirata veloce",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Staff/14.",
+      "source": "coined"
+    },
+    {
+      "en": "detect secret doors",
+      "it": "Individuazione delle porte segrete",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Staff/15. Parallel to individuazione del bene/male pattern.",
+      "source": "coined"
+    },
+    {
+      "en": "locate creature",
+      "it": "Localizzare creatura",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Specific Weapon/11, Staff/15.",
+      "source": "coined"
+    },
+    {
+      "en": "prying eyes",
+      "it": "Occhi indiscreti",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Staff/15.",
+      "source": "coined"
+    },
+    {
+      "en": "move earth",
+      "it": "Spostare la terra",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Staff/16.",
+      "source": "coined"
+    },
+    {
+      "en": "barkskin",
+      "it": "Pelle di corteccia",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Staff/17.",
+      "source": "coined"
+    },
+    {
+      "en": "wall of thorns",
+      "it": "Muro di spine",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Staff/17.",
+      "source": "coined"
+    },
+    {
+      "en": "animate plants",
+      "it": "Animare piante",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Staff/17.",
+      "source": "coined"
+    },
+    {
+      "en": "pass without trace",
+      "it": "Passare senza lasciar traccia",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Staff/17.",
+      "source": "coined"
+    },
+    {
+      "en": "phase door",
+      "it": "Porta di fase",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Staff/19.",
+      "source": "coined"
+    },
+    {
+      "en": "greater teleport",
+      "it": "Teletrasporto superiore",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Staff/19.",
+      "source": "coined"
+    },
+    {
+      "en": "ray of enfeeblement",
+      "it": "Raggio di indebolimento",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Staff/20.",
+      "source": "coined"
+    },
+    {
+      "en": "hold monster",
+      "it": "Immobilizzare mostri",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Staff/20. Parallel to hold person -> immobilizzare persone.",
+      "source": "coined"
+    },
+    {
+      "en": "globe of invulnerability",
+      "it": "Globo di invulnerabilità",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Staff/20.",
+      "source": "coined"
+    },
+    {
+      "en": "alarm",
+      "it": "Allarme",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Rod/33.",
+      "source": "coined"
+    },
+    {
+      "en": "detect chaos",
+      "it": "Individuazione del caos",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Rod/33. Parallel to individuazione del bene/male.",
+      "source": "coined"
+    },
+    {
+      "en": "detect law",
+      "it": "Individuazione della legge",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Rod/33.",
+      "source": "coined"
+    },
+    {
+      "en": "see invisibility",
+      "it": "Vedere l'invisibile",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Rod/33.",
+      "source": "coined"
+    },
+    {
+      "en": "prayer",
+      "it": "Preghiera",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Rod/33.",
+      "source": "coined"
+    },
+    {
+      "en": "animate objects",
+      "it": "Animare oggetti",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Rod/33.",
+      "source": "coined"
+    },
+    {
+      "en": "hold person",
+      "it": "Immobilizzare persone",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Rod/30.",
+      "source": "coined"
+    },
+    {
+      "en": "inflict light wounds",
+      "it": "Infliggi ferite leggere",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name. Manuale del Giocatore (Infliggi ferite leggere: A contatto, infligge...).",
+      "source": "manual"
+    },
+    {
+      "en": "sovereign glue",
+      "it": "colla sovrana",
+      "strict": false,
+      "kind": "item",
+      "note": "Item name, items.json Wondrous Item/1.",
+      "source": "coined"
+    },
+    {
+      "en": "zone of truth",
+      "it": "Zona di verità",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Wondrous Item/14.",
+      "source": "coined"
+    },
+    {
+      "en": "control water",
+      "it": "Controllare l'acqua",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Wondrous Item/16.",
+      "source": "coined"
+    },
+    {
+      "en": "mage hand",
+      "it": "Mano del mago",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Wondrous Item/18.",
+      "source": "coined"
+    },
+    {
+      "en": "mage armor",
+      "it": "Armatura del mago",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Wondrous Item/19.",
+      "source": "coined"
+    },
+    {
+      "en": "resistance",
+      "it": "Resistenza",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name (distinct from the resistance bonus type), items.json Wondrous Item/20.",
+      "source": "coined"
+    },
+    {
+      "en": "silence",
+      "it": "Silenzio",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Wondrous Item/7.",
+      "source": "coined"
+    },
+    {
+      "en": "grease",
+      "it": "Untume",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Wondrous Item/23.",
+      "source": "coined"
+    },
+    {
+      "en": "bag of tricks",
+      "it": "sacco dei trucchi",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/17.",
+      "source": "coined"
+    },
+    {
+      "en": "necklace of fireballs",
+      "it": "collana di palle di fuoco",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/29.",
+      "source": "coined"
+    },
+    {
+      "en": "pearl of power",
+      "it": "perla del potere",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/21.",
+      "source": "coined"
+    },
+    {
+      "en": "phylactery of faithfulness",
+      "it": "filatterio della fedeltà",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/22.",
+      "source": "coined"
+    },
+    {
+      "en": "bracers of armor",
+      "it": "bracciali dell'armatura",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/19.",
+      "source": "coined"
+    },
+    {
+      "en": "cloak of resistance",
+      "it": "mantello della resistenza",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/20.",
+      "source": "coined"
+    },
+    {
+      "en": "feather token",
+      "it": "gettone di piuma",
+      "strict": false,
+      "kind": "item",
+      "note": "Item family name, items.json Wondrous Item/0,4,11,12,13,15.",
+      "source": "coined"
+    },
+    {
+      "en": "salve of slipperiness",
+      "it": "unguento di scivolosità",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/23.",
+      "source": "coined"
+    },
+    {
+      "en": "brooch of shielding",
+      "it": "spilla di protezione",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/28.",
+      "source": "coined"
+    },
+    {
+      "en": "dust of tracelessness",
+      "it": "polvere dell'assenza di tracce",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/5.",
+      "source": "coined"
+    },
+    {
+      "en": "dust of illusion",
+      "it": "polvere d'illusione",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/26.",
+      "source": "coined"
+    },
+    {
+      "en": "dust of dryness",
+      "it": "polvere di aridità",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/16.",
+      "source": "coined"
+    },
+    {
+      "en": "elixir",
+      "it": "elisir",
+      "strict": false,
+      "kind": "item",
+      "note": "Generic potion-family noun used across Wondrous Items.",
+      "source": "coined"
+    },
+    {
+      "en": "glitterdust",
+      "it": "Polvere scintillante",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Wondrous Item/30.",
+      "source": "coined"
+    },
+    {
+      "en": "secret chest",
+      "it": "Cassa segreta",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Wondrous Item/33.",
+      "source": "coined"
+    },
+    {
+      "en": "obscuring mist",
+      "it": "Nebbia offuscante",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Wondrous Item/36.",
+      "source": "coined"
+    },
+    {
+      "en": "animate dead",
+      "it": "Animare i morti",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Wondrous Item/38.",
+      "source": "coined"
+    },
+    {
+      "en": "make whole",
+      "it": "Restaurare",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Wondrous Item/39.",
+      "source": "coined"
+    },
+    {
+      "en": "resilient sphere",
+      "it": "Sfera resiliente",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Wondrous Item/50.",
+      "source": "coined"
+    },
+    {
+      "en": "knock",
+      "it": "Scardinare",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Wondrous Item/51.",
+      "source": "coined"
+    },
+    {
+      "en": "greater invisibility",
+      "it": "Invisibilità superiore",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Wondrous Item/54.",
+      "source": "coined"
+    },
+    {
+      "en": "bear's endurance",
+      "it": "Resistenza dell'orso",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Wondrous Item/58. Parallel to Forza del toro.",
+      "source": "coined"
+    },
+    {
+      "en": "animal messenger",
+      "it": "Messaggero animale",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Wondrous Item/57.",
+      "source": "coined"
+    },
+    {
+      "en": "cat's grace",
+      "it": "Grazia del gatto",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Wondrous Item/42.",
+      "source": "coined"
+    },
+    {
+      "en": "robe of useful items",
+      "it": "veste degli oggetti utili",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/38.",
+      "source": "coined"
+    },
+    {
+      "en": "robe of bones",
+      "it": "veste delle ossa",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/38.",
+      "source": "coined"
+    },
+    {
+      "en": "chime of opening",
+      "it": "carillon dell'apertura",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/51.",
+      "source": "coined"
+    },
+    {
+      "en": "figurine of wondrous power",
+      "it": "statuina dal potere meraviglioso",
+      "strict": false,
+      "kind": "item",
+      "note": "Item family name, items.json Wondrous Item/57.",
+      "source": "coined"
+    },
+    {
+      "en": "dust of appearance",
+      "it": "polvere dell'apparenza",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/30, 54.",
+      "source": "coined"
+    },
+    {
+      "en": "dust of disappearance",
+      "it": "polvere della scomparsa",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/54.",
+      "source": "coined"
+    },
+    {
+      "en": "haversack",
+      "it": "zaino magico",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/35.",
+      "source": "coined"
+    },
+    {
+      "en": "bag of holding",
+      "it": "borsa contenitore",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/40.",
+      "source": "coined"
+    },
+    {
+      "en": "portable hole",
+      "it": "foro portatile",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/40.",
+      "source": "coined"
+    },
+    {
+      "en": "rope of climbing",
+      "it": "corda per scalare",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/53.",
+      "source": "coined"
+    },
+    {
+      "en": "boots of the winterlands",
+      "it": "stivali delle terre invernali",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/42.",
+      "source": "coined"
+    },
+    {
+      "en": "scarab of golem summoning",
+      "it": "scarabeo di evocazione dei golem",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/46 (partial: golem-detection scarab family).",
+      "source": "coined"
+    },
+    {
+      "en": "owl's wisdom",
+      "it": "Saggezza del gufo",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Wondrous Item/70.",
+      "source": "coined"
+    },
+    {
+      "en": "fox's cunning",
+      "it": "Astuzia della volpe",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Wondrous Item/65.",
+      "source": "coined"
+    },
+    {
+      "en": "neutralize poison",
+      "it": "Neutralizzare veleno",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Wondrous Item/67.",
+      "source": "coined"
+    },
+    {
+      "en": "spider climb",
+      "it": "Arrampicata del ragno",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Wondrous Item/74.",
+      "source": "coined"
+    },
+    {
+      "en": "comprehend languages",
+      "it": "Comprendere linguaggi",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Wondrous Item/79.",
+      "source": "coined"
+    },
+    {
+      "en": "cure moderate wounds",
+      "it": "Cura ferite moderate",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, parallel to cure light/serious wounds imperative family.",
+      "source": "coined"
+    },
+    {
+      "en": "periapt of wisdom",
+      "it": "periapto di saggezza",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/70.",
+      "source": "coined"
+    },
+    {
+      "en": "ioun stone",
+      "it": "pietra ioun",
+      "strict": false,
+      "kind": "item",
+      "note": "Item family name, items.json Wondrous Item/66, 78. 'ioun' kept as the proper name.",
+      "source": "coined"
+    },
+    {
+      "en": "incense of meditation",
+      "it": "incenso della meditazione",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/75.",
+      "source": "coined"
+    },
+    {
+      "en": "marvelous pigments",
+      "it": "pigmenti meravigliosi",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/68.",
+      "source": "coined"
+    },
+    {
+      "en": "efreeti bottle",
+      "it": "bottiglia da efreeti",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/81.",
+      "source": "coined"
+    },
+    {
+      "en": "eversmoking bottle",
+      "it": "bottiglia perennemente fumante",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/81.",
+      "source": "coined"
+    },
+    {
+      "en": "bracers of archery",
+      "it": "bracciali dell'arcieria",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/77.",
+      "source": "coined"
+    },
+    {
+      "en": "helm of comprehend languages and read magic",
+      "it": "elmo di comprendere linguaggi e lettura del magico",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/79.",
+      "source": "coined"
+    },
+    {
+      "en": "longstrider",
+      "it": "Falcata",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Wondrous Item/84.",
+      "source": "coined"
+    },
+    {
+      "en": "greater magic fang",
+      "it": "Zanna magica superiore",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Wondrous Item/87. Parallel to zanna magica.",
+      "source": "coined"
+    },
+    {
+      "en": "scare",
+      "it": "Spaventare",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Wondrous Item/89.",
+      "source": "coined"
+    },
+    {
+      "en": "magic circle against good",
+      "it": "Cerchio magico contro il bene",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Wondrous Item/93. Parallel to cerchio magico contro il male.",
+      "source": "coined"
+    },
+    {
+      "en": "detect invisibility",
+      "it": "Individuazione dell'invisibilità",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Wondrous Item/104.",
+      "source": "coined"
+    },
+    {
+      "en": "polymorph any object",
+      "it": "Metamorfosi di qualsiasi oggetto",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Wondrous Item/103.",
+      "source": "coined"
+    },
+    {
+      "en": "symbol of stunning",
+      "it": "Simbolo di stordimento",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Wondrous Item/103.",
+      "source": "coined"
+    },
+    {
+      "en": "antimagic field",
+      "it": "Campo antimagia",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Wondrous Item/103.",
+      "source": "coined"
+    },
+    {
+      "en": "commune",
+      "it": "Comunione",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Wondrous Item/103.",
+      "source": "coined"
+    },
+    {
+      "en": "craft construct",
+      "it": "Creare Costrutti",
+      "strict": false,
+      "kind": "feat",
+      "note": "Feat name, items.json Wondrous Item/103. Parallel to Creare Verghe/Creare Bastoni/Creare Oggetti Meravigliosi.",
+      "source": "coined"
+    },
+    {
+      "en": "pipes of haunting",
+      "it": "flauti dell'infestazione",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/89.",
+      "source": "coined"
+    },
+    {
+      "en": "folding boat",
+      "it": "barca pieghevole",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/95.",
+      "source": "coined"
+    },
+    {
+      "en": "cloak of the manta ray",
+      "it": "mantello della manta",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/96.",
+      "source": "coined"
+    },
+    {
+      "en": "golem manual",
+      "it": "manuale del golem",
+      "strict": false,
+      "kind": "item",
+      "note": "Item family name, items.json Wondrous Item/103.",
+      "source": "coined"
+    },
+    {
+      "en": "hand of the mage",
+      "it": "mano del mago",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/104 (distinguish from the mage hand spell if needed).",
+      "source": "coined"
+    },
+    {
+      "en": "rusting grasp",
+      "it": "Presa arrugginente",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Wondrous Item/131.",
+      "source": "coined"
+    },
+    {
+      "en": "transformation",
+      "it": "Trasformazione",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Wondrous Item/138.",
+      "source": "coined"
+    },
+    {
+      "en": "sound burst",
+      "it": "Esplosione sonora",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Wondrous Item/136.",
+      "source": "coined"
+    },
+    {
+      "en": "secret page",
+      "it": "Pagina segreta",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Wondrous Item/137.",
+      "source": "coined"
+    },
+    {
+      "en": "web",
+      "it": "Ragnatela",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Wondrous Item/141.",
+      "source": "coined"
+    },
+    {
+      "en": "stone horse",
+      "it": "cavallo di pietra",
+      "strict": false,
+      "kind": "item",
+      "note": "Item family name, items.json Wondrous Item/128, 142.",
+      "source": "coined"
+    },
+    {
+      "en": "glove of storing",
+      "it": "guanto contenitore",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/126.",
+      "source": "coined"
+    },
+    {
+      "en": "cape of the mountebank",
+      "it": "mantello del ciarlatano",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/129.",
+      "source": "coined"
+    },
+    {
+      "en": "gauntlet of rust",
+      "it": "guanto d'arme della ruggine",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/131.",
+      "source": "coined"
+    },
+    {
+      "en": "monk's belt",
+      "it": "cintura del monaco",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/138.",
+      "source": "coined"
+    },
+    {
+      "en": "gem of brightness",
+      "it": "gemma di luminosità",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/139.",
+      "source": "coined"
+    },
+    {
+      "en": "lyre of building",
+      "it": "lira della costruzione",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/140.",
+      "source": "coined"
+    },
+    {
+      "en": "cloak of arachnida",
+      "it": "mantello dell'aracnide",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/141.",
+      "source": "coined"
+    },
+    {
+      "en": "girdle of dwarvenkind",
+      "it": "cintura della stirpe nanica",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/143.",
+      "source": "coined"
+    },
+    {
+      "en": "periapt of wound closure",
+      "it": "periapto di chiusura delle ferite",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/144.",
+      "source": "coined"
+    },
+    {
+      "en": "horn of the tritons",
+      "it": "corno dei tritoni",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/145.",
+      "source": "coined"
+    },
+    {
+      "en": "pearl of the sirines",
+      "it": "perla delle sirine",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/146.",
+      "source": "coined"
+    },
+    {
+      "en": "girdle of giant strength",
+      "it": "cintura della forza gigante",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/149.",
+      "source": "coined"
+    },
+    {
+      "en": "winged boots",
+      "it": "stivali alati",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/150.",
+      "source": "coined"
+    },
+    {
+      "en": "pipes of pain",
+      "it": "flauti del dolore",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/136.",
+      "source": "coined"
+    },
+    {
+      "en": "keen edge",
+      "it": "Lama affilata",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Wondrous Item/158. Parallel to keen -> affilata.",
+      "source": "coined"
+    },
+    {
+      "en": "overland flight",
+      "it": "Volo prolungato",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Wondrous Item/161, 166.",
+      "source": "coined"
+    },
+    {
+      "en": "permanency",
+      "it": "Rendere permanente",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Wondrous Item/161, 166.",
+      "source": "coined"
+    },
+    {
+      "en": "refuge",
+      "it": "Rifugio",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Wondrous Item/165.",
+      "source": "coined"
+    },
+    {
+      "en": "divine favor",
+      "it": "Favore divino",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Wondrous Item/171.",
+      "source": "coined"
+    },
+    {
+      "en": "scabbard of keen edges",
+      "it": "fodero delle lame affilate",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/158.",
+      "source": "coined"
+    },
+    {
+      "en": "chime of interruption",
+      "it": "carillon dell'interruzione",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/160.",
+      "source": "coined"
+    },
+    {
+      "en": "broom of flying",
+      "it": "scopa volante",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/161.",
+      "source": "coined"
+    },
+    {
+      "en": "bracelet of friends",
+      "it": "braccialetto degli amici",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/165.",
+      "source": "coined"
+    },
+    {
+      "en": "carpet of flying",
+      "it": "tappeto volante",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/166.",
+      "source": "coined"
+    },
+    {
+      "en": "horn of blasting",
+      "it": "corno d'esplosione",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/167, 140.",
+      "source": "coined"
+    },
+    {
+      "en": "luckstone",
+      "it": "pietra fortunata",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/171.",
+      "source": "coined"
+    },
+    {
+      "en": "displacement",
+      "it": "Spostamento",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Wondrous Item/179, 188.",
+      "source": "coined"
+    },
+    {
+      "en": "deathwatch",
+      "it": "Osservare la morte",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Wondrous Item/184.",
+      "source": "coined"
+    },
+    {
+      "en": "clenched fist",
+      "it": "Pugno chiuso",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Wondrous Item/186. Parallel to grasping hand -> mano prensile.",
+      "source": "coined"
+    },
+    {
+      "en": "figurines of wondrous power",
+      "it": "statuine dal potere meraviglioso",
+      "strict": false,
+      "kind": "item",
+      "note": "Item family name.",
+      "source": "coined"
+    },
+    {
+      "en": "rope of entanglement",
+      "it": "corda d'intrico",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/173.",
+      "source": "coined"
+    },
+    {
+      "en": "mask of death",
+      "it": "maschera della morte",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/175.",
+      "source": "coined"
+    },
+    {
+      "en": "mattock of the titans",
+      "it": "zappa dei titani",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/176.",
+      "source": "coined"
+    },
+    {
+      "en": "cloak of displacement",
+      "it": "mantello dello spostamento",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/179.",
+      "source": "coined"
+    },
+    {
+      "en": "helm of underwater action",
+      "it": "elmo dell'azione sottomarina",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/180.",
+      "source": "coined"
+    },
+    {
+      "en": "eyes of doom",
+      "it": "occhi della sventura",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/184.",
+      "source": "coined"
+    },
+    {
+      "en": "maul of the titans",
+      "it": "maglio dei titani",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/186.",
+      "source": "coined"
+    },
+    {
+      "en": "cloak of the bat",
+      "it": "mantello del pipistrello",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/188.",
+      "source": "coined"
+    },
+    {
+      "en": "iron bands of binding",
+      "it": "fasce di ferro del legame",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/189.",
+      "source": "coined"
+    },
+    {
+      "en": "cube of frost resistance",
+      "it": "cubo di resistenza al gelo",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/190.",
+      "source": "coined"
+    },
+    {
+      "en": "helm of telepathy",
+      "it": "elmo della telepatia",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/191.",
+      "source": "coined"
+    },
+    {
+      "en": "robe of scintillating colors",
+      "it": "veste dei colori scintillanti",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/193.",
+      "source": "coined"
+    },
+    {
+      "en": "tome of clear thought",
+      "it": "tomo del pensiero lucido",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/197.",
+      "source": "coined"
+    },
+    {
+      "en": "invisibility purge",
+      "it": "Eliminazione dell'invisibilità",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Wondrous Item/205.",
+      "source": "coined"
+    },
+    {
+      "en": "manacles of cooperation",
+      "it": "manette della cooperazione",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/200.",
+      "source": "coined"
+    },
+    {
+      "en": "obsidian steed",
+      "it": "cavalcatura d'ossidiana",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name (figurine of wondrous power), items.json Wondrous Item/201.",
+      "source": "coined"
+    },
+    {
+      "en": "drums of panic",
+      "it": "tamburi del panico",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/202.",
+      "source": "coined"
+    },
+    {
+      "en": "lantern of revealing",
+      "it": "lanterna della rivelazione",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/205.",
+      "source": "coined"
+    },
+    {
+      "en": "robe of blending",
+      "it": "veste della fusione",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/206.",
+      "source": "coined"
+    },
+    {
+      "en": "tome of leadership and influence",
+      "it": "tomo del comando e dell'influenza",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/198.",
+      "source": "coined"
+    },
+    {
+      "en": "tome of understanding",
+      "it": "tomo della comprensione",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/199.",
+      "source": "coined"
+    },
+    {
+      "en": "scrying",
+      "it": "Scrutazione",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Wondrous Item/223 etc.",
+      "source": "coined"
+    },
+    {
+      "en": "telepathy",
+      "it": "telepatia",
+      "strict": false,
+      "kind": "rules",
+      "note": "Creature/item ability, items.json Wondrous Item/223 (crystal ball with telepathy).",
+      "source": "coined"
+    },
+    {
+      "en": "control weather",
+      "it": "Controllare il clima",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Wondrous Item/225.",
+      "source": "coined"
+    },
+    {
+      "en": "storm of vengeance",
+      "it": "Tempesta della vendetta",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Wondrous Item/225.",
+      "source": "coined"
+    },
+    {
+      "en": "mage's magnificent mansion",
+      "it": "Magione magnifica del mago",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Wondrous Item/238.",
+      "source": "coined"
+    },
+    {
+      "en": "scarab of protection",
+      "it": "scarabeo di protezione",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/220.",
+      "source": "coined"
+    },
+    {
+      "en": "ring gates",
+      "it": "anelli portale",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name (paired rings), items.json Wondrous Item/222.",
+      "source": "coined"
+    },
+    {
+      "en": "crystal ball",
+      "it": "sfera di cristallo",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/223, 231, 233.",
+      "source": "coined"
+    },
+    {
+      "en": "orb of storms",
+      "it": "orbe delle tempeste",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/225.",
+      "source": "coined"
+    },
+    {
+      "en": "boots of teleportation",
+      "it": "stivali del teletrasporto",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/226.",
+      "source": "coined"
+    },
+    {
+      "en": "horn of valhalla",
+      "it": "corno del Valhalla",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/232.",
+      "source": "coined"
+    },
+    {
+      "en": "wings of flying",
+      "it": "ali volanti",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/236.",
+      "source": "coined"
+    },
+    {
+      "en": "cloak of etherealness",
+      "it": "mantello dell'eterealità",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/237.",
+      "source": "coined"
+    },
+    {
+      "en": "instant fortress",
+      "it": "fortezza istantanea",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/238.",
+      "source": "coined"
+    },
+    {
+      "en": "trap the soul",
+      "it": "Intrappolare l'anima",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Wondrous Item/297.",
+      "source": "coined"
+    },
+    {
+      "en": "legend lore",
+      "it": "Sapienza leggendaria",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Wondrous Item/298.",
+      "source": "coined"
+    },
+    {
+      "en": "imprisonment",
+      "it": "Imprigionamento",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, items.json Wondrous Item/299.",
+      "source": "coined"
+    },
+    {
+      "en": "pit fiend",
+      "it": "diavolo della fossa",
+      "strict": false,
+      "kind": "monster",
+      "note": "Devil type, items.json Wondrous Item/297 table. To be verified when monsters.json is translated.",
+      "source": "coined"
+    },
+    {
+      "en": "balor",
+      "it": "balor",
+      "strict": false,
+      "kind": "monster",
+      "note": "Demon type, kept as proper noun, items.json Wondrous Item/297 table.",
+      "source": "coined"
+    },
+    {
+      "en": "glabrezu",
+      "it": "glabrezu",
+      "strict": false,
+      "kind": "monster",
+      "note": "Demon type, kept as proper noun.",
+      "source": "coined"
+    },
+    {
+      "en": "succubus",
+      "it": "succube",
+      "strict": false,
+      "kind": "monster",
+      "note": "Demon type, items.json Wondrous Item/297 table.",
+      "source": "coined"
+    },
+    {
+      "en": "osyluth",
+      "it": "osyluth",
+      "strict": false,
+      "kind": "monster",
+      "note": "Devil type (bone devil), kept as proper noun.",
+      "source": "coined"
+    },
+    {
+      "en": "barbazu",
+      "it": "barbazu",
+      "strict": false,
+      "kind": "monster",
+      "note": "Devil type (bearded devil), kept as proper noun.",
+      "source": "coined"
+    },
+    {
+      "en": "erinyes",
+      "it": "erinni",
+      "strict": false,
+      "kind": "monster",
+      "note": "Devil type, items.json Wondrous Item/297 table.",
+      "source": "coined"
+    },
+    {
+      "en": "cornugon",
+      "it": "cornugon",
+      "strict": false,
+      "kind": "monster",
+      "note": "Devil type (horned devil), kept as proper noun.",
+      "source": "coined"
+    },
+    {
+      "en": "avoral",
+      "it": "avoral",
+      "strict": false,
+      "kind": "monster",
+      "note": "Celestial (guardinal) type, kept as proper noun.",
+      "source": "coined"
+    },
+    {
+      "en": "ghaele",
+      "it": "ghaele",
+      "strict": false,
+      "kind": "monster",
+      "note": "Celestial (eladrin) type, kept as proper noun.",
+      "source": "coined"
+    },
+    {
+      "en": "formian",
+      "it": "formian",
+      "strict": false,
+      "kind": "monster",
+      "note": "Outsider race, kept as proper noun.",
+      "source": "coined"
+    },
+    {
+      "en": "tojanida",
+      "it": "tojanida",
+      "strict": false,
+      "kind": "monster",
+      "note": "Aberration, kept as proper noun.",
+      "source": "coined"
+    },
+    {
+      "en": "xorn",
+      "it": "xorn",
+      "strict": false,
+      "kind": "monster",
+      "note": "Outsider, kept as proper noun.",
+      "source": "coined"
+    },
+    {
+      "en": "rakshasa",
+      "it": "rakshasa",
+      "strict": false,
+      "kind": "monster",
+      "note": "Outsider, kept as proper noun.",
+      "source": "coined"
+    },
+    {
+      "en": "chaos beast",
+      "it": "bestia del caos",
+      "strict": false,
+      "kind": "monster",
+      "note": "Aberration, items.json Wondrous Item/297 table.",
+      "source": "coined"
+    },
+    {
+      "en": "arrowhawk",
+      "it": "falco saetta",
+      "strict": false,
+      "kind": "monster",
+      "note": "Outsider, items.json Wondrous Item/297 table.",
+      "source": "coined"
+    },
+    {
+      "en": "vrock",
+      "it": "vrock",
+      "strict": false,
+      "kind": "monster",
+      "note": "Demon type, kept as proper noun.",
+      "source": "coined"
+    },
+    {
+      "en": "hezrou",
+      "it": "hezrou",
+      "strict": false,
+      "kind": "monster",
+      "note": "Demon type, kept as proper noun.",
+      "source": "coined"
+    },
+    {
+      "en": "mirror of life trapping",
+      "it": "specchio della cattura della vita",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/299.",
+      "source": "coined"
+    },
+    {
+      "en": "iron flask",
+      "it": "fiasca di ferro",
+      "strict": false,
+      "kind": "item",
+      "note": "Item flavor name, items.json Wondrous Item/297.",
+      "source": "coined"
+    },
+    {
+      "en": "ferocity",
+      "it": "Ferocia",
+      "strict": false,
+      "kind": "rules",
+      "note": "Creature special quality (Ex). Manuale dei Mostri I (\"Ferocia (Str): Un cinghiale...\").",
+      "source": "manual",
+      "stems": [
+        "Ferocia"
+      ]
+    },
+    {
+      "en": "improved grab",
+      "it": "Afferrare migliorato",
+      "strict": false,
+      "kind": "rules",
+      "note": "Creature special attack (Ex). Manuale dei Mostri I, confirmed for multiple creatures (leone, orso, coccodrillo, leopardo).",
+      "source": "manual",
+      "stems": [
+        "Afferrare migliorato"
+      ]
+    },
+    {
+      "en": "stampede",
+      "it": "Fuga precipitosa",
+      "strict": false,
+      "kind": "rules",
+      "note": "Creature special attack (Ex), bison entry. Manuale dei Mostri I (\"Fuga precipitosa (Str): Una mandria di bisonti...\").",
+      "source": "manual"
+    },
+    {
+      "en": "carrying capacity",
+      "it": "Capacità di trasporto",
+      "strict": false,
+      "kind": "rules",
+      "note": "Animal stat block heading. Manuale dei Mostri I, camel entry (\"Capacità di trasporto: Un peso non superiore...\").",
+      "source": "manual"
+    },
+    {
+      "en": "hold breath",
+      "it": "Trattenere il fiato",
+      "strict": false,
+      "kind": "rules",
+      "note": "Creature special quality (Ex). Manuale dei Mostri I, confirmed for multiple creatures (coccodrillo, balena, focena).",
+      "source": "manual"
+    },
+    {
+      "en": "sprint",
+      "it": "Scatto",
+      "strict": false,
+      "kind": "rules",
+      "note": "Creature special quality (Ex), cheetah entry. Manuale dei Mostri I (\"Scatto (Str): Una volta ogni ora, un ghepardo...\").",
+      "source": "manual"
+    },
+    {
+      "en": "pounce",
+      "it": "Assaltare",
+      "strict": false,
+      "kind": "rules",
+      "note": "Creature special attack (Ex), feline entries. Manuale dei Mostri I (\"Assaltare (Str): Se un leopardo carica...\").",
+      "source": "manual"
+    },
+    {
+      "en": "rake",
+      "it": "Artigliare",
+      "strict": false,
+      "kind": "rules",
+      "note": "Creature special attack (Ex), feline entries. Manuale dei Mostri I (\"Artigliare (Str): Bonus di attacco...\").",
+      "source": "manual"
+    },
+    {
+      "en": "ink cloud",
+      "it": "Nuvola di inchiostro",
+      "strict": false,
+      "kind": "rules",
+      "note": "Creature special attack (Ex), octopus/kraken/tojanida entries. Manuale dei Mostri I (\"Nuvola di inchiostro (Str): Il kraken puo emettere...\").",
+      "source": "manual"
+    },
+    {
+      "en": "jet",
+      "it": "Spinta a getto",
+      "strict": false,
+      "kind": "rules",
+      "note": "Creature special quality (Ex), octopus movement ability. Not found verbatim as a header in the manual OCR; coined from the generic 'getto' usage nearby (tojanida ink jet).",
+      "source": "coined"
+    },
+    {
+      "en": "constrict",
+      "it": "Costrizione",
+      "strict": false,
+      "kind": "rules",
+      "note": "Creature special attack (Ex). Manuale dei Mostri I dragon table (\"Costrizione/...\"), confirmed generic term for the grapple-damage ability.",
+      "source": "manual"
+    },
+    {
+      "en": "powerful charge",
+      "it": "Carica poderosa",
+      "strict": false,
+      "kind": "rules",
+      "note": "Creature special attack (Ex), rhinoceros/minotaur entries. Manuale dei Mostri I (\"Carica poderosa (Str): Un minotauro...\").",
+      "source": "manual"
+    },
+    {
+      "en": "keen scent",
+      "it": "Olfatto fine",
+      "strict": false,
+      "kind": "rules",
+      "note": "Creature special quality (Ex), shark entry -- distinct from the general Scent ability. Manuale dei Mostri I (\"Olfatto fine (Str): Uno squalo... individuare le creature con l'olfatto in un raggio... fiutare l'odore del sangue...\"), matches the SRD Keen Scent text exactly.",
+      "source": "manual"
+    },
+    {
+      "en": "poison (creature ability)",
+      "it": "Veleno",
+      "strict": false,
+      "kind": "rules",
+      "note": "Creature special attack (Ex) header, e.g. viper snakes (animals.json). Manuale dei Mostri I (\"Veleno (Str): Ferimento, Tempra CD...\"). Not the same glossary slot as any generic 'poison' item term.",
+      "source": "manual"
+    },
+    {
+      "en": "attach",
+      "it": "Attaccarsi",
+      "strict": false,
+      "kind": "rules",
+      "note": "Creature special attack (Ex), weasel entry. Manuale dei Mostri I (\"Attaccarsi (Str): Una donnola crudele...\").",
+      "source": "manual"
+    },
+    {
+      "en": "pin",
+      "it": "immobilizzare",
+      "strict": false,
+      "kind": "rules",
+      "note": "Grapple result verb. Manuale del Giocatore (\"Immobilizzare l'avversario: Il personaggio puo immobilizzare...\").",
+      "source": "manual"
+    },
+    {
+      "en": "dire",
+      "it": "crudele",
+      "strict": false,
+      "kind": "creature",
+      "note": "Creature template/prefix. Manuale dei Mostri I confirms 'X crudele' for every dire animal checked: leone, lupo, orso, cinghiale, tigre, tasso, pipistrello, gorilla (ape), donnola, ghiottone, squalo crudele.",
+      "source": "manual"
+    },
+    {
+      "en": "rend",
+      "it": "Squartare",
+      "strict": false,
+      "kind": "rules",
+      "note": "Creature special attack (Ex), dire ape/gorilla entry. Manuale dei Mostri I (\"Squartare (Str): Un gorilla crudele...\").",
+      "source": "manual"
+    },
+    {
+      "en": "disease (creature ability)",
+      "it": "Malattia",
+      "strict": false,
+      "kind": "rules",
+      "note": "Creature special attack (Ex) header, e.g. dire rat filth fever. Manuale dei Mostri I (\"Malattia (Str): Febbre lurida - morso, Tempra CD...\").",
+      "source": "manual"
+    },
+    {
+      "en": "swallow whole",
+      "it": "Inghiottire",
+      "strict": false,
+      "kind": "rules",
+      "note": "Creature special attack (Ex). Manuale dei Mostri I, confirmed for multiple creatures (squalo crudele, behir, tirannosauro).",
+      "source": "manual"
+    },
+    {
+      "en": "blood drain",
+      "it": "Risucchio di sangue",
+      "strict": false,
+      "kind": "rules",
+      "note": "Creature special attack (Ex), dire weasel entry. Manuale dei Mostri I (\"Risucchio di sangue (Str): Una donnola crudele...\").",
+      "source": "manual"
+    },
+    {
+      "en": "acid arrow",
+      "it": "Freccia acida di Melf",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, traps.json. Manuale del Giocatore (\"Freccia acida di Melf: Un attacco di contatto a...\").",
+      "source": "manual"
+    },
+    {
+      "en": "forcecage",
+      "it": "Gabbia di forza",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, traps.json. Manuale del Giocatore (\"Gabbia di forza: Un cubo o una gabbia di forza...\").",
+      "source": "manual"
+    },
+    {
+      "en": "hamatula",
+      "it": "diavolo uncinato",
+      "strict": false,
+      "kind": "monster",
+      "note": "Devil type, also called hamatula. Manuale dei Mostri I (\"I diavoli uncinati, detti anche hamatula...\").",
+      "source": "manual"
+    },
+    {
+      "en": "arcane eye",
+      "it": "Occhio arcano",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, traps.json trigger table. Manuale del Giocatore (\"Occhio arcano: Un occhio fluttuante invisibile...\").",
+      "source": "manual"
+    },
+    {
+      "en": "clairvoyance",
+      "it": "Chiaroveggenza",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name (standalone, distinct from the clairaudience/clairvoyance compound spell). traps.json trigger table.",
+      "source": "manual"
+    },
+    {
+      "en": "Material Component",
+      "it": "Componente Materiale",
+      "source": "coined"
+    },
+    {
+      "en": "Arcane Focus",
+      "it": "Focus Arcano",
+      "source": "coined"
+    },
+    {
+      "en": "rod of negation",
+      "it": "verga di negazione",
+      "source": "coined"
+    },
+    {
+      "en": "acid sting",
+      "it": "Puntura acida",
+      "strict": false,
+      "kind": "rules",
+      "note": "Creature special attack (Ex), giant ant entry (vermin.json). Not found verbatim in the MM1 OCR; coined from the generic 'acido'/'puntura' pattern.",
+      "source": "coined"
+    },
+    {
+      "en": "acid spray",
+      "it": "Spruzzo acido",
+      "strict": false,
+      "kind": "rules",
+      "note": "Creature special attack (Ex), bombardier beetle entry (vermin.json). Coined, not found verbatim in the MM1 OCR.",
+      "source": "coined"
+    },
+    {
+      "en": "web (creature ability)",
+      "it": "Ragnatela",
+      "strict": false,
+      "kind": "rules",
+      "note": "Creature special attack (Ex), monstrous spider entry. Manuale dei Mostri I (\"Ragnatela (Str): I ragni mostruosi di entrambe le categorie...\"), exact match to the SRD text.",
+      "source": "manual"
+    },
+    {
+      "en": "tremorsense",
+      "it": "Percezione tellurica",
+      "strict": false,
+      "kind": "rules",
+      "note": "Creature special quality (Ex). Manuale dei Mostri I, confirmed for multiple creatures including monstrous spider (\"Percezione tellurica (Str): Un ragno mostruoso puo determinare...\").",
+      "source": "manual"
+    },
+    {
+      "en": "Restoration",
+      "it": "Ripristino",
+      "source": "coined",
+      "note": "Aligned with the existing coined term lesser restoration -> Ripristino minore (items.json Staff/3). Not confirmed in the Italian PHB -- searched pdftotext OCR for restaur/ripristino stems around p.280, found neither directly for this spell; flag for manual check."
+    },
+    {
+      "en": "Greater Restoration",
+      "it": "Ripristino maggiore",
+      "source": "coined",
+      "note": "Aligned with the existing coined term lesser restoration -> Ripristino minore. Unverified, see Restoration."
+    },
+    {
+      "en": "Raise Dead",
+      "it": "Rianimare morti",
+      "source": "manual",
+      "note": "Manuale del Giocatore p.281 (Chr 5, touch, 5,000 gp diamond material component -- confirmed against spells.json #438 raise dead reference)."
+    },
+    {
+      "en": "positive energy",
+      "it": "energia positiva",
+      "source": "coined"
+    },
+    {
+      "en": "negative energy",
+      "it": "energia negativa",
+      "source": "coined"
+    },
+    {
+      "en": "share spells",
+      "it": "Condividere incantesimi",
+      "strict": false,
+      "kind": "rules",
+      "note": "Druid animal companion / familiar special ability (Ex). Manuale del Giocatore (\"Condividere incantesimi (Str): A propria discrezione, il druido puo condividere...\"), exact match.",
+      "source": "manual"
+    },
+    {
+      "en": "improved evasion",
+      "it": "Eludere migliorato",
+      "strict": false,
+      "kind": "rules",
+      "note": "Special ability (Ex/Str). Manuale del Giocatore, confirmed for animal companion, familiar, monk, ranger, mount.",
+      "source": "manual"
+    },
+    {
+      "en": "empathic link",
+      "it": "Legame empatico",
+      "strict": false,
+      "kind": "rules",
+      "note": "Familiar/paladin mount special ability (Su/Sop). Manuale del Giocatore (\"Legame empatico (Sop): Il padrone ha un legame empatico...\"), exact match.",
+      "source": "manual"
+    },
+    {
+      "en": "deliver touch spells",
+      "it": "Trasmettere incantesimi a contatto",
+      "strict": false,
+      "kind": "rules",
+      "note": "Familiar special ability (Su/Sop). Manuale del Giocatore, exact match to familiarAbilities.json text.",
+      "source": "manual"
+    },
+    {
+      "en": "speak with master",
+      "it": "Parlare con il padrone",
+      "strict": false,
+      "kind": "rules",
+      "note": "Familiar special ability (Ex/Str). Manuale del Giocatore, exact match.",
+      "source": "manual"
+    },
+    {
+      "en": "speak with animals of its kind",
+      "it": "Parlare con animali della sua specie",
+      "strict": false,
+      "kind": "rules",
+      "note": "Familiar special ability (Ex/Str). Manuale del Giocatore, exact match.",
+      "source": "manual"
+    },
+    {
+      "en": "scry on familiar",
+      "it": "Scrutare sul famiglio",
+      "strict": false,
+      "kind": "rules",
+      "note": "Familiar special ability (Sp/Mag). Manuale del Giocatore, exact match.",
+      "source": "manual"
+    },
+    {
+      "en": "bonus tricks",
+      "it": "Comandi bonus",
+      "strict": false,
+      "kind": "rules",
+      "note": "Druid animal companion table heading. Manuale del Giocatore (\"Comandi bonus: Il valore dato nella colonna...\"), exact match -- 'trick' in this Handle Animal context is 'comando', not 'trucco'.",
+      "source": "manual"
+    },
+    {
+      "en": "link (companion)",
+      "it": "Legame",
+      "strict": false,
+      "kind": "rules",
+      "note": "Druid animal companion special ability (Ex/Str), distinct glossary slot from empathic link. Manuale del Giocatore (\"Legame (Str): Un druido puo gestire le azioni del suo compagno...\"), exact match.",
+      "source": "manual"
+    },
+    {
+      "en": "devotion",
+      "it": "Devozione",
+      "strict": false,
+      "kind": "rules",
+      "note": "Animal companion special ability (Ex/Str). Manuale del Giocatore (\"Devozione (Str): La devozione del compagno animale...\"), exact match.",
+      "source": "manual"
+    },
+    {
+      "en": "multiattack",
+      "it": "Multiattacco",
+      "strict": false,
+      "kind": "feat",
+      "note": "Bonus feat granted to animal companions with 3+ natural attacks. Manuale del Giocatore (\"Multiattacco: Un compagno animale guadagna Multiattacco come talento bonus...\"), exact match.",
+      "source": "manual"
+    },
+    {
+      "en": "extradimensional space",
+      "it": "spazio extradimensionale",
+      "source": "coined"
+    },
+    {
+      "en": "Material Plane",
+      "it": "Piano Materiale",
+      "source": "coined"
+    },
+    {
+      "en": "ferrous",
+      "it": "ferroso",
+      "source": "coined"
+    },
+    {
+      "en": "Will disbelief",
+      "it": "Volontà per non crederci",
+      "source": "coined",
+      "note": "Illusion disbelief save idiom, not confirmed against the book."
+    },
+    {
+      "en": "scintillating pattern",
+      "it": "motivo scintillante",
+      "source": "coined",
+      "note": "Unverified spell name, spells.json #445."
+    },
+    {
+      "en": "arcane lock",
+      "it": "Serratura arcana",
+      "source": "coined"
+    },
+    {
+      "en": "erase",
+      "it": "Cancellare",
+      "source": "coined"
+    },
+    {
+      "en": "Ethereal Plane",
+      "it": "Piano Etereo",
+      "source": "coined",
+      "note": "Matches existing usage in spells.a.json (ethereal jaunt/etherealness descriptions)."
+    },
+    {
+      "en": "will-o'-wisp",
+      "it": "fuoco fatuo",
+      "source": "coined"
     }
   ]
 }

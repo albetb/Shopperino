@@ -99,6 +99,49 @@ Before writing or modifying code that touches a D&D rule, **read [obsidian-vault
 
 The notes are built by the `dnd-rules-extract` skill. Their auto-generated section in INDEX.md is refreshed by a PostToolUse hook on every write into the rules folder.
 
+### Translation: every string a person reads is wrapped
+
+The app is bilingual — English and Italian — and **English is the source**. A
+translation is a *pack* beside it, keyed by the English text; nothing English is
+ever overwritten, so a missing translation degrades to English rather than to a
+blank.
+
+**Any new string a user can read must be wrapped and translated in the same
+change.** A bare literal is a bug, not a to-do: it renders English inside an
+Italian app and no gate will ever mention it again.
+
+| Kind of string | Stays where it is | Translation goes to |
+|---|---|---|
+| A literal in a component | `t('Collapse')` in the JSX | `src/data/it/ui.json` |
+| A whole sentence with values in it | `tx('{0} of {1} used', a, b)` | `src/data/it/ui.json` |
+| A name that is also a lookup key | `tName('conditions', c.name)` | `src/data/it/names.json` |
+| Prose in `src/data` | English, untouched | `src/data/it/<file>.json` |
+
+Three rules that are never bent:
+
+- **Never edit English to fix a translation.** The English literal *is* the pack
+  key, character for character, and it is what an English reader sees. If the
+  Italian needs an article the English does not have, the article goes in the
+  Italian.
+- **Never write to `src/data/*.json`.** Those files carry every `Link`, slug and
+  `Category` the rules are computed from. A translation lives in
+  `src/data/it/` keyed by JSON path, which is what makes it unable to break a
+  rule.
+- **Don't import i18n into a pure model or math module.** Reading the current
+  language there makes it depend on hidden global state — take the word as an
+  argument and let the component pass `t('gp')`.
+
+Use the **`translate-it` skill** ([.claude/skills/translate-it/SKILL.md](.claude/skills/translate-it/SKILL.md),
+invoked as `/translate-it`) for anything beyond a string or two: it owns the
+glossary, the verification that the rules survived, and the coverage report.
+Before finishing a change that touched display strings:
+
+```bash
+python .claude/skills/translate-it/scripts/verify.py     # rules and glossary intact
+python .claude/skills/translate-it/scripts/en_drift.py   # the English did not move
+python .claude/skills/translate-it/scripts/progress.py   # what is still unwrapped
+```
+
 ### Layout Pattern
 
 Each tab renders as `<Sidebar /> + <main content />` inside `App.jsx`. Sidebars contain collapsible cards with controls; the main area shows the primary content (table, sheet, etc.). The sidebar for the active tab is always present except for the shared-shop view, the Search tab and the Monsters tab — the latter puts its filters in a card on the page instead.

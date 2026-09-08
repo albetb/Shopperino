@@ -134,6 +134,30 @@ const MEASURE = new RegExp(
   'gi',
 );
 
+/* Italian elides the unit on the first half of a dimension pair: "5 ft. by
+   5 ft." is written "5 per 5 piedi", not "5 piedi per 5 piedi". The bare 5 is
+   invisible to MEASURE, so a metric reader was shown "5 per 1.5 m" — a
+   mixed-unit measurement that reads like a real one and is not. The unit is
+   carried back from the far side of the connector. */
+const PAIR = new RegExp(
+  `(${NUMBER})(\\s*(?:per|x|×)\\s*)(${NUMBER})(\\s*|-)(${UNIT_WORDS.join('|')})(?![A-Za-z])`,
+  'gi',
+);
+
+/* "1.5 m" -> "1.5" and "1.5 m" -> "m". The first half of a pair carries no
+   unit of its own — but only while both halves land in the same one. Two feet
+   is 60 cm and four feet is 1.2 m, and "60 per 1.2 m" would be exactly the
+   mixed-unit reading this is here to prevent, so in that case the first half
+   keeps its unit and the sentence is longer instead of wrong. */
+function bare(measure) {
+  return measure.replace(/[\s-][A-Za-z.]+$/, '');
+}
+
+function unitOf(measure) {
+  const m = /[\s-]([A-Za-z.]+)$/.exec(measure);
+  return m ? m[1] : '';
+}
+
 /**
  * What one matched unit word means: which system it is already in, what it
  * measures, and its value in canonical terms.
@@ -213,7 +237,7 @@ export function convertUnitsInText(text, units = DEFAULT_UNITS) {
      metric way. */
   const weightSystem = mode === 'imperial' ? 'imperial' : 'metric';
 
-  return text.replace(MEASURE, (whole, num, sep, word) => {
+  const one = (whole, num, sep, word) => {
     const amount = parseAmount(num);
     if (amount == null) return whole;
     const c = canonical(amount, word);
@@ -240,7 +264,20 @@ export function convertUnitsInText(text, units = DEFAULT_UNITS) {
 
     const [value, unit] = formatDistance(c.ft, mode).split(' ');
     return `${group(value)}${joiner}${unit}`;
+  };
+
+  /* Pairs first. Converting them before the general pass leaves text already
+     in the reader's system, which the general pass then walks straight past —
+     so running both is the same as running either, and running twice changes
+     nothing. */
+  const paired = text.replace(PAIR, (_whole, a, mid, b, sep, word) => {
+    const head = one(`${a}${sep}${word}`, a, sep, word);
+    const tail = one(`${b}${sep}${word}`, b, sep, word);
+    const elide = unitOf(head) === unitOf(tail);
+    return `${elide ? bare(head) : head}${mid}${tail}`;
   });
+
+  return paired.replace(MEASURE, one);
 }
 
 /**

@@ -192,21 +192,21 @@
     },
     {
       "en": "Crippling Strike",
-      "it": "Colpo Menomante",
+      "it": "Colpo menomante",
       "kind": "class",
       "note": "Name; the value in names.json is authoritative and was read out of the manual.",
       "source": "manual"
     },
     {
       "en": "Defensive Roll",
-      "it": "Attutire il Colpo",
+      "it": "Attutire il colpo",
       "kind": "class",
       "note": "Name; the value in names.json is authoritative and was read out of the manual.",
       "source": "manual"
     },
     {
       "en": "Improved Evasion",
-      "it": "Eludere Migliorato",
+      "it": "Eludere migliorato",
       "kind": "class",
       "note": "Name; the value in names.json is authoritative and was read out of the manual.",
       "source": "manual"
@@ -227,7 +227,7 @@
     },
     {
       "en": "Slippery Mind",
-      "it": "Mente Sfuggente",
+      "it": "Mente sfuggente",
       "kind": "class",
       "note": "Rogue special ability",
       "source": "coined"

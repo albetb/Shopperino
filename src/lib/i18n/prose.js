@@ -35,6 +35,13 @@ import itFeats from '../../data/it/feats.json';
 import itSkills from '../../data/it/skills.json';
 import itRaces from '../../data/it/races.json';
 import itClasses from '../../data/it/classes.json';
+import itItems from '../../data/it/items.json';
+import itAnimals from '../../data/it/animals.json';
+import itTraps from '../../data/it/traps.json';
+import itVermin from '../../data/it/vermin.json';
+import itDeities from '../../data/it/deities.json';
+import itFamiliarAbilities from '../../data/it/familiarAbilities.json';
+import itCompanionAbilities from '../../data/it/companionAbilities.json';
 
 /** Every prose pack, by language and then by data file name. */
 const PROSE = {
@@ -44,6 +51,13 @@ const PROSE = {
     skills: itSkills,
     races: itRaces,
     classes: itClasses,
+    items: itItems,
+    animals: itAnimals,
+    traps: itTraps,
+    vermin: itVermin,
+    deities: itDeities,
+    familiarAbilities: itFamiliarAbilities,
+    companionAbilities: itCompanionAbilities,
   },
 };
 

@@ -30,7 +30,7 @@ as it is a game term (*a large room*, *reach the door*, *he will fall*).
 | Constitution | **Costituzione** | **STRICT** |  |
 | Dexterity | **Destrezza** | **STRICT** |  |
 | Intelligence | **Intelligenza** | **STRICT** |  |
-| Strength | **Forza** | **STRICT** |  |
+| Strength | **Forza** | **STRICT** | en_case added by the data lane: spell prose uses the same English word, lowercase, as an ordinary noun for potency ('the strength of the most powerful spell', spells.json Arcane Sight #24), unrelated to the ability score, which this dataset always capitalizes when meant as the score. |
 | Wisdom | **Saggezza** | **STRICT** |  |
 
 ## Classes
@@ -55,7 +55,7 @@ as it is a game term (*a large room*, *reach the door*, *he will fall*).
 |---|---|---|---|
 | Dwarf | **Nano** | **STRICT** |  |
 | Elf | **Elfo** | **STRICT** |  |
-| Gnome | **Gnomo** | **STRICT** |  |
+| Gnome | **Gnomo** | **STRICT** | The race is 'Gnomo'; the language of the same name is 'Gnomesco'. Either satisfies this term. |
 | Half-Elf | **Mezzelfo** | **STRICT** |  |
 | Half-Orc | **Mezzorco** | **STRICT** |  |
 | Halfling | **Halfling** | **STRICT** | Kept as-is, as the Italian manuals do. |
@@ -68,7 +68,7 @@ as it is a game term (*a large room*, *reach the door*, *he will fall*).
 | Abjuration | **Abiurazione** | **STRICT** |  |
 | Conjuration | **Evocazione** | **STRICT** | TRAP. Conjuration is Evocazione and Evocation is Invocazione. Swapping them mislabels every summoning spell. |
 | Divination | **Divinazione** | **STRICT** |  |
-| Enchantment | **Ammaliamento** | **STRICT** |  |
+| Enchantment | **Ammaliamento** | **STRICT** | The school. 'break enchantment' is a spell -- 'spezzare incantamento' -- and satisfies this term too. |
 | Evocation | **Invocazione** | **STRICT** | TRAP. See Conjuration. Never Evocazione. |
 | Illusion | **Illusione** | **STRICT** |  |
 | Necromancy | **Necromanzia** | **STRICT** |  |
@@ -80,14 +80,14 @@ as it is a game term (*a large room*, *reach the door*, *he will fall*).
 | English | Italiano | | Note |
 |---|---|---|---|
 | Colossal | **Colossale** | **STRICT** |  |
-| Diminutive | **Minuscolo** | **STRICT** |  |
-| Fine | **Minutolo** | soft | Soft: the English word is ordinary prose as often as it is the game term. |
+| Diminutive | **Minuto** | **STRICT** |  |
+| Fine | **Piccolissimo** | soft | Soft: the English word is ordinary prose as often as it is the game term. |
 | Gargantuan | **Mastodontico** | **STRICT** |  |
 | Huge | **Enorme** | soft | Soft: the English word is ordinary prose as often as it is the game term. |
 | Large | **Grande** | soft | Soft: the English word is ordinary prose as often as it is the game term. |
 | Medium | **Medio** | soft | Soft: the English word is ordinary prose as often as it is the game term. |
 | Small | **Piccolo** | soft | Soft: the English word is ordinary prose as often as it is the game term. |
-| Tiny | **Piccolissimo** | soft | Soft: the English word is ordinary prose as often as it is the game term. |
+| Tiny | **Minuscolo** | soft | Soft: the English word is ordinary prose as often as it is the game term. |
 
 ## Saving throws
 
@@ -95,7 +95,7 @@ as it is a game term (*a large room*, *reach the door*, *he will fall*).
 |---|---|---|---|
 | Fortitude | **Tempra** | **STRICT** |  |
 | Reflex | **Riflessi** | **STRICT** |  |
-| Will | **Volontà** | **STRICT** |  |
+| Will | **Volontà** | **STRICT** | The saving throw. 'Will save' -> 'tiro salvezza su Volonta'. Not the modal verb: 'Will take risks to hurt you' is a monster attitude, and its Italian is a future tense. |
 
 ## Core rules terms
 
@@ -109,9 +109,9 @@ as it is a game term (*a large room*, *reach the door*, *he will fall*).
 | attack of opportunity | **attacco di opportunità** | **STRICT** |  |
 | base attack bonus | **bonus di attacco base** | **STRICT** |  |
 | Benefit | **Beneficio** | **STRICT** | The bold header on every feat description. Always this word, so the 109 feats read alike. |
-| caster level | **livello dell'incantatore** | soft |  |
+| caster level | **livello dell'incantatore** | soft | Also the inverted prerequisite form the book uses: 'Caster level 5th.' is 'Incantatore di 5° livello.' |
 | Challenge Rating | **Grado di Sfida** | **STRICT** |  |
-| character | **personaggio** | **STRICT** |  |
+| character | **personaggio** | **STRICT** | en_match narrowed by the data lane: some spells count text glyphs, not player characters ('no more than six characters', spells.json Arcane Mark #23). Excludes the common small-number-prefixed letter-count idiom; extend the exclusion list if another count word turns up. |
 | check | **prova** | soft | A skill or ability check. 'Jump checks' -> 'prove di Saltare'. Not 'armor check penalty', which is 'penalità di armatura'. |
 | class feature | **privilegio di classe** | soft |  |
 | concealment | **occultamento** | soft |  |
@@ -123,7 +123,7 @@ as it is a game term (*a large room*, *reach the door*, *he will fall*).
 | Difficulty Class | **Classe Difficoltà** | **STRICT** |  |
 | domain | **dominio** | soft |  |
 | Elemental Shape | **Forma Elementale** | **STRICT** | The elemental variant of the druid's Wild Shape (Complete Divine). |
-| familiar | **famiglio** | **STRICT** |  |
+| familiar | **famiglio** | **STRICT** | A wizard's or sorcerer's familiar. Not the English adjective: 'dwarves are familiar with valuable items', or 'locate creature' (spells.json #307): 'this spell locates a known or familiar creature'. |
 | feat | **talento** | **STRICT** |  |
 | Flurry of Blows | **Raffica di Colpi** | **STRICT** | The monk class feature. |
 | Hit Dice | **Dadi Vita** | **STRICT** |  |
@@ -143,7 +143,7 @@ as it is a game term (*a large room*, *reach the door*, *he will fall*).
 | skill points | **punti abilità** | **STRICT** |  |
 | sneak attack | **attacco furtivo** | **STRICT** |  |
 | Special | **Speciale** | soft | Feat header. |
-| spell | **incantesimo** | **STRICT** |  |
+| spell | **incantesimo** | **STRICT** | en_match excludes 'spell-like', which is its own term (Spell-Like -> Magica) and would otherwise double-fire this one whenever spell-like abilities are mentioned without the literal word incantesimo nearby. |
 | spell resistance | **resistenza agli incantesimi** | **STRICT** |  |
 | spell slot | **slot incantesimo** | soft |  |
 | spellcaster | **incantatore** | **STRICT** |  |
@@ -151,7 +151,7 @@ as it is a game term (*a large room*, *reach the door*, *he will fall*).
 | Two-Weapon Fighting | **Combattere con Due Armi** | **STRICT** | The feat name, used both as prose and as a feat name in names.json when phase 3 reaches it. |
 | undead | **non morti** | **STRICT** |  |
 | Weapon Proficiency | **Competenza nelle Armi** | soft |  |
-| Wild Shape | **Forma Selvatica** | **STRICT** | The druid class feature. |
+| Wild Shape | **Forma selvatica** | **STRICT** | The druid class feature. |
 
 ## Abbreviations
 
@@ -183,23 +183,23 @@ as it is a game term (*a large room*, *reach the door*, *he will fall*).
 | full-round action | **azione di round completo** | **STRICT** |  |
 | immediate action | **azione immediata** | **STRICT** |  |
 | move action | **azione di movimento** | **STRICT** |  |
-| round | **round** | **STRICT** | Stays 'round' in Italian D&D. Never 'turno' — turn is a different thing. |
+| round | **round** | **STRICT** | Stays 'round' in Italian D&D. Never 'turno' — turn is a different thing. en_match excludes the shape adjective ('round as bullets'), a different word entirely. |
 | standard action | **azione standard** | **STRICT** |  |
 | swift action | **azione veloce** | **STRICT** |  |
-| turn | **turno** | soft |  |
+| turn | **turno** | soft | A combat turn. Not turning undead -- 'turn or rebuke creatures' is 'scacciare o intimorire le creature'. |
 
 ## Combat
 
 | English | Italiano | | Note |
 |---|---|---|---|
 | charge | **carica** | soft |  |
-| flanking | **fiancheggiare** | **STRICT** |  |
+| flanking | **fiancheggiare** | **STRICT** | Confirmed: Manuale dei Mostri I p.12/30 use 'fiancheggiare'/'fiancheggiano' for this exact mechanic ("Può fiancheggiare", "non si possono fiancheggiare"). The passive/adjective form 'flanked' instead renders as 'attaccato ai fianchi' in the Manuale del Giocatore (Barbarian Improved Uncanny Dodge) — both are manual-attested, for different grammatical forms of the same rule. |
 | grapple | **lotta** | **STRICT** |  |
 | melee | **mischia** | **STRICT** |  |
 | ranged | **a distanza** | **STRICT** |  |
-| reach | **portata** | soft |  |
+| reach | **portata** | soft | A weapon's or creature's reach. Not the English verb: 'if you reach -10 hit points'. |
 | speed | **velocità** | soft |  |
-| square | **quadretto** | **STRICT** |  |
+| square | **quadretto** | **STRICT** | The grid-distance unit. Not a square piece of material: 'a small square of silk' (spells.json #319, Magic Aura). |
 | touch attack | **attacco di contatto** | soft |  |
 
 ## Items
@@ -215,7 +215,7 @@ as it is a game term (*a large room*, *reach the door*, *he will fall*).
 | Arrow catching | **attirare frecce** | **STRICT** | Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. |
 | Arrow deflection | **deviazione delle frecce** | **STRICT** | Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. |
 | axiomatic | **assiomatica** | **STRICT** | Magic weapon special ability (lawful-aligned). |
-| bane | **anatema** | **STRICT** | Magic weapon special ability (tables.json Magic Melee/Ranged Weapon). 'Un'arma anatema'. Official Italian D&D 3.5 term. Reuse verbatim when items.json reaches this property. |
+| bane | **anatema** | **STRICT** | Magic weapon special ability (tables.json Magic Melee/Ranged Weapon). 'Un'arma anatema'. Official Italian D&D 3.5 term. Reuse verbatim when items.json reaches this property. en_match narrowed by the data lane: 'Bane' is also the name of a 2nd-level spell (spells.json #31) that refers to itself by name in its own English prose ('Bane fills your enemies...', 'Bane counters and dispels bless'), and is referenced back the same way from its counter-spell Bless (spells.json #41, 'Bless counters and dispels bane') — unrelated to the weapon property, and untranslatable here since Name is frozen and the spell has no separate Italian name on record yet. |
 | Bashing | **sfondamento** | **STRICT** | Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. |
 | Blinding | **accecante** | **STRICT** | Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. |
 | brilliant energy | **energia luminosa** | **STRICT** | Magic weapon special ability. Official Italian D&D 3.5 term (per the game manual). |
@@ -224,7 +224,7 @@ as it is a game term (*a large room*, *reach the door*, *he will fall*).
 | Cold resistance, improved | **resistenza al freddo, migliorata** | **STRICT** | Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. |
 | dancing | **danzante** | **STRICT** | Magic weapon special ability. |
 | defending | **difensiva** | **STRICT** | Magic weapon special ability. 'Un'arma difensiva'. |
-| disruption | **distruzione** | **STRICT** | Magic weapon special ability, 'weapon of disruption' -> 'arma della distruzione'. |
+| disruption | **distruzione** | **STRICT** | Magic weapon special ability, 'weapon of disruption' -> 'arma della distruzione'. The plain noun is ordinary English: 'the disruption of a spell' is 'l'interruzione di un incantesimo'. |
 | distance | **distanza** | **STRICT** | Magic ranged weapon special ability, 'weapon of distance' -> 'arma della distanza'. en_case scopes this to the capitalised game term; 'distance' as ordinary prose is common. |
 | Electricity resistance | **resistenza all'elettricità** | **STRICT** | Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. |
 | Electricity resistance, greater | **resistenza all'elettricità, superiore** | **STRICT** | Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. |
@@ -245,19 +245,19 @@ as it is a game term (*a large room*, *reach the door*, *he will fall*).
 | holy | **sacra** | **STRICT** | Magic weapon special ability (good-aligned). 'Holy' is common English prose too, but en_case scopes this to the capitalised game term. |
 | icy burst | **esplosione di ghiaccio** | **STRICT** | Magic weapon special ability. Official Italian D&D 3.5 term (per the game manual). |
 | Invulnerability | **invulnerabilità** | **STRICT** | Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. |
-| keen | **affilata** | **STRICT** | Magic weapon special ability. Official Italian D&D 3.5 term (per the game manual). |
+| keen | **affilata** | **STRICT** | Magic weapon special ability. Not the adjective: 'an elf's senses are so keen', 'not as keen as those of an elf'. |
 | ki focus | **focalizza ki** | **STRICT** | Magic weapon special ability. Official Italian D&D 3.5 term (per the game manual). |
-| Martial Weapons | **Armi da Guerra** | **STRICT** |  |
-| masterwork | **capolavoro** | **STRICT** |  |
+| Martial Weapons | **Armi da Guerra** | **STRICT** | Confirmed: Manuale del Giocatore uses "Armi da Guerra" throughout (e.g. "Competenza nelle Armi da Guerra", Barbarian Weapon and Armor Proficiency entry). |
+| masterwork | **perfetto** | **STRICT** |  |
 | merciful | **pietosa** | **STRICT** | Magic weapon special ability. Official Italian D&D 3.5 term (per the game manual). |
 | mighty cleaving | **incalzare rafforzato** | **STRICT** | Magic weapon special ability. Official Italian D&D 3.5 term (per the game manual). |
 | potion | **pozione** | **STRICT** |  |
 | Reflecting | **riflettente** | **STRICT** | Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. |
-| Returning | **ritornante** | **STRICT** | Magic ranged weapon special ability. Official Italian D&D 3.5 term. |
+| Returning | **ritornante** | **STRICT** | Magic ranged weapon special ability. Official Italian D&D 3.5 term. en_case added by the data lane: ordinary spell prose uses the same English word as a lowercase verb ('never willingly returning to it', spells.json Antipathy #19) unrelated to the item property. |
 | ring | **anello** | **STRICT** |  |
 | rod | **verga** | **STRICT** |  |
 | scroll | **pergamena** | **STRICT** |  |
-| Seeking | **ricercante** | **STRICT** | Magic ranged weapon special ability. Official Italian D&D 3.5 term. |
+| Seeking | **ricercante** | **STRICT** | Magic ranged weapon special ability. Official Italian D&D 3.5 term. en_case added by the data lane: ordinary spell prose uses the same English word as a lowercase verb/gerund ('a creature seeking atonement', spells.json Atonement #27) unrelated to the item property. |
 | Shadow | **ombra** | **STRICT** | Magic armor special ability. en_case scopes this to the capitalised game term; a creature of the same name exists (monsters.json, later phase) and will need its own disambiguation when that phase is reached. |
 | Shadow, greater | **ombra, superiore** | **STRICT** | Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. |
 | Shadow, improved | **ombra, migliorata** | **STRICT** | Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. |
@@ -279,12 +279,12 @@ as it is a game term (*a large room*, *reach the door*, *he will fall*).
 | Spell resistance (17) | **resistenza agli incantesimi (17)** | **STRICT** | Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. |
 | Spell resistance (19) | **resistenza agli incantesimi (19)** | **STRICT** | Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. |
 | spell storing | **accumula incantesimi** | **STRICT** | Magic weapon special ability. Official Italian D&D 3.5 term (per the game manual). |
-| staff | **bastone** | **STRICT** |  |
+| staff | **bastone** | **STRICT** | The magic item (Staff of Fire, etc). Not the English collective noun: 'a staff of near-transparent servants' (spells.json #316, Mage's Magnificent Mansion). |
 | throwing | **lancio** | **STRICT** | Magic weapon special ability. Official Italian D&D 3.5 term (per the game manual). |
 | thundering | **tonante** | **STRICT** | Magic weapon special ability. |
 | Undead controlling | **controllo dei morti** | **STRICT** | Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. |
 | unholy | **sacrilega** | **STRICT** | Magic weapon special ability. Official Italian D&D 3.5 term (per the game manual). |
-| vicious | **immorale** | **STRICT** | Magic weapon special ability. Official Italian D&D 3.5 term (per the game manual). |
+| vicious | **immorale** | **STRICT** | Magic weapon special ability. Official Italian D&D 3.5 term (per the game manual). Not the ordinary adjective: 'a vicious bite' (spells.json #314, Mage's Faithful Hound). |
 | vorpal | **vorpal** | **STRICT** | Magic weapon special ability. Kept as-is, as the Italian manuals do. |
 | wand | **bacchetta** | **STRICT** |  |
 | weapon | **arma** | **STRICT** |  |
@@ -302,7 +302,7 @@ as it is a game term (*a large room*, *reach the door*, *he will fall*).
 | Fire | **Fuoco** | soft | Soft: the English word is ordinary prose as often as it is the game term. |
 | Piercing | **Perforanti** | **STRICT** |  |
 | Slashing | **Taglienti** | **STRICT** |  |
-| Sonic | **Sonico** | **STRICT** |  |
+| Sonic | **Sonoro** | **STRICT** |  |
 
 ## Skills
 
@@ -317,7 +317,7 @@ as it is a game term (*a large room*, *reach the door*, *he will fall*).
 | Decipher Script | **Decifrare Scritture** | **STRICT** |  |
 | Diplomacy | **Diplomazia** | **STRICT** |  |
 | Disable Device | **Disattivare Congegni** | **STRICT** |  |
-| Disguise | **Camuffare** | **STRICT** |  |
+| Disguise | **Camuffare** | **STRICT** | The skill. Not the ordinary plural noun: 'Disguises and illusions can fool them' (spells.json #328, Magic Mouth). |
 | Escape Artist | **Artista della Fuga** | **STRICT** |  |
 | Forgery | **Falsificare** | **STRICT** |  |
 | Gather Information | **Raccogliere Informazioni** | **STRICT** |  |
@@ -326,15 +326,15 @@ as it is a game term (*a large room*, *reach the door*, *he will fall*).
 | Hide | **Nascondersi** | soft | Soft: the English word is ordinary prose as often as it is the game term. |
 | Intimidate | **Intimidire** | **STRICT** |  |
 | Jump | **Saltare** | soft | Soft: the English word is ordinary prose as often as it is the game term. |
-| Knowledge | **Conoscenze** | **STRICT** |  |
+| Knowledge | **Conoscenze** | **STRICT** | The skill. The cleric domain of the same name is 'Conoscenza' in names.json -- both are correct. |
 | Listen | **Ascoltare** | soft | Soft: the English word is ordinary prose as often as it is the game term. |
 | Move Silently | **Muoversi Silenziosamente** | **STRICT** |  |
 | Open Lock | **Scassinare Serrature** | **STRICT** |  |
-| Perform | **Intrattenere** | soft | Soft: the English word is ordinary prose as often as it is the game term. |
+| Perform | **Intrattenere** | soft | The skill. Not the animal trick 'Perform (DC 15)' in the Handle Animal table. |
 | Profession | **Professione** | **STRICT** |  |
 | Ride | **Cavalcare** | soft | Soft: the English word is ordinary prose as often as it is the game term. |
 | Search | **Cercare** | soft | Soft: the English word is ordinary prose as often as it is the game term. |
-| Sense Motive | **Intuizione** | **STRICT** |  |
+| Sense Motive | **Percepire Intenzioni** | **STRICT** | The skill. Manuale del Giocatore p.80 heads the entry "PERCEPIRE INTENZIONI (SAG)"; the skill table on p.64 lists it under that name. "Intuizione" is the common noun and never a skill. |
 | Sleight of Hand | **Rapidità di Mano** | **STRICT** |  |
 | Speak Language | **Parlare Linguaggio** | **STRICT** |  |
 | Spellcraft | **Sapienza Magica** | **STRICT** |  |
@@ -350,8 +350,8 @@ as it is a game term (*a large room*, *reach the door*, *he will fall*).
 | English | Italiano | | Note |
 |---|---|---|---|
 | Chaotic | **Caotico** | **STRICT** |  |
-| Evil | **Malvagio** | **STRICT** |  |
-| Good | **Buono** | **STRICT** | The moral-axis alignment word, not the general English adjective — en_case keeps it from firing on ordinary prose. |
+| Evil | **Malvagio** | **STRICT** | The moral-axis alignment word. The domain and the paladin's detect evil are 'Male' in the book -- 'Individuazione del Male' -- and satisfy this term too. |
+| Good | **Buono** | **STRICT** | The moral-axis alignment word, not the general English adjective; en_case keeps it from firing on 'a good save'. The cleric domain of the same name is 'Bene' in names.json, and the paladin's aura of good is 'aura di Bene' -- both satisfy this term. |
 | Lawful | **Legale** | **STRICT** |  |
 | Neutral | **Neutrale** | **STRICT** | Either alignment axis. 'Neutral Good' -> 'Neutrale Buono'. |
 
@@ -360,18 +360,47 @@ as it is a game term (*a large room*, *reach the door*, *he will fall*).
 | English | Italiano | | Note |
 |---|---|---|---|
 | Aberration | **Aberrazione** | **STRICT** |  |
-| Construct | **Costrutto** | **STRICT** |  |
+| Construct | **Costrutto** | **STRICT** | The creature type, always capitalized in prose. Not the lowercase verb: 'it costs 250 gp to construct' (spells.json #318, Mage's Sword). |
 | Dragon | **Drago** | **STRICT** |  |
 | Elemental | **Elementale** | **STRICT** | The creature type, not the Elemental Shape class feature. |
-| Fey | **Fata** | **STRICT** |  |
+| Fey | **Folletto** | **STRICT** |  |
 | Giant | **Gigante** | **STRICT** |  |
 | Humanoid | **Umanoide** | **STRICT** |  |
 | Magical Beast | **Bestia Magica** | **STRICT** |  |
 | Monstrous Humanoid | **Umanoide Mostruoso** | **STRICT** |  |
 | Ooze | **Melma** | **STRICT** |  |
 | Outsider | **Esterno** | **STRICT** |  |
-| Plant | **Pianta** | **STRICT** |  |
-| Vermin | **Verme** | **STRICT** |  |
+| Plant | **Vegetale** | **STRICT** | Corrected from a coined 'Pianta' guess by the data lane translating spells.json (Animate Plants, #15) — read out of Manuale Dei Mostri I p.318 ("Tipo vegetale: Questo tipo comprende le creature vegetali") and Manuale del Giocatore p.284/p.205 ("acquisisce il tipo vegetale", "creature vegetali (come i treant)"). The spell itself is 'Animare vegetali' in the manual, not 'Animare piante'. |
+| Vermin | **Parassita** | **STRICT** |  |
+
+## spell
+
+| English | Italiano | | Note |
+|---|---|---|---|
+| blindness/deafness | **cecità/sordità** | soft | Spell name, Manuale del Giocatore. |
+| call lightning | **invocare il fulmine** | soft | Spell name, Manuale del Giocatore. |
+| chaos hammer | **martello del caos** | soft | Spell name, Manuale del Giocatore. |
+| chill metal | **gelare il metallo** | soft | Spell name, Manuale del Giocatore. |
+| circle of death | **cerchio di morte** | soft | Spell name, Manuale del Giocatore. |
+| continual flame | **fiamma perenne** | soft | Spell name, Manuale del Giocatore. |
+| control undead | **controllare non morti** | soft | Spell name, Manuale del Giocatore. |
+| cure light wounds | **cura ferite leggere** | soft | Spell name, Manuale del Giocatore. |
+| entropic shield | **scudo entropico** | soft | Spell name, Manuale del Giocatore. |
+| ethereal jaunt | **transizione eterea** | soft | Spell name, Manuale del Giocatore. |
+| gaseous form | **forma gassosa** | soft | Spell name, Manuale del Giocatore. |
+| ice storm | **tempesta di ghiaccio** | soft | Spell name, Manuale del Giocatore. |
+| lightning bolt | **fulmine** | soft | Spell name, Manuale del Giocatore. |
+| limited wish | **desiderio limitato** | soft | Spell name, Manuale del Giocatore. |
+| mage's sword | **spada di Mordenkainen** | soft | Spell name, Manuale del Giocatore; the DMG weapon entry prints "spada di Mordenkainen". |
+| miracle | **miracolo** | soft | Spell name, Manuale del Giocatore. |
+| order's wrath | **ira dell'ordine** | soft | Spell name, Manuale del Giocatore. |
+| resist energy | **resistenza all'energia** | soft | Spell name, Manuale del Giocatore. |
+| searing light | **luce incandescente** | soft | Spell name, Manuale del Giocatore p.187 (cleric 3rd). |
+| spell turning | **riflettere incantesimo** | soft | Spell name, Manuale del Giocatore. |
+| stoneskin | **pelle di pietra** | soft | Spell name, Manuale del Giocatore. |
+| summon monster | **evocare mostri** | soft | Spell name, Manuale del Giocatore. |
+| unholy blight | **influenza sacrilega** | soft | Spell name, Manuale del Giocatore p.192 (Evil domain 4th). |
+| wish | **desiderio** | soft | Spell name, Manuale del Giocatore. |
 
 ## ui
 

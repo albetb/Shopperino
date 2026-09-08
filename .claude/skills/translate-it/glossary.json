@@ -45,6 +45,8 @@
       "it": "Forza",
       "strict": true,
       "kind": "ability",
+      "en_case": true,
+      "note": "en_case added by the data lane: spell prose uses the same English word, lowercase, as an ordinary noun for potency ('the strength of the most powerful spell', spells.json Arcane Sight #24), unrelated to the ability score, which this dataset always capitalizes when meant as the score.",
       "source": "coined"
     },
     {
@@ -187,6 +189,8 @@
       "strict": true,
       "kind": "race",
       "source": "coined",
+      "en_case": true,
+      "note": "en_case added so the race name (always capitalized when meant as the race) doesn't fire on the ordinary lowercase adjective 'human' (e.g. 'human hand').",
       "stems": [
         "umano",
         "umani"
@@ -352,8 +356,10 @@
       "en_case": true,
       "source": "manual",
       "stems": [
+        "minuti",
         "minuto"
-      ]
+      ],
+      "note": "Added plural stem 'minuti' (creature-count lists, e.g. animals.json dire shark gullet table)."
     },
     {
       "en": "Tiny",
@@ -745,6 +751,8 @@
       "stem": "personagg",
       "strict": true,
       "kind": "rules",
+      "en_match": "(?<![A-Za-z])characters?(?![A-Za-z])(?<!six characters)(?<!seven characters)(?<!eight characters)(?<!nine characters)(?<!ten characters)",
+      "note": "en_match narrowed by the data lane: some spells count text glyphs, not player characters ('no more than six characters', spells.json Arcane Mark #23). Excludes the common small-number-prefixed letter-count idiom; extend the exclusion list if another count word turns up.",
       "source": "coined"
     },
     {
@@ -765,8 +773,8 @@
         "famigliari"
       ],
       "source": "coined",
-      "en_match": "(?<![A-Za-z])familiars?(?![A-Za-z])(?!\\s+with)",
-      "note": "A wizard's or sorcerer's familiar. Not the English adjective: 'dwarves are familiar with valuable items'."
+      "en_match": "(?<![A-Za-z])familiars?(?![A-Za-z])(?!\\s+with)(?!\\s+to)(?!\\s+creature)(?!\\s*\\()",
+      "note": "A wizard's or sorcerer's familiar. Not the English adjective: 'dwarves are familiar with valuable items', 'a place familiar to you' (spells.json Clairaudience/Clairvoyance #69), 'locate creature' (spells.json #307): 'this spell locates a known or familiar creature', or a table-row label like 'Familiar (you know the subject well)' (spells.json #357, Nightmare)."
     },
     {
       "en": "animal companion",
@@ -855,19 +863,20 @@
     },
     {
       "en": "round",
+      "en_match": "(?<![A-Za-z])rounds?(?![A-Za-z])(?<!as )(?!\\s+as\\b)",
       "it": "round",
       "strict": true,
       "kind": "action",
-      "note": "Stays 'round' in Italian D&D. Never 'turno' — turn is a different thing.",
+      "note": "Stays 'round' in Italian D&D. Never 'turno' — turn is a different thing. en_match excludes the shape adjective ('round as bullets'), a different word entirely.",
       "source": "coined"
     },
     {
       "en": "turn",
       "it": "turno",
       "kind": "action",
-      "en_match": "(?<![A-Za-z])[Tt]urns?(?![A-Za-z])(?!\\s+(?:undead|or\\s+(?:commands?|rebukes?)\\s+(?:undead|creatures)|their|his|her|its|your|my|our))",
+      "en_match": "(?<![A-Za-z])[Tt]urns?(?![A-Za-z])(?!\\s+(?:undead|or\\s+(?:commands?|rebukes?)\\s+(?:undead|creatures)|their|his|her|its|your|my|our|back))",
       "source": "coined",
-      "note": "A combat turn. Not turning undead -- 'turn or rebuke creatures' is 'scacciare o intimorire le creature'."
+      "note": "A combat turn. Not turning undead -- 'turn or rebuke creatures' is 'scacciare o intimorire le creature'. Not 'turn back' -- spells.json #431 Repulsion: 'tries to turn back toward you'."
     },
     {
       "en": "melee",
@@ -918,16 +927,18 @@
       "stem": "quadrett",
       "strict": true,
       "kind": "combat",
-      "source": "coined"
+      "source": "coined",
+      "en_match": "(?<!ft\\. )(?<!foot )(?<!feet )(?<![A-Za-z])squares?(?![A-Za-z])(?!\\s+of\\s+(?:silk|cloth|paper|linen))(?![\\s-]+(?:feet|foot|meters?|yards?))(?!\\s+sail)",
+      "note": "The grid-distance unit. Not a square piece of material: 'a small square of silk' (spells.json #319, Magic Aura). Not a shape dimension either: '750 ft. square', '150-foot square' (spells.json #355, Move Earth)."
     },
     {
       "en": "reach",
       "it": "portata",
       "stem": "portat",
       "kind": "combat",
-      "en_match": "(?<![A-Za-z])reach(?![A-Za-z])(?!\\s*[−–-]?\\d)",
+      "en_match": "(?<![A-Za-z])reach(?![A-Za-z])(?!\\s*[−–-]?\\d)(?!\\s+(?:the|an?))",
       "source": "coined",
-      "note": "A weapon's or creature's reach. Not the English verb: 'if you reach -10 hit points'."
+      "note": "A weapon's or creature's reach. Not the English verb: 'if you reach -10 hit points', 'fall upward and reach the top of the area' (spells.json #439 Reverse Gravity)."
     },
     {
       "en": "speed",
@@ -990,7 +1001,9 @@
       "stem": "baston",
       "strict": true,
       "kind": "item",
-      "source": "coined"
+      "source": "coined",
+      "en_match": "(?<![A-Za-z])staffs?(?![A-Za-z])(?!\\s+of\\s+(?:[\\w-]+\\s+){0,3}servants?\\b)",
+      "note": "The magic item (Staff of Fire, etc). Not the English collective noun: 'a staff of near-transparent servants' (spells.json #316, Mage's Magnificent Mansion)."
     },
     {
       "en": "rod",
@@ -998,22 +1011,27 @@
       "stem": "verg",
       "strict": true,
       "kind": "item",
+      "en_match": "(?<![A-Za-z])rods?(?![A-Za-z])(?<!crystal rod)(?<!glass rod)",
+      "note": "en_match narrowed by the data lane: a mundane 'crystal rod' or 'glass rod' turns up as an ordinary material-component/focus item (e.g. spells.json Chain Lightning #59), unrelated to the Rod magic item type.",
       "source": "coined"
     },
     {
       "en": "ring",
+      "en_match": "(?<![A-Za-z])rings?(?![A-Za-z])(?!\\s+forth)(?<!tone )",
       "it": "anello",
       "stem": "anell",
       "strict": true,
       "kind": "item",
-      "source": "coined"
+      "source": "coined",
+      "note": "en_match excludes 'rings forth' / 'a tone rings' — the verb 'to ring' (a bell/tone sounding), a different word from the item noun."
     },
     {
       "en": "masterwork",
-      "it": "capolavoro",
+      "it": "perfetto",
+      "stem": "perfett",
       "strict": true,
       "kind": "item",
-      "source": "coined"
+      "source": "manual"
     },
     {
       "en": "Simple Weapons",
@@ -1190,7 +1208,9 @@
       "strict": true,
       "kind": "skill",
       "en_case": true,
-      "source": "coined"
+      "source": "coined",
+      "en_match": "(?<![A-Za-z])Disguises?(?![A-Za-z])(?!\\s+and\\s+illusions)",
+      "note": "The skill. Not the ordinary plural noun: 'Disguises and illusions can fool them' (spells.json #328, Magic Mouth)."
     },
     {
       "en": "Escape Artist",
@@ -1628,7 +1648,9 @@
       "stems": [
         "costrutt"
       ],
-      "source": "coined"
+      "source": "coined",
+      "en_case": true,
+      "note": "The creature type, always capitalized in prose. Not the lowercase verb: 'it costs 250 gp to construct' (spells.json #318, Mage's Sword)."
     },
     {
       "en": "Dragon",
@@ -1695,7 +1717,7 @@
     },
     {
       "en": "Monstrous Humanoid",
-      "it": "Umanoide Mostruoso",
+      "it": "Umanoide mostruoso",
       "strict": true,
       "kind": "creature-type",
       "stems": [
@@ -1726,13 +1748,17 @@
     },
     {
       "en": "Plant",
-      "it": "Pianta",
-      "strict": true,
+      "it": "Vegetale",
+      "strict": false,
       "kind": "creature-type",
       "stems": [
+        "vegetal",
         "piant"
       ],
-      "source": "coined"
+      "source": "coined",
+      "note": "Two words. The creature *type* is Vegetale (Manuale dei Mostri, type list ch.1); an ordinary plant is una pianta, and most spells mean that. The English says which: see the 'plant creature' and 'plant type' terms, which are the part that can be checked.",
+      "en_match": "(?<![A-Za-z])Plants?(?![A-Za-z])(?!\\s+matter)",
+      "homonym": true
     },
     {
       "en": "Vermin",
@@ -1968,8 +1994,8 @@
       "strict": true,
       "kind": "item",
       "en_case": true,
-      "en_match": "(?<![A-Za-z])[Bb]ane(?![A-Za-z])",
-      "note": "Magic weapon special ability (tables.json Magic Melee/Ranged Weapon). 'Un'arma anatema'. Official Italian D&D 3.5 term. Reuse verbatim when items.json reaches this property.",
+      "en_match": "(?<!dispels )(?<![A-Za-z])[Bb]ane(?![A-Za-z])(?! fills)(?! counters)",
+      "note": "Magic weapon special ability (tables.json Magic Melee/Ranged Weapon). 'Un'arma anatema'. Official Italian D&D 3.5 term. Reuse verbatim when items.json reaches this property. en_match narrowed by the data lane: 'Bane' is also the name of a 2nd-level spell (spells.json #31) that refers to itself by name in its own English prose ('Bane fills your enemies...', 'Bane counters and dispels bless'), and is referenced back the same way from its counter-spell Bless (spells.json #41, 'Bless counters and dispels bane') — unrelated to the weapon property, and untranslatable here since Name is frozen and the spell has no separate Italian name on record yet.",
       "source": "manual"
     },
     {
@@ -1980,8 +2006,9 @@
       "stems": [
         "difensiv"
       ],
-      "note": "Magic weapon special ability. 'Un'arma difensiva'.",
-      "source": "manual"
+      "note": "Magic weapon special ability. 'Un'arma difensiva'. en_match added: not the generic verb, e.g. 'defending themselves or their hive' (vermin.json).",
+      "source": "manual",
+      "en_match": "(?<![A-Za-z])[Dd]efending(?![A-Za-z])(?!\\s+(?:itself|themselves|their|his|her|its|only when))"
     },
     {
       "en": "flaming",
@@ -1996,13 +2023,14 @@
     },
     {
       "en": "frost",
+      "en_match": "(?<![A-Za-z])frost(?![A-Za-z])(?!\\s+[Gg]iant)",
       "it": "gelida",
       "strict": true,
       "kind": "item",
       "stems": [
         "gelid"
       ],
-      "note": "Magic weapon special ability. Official Italian D&D 3.5 term (per the game manual).",
+      "note": "Magic weapon special ability. Official Italian D&D 3.5 term (per the game manual). en_match excludes 'Frost Giant', a creature name (Gigante del ghiaccio), not the weapon property.",
       "source": "manual"
     },
     {
@@ -2010,10 +2038,11 @@
       "it": "folgorante",
       "strict": true,
       "kind": "item",
+      "en_match": "(?<!The )(?<!the )(?<![A-Za-z])shocks?(?![A-Za-z])",
       "stems": [
         "folgorant"
       ],
-      "note": "Magic weapon special ability (not the 'shocking burst' variant, which is its own term).",
+      "note": "Magic weapon special ability (not the 'shocking burst' variant, which is its own term). en_match narrowed by the data lane: ordinary prose uses the noun for a tremor/impact ('The shock knocks creatures down', spells.json Earthquake #169), unrelated to the item property; excludes 'shock' preceded by an article, the pattern that phrase uses.",
       "source": "manual"
     },
     {
@@ -2035,8 +2064,8 @@
       "stems": [
         "affilat"
       ],
-      "en_match": "(?<![A-Za-z])(?<!so )(?<!as )(?<!more )[Kk]een(?!\\s+edge)(?!\\s+(?:senses?|ears?|hearing|eyes|nose|smell))(?!\\s+as\\b)(?![A-Za-z])",
-      "note": "Magic weapon special ability. Not the adjective: 'an elf's senses are so keen', 'not as keen as those of an elf'.",
+      "en_match": "(?<![A-Za-z])(?<!so )(?<!as )(?<!more )[Kk]een(?!\\s+edge)(?!\\s+(?:senses?|ears?|hearing|eyes|nose|smell|scent))(?!\\s+as\\b)(?![A-Za-z])",
+      "note": "Magic weapon special ability. Not the adjective: 'an elf's senses are so keen', 'not as keen as those of an elf'. Also not the Keen Scent (Ex) creature ability (animals.json).",
       "source": "manual"
     },
     {
@@ -2113,8 +2142,9 @@
       "stems": [
         "immoral"
       ],
-      "note": "Magic weapon special ability. Official Italian D&D 3.5 term (per the game manual).",
-      "source": "manual"
+      "note": "Magic weapon special ability. Official Italian D&D 3.5 term (per the game manual). Not the ordinary adjective: 'a vicious bite' (spells.json #314, Mage's Faithful Hound). Also not 'vicious predators' (animals.json, whale entries).",
+      "source": "manual",
+      "en_match": "(?<![A-Za-z])vicious(?![A-Za-z])(?!\\s+bite)(?!\\s+(?:predators?|creatures?))"
     },
     {
       "en": "anarchic",
@@ -2174,14 +2204,15 @@
     },
     {
       "en": "holy",
+      "en_match": "(?<![A-Za-z])holy(?:s|es)?(?![A-Za-z])(?!\\s+water)",
       "it": "sacra",
       "strict": true,
       "kind": "item",
       "en_case": true,
+      "note": "Magic weapon special ability (good-aligned). 'Holy' is common English prose too, but en_case scopes this to the capitalised game term.",
       "stems": [
         "sacr"
       ],
-      "note": "Magic weapon special ability (good-aligned). 'Holy' is common English prose too, but en_case scopes this to the capitalised game term.",
       "source": "manual"
     },
     {
@@ -2731,10 +2762,11 @@
       "it": "ritornante",
       "strict": true,
       "kind": "item",
+      "en_case": true,
       "stems": [
         "ritornant"
       ],
-      "note": "Magic ranged weapon special ability. Official Italian D&D 3.5 term.",
+      "note": "Magic ranged weapon special ability. Official Italian D&D 3.5 term. en_case added by the data lane: ordinary spell prose uses the same English word as a lowercase verb ('never willingly returning to it', spells.json Antipathy #19) unrelated to the item property.",
       "source": "manual"
     },
     {
@@ -2742,10 +2774,11 @@
       "it": "ricercante",
       "strict": true,
       "kind": "item",
+      "en_case": true,
       "stems": [
         "ricercant"
       ],
-      "note": "Magic ranged weapon special ability. Official Italian D&D 3.5 term.",
+      "note": "Magic ranged weapon special ability. Official Italian D&D 3.5 term. en_case added by the data lane: ordinary spell prose uses the same English word as a lowercase verb/gerund ('a creature seeking atonement', spells.json Atonement #27) unrelated to the item property.",
       "source": "manual"
     },
     {
@@ -3011,6 +3044,61 @@
       ],
       "source": "manual",
       "note": "Spell name, Manuale del Giocatore; the DMG weapon entry prints \"spada di Mordenkainen\"."
+    },
+    {
+      "en": "plant creature",
+      "it": "creatura vegetale",
+      "strict": true,
+      "kind": "creature type",
+      "stems": [
+        "vegetal"
+      ],
+      "source": "manual",
+      "note": "The type, never 'creatura pianta'. Manuale dei Mostri ch.1."
+    },
+    {
+      "en": "plant type",
+      "it": "tipo vegetale",
+      "strict": true,
+      "kind": "creature type",
+      "stems": [
+        "vegetal"
+      ],
+      "source": "manual",
+      "note": "As in 'it gains the plant type'. Manuale dei Mostri ch.1."
+    },
+    {
+      "en": "slaughter",
+      "it": "massacro",
+      "strict": false,
+      "kind": "deity title",
+      "stems": [
+        "massacr"
+      ],
+      "source": "manual",
+      "note": "Manuale del Giocatore: \"Erythnul (dio del massacro)\". Not *strage*, which the book never uses."
+    },
+    {
+      "en": "retribution",
+      "it": "castigo",
+      "strict": false,
+      "kind": "deity title",
+      "stems": [
+        "castig"
+      ],
+      "source": "manual",
+      "note": "Manuale del Giocatore: \"St. Cuthbert, dio del castigo\". Chastisement, not revenge (*vendetta*)."
+    },
+    {
+      "en": "woodlands",
+      "it": "terre boschive",
+      "strict": false,
+      "kind": "deity title",
+      "stems": [
+        "boschiv"
+      ],
+      "source": "manual",
+      "note": "Manuale del Giocatore: \"Ehlonna, dea delle terre boschive\"."
     }
   ]
 }
