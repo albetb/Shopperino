@@ -8,6 +8,7 @@ import BottomSheet from '../../common/BottomSheet';
 import Button from '../../common/Button';
 import EquipBonusControls from './EquipBonusControls';
 import 'style/shop_inventory.css';
+import { t, tx, tName } from 'lib/i18n';
 
 export default function AddItemFormInventory({ open, onAddItem, items, onClose }) {
   const [number, setNumber] = useState(1);
@@ -196,16 +197,16 @@ export default function AddItemFormInventory({ open, onAddItem, items, onClose }
     <BottomSheet
       open={open}
       onClose={onClose}
-      eyebrow="Inventory"
-      title="Add item"
+      eyebrow={t('Inventory')}
+      title={t('Add item')}
     >
       <div className="sh-stack" style={{ gap: 'var(--space-3)' }}>
         <label className="sh-field">
-          <span className="sh-label">Name</span>
+          <span className="sh-label">{t('Name')}</span>
           <div className="suggestions-anchor">
             <input
               type="text"
-              placeholder="Item name"
+              placeholder={t('Item name')}
               value={itemName}
               onChange={(e) => setItemName(e.target.value)}
               onFocus={() => setIsFocused(true)}
@@ -227,13 +228,13 @@ export default function AddItemFormInventory({ open, onAddItem, items, onClose }
                         one row repeated — and they can sit at different spell
                         levels, which is what decides who may read them. */}
                     {suggestion.Source && (
-                      <span className="sh-faint suggestion-item-source">{suggestion.Source}</span>
+                      <span className="sh-faint suggestion-item-source">{tName('spellSources', suggestion.Source)}</span>
                     )}
                   </li>
                 ))}
                 {suggestionOverflow > 0 && (
                   <li className="suggestion-item suggestion-item--more">
-                    {suggestionOverflow} more — keep typing to narrow it
+                    {tx('{0} more — keep typing to narrow it', suggestionOverflow)}
                   </li>
                 )}
               </ul>
@@ -242,10 +243,10 @@ export default function AddItemFormInventory({ open, onAddItem, items, onClose }
         </label>
         <label className="sh-field">
           <span className="sh-label">
-            Type
+            {t('Type')}
             {magicLabel && (
-              <span className="sh-magic-type-badge" title="Item carries an enhancement bonus or effects">
-                {magicLabel}
+              <span className="sh-magic-type-badge" title={t('Item carries an enhancement bonus or effects')}>
+                {tName('itemTypes', magicLabel)}
               </span>
             )}
           </span>
@@ -253,16 +254,16 @@ export default function AddItemFormInventory({ open, onAddItem, items, onClose }
             value={itemType}
             onChange={(e) => setItemType(e.target.value)}
             className="sh-select"
-            aria-label={magicLabel ? `Type: ${displayType}` : 'Type'}
+            aria-label={magicLabel ? tx('Type: {0}', tName('itemTypes', displayType)) : t('Type')}
           >
             {itemTypes.map((type, index) => (
-              <option key={index} value={type}>{type}</option>
+              <option key={index} value={type}>{tName('itemTypes', type)}</option>
             ))}
           </select>
         </label>
         {choiceKind === 'energy' && (
           <div className="sh-field">
-            <span className="sh-label">Energy type</span>
+            <span className="sh-label">{t('Energy type')}</span>
             <div className="sh-row-h" style={{ flexWrap: 'wrap', gap: '0.375rem' }}>
               {ENERGY_TYPES.map((energy) => (
                 <button
@@ -271,7 +272,7 @@ export default function AddItemFormInventory({ open, onAddItem, items, onClose }
                   className={['sh-chip', choice === energy && 'is-on'].filter(Boolean).join(' ')}
                   onClick={() => setChoice(choice === energy ? '' : energy)}
                 >
-                  {energy}
+                  {tName('energyTypes', energy)}
                 </button>
               ))}
             </div>
@@ -279,7 +280,7 @@ export default function AddItemFormInventory({ open, onAddItem, items, onClose }
         )}
         {isBonusCandidate && (
           <div className="sh-field">
-            <span className="sh-label">Magical properties</span>
+            <span className="sh-label">{t('Magical properties')}</span>
             <EquipBonusControls
               itemLink={link}
               masterwork={masterwork}
@@ -290,13 +291,13 @@ export default function AddItemFormInventory({ open, onAddItem, items, onClose }
           </div>
         )}
         <div className="sh-field">
-          <span className="sh-label">Quantity</span>
+          <span className="sh-label">{t('Quantity')}</span>
           <div className="sh-qty-stepper">
             <button
               type="button"
               className="sh-qty-btn"
               onClick={stepQty(-1)}
-              aria-label="Decrease quantity"
+              aria-label={t('Decrease quantity')}
               disabled={(typeof number === 'number' ? number : parseInt(number, 10) || 0) <= 0}
             >
               <span className="material-symbols-outlined">remove</span>
@@ -315,7 +316,7 @@ export default function AddItemFormInventory({ open, onAddItem, items, onClose }
               type="button"
               className="sh-qty-btn"
               onClick={stepQty(1)}
-              aria-label="Increase quantity"
+              aria-label={t('Increase quantity')}
               disabled={(typeof number === 'number' ? number : parseInt(number, 10) || 0) >= MAX_NUMBER}
             >
               <span className="material-symbols-outlined">add</span>
@@ -323,14 +324,14 @@ export default function AddItemFormInventory({ open, onAddItem, items, onClose }
           </div>
         </div>
         <div className="sh-row-h" style={{ gap: 'var(--space-2)', justifyContent: 'flex-end' }}>
-          <Button variant="ghost" onClick={onClose}>Cancel</Button>
+          <Button variant="ghost" onClick={onClose}>{t('Cancel')}</Button>
           <Button
             variant="primary"
             icon="add_shopping_cart"
             onClick={handleAddItemClick}
             disabled={!itemName.trim()}
           >
-            Add
+            {t('Add')}
           </Button>
         </div>
       </div>

@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { MAGICSCHOOLS } from '../../../../lib/spellbook';
 import { setSearchSpellName, setSearchSpellSchool, setShowShortDescriptions } from '../../../../store/slices/spellbookSlice';
 import '../../../../style/menu_cards.css';
+import { t, tName } from '../../../../lib/i18n';
 
 /** Set to true to show the "Show spell descriptions" checkbox in the filter card. */
 const SHOW_DESCRIPTION_UI = false;
@@ -20,18 +21,18 @@ export default function MenuCardSearch() {
   return (
     <>
       <div className="card-side-div">
-        <label className="modern-label">Name</label>
+        <label className="modern-label">{t('Name')}</label>
         <input
           className='modern-dropdown small-longer padding-left'
           type='text'
-          placeholder={"Search spell name"}
+          placeholder={t('Search spell name')}
           value={searchSpellName}
           onChange={(e) => handleNameChange(e.target.value)}
         />
       </div>
 
       <div className="card-side-div margin-top">
-        <label className="modern-label">School</label>
+        <label className="modern-label">{t('School')}</label>
         <select
           className="modern-dropdown small-long"
           value={searchSpellSchool}
@@ -40,7 +41,7 @@ export default function MenuCardSearch() {
           <option value="">-</option>
           {MAGICSCHOOLS.map(cls => (
             <option key={cls} value={cls}>
-              {cls}
+              {tName('schools', cls)}
             </option>
           ))}
         </select>
@@ -56,7 +57,7 @@ export default function MenuCardSearch() {
               onChange={e => handleToggleShortDescriptions(e.target.checked)}
               className="margin-right-sm"
             />
-            Show spell descriptions
+            {t('Show spell descriptions')}
           </label>
         </div>
       )}

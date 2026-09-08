@@ -7,6 +7,7 @@ import LevelComponent from '../../../common/level_component';
 import OptionStepper from '../../../common/option_stepper';
 import { isMobile } from '../../../../lib/utils';
 import { setIsLootSidebarCollapsed } from '../../../../store/slices/lootSlice';
+import { t } from '../../../../lib/i18n';
 
 const MODIFIER_OPTIONS = [
   { value: 0, label: 'x0' },
@@ -65,7 +66,7 @@ export default function MenuCardLoot() {
           onChange={e => handleSelectLoot(e.target.value)}
           disabled={loots.length === 0}
         >
-          <option value="" disabled>Select Loot</option>
+          <option value="" disabled>{t('Select Loot')}</option>
           {loots
             .map((l, i) => ({ item: l, originalIndex: i }))
             .reverse()
@@ -86,15 +87,15 @@ export default function MenuCardLoot() {
         </button>
       </div>
 
-      <LevelComponent props={{ level, levelName: 'Encounter lv', onLevelChange: onSetLevel }} />
+      <LevelComponent props={{ level, levelName: t('Encounter lv'), onLevelChange: onSetLevel }} />
 
-      <OptionStepper props={{ value: goldMod,  options: MODIFIER_OPTIONS, name: 'Gold',  onChange: setGoldMod  }} />
-      <OptionStepper props={{ value: goodsMod, options: MODIFIER_OPTIONS, name: 'Goods', onChange: setGoodsMod }} />
-      <OptionStepper props={{ value: itemsMod, options: MODIFIER_OPTIONS, name: 'Item',  onChange: setItemsMod }} />
+      <OptionStepper props={{ value: goldMod,  options: MODIFIER_OPTIONS, name: t('Gold'),  onChange: setGoldMod  }} />
+      <OptionStepper props={{ value: goodsMod, options: MODIFIER_OPTIONS, name: t('Goods'), onChange: setGoodsMod }} />
+      <OptionStepper props={{ value: itemsMod, options: MODIFIER_OPTIONS, name: t('Item'),  onChange: setItemsMod }} />
 
       <div className="card-side-div margin-top buttons-row-center">
         <button className="modern-button small-long" onClick={handleGenerate}>
-          Generate loot
+          {t('Generate loot')}
         </button>
       </div>
     </>

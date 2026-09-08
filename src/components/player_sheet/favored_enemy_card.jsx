@@ -12,8 +12,11 @@ import {
   onRemoveFavoredEnemy,
 } from '../../store/thunks/playerSheetThunks';
 import '../../style/favored_enemy.css';
+import { t, tx, tName } from '../../lib/i18n';
 
-const label = (entry) => (entry.subtype ? `${entry.type} (${entry.subtype})` : entry.type);
+const label = (entry) => (entry.subtype
+  ? tx('{0} ({1})', tName('creatureTypes', entry.type), tName('creatureTypes', entry.subtype))
+  : tName('creatureTypes', entry.type));
 
 /**
  * Ranger favored enemies.
@@ -54,26 +57,27 @@ export default function FavoredEnemyCard() {
 
   return (
     <Card
-      title="Favored enemies"
+      title={t('Favored enemies')}
       className="sh-card--head-spread"
-      eyebrow={`${used} of ${max} slots`}
+      eyebrow={tx('{0} of {1} slots', used, max)}
       action={
         <span className="sh-row-h" style={{ gap: 'var(--space-1)' }}>
-          <InfoPopover label="Favored enemies">
+          <InfoPopover label={t('Favored enemies')}>
             <p>
-              A ranger picks a first favored enemy at 1st level and another
-              every five levels after. Each new slot may name a fresh enemy or{' '}
-              <b>raise an existing one by +2</b>.
+              {tx(
+                'A ranger picks a first favored enemy at 1st level and another every five levels after. Each new slot may name a fresh enemy or {0}.',
+                <b>{t('raise an existing one by +2')}</b>
+              )}
             </p>
             <p>
-              The bonus applies to{' '}
-              <b>{player.getFavoredEnemySkills().join(', ')}</b> checks against
-              that enemy, and to <b>weapon damage</b> against it. It also passes
-              to anything the ranger&apos;s weapon damage would carry.
+              {tx(
+                "The bonus applies to {0} checks against that enemy, and to {1} against it. It also passes to anything the ranger's weapon damage would carry.",
+                <b>{player.getFavoredEnemySkills().map((s) => tName('skills', s)).join(', ')}</b>,
+                <b>{t('weapon damage')}</b>
+              )}
             </p>
             <p>
-              A type too broad to take whole — humanoids, outsiders — must be
-              narrowed to a subtype.
+              {t('A type too broad to take whole — humanoids, outsiders — must be narrowed to a subtype.')}
             </p>
           </InfoPopover>
           {collapseToggle}
@@ -84,13 +88,13 @@ export default function FavoredEnemyCard() {
       <div className="sh-stack favored-enemy">
         {overCap && (
           <Pill tone="warn" icon="warning">
-            {used - max} more than this level allows
+            {tx('{0} more than this level allows', used - max)}
           </Pill>
         )}
 
         {entries.length === 0 ? (
           <span className="sh-faint favored-enemy-empty">
-            No favored enemy chosen yet.
+            {t('No favored enemy chosen yet.')}
           </span>
         ) : (
           <ul className="favored-enemy-list">
@@ -103,16 +107,16 @@ export default function FavoredEnemyCard() {
                     icon="add"
                     ghost
                     size="sm"
-                    title="Spend a slot raising this enemy by +2"
-                    aria-label={`Raise ${label(entry)}`}
+                    title={t('Spend a slot raising this enemy by +2')}
+                    aria-label={tx('Raise {0}', label(entry))}
                     onClick={() => dispatch(onRaiseFavoredEnemy(index))}
                   />
                   <IconButton
                     icon="close"
                     ghost
                     size="sm"
-                    title="Remove"
-                    aria-label={`Remove ${label(entry)}`}
+                    title={t('Remove')}
+                    aria-label={tx('Remove {0}', label(entry))}
                     onClick={() => dispatch(onRemoveFavoredEnemy(index))}
                   />
                 </span>
@@ -125,12 +129,12 @@ export default function FavoredEnemyCard() {
           <select
             className="sh-select"
             value={type}
-            aria-label="Favored enemy type"
+            aria-label={t('Favored enemy type')}
             onChange={(e) => handleTypeChange(e.target.value)}
           >
-            <option value="">Add a favored enemy…</option>
-            {player.getFavoredEnemyTypes().map((t) => (
-              <option key={t} value={t}>{t}</option>
+            <option value="">{t('Add a favored enemy…')}</option>
+            {player.getFavoredEnemyTypes().map((ft) => (
+              <option key={ft} value={ft}>{tName('creatureTypes', ft)}</option>
             ))}
           </select>
 
@@ -138,26 +142,26 @@ export default function FavoredEnemyCard() {
             <select
               className="sh-select"
               value={subtype}
-              aria-label="Favored enemy subtype"
+              aria-label={t('Favored enemy subtype')}
               onChange={(e) => setSubtype(e.target.value)}
             >
               <option value="">
-                {needsSubtype ? 'Choose a subtype…' : 'Any subtype'}
+                {needsSubtype ? t('Choose a subtype…') : t('Any subtype')}
               </option>
               {subtypes.map((s) => (
-                <option key={s} value={s}>{s}</option>
+                <option key={s} value={s}>{tName('creatureTypes', s)}</option>
               ))}
             </select>
           )}
 
           <Button variant="primary" icon="add" disabled={!canAdd} onClick={handleAdd}>
-            Add
+            {t('Add')}
           </Button>
         </div>
 
         {needsSubtype && !subtype && (
           <span className="sh-faint favored-enemy-empty">
-            {type} is too broad to take whole — choose a subtype.
+            {tx('{0} is too broad to take whole — choose a subtype.', tName('creatureTypes', type))}
           </span>
         )}
       </div>

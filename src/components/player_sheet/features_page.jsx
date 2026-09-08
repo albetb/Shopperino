@@ -4,7 +4,7 @@ import { onAddBonusLanguage, onRemoveBonusLanguage } from '../../store/thunks/pl
 import { onSetPlayerAlignment, onSetExClass, onSetPlayerDeity } from '../../store/thunks/playerSheetThunks';
 import { getClassData, getRaceData } from '../../lib/player';
 import { getAllowedEthics, getAllowedMorals } from '../../lib/alignment';
-import { listDeities, formatDeityAlignment } from '../../lib/utils';
+import { listDeities } from '../../lib/utils';
 import { getClassStats, renderFeature, ClassFeaturePills } from './class_cards';
 import StatBar from './stat_bar';
 import Card from '../common/Card';
@@ -16,7 +16,7 @@ import EmptyState from '../common/EmptyState';
 import Icon from '../common/Icon';
 import Switch from '../common/Switch';
 import '../../style/player_sheet.css';
-import { t, tName } from '../../lib/i18n';
+import { t, tx, tName } from '../../lib/i18n';
 
 const FEATURE_CARD_KEYS = ['alignment', 'languages', 'weaponArmor', 'racialTraits', 'classTraits'];
 
@@ -195,7 +195,7 @@ export default function FeaturesPage() {
       <div style={{ marginTop: 'var(--space-3)', marginBottom: 'var(--space-4)', textAlign: 'center' }}>
         <Filigree>{t('Class & race features')}</Filigree>
         <div className="sh-display" style={{ fontSize: 'var(--font-size-2xl)' }}>
-          {className || 'Classless'} · {raceName || 'No race'}
+          {className ? tName('classes', className) : t('Classless')} · {raceName ? tName('races', raceName) : t('No race')}
         </div>
       </div>
 
@@ -275,13 +275,19 @@ export default function FeaturesPage() {
 
               {deityData && (
                 <div className="sh-muted" style={{ fontSize: 'var(--font-size-xs)' }}>
-                  {formatDeityAlignment(deityData)} · {deityData.title} · grants{' '}
-                  {deityData.domains.join(', ')}
+                  {tx(
+                    '{0} · {1} · grants {2}',
+                    deityData.ethical === 'Neutral' && deityData.moral === 'Neutral'
+                      ? tName('alignments', 'Neutral')
+                      : `${tName('alignments', deityData.ethical)} ${tName('alignments', deityData.moral)}`,
+                    deityData.title,
+                    deityData.domains.map((d) => tName('domains', d)).join(', ')
+                  )}
                 </div>
               )}
               {deityIsCustom && deity !== '' && (
                 <div className="sh-muted" style={{ fontSize: 'var(--font-size-xs)' }}>
-                  Not in the core pantheon — alignment and domains are not checked.
+                  {t('Not in the core pantheon — alignment and domains are not checked.')}
                 </div>
               )}
             </>
@@ -306,7 +312,7 @@ export default function FeaturesPage() {
                 <span style={{ flex: '0 0 60%' }}>
                   <Switch
                     checked={isExClass}
-                    aria-label={`Mark ${className} as fallen`}
+                    aria-label={tx('Mark {0} as fallen', tName('classes', className))}
                     onChange={(value) => dispatch(onSetExClass(value))}
                   />
                 </span>
@@ -314,8 +320,7 @@ export default function FeaturesPage() {
               {isExClass && (
                 <div className="sh-warn-strip">
                   <Icon name="gavel" />
-                  Class features are lost until atonement. The sheet still shows
-                  them — track the loss at the table.
+                  {t('Class features are lost until atonement. The sheet still shows them — track the loss at the table.')}
                 </div>
               )}
             </>
@@ -353,8 +358,7 @@ export default function FeaturesPage() {
             <div className="sh-warn-strip">
               <Icon name="translate" />
               <span>
-                You can speak with <b>{t('any living creature')}</b>, whatever language
-                the list below holds.
+                {tx('You can speak with {0}, whatever language the list below holds.', <b>{t('any living creature')}</b>)}
               </span>
             </div>
           )}
@@ -365,14 +369,14 @@ export default function FeaturesPage() {
                 return (
                   <div key={lang} className="sh-row-h sh-spread" style={{ padding: 'var(--space-2) 0', borderBottom: '1px solid var(--border-soft)' }}>
                     <span className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
-                      <span className="sh-display" style={{ fontSize: 'var(--font-size-md)' }}>{lang}</span>
-                      {isAuto && <Pill tone="ghost">auto</Pill>}
+                      <span className="sh-display" style={{ fontSize: 'var(--font-size-md)' }}>{tName('languages', lang)}</span>
+                      {isAuto && <Pill tone="ghost">{t('auto')}</Pill>}
                     </span>
                     <IconButton
                       ghost size="sm" icon="remove"
                       onClick={() => handleRemove(lang)}
                       disabled={isAuto}
-                      aria-label={`Remove ${lang}`}
+                      aria-label={tx('Remove {0}', tName('languages', lang))}
                     />
                   </div>
                 );
@@ -386,7 +390,7 @@ export default function FeaturesPage() {
               aria-label={t('Choose language to add')}
             >
               <option value="">{t('— choose —')}</option>
-              {bonusOptions.map(lang => <option key={lang} value={lang}>{lang}</option>)}
+              {bonusOptions.map(lang => <option key={lang} value={lang}>{tName('languages', lang)}</option>)}
             </select>
             <Button
               icon="add"
@@ -426,7 +430,7 @@ export default function FeaturesPage() {
 
       <CollapsibleCard
         eyebrow={t('Race')}
-        title={raceName ? `${raceName} traits` : 'Racial traits'}
+        title={raceName ? tx('{0} traits', tName('races', raceName)) : t('Racial traits')}
         open={isOpen('racialTraits')}
         onToggle={() => toggleCard('racialTraits')}
       >
@@ -441,7 +445,7 @@ export default function FeaturesPage() {
 
       <CollapsibleCard
         eyebrow={t('Class')}
-        title={className ? `${className} features` : 'Class features'}
+        title={className ? tx('{0} features', tName('classes', className)) : t('Class features')}
         open={isOpen('classTraits')}
         onToggle={() => toggleCard('classTraits')}
       >

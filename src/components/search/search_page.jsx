@@ -7,7 +7,7 @@ import SpellLink from '../common/spell_link';
 import '../../style/sidebar.css';
 import '../../style/menu_cards.css';
 import { useUnits } from '../hooks/useUnits';
-import { t, tName } from '../../lib/i18n';
+import { t, tx, tName } from '../../lib/i18n';
 
 const TYPE_OPTIONS = ['', 'Spells', 'Items', 'Feats', 'Skills'];
 const SPELL_CLASS_OPTIONS = ['All', 'Sorcerer', 'Wizard', 'Cleric', 'Druid', 'Bard', 'Ranger', 'Paladin', 'Domains'];
@@ -340,12 +340,12 @@ export default function SearchPage() {
         <div className="search-results">
           {!searchType && (
             <p className="search-hint">
-              Select an item type to search his content.
+              {t('Select an item type to search his content.')}
             </p>
           )}
           {searchType && results.length === 0 && (
             <p className="search-hint">
-              No {searchType.toLowerCase()} found matching this filter.
+              {tx('No {0} found matching this filter.', t(searchType).toLowerCase())}
             </p>
           )}
 
@@ -361,7 +361,7 @@ export default function SearchPage() {
                   </span>
                 </button>
                 <p className="filter-icon-white">
-                  Filter by name: <b>{query}</b>
+                  {tx('Filter by name: {0}', <b>{query}</b>)}
                 </p>
               </div>
             </div>
@@ -455,7 +455,7 @@ export default function SearchPage() {
                         className="card-side-div card-expand-div"
                         onClick={() => toggleSpellLevel(level)}
                       >
-                        <h3 className="card-title">{spellClassFilter} — Level {level}</h3>
+                        <h3 className="card-title">{tx('{0} — Level {1}', tName('classes', spellClassFilter), level)}</h3>
                         <button className="collapse-button">
                           <span className="material-symbols-outlined">
                             {collapsed ? 'expand_more' : 'expand_less'}
@@ -537,7 +537,7 @@ export default function SearchPage() {
                         className="card-side-div card-expand-div"
                         onClick={() => toggleDomain(domain)}
                       >
-                        <h3 className="card-title">{domain}</h3>
+                        <h3 className="card-title">{tName('domains', domain)}</h3>
                         <button className="collapse-button">
                           <span className="material-symbols-outlined">
                             {collapsed ? 'expand_more' : 'expand_less'}

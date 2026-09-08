@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { setCombatPageCardCollapsed } from '../../../store/slices/playerSheetSlice';
 import IconButton from '../../common/IconButton';
+import { t, tx } from '../../../lib/i18n';
 
 /**
  * Collapse state for one combat-page card, plus the chevron that toggles it.
@@ -25,7 +26,7 @@ export default function useCardCollapse(key, label) {
       ghost
       size="sm"
       onClick={() => dispatch(setCombatPageCardCollapsed({ key, value: !collapsed }))}
-      aria-label={`Toggle ${label}`}
+      aria-label={tx('Toggle {0}', t(label))}
     />
   );
   return [collapsed, toggle];

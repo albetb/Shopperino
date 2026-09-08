@@ -405,8 +405,9 @@
         "Volont"
       ],
       "en_case": true,
-      "en_match": "(?<![A-Za-z])Will(?![A-Za-z])",
-      "source": "coined"
+      "en_match": "(?<![A-Za-z])Will(?![A-Za-z])(?!\\s+(?!saves?\\b|saving\\b)[a-z])",
+      "source": "coined",
+      "note": "The saving throw. 'Will save' -> 'tiro salvezza su Volonta'. Not the modal verb: 'Will take risks to hurt you' is a monster attitude, and its Italian is a future tense."
     },
     {
       "en": "saving throw",
@@ -819,7 +820,7 @@
       "en": "turn",
       "it": "turno",
       "kind": "action",
-      "en_match": "(?<![A-Za-z])[Tt]urns?(?![A-Za-z])(?!\\s+undead)",
+      "en_match": "(?<![A-Za-z])[Tt]urns?(?![A-Za-z])(?!\\s+(?:undead|or\\s+commands?\\s+undead|their|his|her|its|your|my|our))",
       "source": "coined"
     },
     {
@@ -1037,7 +1038,8 @@
       "kind": "damage",
       "en_case": true,
       "note": "Soft: the English word is ordinary prose as often as it is the game term.",
-      "source": "coined"
+      "source": "coined",
+      "en_match": "(?<![A-Za-z])Fire(?![A-Za-z-])"
     },
     {
       "en": "Electricity",
@@ -1245,8 +1247,9 @@
       "strict": false,
       "kind": "skill",
       "en_case": true,
-      "note": "Soft: the English word is ordinary prose as often as it is the game term.",
-      "source": "coined"
+      "note": "The skill. Not the animal trick 'Perform (DC 15)' in the Handle Animal table.",
+      "source": "coined",
+      "en_match": "(?<![A-Za-z])Perform(?![A-Za-z])(?!\\s*\\(DC)"
     },
     {
       "en": "Profession",
@@ -2074,8 +2077,9 @@
       "stems": [
         "distruzion"
       ],
-      "note": "Magic weapon special ability, 'weapon of disruption' -> 'arma della distruzione'.",
-      "source": "manual"
+      "note": "Magic weapon special ability, 'weapon of disruption' -> 'arma della distruzione'. The plain noun is ordinary English: 'the disruption of a spell' is 'l'interruzione di un incantesimo'.",
+      "source": "manual",
+      "en_match": "(?<=of )disruption(?![A-Za-z])"
     },
     {
       "en": "flaming burst",

@@ -13,6 +13,7 @@ import EquipBonusControls from '../../../player_sheet/inventory/EquipBonusContro
 import AugmentSummoningNote from '../../../common/AugmentSummoningNote';
 import '../../../../style/menu_cards.css';
 import { useUnits } from '../../../hooks/useUnits';
+import { t, tx } from '../../../../lib/i18n';
 
 const HIDDEN_KEYS = new Set(['Short Description', 'id', 'Link', 'editable', 'editKey']);
 
@@ -196,7 +197,7 @@ export default function InfoMenuCards({ cardsData, closeCard }) {
         const state = cardStates.find((s) => s.id === idx) || { collapsed: idx !== 0 };
         const isEditing = editingIdx === idx;
         const editableValue = isEditing ? (editValues.Name ?? '') : null;
-        const title = isEditing ? (editableValue || 'Edit') : (data.Name || `Card ${idx + 1}`);
+        const title = isEditing ? (editableValue || t('Edit')) : (data.Name || tx('Card {0}', idx + 1));
         return (
           <div key={idx} className={`card ${state.collapsed ? 'collapsed' : ''}`}>
             <div className="card-side-div card-expand-div">
@@ -206,7 +207,7 @@ export default function InfoMenuCards({ cardsData, closeCard }) {
                   <button
                     type="button"
                     className="card-edit-button"
-                    title="Edit"
+                    title={t('Edit')}
                     onClick={() => startEdit(idx, data)}
                   >
                     <span className="material-symbols-outlined">edit</span>
@@ -217,7 +218,7 @@ export default function InfoMenuCards({ cardsData, closeCard }) {
                     <button
                       type="button"
                       className="card-edit-button"
-                      title="Save"
+                      title={t('Save')}
                       onClick={() => saveEdit(data)}
                     >
                       <span className="material-symbols-outlined">check</span>
@@ -225,7 +226,7 @@ export default function InfoMenuCards({ cardsData, closeCard }) {
                     <button
                       type="button"
                       className="card-edit-button"
-                      title="Cancel"
+                      title={t('Cancel')}
                       onClick={cancelEdit}
                     >
                       <span className="material-symbols-outlined">close</span>
@@ -300,7 +301,7 @@ export default function InfoMenuCards({ cardsData, closeCard }) {
                               onChange={(e) =>
                                 setEditValues((prev) => ({ ...prev, [key]: e.target.value }))
                               }
-                              placeholder={key}
+                              placeholder={t(key)}
                             />
                           </div>
                         );
@@ -315,14 +316,14 @@ export default function InfoMenuCards({ cardsData, closeCard }) {
                               onChange={(e) =>
                                 setEditValues((prev) => ({ ...prev, [key]: e.target.value }))
                               }
-                              placeholder={key}
+                              placeholder={t(key)}
                             />
                           </div>
                         );
                       }
                       return (
                         <div key={key} className="info-card-row info-card-edit-row">
-                          <span className="info-key info-card">{key}: </span>
+                          <span className="info-key info-card">{t(key)}: </span>
                           <input
                             type="text"
                             className="info-card-input"
@@ -337,7 +338,7 @@ export default function InfoMenuCards({ cardsData, closeCard }) {
                     return (
                       <div key={key} className="info-card-row">
                         {['Name', 'Description'].includes(key) ? null : (
-                          <span className="info-key info-card">{key}: </span>
+                          <span className="info-key info-card">{t(key)}: </span>
                         )}
                         {key === 'Description' ? (
                           <div className="info-value info-card description-content">

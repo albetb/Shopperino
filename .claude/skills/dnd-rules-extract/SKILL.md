@@ -1,6 +1,6 @@
 ---
 name: dnd-rules-extract
-description: Extract condensed D&D 3.5 rule notes from a PDF manual (player's handbook, DMG, monster manual, supplements — Italian or English) and merge them into topic-organized markdown files in `obsidian-vault/dnd-rules/`. Trigger whenever the user gives a manual page range to summarize for the Shopperino app's rules knowledge base — e.g. "extract rules from pages 12-30 of <pdf>", "estrai regole dalle pagine X-Y di <manuale>", "/dnd-rules-extract <pdf> <range>", "summarize D&D rules from <pdf> pages X-Y into obsidian-vault/dnd-rules", "process pages X-Y of the Manuale del Giocatore for the rules vault", or anything that mentions a D&D 3.5 PDF + a page range with the intent of building rule notes. Use this skill (not a plain Read + Write) whenever the goal is to populate the Shopperino rules knowledge base, even if the user does not say the word "skill" or "extract" explicitly. Do NOT trigger for: reading a PDF without writing rule notes, reading non-D&D PDFs, or pure code/UI work that just happens to reference D&D concepts.
+description: Extract condensed D&D 3.5 rule notes from a PDF manual (player's handbook, DMG, monster manual, supplements — Italian or English) and merge them into topic-organized markdown files in `obsidian-vault/dnd-rules/`. Trigger whenever the user gives a manual page range to summarize for the Shopperino app's rules knowledge base — e.g. "extract rules from pages 12-30 of <pdf>", "estrai regole dalle pagine X-Y di <manuale>", "/dnd-rules-extract <pdf> <range>", "summarize D&D rules from <pdf> pages X-Y into obsidian-vault/dnd-rules", "process pages X-Y of the Manuale del Giocatore for the rules vault", or anything that mentions a D&D 3.5 PDF + a page range with the intent of building rule notes. Use this skill (not a plain Read + Write) whenever the goal is to populate the Shopperino rules knowledge base, even if the user does not say the word "skill" or "extract" explicitly. Also use it to look a term or a rule up in those manuals without writing notes -- e.g. "what does the Italian manual call bane", "check this translation against the book", "find X in the Manuale del Giocatore" -- the skill records where the PDFs live on this machine and how to search them. Do NOT trigger for: reading non-D&D PDFs, or pure code/UI work that just happens to reference D&D concepts.
 ---
 
 # D&D 3.5 Rules Extractor
@@ -18,6 +18,64 @@ The user provides:
 2. **Page range** — e.g. `5-7`, `120-135`, or a single page `42`.
 
 If either is missing or ambiguous, ask once and proceed.
+
+## Where the manuals live
+
+The PDFs are already on this machine, so a path is rarely something the user has
+to supply:
+
+| Folder | Holds |
+|---|---|
+| `C:\Users\albet\Documents\D&D 3.5\!Manuali - Base\` | Manuale Del Giocatore (328 pp), Manuale Del Dungeon Master (322 pp), Manuale Dei Mostri I / II / III, Armi E Equipaggiamento, Ricompense, Talenti (Completo), Talenti (Giocatore) |
+| `C:\Users\albet\Documents\D&D 3.5\Manuali - Avanzato\` | Arcani Rivelati, Atlante Planare, Libro delle Fosche Tenebre, Libro delle Imprese Eroiche, Manuale Dei Piani, Perfetto Arcanista / Avventuriero / Combattente / Sacerdote |
+
+From Bash these are `/c/Users/albet/Documents/D&D 3.5/...` -- quote the path, it
+contains a space, an `&` and a leading `!`.
+
+All of them are the **Italian** editions, and every one carries a real text
+layer, so a term can be found without rendering a single page.
+
+## Checking what the book calls something
+
+Looking a term up is **not** an extraction: answer the question and write no
+rule notes. This is the check that settles an Italian translation -- the
+[translate-it](../translate-it/SKILL.md) glossary calls a term `manual` only
+once someone has actually seen it in print.
+
+Dump the manual once, then search the text. A 145 MB, 322-page PDF takes about
+a second:
+
+```bash
+PT="/c/Users/albet/AppData/Local/Microsoft/WinGet/Packages/oschwartz10612.Poppler_Microsoft.Winget.Source_8wekyb3d8bbwe/poppler-25.07.0/Library/bin"
+B="/c/Users/albet/Documents/D&D 3.5/!Manuali - Base"
+OUT=<your scratchpad>/dmg.txt
+
+"$PT/pdftotext.exe" "$B/Manuale Del Dungeon Master.pdf" "$OUT"
+
+awk -v RS='\f' '/[Aa]natem/ { print "page " NR }' "$OUT"      # where is it
+awk -v RS='\f' 'NR==225' "$OUT" | grep -i -B2 -A6 'anatem'    # read that page
+```
+
+`RS='\f'` splits on the form feed pdftotext writes between pages, so `NR` is the
+**PDF** page number -- a few off from the one printed on the paper, and the
+number to hand back to `Read`'s `pages` parameter.
+
+Two things that will mislead you if nobody says them:
+
+- **Omit `-layout` for prose.** These books are two-column, and `-layout`
+  interleaves the two columns onto the same output line, so every sentence
+  reads as two half-sentences spliced together. Add `-layout` only when you
+  need a table's columns to stay aligned.
+- **The text layer is OCR, and it is dirty.** On the page above it reads
+  `Unarma` for *Un'arma*, `oggelIi` for *oggetti*, `spada p unga+3` for *spada
+  pungente+3*. So grep a **stem** rather than a phrase (`anatem`, not `arma ad
+  anatema`), grep case-insensitively, try the word without its accents -- and
+  when the exact characters decide something, confirm them by rendering the
+  page with `Read` before writing the term down.
+
+That page is what proves *bane* is **Anatema**, and that Craft Magic Arms and
+Armor is **Creare Armi e Armature Magiche** -- neither of which a plausible
+guess got right.
 
 ## Workflow
 

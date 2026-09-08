@@ -5,6 +5,7 @@ import Icon from '../../common/Icon';
 import IconButton from '../../common/IconButton';
 import { onAdjustPlayerGold, onSetPlayerGold } from '../../../store/thunks/playerSheetThunks';
 import 'style/money_card.css';
+import { t } from 'lib/i18n';
 
 /* D&D 3.5 coinage, shown as one number.
    The player stores a single float gp value and the decimals are the smaller
@@ -95,17 +96,17 @@ export default function MoneyCard({ player }) {
               type="button"
               className="money-value"
               onClick={startEdit}
-              aria-label="Edit gold"
+              aria-label={t('Edit gold')}
             >
               <span className="money-num">{formatGp(total)}</span>
-              <span className="money-unit">g</span>
+              <span className="money-unit">{t('g')}</span>
             </button>
           )}
           <button
             type="button"
             className="money-coin"
             onClick={() => !editing && startEdit()}
-            aria-label="Edit gold"
+            aria-label={t('Edit gold')}
             tabIndex={-1}
           >
             <Icon name="paid" color={GOLD_COLOR} size={28} />
@@ -119,7 +120,7 @@ export default function MoneyCard({ player }) {
           size="sm"
           onClick={() => setAdjustOpen((v) => !v)}
           aria-expanded={adjustOpen}
-          aria-label={adjustOpen ? 'Hide spend and earn' : 'Spend or earn gold'}
+          aria-label={adjustOpen ? t('Hide spend and earn') : t('Spend or earn gold')}
         />
       </div>
 
@@ -134,21 +135,21 @@ export default function MoneyCard({ player }) {
             placeholder="0.00"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
-            aria-label="Amount to add or subtract"
+            aria-label={t('Amount to add or subtract')}
           />
           <IconButton
             icon="add"
             size="sm"
             onClick={() => applyAmount(1)}
-            aria-label="Add to gold"
-            title="Add"
+            aria-label={t('Add to gold')}
+            title={t('Add')}
           />
           <IconButton
             icon="remove"
             size="sm"
             onClick={() => applyAmount(-1)}
-            aria-label="Subtract from gold"
-            title="Subtract"
+            aria-label={t('Subtract from gold')}
+            title={t('Subtract')}
           />
         </div>
       )}

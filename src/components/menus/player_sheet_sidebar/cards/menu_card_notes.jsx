@@ -10,6 +10,7 @@ import { setPlayerSheetMainView, setIsPlayerSheetSidebarCollapsed } from '../../
 import CreateComponent from '../../../common/create_component';
 import SelectComponent from '../../../common/select_component';
 import '../../../../style/menu_cards.css';
+import { t } from '../../../../lib/i18n';
 
 export default function MenuCardNotes() {
   const dispatch = useDispatch();
@@ -81,7 +82,7 @@ export default function MenuCardNotes() {
                 onClick={handleOpenNote}
                 /* Stays clickable while active so re-pressing closes the
                    sidebar on mobile; visual fade comes from opacity-50. */
-                title="Open note"
+                title={t('Open note')}
               >
                 <span className="material-symbols-outlined">note_stack</span>
               </button>

@@ -22,6 +22,7 @@ import CreateComponent from '../../../common/create_component';
 import LevelComponent from '../../../common/level_component';
 import SelectComponent from '../../../common/select_component';
 import '../../../../style/menu_cards.css';
+import { t, tName } from '../../../../lib/i18n';
 
 export default function MenuCardPlayer() {
   const dispatch = useDispatch();
@@ -73,13 +74,13 @@ export default function MenuCardPlayer() {
 
   const levelProps = {
     level: playerLevel,
-    levelName: 'Player Level',
+    levelName: t('Player Level'),
     onLevelChange: lvl => handleLevelChange(lvl)
   };
 
   const charProps = {
     level: charLevel,
-    levelName: charName,
+    levelName: tName('abilities', charName),
     onLevelChange: lvl => handleCharChange(lvl)
   };
 
@@ -122,16 +123,16 @@ export default function MenuCardPlayer() {
       {saved.length > 0 && (
         <>
           <div className="card-side-div margin-top">
-            <label className="modern-label">Class</label>
+            <label className="modern-label">{t('Class')}</label>
             <select
               className="modern-dropdown small-long"
               value={playerClass}
               onChange={e => handleClassChange(e.target.value)}
             >
-              <option value="">Select a class</option>
+              <option value="">{t('Select a class')}</option>
               {classList.map(cls => (
                 <option key={cls} value={cls}>
-                  {cls}
+                  {tName('classes', cls)}
                 </option>
               ))}
             </select>
@@ -144,7 +145,7 @@ export default function MenuCardPlayer() {
           {["Cleric", "Druid"].includes(playerClass) &&
             <>
               <div className="card-side-div margin-top">
-                <label className="modern-label">Moral</label>
+                <label className="modern-label">{t('Moral')}</label>
                 <select
                   className="modern-dropdown small-long"
                   value={moralAlign}
@@ -152,14 +153,14 @@ export default function MenuCardPlayer() {
                 >
                   {MORALALIGNMENTS.map(align => (
                     <option key={align} value={align}>
-                      {align}
+                      {tName('alignments', align)}
                     </option>
                   ))}
                 </select>
               </div>
 
               <div className="card-side-div margin-top">
-                <label className="modern-label">Ethics</label>
+                <label className="modern-label">{t('Ethics')}</label>
                 <select
                   className="modern-dropdown small-long"
                   value={ethicalAlign}
@@ -167,7 +168,7 @@ export default function MenuCardPlayer() {
                 >
                   {ETHICALALIGNMENTS.map(align => (
                     <option key={align} value={align}>
-                      {align}
+                      {tName('alignments', align)}
                     </option>
                   ))}
                 </select>
@@ -177,7 +178,7 @@ export default function MenuCardPlayer() {
           {playerClass === "Cleric" &&
             <>
               <div className="card-side-div margin-top">
-                <label className="modern-label">Domains</label>
+                <label className="modern-label">{t('Domains')}</label>
                 <select
                   className="modern-dropdown small-long"
                   value={domain1}
@@ -186,7 +187,7 @@ export default function MenuCardPlayer() {
                   <option value="">-</option>
                   {possibleDomains1.map(domain => (
                     <option key={domain} value={domain}>
-                      {domain}
+                      {tName('domains', domain)}
                     </option>
                   ))}
                 </select>
@@ -202,7 +203,7 @@ export default function MenuCardPlayer() {
                   <option value="">-</option>
                   {possibleDomains2.map(domain => (
                     <option key={domain} value={domain}>
-                      {domain}
+                      {tName('domains', domain)}
                     </option>
                   ))}
                 </select>
@@ -212,7 +213,7 @@ export default function MenuCardPlayer() {
           {playerClass === "Wizard" &&
             <>
               <div className="card-side-div margin-top">
-                <label className="modern-label">Specialized</label>
+                <label className="modern-label">{t('Specialized')}</label>
                 <select
                   className="modern-dropdown small-long"
                   value={specialized}
@@ -221,14 +222,14 @@ export default function MenuCardPlayer() {
                   <option value="">-</option>
                   {possibleSpecialized.map(school => (
                     <option key={school} value={school}>
-                      {school}
+                      {tName('schools', school)}
                     </option>
                   ))}
                 </select>
               </div>
 
               <div className="card-side-div margin-top">
-                <label className="modern-label">Forbidden</label>
+                <label className="modern-label">{t('Forbidden')}</label>
                 <select
                   className="modern-dropdown small-long"
                   value={forbidden1}
@@ -237,7 +238,7 @@ export default function MenuCardPlayer() {
                   <option value="">-</option>
                   {possibleForbidden1.map(domain => (
                     <option key={domain} value={domain}>
-                      {domain}
+                      {tName('schools', domain)}
                     </option>
                   ))}
                 </select>
@@ -254,7 +255,7 @@ export default function MenuCardPlayer() {
                     <option value="">-</option>
                     {possibleForbidden2.map(domain => (
                       <option key={domain} value={domain}>
-                        {domain}
+                        {tName('schools', domain)}
                       </option>
                     ))}
                   </select>
@@ -270,7 +271,7 @@ export default function MenuCardPlayer() {
                 onClick={() => dispatch(setSpellbookPage(0))}
                 disabled={spellbookPage === 0 && !isMobile()}
               >
-                <b>Learn</b>
+                <b>{t('Learn')}</b>
               </button>
             }
 
@@ -280,7 +281,7 @@ export default function MenuCardPlayer() {
                 onClick={() => dispatch(setSpellbookPage(1))}
                 disabled={spellbookPage === 1 && !isMobile()}
               >
-                <b>Prepare</b>
+                <b>{t('Prepare')}</b>
               </button>
             }
 
@@ -289,7 +290,7 @@ export default function MenuCardPlayer() {
               onClick={() => changeToSpellbook()}
               disabled={spellbookPage === 2 && !isMobile()}
             >
-              <b>Spellbook</b>
+              <b>{t('Spellbook')}</b>
             </button>
           </div>
           }

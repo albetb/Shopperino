@@ -4,6 +4,7 @@ import { itemTypes } from 'lib/utils';
 import Modal from '../common/Modal';
 import Button from '../common/Button';
 import 'style/shop_inventory.css';
+import { t, tName } from 'lib/i18n';
 
 export default function AddItemForm({ open, onAddItem, items, onClose }) {
   const [number, setNumber] = useState(1);
@@ -89,29 +90,29 @@ export default function AddItemForm({ open, onAddItem, items, onClose }) {
     <Modal
       open={open}
       onClose={onClose}
-      eyebrow="Shop"
-      title="Add item"
+      eyebrow={t('Shop')}
+      title={t('Add item')}
       footer={
         <div className="sh-row-h" style={{ gap: 'var(--space-2)', justifyContent: 'flex-end' }}>
-          <Button variant="ghost" onClick={onClose}>Cancel</Button>
+          <Button variant="ghost" onClick={onClose}>{t('Cancel')}</Button>
           <Button
             variant="primary"
             icon="add_shopping_cart"
             onClick={handleAddItemClick}
             disabled={!itemName.trim()}
           >
-            Add
+            {t('Add')}
           </Button>
         </div>
       }
     >
       <div className="sh-stack" style={{ gap: 'var(--space-3)' }}>
         <label className="sh-field">
-          <span className="sh-label">Name</span>
+          <span className="sh-label">{t('Name')}</span>
           <div className="suggestions-anchor">
             <input
               type="text"
-              placeholder="Item name"
+              placeholder={t('Item name')}
               value={itemName}
               onChange={(e) => setItemName(e.target.value)}
               onFocus={() => setIsFocused(true)}
@@ -135,19 +136,19 @@ export default function AddItemForm({ open, onAddItem, items, onClose }) {
           </div>
         </label>
         <label className="sh-field">
-          <span className="sh-label">Type</span>
+          <span className="sh-label">{t('Type')}</span>
           <select
             value={itemType}
             onChange={(e) => setItemType(e.target.value)}
             className="sh-select"
           >
             {itemTypes.map((type, index) => (
-              <option key={index} value={type}>{type}</option>
+              <option key={index} value={type}>{tName('itemTypes', type)}</option>
             ))}
           </select>
         </label>
         <label className="sh-field">
-          <span className="sh-label">Quantity</span>
+          <span className="sh-label">{t('Quantity')}</span>
           <input
             type="number"
             min={0}
@@ -159,7 +160,7 @@ export default function AddItemForm({ open, onAddItem, items, onClose }) {
           />
         </label>
         <label className="sh-field">
-          <span className="sh-label">Cost (gp)</span>
+          <span className="sh-label">{t('Cost (gp)')}</span>
           <input
             type="number"
             step="0.01"

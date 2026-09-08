@@ -7,6 +7,7 @@ import MenuCardAbilityScores from './menu_card_ability_scores';
 import MenuCardNotes from './menu_card_notes';
 import MenuCardCombat from './menu_card_combat';
 import MenuCardCharacter from './menu_card_character';
+import { t, tx, tName } from '../../../../lib/i18n';
 
 export default function PlayerSheetMenuCards() {
   const dispatch = useDispatch();
@@ -24,29 +25,29 @@ export default function PlayerSheetMenuCards() {
     const race = player?.getRace?.() ?? '';
     const _class = player?.getClass?.() ?? '';
     const level = player?.getLevel?.() ?? 1;
-    if (!name || !race || !_class) return 'Create a new character';
-    return `${race} ${_class} lv${level}`;
+    if (!name || !race || !_class) return t('Create a new character');
+    return tx('{0} {1} lv{2}', tName('races', race), tName('classes', _class), level);
   }, [player]);
 
   const hasRaceAndClass = !!(player?.getRace?.() && player?.getClass?.());
 
   const combatTitle = useMemo(() => {
-    if (!player) return 'Combat';
+    if (!player) return t('Combat');
     const current = player.getCurrentHp();
     const max = player.getMaxLife();
-    return `Combat - ${current}/${max} hp`;
+    return tx('Combat - {0}/{1} hp', current, max);
   }, [player]);
 
   const characterTitle = useMemo(() => {
-    if (!player) return 'Character';
+    if (!player) return t('Character');
     const skillUsed = player.getUsedSkillPoints();
     const skillTotal = player.getTotalSkillPoints();
     const featUsed = player.getFeatPointsUsed();
     const featMax = player.getFeatPointsMax();
     const showAlert = skillUsed < skillTotal || featUsed < featMax;
     return showAlert ? (
-      <><span className="material-symbols-outlined" style={{ color: 'var(--danger)' }}>priority_high</span> Character</>
-    ) : 'Character';
+      <><span className="material-symbols-outlined" style={{ color: 'var(--danger)' }}>priority_high</span> {t('Character')}</>
+    ) : t('Character');
   }, [player]);
 
   return (
@@ -117,7 +118,7 @@ export default function PlayerSheetMenuCards() {
               className="card-side-div card-expand-div"
               onClick={() => toggleCard('Notes')}
             >
-              <h3 className="card-title">Notes</h3>
+              <h3 className="card-title">{t('Notes')}</h3>
               <button type="button" className="collapse-button">
                 <span className="material-symbols-outlined">
                   {isCollapsed('Notes') ? 'expand_more' : 'expand_less'}

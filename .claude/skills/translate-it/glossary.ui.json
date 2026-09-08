@@ -1,3 +1,312 @@
 {
-  "terms": []
+  "terms": [
+    {
+      "en": "Area",
+      "it": "Area",
+      "kind": "rules",
+      "source": "coined",
+      "scope": "ui",
+      "note": "Label rendering: the same English word is ordinary prose in the rule text."
+    },
+    {
+      "en": "Casting Time",
+      "it": "Tempo di Lancio",
+      "kind": "rules",
+      "source": "coined"
+    },
+    {
+      "en": "Category",
+      "it": "Categoria",
+      "kind": "ui",
+      "source": "coined"
+    },
+    {
+      "en": "Chance",
+      "it": "Probabilità",
+      "kind": "ui",
+      "source": "coined",
+      "scope": "ui",
+      "note": "Label rendering: the same English word is ordinary prose in the rule text."
+    },
+    {
+      "en": "Component",
+      "it": "Componente",
+      "kind": "rules",
+      "source": "coined"
+    },
+    {
+      "en": "Components",
+      "it": "Componenti",
+      "kind": "rules",
+      "source": "coined"
+    },
+    {
+      "en": "Critical",
+      "it": "Critico",
+      "kind": "combat",
+      "source": "coined"
+    },
+    {
+      "en": "Duration",
+      "it": "Durata",
+      "kind": "rules",
+      "source": "coined"
+    },
+    {
+      "en": "favored enemy",
+      "it": "nemico prescelto",
+      "kind": "class",
+      "note": "Ranger class feature",
+      "source": "coined"
+    },
+    {
+      "en": "Effect",
+      "it": "Effetto",
+      "kind": "rules",
+      "source": "coined"
+    },
+    {
+      "en": "Forbidden",
+      "it": "Scuola proibita",
+      "kind": "class",
+      "note": "Wizard sidebar: forbidden school picker label",
+      "source": "coined"
+    },
+    {
+      "en": "Features",
+      "it": "Privilegi",
+      "kind": "ui",
+      "note": "Player sheet nav tab: class features page",
+      "source": "coined"
+    },
+    {
+      "en": "Gold",
+      "it": "Oro",
+      "kind": "ui",
+      "source": "coined"
+    },
+    {
+      "en": "Inventory",
+      "it": "Inventario",
+      "kind": "ui",
+      "source": "coined"
+    },
+    {
+      "en": "Learn",
+      "it": "Impara",
+      "kind": "ui",
+      "note": "Spellbook page: learning spells (sorcerer/bard/gnome) Label rendering: the same English word is ordinary prose in the rule text.",
+      "source": "coined",
+      "scope": "ui"
+    },
+    {
+      "en": "Maximum Dex Bonus",
+      "it": "Bonus Massimo di Destrezza",
+      "kind": "item",
+      "source": "coined"
+    },
+    {
+      "en": "Prepare",
+      "it": "Prepara",
+      "kind": "ui",
+      "note": "Spellbook page: preparing spells (wizard/cleric/druid/etc)",
+      "source": "coined"
+    },
+    {
+      "en": "Power Attack",
+      "it": "Attacco Poderoso",
+      "strict": true,
+      "kind": "class",
+      "note": "Feat name",
+      "source": "coined"
+    },
+    {
+      "en": "Combat Expertise",
+      "it": "Perizia nel Combattimento",
+      "strict": true,
+      "kind": "class",
+      "note": "Feat name",
+      "source": "coined"
+    },
+    {
+      "en": "Rapid Shot",
+      "it": "Tiro Rapido",
+      "kind": "class",
+      "note": "Feat name",
+      "source": "coined"
+    },
+    {
+      "en": "Manyshot",
+      "it": "Tiro Multiplo",
+      "kind": "class",
+      "note": "Feat name",
+      "source": "coined"
+    },
+    {
+      "en": "Improved Precise Shot",
+      "it": "Tiro Preciso Migliorato",
+      "kind": "class",
+      "note": "Feat name",
+      "source": "coined"
+    },
+    {
+      "en": "Improved Two-Weapon Fighting",
+      "it": "Combattere con Due Armi Migliorato",
+      "kind": "class",
+      "note": "Feat name",
+      "source": "coined"
+    },
+    {
+      "en": "Greater Two-Weapon Fighting",
+      "it": "Combattere con Due Armi Superiore",
+      "kind": "class",
+      "note": "Feat name",
+      "source": "coined"
+    },
+    {
+      "en": "Archery",
+      "it": "Tiro con l'Arco",
+      "kind": "class",
+      "note": "Ranger combat style name Label rendering: the same English word is ordinary prose in the rule text.",
+      "source": "coined",
+      "scope": "ui"
+    },
+    {
+      "en": "flat-footed",
+      "it": "colto alla sprovvista",
+      "kind": "combat",
+      "note": "Matches conditions.Flat-Footed already in names.json",
+      "source": "coined"
+    },
+    {
+      "en": "dodge bonus",
+      "it": "bonus di schivata",
+      "kind": "combat",
+      "source": "coined"
+    },
+    {
+      "en": "Crippling Strike",
+      "it": "Colpo Debilitante",
+      "kind": "class",
+      "note": "Rogue special ability",
+      "source": "coined"
+    },
+    {
+      "en": "Defensive Roll",
+      "it": "Tuffo Difensivo",
+      "kind": "class",
+      "note": "Rogue special ability",
+      "source": "coined"
+    },
+    {
+      "en": "Improved Evasion",
+      "it": "Elusione Migliorata",
+      "kind": "class",
+      "note": "Rogue special ability",
+      "source": "coined"
+    },
+    {
+      "en": "Opportunist",
+      "it": "Opportunista",
+      "kind": "class",
+      "note": "Rogue special ability",
+      "source": "coined"
+    },
+    {
+      "en": "Skill Mastery",
+      "it": "Maestria nelle Abilità",
+      "kind": "class",
+      "note": "Rogue special ability",
+      "source": "coined"
+    },
+    {
+      "en": "Slippery Mind",
+      "it": "Mente Sfuggente",
+      "kind": "class",
+      "note": "Rogue special ability",
+      "source": "coined"
+    },
+    {
+      "en": "Range",
+      "it": "Gittata",
+      "kind": "rules",
+      "source": "coined",
+      "scope": "ui",
+      "note": "Label rendering: the same English word is ordinary prose in the rule text."
+    },
+    {
+      "en": "ACP",
+      "it": "PA",
+      "kind": "abbrev",
+      "note": "Compact abbreviation for Armor Check Penalty in the skills list",
+      "source": "coined"
+    },
+    {
+      "en": "Village",
+      "it": "Villaggio",
+      "kind": "ui",
+      "note": "City size tier",
+      "source": "coined"
+    },
+    {
+      "en": "Burg",
+      "it": "Borgo",
+      "kind": "ui",
+      "note": "City size tier",
+      "source": "coined"
+    },
+    {
+      "en": "Town",
+      "it": "Cittadina",
+      "kind": "ui",
+      "note": "City size tier",
+      "source": "coined"
+    },
+    {
+      "en": "Metropolis",
+      "it": "Metropoli",
+      "kind": "ui",
+      "note": "City size tier",
+      "source": "coined"
+    },
+    {
+      "en": "Capital",
+      "it": "Capitale",
+      "kind": "ui",
+      "note": "City size tier",
+      "source": "coined"
+    },
+    {
+      "en": "Reputation",
+      "it": "Reputazione",
+      "kind": "ui",
+      "note": "Shop generator stat",
+      "source": "coined"
+    },
+    {
+      "en": "School",
+      "it": "Scuola",
+      "kind": "school",
+      "source": "coined"
+    },
+    {
+      "en": "Specialized",
+      "it": "Specializzazione",
+      "kind": "class",
+      "note": "Wizard sidebar: specialization school picker label",
+      "source": "coined"
+    },
+    {
+      "en": "Subtype",
+      "it": "Sottotipo",
+      "kind": "creature-type",
+      "source": "coined"
+    },
+    {
+      "en": "Target",
+      "it": "Bersaglio",
+      "kind": "rules",
+      "source": "coined"
+    }
+  ]
 }

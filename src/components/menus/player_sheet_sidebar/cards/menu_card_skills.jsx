@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setPlayerSheetMainView, setIsPlayerSheetSidebarCollapsed } from '../../../../store/slices/playerSheetSlice';
 import { isMobile } from '../../../../lib/utils';
 import '../../../../style/menu_cards.css';
+import { t } from '../../../../lib/i18n';
 
 export default function MenuCardSkills() {
   const dispatch = useDispatch();
@@ -21,13 +22,13 @@ export default function MenuCardSkills() {
         type="button"
         className="modern-button small-middle-long2"
         onClick={openSkills}
-        title="Skills"
+        title={t('Skills')}
       >
         <span className="material-symbols-outlined">psychology</span>
       </button>
       <div className="player-sheet-skills-points-wrap">
         <span className="player-sheet-skills-points">
-          <span className="material-symbols-outlined" title="Ability points">rule</span>
+          <span className="material-symbols-outlined" title={t('Ability points')}>rule</span>
           <span>{used}/{total}</span>
         </span>
       </div>

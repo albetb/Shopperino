@@ -5,6 +5,7 @@ import { isMobile } from '../../../lib/utils';
 import { TrapRollControls } from '../../trap/trap_page';
 import '../../../style/sidebar.css';
 import '../../../style/menu_cards.css';
+import { t } from '../../../lib/i18n';
 
 /**
  * The trap generator's controls, in the same place the Shop and Loot
@@ -35,7 +36,7 @@ export default function TrapSidebar() {
         <div className="cards cards-aligned">
           <div className="card">
             <div className="card-side-div">
-              <h3 className="card-title">Trap generation</h3>
+              <h3 className="card-title">{t('Trap generation')}</h3>
             </div>
             <div className="card-content">
               <TrapRollControls />

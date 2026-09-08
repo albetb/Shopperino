@@ -7,6 +7,7 @@ import InfoPopover from '../common/InfoPopover';
 import useCardCollapse from './hooks/useCardCollapse';
 import { onSetRogueSpecialAbility } from '../../store/thunks/playerSheetThunks';
 import '../../style/rogue_cards.css';
+import { t, tx, tName } from '../../lib/i18n';
 
 /**
  * Rogue special abilities — one pick at 10th level and every third level after.
@@ -39,21 +40,23 @@ export default function RogueSpecialAbilitiesCard() {
 
   return (
     <Card
-      title="Special abilities"
+      title={t('Special abilities')}
       className="sh-card--head-spread"
-      eyebrow={`${chosen.length} of ${levels.length} chosen`}
+      eyebrow={tx('{0} of {1} chosen', chosen.length, levels.length)}
       action={
         <span className="sh-row-h" style={{ gap: 'var(--space-1)' }}>
-          <InfoPopover label="Rogue special abilities">
+          <InfoPopover label={t('Rogue special abilities')}>
             <p>
-              At 10th level and every third level after, a rogue takes one
-              special ability. Each named ability may be taken{' '}
-              <b>only once</b>.
+              {tx(
+                'At 10th level and every third level after, a rogue takes one special ability. Each named ability may be taken {0}.',
+                <b>{t('only once')}</b>
+              )}
             </p>
             <p>
-              A pick may be traded for a <b>bonus feat</b> instead, and that
-              trade may be made more than once — each one widens the general
-              feat budget by a slot, with no restriction on what fills it.
+              {tx(
+                'A pick may be traded for a {0} instead, and that trade may be made more than once — each one widens the general feat budget by a slot, with no restriction on what fills it.',
+                <b>{t('bonus feat')}</b>
+              )}
             </p>
           </InfoPopover>
           {collapseToggle}
@@ -72,14 +75,14 @@ export default function RogueSpecialAbilitiesCard() {
                   {/* The level leads the row as a compact badge: it is the one
                       fixed thing about the slot, and a full "Level 10" label
                       took a third of the row from the choice itself. */}
-                  <Pill tone="accent" className="rogue-ability-level">Lv {level}</Pill>
+                  <Pill tone="accent" className="rogue-ability-level">{tx('Lv {0}', level)}</Pill>
                   <select
                     className="sh-select"
                     value={current}
-                    aria-label={`Special ability gained at level ${level}`}
+                    aria-label={tx('Special ability gained at level {0}', level)}
                     onChange={(e) => dispatch(onSetRogueSpecialAbility(level, e.target.value))}
                   >
-                    <option value="">— not chosen —</option>
+                    <option value="">{t('— not chosen —')}</option>
                     {options.map((option) => {
                       /* Only the named abilities are once-each; the feat
                          option can be taken at more than one level. */
@@ -87,8 +90,8 @@ export default function RogueSpecialAbilitiesCard() {
                         && chosen.some((c) => c.ability === option && c.level !== level);
                       return (
                         <option key={option} value={option} disabled={takenElsewhere}>
-                          {option === 'Feat' ? 'A feat instead' : option}
-                          {takenElsewhere ? ' (already taken)' : ''}
+                          {option === 'Feat' ? t('A feat instead') : tName('rogueAbilities', option)}
+                          {takenElsewhere ? t(' (already taken)') : ''}
                         </option>
                       );
                     })}
@@ -105,7 +108,7 @@ export default function RogueSpecialAbilitiesCard() {
                       onClick={() => toggleLevel(level)}
                     >
                       <Icon name={open ? 'expand_less' : 'expand_more'} size={16} />
-                      {open ? 'Hide' : 'What it does'}
+                      {open ? t('Hide') : t('What it does')}
                     </button>
                     {open && <p className="sh-faint rogue-ability-description">{description}</p>}
                   </>
@@ -117,7 +120,9 @@ export default function RogueSpecialAbilitiesCard() {
           {featSlots > 0 && (
             <div className="sh-row-h" style={{ gap: 'var(--space-2)', flexWrap: 'wrap' }}>
               <Pill tone="accent" icon="auto_awesome">
-                +{featSlots} feat slot{featSlots === 1 ? '' : 's'} in the Feats tab
+                {featSlots === 1
+                  ? tx('+{0} feat slot in the Feats tab', featSlots)
+                  : tx('+{0} feat slots in the Feats tab', featSlots)}
               </Pill>
             </div>
           )}

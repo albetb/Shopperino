@@ -11,6 +11,7 @@ import {
 } from '../../store/thunks/monsterBookThunks';
 import { MAX_ROSTER_ENTRIES, countIndividuals } from '../../lib/monster/monsterRoster';
 import '../../style/monster_book.css';
+import { t, tx } from '../../lib/i18n';
 
 /**
  * The creatures the master is running right now.
@@ -42,11 +43,14 @@ export default function MonsterRosterCard() {
   if (!roster || roster.length === 0) return null;
 
   const creatures = countIndividuals(roster);
+  const creaturesLabel = creatures === 1
+    ? tx('{0} creature', creatures)
+    : tx('{0} creatures', creatures);
 
   return (
     <Card
-      title="Roster"
-      eyebrow={`${roster.length} / ${MAX_ROSTER_ENTRIES} kinds · ${creatures} creature${creatures === 1 ? '' : 's'}`}
+      title={t('Roster')}
+      eyebrow={tx('{0} / {1} kinds · {2}', roster.length, MAX_ROSTER_ENTRIES, creaturesLabel)}
       className="monster-roster"
     >
       <div className="roster-list">
@@ -63,7 +67,7 @@ export default function MonsterRosterCard() {
                   type="button"
                   className="button-link roster-entry-name"
                   onClick={() => dispatch(addCardByLink({ links: sheet.getRef() }))}
-                  title="Show stat block"
+                  title={t('Show stat block')}
                 >
                   {sheet.getName()}
                 </button>
@@ -75,8 +79,8 @@ export default function MonsterRosterCard() {
                     icon="swords"
                     size="sm"
                     onClick={() => dispatch(onOpenRosterEntry(entryIndex))}
-                    aria-label={`Open the combat sheet for ${sheet.getName()}`}
-                    title="Open combat sheet"
+                    aria-label={tx('Open the combat sheet for {0}', sheet.getName())}
+                    title={t('Open combat sheet')}
                   />
                 </span>
               </div>
@@ -100,13 +104,13 @@ export default function MonsterRosterCard() {
                     onClick={() => dispatch(onRemoveIndividual(entryIndex, individual.index))}
                     aria-label={
                       individuals.length === 1
-                        ? `Remove ${sheet.getName()} from the roster`
-                        : `Remove ${sheet.getName()} #${individual.index + 1}`
+                        ? tx('Remove {0} from the roster', sheet.getName())
+                        : tx('Remove {0} #{1}', sheet.getName(), individual.index + 1)
                     }
                     title={
                       individuals.length === 1
-                        ? 'Remove from the roster'
-                        : 'Remove this one'
+                        ? t('Remove from the roster')
+                        : t('Remove this one')
                     }
                   />
                   <span className="sh-faint roster-hp-index">

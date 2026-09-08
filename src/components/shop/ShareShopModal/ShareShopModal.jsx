@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import QRCode from 'qrcode';
 import '../../../style/menu_cards.css';
+import { t } from '../../../lib/i18n';
 
 export default function ShareShopModal({ payload, onClose }) {
   const [dataUrl, setDataUrl] = useState(null);
@@ -12,7 +13,7 @@ export default function ShareShopModal({ payload, onClose }) {
     setError(null);
     QRCode.toDataURL(payload, { errorCorrectionLevel: 'M', margin: 2 })
       .then(setDataUrl)
-      .catch(() => setError('Could not generate QR code'));
+      .catch(() => setError(t('Could not generate QR code')));
   }, [payload]);
 
   const modal = (
@@ -21,19 +22,19 @@ export default function ShareShopModal({ payload, onClose }) {
       onClick={onClose}
       role="dialog"
       aria-modal="true"
-      aria-label="Share shop QR code"
+      aria-label={t('Share shop QR code')}
     >
       <div className="share-shop-modal-box" onClick={e => e.stopPropagation()}>
-        <h3 className="modal-heading">Share shop</h3>
+        <h3 className="modal-heading">{t('Share shop')}</h3>
         {error && <p className="modal-error">{error}</p>}
         {dataUrl && !error && (
-          <img src={dataUrl} alt="QR code for shared shop" className="modal-qr-img" />
+          <img src={dataUrl} alt={t('QR code for shared shop')} className="modal-qr-img" />
         )}
         <p className="modal-body-muted">
-          Scan this QR code with your phone to access the shop using the button in the Options menu.
+          {t('Scan this QR code with your phone to access the shop using the button in the Options menu.')}
         </p>
         <button type="button" className="modern-button small-long" onClick={onClose}>
-          Close
+          {t('Close')}
         </button>
       </div>
     </div>

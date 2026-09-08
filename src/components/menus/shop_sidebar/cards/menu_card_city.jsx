@@ -10,6 +10,7 @@ import {
 import CreateComponent from '../../../common/create_component';
 import SelectComponent from '../../../common/select_component';
 import '../../../../style/menu_cards.css';
+import { t } from '../../../../lib/i18n';
 
 export default function MenuCardCity() {
   const dispatch = useDispatch();
@@ -59,18 +60,18 @@ export default function MenuCardCity() {
 
       {saved.length > 0 && (
         <div className="card-side-div margin-top">
-          <label className="modern-label">City Level:</label>
+          <label className="modern-label">{t('City Level:')}</label>
           <select
             className="modern-dropdown small-long"
             value={cityLevel}
             onChange={e => handleLevelChange(Number(e.target.value))}
           >
-            <option value={0}>Village</option>
-            <option value={1}>Burg</option>
-            <option value={2}>Town</option>
-            <option value={3}>City</option>
-            <option value={4}>Metropolis</option>
-            <option value={5}>Capital</option>
+            <option value={0}>{t('Village')}</option>
+            <option value={1}>{t('Burg')}</option>
+            <option value={2}>{t('Town')}</option>
+            <option value={3}>{t('City')}</option>
+            <option value={4}>{t('Metropolis')}</option>
+            <option value={5}>{t('Capital')}</option>
           </select>
         </div>
       )}

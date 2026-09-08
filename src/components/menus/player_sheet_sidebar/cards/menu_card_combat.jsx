@@ -5,6 +5,7 @@ import { getClassData } from '../../../../lib/player';
 import { isMobile, signed } from '../../../../lib/utils';
 import Bar from '../../../common/Bar';
 import '../../../../style/menu_cards.css';
+import { t } from '../../../../lib/i18n';
 
 function hasSpellcastingClass(player) {
   if (!player) return false;
@@ -74,22 +75,22 @@ export default function MenuCardCombat() {
       <div className="player-sheet-combat-stats card-side-div margin-top">
         <div className="player-sheet-combat-stats-row">
           <div className="player-sheet-combat-stat-cell">
-            <span className="material-symbols-outlined" title="Base speed">directions_walk</span>
+            <span className="material-symbols-outlined" title={t('Base speed')}>directions_walk</span>
           </div>
           <div className="player-sheet-combat-stat-cell">
-            <span className="material-symbols-outlined" title="Initiative">schedule</span>
+            <span className="material-symbols-outlined" title={t('Initiative')}>schedule</span>
           </div>
           <div className="player-sheet-combat-stat-cell">
-            <span className="material-symbols-outlined" title="Armor class">shield</span>
+            <span className="material-symbols-outlined" title={t('Armor class')}>shield</span>
           </div>
           <div className="player-sheet-combat-stat-cell">
-            <span className="player-sheet-combat-save-label">F</span>
+            <span className="player-sheet-combat-save-label">{t('F', 'save-abbrev')}</span>
           </div>
           <div className="player-sheet-combat-stat-cell">
-            <span className="player-sheet-combat-save-label">R</span>
+            <span className="player-sheet-combat-save-label">{t('R', 'save-abbrev')}</span>
           </div>
           <div className="player-sheet-combat-stat-cell">
-            <span className="player-sheet-combat-save-label">W</span>
+            <span className="player-sheet-combat-save-label">{t('W', 'save-abbrev')}</span>
           </div>
         </div>
         <div className="player-sheet-combat-stats-row">
@@ -120,7 +121,7 @@ export default function MenuCardCombat() {
           onClick={openCombat}
           /* Keep visually faded via opacity-50 but stay clickable — clicking
              again on the active page still closes the sidebar on mobile. */
-          title="Combat"
+          title={t('Combat')}
         >
           <span className="material-symbols-outlined">swords</span>
         </button>
@@ -138,7 +139,7 @@ export default function MenuCardCombat() {
                   onClick={() => { setPage(0); openSpells(); }}
                   /* See note above the Combat button — active page stays
                      clickable so it can close the sidebar on mobile. */
-                  title="Learn"
+                  title={t('Learn')}
                 >
                   <span className="material-symbols-outlined">bookmark_add</span>
                 </button>
@@ -149,7 +150,7 @@ export default function MenuCardCombat() {
                   className={`${buttonClass}${isPrepareActive ? ' opacity-50' : ''}`}
                   onClick={() => { setPage(1); openSpells(); }}
                   /* Same as combat / learn buttons — active stays clickable. */
-                  title="Prepare"
+                  title={t('Prepare')}
                 >
                   <span className="material-symbols-outlined">menu_book</span>
                 </button>
@@ -159,7 +160,7 @@ export default function MenuCardCombat() {
                 className={`${buttonClass}${isSpellbookActive ? ' opacity-50' : ''}`}
                 onClick={openSpellbook}
                 /* Same as the other sidebar nav buttons. */
-                title="Open spellbook"
+                title={t('Open spellbook')}
               >
                 <span className="material-symbols-outlined">wand_stars</span>
               </button>

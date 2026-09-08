@@ -115,7 +115,7 @@ describe('the same card in Italian', () => {
     expect(screen.getByText('+1 caratteristica')).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('button', { name: /modifica i punteggi di caratteristica/i }));
-    fireEvent.click(screen.getByRole('button', { name: /aumenta str base/i }));
+    fireEvent.click(screen.getByRole('button', { name: /aumenta for base/i }));
     fireEvent.click(screen.getByRole('button', { name: /^salva$/i }));
     expect(onAcknowledgeAbilityIncreases).toHaveBeenCalledTimes(1);
   });

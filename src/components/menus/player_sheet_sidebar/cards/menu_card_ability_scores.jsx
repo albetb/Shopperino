@@ -204,13 +204,13 @@ export default function MenuCardAbilityScores({ isCollapsed, onToggleCollapse })
                 const v = tempValues[key] ?? { base: DEFAULT_BASE, bonus: 0 };
                 return (
                   <div key={key} className="ability-edit-row">
-                    <label className="ability-edit-row-label">{ABILITY_LABELS[key]}</label>
+                    <label className="ability-edit-row-label">{t(ABILITY_LABELS[key])}</label>
                     <div className="ability-edit-row-controls">
                       <button
                         type="button"
                         className="levels-button small"
                         onClick={() => updateTemp(key, 'base', -1)}
-                        aria-label={`${t('Decrease')} ${ABILITY_LABELS[key]} ${t('base')}`}
+                        aria-label={`${t('Decrease')} ${t(ABILITY_LABELS[key])} ${t('base')}`}
                       >
                         <span className="material-symbols-outlined">remove</span>
                       </button>
@@ -221,7 +221,7 @@ export default function MenuCardAbilityScores({ isCollapsed, onToggleCollapse })
                         type="button"
                         className="levels-button small"
                         onClick={() => updateTemp(key, 'base', 1)}
-                        aria-label={`${t('Increase')} ${ABILITY_LABELS[key]} ${t('base')}`}
+                        aria-label={`${t('Increase')} ${t(ABILITY_LABELS[key])} ${t('base')}`}
                       >
                         <span className="material-symbols-outlined">add</span>
                       </button>
@@ -231,7 +231,7 @@ export default function MenuCardAbilityScores({ isCollapsed, onToggleCollapse })
                         type="button"
                         className="levels-button small"
                         onClick={() => updateTemp(key, 'bonus', -1)}
-                        aria-label={`${t('Decrease')} ${ABILITY_LABELS[key]} ${t('bonus')}`}
+                        aria-label={`${t('Decrease')} ${t(ABILITY_LABELS[key])} ${t('bonus')}`}
                       >
                         <span className="material-symbols-outlined">remove</span>
                       </button>
@@ -242,7 +242,7 @@ export default function MenuCardAbilityScores({ isCollapsed, onToggleCollapse })
                         type="button"
                         className="levels-button small"
                         onClick={() => updateTemp(key, 'bonus', 1)}
-                        aria-label={`${t('Increase')} ${ABILITY_LABELS[key]} ${t('bonus')}`}
+                        aria-label={`${t('Increase')} ${t(ABILITY_LABELS[key])} ${t('bonus')}`}
                       >
                         <span className="material-symbols-outlined">add</span>
                       </button>
@@ -256,7 +256,7 @@ export default function MenuCardAbilityScores({ isCollapsed, onToggleCollapse })
               <div className="ability-grid ability-grid-labels">
                 {ABILITY_KEYS.map((key) => (
                   <div key={key} className="ability-grid-cell ability-label-cell">
-                    {ABILITY_LABELS[key]}
+                    {t(ABILITY_LABELS[key])}
                   </div>
                 ))}
               </div>
@@ -289,7 +289,7 @@ export default function MenuCardAbilityScores({ isCollapsed, onToggleCollapse })
                     <div key={key} className={cls}>
                       <span className="ability-score-info">
                         <StatInfo
-                          label={ABILITY_LABELS[key]}
+                          label={t(ABILITY_LABELS[key])}
                           value={total}
                           contributions={beyondTheBase ? contributions : []}
                           situational={notes}

@@ -7,6 +7,7 @@ import { addCardByLink } from '../../store/slices/appSlice';
 import { onAddMonsterToRoster } from '../../store/thunks/monsterBookThunks';
 import { formatCr } from '../../lib/monster/monsterBook';
 import '../../style/monster_book.css';
+import { t, tx, tName } from '../../lib/i18n';
 
 /**
  * The search results. The name opens the creature's stat block in the info
@@ -27,8 +28,8 @@ export default function MonsterList() {
     return (
       <EmptyState
         icon="search"
-        title="Nothing searched yet"
-        hint="Set the filters above and press Search, or Random for a surprise."
+        title={t('Nothing searched yet')}
+        hint={t('Set the filters above and press Search, or Random for a surprise.')}
       />
     );
   }
@@ -37,14 +38,14 @@ export default function MonsterList() {
     return (
       <EmptyState
         icon="filter_alt_off"
-        title="No creature matches"
-        hint="Widen the challenge rating, or switch another source back on."
+        title={t('No creature matches')}
+        hint={t('Widen the challenge rating, or switch another source back on.')}
       />
     );
   }
 
   return (
-    <Card title="Results" eyebrow={`${results.length} found`} className="monster-results">
+    <Card title={t('Results')} eyebrow={tx('{0} found', results.length)} className="monster-results">
       <div className="monster-list" role="list">
         {results.map((creature) => (
           <div key={creature.ref} className="monster-row" role="listitem">
@@ -52,21 +53,21 @@ export default function MonsterList() {
               type="button"
               className="button-link monster-row-name"
               onClick={() => dispatch(addCardByLink({ links: creature.ref }))}
-              title="Show stat block"
+              title={t('Show stat block')}
             >
               {creature.name}
             </button>
             <span className="monster-row-meta">
               <span className="sh-faint monster-row-tags">
-                {creature.size} {creature.type}
+                {tName('sizes', creature.size)} {tName('creatureTypes', creature.type)}
               </span>
-              <Pill tone="accent">CR {formatCr(creature.challengeRating?.value)}</Pill>
+              <Pill tone="accent">{tx('CR {0}', formatCr(creature.challengeRating?.value))}</Pill>
               <IconButton
                 icon="add"
                 size="sm"
                 onClick={() => dispatch(onAddMonsterToRoster(creature.ref))}
-                aria-label={`Add ${creature.name} to the roster`}
-                title="Add to the roster"
+                aria-label={tx('Add {0} to the roster', creature.name)}
+                title={t('Add to the roster')}
               />
             </span>
           </div>

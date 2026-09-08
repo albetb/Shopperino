@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import jsQR from 'jsqr';
 import { parseSharedShop } from 'lib/shop';
 import '../../../style/menu_cards.css';
+import { t } from '../../../lib/i18n';
 
 export default function ScanShopScanner({ onClose, onSuccess }) {
   const videoRef = useRef(null);
@@ -38,7 +39,7 @@ export default function ScanShopScanner({ onClose, onSuccess }) {
         video.play();
       })
       .catch(() => {
-        setError('Could not access camera.');
+        setError(t('Could not access camera.'));
       });
 
     const tick = () => {
@@ -91,17 +92,17 @@ export default function ScanShopScanner({ onClose, onSuccess }) {
       className="share-shop-modal-overlay"
       role="dialog"
       aria-modal="true"
-      aria-label="Scan shop QR code"
+      aria-label={t('Scan shop QR code')}
     >
       <div className="share-shop-modal-box">
-        <h3 className="modal-heading">Scan shop</h3>
+        <h3 className="modal-heading">{t('Scan shop')}</h3>
         {error && (
           <p className="modal-error modal-error-margin">{error}</p>
         )}
         {!error && (
           <>
             <p className="modal-body-muted">
-              Point your camera at a shop QR code.
+              {t('Point your camera at a shop QR code.')}
             </p>
             <div className="modal-qr-wrapper">
               <video
@@ -124,7 +125,7 @@ export default function ScanShopScanner({ onClose, onSuccess }) {
           className="modern-button small-long"
           onClick={handleClose}
         >
-          Cancel
+          {t('Cancel')}
         </button>
       </div>
     </div>

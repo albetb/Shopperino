@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setPlayerSheetMainView, setIsPlayerSheetSidebarCollapsed } from '../../../../store/slices/playerSheetSlice';
 import { isMobile } from '../../../../lib/utils';
 import '../../../../style/menu_cards.css';
+import { t } from '../../../../lib/i18n';
 
 const ROWS = [
   {
@@ -54,33 +55,33 @@ export default function MenuCardCharacter() {
 
   const getRowLabel = (row) => {
     if (row.labelAlert === 'skills' && skillUsed < skillTotal) {
-      return <><span className="material-symbols-outlined" style={{ color: 'var(--danger)' }}>priority_high</span> Skills</>;
+      return <><span className="material-symbols-outlined" style={{ color: 'var(--danger)' }}>priority_high</span> {t('Skills')}</>;
     }
     if (row.labelAlert === 'feats' && featUsed < featMax) {
-      return <><span className="material-symbols-outlined" style={{ color: 'var(--danger)' }}>priority_high</span> Feats</>;
+      return <><span className="material-symbols-outlined" style={{ color: 'var(--danger)' }}>priority_high</span> {t('Feats')}</>;
     }
-    return row.label;
+    return t(row.label);
   };
 
   const renderRight = (row) => {
     if (row.right === 'gold') {
       return (
         <span className="player-sheet-character-right">
-          {gold} <span className="material-symbols-outlined" title="Gold">monetization_on</span>
+          {gold} <span className="material-symbols-outlined" title={t('Gold')}>monetization_on</span>
         </span>
       );
     }
     if (row.right === 'skillPoints') {
       return (
         <span className="player-sheet-character-right">
-          {skillUsed}/{skillTotal} <span className="material-symbols-outlined" title="Ability points">rule</span>
+          {skillUsed}/{skillTotal} <span className="material-symbols-outlined" title={t('Ability points')}>rule</span>
         </span>
       );
     }
     if (row.right === 'featPoints') {
       return (
         <span className="player-sheet-character-right">
-          {featUsed}/{featMax} <span className="material-symbols-outlined" title="Feats">rule</span>
+          {featUsed}/{featMax} <span className="material-symbols-outlined" title={t('Feats')}>rule</span>
         </span>
       );
     }
@@ -103,7 +104,7 @@ export default function MenuCardCharacter() {
               onClick={() => open(row.mainView)}
               /* Active row stays clickable — re-pressing closes the
                  sidebar on mobile so the user can see the main content. */
-              title={row.label}
+              title={t(row.label)}
             >
               <span className="material-symbols-outlined">{row.icon}</span>
             </button>

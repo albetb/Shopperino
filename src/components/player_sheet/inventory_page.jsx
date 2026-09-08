@@ -26,6 +26,7 @@ import Button from '../common/Button';
 import EmptyState from '../common/EmptyState';
 import IconButton from '../common/IconButton';
 import '../../style/inventory.css';
+import { t, tx } from '../../lib/i18n';
 
 export default function InventoryPage() {
   const dispatch = useDispatch();
@@ -132,7 +133,7 @@ export default function InventoryPage() {
   if (!player) {
     return (
       <div className="sh-stack" style={{ padding: 'var(--space-4)' }}>
-        <EmptyState icon="backpack" title="No character selected" hint="Pick or create one from the sidebar." />
+        <EmptyState icon="backpack" title={t('No character selected')} hint={t('Pick or create one from the sidebar.')} />
       </div>
     );
   }
@@ -162,10 +163,10 @@ export default function InventoryPage() {
           spellbook-card calc width). Margin-bottom comes with the class. */}
       <div className="card-width-spellbook sh-row-h sh-spread" style={{ background: 'transparent', border: 0, boxShadow: 'none', marginBottom: 'var(--space-3)' }}>
         <div>
-          <Filigree>Inventory</Filigree>
-          <div className="sh-display" style={{ fontSize: 'var(--font-size-2xl)' }}>Carry & equip</div>
+          <Filigree>{t('Inventory')}</Filigree>
+          <div className="sh-display" style={{ fontSize: 'var(--font-size-2xl)' }}>{t('Carry & equip')}</div>
         </div>
-        <Pill tone="accent">{itemCount} items</Pill>
+        <Pill tone="accent">{tx('{0} items', itemCount)}</Pill>
       </div>
 
       <MoneyCard player={player} />
@@ -198,15 +199,15 @@ export default function InventoryPage() {
 
       <Card
         className="card-width-spellbook card-overflow-visible"
-        eyebrow="Inventory items"
-        title={`${inventory.length} entries`}
+        eyebrow={t('Inventory items')}
+        title={tx('{0} entries', inventory.length)}
         padding={false}
         action={
           <IconButton
             ghost size="sm"
             icon="add"
             onClick={() => setShowAddItemForm(true)}
-            aria-label="Add item"
+            aria-label={t('Add item')}
           />
         }
       >
@@ -216,7 +217,7 @@ export default function InventoryPage() {
             {inventory.length === 0 && (
               <tr>
                 <td colSpan={4}>
-                  <EmptyState icon="inbox" title="No items yet" hint="Tap + above to add something." />
+                  <EmptyState icon="inbox" title={t('No items yet')} hint={t('Tap + above to add something.')} />
                 </td>
               </tr>
             )}
@@ -239,7 +240,7 @@ export default function InventoryPage() {
             icon="add_shopping_cart"
             onClick={() => setShowAddItemForm(true)}
           >
-            Add item
+            {t('Add item')}
           </Button>
         </div>
       </Card>

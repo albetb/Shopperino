@@ -5,6 +5,7 @@ import Icon from '../common/Icon';
 import Pill from '../common/Pill';
 import { onSetPowerAttack, onSetCombatExpertise } from '../../store/thunks/playerSheetThunks';
 import '../../style/combat_stances.css';
+import { t, tx, tName } from '../../lib/i18n';
 
 /**
  * Power Attack and Combat Expertise, at the foot of the attacks card.
@@ -38,13 +39,13 @@ function StanceRow({ name, value, max, overCap, onChange, summary, children }) {
           ghost
           size="sm"
           disabled={value <= 0}
-          title={`Less ${name}`}
-          aria-label={`Less ${name}`}
+          title={tx('Less {0}', name)}
+          aria-label={tx('Less {0}', name)}
           onClick={() => onChange(value - 1)}
         />
         <span
           className={`combat-stance-value${overCap ? ' is-over' : ''}`}
-          aria-label={`${name} ${value}`}
+          aria-label={tx('{0} {1}', name, value)}
         >
           {value}
         </span>
@@ -52,8 +53,8 @@ function StanceRow({ name, value, max, overCap, onChange, summary, children }) {
           icon="add"
           ghost
           size="sm"
-          title={`More ${name}`}
-          aria-label={`More ${name}`}
+          title={tx('More {0}', name)}
+          aria-label={tx('More {0}', name)}
           onClick={() => onChange(value + 1)}
         />
       </span>
@@ -61,7 +62,7 @@ function StanceRow({ name, value, max, overCap, onChange, summary, children }) {
       {overCap && (
         <div className="sh-warn-strip combat-stance-over">
           <Icon name="warning" />
-          {value - max} over your base attack bonus of {max}
+          {tx('{0} over your base attack bonus of {1}', value - max, max)}
         </div>
       )}
     </div>
@@ -84,59 +85,70 @@ export default function CombatStancesRow() {
     <div className="combat-stances">
       {hasPowerAttack && (
         <StanceRow
-          name="Power attack"
+          name={tName('feats', 'Power attack')}
           value={power}
           max={player.getPowerAttackMax?.() ?? 0}
           overCap={player.isPowerAttackOverCap?.() ?? false}
           onChange={(n) => dispatch(onSetPowerAttack(n))}
           summary={power > 0 && (
-            <Pill tone="warn">−{power} to hit</Pill>
+            <Pill tone="warn">{tx('−{0} to hit', power)}</Pill>
           )}
         >
           <p>
-            Trade up to your <b>base attack bonus</b> — {player.getPowerAttackMax?.() ?? 0} — from
-            every melee attack roll this round, and add the same to melee damage.
-            There is no cap of 5; that belongs to Combat expertise.
+            {tx(
+              'Trade up to your {0} — {1} — from every melee attack roll this round, and add the same to melee damage. There is no cap of 5; that belongs to {2}.',
+              <b>{t('base attack bonus')}</b>,
+              player.getPowerAttackMax?.() ?? 0,
+              tName('feats', 'Combat expertise')
+            )}
           </p>
           <p>
-            A <b>two-handed</b> weapon, or a one-handed one held in both hands,
-            adds <b>twice</b> the number to damage while the attack penalty stays
-            the same.
+            {tx(
+              'A {0} weapon, or a one-handed one held in both hands, adds {1} the number to damage while the attack penalty stays the same.',
+              <b>{t('two-handed')}</b>,
+              <b>{t('twice')}</b>
+            )}
           </p>
           <p>
-            A <b>light</b> weapon gains no damage at all and still takes the full
-            penalty — an unarmed strike or a natural weapon is the exception and
-            does get it. Ranged attacks are untouched either way.
+            {tx(
+              'A {0} weapon gains no damage at all and still takes the full penalty — an unarmed strike or a natural weapon is the exception and does get it. Ranged attacks are untouched either way.',
+              <b>{t('light')}</b>
+            )}
           </p>
         </StanceRow>
       )}
 
       {hasExpertise && (
         <StanceRow
-          name="Combat expertise"
+          name={tName('feats', 'Combat expertise')}
           value={expertise}
           max={player.getCombatExpertiseMax?.() ?? 0}
           overCap={player.isCombatExpertiseOverCap?.() ?? false}
           onChange={(n) => dispatch(onSetCombatExpertise(n))}
           summary={expertise > 0 && (
             <>
-              <Pill tone="warn">−{expertise} to hit</Pill>
-              <Pill tone="success">+{expertise} AC</Pill>
+              <Pill tone="warn">{tx('−{0} to hit', expertise)}</Pill>
+              <Pill tone="success">{tx('+{0} AC', expertise)}</Pill>
             </>
           )}
         >
           <p>
-            Trade up to <b>5</b> from your melee attack rolls for the same as a{' '}
-            <b>dodge bonus</b> to Armor Class, until your next action. Your base
-            attack bonus caps it lower than 5 until you reach 5th level —
-            yours allows {player.getCombatExpertiseMax?.() ?? 0}.
+            {tx(
+              'Trade up to {0} from your melee attack rolls for the same as a {1} to Armor Class, until your next action. Your base attack bonus caps it lower than 5 until you reach 5th level — yours allows {2}.',
+              <b>5</b>,
+              <b>{t('dodge bonus')}</b>,
+              player.getCombatExpertiseMax?.() ?? 0
+            )}
           </p>
           <p>
-            A dodge bonus counts against <b>touch attacks</b> but is lost the
-            moment you are <b>flat-footed</b> or otherwise denied your Dexterity.
+            {tx(
+              'A dodge bonus counts against {0} but is lost the moment you are {1} or otherwise denied your Dexterity.',
+              <b>{t('touch attacks')}</b>,
+              <b>{t('flat-footed')}</b>
+            )}
           </p>
           <p>
-            Usable only on the attack or full-attack action, and only in melee.
+            {t('Usable only on the attack or full-attack action, and only in melee.')}
           </p>
         </StanceRow>
       )}

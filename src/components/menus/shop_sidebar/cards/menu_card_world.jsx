@@ -11,6 +11,7 @@ import {
 import CreateComponent from '../../../common/create_component';
 import LevelComponent from '../../../common/level_component';
 import SelectComponent from '../../../common/select_component';
+import { t } from '../../../../lib/i18n';
 
 export default function MenuCardWorld() {
   const dispatch = useDispatch();
@@ -80,7 +81,7 @@ export default function MenuCardWorld() {
 
   const levelProps = {
     level: playerLevel,
-    levelName: 'Player Level',
+    levelName: t('Player Level'),
     onLevelChange: lvl => dispatch(onPlayerLevelChange(lvl))
   };
 

@@ -4,6 +4,7 @@ import { setPlayerSheetMainView, setIsPlayerSheetSidebarCollapsed, setPlayerSpel
 import { getClassData } from '../../lib/player';
 import useLongPress from '../hooks/useLongPress';
 import Icon from '../common/Icon';
+import { t } from '../../lib/i18n';
 
 function hasSpellcastingClass(player) {
   if (!player) return false;
@@ -105,7 +106,7 @@ export default function PlayerSheetBottomNav() {
   return (
     <nav
       className={`sh-bnav${isAnySidebarOpen ? ' sh-bnav--hidden' : ''}`}
-      aria-label="Player sheet sections"
+      aria-label={t('Player sheet sections')}
       aria-hidden={isAnySidebarOpen || undefined}
     >
       {items.map(it => {
@@ -120,7 +121,7 @@ export default function PlayerSheetBottomNav() {
               {...spellLongPress}
             >
               <Icon name={it.icon} />
-              <span>{it.label}</span>
+              <span>{t(it.label)}</span>
               {openPopout === 'playerSpells' && (
                 <div
                   className="sh-bnav-popout"
@@ -131,12 +132,12 @@ export default function PlayerSheetBottomNav() {
                   onTouchEnd={swallow}
                 >
                   {isPrepareVisible && (
-                    <button type="button" className="sh-bnav-popout-btn" onClick={handlePrepareSpell} title="Prepare Spell">
+                    <button type="button" className="sh-bnav-popout-btn" onClick={handlePrepareSpell} title={t('Prepare Spell')}>
                       <Icon name="menu_book" />
                     </button>
                   )}
                   {isLearnVisible && (
-                    <button type="button" className="sh-bnav-popout-btn" onClick={handleLearnSpell} title="Learn Spell">
+                    <button type="button" className="sh-bnav-popout-btn" onClick={handleLearnSpell} title={t('Learn Spell')}>
                       <Icon name="bookmark_add" />
                     </button>
                   )}
@@ -156,7 +157,7 @@ export default function PlayerSheetBottomNav() {
               {...skillsLongPress}
             >
               <Icon name={it.icon} />
-              <span>{it.label}</span>
+              <span>{t(it.label)}</span>
               {openPopout === 'skills' && (
                 <div
                   className="sh-bnav-popout"
@@ -166,7 +167,7 @@ export default function PlayerSheetBottomNav() {
                   onTouchStart={swallow}
                   onTouchEnd={swallow}
                 >
-                  <button type="button" className="sh-bnav-popout-btn" onClick={handleFeats} title="Feats">
+                  <button type="button" className="sh-bnav-popout-btn" onClick={handleFeats} title={t('Feats')}>
                     <Icon name="auto_awesome" />
                   </button>
                 </div>

@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setPlayerSheetMainView, setIsPlayerSheetSidebarCollapsed } from '../../../../store/slices/playerSheetSlice';
 import { isMobile } from '../../../../lib/utils';
 import '../../../../style/menu_cards.css';
+import { t } from '../../../../lib/i18n';
 
 export default function MenuCardInventory() {
   const dispatch = useDispatch();
@@ -20,13 +21,13 @@ export default function MenuCardInventory() {
         type="button"
         className="modern-button small-middle-long2"
         onClick={openInventory}
-        title="Inventory"
+        title={t('Inventory')}
       >
         <span className="material-symbols-outlined">savings</span>
       </button>
       <div className="player-sheet-inventory-weight-wrap">
         <span className="player-sheet-inventory-weight">
-          <span className="material-symbols-outlined" title="Weight">weight</span>
+          <span className="material-symbols-outlined" title={t('Weight')}>weight</span>
           <span>{weight}</span>
         </span>
       </div>

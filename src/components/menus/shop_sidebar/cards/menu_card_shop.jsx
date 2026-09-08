@@ -15,6 +15,7 @@ import SelectComponent from '../../../common/select_component';
 import { ShareShopModal } from '../../../shop/ShareShopModal';
 import '../../../../style/menu_cards.css';
 import { toggleSidebar } from '../../../../store/slices/appSlice';
+import { t, tName } from '../../../../lib/i18n';
 
 export default function MenuCardShop() {
   const dispatch = useDispatch();
@@ -105,20 +106,20 @@ export default function MenuCardShop() {
           <LevelComponent
             props={{
               level: shopLevel,
-              levelName: 'Shop Level',
+              levelName: t('Shop Level'),
               onLevelChange: handleLevelChange
             }}
           />
           <LevelComponent
             props={{
               level: reputation,
-              levelName: 'Reputation',
+              levelName: t('Reputation'),
               onLevelChange: handleReputationChange
             }}
           />
 
           <div className="card-side-div margin-top">
-            <label className="modern-label">Shop Type</label>
+            <label className="modern-label">{t('Shop Type')}</label>
             <select
               className="modern-dropdown small-middle"
               value={shopType}
@@ -126,7 +127,7 @@ export default function MenuCardShop() {
             >
               {types.map((type, idx) => (
                 <option key={idx} value={type}>
-                  {type}
+                  {tName('shopTypes', type)}
                 </option>
               ))}
             </select>
@@ -139,13 +140,13 @@ export default function MenuCardShop() {
               disabled={!canGenerate}
               style={{ flex: 1 }}
             >
-              <b>Generate</b>
+              <b>{t('Generate')}</b>
             </button>
             {shopGenerated && (
               <button
                 className="modern-button small-middle"
                 onClick={handleShare}
-                title="Share shop"
+                title={t('Share shop')}
               >
                 <span className="material-symbols-outlined">qr_code</span>
               </button>

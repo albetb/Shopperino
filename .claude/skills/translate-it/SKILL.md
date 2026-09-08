@@ -103,6 +103,64 @@ the only reason it surfaced is that the user happened to know one of them.
 the user can go through them with the book. If a term matters and you cannot
 verify it, say so in your report rather than burying it in the glossary.
 
+### Names are looked up, never invented
+
+A value in `names.json` is a proper noun the book already decided: a condition,
+a size, a class feature, a creature type, a school. **Look it up before you
+write it.**
+
+```bash
+S=.claude/skills/translate-it/scripts
+python $S/book.py "colpo menomante"      # which manual and page prints this
+python $S/book.py --page phb 42          # read that page
+python $S/book.py --names                # every name the books never print
+python $S/book.py --names conditions     # one domain
+```
+
+This is not a precaution against an unlikely mistake. One batch of coined names
+got 28 of them wrong -- 9 of 38 conditions, 5 of 6 rogue special abilities, 3 of
+9 sizes, 5 of 10 Knowledge fields -- and every correct form was in a manual on
+this machine. *Crippling Strike* is **Colpo menomante**, not *Colpo
+Debilitante*; *Cowering* is **Accovacciato**, not *Terrorizzato*; *Fey* is
+**Folletto**, not *Fata*.
+
+`--names` catches an invented word. It cannot catch a real word on the wrong
+rung, and that is the failure worth fearing: the pack had *Tiny* ->
+*Piccolissimo*, *Diminutive* -> *Minuscolo*, *Fine* -> *Minutolo* -- the whole
+ladder rotated by one, using terms the book really prints, for the wrong sizes.
+**When a domain is an ordered set, read the book's own list rather than
+checking the entries one at a time.**
+
+**The books are on this machine** -- the Italian editions, with a text layer, in
+`C:\Users\albet\Documents\D&D 3.5\!Manuali - Base\` (core) and
+`Manuali - Avanzato\` (supplements). Nothing stops you from checking a term you
+care about; the recipe is in
+[dnd-rules-extract](../dnd-rules-extract/SKILL.md#checking-what-the-book-calls-something).
+Roughly:
+
+```bash
+PT="/c/Users/albet/AppData/Local/Microsoft/WinGet/Packages/oschwartz10612.Poppler_Microsoft.Winget.Source_8wekyb3d8bbwe/poppler-25.07.0/Library/bin"
+"$PT/pdftotext.exe" "/c/Users/albet/Documents/D&D 3.5/!Manuali - Base/Manuale Del Dungeon Master.pdf" dmg.txt
+awk -v RS='\f' '/[Aa]natem/ { print "page " NR }' dmg.txt
+```
+
+The text is OCR and misreads letters, so grep a stem and confirm the spelling by
+rendering the page with `Read` before you write the term down. A term seen in
+print is `manual`; anything else stays `coined`, however sure it looks.
+
+### A UI label is not a term for the rule text
+
+`verify.py` enforces the glossary against `src/data/*.json` and nothing else.
+So a term coined for a button label -- `Range`, `Area`, `Learn`, `Chance` --
+cannot help there and can only fire on the ordinary English word inside a rule
+description: *doubles the threat range of a weapon*, *protects vital areas*, *to
+learn or cast a spell*. Give such a term **`"scope": "ui"`**. It stays in the
+glossary as the agreed rendering of that label and stops shouting at prose.
+
+Warnings are worth nothing once they are worth ignoring. A previous batch
+reported 114 of them as expected noise; 113 were one bad pattern and the 114th
+was real.
+
 ### The three rules that are not yours to bend
 
 - **Never edit a file in `src/data/` that is not inside a language folder.**
@@ -355,3 +413,4 @@ Why the design is as it is: [references/design-notes.md](references/design-notes
 | `scripts/en_drift.py` | Proves wrapping did not change the English. |
 | `scripts/progress.py` | What is done, what is left. |
 | `scripts/glossary.py` | Look terms up; regenerate the markdown. |
+| `scripts/book.py` | Asks the Italian manuals what a thing is called. |

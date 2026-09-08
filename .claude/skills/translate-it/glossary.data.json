@@ -1,3 +1,645 @@
 {
-  "terms": []
+  "terms": [
+    {
+      "en": "Diligent",
+      "it": "Diligente",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, referenced inline from skills.json (Appraise) before feats.json is translated. Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "Persuasive",
+      "it": "Persuasivo",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, referenced inline from skills.json (Bluff) before feats.json is translated. Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "Athletic",
+      "it": "Atletico",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, referenced inline from skills.json (Climb) before feats.json is translated. Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "Agile",
+      "it": "Agile",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, referenced inline from skills.json (Balance) before feats.json is translated. Same spelling as English. Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "read magic",
+      "it": "lettura magica",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced in lowercase prose from tables.json (Wizard spellcasting) before spells.json is translated. Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "rope trick",
+      "it": "corda magica",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced in lowercase prose from skills.json (Climb) before spells.json is translated. Uncertain — not checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "Combat Casting",
+      "it": "Lancio in Combattimento",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, referenced inline from skills.json (Concentration) before feats.json is translated. Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "Negotiator",
+      "it": "Negoziatore",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, referenced inline from skills.json (Diplomacy) before feats.json is translated. Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "Nimble Fingers",
+      "it": "Dita Agili",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, referenced inline from skills.json (Disable Device) before feats.json is translated. Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "Deceitful",
+      "it": "Ingannevole",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, referenced inline from skills.json (Disguise, Forgery) before feats.json is translated. Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "Investigator",
+      "it": "Investigatore",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, referenced inline from skills.json (Gather Information) before feats.json is translated. Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "trapfinding",
+      "it": "trovare trappole",
+      "strict": false,
+      "kind": "class",
+      "note": "Rogue class feature, referenced from skills.json (Disable Device) before classes.json is translated. Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "Alchemy",
+      "it": "Alchimia",
+      "strict": false,
+      "kind": "skill",
+      "note": "Craft sub-skill (Craft (alchemy) -> Artigianato (alchimia)), referenced from skills.json (Craft).",
+      "source": "coined"
+    },
+    {
+      "en": "Armorsmithing",
+      "it": "Armature",
+      "strict": false,
+      "kind": "skill",
+      "note": "Craft sub-skill (Craft (Armorsmithing) -> Artigianato (armature)), referenced from skills.json (Craft).",
+      "source": "coined"
+    },
+    {
+      "en": "Bowmaking",
+      "it": "Archi",
+      "strict": false,
+      "kind": "skill",
+      "note": "Craft sub-skill (Craft (Bowmaking) -> Artigianato (archi)), referenced from skills.json (Craft).",
+      "source": "coined"
+    },
+    {
+      "en": "Weaponsmithing",
+      "it": "Armi",
+      "strict": false,
+      "kind": "skill",
+      "note": "Craft sub-skill (Craft (Weaponsmithing) -> Artigianato (armi)), referenced from skills.json (Craft).",
+      "source": "coined"
+    },
+    {
+      "en": "Trapmaking",
+      "it": "Trappole",
+      "strict": false,
+      "kind": "skill",
+      "note": "Craft sub-skill (Craft (Trapmaking) -> Artigianato (trappole)), referenced from skills.json (Craft).",
+      "source": "coined"
+    },
+    {
+      "en": "wild empathy",
+      "it": "empatia selvatica",
+      "strict": false,
+      "kind": "class",
+      "note": "Druid/ranger class feature, referenced from skills.json (Diplomacy) before classes.json is translated. Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "fire trap",
+      "it": "trappola di fuoco",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced in lowercase prose from skills.json (Disable Device) before spells.json is translated. Uncertain — not checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "glyph of warding",
+      "it": "glifo di custodia",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced in lowercase prose from skills.json (Disable Device) before spells.json is translated. Uncertain — not checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "teleportation circle",
+      "it": "cerchio di teletrasporto",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced in lowercase prose from skills.json (Disable Device) before spells.json is translated. Uncertain — not checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "spike growth",
+      "it": "crescita di spunzoni",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced in lowercase prose from skills.json (Disable Device) before spells.json is translated. Uncertain — not checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "spike stones",
+      "it": "pietre aguzze",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced in lowercase prose from skills.json (Disable Device) before spells.json is translated. Uncertain — not checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "dispel magic",
+      "it": "dissolvi magie",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced in lowercase prose from skills.json (Disable Device). Well-known 3.5 spell, fairly confident.",
+      "source": "coined"
+    },
+    {
+      "en": "animate rope",
+      "it": "corda animata",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced in lowercase prose from skills.json (Escape Artist) before spells.json is translated. Uncertain — not checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "command plants",
+      "it": "comandare piante",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced in lowercase prose from skills.json (Escape Artist) before spells.json is translated. Uncertain — not checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "control plants",
+      "it": "controllare piante",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced in lowercase prose from skills.json (Escape Artist) before spells.json is translated. Uncertain — not checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "entangle",
+      "it": "intrico",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced in lowercase prose from skills.json (Escape Artist). Fairly standard rendering.",
+      "source": "coined"
+    },
+    {
+      "en": "snare",
+      "it": "laccio",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced in lowercase prose from skills.json (Escape Artist) before spells.json is translated. Uncertain — not checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "alter self",
+      "it": "alterare se stessi",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced in lowercase prose from skills.json (Disguise) before spells.json is translated. Uncertain — not checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "disguise self",
+      "it": "camuffare se stesso",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, read out of the Manuale del Giocatore.",
+      "source": "manual",
+      "stems": [
+        "camuffare se stes"
+      ]
+    },
+    {
+      "en": "polymorph",
+      "it": "metamorfosi",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, Manuale del Giocatore.",
+      "source": "manual",
+      "stems": [
+        "metamorfosi"
+      ]
+    },
+    {
+      "en": "shapechange",
+      "it": "mutare forma",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced in lowercase prose from skills.json (Disguise). Well-known 3.5 spell, fairly confident.",
+      "source": "coined"
+    },
+    {
+      "en": "true seeing",
+      "it": "visione del vero",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, read out of the Manuale del Giocatore.",
+      "source": "manual",
+      "stems": [
+        "visione del ve"
+      ]
+    },
+    {
+      "en": "veil",
+      "it": "velo",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced in lowercase prose from skills.json (Disguise) before spells.json is translated. Uncertain — not checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "simulacrum",
+      "it": "simulacro",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced in lowercase prose from skills.json (Disguise). Fairly standard rendering.",
+      "source": "coined"
+    },
+    {
+      "en": "Animal Affinity",
+      "it": "Affinità Animale",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, referenced inline from skills.json (Handle Animal) before feats.json is translated. Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "Self-Sufficient",
+      "it": "Autosufficiente",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, referenced inline from skills.json (Heal) before feats.json is translated. Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "Stealthy",
+      "it": "Furtivo",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, referenced inline from skills.json (Hide) before feats.json is translated. Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "caltrop",
+      "it": "tribolo",
+      "strict": false,
+      "kind": "item",
+      "note": "Referenced in lowercase prose from skills.json (Heal). Standard 3.5 item name.",
+      "source": "coined"
+    },
+    {
+      "en": "Run",
+      "it": "Corsa",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, referenced inline from skills.json (Jump) before feats.json is translated. Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "Acrobatic",
+      "it": "Acrobatico",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, referenced inline from skills.json (Jump) before feats.json is translated. Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "Alertness",
+      "it": "Vigilanza",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, referenced inline from skills.json (Listen) before feats.json is translated. Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "bardic knowledge",
+      "it": "conoscenza bardica",
+      "strict": false,
+      "kind": "class",
+      "note": "Bard class feature, referenced from skills.json (Knowledge) before classes.json is translated. Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "thieves' tools",
+      "it": "arnesi da scasso",
+      "strict": false,
+      "kind": "item",
+      "note": "Referenced from skills.json (Open Lock) before items.json is translated. Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "Bardic Music",
+      "it": "Musica Bardica",
+      "strict": false,
+      "kind": "class",
+      "note": "Bard class feature grouping, referenced from skills.json (Perform) before classes.json is translated. Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "Mounted Archery",
+      "it": "Tiro da Cavallo",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, referenced inline from skills.json (Ride) before feats.json is translated. Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "Mounted Combat",
+      "it": "Combattimento a Cavallo",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, referenced inline from skills.json (Ride) before feats.json is translated. Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "Ride-By Attack",
+      "it": "Attacco al Passaggio",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, referenced inline from skills.json (Ride) before feats.json is translated. Uncertain — not checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "Spirited Charge",
+      "it": "Carica Impetuosa",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, referenced inline from skills.json (Ride) before feats.json is translated. Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "Trample",
+      "it": "Travolgere",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, referenced inline from skills.json (Ride) before feats.json is translated. Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "Track",
+      "it": "Traccia",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, referenced inline from skills.json (Search) before feats.json is translated. Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "Deft Hands",
+      "it": "Mani Abili",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, referenced inline from skills.json (Sleight of Hand) before feats.json is translated. Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "Magical Aptitude",
+      "it": "Attitudine Magica",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, referenced inline from skills.json (Spellcraft) before feats.json is translated. Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "stonecunning",
+      "it": "conoscenza della pietra",
+      "strict": false,
+      "kind": "race",
+      "note": "Dwarf racial ability, referenced from skills.json (Search) before races.json is translated. Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "detect magic",
+      "it": "individuazione magica",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced in lowercase prose from skills.json (Spellcraft) before spells.json is translated. Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "dominate person",
+      "it": "dominare persone",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced in lowercase prose from skills.json (Sense Motive) before spells.json is translated. Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "explosive runes",
+      "it": "rune esplosive",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced in lowercase prose from skills.json (Search) before spells.json is translated. Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "wall of iron",
+      "it": "muro di ferro",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced in lowercase prose from skills.json (Spellcraft) before spells.json is translated. Fairly literal, reasonably confident.",
+      "source": "coined"
+    },
+    {
+      "en": "magic circle",
+      "it": "cerchio magico",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name fragment (magic circle against X), referenced in lowercase prose from skills.json (Spellcraft) before spells.json is translated. Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "dimensional anchor",
+      "it": "ancora dimensionale",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced in lowercase prose from skills.json (Spellcraft) before spells.json is translated. Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "find traps",
+      "it": "individuare trappole",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced in lowercase prose from skills.json (Search) before spells.json is translated. Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "magic stream",
+      "it": "flusso magico",
+      "strict": false,
+      "kind": "rules",
+      "note": "Referenced in lowercase prose from skills.json (Spellcraft), likely a splatbook-specific magical phenomenon. Uncertain — not checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "Abyssal (language)",
+      "it": "Abissale",
+      "strict": false,
+      "kind": "rules",
+      "note": "Language name, from skills.json (Speak Language) table. Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "Celestial (language)",
+      "it": "Celestiale",
+      "strict": false,
+      "kind": "rules",
+      "note": "Language name, from skills.json (Speak Language) table. Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "Draconic (language)",
+      "it": "Draconico",
+      "strict": false,
+      "kind": "rules",
+      "note": "Language name, from skills.json (Speak Language) table. Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "Druidic (language)",
+      "it": "Druidico",
+      "strict": false,
+      "kind": "rules",
+      "note": "Language name, from skills.json (Speak Language) table. Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "Dwarven (language)",
+      "it": "Nanico",
+      "strict": false,
+      "kind": "rules",
+      "note": "Language name, from skills.json (Speak Language) table. Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "Elven (language)",
+      "it": "Elfico",
+      "strict": false,
+      "kind": "rules",
+      "note": "Language name, from skills.json (Speak Language) table. Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "Giant (language)",
+      "it": "Gigante",
+      "strict": false,
+      "kind": "rules",
+      "note": "Language name, from skills.json (Speak Language) table. Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "Gnome (language)",
+      "it": "Gnomico",
+      "strict": false,
+      "kind": "rules",
+      "note": "Language name, from skills.json (Speak Language) table. Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "Infernal (language)",
+      "it": "Infernale",
+      "strict": false,
+      "kind": "rules",
+      "note": "Language name, from skills.json (Speak Language) table. Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "Orc (language)",
+      "it": "Orchesco",
+      "strict": false,
+      "kind": "rules",
+      "note": "Language name, from skills.json (Speak Language) table. Uncertain — collides in concept with 'Ogre', which was left untranslated to avoid clashing with Orc->Orco (see Half-Orc->Mezzorco in names.json). Needs reconciling once monsters.json/races.json are translated.",
+      "source": "coined"
+    },
+    {
+      "en": "Sylvan (language)",
+      "it": "Silvano",
+      "strict": false,
+      "kind": "rules",
+      "note": "Language name, from skills.json (Speak Language) table. Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "Undercommon",
+      "it": "Sottocomune",
+      "strict": false,
+      "kind": "rules",
+      "note": "Language name, from skills.json (Speak Language) table. Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "Endurance",
+      "it": "Resistenza",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, referenced inline from skills.json (Swim) before feats.json is translated. Not yet checked against the manual.",
+      "source": "coined"
+    }
+  ]
 }

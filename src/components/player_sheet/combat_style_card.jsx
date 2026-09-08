@@ -9,6 +9,7 @@ import { slug } from '../../lib/slugUtils';
 import { setCombatPageCardCollapsed } from '../../store/slices/playerSheetSlice';
 import { onSetCombatStyle } from '../../store/thunks/playerSheetThunks';
 import '../../style/favored_enemy.css';
+import { t, tx, tName } from '../../lib/i18n';
 
 /**
  * Ranger combat style.
@@ -34,25 +35,30 @@ export default function CombatStyleCard() {
 
   return (
     <Card
-      title="Combat style"
+      title={t('Combat style')}
       className="sh-card--head-spread"
-      eyebrow={style ? 'Permanent choice' : `Choose at level ${player.getCombatStyleChoiceLevel()}`}
+      eyebrow={style ? t('Permanent choice') : tx('Choose at level {0}', player.getCombatStyleChoiceLevel())}
       action={
         <span className="sh-row-h" style={{ gap: 'var(--space-1)' }}>
-          <InfoPopover label="Combat style">
+          <InfoPopover label={t('Combat style')}>
             <p>
-              A ranger picks one style at{' '}
-              {player.getCombatStyleChoiceLevel()}th level, and the choice is{' '}
-              <b>permanent</b> — it cannot be swapped later.
+              {tx(
+                'A ranger picks one style at {0}th level, and the choice is {1} — it cannot be swapped later.',
+                player.getCombatStyleChoiceLevel(),
+                <b>{t('permanent')}</b>
+              )}
             </p>
             <p>
-              The feats it grants are given by the class: they cost nothing from
-              either feat budget and <b>ignore their normal prerequisites</b>,
-              so a ranger gets them whether or not the ability scores qualify.
+              {tx(
+                'The feats it grants are given by the class: they cost nothing from either feat budget and {0}, so a ranger gets them whether or not the ability scores qualify.',
+                <b>{t('ignore their normal prerequisites')}</b>
+              )}
             </p>
             <p>
-              They work only in <b>light armor or none</b>. In medium or heavy
-              armor the style is suppressed entirely.
+              {tx(
+                'They work only in {0}. In medium or heavy armor the style is suppressed entirely.',
+                <b>{t('light armor or none')}</b>
+              )}
             </p>
           </InfoPopover>
           {style && (
@@ -60,15 +66,15 @@ export default function CombatStyleCard() {
               icon="restart_alt"
               ghost size="sm"
               onClick={() => dispatch(onSetCombatStyle(''))}
-              title="Clear the chosen style"
-              aria-label="Clear combat style"
+              title={t('Clear the chosen style')}
+              aria-label={t('Clear combat style')}
             />
           )}
           <IconButton
             icon={collapsed ? 'expand_more' : 'expand_less'}
             ghost size="sm"
             onClick={() => dispatch(setCombatPageCardCollapsed({ key: 'combatStyle', value: !collapsed }))}
-            aria-label="Toggle combat style"
+            aria-label={t('Toggle combat style')}
           />
         </span>
       }
@@ -78,19 +84,18 @@ export default function CombatStyleCard() {
         {!style ? (
           <>
             <span className="sh-faint favored-enemy-empty">
-              Pick one. The choice is permanent, and each style grants its feats
-              free of their usual prerequisites.
+              {t('Pick one. The choice is permanent, and each style grants its feats free of their usual prerequisites.')}
             </span>
             <div className="favored-enemy-add">
               <select
                 className="sh-select"
                 value=""
-                aria-label="Combat style"
+                aria-label={t('Combat style')}
                 onChange={(e) => { if (e.target.value) dispatch(onSetCombatStyle(e.target.value)); }}
               >
-                <option value="">Choose a combat style…</option>
+                <option value="">{t('Choose a combat style…')}</option>
                 {player.getCombatStyleOptions().map((option) => (
-                  <option key={option} value={option}>{option}</option>
+                  <option key={option} value={option}>{tName('combatStyles', option)}</option>
                 ))}
               </select>
             </div>
@@ -98,10 +103,10 @@ export default function CombatStyleCard() {
         ) : (
           <>
             <div className="favored-enemy-entry">
-              <span className="favored-enemy-name">{style}</span>
+              <span className="favored-enemy-name">{tName('combatStyles', style)}</span>
               <span className="favored-enemy-actions">
                 <Pill tone={suppressed ? 'warn' : 'success'} icon={suppressed ? 'warning' : 'check'}>
-                  {suppressed ? 'Suppressed' : 'Active'}
+                  {suppressed ? t('Suppressed') : t('Active')}
                 </Pill>
               </span>
             </div>
@@ -109,7 +114,7 @@ export default function CombatStyleCard() {
             {suppressed && (
               <div className="sh-warn-strip">
                 <Icon name="shield" />
-                Combat style benefits apply only in light armor or none.
+                {t('Combat style benefits apply only in light armor or none.')}
               </div>
             )}
 
@@ -117,10 +122,10 @@ export default function CombatStyleCard() {
               {feats.map(({ level, feat }) => (
                 <li key={feat} className="favored-enemy-entry">
                   <SpellLink link={`feats#${slug(feat)}`}>
-                    <span className="favored-enemy-name">{feat}</span>
+                    <span className="favored-enemy-name">{tName('feats', feat)}</span>
                   </SpellLink>
                   <span className="favored-enemy-actions">
-                    <Pill tone="ghost">Level {level}</Pill>
+                    <Pill tone="ghost">{tx('Level {0}', level)}</Pill>
                   </span>
                 </li>
               ))}
