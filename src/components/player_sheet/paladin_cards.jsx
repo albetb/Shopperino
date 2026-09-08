@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { t, tx } from '../../lib/i18n';
 import TrackerCard from './tracker_card';
 import useLongPress from '../hooks/useLongPress';
 import Pill from '../common/Pill';
@@ -34,33 +35,36 @@ export function SmiteEvilCard() {
 
   return (
     <TrackerCard
-      title="Smite evil"
+      title={t('Smite evil')}
       collapseKey="smiteEvil"
       used={player.getClassFeatureUsed('smiteEvil')}
       max={max}
       onUse={(delta) => dispatch(onUseClassFeature('smiteEvil', delta))}
       onReset={() => dispatch(onResetClassFeature('smiteEvil'))}
       action={
-        <InfoPopover label="Smite evil">
+        <InfoPopover label={t('Smite evil')}>
           <p>
-            Declared <b>before</b> the attack roll, as part of a single melee
-            attack. It adds <b>{fmt(player.getSmiteEvilAttackBonus())}</b> to the
-            attack — your Charisma modifier — and{' '}
-            <b>{fmt(player.getSmiteEvilDamageBonus())}</b> to the damage, one
-            point per paladin level.
+            {tx(
+              'Declared {0} the attack roll, as part of a single melee attack. It adds {1} to the attack — your Charisma modifier — and {2} to the damage, one point per paladin level.',
+              <b>{t('before')}</b>,
+              <b>{fmt(player.getSmiteEvilAttackBonus())}</b>,
+              <b>{fmt(player.getSmiteEvilDamageBonus())}</b>,
+            )}
           </p>
           <p>
-            The use is <b>spent either way</b>: it is wasted on a miss, and
-            wasted entirely on a target that turns out not to be evil.
+            {tx(
+              'The use is {0}: it is wasted on a miss, and wasted entirely on a target that turns out not to be evil.',
+              <b>{t('spent either way')}</b>,
+            )}
           </p>
         </InfoPopover>
       }
     >
       <div className="tracker-card-row tracker-card-meta">
         <Pill tone="accent" icon="swords">
-          {fmt(player.getSmiteEvilAttackBonus())} attack
+          {tx('{0} attack', fmt(player.getSmiteEvilAttackBonus()))}
         </Pill>
-        <Pill tone="accent">{fmt(player.getSmiteEvilDamageBonus())} damage</Pill>
+        <Pill tone="accent">{tx('{0} damage', fmt(player.getSmiteEvilDamageBonus()))}</Pill>
       </div>
 
       {detectEvil && (
@@ -70,7 +74,7 @@ export function SmiteEvilCard() {
           <SpellLink link={detectEvil.link}>
             <Pill tone="accent" icon="visibility">{detectEvil.name}</Pill>
           </SpellLink>
-          <span className="sh-faint">at will</span>
+          <span className="sh-faint">{t('at will')}</span>
         </div>
       )}
     </TrackerCard>
@@ -96,7 +100,7 @@ export function LayOnHandsCard() {
 
   return (
     <TrackerCard
-      title="Lay on hands"
+      title={t('Lay on hands')}
       collapseKey="layOnHands"
       unit="hp"
       used={player.getClassFeatureUsed('layOnHands')}
@@ -108,12 +112,11 @@ export function LayOnHandsCard() {
           ghost
           size="sm"
           {...longPressSpend}
-          title="Give 1 hp (hold for 10)"
-          aria-label="Give one hit point"
+          title={t('Give 1 hp (hold for 10)')}
+          aria-label={t('Give one hit point')}
         />
       }
-      note="A standard action by touch, split however you like across the day. The
-        same points deal damage to undead instead, as a touch attack with no save."
+      note={t('A standard action by touch, split however you like across the day. The same points deal damage to undead instead, as a touch attack with no save.')}
     />
   );
 }
@@ -130,28 +133,30 @@ export function RemoveDiseaseCard() {
 
   return (
     <TrackerCard
-      title="Remove disease"
-      eyebrow="per week"
+      title={t('Remove disease')}
+      eyebrow={t('per week')}
       collapseKey="removeDisease"
       used={player.getClassFeatureUsed('removeDisease')}
       max={max}
       onUse={(delta) => dispatch(onUseClassFeature('removeDisease', delta))}
       onReset={() => dispatch(onResetClassFeature('removeDisease'))}
       action={
-        <InfoPopover label="Remove disease">
+        <InfoPopover label={t('Remove disease')}>
           <p>
-            Casts the spell{' '}
             {/* The link survives the move: the spell's own range, duration and
                 save are what a paladin actually needs from this card. */}
-            <SpellLink link={getFeatureSpell('remove disease').link}>
-              {getFeatureSpell('remove disease').name}
-            </SpellLink>
-            , at a caster level equal to your paladin level.
+            {tx(
+              'Casts the spell {0}, at a caster level equal to your paladin level.',
+              <SpellLink link={getFeatureSpell('remove disease').link}>
+                {getFeatureSpell('remove disease').name}
+              </SpellLink>,
+            )}
           </p>
           <p>
-            These uses refresh <b>weekly</b>, not with a night&apos;s rest, so a
-            long rest leaves the counter alone — reset it by hand when the week
-            turns.
+            {tx(
+              "These uses refresh {0}, not with a night's rest, so a long rest leaves the counter alone — reset it by hand when the week turns.",
+              <b>{t('weekly')}</b>,
+            )}
           </p>
         </InfoPopover>
       }

@@ -1,4 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
+import { t, tx } from '../../lib/i18n';
 import { setTrap, setTrapFilters, setIsCatalogueCollapsed } from '../../store/slices/trapSlice';
 import { filterTraps, trapTypeLabel, TRAP_TYPES } from '../../lib/trap';
 
@@ -27,9 +28,9 @@ export default function TrapCatalogue() {
         onClick={() => dispatch(setIsCatalogueCollapsed(!collapsed))}
       >
         <h3 className="card-title">
-          The book&apos;s traps ({matches.length})
+          {tx("The book's traps ({0})", matches.length)}
         </h3>
-        <button className="collapse-button" aria-label={collapsed ? 'Show the catalogue' : 'Hide the catalogue'}>
+        <button className="collapse-button" aria-label={collapsed ? t('Show the catalogue') : t('Hide the catalogue')}>
           <span className="material-symbols-outlined">
             {collapsed ? 'expand_more' : 'expand_less'}
           </span>
@@ -41,24 +42,24 @@ export default function TrapCatalogue() {
           <div className="trap-filters">
             <input
               className="modern-input"
-              placeholder="Trap name"
+              placeholder={t('Trap name')}
               value={filters.name}
               onChange={(e) => setFilter({ name: e.target.value })}
-              aria-label="Filter by name"
+              aria-label={t('Filter by name')}
             />
             <select
               className="modern-dropdown"
               value={filters.type}
               onChange={(e) => setFilter({ type: e.target.value })}
-              aria-label="Filter by type"
+              aria-label={t('Filter by type')}
             >
-              <option value="">Any kind</option>
-              {TRAP_TYPES.map((t) => (
-                <option key={t} value={t}>{trapTypeLabel(t)}</option>
+              <option value="">{t('Any kind')}</option>
+              {TRAP_TYPES.map((type) => (
+                <option key={type} value={type}>{trapTypeLabel(type)}</option>
               ))}
             </select>
             <label className="trap-field trap-field-inline">
-              <span className="trap-field-label">CR</span>
+              <span className="trap-field-label">{t('CR')}</span>
               <input
                 className="modern-input trap-number"
                 type="number"
@@ -66,9 +67,9 @@ export default function TrapCatalogue() {
                 max="10"
                 value={filters.minCR}
                 onChange={(e) => setFilter({ minCR: Number(e.target.value) || 1 })}
-                aria-label="Lowest CR"
+                aria-label={t('Lowest CR')}
               />
-              <span className="trap-field-label">to</span>
+              <span className="trap-field-label">{t('to', 'range')}</span>
               <input
                 className="modern-input trap-number"
                 type="number"
@@ -76,25 +77,25 @@ export default function TrapCatalogue() {
                 max="10"
                 value={filters.maxCR}
                 onChange={(e) => setFilter({ maxCR: Number(e.target.value) || 10 })}
-                aria-label="Highest CR"
+                aria-label={t('Highest CR')}
               />
             </label>
           </div>
 
           {matches.length === 0 ? (
-            <p className="search-hint">Nothing matches those filters.</p>
+            <p className="search-hint">{t('Nothing matches those filters.')}</p>
           ) : (
             <ul className="trap-list">
-              {matches.map((t) => (
-                <li key={t.ref}>
+              {matches.map((trap) => (
+                <li key={trap.ref}>
                   <button
                     type="button"
-                    className={'trap-list-row' + (current?.ref === t.ref ? ' is-current' : '')}
-                    onClick={() => dispatch(setTrap({ ...t }))}
+                    className={'trap-list-row' + (current?.ref === trap.ref ? ' is-current' : '')}
+                    onClick={() => dispatch(setTrap({ ...trap }))}
                   >
-                    <span className="trap-list-cr">CR {t.cr}</span>
-                    <span className="trap-list-name">{t.name}</span>
-                    <span className="trap-list-type">{trapTypeLabel(t.type)}</span>
+                    <span className="trap-list-cr">{t('CR')} {trap.cr}</span>
+                    <span className="trap-list-name">{trap.name}</span>
+                    <span className="trap-list-type">{trapTypeLabel(trap.type)}</span>
                   </button>
                 </li>
               ))}

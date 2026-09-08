@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
+import { t, tx } from '../../lib/i18n';
 import AnchorPopover from '../common/AnchorPopover';
 import MetamagicChooser from './metamagic_chooser';
 import MetamagicPills from './metamagic_pills';
@@ -32,7 +33,7 @@ export default function MetamagicPrepareButton({
 
   return (
     <AnchorPopover
-      label={`Metamagic — ${spell.Name}`}
+      label={tx('Metamagic — {0}', spell.Name)}
       className="mm-popover"
       width="24rem"
       renderTrigger={({ ref, open, toggle }) => (
@@ -42,8 +43,8 @@ export default function MetamagicPrepareButton({
           className={'mm-trigger' + (preparations.length ? ' has-any' : '')}
           onClick={(e) => { e.stopPropagation(); toggle(); }}
           aria-expanded={open}
-          aria-label={`Prepare ${spell.Name} with metamagic`}
-          title={`Prepare ${spell.Name} with metamagic`}
+          aria-label={tx('Prepare {0} with metamagic', spell.Name)}
+          title={tx('Prepare {0} with metamagic', spell.Name)}
         >
           <span className="material-symbols-outlined">auto_fix_high</span>
         </button>
@@ -58,8 +59,7 @@ export default function MetamagicPrepareButton({
 
       {mm === 0 ? (
         <p className="mm-hint">
-          Pick a feat above to prepare a modified copy of this spell. It becomes
-          a preparation of its own, alongside the ordinary one.
+          {t('Pick a feat above to prepare a modified copy of this spell. It becomes a preparation of its own, alongside the ordinary one.')}
         </p>
       ) : (
         <div className="mm-prepare-row">
@@ -73,18 +73,18 @@ export default function MetamagicPrepareButton({
 
       {others.length > 0 && (
         <div className="mm-other-preps">
-          <div className="mm-other-preps-title">Also prepared</div>
+          <div className="mm-other-preps-title">{t('Also prepared')}</div>
           {others.map((p) => (
             <button
               type="button"
               key={p.mm}
               className="mm-other-prep"
               onClick={() => setMm(p.mm)}
-              title="Edit this preparation"
+              title={t('Edit this preparation')}
             >
               <MetamagicPills mm={p.mm} />
               <span className="mm-other-prep-count">
-                {p.Prepared}× at level {p.level}
+                {tx('{0}× at level {1}', p.Prepared, p.level)}
               </span>
             </button>
           ))}

@@ -127,7 +127,7 @@ export default function FeatsPage() {
     // explain itself.
     const reason = choicesAvailable.length > 0
       ? ''
-      : getChoiceUnavailableReason(baseName, playerFeats);
+      : getChoiceUnavailableReason(baseName, playerFeats, { t, tx });
     if (choicesAvailable.length > 0 || reason) {
       // FeatChoicePopover only renders when given a position — capture the
       // click target's rect so the popover anchors next to the "+" button.

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import BottomSheet from '../common/BottomSheet';
 import Button from '../common/Button';
+import { t } from '../../lib/i18n';
 import {
   decodeFile,
   composePortrait,
@@ -84,7 +85,7 @@ export default function PortraitEditorSheet({ open, onClose, currentPortrait, on
       const drawH = decoded.height * s;
       setOffset({ x: (VIEWPORT_PX - drawW) / 2, y: (VIEWPORT_PX - drawH) / 2 });
     } catch (err) {
-      setError(err?.message || 'Could not read the image');
+      setError(err?.message || t('Could not read the image'));
     } finally {
       setBusy(false);
     }
@@ -130,7 +131,7 @@ export default function PortraitEditorSheet({ open, onClose, currentPortrait, on
       });
       onSave?.(dataUrl);
     } catch (err) {
-      setError(err?.message || 'Could not save the portrait');
+      setError(err?.message || t('Could not save the portrait'));
     }
   }, [edit, displayOffset, onSave]);
 
@@ -147,7 +148,7 @@ export default function PortraitEditorSheet({ open, onClose, currentPortrait, on
   const isEditing = Boolean(edit);
 
   return (
-    <BottomSheet open={open} onClose={onClose} title="Portrait" eyebrow="Character">
+    <BottomSheet open={open} onClose={onClose} title={t('Portrait')} eyebrow={t('Character')}>
       <div className="portrait-editor">
         <input
           ref={fileInputRef}
@@ -184,31 +185,31 @@ export default function PortraitEditorSheet({ open, onClose, currentPortrait, on
                 }}
               />
             </div>
-            <div className="portrait-editor-hint">Drag to reposition</div>
+            <div className="portrait-editor-hint">{t('Drag to reposition')}</div>
             {error && <div className="portrait-editor-error">{error}</div>}
             <div className="portrait-editor-actions">
-              <Button variant="ghost" onClick={handleCancelEdit}>Cancel</Button>
-              <Button variant="ghost" icon="image" onClick={handlePickFile}>Choose another</Button>
-              <Button variant="primary" icon="check" onClick={handleSave}>Save</Button>
+              <Button variant="ghost" onClick={handleCancelEdit}>{t('Cancel')}</Button>
+              <Button variant="ghost" icon="image" onClick={handlePickFile}>{t('Choose another')}</Button>
+              <Button variant="primary" icon="check" onClick={handleSave}>{t('Save')}</Button>
             </div>
           </>
         ) : hasExisting ? (
           <>
             <div className="portrait-editor-preview">
-              <img src={currentPortrait} alt="Current portrait" />
+              <img src={currentPortrait} alt={t('Current portrait')} />
             </div>
             {error && <div className="portrait-editor-error">{error}</div>}
             <div className="portrait-editor-actions">
-              <Button variant="danger" icon="delete" onClick={onRemove}>Remove</Button>
-              <Button variant="primary" icon="image" onClick={handlePickFile} disabled={busy}>Replace</Button>
+              <Button variant="danger" icon="delete" onClick={onRemove}>{t('Remove')}</Button>
+              <Button variant="primary" icon="image" onClick={handlePickFile} disabled={busy}>{t('Replace')}</Button>
             </div>
           </>
         ) : (
           <>
-            <div className="portrait-editor-hint">Pick an image from your device. It will be cropped to a square.</div>
+            <div className="portrait-editor-hint">{t('Pick an image from your device. It will be cropped to a square.')}</div>
             {error && <div className="portrait-editor-error">{error}</div>}
             <div className="portrait-editor-actions">
-              <Button variant="primary" icon="image" onClick={handlePickFile} disabled={busy}>Choose image</Button>
+              <Button variant="primary" icon="image" onClick={handlePickFile} disabled={busy}>{t('Choose image')}</Button>
             </div>
           </>
         )}

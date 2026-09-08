@@ -39,7 +39,7 @@ export default function AugmentSummoningNote() {
       <span>
         {tx(
           'If you summoned this creature, {0} gives it {1} for the spell’s duration — the scores below are the unsummoned ones.',
-          <b>Augment summoning</b>,
+          <b>{t('Augment summoning')}</b>,
           <b>+{AUGMENT_SUMMONING_BONUS} {scores}</b>,
         )}
       </span>

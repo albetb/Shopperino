@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import parse from 'html-react-parser';
+import { t, tName } from '../../lib/i18n';
 import Card from '../common/Card';
 import Pill from '../common/Pill';
 import useCardCollapse from './hooks/useCardCollapse';
@@ -30,15 +31,15 @@ export default function DomainsCard() {
 
   const powers = loadFile('tables')?.Domains ?? {};
   const slots = [
-    { slot: 1, key: 'domain1', label: 'Domain 1', name: player.domain1 ?? '' },
-    { slot: 2, key: 'domain2', label: 'Domain 2', name: player.domain2 ?? '' },
+    { slot: 1, key: 'domain1', label: t('Domain 1'), name: player.domain1 ?? '' },
+    { slot: 2, key: 'domain2', label: t('Domain 2'), name: player.domain2 ?? '' },
   ];
 
   return (
     <Card
-      title="Domain powers"
+      title={t('Domain powers')}
       className="sh-card--head-spread"
-      eyebrow="Granted abilities"
+      eyebrow={t('Granted abilities')}
       action={collapseToggle}
     >
       {!collapsed && (
@@ -46,8 +47,8 @@ export default function DomainsCard() {
         {slots.map(({ slot, key, label, name }) => (
           <div key={label} className="domains-card-slot">
             <div className="domains-card-head">
-              <span className="domains-card-name">{name || label}</span>
-              {!name && <Pill tone="warn">Not chosen</Pill>}
+              <span className="domains-card-name">{name ? tName('domains', name) : label}</span>
+              {!name && <Pill tone="warn">{t('Not chosen')}</Pill>}
             </div>
             <select
               className="modern-dropdown domains-card-select"
@@ -55,16 +56,16 @@ export default function DomainsCard() {
               onChange={(e) => dispatch(onSetPlayerSpellOption(key, e.target.value))}
               aria-label={label}
             >
-              <option value="">Select a domain…</option>
+              <option value="">{t('Select a domain…')}</option>
               {player.getPossibleDomains(slot).map((d) => (
-                <option key={d} value={d}>{d}</option>
+                <option key={d} value={d}>{tName('domains', d)}</option>
               ))}
             </select>
             {name && (
               <div className="domains-card-power">
                 {powers[name]
                   ? parse(u.prose(powers[name]))
-                  : <span className="sh-faint">No granted power recorded for this domain.</span>}
+                  : <span className="sh-faint">{t('No granted power recorded for this domain.')}</span>}
               </div>
             )}
           </div>

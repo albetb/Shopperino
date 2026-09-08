@@ -1,8 +1,10 @@
 import 'style/carrying_capacity.css';
 import { useUnits } from '../../hooks/useUnits';
+import { t } from '../../../lib/i18n';
 
 /* Static per-tier effects from equipment.md "Load effects". Speeds are
-   handled per-character below (the base depends on race). */
+   handled per-character below (the base depends on race). label is the
+   English key, translated where it is read, not here at module load. */
 const TIER_INFO = {
   light:  { label: 'Light',  maxDex: '—',  acp: 0,  run: '×4' },
   medium: { label: 'Medium', maxDex: '+3', acp: -3, run: '×4' },
@@ -42,9 +44,9 @@ export default function CarryingCapacityCard({ player, collapsed, setCollapsed }
         className="card-side-div card-expand-div"
         onClick={() => setCollapsed((c) => !c)}
       >
-        <h3 className="card-title">Carrying capacity</h3>
+        <h3 className="card-title">{t('Carrying capacity')}</h3>
         <span className="carry-title-readout sh-mono">{u.weight(fmtKg(weight))} / {u.weight(cap.heavy)}</span>
-        <button type="button" className="collapse-button" aria-label="Toggle carrying capacity">
+        <button type="button" className="collapse-button" aria-label={t('Toggle carrying capacity')}>
           <span className="material-symbols-outlined">
             {collapsed ? 'expand_more' : 'expand_less'}
           </span>
@@ -53,14 +55,14 @@ export default function CarryingCapacityCard({ player, collapsed, setCollapsed }
       {!collapsed && (
         <div className="card-content">
         <div className="sh-stack" style={{ gap: 'var(--space-3)' }}>
-          <div className="carry-table" role="table" aria-label="Load tiers">
+          <div className="carry-table" role="table" aria-label={t('Load tiers')}>
             <div className="carry-row carry-row--head" role="row">
-              <span role="columnheader">Tier</span>
-              <span role="columnheader">Max</span>
-              <span role="columnheader" title="Max Dex bonus">Dex</span>
-              <span role="columnheader" title="Skill check penalty">ACP</span>
-              <span role="columnheader">Run</span>
-              <span role="columnheader">Speed</span>
+              <span role="columnheader">{t('Tier')}</span>
+              <span role="columnheader">{t('Max')}</span>
+              <span role="columnheader" title={t('Max Dex bonus')}>{t('Dex')}</span>
+              <span role="columnheader" title={t('Skill check penalty')}>{t('ACP')}</span>
+              <span role="columnheader">{t('Run')}</span>
+              <span role="columnheader">{t('Speed')}</span>
             </div>
             {(['light', 'medium', 'heavy']).map(tier => {
               const info = TIER_INFO[tier];
@@ -72,7 +74,7 @@ export default function CarryingCapacityCard({ player, collapsed, setCollapsed }
                   role="row"
                   className={`carry-row ${active ? 'carry-row--active' : ''}`}
                 >
-                  <span className="carry-tier-label">{info.label}</span>
+                  <span className="carry-tier-label">{t(info.label)}</span>
                   <span className="sh-mono">{u.weight(cap[tier])}</span>
                   <span className="sh-mono">{info.maxDex}</span>
                   <span className="sh-mono">{info.acp}</span>
@@ -85,15 +87,15 @@ export default function CarryingCapacityCard({ player, collapsed, setCollapsed }
 
           <div className="carry-lift">
             <div className="carry-lift-row">
-              <span>Lift overhead</span>
+              <span>{t('Lift overhead')}</span>
               <span className="sh-mono">{u.weight(cap.heavy)}</span>
             </div>
             <div className="carry-lift-row">
-              <span>Lift off ground <span className="sh-faint">(×2)</span></span>
+              <span>{t('Lift off ground')} <span className="sh-faint">(×2)</span></span>
               <span className="sh-mono">{u.weight(fmtKg(capacity.heavy * 2))}</span>
             </div>
             <div className="carry-lift-row">
-              <span>Push or drag <span className="sh-faint">(×5)</span></span>
+              <span>{t('Push or drag')} <span className="sh-faint">(×5)</span></span>
               <span className="sh-mono">{u.weight(fmtKg(capacity.heavy * 5))}</span>
             </div>
           </div>

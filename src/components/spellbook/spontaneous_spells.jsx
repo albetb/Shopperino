@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { t } from '../../lib/i18n';
 import { isMobile } from '../../lib/utils';
 import { addCardByLink } from '../../store/slices/appSlice';
 import { StarOrbitCast } from './row_actions';
@@ -21,7 +22,7 @@ export default function SpontaneousSpells({
                     <thead>
                         <tr>
                             <th className="dark-grey col-btn-sm"></th>
-                            <th className="dark-grey spell-table-header-title">Spontaneous spells</th>
+                            <th className="dark-grey spell-table-header-title">{t('Spontaneous spells')}</th>
                             {!isMobile() && (<th className="dark-grey col-30"></th>)}
                         </tr>
                     </thead>

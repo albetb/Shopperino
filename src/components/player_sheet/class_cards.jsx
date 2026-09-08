@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { t, tName } from '../../lib/i18n';
 import { loadFile, isMobile } from '../../lib/utils';
 import SpellLink from '../common/spell_link';
 import { getFeatureSpell } from '../../lib/player/featureSpells';
@@ -32,16 +33,16 @@ function getAttackBar(baseAttack) {
 
 function getWeaponBar(className) {
   let filled = 1;
-  let value = 'Low';
+  let value = t('Low');
   if (WEAPON_HIGH.includes(className)) {
     filled = 3;
-    value = 'High';
+    value = t('High');
   } else if (WEAPON_MID.includes(className)) {
     filled = 2;
-    value = 'Mid';
+    value = t('Mid');
   } else if (WEAPON_LOW.includes(className)) {
     filled = 1;
-    value = 'Low';
+    value = t('Low');
   }
   return { filled, max: 3, value };
 }
@@ -49,13 +50,13 @@ function getWeaponBar(className) {
 function getArmorBar(armorProficiency) {
   const map = { no: 0, light: 1, medium: 2, heavy: 3 };
   const filled = map[armorProficiency] ?? 0;
-  const labels = { no: 'No', light: 'Light', medium: 'Medium', heavy: 'Heavy' };
+  const labels = { no: t('No'), light: t('Light'), medium: t('Medium'), heavy: t('Heavy') };
   return { filled, max: 3, value: labels[armorProficiency] || armorProficiency || '—' };
 }
 
 function getSaveBar(save) {
   const filled = save === 'high' ? 2 : 1;
-  return { filled, max: 2, value: save === 'high' ? 'High' : 'Low' };
+  return { filled, max: 2, value: save === 'high' ? t('High') : t('Low') };
 }
 
 function getAbilitiesBar(skillPointsPerLevel) {
@@ -65,11 +66,11 @@ function getAbilitiesBar(skillPointsPerLevel) {
 }
 
 function getSpellsBar(className, hasSpells) {
-  if (!hasSpells) return { filled: 0, max: 3, value: 'No' };
-  if (SPELLS_HIGH.includes(className)) return { filled: 3, max: 3, value: 'High' };
-  if (SPELLS_MID.includes(className)) return { filled: 2, max: 3, value: 'Mid' };
-  if (SPELLS_LOW.includes(className)) return { filled: 1, max: 3, value: 'Low' };
-  return { filled: 0, max: 3, value: 'No' };
+  if (!hasSpells) return { filled: 0, max: 3, value: t('No') };
+  if (SPELLS_HIGH.includes(className)) return { filled: 3, max: 3, value: t('High') };
+  if (SPELLS_MID.includes(className)) return { filled: 2, max: 3, value: t('Mid') };
+  if (SPELLS_LOW.includes(className)) return { filled: 1, max: 3, value: t('Low') };
+  return { filled: 0, max: 3, value: t('No') };
 }
 
 function getClassStats(className, data) {
@@ -187,7 +188,7 @@ export function ClassFeaturePills({ features, longFeatures, level }) {
                     save, so link to where they are. */}
                 {getFeatureSpell(feature.name) && (
                   <span className="class-feature-pill-spell">
-                    Casts{' '}
+                    {t('Casts')}{' '}
                     <SpellLink link={getFeatureSpell(feature.name).link}>
                       {getFeatureSpell(feature.name).name}
                     </SpellLink>
@@ -210,7 +211,10 @@ export default function ClassCards() {
   const currentClass = player?.getClass?.() ?? '';
 
   const classesData = useMemo(() => loadFile('classes') ?? {}, []);
-  const classNames = useMemo(() => Object.keys(classesData).sort(), [classesData]);
+  const classNames = useMemo(
+    () => Object.keys(classesData).sort((a, b) => tName('classes', a).localeCompare(tName('classes', b))),
+    [classesData]
+  );
 
   const [collapsed, setCollapsed] = useState({});
   const toggleCard = (name) => {
@@ -237,7 +241,7 @@ export default function ClassCards() {
         return (
           <div key={name} className={`card card-width-spellbook ${isCollapsed ? 'collapsed' : ''}`}>
             <div className="card-side-div card-expand-div" onClick={() => toggleCard(name)}>
-              <h3 className="card-title">{name}</h3>
+              <h3 className="card-title">{tName('classes', name)}</h3>
               <button className="collapse-button" type="button">
                 <span className="material-symbols-outlined">
                   {isCollapsed ? 'expand_more' : 'expand_less'}
@@ -248,16 +252,16 @@ export default function ClassCards() {
               <div className="card-content">
                 {stats && (
                   <div className="player-sheet-class-bars">
-                    <StatBar label="Life" {...stats.life} />
-                    <StatBar label="Attack" {...stats.attack} />
+                    <StatBar label={t('Life')} {...stats.life} />
+                    <StatBar label={t('Attack')} {...stats.attack} />
                     {/* <StatBar label="Weapon" {...stats.weapon} /> */}
-                    <StatBar label="Armor" {...stats.armor} />
-                    <StatBar label="Abilities" {...stats.abilities} />
-                    <StatBar label="Spells" {...stats.spells} />
+                    <StatBar label={t('Armor')} {...stats.armor} />
+                    <StatBar label={t('Abilities')} {...stats.abilities} />
+                    <StatBar label={t('Spells')} {...stats.spells} />
                     <div className="player-sheet-class-bars-saves">
-                      <StatBar label="Fortitude" {...stats.fort} className="short" />
-                      <StatBar label="Reflex" {...stats.reflex} className="short" />
-                      <StatBar label="Will" {...stats.will} className="short" />
+                      <StatBar label={t('Fortitude')} {...stats.fort} className="short" />
+                      <StatBar label={t('Reflex')} {...stats.reflex} className="short" />
+                      <StatBar label={t('Will')} {...stats.will} className="short" />
                     </div>
                   </div>
                 )}
@@ -271,7 +275,7 @@ export default function ClassCards() {
                     onClick={() => handleSelect(name)}
                     disabled={isCurrent}
                   >
-                    Select
+                    {t('Select')}
                   </button>
                 </div>
               </div>

@@ -1,5 +1,15 @@
 import PropTypes from 'prop-types';
+import { t, tx } from '../../lib/i18n';
 import { metamagicLabels } from '../../lib/spellbook/metamagic';
+
+const HEIGHTENED_TO = /^Heightened to (\d+)$/;
+
+/** metamagicLabels() returns fixed adjectives, or "Heightened to {n}" — the
+    only one carrying a value, so it needs its own translated template. */
+function translateLabel(label) {
+  const m = HEIGHTENED_TO.exec(label);
+  return m ? tx('Heightened to {0}', m[1]) : t(label);
+}
 
 /**
  * What has been done to a preparation, said beside the spell's name.
@@ -15,7 +25,7 @@ export default function MetamagicPills({ mm, className = '' }) {
   return (
     <span className={['mm-pills', className].filter(Boolean).join(' ')}>
       {labels.map((label) => (
-        <span className="mm-pill" key={label}>{label}</span>
+        <span className="mm-pill" key={label}>{translateLabel(label)}</span>
       ))}
     </span>
   );

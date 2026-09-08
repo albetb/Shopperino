@@ -184,7 +184,7 @@ export default function PlayerSheetBottomNav() {
             onClick={() => navigate(it.id)}
           >
             <Icon name={it.icon} />
-            <span>{it.label}</span>
+            <span>{t(it.label)}</span>
           </button>
         );
       })}

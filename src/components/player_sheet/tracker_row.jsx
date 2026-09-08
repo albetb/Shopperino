@@ -1,6 +1,7 @@
 import Slots from '../common/Slots';
 import IconButton from '../common/IconButton';
 import Icon from '../common/Icon';
+import { t, tx } from '../../lib/i18n';
 
 /* Beyond this many, a pip row stops being readable and the count carries it. */
 const MAX_PIPS = 12;
@@ -72,8 +73,8 @@ export default function TrackerRow({
               icon="remove"
               ghost
               size="sm"
-              title="Use one"
-              aria-label={`Use one ${name}`}
+              title={t('Use one')}
+              aria-label={tx('Use one {0}', name)}
               onClick={() => onUse?.(1)}
             />
           )}
@@ -83,8 +84,8 @@ export default function TrackerRow({
               ghost
               size="sm"
               disabled={usedNum === 0}
-              title="Restore to maximum"
-              aria-label={`Restore ${name}`}
+              title={t('Restore to maximum')}
+              aria-label={tx('Restore {0}', name)}
               onClick={onReset}
             />
           )}
@@ -94,7 +95,7 @@ export default function TrackerRow({
       {overCap && (
         <div className="sh-warn-strip tracker-card-over">
           <Icon name="warning" />
-          {usedNum - maxNum}{unitLabel} over the limit for this level
+          {tx('{0}{1} over the limit for this level', usedNum - maxNum, unitLabel)}
         </div>
       )}
 

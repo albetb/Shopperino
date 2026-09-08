@@ -19,14 +19,16 @@ const DOMAINS = [
   'War', 'Water'
 ];
 
+/* English keys, translated where they are read — not here at module load,
+   which would freeze the labels to whatever language was active on import. */
 const CHARACTERISTIC_FULL = {
-  Str: t('Strength'),
-  Dex: t('Dexterity'),
-  Con: t('Constitution'),
-  Int: t('Intelligence'),
-  Wis: t('Wisdom'),
-  Cha: t('Charisma'),
-  None: t('None'),
+  Str: 'Strength',
+  Dex: 'Dexterity',
+  Con: 'Constitution',
+  Int: 'Intelligence',
+  Wis: 'Wisdom',
+  Cha: 'Charisma',
+  None: 'None',
 };
 
 const linkParseOptions = {
@@ -423,7 +425,7 @@ export default function SearchPage() {
                         </td>
                       )}
                       {searchType === 'Skills' && (
-                        <td>{CHARACTERISTIC_FULL[r.Characteristic] || r.Characteristic || ''}</td>
+                        <td>{t(CHARACTERISTIC_FULL[r.Characteristic]) || r.Characteristic || ''}</td>
                       )}
                       {searchType === 'Items' && (
                         <>

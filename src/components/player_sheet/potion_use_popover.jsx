@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { t, tx, tName } from '../../lib/i18n';
 import BottomSheet from '../common/BottomSheet';
 import Button from '../common/Button';
 import Icon from '../common/Icon';
@@ -77,7 +78,7 @@ export default function PotionUsePopover({ potion, targets = [], damagedAbilitie
   const total = parsed ? (Number.isFinite(rollNumber) ? rollNumber : 0) + levelBonus : 0;
   const blocked = (needsTarget && !target) || !rollValid;
 
-  const verb = needsTarget ? 'Apply' : 'Drink';
+  const verb = needsTarget ? t('Apply') : t('Drink');
 
   const confirm = () => {
     if (blocked) return;
@@ -89,11 +90,11 @@ export default function PotionUsePopover({ potion, targets = [], damagedAbilitie
   };
 
   const targetList = repairing
-    ? damagedAbilities.map((d) => ({ slot: d.ability, name: `${d.ability} −${d.amount}` }))
+    ? damagedAbilities.map((d) => ({ slot: d.ability, name: tx('{0} −{1}', tName('abilities', d.ability), d.amount) }))
     : targets;
 
   return (
-    <BottomSheet open onClose={onClose} title={potion.name} eyebrow={needsTarget ? 'Oil' : 'Potion'}>
+    <BottomSheet open onClose={onClose} title={potion.name} eyebrow={needsTarget ? t('Oil') : t('Potion')}>
       <div className="potion-use">
         <p className="potion-use-desc">{potion.description}</p>
 
@@ -109,7 +110,7 @@ export default function PotionUsePopover({ potion, targets = [], damagedAbilitie
         {parsed && (
           <div className="potion-use-block">
             <span className="sh-eyebrow">
-              {dice.into === 'tempHp' ? 'Temporary hit points' : repairing ? 'Points repaired' : 'Amount'}
+              {dice.into === 'tempHp' ? t('Temporary hit points') : repairing ? t('Points repaired') : t('Amount')}
             </span>
             <div className="potion-use-roll">
               <input
@@ -118,7 +119,7 @@ export default function PotionUsePopover({ potion, targets = [], damagedAbilitie
                 value={rolled}
                 min={0}
                 onChange={(e) => setRolled(e.target.value)}
-                aria-label={`${dice.expr} roll`}
+                aria-label={tx('{0} roll', dice.expr)}
               />
               <span className="sh-faint potion-use-expr">
                 {dice.expr}
@@ -133,7 +134,7 @@ export default function PotionUsePopover({ potion, targets = [], damagedAbilitie
             </div>
             {levelBonus > 0 && (
               <span className="sh-faint potion-use-hint">
-                The +{levelBonus} is the potion’s caster level and is not rolled.
+                {tx("The +{0} is the potion’s caster level and is not rolled.", levelBonus)}
               </span>
             )}
           </div>
@@ -143,22 +144,22 @@ export default function PotionUsePopover({ potion, targets = [], damagedAbilitie
         {(needsTarget || repairing) && (
           <div className="potion-use-block">
             <span className="sh-eyebrow">
-              {repairing ? 'Repair which ability?' : TARGET_PROMPT[potion.target] || TARGET_PROMPT.any}
+              {repairing ? t('Repair which ability?') : t(TARGET_PROMPT[potion.target] || TARGET_PROMPT.any)}
             </span>
             {targetList.length === 0 ? (
               <span className="sh-faint">
-                {repairing ? 'No ability damage to repair.' : TARGET_EMPTY[potion.target] || TARGET_EMPTY.any}
+                {repairing ? t('No ability damage to repair.') : t(TARGET_EMPTY[potion.target] || TARGET_EMPTY.any)}
               </span>
             ) : (
               <div className="potion-use-targets">
-                {targetList.map((t) => (
+                {targetList.map((entry) => (
                   <button
                     type="button"
-                    key={t.slot}
-                    className={['sh-chip', target === t.slot && 'is-on'].filter(Boolean).join(' ')}
-                    onClick={() => setTarget(t.slot)}
+                    key={entry.slot}
+                    className={['sh-chip', target === entry.slot && 'is-on'].filter(Boolean).join(' ')}
+                    onClick={() => setTarget(entry.slot)}
                   >
-                    {t.name}
+                    {entry.name}
                   </button>
                 ))}
               </div>
@@ -179,12 +180,12 @@ export default function PotionUsePopover({ potion, targets = [], damagedAbilitie
         {potion.kind === 'condition' && (
           <div className="potion-use-note">
             <Icon name="label" size={16} />
-            <span>Nothing here maps onto a number the sheet keeps, so this becomes a pill you can see and clear.</span>
+            <span>{t('Nothing here maps onto a number the sheet keeps, so this becomes a pill you can see and clear.')}</span>
           </div>
         )}
 
         <div className="potion-use-actions">
-          <Button variant="ghost" icon="close" onClick={onClose}>Cancel</Button>
+          <Button variant="ghost" icon="close" onClick={onClose}>{t('Cancel')}</Button>
           <Button variant="primary" icon="local_bar" onClick={confirm} disabled={blocked}>
             {verb}
           </Button>

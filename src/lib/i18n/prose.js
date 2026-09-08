@@ -32,12 +32,18 @@
 import { getLanguage } from './index';
 import itTables from '../../data/it/tables.json';
 import itFeats from '../../data/it/feats.json';
+import itSkills from '../../data/it/skills.json';
+import itRaces from '../../data/it/races.json';
+import itClasses from '../../data/it/classes.json';
 
 /** Every prose pack, by language and then by data file name. */
 const PROSE = {
   it: {
     tables: itTables,
     feats: itFeats,
+    skills: itSkills,
+    races: itRaces,
+    classes: itClasses,
   },
 };
 

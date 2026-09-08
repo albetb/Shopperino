@@ -1,0 +1,24 @@
+{
+  "_": [
+    "Packs that are finished but deliberately not yet wired into prose.js.",
+    "",
+    "verify.py hard-fails on a pack nobody imports, because that is normally a",
+    "translation nobody can read. These two are the exception: they are large",
+    "enough that a static import would put them in the English bundle, and the",
+    "fix is the lazy chunk prose.js's own header describes -- not an import.",
+    "",
+    "An entry here turns that failure into a warning that names the reason, so",
+    "the work is visible every single run instead of being quietly forgotten.",
+    "Delete an entry the moment its pack is reachable."
+  ],
+  "packs": {
+    "spells": {
+      "reason": "4062 strings. Needs the lazy chunk prose.js describes, not a static import -- an English reader must not download it.",
+      "blocks": "src/lib/i18n/prose.js"
+    },
+    "monsters": {
+      "reason": "906 strings, and the English monsters.json is already a lazy chunk in loadFile.js -- a static pack would pull the Italian into the main bundle that the English was deliberately kept out of.",
+      "blocks": "src/lib/i18n/prose.js"
+    }
+  }
+}

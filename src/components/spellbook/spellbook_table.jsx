@@ -1,4 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
+import { t, tx, tName } from '../../lib/i18n';
 import SpellbookTableHeader from './spellbook_header';
 import SpellFilters from './spell_filters';
 import RestBox from './rest_box';
@@ -74,13 +75,13 @@ const CASTER_CLASSES = ['Sorcerer', 'Wizard', 'Cleric', 'Druid', 'Bard', 'Ranger
  */
 export function getNoSpellbookHint(playerClass) {
   if (!playerClass) {
-    return { text: 'Select a spellcasting class (and level 4+ for Paladin/Ranger).', pending: true };
+    return { text: t('Select a spellcasting class (and level 4+ for Paladin/Ranger).'), pending: true };
   }
   if (['Ranger', 'Paladin'].includes(playerClass)) {
-    return { text: `A ${playerClass} gains spells at 4th level.`, pending: true };
+    return { text: tx('A {0} gains spells at 4th level.', tName('classes', playerClass)), pending: true };
   }
   if (CASTER_CLASSES.includes(playerClass)) return { text: '', pending: false };
-  return { text: `A ${playerClass} has no spellcasting.`, pending: false };
+  return { text: tx('A {0} has no spellcasting.', tName('classes', playerClass)), pending: false };
 }
 
 export default function SpellbookTable({ source = 'app' }) {
@@ -172,7 +173,7 @@ export default function SpellbookTable({ source = 'app' }) {
 
   if (!spellbook?.Class) {
     const hint = isApp
-      ? { text: 'Create a new player and select his class to make a spellbook.', pending: true }
+      ? { text: t('Create a new player and select his class to make a spellbook.'), pending: true }
       : getNoSpellbookHint(player?.getClass?.() ?? '');
     if (!isApp && playerSpellbookPage === 2 && player?.getRace?.() === 'Gnome') {
       // The gnome's racial spells are the page's content here, so the hint is
@@ -242,7 +243,7 @@ export default function SpellbookTable({ source = 'app' }) {
   const metamagicRods = isApp ? [] : (player?.getMetamagicRods?.() ?? []);
 
   const castingBlocked = !isApp && player?.canCastSpells?.() === false;
-  const castingBlockedReason = 'No speech in animal form — Natural Spell removes this';
+  const castingBlockedReason = t('No speech in animal form — Natural Spell removes this');
 
   return (
     <>
@@ -310,9 +311,11 @@ export default function SpellbookTable({ source = 'app' }) {
         <div className="card card-width-spellbook wild-shape-cast-block">
           <span className="material-symbols-outlined">auto_fix_off</span>
           <span>
-            Wild-shaped as <b>{player.getWildShapeName()}</b> — you cannot cast.
-            An animal form has no speech, so verbal components fail. The{' '}
-            <b>Natural Spell</b> feat removes this restriction.
+            {tx(
+              'Wild-shaped as {0} — you cannot cast. An animal form has no speech, so verbal components fail. The {1} feat removes this restriction.',
+              <b>{player.getWildShapeName()}</b>,
+              <b>{tName('feats', 'Natural Spell')}</b>,
+            )}
           </span>
         </div>
       )}

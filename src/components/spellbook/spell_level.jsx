@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { t, tx } from '../../lib/i18n';
 import StatInfo from '../common/StatInfo';
 import InfoPopover from '../common/InfoPopover';
 import { AUGMENT_SUMMONING_ABILITY_NAMES } from '../../lib/player/augmentSummoning';
@@ -79,14 +80,14 @@ export default function SpellLevelCard({
       case (["Sorcerer", "Bard"].includes(inst.Class) && page === 0): {
 
         const count = (learnedByLevel[lvl] || []).length;
-        return `Lv${lvl} (${count}/${known[lvl]} known)`;
+        return tx('Lv{0} ({1}/{2} known)', lvl, count, known[lvl]);
       }
       case (inst.Class === 'Wizard' && page === 0):
         // Not a cap: the figure is what levelling grants for free, and copying
         // scrolls legitimately puts a wizard above it. Never flagged.
         return lvl === 0
-          ? `Lv${lvl} (Wizards know all lv0 spells)`
-          : `Lv${lvl} (${spellLength - learnedByLevel0Length}/${known} free in total)`;
+          ? tx('Lv{0} (Wizards know all lv0 spells)', lvl)
+          : tx('Lv{0} ({1}/{2} free in total)', lvl, spellLength - learnedByLevel0Length, known);
       case (page === 1): {
         /* Counted by the slot each preparation occupies rather than by the
            spell's own level, so an empowered magic missile is charged to the
@@ -105,13 +106,13 @@ export default function SpellLevelCard({
         }
 
         const domainPart = inst.Class === 'Cleric' && lvl !== 0
-          ? ` Domain (${((inst.PreparedDomainSpells && inst.PreparedDomainSpells[lvl]) || []).reduce((sum, s) => sum + (s.Prepared || 0), 0)}/1)`
+          ? tx(' Domain ({0}/1)', ((inst.PreparedDomainSpells && inst.PreparedDomainSpells[lvl]) || []).reduce((sum, s) => sum + (s.Prepared || 0), 0))
           : '';
-        return `Lv${lvl} (${totalPrep}/${spellsPerDay[lvl]} per day) ${mageSpec}${domainPart}`;
+        return tx('Lv{0} ({1}/{2} per day) {3}{4}', lvl, totalPrep, spellsPerDay[lvl], mageSpec, domainPart);
       }
       default:
         const mageSpec = isSpecialized ? "+1" : "";
-        return `Lv${lvl} (${spellsPerDay[lvl]}${mageSpec}/day) CD ${10 + charBonus + lvl}`;
+        return tx('Lv{0} ({1}{2}/day) DC {3}', lvl, spellsPerDay[lvl], mageSpec, 10 + charBonus + lvl);
     }
   };
 
@@ -135,7 +136,7 @@ export default function SpellLevelCard({
         <h3 className={`card-title${knownOverCap > 0 ? ' card-title-over-cap' : ''}`}>
           {trimLine(spellCardTitle(level), isMobile() ? 35 : 45)}
           {knownOverCap > 0 && (
-            <span className="over-cap-badge" title="More spells known than the table allows">
+            <span className="over-cap-badge" title={t('More spells known than the table allows')}>
               +{knownOverCap}
             </span>
           )}
@@ -165,7 +166,7 @@ export default function SpellLevelCard({
             <tr>
               <th className="dark-grey col-btn-sm"></th>
               <th className="dark-grey spell-table-header-title">
-                Domain spell
+                {t('Domain spell')}
               </th>
               {!isMobile() && (<th className="dark-grey col-30"></th>)}
             </tr>
@@ -327,13 +328,13 @@ export default function SpellLevelCard({
                             <span
                               className={'spell-save-dc' + (save.focused ? ' is-focused' : '')}
                               title={save.focused
-                                ? 'Save DC, including Spell focus for this school'
-                                : 'Save DC against this spell'}
+                                ? t('Save DC, including Spell focus for this school')
+                                : t('Save DC against this spell')}
                             >
-                              DC {save.dc}
+                              {t('DC')} {save.dc}
                             </span>
                             <StatInfo
-                              label={`${item.Name} save DC`}
+                              label={tx('{0} save DC', item.Name)}
                               value={save.dc}
                               contributions={save.contributions ?? []}
                             />
@@ -348,20 +349,20 @@ export default function SpellLevelCard({
                         const sr = getSpellResistance?.(item);
                         if (!sr) return null;
                         const label = sr.qualifier
-                          ? `SR ${sr.qualifier}`
-                          : 'SR';
+                          ? tx('SR {0}', sr.qualifier)
+                          : t('SR');
                         return (
                           <span className="spell-sr-group">
                             <span
                               className={'spell-sr' + (sr.penetration > 0 ? ' is-focused' : '')}
-                              title={`${label} — roll 1d20+${sr.check} against the creature's spell resistance`}
+                              title={tx("{0} — roll 1d20+{1} against the creature's spell resistance", label, sr.check)}
                             >
                               {label} +{sr.check}
                             </span>
                             <StatInfo
-                              label={`${item.Name} caster level check`}
+                              label={tx('{0} caster level check', item.Name)}
                               value={sr.check}
-                              primaryLabel="Caster level check"
+                              primaryLabel={t('Caster level check')}
                               contributions={sr.contributions ?? []}
                             />
                           </span>
@@ -377,17 +378,19 @@ export default function SpellLevelCard({
                         if (!summon) return null;
                         return (
                           <span className="spell-summon-bonus">
-                            <InfoPopover label="Augment summoning">
+                            <InfoPopover label={t('Augment summoning')}>
                               <p>
-                                Every creature this spell summons gains{' '}
-                                <b>+{summon.bonus} {summon.type}</b> to{' '}
-                                {summon.abilities.map((k) => AUGMENT_SUMMONING_ABILITY_NAMES[k] ?? k).join(' and ')},
-                                for the whole duration.
+                                {tx(
+                                  'Every creature this spell summons gains {0} to {1}, for the whole duration.',
+                                  <b>+{summon.bonus} {summon.type}</b>,
+                                  summon.abilities.map((k) => t(AUGMENT_SUMMONING_ABILITY_NAMES[k] ?? k)).join(` ${t('and')} `),
+                                )}
                               </p>
                               <p>
-                                That is +{Math.floor(summon.bonus / 2)} to melee attack
-                                and damage rolls, to Fortitude saves, and to the
-                                creature's hit points per Hit Die.
+                                {tx(
+                                  "That is +{0} to melee attack and damage rolls, to Fortitude saves, and to the creature's hit points per Hit Die.",
+                                  Math.floor(summon.bonus / 2),
+                                )}
                               </p>
                             </InfoPopover>
                           </span>

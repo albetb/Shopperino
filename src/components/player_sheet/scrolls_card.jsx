@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
+import { t, tx } from '../../lib/i18n';
 import Card from '../common/Card';
 import Pill from '../common/Pill';
 import Button from '../common/Button';
@@ -39,7 +40,7 @@ export default function ScrollsCard() {
   return (
     <>
       <Card
-        title="Scrolls"
+        title={t('Scrolls')}
         className="sh-card--head-spread"
         onHeadClick={() => toggle.props.onClick()}
         action={toggle}
@@ -53,9 +54,9 @@ export default function ScrollsCard() {
                   size="sm"
                   icon="draw"
                   onClick={() => setUsing(scroll)}
-                  aria-label={`Read ${scroll.name}`}
+                  aria-label={tx('Read {0}', scroll.name)}
                 >
-                  Read
+                  {t('Read')}
                 </Button>
                 <span className="scroll-row-name">
                   <span className="scroll-row-title">
@@ -68,10 +69,10 @@ export default function ScrollsCard() {
                       <span
                         className="scroll-row-warn"
                         title={scroll.reason}
-                        aria-label={`Cannot read unaided: ${scroll.reason}`}
+                        aria-label={tx('Cannot read unaided: {0}', scroll.reason)}
                       >
                         <Icon name="warning" size={12} />
-                        Can’t read
+                        {t('Can’t read')}
                       </span>
                     )}
                   </span>

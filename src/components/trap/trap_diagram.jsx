@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { t, tx } from '../../lib/i18n';
 import { trapGrid, footprintCaveat, TRIGGER_SHAPE_NOTE } from '../../lib/trap';
 import { useUnits } from '../hooks/useUnits';
 
@@ -32,7 +33,7 @@ export default function TrapDiagram({ trap }) {
         className="trap-diagram-svg"
         viewBox={`0 0 ${width} ${height}`}
         role="img"
-        aria-label={`Board diagram: ${grid.caption}`}
+        aria-label={tx('Board diagram: {0}', grid.caption)}
         preserveAspectRatio="xMidYMid meet"
       >
         {grid.cells.map((c) => {
@@ -57,27 +58,27 @@ export default function TrapDiagram({ trap }) {
       <div className="trap-diagram-legend">
         <span className="trap-legend-item">
           <span className="trap-swatch is-effect" aria-hidden="true" />
-          Caught by the trap
+          {t('Caught by the trap')}
         </span>
         {grid.triggerShape !== 'none' && (
           <span className="trap-legend-item">
             <span className="trap-swatch is-trigger" aria-hidden="true" />
-            Trigger
+            {t('Trigger')}
           </span>
         )}
         {grid.kind === 'room' && (
           <span className="trap-legend-item">
             <span className="trap-swatch is-wall" aria-hidden="true" />
-            Wall
+            {t('Wall')}
           </span>
         )}
       </div>
 
       <p className="trap-diagram-caption">
-        {u.text(grid.caption)} Each square is {u.distance(grid.cellFt)}.
+        {tx('{0} Each square is {1}.', u.text(grid.caption), u.distance(grid.cellFt))}
       </p>
       <p className="trap-diagram-caption trap-diagram-trigger-note">
-        {TRIGGER_SHAPE_NOTE[grid.triggerShape]}
+        {t(TRIGGER_SHAPE_NOTE[grid.triggerShape])}
       </p>
       {caveat && <p className="trap-diagram-caveat">{caveat}</p>}
     </div>

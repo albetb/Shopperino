@@ -10,6 +10,7 @@ import {
 import { onSetCharacterRace } from '../../store/thunks/playerSheetThunks';
 import { setIsPlayerSheetSidebarCollapsed } from '../../store/slices/playerSheetSlice';
 import '../../style/menu_cards.css';
+import { t, tx, tName } from '../../lib/i18n';
 import '../../style/race_cards.css';
 import { useUnits } from '../hooks/useUnits';
 
@@ -35,10 +36,12 @@ const ABILITY_LABELS = {
 
 const signed = (value) => `${value >= 0 ? '+' : ''}${value}`;
 
-/** A list read as a sentence: "a, b and c". */
-function asSentence(items) {
+/** A list read as a sentence: "a, b and c".
+    `and` is passed in translated -- the joining word belongs to the
+    language, not to this helper. */
+function asSentence(items, and) {
   if (items.length <= 1) return items.join('');
-  return `${items.slice(0, -1).join(', ')} and ${items[items.length - 1]}`;
+  return `${items.slice(0, -1).join(', ')} ${and} ${items[items.length - 1]}`;
 }
 
 function RaceCard({ name, isCurrent, onSelect }) {
@@ -60,11 +63,11 @@ function RaceCard({ name, isCurrent, onSelect }) {
               key={key}
               className={value > 0 ? 'race-mod is-up' : 'race-mod is-down'}
             >
-              {signed(value)} {ABILITY_LABELS[key] ?? key}
+              {signed(value)} {t(ABILITY_LABELS[key] ?? key)}
             </span>
           ))}
         </span>
-        <button type="button" className="collapse-button" aria-label={`Toggle ${name}`}>
+        <button type="button" className="collapse-button" aria-label={tx('Toggle {0}', tName('races', name))}>
           <span className="material-symbols-outlined">
             {collapsed ? 'expand_more' : 'expand_less'}
           </span>
@@ -74,26 +77,27 @@ function RaceCard({ name, isCurrent, onSelect }) {
       {!collapsed && (
         <div className="card-content">
           <div className="race-card-facts">
-            {summary.size && <span className="race-fact">{summary.size}</span>}
+            {summary.size && <span className="race-fact">{tName('sizes', summary.size)}</span>}
             {summary.landSpeed > 0 && (
-              <span className="race-fact">{u.distance(summary.landSpeed)} speed</span>
+              <span className="race-fact">{tx('{0} speed', u.distance(summary.landSpeed))}</span>
             )}
             {summary.favoredClass && (
-              <span className="race-fact">favored class: {summary.favoredClass}</span>
+              <span className="race-fact">{tx('favored class: {0}', tName('classes', summary.favoredClass))}</span>
             )}
           </div>
           {summary.speedNote && <p className="race-card-note">{u.text(summary.speedNote)}</p>}
 
           {traits.map((trait) => (
             <p key={trait.name || trait.description} className="text-left">
-              {trait.name && <strong>{trait.name}: </strong>}
+              {trait.name && <strong>{tName('traits', trait.name)}: </strong>}
               {trait.description}
             </p>
           ))}
 
           {applied.length > 0 && (
             <p className="race-card-applied">
-              Applied to your sheet automatically: {asSentence(applied)}.
+              {tx('Applied to your sheet automatically: {0}.',
+                asSentence(applied.map((c) => t(c)), t('and')))}
             </p>
           )}
 
@@ -104,7 +108,7 @@ function RaceCard({ name, isCurrent, onSelect }) {
               onClick={onSelect}
               disabled={isCurrent}
             >
-              Select
+              {t('Select')}
             </button>
           </div>
         </div>

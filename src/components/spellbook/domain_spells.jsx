@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { t } from '../../lib/i18n';
 import { isMobile } from '../../lib/utils';
 import { addCardByLink } from '../../store/slices/appSlice';
 import { StarOrbitCast } from './row_actions';
@@ -16,7 +17,7 @@ export default function DomainSpells({ preparedByLevel, preparedLevels, onUseDom
                         <thead>
                             <tr>
                                 <th className="dark-grey col-btn-sm"></th>
-                                <th className="dark-grey spell-table-header-title">Domain spell</th>
+                                <th className="dark-grey spell-table-header-title">{t('Domain spell')}</th>
                                 {!isMobile() && (<th className="dark-grey col-30"></th>)}
                             </tr>
                         </thead>

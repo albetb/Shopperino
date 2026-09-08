@@ -85,6 +85,42 @@ Run `--merge` when both lanes are idle, then `--md`. A conflict is reported,
 never resolved silently — the two agents disagreeing about a term is exactly
 what the glossary exists to prevent.
 
+### More than one agent inside one file
+
+`spells.json` is 4062 strings — more than every other untranslated file put
+together. Splitting it by hand is not possible: two agents writing
+`src/data/it/spells.json` spend the hour overwriting each other.
+
+So a pack may be held in pieces. Set **`TRANSLATE_SHARD`** and your writes go to
+your own file instead of the shared one:
+
+```bash
+export TRANSLATE_SHARD=a        # writes src/data/it/spells.a.json
+```
+
+Reads are always the union of `spells.json` and every `spells.*.json` beside
+it, so `verify.py`, `progress.py` and `leftovers.py` report on the whole pack
+however it is divided, and you can check your work against the other agent's
+while you are both still running. Set it once, at the start, in the same shell
+you run everything else in.
+
+Two things follow from sharing a file:
+
+- **Translate only the slice you were given.** Whoever assigned the shard named
+  a range of indices. A key outside it is the other agent's, and the last
+  writer of a key wins.
+- **A spell description that names another spell is where the two of you can
+  disagree.** Look the name up in the manual, translate it, and record it in
+  your `glossary.<lane>.json` the moment you use it — the other agent reads
+  your inbox on their next `verify.py` run and will match you.
+
+When the batch is finished the shards fold back into the shared file:
+
+```bash
+python $S/glossary.py --conflicts     # first: did the shards diverge?
+python $S/shards.py --fold src/data/spells.json
+```
+
 ### Where an Italian term comes from
 
 Every term carries `source`:
@@ -124,12 +160,18 @@ this machine. *Crippling Strike* is **Colpo menomante**, not *Colpo
 Debilitante*; *Cowering* is **Accovacciato**, not *Terrorizzato*; *Fey* is
 **Folletto**, not *Fata*.
 
-`--names` catches an invented word. It cannot catch a real word on the wrong
-rung, and that is the failure worth fearing: the pack had *Tiny* ->
+`--names` catches an invented word. It cannot catch a real word that is not
+the name, and that is the failure worth fearing. *Sense Motive* was rendered
+**Intuizione**, which the Manuale del Giocatore prints four times -- as an
+ordinary noun, never as a skill. The skill is **Percepire Intenzioni**, and the
+book says so in a heading. Nor can it catch a real name on the wrong rung: the pack had *Tiny* ->
 *Piccolissimo*, *Diminutive* -> *Minuscolo*, *Fine* -> *Minutolo* -- the whole
 ladder rotated by one, using terms the book really prints, for the wrong sizes.
-**When a domain is an ordered set, read the book's own list rather than
-checking the entries one at a time.**
+**Read the book's own list rather than checking entries one at a time.**
+`--names` prints where each domain's list lives -- the skill table on p.64, the
+condition appendix in the DMG, the size entries in the glossary with their
+measurements. One page settles a whole domain and is the only thing that
+catches a plausible word in the wrong place.
 
 **The books are on this machine** -- the Italian editions, with a text layer, in
 `C:\Users\albet\Documents\D&D 3.5\!Manuali - Base\` (core) and
@@ -322,6 +364,18 @@ python $S/verify.py src/data/spells.json
 
 The batch hands strings out in document order, so a spell's Description, Range
 and Duration arrive together — translate them as one unit.
+
+**Sharing the file with another agent?** Pass your slice, every time, or you
+will both be handed entry 0:
+
+```bash
+export TRANSLATE_SHARD=a
+python $S/next_batch.py src/data/spells.json --first 0 --last 300 --count 30 --out /tmp/batch.json
+python $S/next_batch.py src/data/spells.json --first 0 --last 300 --status   # your slice only
+```
+
+The index is the leading path segment, so `--first 0 --last 300` is spells 0
+through 300 inclusive. `--status` then counts your slice rather than the file.
 
 **Progress lives in the pack.** A path with an entry is done. No ledger,
 and committing changes nothing.

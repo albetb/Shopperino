@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { tx, tName } from '../../lib/i18n';
 
 export default function SpellFilters({ filters, onClearSearchName, onClearSearchSchool }) {
     const { name, school } = filters;
@@ -21,7 +22,7 @@ export default function SpellFilters({ filters, onClearSearchName, onClearSearch
                             </span>
                         </button>
                         <p className="filter-icon-white">
-                            Filter by name: <b>{name}</b>
+                            {tx('Filter by name: {0}', <b>{name}</b>)}
                         </p>
                     </div>
                 </div>
@@ -38,7 +39,7 @@ export default function SpellFilters({ filters, onClearSearchName, onClearSearch
                             </span>
                         </button>
                         <p className="filter-icon-white">
-                            Filter by school: <b>{school}</b>
+                            {tx('Filter by school: {0}', <b>{tName('schools', school)}</b>)}
                         </p>
                     </div>
                 </div>

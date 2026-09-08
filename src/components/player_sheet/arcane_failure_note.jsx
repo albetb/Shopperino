@@ -1,4 +1,5 @@
 import { useSelector } from 'react-redux';
+import { t, tx } from '../../lib/i18n';
 import Pill from '../common/Pill';
 import InfoPopover from '../common/InfoPopover';
 import '../../style/arcane_failure_note.css';
@@ -22,17 +23,17 @@ export default function ArcaneFailureNote() {
 
   return (
     <div className="card card-width-spellbook arcane-failure-note">
-      <Pill tone="warn" icon="warning">Arcane spell failure {chance}%</Pill>
-      <InfoPopover label="Arcane spell failure">
+      <Pill tone="warn" icon="warning">{tx('Arcane spell failure {0}%', chance)}</Pill>
+      <InfoPopover label={t('Arcane spell failure')}>
         <p>
-          Before casting an arcane spell with a <b>somatic</b> component, roll
-          percentile dice. On <b>{chance} or less</b> the spell fails and the
-          slot is spent anyway.
+          {tx(
+            'Before casting an arcane spell with a {0} component, roll percentile dice. On {1} the spell fails and the slot is spent anyway.',
+            <b>{t('somatic')}</b>,
+            <b>{tx('{0} or less', chance)}</b>,
+          )}
         </p>
         <p>
-          Armor and shield chances add together, and being proficient does not
-          reduce them — only taking the armor off does. A spell with no somatic
-          component ignores this entirely, as do divine spells.
+          {t('Armor and shield chances add together, and being proficient does not reduce them — only taking the armor off does. A spell with no somatic component ignores this entirely, as do divine spells.')}
         </p>
       </InfoPopover>
     </div>

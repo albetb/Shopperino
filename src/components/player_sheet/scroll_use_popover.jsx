@@ -1,4 +1,5 @@
 import { useDispatch } from 'react-redux';
+import { t, tx, tName } from '../../lib/i18n';
 import BottomSheet from '../common/BottomSheet';
 import Button from '../common/Button';
 import Icon from '../common/Icon';
@@ -32,27 +33,27 @@ export default function ScrollUsePopover({ scroll, onClose }) {
   };
 
   return (
-    <BottomSheet open onClose={onClose} title={scroll.spellName} eyebrow={`${scroll.source} scroll`}>
+    <BottomSheet open onClose={onClose} title={scroll.spellName} eyebrow={tx('{0} scroll', tName('spellSources', scroll.source))}>
       <div className="scroll-use">
         <p className="scroll-use-desc">{scroll.description}</p>
 
         <div className="scroll-use-meta">
-          <Pill tone="ghost">Level {scroll.spellLevel}</Pill>
-          {scroll.casterLevel > 0 && <Pill tone="ghost">CL {scroll.casterLevel}</Pill>}
-          {scroll.number > 1 && <Pill tone="ghost">{scroll.number} carried</Pill>}
+          <Pill tone="ghost">{tx('Level {0}', scroll.spellLevel)}</Pill>
+          {scroll.casterLevel > 0 && <Pill tone="ghost">{tx('CL {0}', scroll.casterLevel)}</Pill>}
+          {scroll.number > 1 && <Pill tone="ghost">{tx('{0} carried', scroll.number)}</Pill>}
         </div>
 
         {/* The spell's own page, one tap away — everything this box does not
             repeat (range, duration, the full text) lives there. */}
         <div className="scroll-use-link">
           <Icon name="menu_book" size={16} />
-          <SpellLink link={`spells#${scroll.link}`}>Open {scroll.spellName}</SpellLink>
+          <SpellLink link={`spells#${scroll.link}`}>{tx('Open {0}', scroll.spellName)}</SpellLink>
         </div>
 
         {scroll.school && (
           <div className="scroll-use-note">
             <Icon name="auto_stories" size={16} />
-            <span>{scroll.school}</span>
+            <span>{tName('schools', scroll.school)}</span>
           </div>
         )}
 
@@ -64,14 +65,15 @@ export default function ScrollUsePopover({ scroll, onClose }) {
           <div className="sh-warn-strip scroll-use-warn">
             <Icon name="warning" size={16} />
             <div className="scroll-use-warn-body">
-              <strong>Reading this is beyond you.</strong>
+              <strong>{t('Reading this is beyond you.')}</strong>
               <ul className="scroll-use-reasons">
                 {scroll.reasons.map((reason) => <li key={reason}>{reason}</li>)}
               </ul>
               <span>
-                A scroll is spell completion, so both must hold. You can still try
-                with Use Magic Device, DC {scroll.umdDC} — failing it by 10 or more
-                is a mishap.
+                {tx(
+                  'A scroll is spell completion, so both must hold. You can still try with Use Magic Device, DC {0} — failing it by 10 or more is a mishap.',
+                  scroll.umdDC,
+                )}
               </span>
             </div>
           </div>
@@ -81,8 +83,8 @@ export default function ScrollUsePopover({ scroll, onClose }) {
             rules — the same bargain every other over-limit input on this page
             makes. */}
         <div className="scroll-use-actions">
-          <Button variant="ghost" icon="close" onClick={onClose}>Cancel</Button>
-          <Button variant="primary" icon="draw" onClick={confirm}>Read</Button>
+          <Button variant="ghost" icon="close" onClick={onClose}>{t('Cancel')}</Button>
+          <Button variant="primary" icon="draw" onClick={confirm}>{t('Read')}</Button>
         </div>
       </div>
     </BottomSheet>

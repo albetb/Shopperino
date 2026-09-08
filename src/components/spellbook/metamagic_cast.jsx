@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
+import { t, tx } from '../../lib/i18n';
 import AnchorPopover from '../common/AnchorPopover';
 import MetamagicChooser from './metamagic_chooser';
 import { metamagicLabel, modifiedSpellLevel } from '../../lib/spellbook/metamagic';
 
 const QUICKEN = 'Quicken spell';
-const QUICKEN_WARNING = 'A spontaneously cast spell cannot be quickened — applying '
+const QUICKEN_WARNING_EN = 'A spontaneously cast spell cannot be quickened — applying '
   + 'any metamagic to one already costs a full-round action.';
 
 /**
@@ -38,7 +39,7 @@ export default function MetamagicCastButton({
 
   return (
     <AnchorPopover
-      label={`Metamagic — ${spell.Name}`}
+      label={tx('Metamagic — {0}', spell.Name)}
       className="mm-popover"
       width="24rem"
       renderTrigger={({ ref, open, toggle }) => (
@@ -48,8 +49,8 @@ export default function MetamagicCastButton({
           className="mm-trigger"
           onClick={(e) => { e.stopPropagation(); toggle(); }}
           aria-expanded={open}
-          aria-label={`Cast ${spell.Name} with metamagic`}
-          title={`Cast ${spell.Name} with metamagic`}
+          aria-label={tx('Cast {0} with metamagic', spell.Name)}
+          title={tx('Cast {0} with metamagic', spell.Name)}
         >
           <span className="material-symbols-outlined">auto_fix_high</span>
         </button>
@@ -63,11 +64,13 @@ export default function MetamagicCastButton({
             mm={mm}
             onChange={setMm}
             warnFeat={QUICKEN}
-            warning={QUICKEN_WARNING}
+            warning={t(QUICKEN_WARNING_EN)}
           />
           <div className="mm-cast-row">
             <span className="mm-cast-remaining">
-              {remaining} level {level} {remaining === 1 ? 'slot' : 'slots'} left
+              {remaining === 1
+                ? tx('{0} level {1} slot left', remaining, level)
+                : tx('{0} level {1} slots left', remaining, level)}
             </span>
             <button
               type="button"
@@ -75,13 +78,12 @@ export default function MetamagicCastButton({
               disabled={mm === 0 || blocked}
               onClick={() => onCast(mm)}
             >
-              <b>Cast</b>
+              <b>{t('Cast')}</b>
             </button>
           </div>
           {mm !== 0 && remaining <= 0 && (
             <p className="mm-hint is-over">
-              No level {level} slot left today. Casting anyway is allowed and
-              takes the count below zero.
+              {tx('No level {0} slot left today. Casting anyway is allowed and takes the count below zero.', level)}
             </p>
           )}
         </>
@@ -89,10 +91,9 @@ export default function MetamagicCastButton({
 
       {rods.length > 0 && (
         <div className="mm-rods">
-          <div className="mm-rods-title">Metamagic rods in hand</div>
+          <div className="mm-rods-title">{t('Metamagic rods in hand')}</div>
           <p className="mm-hint">
-            A rod applies its feat without raising the slot — the spell is cast
-            out of the slot it is already in, and the rod spends a charge.
+            {t('A rod applies its feat without raising the slot — the spell is cast out of the slot it is already in, and the rod spends a charge.')}
           </p>
           {rods.map((rod) => {
             const overLevel = rod.maxLevel > 0 && baseLevel > rod.maxLevel;
@@ -104,30 +105,29 @@ export default function MetamagicCastButton({
                   <span className="mm-rod-charges">{rod.remaining}/{rod.maxCharges}</span>
                 </div>
                 <div className="mm-rod-body">
-                  <span className="mm-rod-feat">{metamagicLabel(rod.feat)}</span>
+                  <span className="mm-rod-feat">{t(metamagicLabel(rod.feat))}</span>
                   <button
                     type="button"
                     className="modern-button mm-cast-button"
                     disabled={blocked}
                     onClick={() => onCastWithRod(rod.id)}
                   >
-                    <b>Cast</b>
+                    <b>{t('Cast')}</b>
                   </button>
                 </div>
                 {overLevel && (
                   <div className="mm-summary-note is-over">
-                    This rod reaches spells of level {rod.maxLevel} and below;
-                    this one is level {baseLevel}.
+                    {tx('This rod reaches spells of level {0} and below; this one is level {1}.', rod.maxLevel, baseLevel)}
                   </div>
                 )}
                 {spent && (
                   <div className="mm-summary-note is-over">
-                    All {rod.maxCharges} of today's charges are spent.
+                    {tx("All {0} of today's charges are spent.", rod.maxCharges)}
                   </div>
                 )}
                 {rod.isSecondarySet && (
                   <div className="mm-summary-note">
-                    In your other hand set — you would have to swap to it first.
+                    {t('In your other hand set — you would have to swap to it first.')}
                   </div>
                 )}
               </div>

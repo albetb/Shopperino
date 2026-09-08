@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { t, tx } from 'lib/i18n';
 import Shop from 'lib/shop';
 import { sharedStockToDisplayItems } from 'lib/shop';
 import { formatNumber, getEffectById } from 'lib/utils';
@@ -37,7 +38,7 @@ export default function ShopInventory() {
   const items = isViewOnly
     ? (Array.isArray(sharedShop.stock) ? sharedStockToDisplayItems(sharedShop.stock) : [])
     : (rawShop?.getInventory?.() ?? []);
-  const shopName = isViewOnly ? (sharedShop.name ?? 'Shared shop') : (rawShop?.Name || '');
+  const shopName = isViewOnly ? (sharedShop.name ?? t('Shared shop')) : (rawShop?.Name || '');
   const gold = isViewOnly ? (Number(sharedShop.gold) || 0) : (rawShop?.Gold ?? 0);
   const cityFromRedux = useSelector((state) => state.city.city?.Name) || '';
   const cityName = isViewOnly ? '' : cityFromRedux;
@@ -100,7 +101,7 @@ export default function ShopInventory() {
           <h2>{shopLabel()}</h2>
             {isViewOnly ? (
               <div className="space-left">
-                <h4 className="view-only-italic">(view only)</h4>
+                <h4 className="view-only-italic">{t('(view only)')}</h4>
               </div>
             ) : (
               <></>
@@ -116,19 +117,19 @@ export default function ShopInventory() {
                 className="modern-button small-middle"
                 onClick={() => dispatch(clearSharedShop())}
               >
-                Close
+                {t('Close')}
               </button>
             )}
-            <h4 className="money-box-amount" aria-label={`Gold: ${formatNumber(gold)}`}>
+            <h4 className="money-box-amount" aria-label={tx('Gold: {0}', formatNumber(gold))}>
               <span className="material-symbols-outlined money-box-icon" aria-hidden="true">paid</span>
               <b>{formatNumber(gold)}</b>
             </h4>
           </div>
         )}
 
-      {isViewOnly && !hasItems && <p className="empty-state-message">No items in this shop.</p>}
+      {isViewOnly && !hasItems && <p className="empty-state-message">{t('No items in this shop.')}</p>}
       {!isViewOnly && !hasItems && (
-        <p className="search-hint">Create a world and shop, then generate its inventory.</p>
+        <p className="search-hint">{t('Create a world and shop, then generate its inventory.')}</p>
       )}
 
       <table
@@ -148,7 +149,7 @@ export default function ShopInventory() {
 
       {!isViewOnly && hasItems && (
         <button className="add-item-button medium-long" onClick={() => setShowAddItemForm(true)}>
-          Add Item
+          {t('Add Item')}
         </button>
       )}
 

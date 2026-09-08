@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { t, tx } from '../../lib/i18n';
 import Loot from '../../lib/loot';
 import { unixToDisplay } from '../../lib/storageFormat';
 import { formatNumber, isMobile, trimLine } from '../../lib/utils';
@@ -59,7 +60,7 @@ export default function LootInventory() {
       <>
         {mobileMenu}
         <p className="search-hint">
-          Select players level and generate a loot.
+          {t('Select players level and generate a loot.')}
         </p>
       </>
     );
@@ -70,12 +71,12 @@ export default function LootInventory() {
       {mobileMenu}
       <div className="header-container">
         <div className="label-container">
-          <h2>Generated at {timeLabel()}</h2>
+          <h2>{tx('Generated at {0}', timeLabel())}</h2>
         </div>
         <div className="money-box money-box-column">
-          <h4 className="loot-gold-margin"><b>Gold: {formatNumber(gold)}gp</b></h4>
+          <h4 className="loot-gold-margin"><b>{tx('Gold: {0}gp', formatNumber(gold))}</b></h4>
           {goodsList.length > 0 &&
-            <h2 className="loot-gold-margin">+ goods {formatNumber(goodsValue)}gp</h2>
+            <h2 className="loot-gold-margin">{tx('+ goods {0}gp', formatNumber(goodsValue))}</h2>
           }
         </div>
       </div>
@@ -87,8 +88,8 @@ export default function LootInventory() {
           <thead>
             <tr>
               <th className="number-size td-muted">#</th>
-              <th className="name-size td-muted">Goods</th>
-              <th className="cost-size td-muted">Cost</th>
+              <th className="name-size td-muted">{t('Goods')}</th>
+              <th className="cost-size td-muted">{t('Cost')}</th>
             </tr>
           </thead>
           <tbody>
@@ -110,8 +111,8 @@ export default function LootInventory() {
           <thead>
             <tr>
               <th className="number-size td-muted">#</th>
-              <th className="name-size td-muted">Items</th>
-              <th className="cost-size td-muted">Cost</th>
+              <th className="name-size td-muted">{t('Items')}</th>
+              <th className="cost-size td-muted">{t('Cost')}</th>
             </tr>
           </thead>
           <tbody>

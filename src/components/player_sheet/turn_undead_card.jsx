@@ -1,4 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
+import { t, tx } from '../../lib/i18n';
 import TrackerCard from './tracker_card';
 import Pill from '../common/Pill';
 import InfoPopover from '../common/InfoPopover';
@@ -21,43 +22,56 @@ function TurningRules({ rebukes, effectiveLevel, checkBonus, damage, destroyThre
   return (
     <>
       <p>
-        A standard action that does not provoke an attack of opportunity.
-        Brandish your holy symbol and it affects undead within <b>60 ft</b>,
-        in line of sight and line of effect.
+        {tx(
+          'A standard action that does not provoke an attack of opportunity. Brandish your holy symbol and it affects undead within {0}, in line of sight and line of effect.',
+          <b>{t('60 ft')}</b>,
+        )}
       </p>
-      <p><b>It takes two rolls, in this order:</b></p>
+      <p><b>{t('It takes two rolls, in this order:')}</b></p>
       <ul>
         <li>
-          <b>The {verbing} check</b> — d20 {fmt(checkBonus)} decides <i>how
-          powerful</i> an undead you can touch. Look the result up on the
-          turning table: it gives the highest Hit Dice affected, from your
-          {' '}{verbing} level {fmt(-4)} to {fmt(4)}.
+          <b>{tx('The {0} check', t(verbing))}</b> — {tx(
+            'd20 {0} decides {1} an undead you can touch. Look the result up on the turning table: it gives the highest Hit Dice affected, from your {2} level {3} to {4}.',
+            fmt(checkBonus),
+            <i>{t('how powerful')}</i>,
+            t(verbing),
+            fmt(-4),
+            fmt(4),
+          )}
         </li>
         <li>
-          <b>{rebukes ? 'Rebuking' : 'Turning'} damage</b> — {damage.formula} is{' '}
-          <i>how many</i> Hit Dice of undead you affect in total, spending it on
-          the closest and weakest first. You may skip a stronger one nearby, and
-          any remainder too small for the next undead is wasted.
+          <b>{rebukes ? t('Rebuking damage') : t('Turning damage')}</b> — {tx(
+            '{0} is {1} Hit Dice of undead you affect in total, spending it on the closest and weakest first. You may skip a stronger one nearby, and any remainder too small for the next undead is wasted.',
+            damage.formula,
+            <i>{t('how many')}</i>,
+          )}
         </li>
       </ul>
       {rebukes ? (
         <p>
-          Rebuked undead cower for <b>10 rounds</b>, and attacks against them
-          get +2. Any with <b>{destroyThreshold} HD or less</b> can be{' '}
-          <b>commanded</b> instead — a standard action per order, holding at most{' '}
-          {effectiveLevel} HD of undead at a time.
+          {tx(
+            'Rebuked undead cower for {0}, and attacks against them get +2. Any with {1} can be {2} instead — a standard action per order, holding at most {3} HD of undead at a time.',
+            <b>{t('10 rounds')}</b>,
+            <b>{tx('{0} HD or less', destroyThreshold)}</b>,
+            <b>{t('commanded')}</b>,
+            effectiveLevel,
+          )}
         </p>
       ) : (
         <p>
-          Turned undead flee at full speed for <b>10 rounds</b>, and cower if
-          cornered. Any with <b>{destroyThreshold} HD or less</b> — half your
-          turning level — are <b>destroyed</b> outright instead.
+          {tx(
+            'Turned undead flee at full speed for {0}, and cower if cornered. Any with {1} — half your turning level — are {2} outright instead.',
+            <b>{t('10 rounds')}</b>,
+            <b>{tx('{0} HD or less', destroyThreshold)}</b>,
+            <b>{t('destroyed')}</b>,
+          )}
         </p>
       )}
       <p>
-        Coming within 10 ft of a {rebukes ? 'rebuked' : 'turned'} undead, or
-        attacking it in melee, breaks the effect on that creature. Ranged
-        attacks from further off do not.
+        {tx(
+          'Coming within 10 ft of a {0} undead, or attacking it in melee, breaks the effect on that creature. Ranged attacks from further off do not.',
+          t(rebukes ? 'rebuked' : 'turned'),
+        )}
       </p>
     </>
   );
@@ -84,15 +98,15 @@ export default function TurnUndeadCard() {
 
   return (
     <TrackerCard
-      title={`${verb} undead`}
-      eyebrow={`Turning level ${effectiveLevel}`}
+      title={tx('{0} undead', t(verb))}
+      eyebrow={tx('Turning level {0}', effectiveLevel)}
       collapseKey="turnUndead"
       used={player.getClassFeatureUsed('turnUndead')}
       max={player.getTurnUndeadAttemptsMax()}
       onUse={(delta) => dispatch(onUseClassFeature('turnUndead', delta))}
       onReset={() => dispatch(onResetClassFeature('turnUndead'))}
       action={
-        <InfoPopover label={`${verb} undead`}>
+        <InfoPopover label={tx('{0} undead', t(verb))}>
           <TurningRules
             rebukes={rebukes}
             effectiveLevel={effectiveLevel}
@@ -105,17 +119,17 @@ export default function TurnUndeadCard() {
     >
       <div className="tracker-card-row tracker-card-meta">
         <Pill tone="accent" icon="casino">
-          Check d20 {fmt(checkBonus)}
+          {tx('Check d20 {0}', fmt(checkBonus))}
         </Pill>
-        <Pill tone="accent">{damage.formula} HD affected</Pill>
+        <Pill tone="accent">{tx('{0} HD affected', damage.formula)}</Pill>
       </div>
 
       <div className="tracker-card-row tracker-card-meta">
         <Pill tone="ghost">
-          Highest HD: turning level {fmt(-4)} to {fmt(4)} by check result
+          {tx('Highest HD: turning level {0} to {1} by check result', fmt(-4), fmt(4))}
         </Pill>
         <Pill tone={destroyThreshold > 0 ? 'danger' : 'ghost'} icon="skull">
-          {rebukes ? 'Commands' : 'Destroys'} {destroyThreshold} HD or less
+          {tx('{0} {1} HD or less', t(rebukes ? 'Commands' : 'Destroys'), destroyThreshold)}
         </Pill>
       </div>
     </TrackerCard>

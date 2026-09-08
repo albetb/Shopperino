@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
+import { t, tx, tName } from '../../lib/i18n';
 import Stepper from '../common/Stepper';
 import '../../style/spell_swap_note.css';
 
@@ -35,11 +36,11 @@ export default function SpellSwapNote({ inst, onSetSwapsUsed }) {
         onClick={() => setCollapsed((v) => !v)}
       >
         <span className="material-symbols-outlined">swap_horiz</span>
-        <h3 className="card-title">Spell swaps</h3>
+        <h3 className="card-title">{t('Spell swaps')}</h3>
         <span className={overCap ? 'spell-swap-count is-over' : 'spell-swap-count'}>
           {used} / {earned}
         </span>
-        <button type="button" className="collapse-button" aria-label="Toggle spell swaps">
+        <button type="button" className="collapse-button" aria-label={t('Toggle spell swaps')}>
           <span className="material-symbols-outlined">
             {collapsed ? 'expand_more' : 'expand_less'}
           </span>
@@ -49,7 +50,7 @@ export default function SpellSwapNote({ inst, onSetSwapsUsed }) {
       {!collapsed && (
         <div className="card-content spell-swap-note-content">
           <div className="spell-swap-counter">
-            <span className="sh-eyebrow">Swaps used</span>
+            <span className="sh-eyebrow">{t('Swaps used')}</span>
             <Stepper
               value={used}
               min={0}
@@ -60,21 +61,23 @@ export default function SpellSwapNote({ inst, onSetSwapsUsed }) {
 
           {overCap && (
             <div className="sh-warn-strip">
-              {used - earned} more than this level has earned.
+              {tx('{0} more than this level has earned.', used - earned)}
             </div>
           )}
 
           <p className="spell-swap-note-body">
-            A {inst.Class} may trade one known spell for another of the same level
-            on reaching level{' '}
-            {levels.map((lvl, i) => (
-              <span key={lvl} className={lvl <= current ? 'swap-level is-reached' : 'swap-level'}>
-                {lvl}{i < levels.length - 1 ? ', ' : ''}
-              </span>
-            ))}
-            . {next ? `Next at level ${next}.` : 'All of them are behind you.'} The new
-            spell must be of a level you can already cast. Learning here is not
-            restricted — keep the tally above.
+            {tx(
+              'A {0} may trade one known spell for another of the same level on reaching level {1}. {2} The new spell must be of a level you can already cast. Learning here is not restricted — keep the tally above.',
+              tName('classes', inst.Class),
+              <>
+                {levels.map((lvl, i) => (
+                  <span key={lvl} className={lvl <= current ? 'swap-level is-reached' : 'swap-level'}>
+                    {lvl}{i < levels.length - 1 ? ', ' : ''}
+                  </span>
+                ))}
+              </>,
+              next ? tx('Next at level {0}.', next) : t('All of them are behind you.'),
+            )}
           </p>
         </div>
       )}

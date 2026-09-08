@@ -1,4 +1,5 @@
 import { useSelector } from 'react-redux';
+import { t } from '../../lib/i18n';
 import '../../style/shop_inventory.css';
 import RaceCards from './race_cards';
 import ClassCards from './class_cards';
@@ -16,7 +17,7 @@ export default function PlayerSheetPage() {
   const defaultContent = (
     <div className="card card-width-spellbook">
       <p className="text-center">
-        Select a character from the lateral sidebar, then open the pages using menu buttons.
+        {t('Select a character from the lateral sidebar, then open the pages using menu buttons.')}
       </p>
     </div>
   );
@@ -33,16 +34,16 @@ export default function PlayerSheetPage() {
     mainView === 'features' ? <FeaturesPage /> :
     defaultContent;
   const text =
-    mainView === 'race' ? 'Races' :
-    mainView === 'class' ? 'Classes' :
-    mainView === 'note' ? 'Notes' :
-    mainView === 'combat' ? 'Combat' :
-    mainView === 'playerSpells' ? 'Spells' :
-    mainView === 'skills' ? 'Skills' :
-    mainView === 'inventory' ? 'Inventory' :
-    mainView === 'feats' ? 'Feats' :
-    mainView === 'features' ? 'Features' :
-    'Player sheet';
+    mainView === 'race' ? t('Races') :
+    mainView === 'class' ? t('Classes') :
+    mainView === 'note' ? t('Notes') :
+    mainView === 'combat' ? t('Combat') :
+    mainView === 'playerSpells' ? t('Spells') :
+    mainView === 'skills' ? t('Skills') :
+    mainView === 'inventory' ? t('Inventory') :
+    mainView === 'feats' ? t('Feats') :
+    mainView === 'features' ? t('Features') :
+    t('Player sheet');
 
   return (
     <div className={`player-sheet-page ${mainView === 'note' ? 'player-sheet-page--note' : ''}`}>

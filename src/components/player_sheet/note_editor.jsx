@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { t } from '../../lib/i18n';
 import { onUpdateNoteContent } from '../../store/thunks/playerSheetThunks';
 import Card from '../common/Card';
 import Filigree from '../common/Filigree';
@@ -53,7 +54,7 @@ export default function NoteEditor() {
   if (!noteName || !note) {
     return (
       <div className="sh-stack" style={{ padding: 'var(--space-4)' }}>
-        <EmptyState icon="edit_note" title="No note selected" hint="Pick or create one from the sidebar." />
+        <EmptyState icon="edit_note" title={t('No note selected')} hint={t('Pick or create one from the sidebar.')} />
       </div>
     );
   }
@@ -65,7 +66,7 @@ export default function NoteEditor() {
   return (
     <div className="sh-stack note-editor-page">
       <div className="note-editor-header">
-        <Filigree>Note</Filigree>
+        <Filigree>{t('Note')}</Filigree>
         <div className="sh-display" style={{ fontSize: 'var(--font-size-2xl)' }}>{noteName}</div>
       </div>
 
@@ -76,7 +77,7 @@ export default function NoteEditor() {
             value={localText}
             onChange={handleChange}
             onBlur={handleBlur}
-            placeholder="Write your note here…"
+            placeholder={t('Write your note here…')}
           />
           <div className="sh-row-h sh-spread">
             <span
@@ -90,7 +91,7 @@ export default function NoteEditor() {
                 lineHeight: 1.2,
               }}
             >
-              <span>edited</span>
+              <span>{t('edited')}</span>
               <span>{lastModified}</span>
             </span>
             <Button
@@ -100,7 +101,7 @@ export default function NoteEditor() {
               disabled={isUnchanged}
               onClick={() => handleSave()}
             >
-              Save
+              {t('Save')}
             </Button>
           </div>
         </div>

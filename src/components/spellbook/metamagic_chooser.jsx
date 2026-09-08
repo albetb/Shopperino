@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { t, tx } from '../../lib/i18n';
 import {
   HEIGHTEN,
   MAX_HEIGHTEN_LEVEL,
@@ -61,7 +62,7 @@ export default function MetamagicChooser({
               aria-pressed={on}
               onClick={() => onChange(toggleMetamagic(mm, name, !on))}
             >
-              {metamagicLabel(name)}
+              {t(metamagicLabel(name))}
               <span className="mm-chip-cost">+{adjustment}</span>
             </button>
           );
@@ -70,7 +71,7 @@ export default function MetamagicChooser({
 
       {offersHeighten && (
         <div className="mm-heighten">
-          <span className="mm-heighten-label">Heighten to</span>
+          <span className="mm-heighten-label">{t('Heighten to')}</span>
           <div className="mm-chip-row">
             {Array.from({ length: MAX_HEIGHTEN_LEVEL }, (_, i) => i + 1).map((level) => {
               const on = heightenTo === level;
@@ -81,7 +82,7 @@ export default function MetamagicChooser({
                   className={['sh-chip', 'mm-chip', 'mm-chip-level', on && 'is-on']
                     .filter(Boolean).join(' ')}
                   aria-pressed={on}
-                  aria-label={`Heighten to level ${level}`}
+                  aria-label={tx('Heighten to level {0}', level)}
                   onClick={() => {
                     const others = feats.filter((f) => f !== HEIGHTEN);
                     onChange(on ? encodeMetamagic(others) : encodeMetamagic([...others, HEIGHTEN], level));
@@ -97,25 +98,27 @@ export default function MetamagicChooser({
 
       <div className="mm-summary">
         <div className={'mm-summary-line' + (impossible ? ' is-over' : '')}>
-          <span>Occupies a</span>
-          <b>level {slot}</b>
-          <span>slot</span>
+          {tx('Occupies a {0} slot', <b>{tx('level {0}', slot)}</b>)}
         </div>
         {impossible && (
           <div className="mm-summary-note is-over">
-            No caster has a level {slot} slot — the highest there is is 9.
+            {tx('No caster has a level {0} slot — the highest there is is 9.', slot)}
           </div>
         )}
         {effective !== baseLevel ? (
           <div className="mm-summary-note">
-            Heighten raises the spell's own level too, so its save DC and
-            everything else that reads the level follow <b>level {effective}</b>.
+            {tx(
+              "Heighten raises the spell's own level too, so its save DC and everything else that reads the level follow {0}.",
+              <b>{tx('level {0}', effective)}</b>,
+            )}
           </div>
         ) : (
           feats.length > 0 && (
             <div className="mm-summary-note">
-              The spell still works as a <b>level {baseLevel}</b> spell — only
-              the slot moves.
+              {tx(
+                'The spell still works as a {0} spell — only the slot moves.',
+                <b>{tx('level {0}', baseLevel)}</b>,
+              )}
             </div>
           )
         )}

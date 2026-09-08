@@ -15,6 +15,8 @@
  * for them would be inventing one.
  */
 
+import { t, tx } from '../i18n';
+
 /** Where the trigger sits, relative to the squares the trap catches. */
 export const TRIGGER_SHAPE = {
   location: 'inside',
@@ -123,17 +125,17 @@ function captionFor(kind, footprint, w, h) {
   const ft = (n) => `${n * CELL_FT} ft.`;
   switch (kind) {
     case 'single':
-      return 'One 5-ft. square.';
+      return t('One 5-ft. square.');
     case 'squares':
-      return `${w} adjacent squares — one target in each.`;
+      return tx('{0} adjacent squares — one target in each.', w);
     case 'multi':
-      return `${w} specified squares, struck together.`;
+      return tx('{0} specified squares, struck together.', w);
     case 'area':
-      return `An area ${ft(w)} by ${ft(h)}`;
+      return tx('An area {0} by {1}', ft(w), ft(h));
     case 'room':
-      return `A room ${ft(w)} by ${ft(h)} — everything inside is caught.`;
+      return tx('A room {0} by {1} — everything inside is caught.', ft(w), ft(h));
     case 'burst':
-      return `A ${footprint.radiusFt ?? 5}-ft. radius burst.`;
+      return tx('A {0}-ft. radius burst.', footprint.radiusFt ?? 5);
     default:
       return '';
   }
@@ -149,10 +151,10 @@ function captionFor(kind, footprint, w, h) {
  */
 export function footprintCaveat(trap) {
   if (trap?.multipleTraps) {
-    return 'This entry is really more than one trap sharing a trigger — the diagram draws one of them.';
+    return t('This entry is really more than one trap sharing a trigger — the diagram draws one of them.');
   }
   if (trap?.note) {
-    return 'This trap carries a note the diagram cannot draw. Read it below.';
+    return t('This trap carries a note the diagram cannot draw. Read it below.');
   }
   return '';
 }

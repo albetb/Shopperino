@@ -1,4 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
+import { t } from '../../lib/i18n';
 import { setTrap, setTargetCR, setRollType, setIsTrapSidebarCollapsed } from '../../store/slices/trapSlice';
 import { rollTrap, TRAP_TYPES, trapTypeLabel } from '../../lib/trap';
 import { isMobile } from '../../lib/utils';
@@ -27,7 +28,7 @@ export function TrapRollControls() {
   return (
     <div className="trap-roll">
       <label className="trap-field">
-        <span className="trap-field-label">Challenge Rating</span>
+        <span className="trap-field-label">{t('Challenge Rating')}</span>
         <input
           className="modern-input trap-number"
           type="number"
@@ -35,25 +36,25 @@ export function TrapRollControls() {
           max="10"
           value={targetCR}
           onChange={(e) => dispatch(setTargetCR(e.target.value))}
-          aria-label="Target Challenge Rating"
+          aria-label={t('Target Challenge Rating')}
         />
       </label>
       <label className="trap-field">
-        <span className="trap-field-label">Kind</span>
+        <span className="trap-field-label">{t('Kind')}</span>
         <select
           className="modern-dropdown"
           value={rollType}
           onChange={(e) => dispatch(setRollType(e.target.value))}
-          aria-label="Kind of trap"
+          aria-label={t('Kind of trap')}
         >
-          <option value="">Any kind</option>
-          {TRAP_TYPES.map((t) => (
-            <option key={t} value={t}>{trapTypeLabel(t)}</option>
+          <option value="">{t('Any kind')}</option>
+          {TRAP_TYPES.map((type) => (
+            <option key={type} value={type}>{trapTypeLabel(type)}</option>
           ))}
         </select>
       </label>
       <button className="modern-button small-long trap-roll-button" onClick={roll}>
-        <b>Roll a trap</b>
+        <b>{t('Roll a trap')}</b>
       </button>
     </div>
   );
@@ -86,9 +87,7 @@ export default function TrapPage() {
           <div className="card trap-card trap-empty">
             <span className="material-symbols-outlined trap-empty-icon">crisis_alert</span>
             <p>
-              Roll a trap to a Challenge Rating, or open the book&apos;s 105 and
-              pick one. Either way every part of it can then be changed, and the
-              CR, the market price and the Craft DC follow.
+              {t("Roll a trap to a Challenge Rating, or open the book's 105 and pick one. Either way every part of it can then be changed, and the CR, the market price and the Craft DC follow.")}
             </p>
           </div>
         )}

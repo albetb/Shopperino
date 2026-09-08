@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { t, tx } from '../../lib/i18n';
 import '../../style/shop_inventory.css';
 
 export default function FeatChoicePopover({ position, choices, reason, featName, onConfirm, onClose }) {
@@ -79,9 +80,9 @@ export default function FeatChoicePopover({ position, choices, reason, featName,
             value={selected}
             onChange={(e) => setSelected(e.target.value)}
             className="modern-dropdown feat-choice-select"
-            aria-label={`Select option for ${featName}`}
+            aria-label={tx('Select option for {0}', featName)}
           >
-            <option value="">— Choose —</option>
+            <option value="">{t('— Choose —')}</option>
             {choices.map((c) => (
               <option key={c} value={c}>
                 {c}
@@ -98,7 +99,7 @@ export default function FeatChoicePopover({ position, choices, reason, featName,
               className="item-number-button small-middle"
               onClick={handleConfirm}
               disabled={!selected.trim()}
-              aria-label="Confirm"
+              aria-label={t('Confirm')}
             >
               <span className="material-symbols-outlined">check</span>
             </button>
@@ -107,7 +108,7 @@ export default function FeatChoicePopover({ position, choices, reason, featName,
             type="button"
             className="item-number-button small-middle"
             onClick={onClose}
-            aria-label="Close"
+            aria-label={t('Close')}
           >
             <span className="material-symbols-outlined">close</span>
           </button>

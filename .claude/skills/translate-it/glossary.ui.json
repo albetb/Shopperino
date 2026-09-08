@@ -122,11 +122,14 @@
     },
     {
       "en": "Combat Expertise",
-      "it": "Perizia nel Combattimento",
+      "it": "Maestria in Combattimento",
       "strict": true,
       "kind": "class",
       "note": "Feat name",
-      "source": "coined"
+      "source": "manual",
+      "stems": [
+        "maestria in combattimento"
+      ]
     },
     {
       "en": "Rapid Shot",
@@ -180,44 +183,47 @@
     },
     {
       "en": "dodge bonus",
-      "it": "bonus di schivata",
+      "it": "bonus di schivare",
       "kind": "combat",
-      "source": "coined"
+      "source": "manual",
+      "stems": [
+        "bonus di schivare"
+      ]
     },
     {
       "en": "Crippling Strike",
-      "it": "Colpo Debilitante",
+      "it": "Colpo Menomante",
       "kind": "class",
-      "note": "Rogue special ability",
-      "source": "coined"
+      "note": "Name; the value in names.json is authoritative and was read out of the manual.",
+      "source": "manual"
     },
     {
       "en": "Defensive Roll",
-      "it": "Tuffo Difensivo",
+      "it": "Attutire il Colpo",
       "kind": "class",
-      "note": "Rogue special ability",
-      "source": "coined"
+      "note": "Name; the value in names.json is authoritative and was read out of the manual.",
+      "source": "manual"
     },
     {
       "en": "Improved Evasion",
-      "it": "Elusione Migliorata",
+      "it": "Eludere Migliorato",
       "kind": "class",
-      "note": "Rogue special ability",
-      "source": "coined"
+      "note": "Name; the value in names.json is authoritative and was read out of the manual.",
+      "source": "manual"
     },
     {
       "en": "Opportunist",
-      "it": "Opportunista",
+      "it": "Opportunismo",
       "kind": "class",
-      "note": "Rogue special ability",
-      "source": "coined"
+      "note": "Name; the value in names.json is authoritative and was read out of the manual.",
+      "source": "manual"
     },
     {
       "en": "Skill Mastery",
-      "it": "Maestria nelle Abilità",
+      "it": "Padronanza dell'Abilità",
       "kind": "class",
-      "note": "Rogue special ability",
-      "source": "coined"
+      "note": "Name; the value in names.json is authoritative and was read out of the manual.",
+      "source": "manual"
     },
     {
       "en": "Slippery Mind",
@@ -293,8 +299,9 @@
       "en": "Specialized",
       "it": "Specializzazione",
       "kind": "class",
-      "note": "Wizard sidebar: specialization school picker label",
-      "source": "coined"
+      "note": "Wizard sidebar: specialization school picker label Label rendering: \"specialized tasks\" in the rule text is ordinary English.",
+      "source": "coined",
+      "scope": "ui"
     },
     {
       "en": "Subtype",
@@ -307,6 +314,139 @@
       "it": "Bersaglio",
       "kind": "rules",
       "source": "coined"
+    },
+    {
+      "en": "Smite evil",
+      "it": "Punire il male",
+      "kind": "class",
+      "note": "Paladin class feature. PHB p.50: \"Punire il male (Sop)\"",
+      "source": "manual"
+    },
+    {
+      "en": "Lay on hands",
+      "it": "Imposizione delle mani",
+      "kind": "class",
+      "note": "Paladin class feature. PHB p.50: \"Imposizione delle mani (Sop)\"",
+      "source": "manual"
+    },
+    {
+      "en": "Remove disease",
+      "it": "Rimuovi malattia",
+      "kind": "class",
+      "note": "Paladin class feature. MM1 p.22: \"rimuovi malattia 2 volte alla settimana\"",
+      "source": "manual"
+    },
+    {
+      "en": "at will",
+      "it": "a volontà",
+      "kind": "rules",
+      "note": "PHB p.50: \"A volontà, il paladino può utilizzare individuazione del male\"",
+      "source": "manual"
+    },
+    {
+      "en": "Augment summoning",
+      "it": "Potenziamento Evocazione",
+      "kind": "class",
+      "note": "Feat name (not in PHB/DMG/MM1 — supplement feat, book.py found nothing in the core three). Unverified guess, check against Complete Arcane/Divine if available.",
+      "source": "coined"
+    },
+    {
+      "en": "turning",
+      "it": "scacciare",
+      "kind": "class",
+      "note": "Turn undead ability, PHB p.159: \"SCACCIARE O INTIMORIRE NON MORTI\" / \"prova di scacciare\" / \"danni da scacciare\"",
+      "source": "manual"
+    },
+    {
+      "en": "rebuking",
+      "it": "intimorire",
+      "kind": "class",
+      "note": "Evil cleric's rebuke undead, PHB p.160: \"catalizzano energia negativa per intimorire (incutere rispetto) o comandare (controllare) non morti\"",
+      "source": "manual"
+    },
+    {
+      "en": "commanded",
+      "it": "comandati",
+      "kind": "class",
+      "note": "PHB p.160: \"Comandato: Una creatura non morta comandata è sotto il controllo mentale del chierico malvagio.\"",
+      "source": "manual"
+    },
+    {
+      "en": "destroyed",
+      "it": "distrutti",
+      "kind": "class",
+      "note": "PHB p.159-160: good clerics \"scaccia o distrugge\" undead",
+      "source": "manual"
+    },
+    {
+      "en": "Empowered",
+      "it": "Potenziato",
+      "kind": "class",
+      "note": "Empower Spell metamagic. PHB p.99: \"INCANTESIMI POTENZIATI\" / \"incantesimo potenziato\"",
+      "source": "manual"
+    },
+    {
+      "en": "Enlarged",
+      "it": "Ingrandito",
+      "kind": "class",
+      "note": "Enlarge Spell metamagic. PHB p.98: \"INCANTESIMI INGRANDITI\" / \"incantesimo ingrandito\"",
+      "source": "manual"
+    },
+    {
+      "en": "Extended",
+      "it": "Esteso",
+      "kind": "class",
+      "note": "Extend Spell metamagic. PHB p.98: \"INCANTESIMI ESTESI\" / \"incantesimo esteso\"",
+      "source": "manual"
+    },
+    {
+      "en": "Heightened",
+      "it": "Intensificato",
+      "kind": "class",
+      "note": "Heighten Spell metamagic. PHB p.98: \"INCANTESIMI INTENSIFICATI\"",
+      "source": "manual"
+    },
+    {
+      "en": "Maximized",
+      "it": "Massimizzato",
+      "kind": "class",
+      "note": "Maximize Spell metamagic. PHB p.98-99: \"INCANTESIMI MASSIMIZZATI\" / \"incantesimo massimizzato\"",
+      "source": "manual"
+    },
+    {
+      "en": "Quickened",
+      "it": "Rapido",
+      "kind": "class",
+      "note": "Quicken Spell metamagic. PHB p.99: \"INCANTESIMI RAPIDI\" / \"incantesimo rapido\"",
+      "source": "manual"
+    },
+    {
+      "en": "Silent",
+      "it": "Silenzioso",
+      "kind": "class",
+      "note": "Silent Spell metamagic. PHB p.99: \"INCANTESIMI SILENZIOSI\" / \"incantesimo silenzioso\"",
+      "source": "manual"
+    },
+    {
+      "en": "Stilled",
+      "it": "Immobile",
+      "kind": "class",
+      "note": "Still Spell metamagic. PHB p.98: \"INCANTESIMI IMMOBILI\" / \"incantesimo immobile\"",
+      "source": "manual"
+    },
+    {
+      "en": "Widened",
+      "it": "Ampliato",
+      "kind": "class",
+      "note": "Widen Spell metamagic. PHB p.98: \"INCANTESIMI AMPLIATI\"",
+      "source": "manual"
+    },
+    {
+      "en": "Natural Spell",
+      "it": "Incantesimi Naturali",
+      "kind": "class",
+      "note": "Feat name (druid wild shape casting). PHB p.99: \"INCANTESIMI NATURALI [GENERALE]\" — also filed in names.json feats domain.",
+      "source": "manual"
     }
   ]
 }

@@ -186,42 +186,66 @@
       "it": "Umano",
       "strict": true,
       "kind": "race",
-      "source": "coined"
+      "source": "coined",
+      "stems": [
+        "umano",
+        "umani"
+      ]
     },
     {
       "en": "Dwarf",
       "it": "Nano",
       "strict": true,
       "kind": "race",
-      "source": "coined"
+      "source": "coined",
+      "stems": [
+        "nano",
+        "nani"
+      ]
     },
     {
       "en": "Elf",
       "it": "Elfo",
       "strict": true,
       "kind": "race",
-      "source": "coined"
+      "source": "coined",
+      "stems": [
+        "elfo",
+        "elfi"
+      ]
     },
     {
       "en": "Gnome",
       "it": "Gnomo",
       "strict": true,
       "kind": "race",
-      "source": "coined"
+      "source": "coined",
+      "stems": [
+        "gnom"
+      ],
+      "note": "The race is 'Gnomo'; the language of the same name is 'Gnomesco'. Either satisfies this term."
     },
     {
       "en": "Half-Elf",
       "it": "Mezzelfo",
       "strict": true,
       "kind": "race",
-      "source": "coined"
+      "source": "coined",
+      "stems": [
+        "mezzelfo",
+        "mezzelfi"
+      ]
     },
     {
       "en": "Half-Orc",
       "it": "Mezzorco",
       "strict": true,
       "kind": "race",
-      "source": "coined"
+      "source": "coined",
+      "stems": [
+        "mezzorco",
+        "mezzorchi"
+      ]
     },
     {
       "en": "Halfling",
@@ -261,7 +285,13 @@
       "it": "Ammaliamento",
       "strict": true,
       "kind": "school",
-      "source": "coined"
+      "source": "coined",
+      "en_match": "(?<![A-Za-z])Enchantment(?![A-Za-z])",
+      "stems": [
+        "ammaliament",
+        "incantament"
+      ],
+      "note": "The school. 'break enchantment' is a spell -- 'spezzare incantamento' -- and satisfies this term too."
     },
     {
       "en": "Evocation",
@@ -304,29 +334,38 @@
     },
     {
       "en": "Fine",
-      "it": "Minutolo",
-      "strict": false,
-      "kind": "size",
-      "en_case": true,
-      "note": "Soft: the English word is ordinary prose as often as it is the game term.",
-      "source": "coined"
-    },
-    {
-      "en": "Diminutive",
-      "it": "Minuscolo",
-      "strict": true,
-      "kind": "size",
-      "en_case": true,
-      "source": "coined"
-    },
-    {
-      "en": "Tiny",
       "it": "Piccolissimo",
       "strict": false,
       "kind": "size",
       "en_case": true,
       "note": "Soft: the English word is ordinary prose as often as it is the game term.",
-      "source": "coined"
+      "source": "manual",
+      "stems": [
+        "piccolissimo"
+      ]
+    },
+    {
+      "en": "Diminutive",
+      "it": "Minuto",
+      "strict": true,
+      "kind": "size",
+      "en_case": true,
+      "source": "manual",
+      "stems": [
+        "minuto"
+      ]
+    },
+    {
+      "en": "Tiny",
+      "it": "Minuscolo",
+      "strict": false,
+      "kind": "size",
+      "en_case": true,
+      "note": "Soft: the English word is ordinary prose as often as it is the game term.",
+      "source": "manual",
+      "stems": [
+        "minuscolo"
+      ]
     },
     {
       "en": "Small",
@@ -492,11 +531,13 @@
       "it": "livello dell'incantatore",
       "kind": "rules",
       "stems": [
-        "livello dell’incantator",
         "livello dell'incantator",
-        "livello incantator"
+        "livello dell'incantator",
+        "livello incantator",
+        "incantatore di"
       ],
-      "source": "coined"
+      "source": "coined",
+      "note": "Also the inverted prerequisite form the book uses: 'Caster level 5th.' is 'Incantatore di 5° livello.'"
     },
     {
       "en": "spell resistance",
@@ -656,10 +697,12 @@
     {
       "en": "spell",
       "it": "incantesimo",
+      "en_match": "(?<![A-Za-z])[Ss]pell(?:s|es)?(?!-[Ll]ike)(?![A-Za-z])",
       "stem": "incantesim",
       "strict": true,
       "kind": "rules",
-      "source": "coined"
+      "source": "coined",
+      "note": "en_match excludes 'spell-like', which is its own term (Spell-Like -> Magica) and would otherwise double-fire this one whenever spell-like abilities are mentioned without the literal word incantesimo nearby."
     },
     {
       "en": "spell slot",
@@ -721,7 +764,9 @@
         "famigliare",
         "famigliari"
       ],
-      "source": "coined"
+      "source": "coined",
+      "en_match": "(?<![A-Za-z])familiars?(?![A-Za-z])(?!\\s+with)",
+      "note": "A wizard's or sorcerer's familiar. Not the English adjective: 'dwarves are familiar with valuable items'."
     },
     {
       "en": "animal companion",
@@ -820,8 +865,9 @@
       "en": "turn",
       "it": "turno",
       "kind": "action",
-      "en_match": "(?<![A-Za-z])[Tt]urns?(?![A-Za-z])(?!\\s+(?:undead|or\\s+commands?\\s+undead|their|his|her|its|your|my|our))",
-      "source": "coined"
+      "en_match": "(?<![A-Za-z])[Tt]urns?(?![A-Za-z])(?!\\s+(?:undead|or\\s+(?:commands?|rebukes?)\\s+(?:undead|creatures)|their|his|her|its|your|my|our))",
+      "source": "coined",
+      "note": "A combat turn. Not turning undead -- 'turn or rebuke creatures' is 'scacciare o intimorire le creature'."
     },
     {
       "en": "melee",
@@ -879,8 +925,9 @@
       "it": "portata",
       "stem": "portat",
       "kind": "combat",
-      "en_match": "(?<![A-Za-z])reach(?![A-Za-z])",
-      "source": "coined"
+      "en_match": "(?<![A-Za-z])reach(?![A-Za-z])(?!\\s*[−–-]?\\d)",
+      "source": "coined",
+      "note": "A weapon's or creature's reach. Not the English verb: 'if you reach -10 hit points'."
     },
     {
       "en": "speed",
@@ -980,7 +1027,8 @@
       "it": "Armi da Guerra",
       "strict": true,
       "kind": "item",
-      "source": "coined"
+      "note": "Confirmed: Manuale del Giocatore uses \"Armi da Guerra\" throughout (e.g. \"Competenza nelle Armi da Guerra\", Barbarian Weapon and Armor Proficiency entry).",
+      "source": "manual"
     },
     {
       "en": "Exotic Weapons",
@@ -1051,11 +1099,14 @@
     },
     {
       "en": "Sonic",
-      "it": "Sonico",
+      "it": "Sonoro",
       "strict": true,
       "kind": "damage",
       "en_case": true,
-      "source": "coined"
+      "source": "manual",
+      "stems": [
+        "sonoro"
+      ]
     },
     {
       "en": "Appraise",
@@ -1214,7 +1265,9 @@
       "strict": true,
       "kind": "skill",
       "en_case": true,
-      "source": "coined"
+      "source": "coined",
+      "homonym": true,
+      "note": "The skill. The cleric domain of the same name is 'Conoscenza' in names.json -- both are correct."
     },
     {
       "en": "Listen",
@@ -1279,11 +1332,15 @@
     },
     {
       "en": "Sense Motive",
-      "it": "Intuizione",
+      "it": "Percepire Intenzioni",
       "strict": true,
       "kind": "skill",
       "en_case": true,
-      "source": "coined"
+      "note": "The skill. Manuale del Giocatore p.80 heads the entry \"PERCEPIRE INTENZIONI (SAG)\"; the skill table on p.64 lists it under that name. \"Intuizione\" is the common noun and never a skill.",
+      "source": "manual",
+      "stems": [
+        "percepire intenzion"
+      ]
     },
     {
       "en": "Sleight of Hand",
@@ -1429,7 +1486,7 @@
       "kind": "rules",
       "never": [
         "controllo dell'armatura",
-        "controllo dell’armatura",
+        "controllo dell'armatura",
         "controllo di quell'armatura"
       ],
       "note": "NOT 'controllo dell'armatura' — controllo is an inspection. Both Haiku and Sonnet invented that in the calibration batch.",
@@ -1505,7 +1562,8 @@
       "stem": "fiancheggi",
       "strict": true,
       "kind": "combat",
-      "source": "coined"
+      "note": "Confirmed: Manuale dei Mostri I p.12/30 use 'fiancheggiare'/'fiancheggiano' for this exact mechanic (\"Può fiancheggiare\", \"non si possono fiancheggiare\"). The passive/adjective form 'flanked' instead renders as 'attaccato ai fianchi' in the Manuale del Giocatore (Barbarian Improved Uncanny Dodge) — both are manual-attested, for different grammatical forms of the same rule.",
+      "source": "manual"
     },
     {
       "en": "Two-Weapon Fighting",
@@ -1532,7 +1590,7 @@
     },
     {
       "en": "Wild Shape",
-      "it": "Forma Selvatica",
+      "it": "Forma selvatica",
       "strict": true,
       "kind": "rules",
       "stems": [
@@ -1595,13 +1653,14 @@
     },
     {
       "en": "Fey",
-      "it": "Fata",
+      "it": "Folletto",
       "strict": true,
       "kind": "creature-type",
       "stems": [
-        "fat"
+        "folletto",
+        "folletti"
       ],
-      "source": "coined"
+      "source": "manual"
     },
     {
       "en": "Giant",
@@ -1677,13 +1736,14 @@
     },
     {
       "en": "Vermin",
-      "it": "Verme",
+      "it": "Parassita",
       "strict": true,
       "kind": "creature-type",
       "stems": [
-        "verm"
+        "parassita",
+        "parassiti"
       ],
-      "source": "coined"
+      "source": "manual"
     },
     {
       "en": "CL",
@@ -1716,8 +1776,12 @@
       "strict": true,
       "kind": "alignment",
       "en_case": true,
-      "note": "The moral-axis alignment word, not the general English adjective — en_case keeps it from firing on ordinary prose.",
-      "source": "coined"
+      "note": "The moral-axis alignment word, not the general English adjective; en_case keeps it from firing on 'a good save'. The cleric domain of the same name is 'Bene' in names.json, and the paladin's aura of good is 'aura di Bene' -- both satisfy this term.",
+      "source": "coined",
+      "stems": [
+        "buon",
+        "bene"
+      ]
     },
     {
       "en": "Evil",
@@ -1725,7 +1789,12 @@
       "strict": true,
       "kind": "alignment",
       "en_case": true,
-      "source": "coined"
+      "source": "coined",
+      "stems": [
+        "malvagi",
+        "male"
+      ],
+      "note": "The moral-axis alignment word. The domain and the paladin's detect evil are 'Male' in the book -- 'Individuazione del Male' -- and satisfy this term too."
     },
     {
       "en": "Neutral",
@@ -1966,8 +2035,8 @@
       "stems": [
         "affilat"
       ],
-      "en_match": "(?<![A-Za-z])[Kk]een(?!\\s+edge)(?![A-Za-z])",
-      "note": "Magic weapon special ability. Official Italian D&D 3.5 term (per the game manual).",
+      "en_match": "(?<![A-Za-z])(?<!so )(?<!as )(?<!more )[Kk]een(?!\\s+edge)(?!\\s+(?:senses?|ears?|hearing|eyes|nose|smell))(?!\\s+as\\b)(?![A-Za-z])",
+      "note": "Magic weapon special ability. Not the adjective: 'an elf's senses are so keen', 'not as keen as those of an elf'.",
       "source": "manual"
     },
     {
@@ -2678,6 +2747,270 @@
       ],
       "note": "Magic ranged weapon special ability. Official Italian D&D 3.5 term.",
       "source": "manual"
+    },
+    {
+      "en": "cure light wounds",
+      "it": "cura ferite leggere",
+      "strict": false,
+      "kind": "spell",
+      "stems": [
+        "cur"
+      ],
+      "source": "manual",
+      "note": "Spell name, Manuale del Giocatore."
+    },
+    {
+      "en": "blindness/deafness",
+      "it": "cecità/sordità",
+      "strict": false,
+      "kind": "spell",
+      "stems": [
+        "cecità/sordit"
+      ],
+      "source": "manual",
+      "note": "Spell name, Manuale del Giocatore."
+    },
+    {
+      "en": "circle of death",
+      "it": "cerchio di morte",
+      "strict": false,
+      "kind": "spell",
+      "stems": [
+        "cerchi"
+      ],
+      "source": "manual",
+      "note": "Spell name, Manuale del Giocatore."
+    },
+    {
+      "en": "continual flame",
+      "it": "fiamma perenne",
+      "strict": false,
+      "kind": "spell",
+      "stems": [
+        "fiamm"
+      ],
+      "source": "manual",
+      "note": "Spell name, Manuale del Giocatore."
+    },
+    {
+      "en": "entropic shield",
+      "it": "scudo entropico",
+      "strict": false,
+      "kind": "spell",
+      "stems": [
+        "scud"
+      ],
+      "source": "manual",
+      "note": "Spell name, Manuale del Giocatore."
+    },
+    {
+      "en": "ethereal jaunt",
+      "it": "transizione eterea",
+      "strict": false,
+      "kind": "spell",
+      "stems": [
+        "transizion"
+      ],
+      "source": "manual",
+      "note": "Spell name, Manuale del Giocatore."
+    },
+    {
+      "en": "summon monster",
+      "it": "evocare mostri",
+      "strict": false,
+      "kind": "spell",
+      "stems": [
+        "evocar"
+      ],
+      "source": "manual",
+      "note": "Spell name, Manuale del Giocatore."
+    },
+    {
+      "en": "control undead",
+      "it": "controllare non morti",
+      "strict": false,
+      "kind": "spell",
+      "stems": [
+        "controllar"
+      ],
+      "source": "manual",
+      "note": "Spell name, Manuale del Giocatore."
+    },
+    {
+      "en": "spell turning",
+      "it": "riflettere incantesimo",
+      "strict": false,
+      "kind": "spell",
+      "stems": [
+        "rifletter"
+      ],
+      "source": "manual",
+      "note": "Spell name, Manuale del Giocatore."
+    },
+    {
+      "en": "call lightning",
+      "it": "invocare il fulmine",
+      "strict": false,
+      "kind": "spell",
+      "stems": [
+        "invocar"
+      ],
+      "source": "manual",
+      "note": "Spell name, Manuale del Giocatore."
+    },
+    {
+      "en": "lightning bolt",
+      "it": "fulmine",
+      "strict": false,
+      "kind": "spell",
+      "stems": [
+        "fulmin"
+      ],
+      "source": "manual",
+      "note": "Spell name, Manuale del Giocatore."
+    },
+    {
+      "en": "resist energy",
+      "it": "resistenza all'energia",
+      "strict": false,
+      "kind": "spell",
+      "stems": [
+        "resistenz"
+      ],
+      "source": "manual",
+      "note": "Spell name, Manuale del Giocatore."
+    },
+    {
+      "en": "gaseous form",
+      "it": "forma gassosa",
+      "strict": false,
+      "kind": "spell",
+      "stems": [
+        "form"
+      ],
+      "source": "manual",
+      "note": "Spell name, Manuale del Giocatore."
+    },
+    {
+      "en": "chaos hammer",
+      "it": "martello del caos",
+      "strict": false,
+      "kind": "spell",
+      "stems": [
+        "martell"
+      ],
+      "source": "manual",
+      "note": "Spell name, Manuale del Giocatore."
+    },
+    {
+      "en": "limited wish",
+      "it": "desiderio limitato",
+      "strict": false,
+      "kind": "spell",
+      "stems": [
+        "desideri"
+      ],
+      "source": "manual",
+      "note": "Spell name, Manuale del Giocatore."
+    },
+    {
+      "en": "chill metal",
+      "it": "gelare il metallo",
+      "strict": false,
+      "kind": "spell",
+      "stems": [
+        "gelar"
+      ],
+      "source": "manual",
+      "note": "Spell name, Manuale del Giocatore."
+    },
+    {
+      "en": "ice storm",
+      "it": "tempesta di ghiaccio",
+      "strict": false,
+      "kind": "spell",
+      "stems": [
+        "tempest"
+      ],
+      "source": "manual",
+      "note": "Spell name, Manuale del Giocatore."
+    },
+    {
+      "en": "stoneskin",
+      "it": "pelle di pietra",
+      "strict": false,
+      "kind": "spell",
+      "stems": [
+        "pell"
+      ],
+      "source": "manual",
+      "note": "Spell name, Manuale del Giocatore."
+    },
+    {
+      "en": "miracle",
+      "it": "miracolo",
+      "strict": false,
+      "kind": "spell",
+      "stems": [
+        "miracol"
+      ],
+      "source": "manual",
+      "note": "Spell name, Manuale del Giocatore."
+    },
+    {
+      "en": "wish",
+      "it": "desiderio",
+      "strict": false,
+      "kind": "spell",
+      "stems": [
+        "desideri"
+      ],
+      "source": "manual",
+      "note": "Spell name, Manuale del Giocatore."
+    },
+    {
+      "en": "order's wrath",
+      "it": "ira dell'ordine",
+      "strict": false,
+      "kind": "spell",
+      "stems": [
+        "ir"
+      ],
+      "source": "manual",
+      "note": "Spell name, Manuale del Giocatore."
+    },
+    {
+      "en": "searing light",
+      "it": "luce incandescente",
+      "strict": false,
+      "kind": "spell",
+      "stems": [
+        "luc"
+      ],
+      "source": "manual",
+      "note": "Spell name, Manuale del Giocatore p.187 (cleric 3rd)."
+    },
+    {
+      "en": "unholy blight",
+      "it": "influenza sacrilega",
+      "strict": false,
+      "kind": "spell",
+      "stems": [
+        "influenz"
+      ],
+      "source": "manual",
+      "note": "Spell name, Manuale del Giocatore p.192 (Evil domain 4th)."
+    },
+    {
+      "en": "mage's sword",
+      "it": "spada di Mordenkainen",
+      "strict": false,
+      "kind": "spell",
+      "stems": [
+        "spad"
+      ],
+      "source": "manual",
+      "note": "Spell name, Manuale del Giocatore; the DMG weapon entry prints \"spada di Mordenkainen\"."
     }
   ]
 }

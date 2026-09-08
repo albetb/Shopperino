@@ -159,11 +159,20 @@ function getChoiceUniverse(type) {
   return options;
 }
 
-/** "a", "a and b", "a, b and c" — for feat names inside a sentence. */
-function joinNames(names) {
+/** "a", "a and b", "a, b and c" — for feat names inside a sentence.
+    `and` is the word to join the last item with — pass the translated one;
+    this module stays free of i18n itself, see CLAUDE.md on pure lib modules. */
+function joinNames(names, and = 'and') {
   if (names.length <= 1) return names[0] ?? '';
-  return `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}`;
+  return `${names.slice(0, -1).join(', ')} ${and} ${names[names.length - 1]}`;
 }
+
+/** English pass-through, so a caller that does not care about translation
+    (tests, non-UI code) gets exactly the old behaviour. */
+const IDENTITY_I18N = {
+  t: (s) => s,
+  tx: (s, ...values) => s.replace(/\{(\d+)\}/g, (_, i) => values[Number(i)]),
+};
 
 /**
  * Why a choice feat has nothing left to offer.
@@ -180,15 +189,20 @@ function joinNames(names) {
  *
  * @param {string} featName - Feat name (exact from feats.json)
  * @param {string[]} playerFeats - Player's feat list
+ * @param {{t: function, tx: function}} [i18n] - Translate functions from
+ *   lib/i18n; defaults to an English pass-through so tests and non-UI callers
+ *   are unaffected. This module stays free of an i18n import itself.
  * @returns {string} Empty string when choices are available.
  */
-export function getChoiceUnavailableReason(featName, playerFeats) {
+export function getChoiceUnavailableReason(featName, playerFeats, i18n = IDENTITY_I18N) {
+  const { t, tx } = i18n;
   const type = REPEATABLE_WITH_CHOICE[featName];
   if (!type) return '';
   if (getChoicesForFeat(featName, playerFeats).length > 0) return '';
 
   const required = CHOICE_PREREQUISITE_FEATS[featName] ?? [];
-  const subject = CHOICE_SUBJECT[type] ?? 'option';
+  const subject = t(CHOICE_SUBJECT[type] ?? 'option');
+  const and = t('and');
 
   if (required.length > 0) {
     const universe = getChoiceUniverse(type);
@@ -196,7 +210,7 @@ export function getChoiceUnavailableReason(featName, playerFeats) {
 
     const missing = required.filter((name) => chosenFor(name).length === 0);
     if (missing.length > 0) {
-      return `No ${joinNames(missing)} feat selected — pick a ${subject} there first.`;
+      return tx('No {0} feat selected — pick a {1} there first.', joinNames(missing, and), subject);
     }
 
     // Each prerequisite has been taken, but never for the same subject.
@@ -205,13 +219,13 @@ export function getChoiceUnavailableReason(featName, playerFeats) {
       universe
     );
     if (shared.length === 0) {
-      return `No ${subject} has all of ${joinNames(required)} — they must name the same one.`;
+      return tx('No {0} has all of {1} — they must name the same one.', subject, joinNames(required, and));
     }
 
-    return `Every ${subject} you have ${joinNames(required)} for already has ${featName.toLowerCase()}.`;
+    return tx('Every {0} you have {1} for already has {2}.', subject, joinNames(required, and), featName.toLowerCase());
   }
 
-  return `Every ${subject} is already taken for this feat.`;
+  return tx('Every {0} is already taken for this feat.', subject);
 }
 
 /**

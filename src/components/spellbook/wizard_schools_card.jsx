@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { t, tName } from '../../lib/i18n';
 
 export default function WizardSchoolsCard({
   inst,
@@ -20,7 +21,7 @@ export default function WizardSchoolsCard({
   return (
     <div className={`card card-width-spellbook ${collapsed ? 'collapsed' : ''}`}>
       <div className="card-side-div card-expand-div" onClick={toggle}>
-        <h3 className="card-title">Specialized and Forbidden schools</h3>
+        <h3 className="card-title">{t('Specialized and Forbidden schools')}</h3>
         <button type="button" className="collapse-button">
           <span className="material-symbols-outlined">
             {collapsed ? 'expand_more' : 'expand_less'}
@@ -31,7 +32,7 @@ export default function WizardSchoolsCard({
       {!collapsed && (
         <div className="card-content player-sheet-alignment-card-content">
           <div className="player-sheet-alignment-row">
-            <label className="player-sheet-alignment-label">Specialized</label>
+            <label className="player-sheet-alignment-label">{t('Specialized')}</label>
             <select
               className="modern-dropdown small-long"
               value={specialized}
@@ -39,12 +40,12 @@ export default function WizardSchoolsCard({
             >
               <option value="">-</option>
               {possibleSpecialized.map((s) => (
-                <option key={s} value={s}>{s}</option>
+                <option key={s} value={s}>{tName('schools', s)}</option>
               ))}
             </select>
           </div>
           <div className="player-sheet-alignment-row">
-            <label className="player-sheet-alignment-label">Forbidden</label>
+            <label className="player-sheet-alignment-label">{t('Forbidden')}</label>
             <select
               className="modern-dropdown small-long"
               value={forbidden1}
@@ -52,13 +53,13 @@ export default function WizardSchoolsCard({
             >
               <option value="">-</option>
               {possibleForbidden1.map((s) => (
-                <option key={s} value={s}>{s}</option>
+                <option key={s} value={s}>{tName('schools', s)}</option>
               ))}
             </select>
           </div>
           {specialized !== 'Divination' && (
             <div className="player-sheet-alignment-row">
-              <label className="player-sheet-alignment-label">Forbidden 2</label>
+              <label className="player-sheet-alignment-label">{t('Forbidden 2')}</label>
               <select
                 className="modern-dropdown small-long"
                 value={forbidden2}
@@ -66,7 +67,7 @@ export default function WizardSchoolsCard({
               >
                 <option value="">-</option>
                 {possibleForbidden2.map((s) => (
-                  <option key={s} value={s}>{s}</option>
+                  <option key={s} value={s}>{tName('schools', s)}</option>
                 ))}
               </select>
             </div>

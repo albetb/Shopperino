@@ -38,11 +38,11 @@
     },
     {
       "en": "read magic",
-      "it": "lettura magica",
+      "it": "lettura del magico",
       "strict": false,
       "kind": "spell",
-      "note": "Spell name, referenced in lowercase prose from tables.json (Wizard spellcasting) before spells.json is translated. Not yet checked against the manual.",
-      "source": "coined"
+      "note": "Spell name. Read out of Manuale del Giocatore (\"tranne lettura del magico che tutti i maghi possono preparare a memoria\", Wizard Spellbooks entry, and used consistently throughout, e.g. \"Lettura del magico: Per leggere pergamene e libri...\"). Corrects the earlier coined 'lettura magica' guess used in tables.json/skills.json/feats.json before this was checked.",
+      "source": "manual"
     },
     {
       "en": "rope trick",
@@ -72,12 +72,15 @@
     },
     {
       "en": "Nimble Fingers",
-      "it": "Dita Agili",
+      "it": "Dita Sottili",
       "strict": false,
       "kind": "feat",
       "en_case": true,
-      "note": "Feat name, referenced inline from skills.json (Disable Device) before feats.json is translated. Not yet checked against the manual.",
-      "source": "coined"
+      "note": "Feat name, feats.json Feats/71. Corrected from a coined 'Dita Agili' guess — read out of Manuale del Giocatore (\"DITA SOTTILI [GENERALE]\") — its own benefit text (\"+2 a tutte le prove di Disattivare Congegni e Scassinare Serrature\") matches Feats/71 word for word.",
+      "source": "manual",
+      "stems": [
+        "Dita Sottili"
+      ]
     },
     {
       "en": "Deceitful",
@@ -90,20 +93,15 @@
     },
     {
       "en": "Investigator",
-      "it": "Investigatore",
+      "it": "Indagatore",
       "strict": false,
       "kind": "feat",
       "en_case": true,
-      "note": "Feat name, referenced inline from skills.json (Gather Information) before feats.json is translated. Not yet checked against the manual.",
-      "source": "coined"
-    },
-    {
-      "en": "trapfinding",
-      "it": "trovare trappole",
-      "strict": false,
-      "kind": "class",
-      "note": "Rogue class feature, referenced from skills.json (Disable Device) before classes.json is translated. Not yet checked against the manual.",
-      "source": "coined"
+      "note": "Feat name, feats.json Feats/58. Corrected from a coined 'Investigatore' guess — read out of Manuale del Giocatore (\"INDAGATORE [GENERALE]\") — its own text (\"+2 alle prove di Cercare e Raccogliere Informazioni\") matches Feats/58 word for word.",
+      "source": "manual",
+      "stems": [
+        "Indagatore"
+      ]
     },
     {
       "en": "Alchemy",
@@ -203,11 +201,14 @@
     },
     {
       "en": "animate rope",
-      "it": "corda animata",
+      "it": "animare corde",
       "strict": false,
       "kind": "spell",
-      "note": "Spell name, referenced in lowercase prose from skills.json (Escape Artist) before spells.json is translated. Uncertain — not checked against the manual.",
-      "source": "coined"
+      "note": "Spell name, referenced in lowercase prose from skills.json (Escape Artist, Use Rope). Corrected from a coined 'corda animata' guess — read out of Manuale del Giocatore p.86 (Use Rope entry): \"si lancia l'incantesimo animare corde su una corda\".",
+      "source": "manual",
+      "stems": [
+        "animare corde"
+      ]
     },
     {
       "en": "command plants",
@@ -243,11 +244,11 @@
     },
     {
       "en": "alter self",
-      "it": "alterare se stessi",
+      "it": "alterare se stesso",
       "strict": false,
       "kind": "spell",
-      "note": "Spell name, referenced in lowercase prose from skills.json (Disguise) before spells.json is translated. Uncertain — not checked against the manual.",
-      "source": "coined"
+      "note": "Spell name. Manuale del Giocatore p.72 lists it beside disguise self/polymorph/shapechange in a Bard ability description (OCR splits it across a column break as \"...come altera\" / \"re se stesso, camuffare se stesso, metamorfosi e trasformazione\"), confirming singular reflexive \"se stesso\" (matching disguise self's own \"camuffare se stesso\"), not the earlier coined plural \"se stessi\".",
+      "source": "manual"
     },
     {
       "en": "disguise self",
@@ -343,12 +344,15 @@
     },
     {
       "en": "Run",
-      "it": "Corsa",
+      "it": "Correre",
       "strict": false,
       "kind": "feat",
       "en_case": true,
-      "note": "Feat name, referenced inline from skills.json (Jump) before feats.json is translated. Not yet checked against the manual.",
-      "source": "coined"
+      "note": "Feat name, referenced from feats.json (Endurance, Improved Overrun). Corrected from a coined 'Corsa' guess — read out of Manuale del Giocatore (\"CORRERE [GENERALE]\").",
+      "source": "manual",
+      "stems": [
+        "Correre"
+      ]
     },
     {
       "en": "Acrobatic",
@@ -386,7 +390,7 @@
     },
     {
       "en": "Bardic Music",
-      "it": "Musica Bardica",
+      "it": "Musica bardica",
       "strict": false,
       "kind": "class",
       "note": "Bard class feature grouping, referenced from skills.json (Perform) before classes.json is translated. Not yet checked against the manual.",
@@ -394,39 +398,51 @@
     },
     {
       "en": "Mounted Archery",
-      "it": "Tiro da Cavallo",
+      "it": "Tirare in Sella",
       "strict": false,
       "kind": "feat",
       "en_case": true,
-      "note": "Feat name, referenced inline from skills.json (Ride) before feats.json is translated. Not yet checked against the manual.",
-      "source": "coined"
+      "note": "Feat name, feats.json Feats/67. Corrected from a coined 'Tiro da Cavallo' guess — read out of Manuale del Giocatore (\"TIRARE IN SELLA [GENERALE]\", prerequisites \"Cavalcare 1 grado, Combattere in Sella\" matching Feats/67 exactly, and its halved ranged-penalty benefit text matching word for word).",
+      "source": "manual",
+      "stems": [
+        "Tirare in Sella"
+      ]
     },
     {
       "en": "Mounted Combat",
-      "it": "Combattimento a Cavallo",
+      "it": "Combattere in Sella",
       "strict": false,
       "kind": "feat",
       "en_case": true,
-      "note": "Feat name, referenced inline from skills.json (Ride) before feats.json is translated. Not yet checked against the manual.",
-      "source": "coined"
+      "note": "Feat name, feats.json Feats/68. Corrected from a coined 'Combattimento a Cavallo' guess — read out of Manuale del Giocatore (\"COMBATTERE IN SELLA [GENERALE]\", prerequisite \"Cavalcare 1 grado\" matching Feats/68 exactly, and its Ride-check-negates-the-hit benefit text matching word for word).",
+      "source": "manual",
+      "stems": [
+        "Combattere in Sella"
+      ]
     },
     {
       "en": "Ride-By Attack",
-      "it": "Attacco al Passaggio",
+      "it": "Attacco in Sella",
       "strict": false,
       "kind": "feat",
       "en_case": true,
-      "note": "Feat name, referenced inline from skills.json (Ride) before feats.json is translated. Uncertain — not checked against the manual.",
-      "source": "coined"
+      "note": "Feat name, feats.json Feats/80. Corrected from a coined 'Attacco al Passaggio' guess — read out of Manuale del Giocatore (\"ATTACCO IN SELLA [GENERALE]\"), whose text (move+charge+move again, no AoO) matches Feats/80 word for word.",
+      "source": "manual",
+      "stems": [
+        "Attacco in Sella"
+      ]
     },
     {
       "en": "Spirited Charge",
-      "it": "Carica Impetuosa",
+      "it": "Carica Devastante",
       "strict": false,
       "kind": "feat",
       "en_case": true,
-      "note": "Feat name, referenced inline from skills.json (Ride) before feats.json is translated. Not yet checked against the manual.",
-      "source": "coined"
+      "note": "Feat name, feats.json Feats/93. Corrected from a coined 'Carica Impetuosa' guess — read out of Manuale del Giocatore (\"CARICA DEVASTANTE [GENERALE]\", prerequisites \"Cavalcare 1 grado, Attacco in Sella, Combattere in Sella\" matching Feats/93 exactly, and its double/triple-damage-on-charge benefit text matching word for word).",
+      "source": "manual",
+      "stems": [
+        "Carica Devastante"
+      ]
     },
     {
       "en": "Trample",
@@ -439,21 +455,27 @@
     },
     {
       "en": "Track",
-      "it": "Traccia",
+      "it": "Seguire Tracce",
       "strict": false,
       "kind": "feat",
       "en_case": true,
-      "note": "Feat name, referenced inline from skills.json (Search) before feats.json is translated. Not yet checked against the manual.",
-      "source": "coined"
+      "note": "Feat name, feats.json Feats/100. Corrected from a coined 'Traccia' guess — read out of Manuale del Giocatore (\"Seguire Tracce\", table 5-1 feat list and multiple cross-references, e.g. \"Un ranger acquisisce Seguire Tracce come talento bonus\").",
+      "source": "manual",
+      "stems": [
+        "Seguire Tracce"
+      ]
     },
     {
       "en": "Deft Hands",
-      "it": "Mani Abili",
+      "it": "Manolesta",
       "strict": false,
       "kind": "feat",
       "en_case": true,
-      "note": "Feat name, referenced inline from skills.json (Sleight of Hand) before feats.json is translated. Not yet checked against the manual.",
-      "source": "coined"
+      "note": "Feat name, referenced inline from skills.json (Sleight of Hand, Use Rope). Corrected from a coined 'Mani Abili' guess — read out of Manuale del Giocatore p.86 (Use Rope entry).",
+      "source": "manual",
+      "stems": [
+        "Manolesta"
+      ]
     },
     {
       "en": "Magical Aptitude",
@@ -466,11 +488,14 @@
     },
     {
       "en": "stonecunning",
-      "it": "conoscenza della pietra",
+      "it": "Esperto minatore",
       "strict": false,
       "kind": "race",
-      "note": "Dwarf racial ability, referenced from skills.json (Search) before races.json is translated. Not yet checked against the manual.",
-      "source": "coined"
+      "note": "Dwarf racial ability, races.json Dwarf/traits/4. Corrected from a coined 'conoscenza della pietra' guess — read out of Manuale del Giocatore p.15-16 (\"Esperto minatore: Ottengono un bonus razziale di +2 alle prove di Cercare per individuare strane opere in muratura...\") — matches the trait's full text almost word for word.",
+      "source": "manual",
+      "stems": [
+        "Esperto minatore"
+      ]
     },
     {
       "en": "detect magic",
@@ -594,11 +619,14 @@
     },
     {
       "en": "Gnome (language)",
-      "it": "Gnomico",
+      "it": "Gnomesco",
       "strict": false,
       "kind": "rules",
-      "note": "Language name, from skills.json (Speak Language) table. Not yet checked against the manual.",
-      "source": "coined"
+      "note": "Corrected from a coined 'Gnomico' guess — read out of Manuale del Giocatore p.16 (Dwarf racial traits, \"Linguaggi bonus: Gigante, Gnomesco, Goblin, Orchesco e Terran\"). Homonym warning: the English word 'Gnome' is spelled identically whether it means the race (-> Gnomo, STRICT in glossary.json) or this language (-> Gnomesco); the race-name check will still fire on a bonus-languages sentence and cannot be satisfied without breaking the language name — known, unavoidable false positive.",
+      "source": "manual",
+      "stems": [
+        "Gnomesco"
+      ]
     },
     {
       "en": "Infernal (language)",
@@ -634,12 +662,2451 @@
     },
     {
       "en": "Endurance",
-      "it": "Resistenza",
+      "it": "Resistenza Fisica",
       "strict": false,
       "kind": "feat",
       "en_case": true,
-      "note": "Feat name, referenced inline from skills.json (Swim) before feats.json is translated. Not yet checked against the manual.",
+      "note": "Feat name, feats.json Feats/27. Corrected from a coined 'Resistenza' guess — read out of Manuale del Giocatore (\"RESISTENZA FISICA [GENERALE]\").",
+      "source": "manual",
+      "stems": [
+        "Resistenza Fisica"
+      ]
+    },
+    {
+      "en": "grappling hook",
+      "it": "rampino",
+      "strict": false,
+      "kind": "item",
+      "note": "Referenced from skills.json (Use Rope). Read out of Manuale del Giocatore p.85 (Use Rope entry).",
+      "source": "manual",
+      "stems": [
+        "rampino"
+      ]
+    },
+    {
+      "en": "silk rope",
+      "it": "corda di seta",
+      "strict": false,
+      "kind": "item",
+      "note": "Referenced from skills.json (Use Rope). Read out of Manuale del Giocatore p.86 (Use Rope entry).",
+      "source": "manual",
+      "stems": [
+        "corda di seta"
+      ]
+    },
+    {
+      "en": "circumstance bonus",
+      "it": "bonus di circostanza",
+      "strict": false,
+      "kind": "rules",
+      "note": "Standard D&D 3.5 bonus type. Read out of Manuale del Giocatore p.85-86 (Open Lock, Use Rope entries).",
+      "source": "manual",
+      "stems": [
+        "bonus di circostanza"
+      ]
+    },
+    {
+      "en": "Power Attack",
+      "it": "Attacco Poderoso",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, referenced from feats.json (Cleave prerequisite, table 5-1). Read out of Manuale del Giocatore p.88/91.",
+      "source": "manual",
+      "stems": [
+        "Attacco Poderoso"
+      ]
+    },
+    {
+      "en": "Cleave",
+      "it": "Incalzare",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/11. Read out of Manuale del Giocatore p.97 (\"INCALZARE [GENERALE]\").",
+      "source": "manual",
+      "stems": [
+        "Incalzare"
+      ]
+    },
+    {
+      "en": "Great Cleave",
+      "it": "Incalzare Potenziato",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, referenced by table 5-1 prerequisites alongside Cleave. Read out of Manuale del Giocatore p.98 (\"INCALZARE POTENZIATO [GENERALE]\").",
+      "source": "manual",
+      "stems": [
+        "Incalzare Potenziato"
+      ]
+    },
+    {
+      "en": "Blind-Fight",
+      "it": "Combattere alla Cieca",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/9. Read out of Manuale del Giocatore p.94 (\"COMBATTERE ALLA CIECA [GENERALE]\").",
+      "source": "manual",
+      "stems": [
+        "Combattere alla Cieca"
+      ]
+    },
+    {
+      "en": "blink",
+      "it": "intermittenza",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced in lowercase prose from feats.json (Blind-Fight, Feats/9 Special). Read out of Manuale del Giocatore p.185/197.",
+      "source": "manual",
+      "stems": [
+        "intermittenza"
+      ]
+    },
+    {
+      "en": "Spell Focus",
+      "it": "Incantesimi Focalizzati",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/8 prerequisite. Read out of Manuale del Giocatore p.18/98.",
+      "source": "manual",
+      "stems": [
+        "Incantesimi Focalizzati"
+      ]
+    },
+    {
+      "en": "enhancement bonus",
+      "it": "bonus di potenziamento",
+      "strict": false,
+      "kind": "rules",
+      "note": "Standard D&D 3.5 bonus type. Read out of Manuale del Giocatore p.59/93 (Augment Summoning entry).",
+      "source": "manual",
+      "stems": [
+        "bonus di potenziamento"
+      ]
+    },
+    {
+      "en": "material component",
+      "it": "componente materiale",
+      "strict": false,
+      "kind": "rules",
+      "note": "Read out of Manuale del Giocatore p.89 (Brew Potion entry).",
+      "source": "manual",
+      "stems": [
+        "componente material"
+      ]
+    },
+    {
+      "en": "spell level",
+      "it": "livello dell'incantesimo",
+      "strict": false,
+      "kind": "rules",
+      "note": "Read out of Manuale del Giocatore p.29/89 (Brew Potion entry).",
+      "source": "manual",
+      "stems": [
+        "livello dell'incantesimo"
+      ]
+    },
+    {
+      "en": "spell-like ability",
+      "it": "capacità magica",
+      "strict": false,
+      "kind": "rules",
+      "note": "Read out of Manuale del Giocatore p.25 (\"capacità magica è essenzialmente come lanciare un incantesimo\").",
+      "source": "manual",
+      "stems": [
+        "capacità magica"
+      ]
+    },
+    {
+      "en": "Pick Pocket",
+      "it": "Borseggiare",
+      "strict": false,
+      "kind": "skill",
+      "en_case": true,
+      "note": "Not an actual 3.5 skill (Sleight of Hand covers this); appears as plain, unlinked text in feats.json Armor Proficiency entries (Feats/4-6) alongside real skill links. Coined, not checked against the manual since it names nothing the book defines.",
       "source": "coined"
+    },
+    {
+      "en": "Combat Expertise",
+      "it": "Maestria in Combattimento",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/13. Read out of Manuale del Giocatore (\"MAESTRIA IN COMBATTIMENTO [GENERALE]\").",
+      "source": "manual",
+      "stems": [
+        "Maestria in Combattimento"
+      ]
+    },
+    {
+      "en": "Dodge bonus",
+      "it": "bonus di schivare",
+      "strict": false,
+      "kind": "rules",
+      "note": "Read out of Manuale del Giocatore, Combat Expertise entry (\"bonus di schivare alla propria Classe Armatura\").",
+      "source": "manual",
+      "stems": [
+        "bonus di schivare"
+      ]
+    },
+    {
+      "en": "flat-footed",
+      "it": "colto alla sprovvista",
+      "strict": false,
+      "kind": "rules",
+      "note": "Read out of Manuale del Giocatore, Deflect Arrows / Combat Reflexes entries (\"non essere colto alla sprovvista\").",
+      "source": "manual",
+      "stems": [
+        "colto alla sprovvista"
+      ]
+    },
+    {
+      "en": "Combat Reflexes",
+      "it": "Riflessi in Combattimento",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/14. Read out of Manuale del Giocatore (\"RIFLESSI IN COMBATTIMENTO [GENERALE]\").",
+      "source": "manual",
+      "stems": [
+        "Riflessi in Combattimento"
+      ]
+    },
+    {
+      "en": "opportunist",
+      "it": "opportunismo",
+      "strict": false,
+      "kind": "class",
+      "note": "Rogue class feature, referenced from feats.json (Combat Reflexes special note). Read out of Manuale del Giocatore (\"capacità di opportunismo\").",
+      "source": "manual",
+      "stems": [
+        "opportunismo"
+      ]
+    },
+    {
+      "en": "Craft Magic Arms and Armor",
+      "it": "Creare Armi e Armature Magiche",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/15. Read out of Manuale del Giocatore p.323 index and item-creation section.",
+      "source": "manual",
+      "stems": [
+        "Creare Armi e Armature Magiche"
+      ]
+    },
+    {
+      "en": "Craft Rod",
+      "it": "Creare Verghe",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/16. Read out of Manuale del Giocatore (\"CREARE VERGHE [CREAZIONE OGGETTO]\").",
+      "source": "manual",
+      "stems": [
+        "Creare Verghe"
+      ]
+    },
+    {
+      "en": "Craft Staff",
+      "it": "Creare Bastoni",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/17. Read out of Manuale del Giocatore (\"CREARE BASTONI [CREAZIONE OGGETTO]\").",
+      "source": "manual",
+      "stems": [
+        "Creare Bastoni"
+      ]
+    },
+    {
+      "en": "Craft Wand",
+      "it": "Creare Bacchette",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/18. Read out of Manuale del Giocatore (\"CREARE BACCHETTE [CREAZIONE OGGETTO]\").",
+      "source": "manual",
+      "stems": [
+        "Creare Bacchette"
+      ]
+    },
+    {
+      "en": "Craft Wondrous Item",
+      "it": "Creare Oggetti Meravigliosi",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/19. Read out of Manuale del Giocatore (\"CREARE OGGETTI MERAVIGLIOSI [CREAZIONE OGGETTO]\").",
+      "source": "manual",
+      "stems": [
+        "Creare Oggetti Meravigliosi"
+      ]
+    },
+    {
+      "en": "Deflect Arrows",
+      "it": "Deviare Frecce",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/21. Read out of Manuale del Giocatore (\"DEVIARE FRECCE [GENERALE]\").",
+      "source": "manual",
+      "stems": [
+        "Deviare Frecce"
+      ]
+    },
+    {
+      "en": "Improved Unarmed Strike",
+      "it": "Colpo Senz'Armi Migliorato",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, referenced from feats.json (Deflect Arrows prerequisite). Read out of Manuale del Giocatore p.47/90.",
+      "source": "manual",
+      "stems": [
+        "Colpo Senz'Armi Migliorato"
+      ]
+    },
+    {
+      "en": "Diehard",
+      "it": "Duro a Morire",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/23. Read out of Manuale del Giocatore (\"DURO A MORIRE [GENERALE]\").",
+      "source": "manual",
+      "stems": [
+        "Duro a Morire"
+      ]
+    },
+    {
+      "en": "Dodge",
+      "it": "Schivare",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/25. Read out of Manuale del Giocatore p.11/90 (Table 5-1 feat list).",
+      "source": "manual",
+      "stems": [
+        "Schivare"
+      ]
+    },
+    {
+      "en": "dodge bonus",
+      "it": "bonus di schivare",
+      "strict": false,
+      "kind": "rules",
+      "note": "CONFLICT with glossary.ui.json's coined 'bonus di schivata' (kind: combat). This entry is manual-sourced: read directly off Manuale del Giocatore p.16/18 (\"Bonus di schivare +4 alla Classe Armatura...\"), the Combat Expertise feat entry, and the Dodge feat's own table row. Flagged for the two lanes to reconcile via glossary.py --conflicts / --merge.",
+      "source": "manual",
+      "stems": [
+        "bonus di schivare"
+      ]
+    },
+    {
+      "en": "Empower Spell",
+      "it": "Incantesimi Potenziati",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Metamagic feat name, feats.json Feats/26. Read out of Manuale del Giocatore (\"INCANTESIMI POTENZIATI [METAMAGIA]\") — its own benefit text (\"Tutti gli effetti numerici variabili di un incantesimo potenziato aumentano del 50%\") matches Feats/26 word for word.",
+      "source": "manual",
+      "stems": [
+        "Incantesimi Potenziati"
+      ]
+    },
+    {
+      "en": "Enlarge Spell",
+      "it": "Incantesimi Ingranditi",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Metamagic feat name, feats.json Feats/28. Read out of Manuale del Giocatore (\"INCANTESIMI INGRANDITI [METAMAGIA]\", range +100%). Not to be confused with 'Incantesimi Ampliati' (Widen Spell, area +100%).",
+      "source": "manual",
+      "stems": [
+        "Incantesimi Ingranditi"
+      ]
+    },
+    {
+      "en": "Extend Spell",
+      "it": "Incantesimi Estesi",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Metamagic feat name, feats.json Feats/31. Read out of Manuale del Giocatore (\"INCANTESIMI ESTESI [METAMAGIA]\").",
+      "source": "manual",
+      "stems": [
+        "Incantesimi Estesi"
+      ]
+    },
+    {
+      "en": "Eschew Materials",
+      "it": "Escludere Materiali",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/29. Read out of Manuale del Giocatore (\"ESCLUDERE MATERIALI [GENERALE]\") — its own benefit text matches Feats/29 almost word for word.",
+      "source": "manual",
+      "stems": [
+        "Escludere Materiali"
+      ]
+    },
+    {
+      "en": "Exotic Weapon Proficiency",
+      "it": "Competenza nelle Armi Esotiche",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/30. Read out of Manuale del Giocatore (\"COMPETENZA NELLE ARMI ESOTICHE [GENERALE]\").",
+      "source": "manual",
+      "stems": [
+        "Competenza nelle Armi Esotiche"
+      ]
+    },
+    {
+      "en": "Extra Turning",
+      "it": "Scacciare Extra",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/32. Read out of Manuale del Giocatore (\"SCACCIARE EXTRA [GENERALE]\").",
+      "source": "manual",
+      "stems": [
+        "Scacciare Extra"
+      ]
+    },
+    {
+      "en": "turn (undead)",
+      "it": "scacciare",
+      "strict": false,
+      "kind": "rules",
+      "note": "Cleric/paladin class feature verb (turn undead). Read out of Manuale del Giocatore (\"capacità di scacciare o intimorire creature\", Extra Turning entry).",
+      "source": "manual",
+      "stems": [
+        "scacciare"
+      ]
+    },
+    {
+      "en": "rebuke (undead)",
+      "it": "intimorire",
+      "strict": false,
+      "kind": "rules",
+      "note": "Evil cleric class feature verb (rebuke undead, the command-instead-of-turn variant). Read out of Manuale del Giocatore (\"capacità di scacciare o intimorire creature\", Extra Turning entry).",
+      "source": "manual",
+      "stems": [
+        "intimorire"
+      ]
+    },
+    {
+      "en": "Point Blank Shot",
+      "it": "Tiro Ravvicinato",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, referenced from feats.json (Far Shot prerequisite). Read out of Manuale del Giocatore (\"TIRO RAVVICINATO [GENERALE]\").",
+      "source": "manual",
+      "stems": [
+        "Tiro Ravvicinato"
+      ]
+    },
+    {
+      "en": "Far Shot",
+      "it": "Tiro Lontano",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/33. Read out of Manuale del Giocatore (\"TIRO LONTANO [GENERALE]\") — its own benefit text matches Feats/33 word for word.",
+      "source": "manual",
+      "stems": [
+        "Tiro Lontano"
+      ]
+    },
+    {
+      "en": "Forge Ring",
+      "it": "Forgiare Anelli",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/34. Read out of Manuale del Giocatore (\"FORGIARE ANELLI [CREAZIONE OGGETTO]\").",
+      "source": "manual",
+      "stems": [
+        "Forgiare Anelli"
+      ]
+    },
+    {
+      "en": "Great Fortitude",
+      "it": "Tempra Possente",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/36. Read out of Manuale del Giocatore (\"TEMPRA POSSENTE [GENERALE]\") — its own benefit text matches Feats/36 word for word.",
+      "source": "manual",
+      "stems": [
+        "Tempra Possente"
+      ]
+    },
+    {
+      "en": "Greater Spell Focus",
+      "it": "Incantesimi Focalizzati Superiore",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/37. Read out of Manuale del Giocatore (\"INCANTESIMI FOCALIZZATI SUPERIORE [GENERALE]\").",
+      "source": "manual",
+      "stems": [
+        "Incantesimi Focalizzati Superiore"
+      ]
+    },
+    {
+      "en": "Spell Penetration",
+      "it": "Incantesimi Inarrestabili",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, referenced from feats.json (Greater Spell Penetration prerequisite). Read out of Manuale del Giocatore (\"INCANTESIMI INARRESTABILI [GENERALE]\").",
+      "source": "manual",
+      "stems": [
+        "Incantesimi Inarrestabili"
+      ]
+    },
+    {
+      "en": "Greater Spell Penetration",
+      "it": "Incantesimi Inarrestabili Superiore",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/38. Read out of Manuale del Giocatore (\"INCANTESIMI INARRESTABILI SUPERIORE [GENERALE]\") — its own benefit text matches Feats/38 word for word.",
+      "source": "manual",
+      "stems": [
+        "Incantesimi Inarrestabili Superiore"
+      ]
+    },
+    {
+      "en": "Two-Weapon Fighting",
+      "it": "Combattere con Due Armi",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, referenced from feats.json (Greater Two-Weapon Fighting prerequisite). Read out of Manuale del Giocatore (\"COMBATTERE CON DUE ARMI [GENERALE]\").",
+      "source": "manual",
+      "stems": [
+        "Combattere con Due Armi"
+      ]
+    },
+    {
+      "en": "Improved Two-Weapon Fighting",
+      "it": "Combattere con Due Armi Migliorato",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, referenced from feats.json (Greater Two-Weapon Fighting prerequisite). Read out of Manuale del Giocatore (\"COMBATTERE CON DUE ARMI MIGLIORATO [GENERALE]\").",
+      "source": "manual",
+      "stems": [
+        "Combattere con Due Armi Migliorato"
+      ]
+    },
+    {
+      "en": "Greater Two-Weapon Fighting",
+      "it": "Combattere con Due Armi Superiore",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/39. Read out of Manuale del Giocatore (\"COMBATTERE CON DUE ARMI SUPERIORE [GENERALE]\") — its own benefit text matches Feats/39 word for word.",
+      "source": "manual",
+      "stems": [
+        "Combattere con Due Armi Superiore"
+      ]
+    },
+    {
+      "en": "Weapon Focus",
+      "it": "Arma Focalizzata",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, referenced from feats.json (Greater Weapon Focus). Read out of Manuale del Giocatore (\"ARMA FOCALIZZATA [GENERALE]\").",
+      "source": "manual",
+      "stems": [
+        "Arma Focalizzata"
+      ]
+    },
+    {
+      "en": "Greater Weapon Focus",
+      "it": "Arma Focalizzata Superiore",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/40. Read out of Manuale del Giocatore (\"ARMA FOCALIZZATA SUPERIORE [GENERALE]\") — its own text matches Feats/40 word for word.",
+      "source": "manual",
+      "stems": [
+        "Arma Focalizzata Superiore"
+      ]
+    },
+    {
+      "en": "Weapon Specialization",
+      "it": "Arma Specializzata",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, referenced from feats.json (Greater Weapon Specialization prerequisite). Read out of Manuale del Giocatore (\"ARMA SPECIALIZZATA [GENERALE]\").",
+      "source": "manual",
+      "stems": [
+        "Arma Specializzata"
+      ]
+    },
+    {
+      "en": "Greater Weapon Specialization",
+      "it": "Arma Specializzata Superiore",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, referenced from feats.json (Greater Weapon Focus, Feats/40 Special note; own entry Feats/41 to follow). Read out of Manuale del Giocatore (\"ARMA SPECIALIZZATA SUPERIORE [GENERALE]\").",
+      "source": "manual",
+      "stems": [
+        "Arma Specializzata Superiore"
+      ]
+    },
+    {
+      "en": "threat range",
+      "it": "intervallo di minaccia",
+      "strict": false,
+      "kind": "rules",
+      "note": "Read out of Manuale del Giocatore, Improved Critical entry (\"l'intervallo di minaccia di quell'arma viene raddoppiato\").",
+      "source": "manual",
+      "stems": [
+        "intervallo di minaccia"
+      ]
+    },
+    {
+      "en": "Improved Critical",
+      "it": "Critico Migliorato",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/45. Read out of Manuale del Giocatore (\"CRITICO MIGLIORATO [GENERALE]\") — its own text matches Feats/45 word for word.",
+      "source": "manual",
+      "stems": [
+        "Critico Migliorato"
+      ]
+    },
+    {
+      "en": "Improved Feint",
+      "it": "Fintare Migliorato",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/47. Read out of Manuale del Giocatore (\"FINTARE MIGLIORATO [GENERALE]\").",
+      "source": "manual",
+      "stems": [
+        "Fintare Migliorato"
+      ]
+    },
+    {
+      "en": "feint",
+      "it": "fintare / finta",
+      "strict": false,
+      "kind": "rules",
+      "note": "Combat maneuver verb/noun. Read out of Manuale del Giocatore, Improved Feint entry (\"può effettuare una finta\", \"fare una finta in mischia\").",
+      "source": "manual",
+      "stems": [
+        "fintare",
+        "finta"
+      ]
+    },
+    {
+      "en": "Improved Grapple",
+      "it": "Lottare Migliorato",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/48. Read out of Manuale del Giocatore (\"LOTTARE MIGLIORATO [GENERALE]\") — its own text matches Feats/48 word for word.",
+      "source": "manual",
+      "stems": [
+        "Lottare Migliorato"
+      ]
+    },
+    {
+      "en": "Improved Initiative",
+      "it": "Iniziativa Migliorata",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/49. Read out of Manuale del Giocatore (\"INIZIATIVA MIGLIORATA [GENERALE]\") — its own text (\"bonus di +4 ai tiri di iniziativa\") matches Feats/49 word for word.",
+      "source": "manual",
+      "stems": [
+        "Iniziativa Migliorata"
+      ]
+    },
+    {
+      "en": "Improved Overrun",
+      "it": "Oltrepassare Migliorato",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/50. Read out of Manuale del Giocatore (\"OLTREPASSARE MIGLIORATO [GENERALE]\") — its own text matches Feats/50 closely.",
+      "source": "manual",
+      "stems": [
+        "Oltrepassare Migliorato"
+      ]
+    },
+    {
+      "en": "overrun",
+      "it": "oltrepassare",
+      "strict": false,
+      "kind": "rules",
+      "note": "Combat maneuver verb. Read out of Manuale del Giocatore, Improved Overrun entry (\"quando il personaggio tenta di oltrepassare un avversario\").",
+      "source": "manual",
+      "stems": [
+        "oltrepassare"
+      ]
+    },
+    {
+      "en": "Improved Bull Rush",
+      "it": "Spingere Migliorato",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/43. Read out of Manuale del Giocatore (\"SPINGERE MIGLIORATO [GENERALE]\").",
+      "source": "manual",
+      "stems": [
+        "Spingere Migliorato"
+      ]
+    },
+    {
+      "en": "bull rush",
+      "it": "spingere",
+      "strict": false,
+      "kind": "rules",
+      "note": "Combat maneuver verb, referenced from feats.json (Improved Bull Rush). Read out of Manuale del Giocatore (\"SPINGERE MIGLIORATO\", \"il personaggio sa come spingere indietro gli avversari\").",
+      "source": "manual",
+      "stems": [
+        "spingere"
+      ]
+    },
+    {
+      "en": "Improved Counterspell",
+      "it": "Controincantesimo Migliorato",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/44. Read out of Manuale del Giocatore (\"CONTROINCANTESIMO MIGLIORATO [GENERALE]\") — its own text matches Feats/44 word for word.",
+      "source": "manual",
+      "stems": [
+        "Controincantesimo Migliorato"
+      ]
+    },
+    {
+      "en": "Trip",
+      "it": "Sbilanciare",
+      "strict": false,
+      "kind": "rules",
+      "note": "Combat maneuver verb/name (the D&D 3.5 'trip' attack). Read out of Manuale del Giocatore (\"SBILANCIARE\" section header + \"il talento Sbilanciare Migliorato\").",
+      "source": "manual",
+      "stems": [
+        "Sbilanciare"
+      ]
+    },
+    {
+      "en": "Improved Trip",
+      "it": "Sbilanciare Migliorato",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/54. Read out of Manuale del Giocatore (\"il talento Sbilanciare Migliorato (pagina 100)\", cross-referenced from the Trip special-attack section).",
+      "source": "manual",
+      "stems": [
+        "Sbilanciare Migliorato"
+      ]
+    },
+    {
+      "en": "Sunder",
+      "it": "Spezzare",
+      "strict": false,
+      "kind": "rules",
+      "note": "Combat maneuver verb/name, referenced from feats.json (Improved Sunder, \"see Sunder, page 158\"). Read out of Manuale del Giocatore (\"SPEZZARE MIGLIORATO [GENERALE]\", cross-referenced as \"Spezzare\").",
+      "source": "manual",
+      "stems": [
+        "Spezzare"
+      ]
+    },
+    {
+      "en": "Improved Sunder",
+      "it": "Spezzare Migliorato",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/53. Read out of Manuale del Giocatore (\"SPEZZARE MIGLIORATO [GENERALE]\").",
+      "source": "manual",
+      "stems": [
+        "Spezzare Migliorato"
+      ]
+    },
+    {
+      "en": "Improved Turning",
+      "it": "Scacciare Migliorato",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/55. Read out of Manuale del Giocatore (\"SCACCIARE MIGLIORATO [GENERALE]\").",
+      "source": "manual",
+      "stems": [
+        "Scacciare Migliorato"
+      ]
+    },
+    {
+      "en": "Iron Will",
+      "it": "Volontà di Ferro",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/59. Read out of Manuale del Giocatore (\"VOLONTÀ DI FERRO [GENERALE]\", OCR-mangled as \"VOLONTÀ D1 FERRO\") — its own text (\"bonus di +2 a tutti i tiri salvezza sulla Volontà\") matches Feats/59 word for word.",
+      "source": "manual",
+      "stems": [
+        "Volontà di Ferro"
+      ]
+    },
+    {
+      "en": "Shield Proficiency",
+      "it": "Competenza negli Scudi",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, referenced from feats.json (Improved Shield Bash prerequisite). Read out of Manuale del Giocatore (\"COMPETENZA NEGLI SCUDI [GENERALE]\").",
+      "source": "manual",
+      "stems": [
+        "Competenza negli Scudi"
+      ]
+    },
+    {
+      "en": "shield bash",
+      "it": "attacco con lo scudo",
+      "strict": false,
+      "kind": "rules",
+      "note": "Referenced from feats.json (Improved Shield Bash). Read out of Manuale del Giocatore (\"ATTACCO CON LO SCUDO MIGLIORATO\", \"danni inflitti da un attacco con lo scudo\", p.126).",
+      "source": "manual",
+      "stems": [
+        "attacco con lo scudo"
+      ]
+    },
+    {
+      "en": "Improved Shield Bash",
+      "it": "Attacco con lo Scudo Migliorato",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/52. Read out of Manuale del Giocatore (\"ATTACCO CON LO SCUDO MIGLIORATO\").",
+      "source": "manual",
+      "stems": [
+        "Attacco con lo Scudo Migliorato"
+      ]
+    },
+    {
+      "en": "shield bonus",
+      "it": "bonus di scudo",
+      "strict": false,
+      "kind": "rules",
+      "note": "Standard D&D 3.5 AC bonus type. Read out of Manuale del Giocatore, Two-Weapon Defense entry (\"tale bonus di scudo aumenta a +2\").",
+      "source": "manual",
+      "stems": [
+        "bonus di scudo"
+      ]
+    },
+    {
+      "en": "cover",
+      "it": "copertura",
+      "strict": false,
+      "kind": "rules",
+      "note": "Read out of Manuale del Giocatore p.152 (\"Copertura totale\").",
+      "source": "manual",
+      "stems": [
+        "copertura"
+      ]
+    },
+    {
+      "en": "total cover",
+      "it": "copertura totale",
+      "strict": false,
+      "kind": "rules",
+      "note": "Read out of Manuale del Giocatore p.152 (\"Copertura totale: Se il personaggio non ha alcuna linea di visuale...\").",
+      "source": "manual",
+      "stems": [
+        "copertura totale"
+      ]
+    },
+    {
+      "en": "total concealment",
+      "it": "occultamento totale",
+      "strict": false,
+      "kind": "rules",
+      "note": "Read out of Manuale del Giocatore p.78/103 (\"copertura totale od occultamento totale\").",
+      "source": "manual",
+      "stems": [
+        "occultamento totale"
+      ]
+    },
+    {
+      "en": "Improved Precise Shot",
+      "it": "Tiro Preciso Migliorato",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/51. Confirmed: printed as \"TIRO PRECIS O / MIGLIORATO [GENERALE]\" in Manuale del Giocatore — the OCR line-break had split it, which is why an earlier single-line search for \"TIRO PRECISO MIGLIORATO\" missed it. Found immediately after the base 'Tiro Preciso' entry.",
+      "source": "manual",
+      "stems": [
+        "Tiro Preciso Migliorato"
+      ]
+    },
+    {
+      "en": "Leadership",
+      "it": "Autorità",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/60. Read out of Manuale del Giocatore (\"AUTORITA [GENERALE]\") and Manuale del Dungeon Master p.106-108 (the full cohort/follower rules, matching Feats/60's large table almost word for word).",
+      "source": "manual",
+      "stems": [
+        "Autorità"
+      ]
+    },
+    {
+      "en": "cohort",
+      "it": "gregario",
+      "strict": false,
+      "kind": "rules",
+      "note": "Read out of Manuale del Dungeon Master p.105-108 (Leadership feat section, used throughout).",
+      "source": "manual",
+      "stems": [
+        "gregario"
+      ]
+    },
+    {
+      "en": "follower",
+      "it": "seguace",
+      "strict": false,
+      "kind": "rules",
+      "note": "Read out of Manuale del Dungeon Master p.105-108 (Leadership feat section, used throughout, distinct from 'gregario').",
+      "source": "manual",
+      "stems": [
+        "seguace",
+        "seguaci"
+      ]
+    },
+    {
+      "en": "Leadership score",
+      "it": "punteggio di Autorità",
+      "strict": false,
+      "kind": "rules",
+      "note": "Read out of Manuale del Dungeon Master p.106-107 (\"il suo attuale punteggio di Autorità\", \"Punteggio di Autorità: Il punteggio di Autorità di un personaggio è pari...\").",
+      "source": "manual",
+      "stems": [
+        "punteggio di Autorità"
+      ]
+    },
+    {
+      "en": "Lightning Reflexes",
+      "it": "Riflessi Fulminei",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/61. Read out of Manuale del Giocatore (\"RIFLESSI FULMINEI [GENERALE]\") — its own text (\"bonus di +2 a tutti i tiri salvezza sui Riflessi\") matches Feats/61 word for word.",
+      "source": "manual",
+      "stems": [
+        "Riflessi Fulminei"
+      ]
+    },
+    {
+      "en": "Manyshot",
+      "it": "Tiro Multiplo",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/63. Read out of Manuale del Giocatore (\"TIRO MULTIPLO [GENERALE]\", prerequisites \"Des 17, Tiro Rapido, Tiro Ravvicinato, bonus...\" matching Feats/63).",
+      "source": "manual",
+      "stems": [
+        "Tiro Multiplo"
+      ]
+    },
+    {
+      "en": "Rapid Shot",
+      "it": "Tiro Rapido",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, referenced from feats.json (Manyshot prerequisite). Read out of Manuale del Giocatore (\"TIRO RAPIDO [GENERALE]\").",
+      "source": "manual",
+      "stems": [
+        "Tiro Rapido"
+      ]
+    },
+    {
+      "en": "Martial Weapon Proficiency",
+      "it": "Competenza nelle Armi da Guerra",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/64. Read out of Manuale del Giocatore (\"Competenza nelle Armi da Guerra\", cross-referenced from the War domain and Exotic Weapon Proficiency sections).",
+      "source": "manual",
+      "stems": [
+        "Competenza nelle Armi da Guerra"
+      ]
+    },
+    {
+      "en": "Maximize Spell",
+      "it": "Incantesimi Massimizzati",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Metamagic feat name, feats.json Feats/65. Read out of Manuale del Giocatore (\"INCANTESIMI MASSIMIZZATI [METAMAGIA]\") — its own benefit text matches Feats/65 closely.",
+      "source": "manual",
+      "stems": [
+        "Incantesimi Massimizzati"
+      ]
+    },
+    {
+      "en": "Mobility",
+      "it": "Mobilità",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/66. Read out of Manuale del Giocatore (\"MOBILITÀ [GENERALE]\") — its own text matches Feats/66 word for word (also independently reconfirms 'bonus di schivare' over the UI lane's 'bonus di schivata').",
+      "source": "manual",
+      "stems": [
+        "Mobilità"
+      ]
+    },
+    {
+      "en": "Natural Spell",
+      "it": "Incantesimi Naturali",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/69. Read out of Manuale del Giocatore (\"INCANTESIMI NATURALI [GENERALE]\" header, plus its benefit text found under a jumbled OCR column — \"Prerequisiti: Sag 13, capacità di forma selvatica... può sostituire le componenti verbali e somatiche...\" — matching Feats/69 closely).",
+      "source": "manual",
+      "stems": [
+        "Incantesimi Naturali"
+      ]
+    },
+    {
+      "en": "Quick Draw",
+      "it": "Estrazione Rapida",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/76. Read out of Manuale del Giocatore (\"ESTRAZIONE RAPIDA [GENERALE]\") — its own text matches Feats/76 word for word.",
+      "source": "manual",
+      "stems": [
+        "Estrazione Rapida"
+      ]
+    },
+    {
+      "en": "Quicken Spell",
+      "it": "Incantesimi Rapidi",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Metamagic feat name, feats.json Feats/77. Read out of Manuale del Giocatore (\"INCANTESIMI RAPIDI [METAMAGIA]\") — its own text matches Feats/77 word for word.",
+      "source": "manual",
+      "stems": [
+        "Incantesimi Rapidi"
+      ]
+    },
+    {
+      "en": "Rapid Reload",
+      "it": "Ricarica Rapida",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/78. Read out of Manuale del Giocatore (\"RICARICA RAPIDA [GENERALE]\") — its own text matches Feats/78 word for word.",
+      "source": "manual",
+      "stems": [
+        "Ricarica Rapida"
+      ]
+    },
+    {
+      "en": "Run (feat, full text)",
+      "it": "Correre",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/81. Confirms the earlier correction (Run -> Correre, not Corsa) — read out of Manuale del Giocatore (\"CORRERE [GENERALE]\"), whose text matches Feats/81 word for word.",
+      "source": "manual",
+      "stems": [
+        "Correre"
+      ]
+    },
+    {
+      "en": "Scribe Scroll",
+      "it": "Scrivere Pergamene",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/82. Read out of Manuale del Dungeon Master (\"SCRIVERE PERGAMENE [CREAZIONE OGGETTO]\") — its own text matches Feats/82 word for word.",
+      "source": "manual",
+      "stems": [
+        "Scrivere Pergamene"
+      ]
+    },
+    {
+      "en": "Shot on the Run",
+      "it": "Tiro in Movimento",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/85. Read out of Manuale del Giocatore (\"TIRO IN MOVIMENTO [GENERALE]\") — its own text matches Feats/85 word for word.",
+      "source": "manual",
+      "stems": [
+        "Tiro in Movimento"
+      ]
+    },
+    {
+      "en": "Silent Spell",
+      "it": "Incantesimi Silenziosi",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Metamagic feat name, feats.json Feats/86. Read out of Manuale del Giocatore (\"INCANTESIMI SILENZIOSI [METAMAGIA]\") — its own text matches Feats/86 word for word.",
+      "source": "manual",
+      "stems": [
+        "Incantesimi Silenziosi"
+      ]
+    },
+    {
+      "en": "Simple Weapon Proficiency",
+      "it": "Competenza nelle Armi Semplici",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/87. Read out of Manuale del Giocatore (\"COMPETENZA NELLE ARMI SEMPLICI [GENERALE]\") — its own text matches Feats/87 closely.",
+      "source": "manual",
+      "stems": [
+        "Competenza nelle Armi Semplici"
+      ]
+    },
+    {
+      "en": "Skill Focus",
+      "it": "Abilità Focalizzata",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/88. Read out of Manuale del Giocatore (\"ABILITÀ FOCALIZZATA [GENERALE]\") — its own text matches Feats/88 word for word.",
+      "source": "manual",
+      "stems": [
+        "Abilità Focalizzata"
+      ]
+    },
+    {
+      "en": "Snatch Arrows",
+      "it": "Afferrare Frecce",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/89. Read out of Manuale del Giocatore (\"AFFERRARE FRECCE [GENERALE]\") — its own text matches Feats/89 word for word.",
+      "source": "manual",
+      "stems": [
+        "Afferrare Frecce"
+      ]
+    },
+    {
+      "en": "Spell Mastery",
+      "it": "Padronanza degli Incantesimi",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/91. Read out of Manuale del Giocatore (\"PADRONANZA DEGLI INCANTESIMI [GENERALE]\") — its own text matches Feats/91 word for word.",
+      "source": "manual",
+      "stems": [
+        "Padronanza degli Incantesimi"
+      ]
+    },
+    {
+      "en": "Spring Attack",
+      "it": "Attacco Rapido",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/94. Read out of Manuale del Giocatore (\"ATTACCO RAPIDO [GENERALE]\") — its own text matches Feats/94 closely (manual's example distance '1,5 metri' kept as the source's 5 feet per project convention).",
+      "source": "manual",
+      "stems": [
+        "Attacco Rapido"
+      ]
+    },
+    {
+      "en": "Stunning Fist",
+      "it": "Pugno Stordente",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/97. Read out of Manuale del Giocatore (\"PUGNO STORDENTE [GENERALE]\") — its own text matches Feats/97 word for word.",
+      "source": "manual",
+      "stems": [
+        "Pugno Stordente"
+      ]
+    },
+    {
+      "en": "Toughness",
+      "it": "Robustezza",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/98. Read out of Manuale del Giocatore (\"ROBUSTEZZA [GENERALE]\") — its own text matches Feats/98 word for word.",
+      "source": "manual",
+      "stems": [
+        "Robustezza"
+      ]
+    },
+    {
+      "en": "Tower Shield Proficiency",
+      "it": "Competenza negli Scudi Torre",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/99. Read out of Manuale del Giocatore (\"COMPETENZA NEGLI SCUDI TORRE\") — its own text matches Feats/99 word for word.",
+      "source": "manual",
+      "stems": [
+        "Competenza negli Scudi Torre"
+      ]
+    },
+    {
+      "en": "Two-Weapon Defense",
+      "it": "Difendere con Due Armi",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/102. Read out of Manuale del Giocatore (\"DIFENDERE CON DUE ARMI [GENERALE]\") — its own text matches Feats/102 word for word.",
+      "source": "manual",
+      "stems": [
+        "Difendere con Due Armi"
+      ]
+    },
+    {
+      "en": "Weapon Finesse",
+      "it": "Arma Accurata",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/104. Read out of Manuale del Giocatore (\"ARMA ACCURATA [GENERALE]\") — its own text matches Feats/104 word for word (spiked chain -> catena chiodata, whip -> frusta, rapier -> stocco).",
+      "source": "manual",
+      "stems": [
+        "Arma Accurata"
+      ]
+    },
+    {
+      "en": "Whirlwind Attack",
+      "it": "Attacco Turbinante",
+      "strict": false,
+      "kind": "feat",
+      "en_case": true,
+      "note": "Feat name, feats.json Feats/107. Read out of Manuale del Giocatore (\"ATTACCO TURBINANTE [GENERALE]\" header; body text not recovered due to OCR column jumbling, so Feats/107's prose is translated directly from the English source).",
+      "source": "manual",
+      "stems": [
+        "Attacco Turbinante"
+      ]
+    },
+    {
+      "en": "burst/emanation/line/spread",
+      "it": "esplosione / emanazione / linea / propagazione",
+      "strict": false,
+      "kind": "rules",
+      "note": "The four D&D 3.5 spell-area shapes. Read out of Manuale del Giocatore p.98/177 (\"la linea, l'emanazione, l'esplosione o la propagazione di un incantesimo\").",
+      "source": "manual",
+      "stems": [
+        "esplosione",
+        "emanazione",
+        "propagazione"
+      ]
+    },
+    {
+      "en": "Darkvision",
+      "it": "Scurovisione",
+      "strict": true,
+      "kind": "rules",
+      "note": "Read out of Manuale del Giocatore p.15 (Dwarf racial traits, \"Scurovisione: I nani possono vedere nell'oscurità fino a 18 metri\").",
+      "source": "manual",
+      "stems": [
+        "Scurovisione"
+      ]
+    },
+    {
+      "en": "goblinoid",
+      "it": "goblinoide",
+      "strict": false,
+      "kind": "creature-type",
+      "note": "Read out of Manuale del Giocatore (Dwarf racial traits, monster subtype references).",
+      "source": "manual",
+      "stems": [
+        "goblinoide"
+      ]
+    },
+    {
+      "en": "hobgoblin",
+      "it": "hobgoblin",
+      "strict": false,
+      "kind": "creature",
+      "note": "Kept as-is. Read out of Manuale del Giocatore p.16 (\"goblinoidi (goblin, hobgoblin e bugbear)\", Dwarf racial traits) — the manual does not translate this name.",
+      "source": "manual",
+      "stems": [
+        "hobgoblin"
+      ]
+    },
+    {
+      "en": "bugbear",
+      "it": "bugbear",
+      "strict": false,
+      "kind": "creature",
+      "note": "Kept as-is. Read out of Manuale del Giocatore p.16 (\"goblinoidi (goblin, hobgoblin e bugbear)\", Dwarf racial traits) — the manual does not translate this name.",
+      "source": "manual",
+      "stems": [
+        "bugbear"
+      ]
+    },
+    {
+      "en": "poison (rules noun)",
+      "it": "veleno",
+      "strict": false,
+      "kind": "rules",
+      "note": "Read out of Manuale del Giocatore p.16 (\"Bonus razziale di +2 ai tiri salvezza contro veleni\").",
+      "source": "manual",
+      "stems": [
+        "veleno"
+      ]
+    },
+    {
+      "en": "dwarven urgrosh",
+      "it": "urgrosh nanico",
+      "strict": false,
+      "kind": "item",
+      "note": "Weapon name, races.json Dwarf/traits/5 (Weapon Familiarity). Read out of Manuale del Giocatore p.16 (\"le asce da guerra naniche e gli urgrosh nanici\").",
+      "source": "manual",
+      "stems": [
+        "urgrosh nanico"
+      ]
+    },
+    {
+      "en": "hill giant",
+      "it": "gigante delle colline",
+      "strict": false,
+      "kind": "creature",
+      "note": "Read out of Manuale del Giocatore p.16 (Dwarf racial traits, \"mostri giganti (come ogre, troll e giganti delle colline)\").",
+      "source": "manual",
+      "stems": [
+        "gigante delle colline"
+      ]
+    },
+    {
+      "en": "Low-Light Vision",
+      "it": "Visione crepuscolare",
+      "strict": true,
+      "kind": "rules",
+      "note": "Read out of Manuale del Giocatore p.17-18 (Elf and Gnome racial traits, \"Visione crepuscolare: Gli elfi/gnomi possono vedere due volte più lontano di un umano...\").",
+      "source": "manual",
+      "stems": [
+        "Visione crepuscolare"
+      ]
+    },
+    {
+      "en": "kobold",
+      "it": "coboldo",
+      "strict": false,
+      "kind": "creature",
+      "note": "Read out of Manuale del Giocatore p.18 (Gnome racial traits, \"coboldi e goblinoidi\").",
+      "source": "manual",
+      "stems": [
+        "coboldo",
+        "coboldi"
+      ]
+    },
+    {
+      "en": "gnome hooked hammer",
+      "it": "martello-picca gnomesco",
+      "strict": false,
+      "kind": "item",
+      "note": "Weapon name, races.json Gnome/traits/4 (Weapon Familiarity). Read out of Manuale del Giocatore p.18 (\"i martelli-picca gnomeschi\").",
+      "source": "manual",
+      "stems": [
+        "martello-picca gnomesco",
+        "martelli-picca gnomeschi"
+      ]
+    },
+    {
+      "en": "dancing lights",
+      "it": "luci danzanti",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, races.json Gnome/traits/12 (spell-like abilities). Read out of Manuale del Giocatore p.18.",
+      "source": "manual",
+      "stems": [
+        "luci danzanti"
+      ]
+    },
+    {
+      "en": "ghost sound",
+      "it": "suono fantasma",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, races.json Gnome/traits/12 (spell-like abilities). Read out of Manuale del Giocatore p.18.",
+      "source": "manual",
+      "stems": [
+        "suono fantasma"
+      ]
+    },
+    {
+      "en": "prestidigitation",
+      "it": "prestidigitazione",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, races.json Gnome/traits/12 (spell-like abilities). Read out of Manuale del Giocatore p.18 (OCR-mangled as \"prestid gilazione\", clearly \"prestidigitazione\").",
+      "source": "manual",
+      "stems": [
+        "prestidigitazione"
+      ]
+    },
+    {
+      "en": "speak with animals",
+      "it": "parlare con gli animali",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, races.json Gnome/traits/11-12. Read out of Manuale del Giocatore p.18.",
+      "source": "manual",
+      "stems": [
+        "parlare con gli animali"
+      ]
+    },
+    {
+      "en": "Extraordinary",
+      "it": "Straordinaria",
+      "strict": true,
+      "kind": "rules",
+      "note": "The (Ex) ability-type tag abbreviated as (Str) in Italian (not to be confused with Str = Forza). Read out of Manuale del Giocatore, Barbarian class features (\"Movimento veloce (Str)\", \"Ira (Str)\", etc.) — every (Ex) tag in the Barbarian entry renders as (Str) for Straordinaria. English sometimes spells the word out in prose too (not just as the tag), so the stem must catch every inflection.",
+      "source": "manual",
+      "stems": [
+        "straordinari"
+      ]
+    },
+    {
+      "en": "Weapon and Armor Proficiency",
+      "it": "Competenza nelle armi e nelle armature",
+      "strict": true,
+      "kind": "class",
+      "note": "Standard class-feature header appearing at the top of every class's feature list. Read out of Manuale del Giocatore (Rogue, Wizard, Monk, Paladin entries all use this exact heading).",
+      "source": "manual",
+      "stems": [
+        "Competenza nelle armi e nelle armature"
+      ]
+    },
+    {
+      "en": "Fast Movement",
+      "it": "Movimento veloce",
+      "strict": true,
+      "kind": "class",
+      "note": "Barbarian class feature. Read out of Manuale del Giocatore (\"Movimento veloce (Str)\") — its own text matches classes.json Barbarian/classFeatures/1 word for word (feet kept as the English source's 10 feet per project convention, not the manual's 3 metri).",
+      "source": "manual",
+      "stems": [
+        "Movimento veloce"
+      ]
+    },
+    {
+      "en": "Rage",
+      "it": "Ira",
+      "strict": true,
+      "kind": "class",
+      "note": "Barbarian class feature, classes.json Barbarian/classFeatures/3. Read out of Manuale del Giocatore (\"Ira (Str)\") — its own text matches word for word.",
+      "source": "manual",
+      "stems": [
+        "Ira"
+      ]
+    },
+    {
+      "en": "Uncanny Dodge",
+      "it": "Schivare prodigioso",
+      "strict": true,
+      "kind": "class",
+      "note": "Barbarian (and Rogue) class feature. Read out of Manuale del Giocatore (\"Schivare prodigioso (Str)\") — its own text matches classes.json Barbarian/classFeatures/4 word for word.",
+      "source": "manual",
+      "stems": [
+        "Schivare prodigioso",
+        "schivare prodigioso"
+      ]
+    },
+    {
+      "en": "Improved Uncanny Dodge",
+      "it": "Schivare prodigioso migliorato",
+      "strict": true,
+      "kind": "class",
+      "note": "Barbarian (and Rogue) class feature. Read out of Manuale del Giocatore (\"Schivare prodigioso migliorato (Str)\") — its own text matches classes.json Barbarian/classFeatures/6 word for word.",
+      "source": "manual",
+      "stems": [
+        "schivare prodigioso migliorato"
+      ]
+    },
+    {
+      "en": "Trap Sense",
+      "it": "Percepire trappole",
+      "strict": true,
+      "kind": "class",
+      "note": "Barbarian (and Rogue) class feature. Read out of Manuale del Giocatore (\"Percepire trappole (Str)\") — its own text matches classes.json Barbarian/classFeatures/5 word for word.",
+      "source": "manual",
+      "stems": [
+        "Percepire trappole",
+        "percepire trappole"
+      ]
+    },
+    {
+      "en": "Damage Reduction",
+      "it": "Riduzione del danno",
+      "strict": true,
+      "kind": "rules",
+      "note": "Standard D&D 3.5 defensive trait. Read out of Manuale del Giocatore (\"Riduzione del danno (Str)\", Barbarian) — its own text matches classes.json Barbarian/classFeatures/7 word for word.",
+      "source": "manual",
+      "stems": [
+        "Riduzione del danno",
+        "riduzione del danno"
+      ]
+    },
+    {
+      "en": "Greater Rage",
+      "it": "Ira superiore",
+      "strict": true,
+      "kind": "class",
+      "note": "Barbarian class feature. Read out of Manuale del Giocatore (\"Ira superiore (Str)\") — its own text matches classes.json Barbarian/classFeatures/8 word for word.",
+      "source": "manual",
+      "stems": [
+        "Ira superiore"
+      ]
+    },
+    {
+      "en": "Indomitable Will",
+      "it": "Volontà indomita",
+      "strict": true,
+      "kind": "class",
+      "note": "Barbarian class feature. Read out of Manuale del Giocatore (\"Volontà indomita (Str)\") — its own text matches classes.json Barbarian/classFeatures/9 word for word.",
+      "source": "manual",
+      "stems": [
+        "Volontà indomita"
+      ]
+    },
+    {
+      "en": "Tireless Rage",
+      "it": "Ira infaticabile",
+      "strict": true,
+      "kind": "class",
+      "note": "Barbarian class feature. Read out of Manuale del Giocatore (\"Ira infaticabile (Str)\") — its own text matches classes.json Barbarian/classFeatures/10 word for word.",
+      "source": "manual",
+      "stems": [
+        "Ira infaticabile"
+      ]
+    },
+    {
+      "en": "Mighty Rage",
+      "it": "Ira possente",
+      "strict": true,
+      "kind": "class",
+      "note": "Barbarian class feature. Read out of Manuale del Giocatore (\"Ira possente (Str)\") — its own text matches classes.json Barbarian/classFeatures/11 word for word.",
+      "source": "manual",
+      "stems": [
+        "Ira possente"
+      ]
+    },
+    {
+      "en": "morale bonus",
+      "it": "bonus morale",
+      "strict": false,
+      "kind": "rules",
+      "note": "Standard D&D 3.5 bonus type. Read out of Manuale del Giocatore, Barbarian Rage entry.",
+      "source": "manual",
+      "stems": [
+        "bonus morale"
+      ]
+    },
+    {
+      "en": "flanked",
+      "it": "attaccato ai fianchi",
+      "strict": false,
+      "kind": "rules",
+      "note": "Combat positioning term. Read out of Manuale del Giocatore, Improved Uncanny Dodge entry (\"un barbaro non può più essere attaccato ai fianchi\").",
+      "source": "manual",
+      "stems": [
+        "attaccato ai fianchi",
+        "attaccare ai fianchi"
+      ]
+    },
+    {
+      "en": "Supernatural",
+      "it": "Soprannaturale",
+      "strict": true,
+      "kind": "rules",
+      "note": "The (Su) ability-type tag abbreviated as (Sop) in Italian. Read out of Manuale del Giocatore, Bard class features (\"Controcanto (Sop)\", \"Ispirare coraggio (Sop)\", etc.) — every (Su) tag in the Bard entry renders as (Sop) for Soprannaturale. English sometimes spells the word out in prose too (not just as the tag), so the stem must catch every inflection.",
+      "source": "manual",
+      "stems": [
+        "soprannatural"
+      ]
+    },
+    {
+      "en": "Spell-Like",
+      "it": "Magica",
+      "strict": true,
+      "kind": "rules",
+      "note": "The (Sp) ability-type tag abbreviated as (Mag) in Italian. Read out of Manuale del Giocatore, Bard class features (\"Affascinare (Mag)\", \"Suggestione (Mag)\", \"Canto di libertà (Mag)\", \"Suggestione di massa (Mag)\") — every (Sp) tag in the Bard entry renders as (Mag). English sometimes spells 'spell-like' out in prose too (not just as the tag, e.g. \"spell-like abilities of fey\"), which renders as 'capacità magiche' (see the existing 'spell-like ability' -> 'capacità magica' entry) — stem must catch that inflection too, not just the tag's closing paren.",
+      "source": "manual",
+      "stems": [
+        "magic"
+      ]
+    },
+    {
+      "en": "Bardic Knowledge",
+      "it": "Conoscenze bardiche",
+      "strict": true,
+      "kind": "class",
+      "note": "Bard class feature, classes.json Bard/classFeatures/2. Read out of Manuale del Giocatore (\"Conoscenze bardiche\") — its own text matches word for word. The check is written \"prove di conoscenza bardica\" (p.67); both forms are the book's.",
+      "source": "manual",
+      "stems": [
+        "conoscenze bardich",
+        "conoscenza bardic"
+      ]
+    },
+    {
+      "en": "Countersong",
+      "it": "Controcanto",
+      "strict": true,
+      "kind": "class",
+      "note": "Bard class feature, classes.json Bard/classFeatures/4. Read out of Manuale del Giocatore (\"Controcanto (Sop)\") — its own text matches word for word.",
+      "source": "manual",
+      "stems": [
+        "Controcanto",
+        "controcanto"
+      ]
+    },
+    {
+      "en": "Fascinate",
+      "it": "Affascinare",
+      "strict": true,
+      "kind": "class",
+      "note": "Bard class feature, classes.json Bard/classFeatures/5. Read out of Manuale del Giocatore (\"Affascinare (Mag)\") — its own text matches word for word.",
+      "source": "manual",
+      "stems": [
+        "Affascinare",
+        "affascinare",
+        "affascinato"
+      ]
+    },
+    {
+      "en": "Inspire Courage",
+      "it": "Ispirare coraggio",
+      "strict": true,
+      "kind": "class",
+      "note": "Bard class feature, classes.json Bard/classFeatures/6. Read out of Manuale del Giocatore (\"Ispirare coraggio (Sop)\") — its own text matches word for word.",
+      "source": "manual",
+      "stems": [
+        "Ispirare coraggio",
+        "ispirare coraggio"
+      ]
+    },
+    {
+      "en": "Inspire Competence",
+      "it": "Ispirare competenza",
+      "strict": true,
+      "kind": "class",
+      "note": "Bard class feature, classes.json Bard/classFeatures/7. Read out of Manuale del Giocatore (\"Ispirare competenza (Sop)\") — its own text matches word for word.",
+      "source": "manual",
+      "stems": [
+        "Ispirare competenza",
+        "ispirare competenza"
+      ]
+    },
+    {
+      "en": "Suggestion",
+      "it": "Suggestione",
+      "strict": true,
+      "kind": "class",
+      "note": "Bard class feature / spell, classes.json Bard/classFeatures/8. Read out of Manuale del Giocatore (\"Suggestione (Mag)\") — its own text matches word for word.",
+      "source": "manual",
+      "stems": [
+        "Suggestione",
+        "suggestione"
+      ]
+    },
+    {
+      "en": "Inspire Greatness",
+      "it": "Ispirare grandezza",
+      "strict": true,
+      "kind": "class",
+      "note": "Bard class feature, classes.json Bard/classFeatures/9. Read out of Manuale del Giocatore (\"Ispirare grandezza (Sop)\") — its own text matches word for word.",
+      "source": "manual",
+      "stems": [
+        "Ispirare grandezza",
+        "ispirare grandezza"
+      ]
+    },
+    {
+      "en": "Song of Freedom",
+      "it": "Canto di libertà",
+      "strict": true,
+      "kind": "class",
+      "note": "Bard class feature, classes.json Bard/classFeatures/10. Read out of Manuale del Giocatore (\"Canto di libertà (Mag)\") — its own text matches word for word.",
+      "source": "manual",
+      "stems": [
+        "Canto di libertà",
+        "canto di libertà"
+      ]
+    },
+    {
+      "en": "Inspire Heroics",
+      "it": "Ispirare eroismo",
+      "strict": true,
+      "kind": "class",
+      "note": "Bard class feature, classes.json Bard/classFeatures/11. Read out of Manuale del Giocatore (\"Ispirare eroismo (Sop)\") — its own text matches word for word.",
+      "source": "manual",
+      "stems": [
+        "Ispirare eroismo",
+        "ispirare eroismo"
+      ]
+    },
+    {
+      "en": "Mass Suggestion",
+      "it": "Suggestione di massa",
+      "strict": true,
+      "kind": "class",
+      "note": "Bard class feature, classes.json Bard/classFeatures/12. Read out of Manuale del Giocatore (\"Suggestione di massa (Mag)\") — its own text matches word for word.",
+      "source": "manual",
+      "stems": [
+        "Suggestione di massa",
+        "suggestione di massa"
+      ]
+    },
+    {
+      "en": "competence bonus",
+      "it": "bonus di competenza",
+      "strict": false,
+      "kind": "rules",
+      "note": "Standard D&D 3.5 bonus type. Read out of Manuale del Giocatore, Bard Inspire Competence / Inspire Greatness entries.",
+      "source": "manual",
+      "stems": [
+        "bonus di competenza"
+      ]
+    },
+    {
+      "en": "sap",
+      "it": "manganello",
+      "strict": false,
+      "kind": "item",
+      "note": "Weapon name, classes.json Bard/classFeatures/0 (Weapon and Armor Proficiency). Read out of Manuale del Giocatore (\"manganello\", Bard weapon list).",
+      "source": "manual",
+      "stems": [
+        "manganello"
+      ]
+    },
+    {
+      "en": "break enchantment",
+      "it": "spezzare incantamento",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced in lowercase prose from classes.json (Bard Song of Freedom). Read out of Manuale del Giocatore (\"un effetto equivalente all'incantesimo spezzare incantamento\"). HOMONYM WARNING: this spell's own name uses 'incantamento' (a synonym), not 'ammaliamento' — the shared glossary.json's STRICT 'Enchantment'->'Ammaliamento' (the spell SCHOOL name) will still fire on the English word 'enchantment' inside this spell's name and cannot be satisfied without using the wrong word for the school. Known, unavoidable false positive, same class as 'familiar'/'Gnome'/'keen'.",
+      "source": "manual",
+      "stems": [
+        "spezzare incantamento"
+      ]
+    },
+    {
+      "en": "Aura",
+      "it": "Aura",
+      "strict": true,
+      "kind": "class",
+      "note": "Cleric (and Paladin) class feature, classes.json Cleric/classFeatures/1. Read out of Manuale del Giocatore (\"Aura (Str)\") — its own text matches word for word.",
+      "source": "manual",
+      "stems": [
+        "Aura"
+      ]
+    },
+    {
+      "en": "cure spell",
+      "it": "incantesimo curare",
+      "strict": false,
+      "kind": "rules",
+      "note": "Category label for D&D 3.5's 'cure X' spells. Read out of Manuale del Giocatore, Cleric Spontaneous Casting entry (\"un incantesimo curare è un qualsiasi incantesimo con la parola cura nel nome\") — actual spell names use 'cura' (e.g. cura ferite leggere), the category label uses the infinitive 'curare'.",
+      "source": "manual",
+      "stems": [
+        "incantesimo curare",
+        "incantesimi curare"
+      ]
+    },
+    {
+      "en": "inflict spell",
+      "it": "incantesimo infliggere",
+      "strict": false,
+      "kind": "rules",
+      "note": "Category label for D&D 3.5's 'inflict X' spells. Read out of Manuale del Giocatore, Cleric Spontaneous Casting entry (\"un incantesimo infliggere è un qualsiasi incantesimo con la parola infliggi nel nome\").",
+      "source": "manual",
+      "stems": [
+        "incantesimo infliggere",
+        "incantesimi infliggere"
+      ]
+    },
+    {
+      "en": "Turn or Rebuke Undead",
+      "it": "Scacciare o intimorire i non morti",
+      "strict": false,
+      "kind": "class",
+      "note": "Cleric class feature, classes.json Cleric/classFeatures/6. Read out of Manuale del Giocatore (\"Scacciare o intimorire non morti (Sop)\") — confirms the earlier turn->scacciare / rebuke->intimorire glossary entries and its own text matches word for word. Soft, not strict: the phrase naturally reconjugates (scaccia/scacciare/scacciando etc.) in running prose, so a literal-phrase strict check false-positives on any conjugated form.",
+      "source": "manual",
+      "stems": [
+        "scacci",
+        "intimori"
+      ]
+    },
+    {
+      "en": "atonement",
+      "it": "espiazione",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, classes.json Cleric/classFeatures/8 (Ex-Clerics). Read out of Manuale del Giocatore (\"la descrizione dell'incantesimo espiazione\").",
+      "source": "manual",
+      "stems": [
+        "espiazione"
+      ]
+    },
+    {
+      "en": "Good/Evil domain (noun, not adjective)",
+      "it": "Bene / Male",
+      "strict": false,
+      "kind": "class",
+      "note": "HOMONYM WARNING: the Good and Evil alignment DOMAINS are proper nouns rendered 'Bene' and 'Male' (e.g. \"Dominio del Bene\", \"Dominio del Male\") — read out of Manuale del Giocatore, Cleric Deity/Domains entry (\"un dominio di allineamento (Bene, Caos, Legge, Male)\"). This collides with the shared glossary.json's STRICT en_case 'Good'->'Buono' / 'Evil'->'Malvagio' (the alignment ADJECTIVE), which still fires whenever capitalized 'Good'/'Evil' appears in a domain list, because English uses the same capitalized word for both the domain name and the adjective. Correct translation of a domain list cannot satisfy both at once. Known, unavoidable false positive, same class as 'familiar'/'Gnome'/'keen'/'Enchantment'.",
+      "source": "manual"
+    },
+    {
+      "en": "Wild Empathy",
+      "it": "Empatia selvatica",
+      "strict": true,
+      "kind": "class",
+      "note": "Druid (and Ranger) class feature, classes.json Druid/classFeatures/7. Read out of Manuale del Giocatore (\"Empatia selvatica (Str)\") — its own text matches word for word.",
+      "source": "manual",
+      "stems": [
+        "Empatia selvatica",
+        "empatia selvatica"
+      ]
+    },
+    {
+      "en": "Woodland Stride",
+      "it": "Andatura nel bosco",
+      "strict": true,
+      "kind": "class",
+      "note": "Druid class feature, classes.json Druid/classFeatures/8. Read out of Manuale del Giocatore (\"Andatura nel bosco (Str)\") — its own text matches word for word.",
+      "source": "manual",
+      "stems": [
+        "Andatura nel bosco",
+        "andatura nel bosco"
+      ]
+    },
+    {
+      "en": "Trackless Step",
+      "it": "Passo senza tracce",
+      "strict": true,
+      "kind": "class",
+      "note": "Druid class feature, classes.json Druid/classFeatures/9. Read out of Manuale del Giocatore (\"Passo senza tracce (Str)\") — its own text matches word for word.",
+      "source": "manual",
+      "stems": [
+        "Passo senza tracce",
+        "passo senza tracce"
+      ]
+    },
+    {
+      "en": "Resist Nature's Lure",
+      "it": "Resistenza al richiamo della natura",
+      "strict": true,
+      "kind": "class",
+      "note": "Druid class feature, classes.json Druid/classFeatures/10. Read out of Manuale del Giocatore (\"Resistenza al richiamo della natura (Str)\") — its own text matches word for word and independently reconfirms Fey->Folletto.",
+      "source": "manual",
+      "stems": [
+        "Resistenza al richiamo della natura"
+      ]
+    },
+    {
+      "en": "Wild Shape",
+      "it": "Forma selvatica",
+      "strict": true,
+      "kind": "class",
+      "note": "Druid class feature, classes.json Druid/classFeatures/11. Read out of Manuale del Giocatore (\"Forma selvatica (Sop)\") — its own text matches word for word.",
+      "source": "manual",
+      "stems": [
+        "Forma selvatica",
+        "forma selvatica"
+      ]
+    },
+    {
+      "en": "Venom Immunity",
+      "it": "Immunità ai veleni",
+      "strict": true,
+      "kind": "class",
+      "note": "Druid class feature, classes.json Druid/classFeatures/12. Read out of Manuale del Giocatore (\"Immunità ai veleni (Str)\") — its own text matches word for word.",
+      "source": "manual",
+      "stems": [
+        "Immunità ai veleni"
+      ]
+    },
+    {
+      "en": "A Thousand Faces",
+      "it": "Mille volti",
+      "strict": true,
+      "kind": "class",
+      "note": "Druid class feature, classes.json Druid/classFeatures/13. Read out of Manuale del Giocatore (\"Mille volti (Sop)\") — its own text matches word for word.",
+      "source": "manual",
+      "stems": [
+        "Mille volti"
+      ]
+    },
+    {
+      "en": "Timeless Body",
+      "it": "Corpo senza tempo",
+      "strict": true,
+      "kind": "class",
+      "note": "Druid (and Monk) class feature, classes.json Druid/classFeatures/14. Read out of Manuale del Giocatore (\"Corpo senza tempo (Str)\") — its own text matches word for word.",
+      "source": "manual",
+      "stems": [
+        "Corpo senza tempo"
+      ]
+    },
+    {
+      "en": "Animal Companion",
+      "it": "Compagno animale",
+      "strict": true,
+      "kind": "class",
+      "note": "Druid (and Ranger) class feature, classes.json Druid/classFeatures/5. Read out of Manuale del Giocatore (\"Compagno animale (Str)\") — its own text matches word for word.",
+      "source": "manual",
+      "stems": [
+        "Compagno animale",
+        "compagno animale"
+      ]
+    },
+    {
+      "en": "summon nature's ally",
+      "it": "evoca alleato naturale",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, classes.json Druid/classFeatures/2 (Spontaneous Casting). Read out of Manuale del Giocatore (\"un qualsiasi incantesimo evoca alleato naturale\").",
+      "source": "manual",
+      "stems": [
+        "evoca alleato naturale"
+      ]
+    },
+    {
+      "en": "ironwood",
+      "it": "legno di ferro",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, classes.json Druid/classFeatures/0 (Weapon and Armor Proficiency). Read out of Manuale del Giocatore (\"legno di ferro: il legno magico è forte come l'acciaio\").",
+      "source": "manual",
+      "stems": [
+        "legno di ferro"
+      ]
+    },
+    {
+      "en": "dire rat",
+      "it": "ratto famelico",
+      "strict": false,
+      "kind": "creature",
+      "note": "Creature name, referenced from classes.json (Druid Animal Companion list) before animals.json/monsters.json is translated. NOT checked against the manual — book.py found no match for 'famelico' or 'ratto gigante' in the core books. Uncertain — flag for correction once animals.json is reached.",
+      "source": "coined"
+    },
+    {
+      "en": "riding dog",
+      "it": "cane da cavalcatura",
+      "strict": false,
+      "kind": "creature",
+      "note": "Creature name, referenced from classes.json (Druid Animal Companion list) before animals.json is translated. Not checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "porpoise",
+      "it": "focena",
+      "strict": false,
+      "kind": "creature",
+      "note": "Creature name, classes.json Druid/classFeatures/5 (Animal Companion, aquatic options). Read out of Manuale del Giocatore (\"coccodrillo, focena, seppia e squalo Medio\").",
+      "source": "manual",
+      "stems": [
+        "focena"
+      ]
+    },
+    {
+      "en": "squid",
+      "it": "seppia",
+      "strict": false,
+      "kind": "creature",
+      "note": "Creature name, classes.json Druid/classFeatures/5 (Animal Companion, aquatic options). Read out of Manuale del Giocatore (\"coccodrillo, focena, seppia e squalo Medio\") — note: this is the manual's own rendering for this specific D&D list entry, though 'seppia' literally means cuttlefish rather than squid.",
+      "source": "manual",
+      "stems": [
+        "seppia"
+      ]
+    },
+    {
+      "en": "Evasion",
+      "it": "Eludere",
+      "strict": true,
+      "kind": "class",
+      "note": "Monk (and Rogue) class feature. Read out of Manuale del Giocatore Monk table/description (\"Eludere (Str): A partire dal 2° livello...\") word for word.",
+      "source": "manual",
+      "stems": [
+        "eluder"
+      ]
+    },
+    {
+      "en": "Unarmed Strike",
+      "it": "Colpo Senz'Armi",
+      "strict": false,
+      "kind": "class",
+      "note": "Monk class feature (and the Improved Unarmed Strike feat's base term, already in glossary as 'Colpo Senz'Armi Migliorato'). Read out of Manuale del Giocatore Monk table (\"colpo senz'armi\").",
+      "source": "manual",
+      "stems": [
+        "senz'armi",
+        "senz'armi"
+      ]
+    },
+    {
+      "en": "AC Bonus",
+      "it": "Bonus alla CA",
+      "strict": false,
+      "kind": "class",
+      "note": "Monk class feature. Read out of Manuale del Giocatore Monk table/description (\"Bonus alla CA (Str)\").",
+      "source": "manual"
+    },
+    {
+      "en": "Bonus Feat",
+      "it": "Talento Bonus",
+      "strict": false,
+      "kind": "class",
+      "note": "Recurring class-feature header (Fighter, Monk, Wizard, Ranger...). Read out of Manuale del Giocatore Monk description (\"Talento bonus: Al 1° livello, un monaco può selezionare...\").",
+      "source": "manual",
+      "stems": [
+        "talent"
+      ]
+    },
+    {
+      "en": "Still Mind",
+      "it": "Mente Lucida",
+      "strict": true,
+      "kind": "class",
+      "note": "Monk class feature, classes.json Monk/classFeatures/7. Read out of Manuale del Giocatore Monk table (\"Mente lucida\").",
+      "source": "manual",
+      "stems": [
+        "mente lucid"
+      ]
+    },
+    {
+      "en": "Ki Strike",
+      "it": "Colpo Ki",
+      "strict": true,
+      "kind": "class",
+      "note": "Monk class feature, classes.json Monk/classFeatures/8. Read out of Manuale del Giocatore Monk table (\"Colpo ki (magia/legale/adamantino)\").",
+      "source": "manual",
+      "stems": [
+        "colpo ki"
+      ]
+    },
+    {
+      "en": "Slow Fall",
+      "it": "Caduta Lenta",
+      "strict": true,
+      "kind": "class",
+      "note": "Monk class feature, classes.json Monk/classFeatures/9. Read out of Manuale del Giocatore Monk table (\"caduta lenta\").",
+      "source": "manual",
+      "stems": [
+        "caduta lent"
+      ]
+    },
+    {
+      "en": "Purity of Body",
+      "it": "Purezza del Corpo",
+      "strict": true,
+      "kind": "class",
+      "note": "Monk class feature, classes.json Monk/classFeatures/10. Read out of Manuale del Giocatore Monk table (\"Purezza del corpo\").",
+      "source": "manual",
+      "stems": [
+        "purezza del corpo"
+      ]
+    },
+    {
+      "en": "Wholeness of Body",
+      "it": "Integrità del Corpo",
+      "strict": true,
+      "kind": "class",
+      "note": "Monk class feature, classes.json Monk/classFeatures/11. Read out of Manuale del Giocatore Monk table (\"Integrità del corpo\").",
+      "source": "manual",
+      "stems": [
+        "integrità del corpo"
+      ]
+    },
+    {
+      "en": "Diamond Body",
+      "it": "Corpo Adamantino",
+      "strict": true,
+      "kind": "class",
+      "note": "Monk class feature, classes.json Monk/classFeatures/13. Read out of Manuale del Giocatore Monk table (\"Corpo adamantino\").",
+      "source": "manual",
+      "stems": [
+        "corpo adamantin"
+      ]
+    },
+    {
+      "en": "Abundant Step",
+      "it": "Passo Abbondante",
+      "strict": true,
+      "kind": "class",
+      "note": "Monk class feature, classes.json Monk/classFeatures/14. Read out of Manuale del Giocatore Monk table (\"Passo abbondante\").",
+      "source": "manual",
+      "stems": [
+        "passo abbondant"
+      ]
+    },
+    {
+      "en": "Diamond Soul",
+      "it": "Anima Adamantina",
+      "strict": true,
+      "kind": "class",
+      "note": "Monk class feature, classes.json Monk/classFeatures/15. Read out of Manuale del Giocatore Monk table (\"Anima adamantina\").",
+      "source": "manual",
+      "stems": [
+        "anima adamantin"
+      ]
+    },
+    {
+      "en": "Quivering Palm",
+      "it": "Palmo Tremante",
+      "strict": true,
+      "kind": "class",
+      "note": "Monk class feature, classes.json Monk/classFeatures/16. Read out of Manuale del Giocatore Monk table (\"Palmo tremante\").",
+      "source": "manual",
+      "stems": [
+        "palmo tremant"
+      ]
+    },
+    {
+      "en": "dimension door",
+      "it": "porta dimensionale",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced from classes.json Monk/classFeatures/14 (Abundant Step) before spells.json is translated. Read out of Manuale del Giocatore (\"Porta dimensionale: Teletrasporta l'incantatore...\").",
+      "source": "manual",
+      "stems": [
+        "porta dimensional"
+      ]
+    },
+    {
+      "en": "Tongue of the Sun and Moon",
+      "it": "Lingua del Sole e della Luna",
+      "strict": true,
+      "kind": "class",
+      "note": "Monk class feature, classes.json Monk/classFeatures/18. Read out of Manuale del Giocatore Monk section (\"Lingua del sole e della luna (Str)\") word for word.",
+      "source": "manual",
+      "stems": [
+        "lingua del sole e della luna"
+      ]
+    },
+    {
+      "en": "Empty Body",
+      "it": "Corpo Vuoto",
+      "strict": true,
+      "kind": "class",
+      "note": "Monk class feature, classes.json Monk/classFeatures/19. Read out of Manuale del Giocatore Monk section (\"Corpo vuoto\"). Tag kept as (Sop) per the English source's own (Su), though the manual's OCR reads the tag as \"(Str)\" there -- likely an OCR misread of \"(Sop)\", since Ex/Su/Sp -> Str/Sop/Mag is otherwise an unambiguous 1:1 mapping applied consistently across the whole file.",
+      "source": "manual",
+      "stems": [
+        "corpo vuot"
+      ]
+    },
+    {
+      "en": "Perfect Self",
+      "it": "Perfezione Interiore",
+      "strict": true,
+      "kind": "class",
+      "note": "Monk class feature, classes.json Monk/classFeatures/20. Read out of Manuale del Giocatore Monk section (\"Perfezione interiore\").",
+      "source": "manual",
+      "stems": [
+        "perfezione interior"
+      ]
+    },
+    {
+      "en": "etherealness",
+      "it": "forma eterea",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced from classes.json Monk/classFeatures/19 (Empty Body) before spells.json is translated. Read out of Manuale del Giocatore Monk section (\"come per l'incantesimo forma eterea\").",
+      "source": "manual",
+      "stems": [
+        "forma eterea"
+      ]
+    },
+    {
+      "en": "Aura of Good",
+      "it": "Aura di Bene",
+      "strict": true,
+      "kind": "class",
+      "note": "Paladin class feature, classes.json Paladin/classFeatures/1. Read out of Manuale del Giocatore Paladin section (\"Aura di bene (Str): Il potere dell'aura di bene di un paladino...\") word for word.",
+      "source": "manual",
+      "stems": [
+        "aura di bene"
+      ]
+    },
+    {
+      "en": "detect good",
+      "it": "individuazione del bene",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced from classes.json Paladin/classFeatures/1 (Aura of Good) before spells.json is translated. Read out of Manuale del Giocatore (\"vedi l'incantesimo individuazione del bene\").",
+      "source": "manual",
+      "stems": [
+        "individuazione del bene"
+      ]
+    },
+    {
+      "en": "detect evil",
+      "it": "individuazione del male",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name and Paladin class feature, classes.json Paladin/classFeatures/2. Read out of Manuale del Giocatore (\"Individuazione del male (Mag): A volontà, il paladino può utilizzare individuazione del male...\") word for word.",
+      "source": "manual",
+      "stems": [
+        "individuazione del male"
+      ]
+    },
+    {
+      "en": "Smite Evil",
+      "it": "Punire il Male",
+      "strict": true,
+      "kind": "class",
+      "note": "Paladin class feature, classes.json Paladin/classFeatures/3. Read out of Manuale del Giocatore Paladin section (\"Punire il male (Sop): Una volta al giorno, un paladino può tentare di punire il male con un normale attacco in mischia...\") -- own text matches almost word for word.",
+      "source": "manual",
+      "stems": [
+        "punire il male",
+        "punisce"
+      ]
+    },
+    {
+      "en": "Divine Grace",
+      "it": "Grazia Divina",
+      "strict": true,
+      "kind": "class",
+      "note": "Paladin class feature, classes.json Paladin/classFeatures/4. Read out of Manuale del Giocatore Paladin section (\"Grazia divina (Sop): Al 2° livello, un paladino applica il suo modificatore di Carisma...\") word for word.",
+      "source": "manual",
+      "stems": [
+        "grazia divina"
+      ]
+    },
+    {
+      "en": "Turn Undead",
+      "it": "Scacciare i Non Morti",
+      "strict": false,
+      "kind": "class",
+      "note": "Paladin class feature, classes.json Paladin/classFeatures/8 (paladins turn but never rebuke, unlike clerics). Read out of Manuale del Giocatore (\"Scacciare non morti (Sop): Quando un paladino raggiunge il 4° livello...\") word for word. Non-strict for the same reconjugation reason as 'Turn or Rebuke Undead'.",
+      "source": "manual",
+      "stems": [
+        "scacci"
+      ]
+    },
+    {
+      "en": "Special Mount",
+      "it": "Cavalcatura Speciale",
+      "strict": true,
+      "kind": "class",
+      "note": "Paladin class feature, classes.json Paladin/classFeatures/10. Read out of Manuale del Giocatore (\"Cavalcatura speciale (Mag): Al raggiungimento del 5° livello, un paladino guadagna i servigi di un destriero...\") — own text matches almost word for word.",
+      "source": "manual",
+      "stems": [
+        "cavalcatura special"
+      ]
+    },
+    {
+      "en": "remove disease",
+      "it": "rimuovi malattia",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name and Paladin class feature (classes.json Paladin/classFeatures/11), referenced before spells.json is translated. Read out of Manuale del Giocatore (\"Rimuovi malattia (Mag): A partire dal 6° livello, un paladino può produrre un effetto di rimuovi malattia...\").",
+      "source": "manual",
+      "stems": [
+        "rimuovi malattia"
+      ]
+    },
+    {
+      "en": "Code of Conduct",
+      "it": "Codice di Condotta",
+      "strict": true,
+      "kind": "class",
+      "note": "Paladin class feature, classes.json Paladin/classFeatures/12. Read out of Manuale del Giocatore (\"Codice di condotta : Un paladino deve essere di allineamento legale buono...\") — own text matches almost word for word.",
+      "source": "manual",
+      "stems": [
+        "codice di condotta"
+      ]
+    },
+    {
+      "en": "henchmen",
+      "it": "mercenari",
+      "strict": false,
+      "kind": "rules",
+      "note": "Read out of Manuale del Giocatore, Paladin Associates entry (\"Un paladino può accettare solo mercenari, gregari o seguaci che siano legali buoni\") alongside the already-established 'cohort'->'gregario' and 'follower'->'seguace' (from the DMG Leadership section); assigned to 'mercenari' by elimination since the other two are already spoken for.",
+      "source": "manual"
+    },
+    {
+      "en": "Favored Enemy",
+      "it": "Nemico Prescelto",
+      "strict": true,
+      "kind": "class",
+      "note": "Ranger class feature, classes.json Ranger/classFeatures/1. Read out of Manuale del Giocatore (\"Nemico prescelto (Str): Al 1° livello, un ranger può selezionare un tipo di creatura...\") — own text matches almost word for word.",
+      "source": "manual",
+      "stems": [
+        "nemico prescelt",
+        "nemici prescelt"
+      ]
+    },
+    {
+      "en": "Combat Style",
+      "it": "Stile di Combattimento",
+      "strict": true,
+      "kind": "class",
+      "note": "Ranger class feature, classes.json Ranger/classFeatures/4. Read out of Manuale del Giocatore (\"Stile di combattimento (Str): Al 2° livello, un ranger deve selezionare...\") — own text matches almost word for word.",
+      "source": "manual",
+      "stems": [
+        "stile di combattiment"
+      ]
+    },
+    {
+      "en": "Improved Combat Style",
+      "it": "Stile di Combattimento Migliorato",
+      "strict": true,
+      "kind": "class",
+      "note": "Ranger class feature, classes.json Ranger/classFeatures/8. Read out of Manuale del Giocatore Ranger table (\"Stile di combattimento migliorato\").",
+      "source": "manual",
+      "stems": [
+        "stile di combattimento migliorat"
+      ]
+    },
+    {
+      "en": "Combat Style Mastery",
+      "it": "Padronanza dello Stile di Combattimento",
+      "strict": true,
+      "kind": "class",
+      "note": "Ranger class feature, classes.json Ranger/classFeatures/12. Read out of Manuale del Giocatore Ranger table (\"Padronanza dello stile di combattimento\").",
+      "source": "manual",
+      "stems": [
+        "padronanza dello stile"
+      ]
+    },
+    {
+      "en": "Swift Tracker",
+      "it": "Rapido Segugio",
+      "strict": true,
+      "kind": "class",
+      "note": "Ranger class feature, classes.json Ranger/classFeatures/10. Read out of Manuale del Giocatore (\"Rapido segugio (Str): A partire dall'8° livello, un ranger può muoversi alla sua normale velocità mentre segue le tracce...\") — own text matches almost word for word.",
+      "source": "manual",
+      "stems": [
+        "rapido segugio"
+      ]
+    },
+    {
+      "en": "Camouflage",
+      "it": "Mimetismo",
+      "strict": true,
+      "kind": "class",
+      "note": "Ranger class feature, classes.json Ranger/classFeatures/13. Read out of Manuale del Giocatore (\"Mimetismo (Str): Un ranger di 13° livello o superiore può usare la sua abilità Nascondersi...\") — own text matches word for word.",
+      "source": "manual",
+      "stems": [
+        "mimetismo"
+      ]
+    },
+    {
+      "en": "Hide in Plain Sight",
+      "it": "Nascondersi in Piena Vista",
+      "strict": true,
+      "kind": "class",
+      "note": "Ranger (and Rogue at higher level) class feature, classes.json Ranger/classFeatures/14. Read out of Manuale del Giocatore (\"Nascondersi in piena vista (Str): Mentre si trova in qualsiasi tipo di terreno naturale...\") — own text matches word for word.",
+      "source": "manual",
+      "stems": [
+        "nascondersi in piena vista"
+      ]
+    },
+    {
+      "en": "Sneak Attack",
+      "it": "Attacco Furtivo",
+      "strict": true,
+      "kind": "class",
+      "note": "Rogue class feature, classes.json Rogue/classFeatures/1. Read out of Manuale del Giocatore Rogue section (\"Attacco furtivo : Se un ladro è in grado di sorprendere un avversario...\") — own text matches (OCR column-jumbled on the page but individually confirmed phrase by phrase).",
+      "source": "manual",
+      "stems": [
+        "attacco furtiv",
+        "attacchi furtiv"
+      ]
+    },
+    {
+      "en": "Trapfinding",
+      "it": "Scoprire Trappole",
+      "strict": true,
+      "kind": "class",
+      "note": "Rogue class feature, classes.json Rogue/classFeatures/2. Read out of Manuale del Giocatore (\"Scoprire trappole: I ladri (e solo i ladri) possono usare l'abilità Cercare per localizzare trappole...\") — own text matches almost word for word.",
+      "source": "manual",
+      "stems": [
+        "scoprire trappole"
+      ]
+    },
+    {
+      "en": "Crippling Strike",
+      "it": "Colpo Menomante",
+      "strict": true,
+      "kind": "class",
+      "note": "Rogue special ability, classes.json Rogue/classFeatures/7. Read out of Manuale del Giocatore (\"Colpo menomante (Str): Un ladro con questa capacità può compiere un attacco furtivo con una precisione tale che i suoi colpi indeboliscono e ostacolano l'avversario...\") — own text matches almost word for word.",
+      "source": "manual",
+      "stems": [
+        "colpo menomant"
+      ]
+    },
+    {
+      "en": "Defensive Roll",
+      "it": "Attutire il Colpo",
+      "strict": true,
+      "kind": "class",
+      "note": "Rogue special ability, classes.json Rogue/classFeatures/7. Read out of Manuale del Giocatore (\"Attutire il colpo (Str): Il ladro può attutire un colpo potenzialmente letale per subire meno danni del normale...\") — own text matches almost word for word (OCR misreads the tag as \"(Slr)\").",
+      "source": "manual",
+      "stems": [
+        "attutire il colpo"
+      ]
+    },
+    {
+      "en": "Opportunist",
+      "it": "Opportunismo",
+      "strict": true,
+      "kind": "class",
+      "note": "Rogue special ability, classes.json Rogue/classFeatures/7. Read out of Manuale del Giocatore (\"Opportunismo (Str): Una volta per round, il ladro può compiere un attacco di opportunità contro un avversario a cui sono stati appena inflitti danni in mischia da un altro personaggio...\") — own text matches almost word for word.",
+      "source": "manual",
+      "stems": [
+        "opportunismo"
+      ]
+    },
+    {
+      "en": "Skill Mastery",
+      "it": "Padronanza dell'Abilità",
+      "strict": true,
+      "kind": "class",
+      "note": "Rogue special ability, classes.json Rogue/classFeatures/7. Read out of Manuale del Giocatore (\"Padronanza dell'abilità : Il ladro diventa così sicuro nell'uso di certe abilità che può usarle in modo affidabile anche in condizioni avverse...\") — own text matches almost word for word.",
+      "source": "manual",
+      "stems": [
+        "padronanza dell'abilit",
+        "padronanza dell'abilit"
+      ]
+    },
+    {
+      "en": "Slippery Mind",
+      "it": "Mente Sfuggente",
+      "strict": true,
+      "kind": "class",
+      "note": "Rogue special ability, classes.json Rogue/classFeatures/7. Read out of Manuale del Giocatore (\"Mente sfuggente (Str): Questa capacità rappresenta la capacità del ladro di liberarsi dagli effetti magici che altrimenti lo porrebbero sotto controllo o compulsione...\") — own text matches almost word for word.",
+      "source": "manual",
+      "stems": [
+        "mente sfuggent"
+      ]
+    },
+    {
+      "en": "Still Spell",
+      "it": "Incantesimo Immobile",
+      "strict": true,
+      "kind": "feat",
+      "note": "Metamagic feat, classes.json Wizard/classFeatures/8. Read out of Manuale del Giocatore (\"Beneficio: Il personaggio può lanciare un incantesimo immobile senza le componenti somatiche...\"). NOT 'Incantesimo Silenzioso' -- that is Silent Spell (removes the verbal component instead); the two are easy to swap since the English names are so similar, but the manual keeps them distinct: immobile=no somatic, silenzioso=no verbal.",
+      "source": "manual",
+      "stems": [
+        "incantesimo immobile"
+      ]
     }
   ]
 }
