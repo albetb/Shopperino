@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { t } from '../../lib/i18n';
 import Card from '../common/Card';
 import Button from '../common/Button';
 import RangeSlider from '../common/RangeSlider';
@@ -51,11 +52,11 @@ export default function MonsterFiltersCard() {
   const set = (patch) => dispatch(onSetMonsterFilters(patch));
 
   return (
-    <Card title="Find a monster" eyebrow="Bestiary" className="monster-filters">
+    <Card title={t('Find a monster')} eyebrow={t('Bestiary')} className="monster-filters">
       <div className="sh-stack">
         {/* Which files to search. All three are on by default; the last one
             cannot be switched off, since a search of nothing finds nothing. */}
-        <div className="monster-source-row" role="group" aria-label="Creature sources">
+        <div className="monster-source-row" role="group" aria-label={t('Creature sources')}>
           {SOURCES.map((source, index) => {
             const on = isSourceSelected(filters.sourceMask, index);
             return (
@@ -66,7 +67,7 @@ export default function MonsterFiltersCard() {
                 aria-pressed={on}
                 onClick={() => set({ sourceMask: toggleSource(filters.sourceMask, index) })}
               >
-                {source.label}
+                {t(source.label)}
               </button>
             );
           })}
@@ -75,52 +76,52 @@ export default function MonsterFiltersCard() {
         <input
           type="text"
           className="sh-input"
-          placeholder="Search by name…"
+          placeholder={t('Search by name…')}
           value={filters.name}
-          aria-label="Monster name"
+          aria-label={t('Monster name')}
           onChange={(e) => set({ name: e.target.value })}
         />
 
         <div className="monster-filter-grid">
           <label className="sh-field">
-            <span className="sh-label">Type</span>
+            <span className="sh-label">{t('Type')}</span>
             <select
               className="sh-select"
               value={filters.type}
               onChange={(e) => set({ type: e.target.value })}
             >
-              <option value="">Any type</option>
+              <option value="">{t('Any type')}</option>
               {types.map((type) => <option key={type} value={type}>{type}</option>)}
             </select>
           </label>
 
           <label className="sh-field">
-            <span className="sh-label">Size</span>
+            <span className="sh-label">{t('Size')}</span>
             <select
               className="sh-select"
               value={filters.size}
               onChange={(e) => set({ size: e.target.value })}
             >
-              <option value="">Any size</option>
+              <option value="">{t('Any size')}</option>
               {SIZES.map((size) => <option key={size} value={size}>{size}</option>)}
             </select>
           </label>
 
           <label className="sh-field">
-            <span className="sh-label">Terrain</span>
+            <span className="sh-label">{t('Terrain')}</span>
             <select
               className="sh-select"
               value={filters.terrain}
               onChange={(e) => set({ terrain: e.target.value })}
             >
-              <option value="">Any terrain</option>
-              {TERRAINS.map((t) => <option key={t.key} value={t.key}>{t.label}</option>)}
+              <option value="">{t('Any terrain')}</option>
+              {TERRAINS.map((terrain) => <option key={terrain.key} value={terrain.key}>{t(terrain.label)}</option>)}
             </select>
           </label>
         </div>
 
         <RangeSlider
-          label="Challenge rating"
+          label={t('Challenge rating')}
           min={0}
           max={Math.max(0, crValues.length - 1)}
           low={lowIndex}
@@ -132,10 +133,10 @@ export default function MonsterFiltersCard() {
 
         <div className="monster-actions">
           <Button variant="primary" icon="search" onClick={() => dispatch(onSearchMonsters())}>
-            Search
+            {t('Search')}
           </Button>
           <Button variant="ghost" icon="casino" onClick={() => dispatch(onRandomMonster())}>
-            Random
+            {t('Random')}
           </Button>
         </div>
       </div>

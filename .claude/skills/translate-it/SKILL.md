@@ -54,7 +54,11 @@ If the same gate fails twice on the same string, stop and ask.
 ## The phases
 
 **Phase 1 — the UI.** ~1,260 strings across ~150 components, plus display
-strings in `src/lib`.
+strings in `src/lib`. **Start with `src/components/common/`.** A shared
+component that builds a string around a prop — `aria-label={`How ${label}
+works`}` — is handed an already-translated label by its callers, so until it is
+translated every one of its 16 callers reads half in each language. Worse, a
+test written against that state bakes the defect in as an assertion.
 
 **Phase 2 — the data prose.** ~6,700 strings, in this order:
 `tables.json` → `skills.json` → `feats.json` → `races.json` → `classes.json` →
@@ -100,23 +104,29 @@ Do **one file and its test together**.
 6. `tName('<domain>', name)` requires that `domain` already exists in
    `names.json`. A domain that does not exist falls back to English silently
    for every name — `verify.py` gates this.
-7. **A `t()` whose key is a variable** (`t(bonus.text)`) is invisible to
+7. **A template-literal attribute is display text.** ``aria-label={`How
+   ${label} works`}`` needs `tx('How {0} works', label)`. It is the shape that
+   most often ends up half-translated, because the hole is filled from a call
+   site that already is.
+8. **A `t()` whose key is a variable** (`t(bonus.text)`) is invisible to
    `progress.py`, which lists them separately. Put **every** value it can take
-   in the pack yourself, and say so in your report.
-8. Add every wrapped string to `src/data/<lang>/ui.json`.
-9. **Check the three things a translation quietly breaks:**
-   - **Search boxes.** A filter on `c.name` searches English the reader cannot
-     see. Filter on the displayed name.
-   - **Sorting.** Sort on the displayed name, not the English.
-   - **Plurals and gender.** `{n} items` is not `{n} oggetti` when n is 1;
-     Italian inflects adjectives (*attiva* / *attivo*).
-10. Watch for `t` being **shadowed** — `list.map((t) => …)` silently captures
+   in the pack yourself, and say so in your report. A key built from a template
+   — ``t(`${x} save`)`` — is worse, because the keys it can produce are a
+   product of what the hole holds: prefer `tx()`, or an explicit map.
+9. Add every wrapped string to `src/data/<lang>/ui.json`.
+10. **Check the three things a translation quietly breaks:**
+    - **Search boxes.** A filter on `c.name` searches English the reader cannot
+      see. Filter on the displayed name.
+    - **Sorting.** Sort on the displayed name, not the English.
+    - **Plurals and gender.** `{n} items` is not `{n} oggetti` when n is 1;
+      Italian inflects adjectives (*attiva* / *attivo*).
+11. Watch for `t` being **shadowed** — `list.map((t) => …)` silently captures
     the translate function. Rename the parameter.
-11. Update the co-located test to assert **both** languages via
+12. Update the co-located test to assert **both** languages via
     `setLanguage('it')`. Drive the model in English, assert the screen in
     Italian; see
     [conditions_section.test.js](../../../src/components/player_sheet/conditions_section.test.js).
-12. Run the checks:
+13. Run the checks:
     ```bash
     CI=true npx react-scripts test --watchAll=false --testPathPattern=<name>
     python .claude/skills/translate-it/scripts/en_drift.py    # English unmoved
@@ -221,7 +231,7 @@ CI=true npx react-scripts test --watchAll=false               # all suites pass
 npm run build                                                 # compiles
 ```
 
-Baseline: **126 suites, 2073 tests, 4 pre-existing build warnings**
+Baseline: **127 suites, 2088 tests, 4 pre-existing build warnings**
 (`loot_inventory`, `ShopInventory` ×2, `spellbook_table`). A new warning is
 yours.
 

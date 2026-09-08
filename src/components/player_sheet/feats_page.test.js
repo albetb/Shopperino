@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import Player from '../../lib/player';
 import FeatsPage from './feats_page';
 import { loadFile } from '../../lib/loadFile';
+import { setLanguage } from '../../lib/i18n';
 
 /* The picker opens from inside the "Choose a feat" bottom sheet, so it has to
    clear the sheet's stacking context to be seen at all. These are the values
@@ -196,5 +197,30 @@ describe('a feat name the data no longer carries', () => {
     expect(p.hasFeatNamed(GONE)).toBe(true);
     expect(p.getFeatShortDescription(GONE)).toBe('');
     expect(p.getActionFeats('melee')).toEqual([]);
+  });
+});
+
+describe('the page in Italian', () => {
+  afterEach(() => setLanguage('en'));
+
+  test('the heading, the count and the class name in the suggested chip translate', () => {
+    setLanguage('it');
+    renderFeatsPage(makePlayer());
+    expect(screen.getByText('Talenti')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: /Scegli talento/i }));
+    // The suggested chip names the class through tName('classes', …), so the
+    // class stays translated even though the feat names around it do not.
+    expect(screen.getByRole('button', { name: /Consigliato per Guerriero/i })).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Cerca talenti…')).toBeInTheDocument();
+  });
+
+  test('the add button keeps the English feat name behind the translated word', () => {
+    setLanguage('it');
+    renderFeatsPage(makePlayer());
+    fireEvent.click(screen.getByRole('button', { name: /Scegli talento/i }));
+    fireEvent.change(screen.getByPlaceholderText('Cerca talenti…'), {
+      target: { value: 'Toughness' },
+    });
+    expect(screen.getByRole('button', { name: 'Aggiungi Toughness' })).toBeInTheDocument();
   });
 });

@@ -1449,6 +1449,48 @@
       "kind": "abbrev",
       "en_case": true,
       "note": "Experience points (Punti Esperienza)."
+    },
+    {
+      "en": "Str",
+      "it": "For",
+      "strict": true,
+      "kind": "abbrev",
+      "note": "Strength ability score abbreviation."
+    },
+    {
+      "en": "Dex",
+      "it": "Des",
+      "strict": true,
+      "kind": "abbrev",
+      "note": "Dexterity ability score abbreviation."
+    },
+    {
+      "en": "Con",
+      "it": "Cos",
+      "strict": true,
+      "kind": "abbrev",
+      "note": "Constitution ability score abbreviation."
+    },
+    {
+      "en": "Wis",
+      "it": "Sag",
+      "strict": true,
+      "kind": "abbrev",
+      "note": "Wisdom ability score abbreviation."
+    },
+    {
+      "en": "Cha",
+      "it": "Car",
+      "strict": true,
+      "kind": "abbrev",
+      "note": "Charisma ability score abbreviation."
+    },
+    {
+      "en": "Int",
+      "it": "Int",
+      "strict": true,
+      "kind": "abbrev",
+      "note": "Intelligence ability score abbreviation (same in Italian)."
     }
   ]
 }

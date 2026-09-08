@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import appReducer, { setSharedShopSheetOpen } from '../../../store/slices/appSlice';
 import Player from '../../../lib/player';
 import SharedShopCard from './SharedShopCard';
+import { setLanguage } from '../../../lib/i18n';
 
 /* The scanned shop on the character sheet.
  *
@@ -198,5 +199,37 @@ describe('a scan can open the drawer without anyone pressing anything', () => {
     fireEvent.click(screen.getByLabelText('Put this shop down'));
     expect(store.getState().app.sharedShop).toBeNull();
     expect(store.getState().app.sharedShopSheetOpen).toBe(false);
+  });
+});
+
+describe('the same card in Italian', () => {
+  afterEach(() => setLanguage('en'));
+
+  const openDrawerIt = () => fireEvent.click(screen.getByRole('button', { name: /Sfoglia e compra/i }));
+
+  test('the count, the purse and the buy button translate, with the number and the gold suffix intact', () => {
+    setLanguage('it');
+    renderCard({ gold: 42.5 });
+    expect(screen.getByText('3 oggetti')).toBeInTheDocument();
+    openDrawerIt();
+    expect(screen.getByText('42.50 mo')).toBeInTheDocument();
+    openRow('Dagger');
+    fireEvent.click(within(rowBox('Dagger')).getByRole('button', { name: /Compra per/i }));
+  });
+
+  test('the shortfall and remaining notes translate around the same figure', () => {
+    setLanguage('it');
+    renderCard({ gold: 1 });
+    openDrawerIt();
+    openRow('Dagger');
+    expect(within(rowBox('Dagger')).getByText(/più di quanto porti con te/i)).toBeInTheDocument();
+  });
+
+  test('an affordable purchase says what is left, in Italian', () => {
+    setLanguage('it');
+    renderCard({ gold: 100 });
+    openDrawerIt();
+    openRow('Dagger');
+    expect(within(rowBox('Dagger')).getByText(/Ti restano/i)).toBeInTheDocument();
   });
 });

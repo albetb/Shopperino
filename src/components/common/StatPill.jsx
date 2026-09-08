@@ -1,4 +1,5 @@
 import Icon from './Icon';
+import { tx } from '../../lib/i18n';
 
 /**
  * `cond` marks the value as altered by a temporary effect. Pass the signed
@@ -27,7 +28,7 @@ export default function StatPill({ label, value, sub, accent, editing, onEdit, c
         <button
           type="button"
           className="sh-stat-pill-edit"
-          aria-label={`Edit ${label} modifier`}
+          aria-label={tx('Edit {0} modifier', label)}
           aria-pressed={editing || undefined}
           onClick={onEdit}
         >

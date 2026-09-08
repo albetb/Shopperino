@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import parse from 'html-react-parser';
+import { t, tx } from '../../lib/i18n';
 import Card from '../common/Card';
 import Bar from '../common/Bar';
 import Pill from '../common/Pill';
@@ -81,7 +82,7 @@ function MonsterHpRow({ individual, count, onAdjust }) {
             icon="remove"
             {...(minusDisabled ? {} : longPressMinus)}
             disabled={minusDisabled}
-            aria-label={count > 1 ? `Decrease HP of #${individual.index + 1}` : 'Decrease HP'}
+            aria-label={count > 1 ? tx('Decrease HP of #{0}', individual.index + 1) : t('Decrease HP')}
           />
           <div
             className="monster-hp-readout"
@@ -96,7 +97,7 @@ function MonsterHpRow({ individual, count, onAdjust }) {
             icon="add"
             {...(plusDisabled ? {} : longPressPlus)}
             disabled={plusDisabled}
-            aria-label={count > 1 ? `Increase HP of #${individual.index + 1}` : 'Increase HP'}
+            aria-label={count > 1 ? tx('Increase HP of #{0}', individual.index + 1) : t('Increase HP')}
           />
         </div>
       </div>
@@ -178,7 +179,7 @@ export default function MonsterSheetView() {
   const renderBonusEditor = () => (
     <Card padding>
       <div className="sh-row-h" style={{ gap: 'var(--space-2)', flexWrap: 'wrap' }}>
-        <span className="sh-eyebrow">{BONUS_LABEL[editBonus]} bonus</span>
+        <span className="sh-eyebrow">{tx('{0} bonus', t(BONUS_LABEL[editBonus]))}</span>
         <Stepper
           value={tempBonus}
           min={-99}
@@ -186,8 +187,8 @@ export default function MonsterSheetView() {
           step={editBonus === 'speed' ? 5 : 1}
           onChange={setTempBonus}
         />
-        <IconButton icon="check" size="sm" onClick={saveBonus} aria-label="Save bonus" style={{ marginLeft: 'auto' }} />
-        <IconButton icon="close" ghost size="sm" onClick={() => setEditBonus(null)} aria-label="Cancel" />
+        <IconButton icon="check" size="sm" onClick={saveBonus} aria-label={t('Save bonus')} style={{ marginLeft: 'auto' }} />
+        <IconButton icon="close" ghost size="sm" onClick={() => setEditBonus(null)} aria-label={t('Cancel')} />
       </div>
     </Card>
   );
@@ -210,7 +211,7 @@ export default function MonsterSheetView() {
             icon="arrow_back"
             onClick={() => dispatch(onCloseMonsterSheet())}
           >
-            Back
+            {t('Back')}
           </Button>
           <div className="monster-sheet-identity">
             <Filigree>{sheet.getSizeAndType()}</Filigree>
@@ -224,8 +225,8 @@ export default function MonsterSheetView() {
               icon="menu_book"
               ghost size="sm"
               onClick={() => dispatch(addCardByLink({ links: sheet.getRef() }))}
-              aria-label="Show full stat block"
-              title="Full stat block"
+              aria-label={t('Show full stat block')}
+              title={t('Full stat block')}
             />
           </span>
         </div>
@@ -237,10 +238,10 @@ export default function MonsterSheetView() {
           whole entry off the roster with it. */}
       <Card
         title={individuals.length === 1
-          ? `${individuals[0].currentHp} / ${maxHp} hp`
-          : `${individuals.length} creatures`}
+          ? tx('{0} / {1} hp', individuals[0].currentHp, maxHp)
+          : tx('{0} creatures', individuals.length)}
         className="sh-card--head-spread"
-        eyebrow="Health"
+        eyebrow={t('Health')}
         action={
           <span className="sh-row-h" style={{ gap: 'var(--space-1)' }}>
             <IconButton
@@ -248,18 +249,18 @@ export default function MonsterSheetView() {
               ghost size="sm"
               onClick={() => dispatch(onResetMonsterHp())}
               disabled={!anyDamage}
-              aria-label="Back to full health"
-              title="Every one of them back to full"
+              aria-label={t('Back to full health')}
+              title={t('Every one of them back to full')}
             />
             <IconButton
               icon="add"
               ghost size="sm"
               onClick={() => dispatch(onAddIndividual(openIndex))}
               disabled={atIndividualCap}
-              aria-label={`Add another ${sheet.getName()}`}
+              aria-label={tx('Add another {0}', sheet.getName())}
               title={atIndividualCap
-                ? `${MAX_INDIVIDUALS} is as many as one entry holds`
-                : 'Add another one of these'}
+                ? tx('{0} is as many as one entry holds', MAX_INDIVIDUALS)
+                : t('Add another one of these')}
             />
           </span>
         }
@@ -279,32 +280,32 @@ export default function MonsterSheetView() {
             <Pill tone="ghost">{sheet.getHitDiceLine()}</Pill>
             {individuals.length > 1 && (
               <Pill tone="ghost">
-                {individuals.filter((i) => !i.isDying).length} still up
+                {tx('{0} still up', individuals.filter((i) => !i.isDying).length)}
               </Pill>
             )}
             <IconButton
               icon={hpAdvancedOpen ? 'expand_less' : 'expand_more'}
               ghost size="sm"
               onClick={() => setHpAdvancedOpen((v) => !v)}
-              aria-label={hpAdvancedOpen ? 'Hide max hp' : 'Show max hp'}
+              aria-label={hpAdvancedOpen ? t('Hide max hp') : t('Show max hp')}
             />
           </div>
           {hpAdvancedOpen && (
             <div className="sh-row-h sh-spread">
-              <span className="sh-eyebrow">Max hit points</span>
+              <span className="sh-eyebrow">{t('Max hit points')}</span>
               {editMaxLife ? (
                 <div className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
                   <Stepper value={tempMaxLife} min={1} max={999} onChange={setTempMaxLife} />
-                  <IconButton icon="check" size="sm" onClick={saveMaxLife} aria-label="Save max hp" />
-                  <IconButton icon="restart_alt" ghost size="sm" onClick={resetMaxLife} aria-label="Back to the printed average" />
-                  <IconButton icon="close" ghost size="sm" onClick={() => setEditMaxLife(false)} aria-label="Cancel" />
+                  <IconButton icon="check" size="sm" onClick={saveMaxLife} aria-label={t('Save max hp')} />
+                  <IconButton icon="restart_alt" ghost size="sm" onClick={resetMaxLife} aria-label={t('Back to the printed average')} />
+                  <IconButton icon="close" ghost size="sm" onClick={() => setEditMaxLife(false)} aria-label={t('Cancel')} />
                 </div>
               ) : (
                 <div className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
                   <span className="sh-mono sh-num sh-muted">
                     {maxHp}{sheet.maxLife == null ? '' : ' *'}
                   </span>
-                  <IconButton icon="edit" ghost size="sm" onClick={startEditMaxLife} aria-label="Edit max hp" />
+                  <IconButton icon="edit" ghost size="sm" onClick={startEditMaxLife} aria-label={t('Edit max hp')} />
                 </div>
               )}
             </div>
@@ -315,11 +316,11 @@ export default function MonsterSheetView() {
       {/* Abilities — the same two-row grid the player sheet's sidebar uses, so a
           master reads the two the same way. Directly under health because it
           is what the next die roll usually asks for. */}
-      <Card title="Abilities" className="sh-card--head-spread">
+      <Card title={t('Abilities')} className="sh-card--head-spread">
         <div className="ability-grid ability-grid-labels">
           {ABILITY_KEYS.map((key) => (
             <div key={key} className="ability-grid-cell ability-label-cell">
-              {ABILITY_LABELS[key]}
+              {t(ABILITY_LABELS[key])}
             </div>
           ))}
         </div>
@@ -345,12 +346,12 @@ export default function MonsterSheetView() {
       <div className="sh-grid-3">
         <StatPill
           accent
-          label="AC"
+          label={t('AC')}
           value={sheet.getArmorClass()}
           sub={
             <>
-              <span style={{ display: 'block' }}>touch {sheet.getTouchAc()}</span>
-              <span style={{ display: 'block' }}>flat {sheet.getFlatFootedAc()}</span>
+              <span style={{ display: 'block' }}>{t('touch')} {sheet.getTouchAc()}</span>
+              <span style={{ display: 'block' }}>{t('flat')} {sheet.getFlatFootedAc()}</span>
               {bonusSub('ac')}
             </>
           }
@@ -358,14 +359,14 @@ export default function MonsterSheetView() {
           onEdit={() => toggleEditBonus('ac')}
         />
         <StatPill
-          label="Init"
+          label={t('Init')}
           value={fmt(sheet.getInitiative())}
           sub={bonusSub('initiative')}
           editing={editBonus === 'initiative'}
           onEdit={() => toggleEditBonus('initiative')}
         />
         <StatPill
-          label="Speed"
+          label={t('Speed')}
           value={u.distance(sheet.getSpeed())}
           sub={bonusSub('speed')}
           editing={editBonus === 'speed'}
@@ -377,21 +378,21 @@ export default function MonsterSheetView() {
       {/* Saves row */}
       <div className="sh-grid-3">
         <StatPill
-          label="Fort"
+          label={t('Fort')}
           value={fmt(sheet.getFortitudeSave())}
           sub={bonusSub('fort')}
           editing={editBonus === 'fort'}
           onEdit={() => toggleEditBonus('fort')}
         />
         <StatPill
-          label="Ref"
+          label={t('Ref')}
           value={fmt(sheet.getReflexSave())}
           sub={bonusSub('reflex')}
           editing={editBonus === 'reflex'}
           onEdit={() => toggleEditBonus('reflex')}
         />
         <StatPill
-          label="Will"
+          label={t('Will')}
           value={fmt(sheet.getWillSave())}
           sub={bonusSub('will')}
           editing={editBonus === 'will'}
@@ -401,10 +402,10 @@ export default function MonsterSheetView() {
       {BOTTOM_ROW.includes(editBonus) && renderBonusEditor()}
 
       {/* Attacks */}
-      <Card title="Attacks" eyebrow={sheet.getBaseAttackGrapple()} className="sh-card--head-spread">
+      <Card title={t('Attacks')} eyebrow={sheet.getBaseAttackGrapple()} className="sh-card--head-spread">
         <div className="sh-stack" style={{ gap: 'var(--space-2)' }}>
           {attacks.length === 0 ? (
-            <div className="sh-faint">{sheet.getAttackLine() || 'This creature has no attacks.'}</div>
+            <div className="sh-faint">{sheet.getAttackLine() || t('This creature has no attacks.')}</div>
           ) : attacks.map((line, idx) => (
             <div
               key={line.index}
@@ -421,7 +422,9 @@ export default function MonsterSheetView() {
                     the save that avoids them where the others show a bonus. */}
                 {line.save ? (
                   <Pill tone="warn">
-                    {line.save.dc ? `${line.save.ability} DC ${line.save.dc}` : `${line.save.ability} save`}
+                    {line.save.dc
+                      ? tx('{0} DC {1}', t(line.save.ability), line.save.dc)
+                      : t(`${line.save.ability} save`)}
                   </Pill>
                 ) : (
                   <Pill tone={line.type === 'secondary' ? 'default' : 'accent'}>{fmt(line.bonus ?? 0)}</Pill>
@@ -443,11 +446,11 @@ export default function MonsterSheetView() {
 
       {/* What the creature can do that is not an attack roll */}
       {(specialAttacks.length > 0 || specialQualities.length > 0) && (
-        <Card title="Special" className="sh-card--head-spread">
+        <Card title={t('Special')} className="sh-card--head-spread">
           <div className="sh-stack" style={{ gap: 'var(--space-2)' }}>
             {specialAttacks.length > 0 && (
               <div className="sh-stack" style={{ gap: 'var(--space-1)' }}>
-                <Filigree>Attacks</Filigree>
+                <Filigree>{t('Attacks')}</Filigree>
                 <div className="sh-row-h" style={{ gap: 'var(--space-2)', flexWrap: 'wrap' }}>
                   {specialAttacks.map((s) => <Pill key={s} tone="accent">{u.text(s)}</Pill>)}
                 </div>
@@ -455,7 +458,7 @@ export default function MonsterSheetView() {
             )}
             {specialQualities.length > 0 && (
               <div className="sh-stack" style={{ gap: 'var(--space-1)' }}>
-                <Filigree>Qualities</Filigree>
+                <Filigree>{t('Qualities')}</Filigree>
                 <div className="sh-row-h" style={{ gap: 'var(--space-2)', flexWrap: 'wrap' }}>
                   {specialQualities.map((s) => <Pill key={s} tone="success">{u.text(s)}</Pill>)}
                 </div>
@@ -468,25 +471,25 @@ export default function MonsterSheetView() {
       {/* Reference detail — collapsed by default: useful, but not what you
           read while the initiative count is moving. */}
       <Card
-        title="Details"
+        title={t('Details')}
         className="sh-card--head-spread"
         action={
           <IconButton
             icon={notesOpen ? 'expand_less' : 'expand_more'}
             ghost size="sm"
             onClick={() => setNotesOpen((v) => !v)}
-            aria-label="Toggle details"
+            aria-label={t('Toggle details')}
           />
         }
       >
         {notesOpen && (
           <div className="sh-stack" style={{ gap: 'var(--space-2)' }}>
             {skills.length > 0 && (
-              <div><span className="sh-eyebrow">Skills</span>
+              <div><span className="sh-eyebrow">{t('Skills')}</span>
                 <div className="sh-faint monster-detail-text">{skills.join(', ')}</div></div>
             )}
             {feats.length > 0 && (
-              <div><span className="sh-eyebrow">Feats</span>
+              <div><span className="sh-eyebrow">{t('Feats')}</span>
                 <div className="sh-faint monster-detail-text">{feats.join(', ')}</div></div>
             )}
             <div className="sh-row-h" style={{ gap: 'var(--space-2)', flexWrap: 'wrap' }}>
@@ -495,12 +498,12 @@ export default function MonsterSheetView() {
               {sheet.getTreasure() && <Pill tone="ghost" icon="paid">{sheet.getTreasure()}</Pill>}
             </div>
             {sheet.getOrganization() && (
-              <div><span className="sh-eyebrow">Organization</span>
+              <div><span className="sh-eyebrow">{t('Organization')}</span>
                 <div className="sh-faint monster-detail-text">{sheet.getOrganization()}</div></div>
             )}
             {sheet.getCombatHtml() && (
               <div className="monster-detail-prose">
-                <Filigree>Combat</Filigree>
+                <Filigree>{t('Combat')}</Filigree>
                 {parse(u.prose(sheet.getCombatHtml()))}
               </div>
             )}
@@ -511,7 +514,7 @@ export default function MonsterSheetView() {
       {!sheet.isValid() && (
         <div className="sh-warn-strip">
           <Icon name="warning" />
-          This creature is no longer in the data files.
+          {t('This creature is no longer in the data files.')}
         </div>
       )}
     </div>

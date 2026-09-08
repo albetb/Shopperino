@@ -1,4 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { tx } from '../../lib/i18n';
 import Icon from './Icon';
 import BottomSheet from './BottomSheet';
 import { isMobile } from '../../lib/utils';
@@ -119,7 +120,7 @@ export default function StatInfo({
       {/* Labelled as one phrase so a screen reader reads "Total 19" rather
           than two disconnected cells, and so a test can ask for the total
           without reaching into the DOM for its row. */}
-      <li className="stat-info-row stat-info-row--total" aria-label={`Total ${sum}`}>
+      <li className="stat-info-row stat-info-row--total" aria-label={tx('Total {0}', sum)}>
         <span className="stat-info-row-label" aria-hidden="true">Total</span>
         <span className="stat-info-row-value sh-num" aria-hidden="true">{sum}</span>
       </li>
@@ -178,9 +179,9 @@ export default function StatInfo({
         ref={buttonRef}
         className={['stat-info-button', className].filter(Boolean).join(' ')}
         onClick={(e) => { e.stopPropagation(); setOpen((v) => !v); }}
-        aria-label={`What makes up ${label}`}
+        aria-label={tx('What makes up {0}', label)}
         aria-expanded={open}
-        title={`What makes up ${label}`}
+        title={tx('What makes up {0}', label)}
       >
         <Icon name="info" size={14} />
       </button>

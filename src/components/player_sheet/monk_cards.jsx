@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { t, tx } from '../../lib/i18n';
 import TrackerCard from './tracker_card';
 import TrackerRow from './tracker_row';
 import Card from '../common/Card';
@@ -51,27 +52,27 @@ export function MonkBonusFeatsCard() {
 
   return (
     <Card
-      title="Bonus feats"
+      title={t('Bonus feats')}
       className="sh-card--head-spread"
-      eyebrow={`${chosenCount} of ${levels.length} chosen`}
+      eyebrow={tx('{0} of {1} chosen', chosenCount, levels.length)}
       action={
         <span className="sh-row-h" style={{ gap: 'var(--space-1)' }}>
-          <InfoPopover label="Monk bonus feats">
+          <InfoPopover label={t('Monk bonus feats')}>
             <p>
-              At 1st, 2nd and 6th level a monk takes one feat from a pair. They
-              are granted by the class: they <b>ignore their normal
-              prerequisites</b> and cost nothing from either feat budget.
+              {tx(
+                'At 1st, 2nd and 6th level a monk takes one feat from a pair. They are granted by the class: they {0} and cost nothing from either feat budget.',
+                <b>{t('ignore their normal prerequisites')}</b>
+              )}
             </p>
             <p>
-              The two options at a level are exclusive — one or the other, never
-              both. The middle position of each slider leaves the choice open.
+              {t('The two options at a level are exclusive — one or the other, never both. The middle position of each slider leaves the choice open.')}
             </p>
           </InfoPopover>
           <IconButton
             icon={collapsed ? 'expand_more' : 'expand_less'}
             ghost size="sm"
             onClick={() => dispatch(setCombatPageCardCollapsed({ key: 'monkBonusFeats', value: !collapsed }))}
-            aria-label="Toggle bonus feats"
+            aria-label={t('Toggle bonus feats')}
           />
         </span>
       }
@@ -86,7 +87,7 @@ export function MonkBonusFeatsCard() {
             if (options.length < 2) return null;
             return (
               <div key={level} className="monk-bonus-level">
-                <span className="sh-eyebrow">Level {level}</span>
+                <span className="sh-eyebrow">{tx('Level {0}', level)}</span>
                 <div className="monk-bonus-pair">
                   {/* Wrapped: SpellLink sets text-align inline, so the side a
                       name sits on has to be decided by its container. */}
@@ -99,9 +100,9 @@ export function MonkBonusFeatsCard() {
                     value={chosen}
                     leftValue={options[0]}
                     rightValue={options[1]}
-                    leftLabel={`Take ${options[0]} at level ${level}`}
-                    rightLabel={`Take ${options[1]} at level ${level}`}
-                    centerLabel={`Take neither at level ${level}`}
+                    leftLabel={tx('Take {0} at level {1}', options[0], level)}
+                    rightLabel={tx('Take {0} at level {1}', options[1], level)}
+                    centerLabel={tx('Take neither at level {0}', level)}
                     onChange={(next) => dispatch(onSetMonkBonusFeat(level, next))}
                   />
                   <span className="monk-bonus-side">
@@ -145,43 +146,44 @@ export function StunningFistCard() {
 
   return (
     <TrackerCard
-      title="Stunning fist"
+      title={t('Stunning fist')}
       collapseKey="stunningFist"
       used={player.getClassFeatureUsed('stunningFist')}
       max={max}
       onUse={(delta) => dispatch(onUseClassFeature('stunningFist', delta))}
       onReset={() => dispatch(onResetClassFeature('stunningFist'))}
-      note={max === 0 ? 'One attempt per four levels — the first arrives at 4th.' : undefined}
+      note={max === 0 ? t('One attempt per four levels — the first arrives at 4th.') : undefined}
       action={
-        <InfoPopover label="Stunning fist">
+        <InfoPopover label={t('Stunning fist')}>
           <p>
-            Declared <b>before</b> the attack roll, at most once per round, and
-            only on an unarmed melee attack. It costs one attempt whether or not
-            the attack lands.
+            {tx(
+              'Declared {0}, at most once per round, and only on an unarmed melee attack. It costs one attempt whether or not the attack lands.',
+              <b>{t('before the attack roll')}</b>
+            )}
           </p>
           <p>
-            On a hit, the target makes a <b>Fortitude save (DC {player.getStunningFistDc()})</b>{' '}
-            — 10 + half your character level + your Wisdom modifier. On a failure
-            it is <b>stunned for one round</b>: it loses its next action, is
-            denied its Dexterity bonus to AC, and takes a further −2 to AC.
+            {tx(
+              'On a hit, the target makes a {0} — 10 + half your character level + your Wisdom modifier. On a failure it is {1}: it loses its next action, is denied its Dexterity bonus to AC, and takes a further −2 to AC.',
+              <b>{tx('{0} (DC {1})', t('Fortitude save'), player.getStunningFistDc())}</b>,
+              <b>{t('stunned for one round')}</b>
+            )}
           </p>
           <p>
             {isMonkAllowance
-              ? 'A monk attempts it once per day for each monk level.'
-              : 'Outside the monk class the feat allows one attempt per day for every four levels.'}{' '}
-            Constructs, oozes, plants, undead, incorporeal creatures and anything
-            immune to critical hits cannot be stunned.
+              ? t('A monk attempts it once per day for each monk level.')
+              : t('Outside the monk class the feat allows one attempt per day for every four levels.')}{' '}
+            {t('Constructs, oozes, plants, undead, incorporeal creatures and anything immune to critical hits cannot be stunned.')}
           </p>
-          <p>The attack itself deals its damage normally either way.</p>
+          <p>{t('The attack itself deals its damage normally either way.')}</p>
         </InfoPopover>
       }
     >
       <div className="tracker-card-row tracker-card-meta">
         <Pill tone="accent" icon="shield_person">
-          Fortitude DC {player.getStunningFistDc()}
+          {tx('{0} DC {1}', t('Fortitude'), player.getStunningFistDc())}
         </Pill>
         {kiStrike && (
-          <Pill tone="accent" icon="auto_awesome">Ki strike: {kiStrike}</Pill>
+          <Pill tone="accent" icon="auto_awesome">{tx('Ki strike: {0}', kiStrike)}</Pill>
         )}
       </div>
     </TrackerCard>
@@ -230,7 +232,7 @@ export function MonkAbilitiesCard() {
 
   return (
     <Card
-      title="Monk abilities"
+      title={t('Monk abilities')}
       className="sh-card--head-spread"
       onHeadClick={() => dispatch(setCombatPageCardCollapsed({ key: 'monkAbilities', value: !collapsed }))}
       action={
@@ -238,7 +240,7 @@ export function MonkAbilitiesCard() {
           icon={collapsed ? 'expand_more' : 'expand_less'}
           ghost size="sm"
           onClick={() => dispatch(setCombatPageCardCollapsed({ key: 'monkAbilities', value: !collapsed }))}
-          aria-label="Toggle monk abilities"
+          aria-label={t('Toggle monk abilities')}
         />
       }
     >
@@ -248,15 +250,15 @@ export function MonkAbilitiesCard() {
             <div className="monk-ability">
               <TrackerRow
                 name="wholeness of body"
-                label="Wholeness of body"
-                unit="hp"
+                label={t('Wholeness of body')}
+                unit={t('hp')}
                 used={player.getClassFeatureUsed('wholenessOfBody')}
                 max={wholeness}
                 onReset={restore('wholenessOfBody')}
                 note={
                   atFullHealth
-                    ? 'Already at full health — nothing to heal.'
-                    : 'Heals the monk alone, in any split across the day.'
+                    ? t('Already at full health — nothing to heal.')
+                    : t('Heals the monk alone, in any split across the day.')
                 }
                 spendControl={
                   <IconButton
@@ -267,21 +269,21 @@ export function MonkAbilitiesCard() {
                        long-press handlers must not be wired when it is off. */
                     {...(atFullHealth ? {} : longPressHeal)}
                     disabled={atFullHealth}
-                    title={atFullHealth ? 'Already at full health' : 'Heal 1 hp (hold for 10)'}
-                    aria-label="Heal one hit point"
+                    title={atFullHealth ? t('Already at full health') : t('Heal 1 hp (hold for 10)')}
+                    aria-label={t('Heal one hit point')}
                   />
                 }
                 action={
-                  <InfoPopover label="Wholeness of body">
+                  <InfoPopover label={t('Wholeness of body')}>
                     <p>
-                      A pool of <b>{wholeness} hit points</b> — twice your monk
-                      level — that you may heal <b>yourself</b> with, in any split
-                      across the day.
+                      {tx(
+                        'A pool of {0} — twice your monk level — that you may heal {1} with, in any split across the day.',
+                        <b>{tx('{0} hit points', wholeness)}</b>,
+                        <b>{t('yourself')}</b>
+                      )}
                     </p>
                     <p>
-                      Each press moves one point out of the pool and onto your hit
-                      points in the same action, so the two can never drift apart.
-                      Hold for ten.
+                      {t('Each press moves one point out of the pool and onto your hit points in the same action, so the two can never drift apart. Hold for ten.')}
                     </p>
                   </InfoPopover>
                 }
@@ -293,19 +295,19 @@ export function MonkAbilitiesCard() {
             <div className="monk-ability">
               <TrackerRow
                 name="abundant step"
-                label="Abundant step"
+                label={t('Abundant step')}
                 used={player.getClassFeatureUsed('abundantStep')}
                 max={abundantStep}
                 onUse={spend('abundantStep')}
                 onReset={restore('abundantStep')}
                 action={
-                  <InfoPopover label="Abundant step">
+                  <InfoPopover label={t('Abundant step')}>
                     <p>
-                      Once a day, teleport as{' '}
-                      <SpellLink link="spells#dimension-door">dimension door</SpellLink>,
-                      at <b>caster level {player.getAbundantStepCasterLevel()}</b> — half
-                      your monk level. It is a spell-like ability, so the range and
-                      everything it can carry are the spell&apos;s.
+                      {tx(
+                        "Once a day, teleport as {0}, at {1} — half your monk level. It is a spell-like ability, so the range and everything it can carry are the spell's.",
+                        <SpellLink link="spells#dimension-door">dimension door</SpellLink>,
+                        <b>{tx('caster level {0}', player.getAbundantStepCasterLevel())}</b>
+                      )}
                     </p>
                   </InfoPopover>
                 }
@@ -317,28 +319,29 @@ export function MonkAbilitiesCard() {
             <div className="monk-ability">
               <TrackerRow
                 name="quivering palm"
-                label="Quivering palm"
+                label={t('Quivering palm')}
                 used={player.getClassFeatureUsed('quiveringPalm')}
                 max={quiveringPalm}
                 onUse={spend('quiveringPalm')}
                 onReset={restore('quiveringPalm')}
                 action={
-                  <InfoPopover label="Quivering palm">
+                  <InfoPopover label={t('Quivering palm')}>
                     <p>
-                      Declare it, then land an <b>unarmed strike</b>. At any time in
-                      the next <b>{player.getQuiveringPalmWindowDays()} days</b> you may
-                      will the target dead: it makes a{' '}
-                      <b>Fortitude save (DC {player.getQuiveringPalmDc()})</b> or dies.
+                      {tx(
+                        'Declare it, then land an {0}. At any time in the next {1} you may will the target dead: it makes a {2} or dies.',
+                        <b>{t('unarmed strike')}</b>,
+                        <b>{tx('{0} days', player.getQuiveringPalmWindowDays())}</b>,
+                        <b>{tx('{0} (DC {1})', t('Fortitude save'), player.getQuiveringPalmDc())}</b>
+                      )}
                     </p>
                     <p>
-                      Only one victim at a time — declaring it again releases the last.
-                      Constructs, oozes, plants, undead and incorporeal creatures are
-                      immune, as is anything with more Hit Dice than your monk level.
+                      {t('Only one victim at a time — declaring it again releases the last. Constructs, oozes, plants, undead and incorporeal creatures are immune, as is anything with more Hit Dice than your monk level.')}
                     </p>
                     <p>
-                      This use refreshes <b>weekly</b>, not with a night&apos;s rest,
-                      so a long rest leaves the counter alone — restore it by hand
-                      when the week turns.
+                      {tx(
+                        "This use refreshes {0}, not with a night's rest, so a long rest leaves the counter alone — restore it by hand when the week turns.",
+                        <b>{t('weekly')}</b>
+                      )}
                     </p>
                   </InfoPopover>
                 }
@@ -350,19 +353,20 @@ export function MonkAbilitiesCard() {
             <div className="monk-ability">
               <TrackerRow
                 name="empty body"
-                label="Empty body"
-                unit="rounds"
+                label={t('Empty body')}
+                unit={t('rounds')}
                 used={player.getClassFeatureUsed('emptyBody')}
                 max={emptyBody}
                 onUse={spend('emptyBody')}
                 onReset={restore('emptyBody')}
                 action={
-                  <InfoPopover label="Empty body">
+                  <InfoPopover label={t('Empty body')}>
                     <p>
-                      Become ethereal as{' '}
-                      <SpellLink link="spells#etherealness">etherealness</SpellLink>{' '}
-                      for <b>one round per monk level each day</b>, and the rounds may
-                      be split across as many separate uses as you like.
+                      {tx(
+                        'Become ethereal as {0} for {1}, and the rounds may be split across as many separate uses as you like.',
+                        <SpellLink link="spells#etherealness">etherealness</SpellLink>,
+                        <b>{t('one round per monk level each day')}</b>
+                      )}
                     </p>
                   </InfoPopover>
                 }

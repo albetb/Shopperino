@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { tx } from '../../lib/i18n';
 import { useDispatch, useSelector } from 'react-redux';
 import BottomSheet from './BottomSheet';
 import { setDiceMultiplierMask, setDiceLastRoll } from '../../store/slices/appSlice';
@@ -135,7 +136,7 @@ export default function DiceRollerSheet({ open, onClose }) {
                 type="button"
                 className="dice-pill dice-pill--die"
                 onClick={() => handleRoll(sides)}
-                aria-label={`Roll ${count}d${sides}`}
+                aria-label={tx('Roll {0}d{1}', count, sides)}
               >
                 d{sides}
               </button>

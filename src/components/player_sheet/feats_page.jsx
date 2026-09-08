@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { t, tx, tName } from '../../lib/i18n';
 import { loadFile } from '../../lib/loadFile';
 import { meetsPrerequisites } from '../../lib/featPrerequisites';
 import {
@@ -160,10 +161,13 @@ export default function FeatsPage() {
   if (!player) {
     return (
       <div className="sh-stack" style={{ padding: 'var(--space-4)' }}>
-        <EmptyState icon="auto_awesome" title="No character selected" hint="Pick or create one from the sidebar." />
+        <EmptyState icon="auto_awesome" title={t('No character selected')} hint={t('Pick or create one from the sidebar.')} />
       </div>
     );
   }
+
+  const bonusWord = t(bonusLabel);
+  const bonusWordCap = bonusWord.charAt(0).toUpperCase() + bonusWord.slice(1);
 
   return (
     <div className="sh-stack" style={{ padding: 'var(--space-4)', paddingBottom: 'var(--space-12)' }}>
@@ -171,27 +175,27 @@ export default function FeatsPage() {
         <div>
           <Filigree>
             {hasBonusPool
-              ? `${generalUsed} of ${max} general · ${bonusUsed} of ${bonusMax} ${bonusLabel}`
-              : `${count} of ${max} selected`}
+              ? tx('{0} of {1} general · {2} of {3} {4}', generalUsed, max, bonusUsed, bonusMax, bonusWord)
+              : tx('{0} of {1} selected', count, max)}
           </Filigree>
-          <div className="sh-display" style={{ fontSize: 'var(--font-size-2xl)' }}>Feats</div>
+          <div className="sh-display" style={{ fontSize: 'var(--font-size-2xl)' }}>{t('Feats')}</div>
           {(overCap || bonusOverCap) && (
             <div className="sh-row-h" style={{ marginTop: 'var(--space-1)', gap: 'var(--space-2)', flexWrap: 'wrap' }}>
               {overCap && (
                 <Pill tone="warn" icon="warning">
-                  {hasBonusPool ? 'General' : 'Over cap'} ({generalUsed - max} extra)
+                  {tx('{0} ({1} extra)', hasBonusPool ? t('General') : t('Over cap'), generalUsed - max)}
                 </Pill>
               )}
               {bonusOverCap && (
                 <Pill tone="warn" icon="warning">
-                  {bonusLabel.charAt(0).toUpperCase() + bonusLabel.slice(1)} ({bonusUsed - bonusMax} extra)
+                  {tx('{0} ({1} extra)', bonusWordCap, bonusUsed - bonusMax)}
                 </Pill>
               )}
             </div>
           )}
         </div>
         <Button variant="primary" icon="add" onClick={() => { setIsSelection(true); setQuery(''); }}>
-          Choose feat
+          {t('Choose feat')}
         </Button>
       </div>
 
@@ -211,7 +215,7 @@ export default function FeatsPage() {
                       <SpellLink link={`feats#${slug(getBaseFeatName(feat))}`}>
                         <span className="sh-display" style={{ fontSize: 'var(--font-size-lg)' }}>{feat}</span>
                       </SpellLink>
-                      <Pill tone="accent" className="sh-push-right">granted · lv {level}</Pill>
+                      <Pill tone="accent" className="sh-push-right">{tx('granted · lv {0}', level)}</Pill>
                     </span>
                     {data?.shortDescription && (
                       <div className="sh-faint" style={{ fontSize: 'var(--font-size-xs)', marginTop: 'var(--space-1)' }}>
@@ -224,14 +228,14 @@ export default function FeatsPage() {
             );
           })}
           <div className="sh-faint" style={{ fontSize: 'var(--font-size-xs)' }}>
-            Granted by the class — costs nothing from either budget.
+            {t('Granted by the class — costs nothing from either budget.')}
           </div>
         </div>
       )}
 
       {playerFeats.length === 0 ? (
         grantedFeats.length === 0 && (
-          <EmptyState icon="auto_awesome" title="No feats yet" hint="Tap 'Choose feat' to start." />
+          <EmptyState icon="auto_awesome" title={t('No feats yet')} hint={t("Tap 'Choose feat' to start.")} />
         )
       ) : (
         <div className="sh-stack">
@@ -263,8 +267,8 @@ export default function FeatsPage() {
                     ghost size="sm"
                     icon="close"
                     onClick={() => handleRemove(idx)}
-                    aria-label="Remove feat"
-                    title="Remove feat"
+                    aria-label={t('Remove feat')}
+                    title={t('Remove feat')}
                   />
                 </div>
               </Card>
@@ -276,17 +280,17 @@ export default function FeatsPage() {
       <BottomSheet
         open={isSelection}
         onClose={() => { setIsSelection(false); setQuery(''); }}
-        title="Choose a feat"
+        title={t('Choose a feat')}
         /* Fixed height: the list is filtered as you type, and a sheet that
            shrinks with it drags the search box down under the keyboard. */
         fixedHeight
-        eyebrow={`${availableFeats.length} available`}
+        eyebrow={tx('{0} available', availableFeats.length)}
         subheader={
           <div className="sh-stack" style={{ gap: 'var(--space-2)' }}>
             <input
               type="text"
               className="sh-input"
-              placeholder="Search feats…"
+              placeholder={t('Search feats…')}
               value={query}
               onChange={e => setQuery(e.target.value)}
               autoFocus
@@ -298,7 +302,7 @@ export default function FeatsPage() {
                 aria-pressed={filterPrereqs}
                 onClick={() => setFilterPrereqs(v => !v)}
               >
-                Prerequisites met
+                {t('Prerequisites met')}
               </button>
               {/* Only a class that runs a second budget can filter to it — the
                   fighter's combat feats, the wizard's metamagic and item
@@ -311,7 +315,7 @@ export default function FeatsPage() {
                   aria-pressed={filterBonusPool}
                   onClick={() => setFilterBonusPool(v => !v)}
                 >
-                  {bonusLabel.charAt(0).toUpperCase() + bonusLabel.slice(1)} feats
+                  {tx('{0} feats', bonusWordCap)}
                 </button>
               )}
               {playerClass && (
@@ -321,7 +325,7 @@ export default function FeatsPage() {
                   aria-pressed={filterSuggested}
                   onClick={() => setFilterSuggested(v => !v)}
                 >
-                  Suggested for {playerClass}
+                  {tx('Suggested for {0}', tName('classes', playerClass))}
                 </button>
               )}
             </div>
@@ -329,7 +333,7 @@ export default function FeatsPage() {
         }
       >
         {availableFeats.length === 0 ? (
-          <EmptyState icon="filter_alt_off" title="Nothing matches" hint="Try clearing the search or filters." />
+          <EmptyState icon="filter_alt_off" title={t('Nothing matches')} hint={t('Try clearing the search or filters.')} />
         ) : (
           <div className="sh-stack" style={{ gap: 'var(--space-1)' }}>
             {availableFeats.map(feat => {
@@ -355,17 +359,17 @@ export default function FeatsPage() {
                       <SpellLink link={`feats#${slug(getBaseFeatName(feat.Name))}`}>
                         <span className="sh-display" style={{ fontSize: 'var(--font-size-md)' }}>{feat.Name}</span>
                       </SpellLink>
-                      {!prereqOk && <Pill tone="warn" icon="warning">prereq</Pill>}
+                      {!prereqOk && <Pill tone="warn" icon="warning">{t('prereq')}</Pill>}
                     </span>
                     <IconButton
                       ghost size="sm"
                       icon="add"
                       onClick={(ev) => handleFeatClick(feat, ev)}
                       disabled={isDisabled}
-                      title={isDisabled ? 'Already selected' : 'Add feat'}
+                      title={isDisabled ? t('Already selected') : t('Add feat')}
                       /* Named, because the list shows one of these per feat and
                          "Add" alone tells a screen reader nothing about which. */
-                      aria-label={`Add ${feat.Name}`}
+                      aria-label={tx('Add {0}', feat.Name)}
                     />
                   </div>
                   {shortDesc && (

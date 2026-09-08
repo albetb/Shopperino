@@ -87,6 +87,47 @@ Its glossary edits were additive and tightening (5 new `strict` terms), never
 weakening a check to get past it. That is the behaviour to preserve if the
 glossary rules are ever revisited.
 
+## The second unassisted run
+
+Five components, 148 pack entries, with the rules above in place. The
+translation itself was clean: `tx()` was used throughout, plurals were branched
+correctly (`items.length === 1 ? '{0} item' : '{0} items'`), holes were
+reordered where Italian wants them (`'{0} feats'` → `'Talenti {0}'`), and all
+16 run-time keys had every value they can take already in the pack. Glossary
+edits were additive again. Nothing had to be corrected in what it wrote.
+
+What it exposed were two more holes in the **tooling**, both of which had been
+reporting success:
+
+1. **`progress.py` never looked inside a template-literal attribute.**
+   ``aria-label={`How ${label} works`}`` matched neither the double-quoted
+   attribute pattern nor the JSX-text pattern, so `InfoPopover` reported zero
+   bare strings and counted among the finished files. It is used by 16
+   components, all of which pass it an already-translated label, so every one
+   of them rendered "How Palmo tremante works". `StatInfo`, `StatPill` and
+   `DiceRollerSheet` had the same shape. Fixing the scanner moved 28 hidden
+   strings into the bare count and two files out of "done".
+
+   This is why Phase 1 now starts with `src/components/common/`. A shared
+   component that composes a sentence around a prop has to be translated before
+   its callers, or each caller is only half done — and the run's own test had
+   already frozen the defect into an assertion (`/How Palmo tremante works/i`),
+   which is how a half-translated string becomes permanent.
+
+2. **`T_DYNAMIC` missed a key built from a template.** ``t(`${x} save`)`` is
+   more dangerous than `t(someVar)`, not less: the keys it can produce are a
+   product of what the hole holds, so the pack needs an entry per combination.
+   The pattern excluded backticks along with quotes.
+
+`en_drift.py` also crashed on the Windows console — a `UnicodeEncodeError` on
+U+2212 killed the report partway through the files it was reporting on. It
+prints through a replacing encoder now.
+
+The lesson worth keeping: both defects were in the gates, not in the
+translation, and both presented as green. When a component reports zero bare
+strings, check that the scanner can see the shapes that component actually
+uses before believing it.
+
 ## Glossary gate history
 
 Tuning that took several passes, kept here so it is not undone:

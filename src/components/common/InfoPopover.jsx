@@ -1,4 +1,5 @@
 import Icon from './Icon';
+import { tx } from '../../lib/i18n';
 import AnchorPopover from './AnchorPopover';
 import '../../style/stat_info.css';
 
@@ -28,9 +29,9 @@ export default function InfoPopover({ label, children, className = '' }) {
           ref={ref}
           className={['stat-info-button', className].filter(Boolean).join(' ')}
           onClick={(e) => { e.stopPropagation(); toggle(); }}
-          aria-label={`How ${label} works`}
+          aria-label={tx('How {0} works', label)}
           aria-expanded={open}
-          title={`How ${label} works`}
+          title={tx('How {0} works', label)}
         >
           <Icon name="info" size={14} />
         </button>

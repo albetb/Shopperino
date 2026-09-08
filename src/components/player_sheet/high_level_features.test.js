@@ -5,6 +5,7 @@ import Player from '../../lib/player';
 import { MonkAbilitiesCard, StunningFistCard } from './monk_cards';
 import { SmiteEvilCard } from './paladin_cards';
 import FeaturesPage from './features_page';
+import { setLanguage } from '../../lib/i18n';
 
 /* The four abilities that had a use or a spell behind them and nowhere to be:
    the three high monk counters, stunning fist for a class that is not the monk,
@@ -196,5 +197,37 @@ describe('tongue of the sun and moon on the language card', () => {
     renderWith(<FeaturesPage />, make('Monk', 17));
     expect(screen.queryByText('0 / 0')).toBe(null);
     expect(screen.getByText('Tongue of the sun and moon')).toBeInTheDocument();
+  });
+});
+
+describe('the monk cards in Italian', () => {
+  afterEach(() => setLanguage('en'));
+
+  test('the four ability labels and the days figure translate', () => {
+    setLanguage('it');
+    renderWith(<MonkAbilitiesCard />, make('Monk', 20, 20));
+    ['Interezza del corpo', 'Passo abbondante', 'Palmo tremante', 'Corpo vuoto']
+      .forEach((name) => expect(screen.getByText(name)).toBeInTheDocument());
+    fireEvent.click(screen.getByRole('button', { name: /Come funziona Palmo tremante/i }));
+    const box = screen.getByRole('dialog', { name: 'Palmo tremante' });
+    expect(within(box).getByText('20 giorni')).toBeInTheDocument();
+    expect(within(box).getByText('settimanalmente')).toBeInTheDocument();
+  });
+
+  test('the caster level phrase translates with the number intact', () => {
+    setLanguage('it');
+    renderWith(<MonkAbilitiesCard />, make('Monk', 12));
+    fireEvent.click(screen.getByRole('button', { name: /Come funziona Passo abbondante/i }));
+    const box = screen.getByRole('dialog', { name: 'Passo abbondante' });
+    expect(within(box).getByText("livello dell'incantatore 6")).toBeInTheDocument();
+  });
+
+  test('stunning fist keeps the Fortitude DC pattern translated', () => {
+    const fighter = make('Fighter', 12, 14);
+    fighter.addFeat('Stunning Fist');
+    setLanguage('it');
+    renderWith(<StunningFistCard />, fighter);
+    expect(screen.getByText('Pugno stordente')).toBeInTheDocument();
+    expect(screen.getByText('Tempra CD 18')).toBeInTheDocument();
   });
 });

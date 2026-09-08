@@ -156,14 +156,20 @@ as it is a game term (*a large room*, *reach the door*, *he will fall*).
 | English | Italiano | | Note |
 |---|---|---|---|
 | AC | **CA** | **STRICT** |  |
+| Cha | **Car** | **STRICT** | Charisma ability score abbreviation. |
+| Con | **Cos** | **STRICT** | Constitution ability score abbreviation. |
 | CR | **GS** | **STRICT** | Abbreviation of Challenge Rating (Grado di Sfida). |
 | DC | **CD** | **STRICT** |  |
+| Dex | **Des** | **STRICT** | Dexterity ability score abbreviation. |
 | DR | **RD** | **STRICT** | Abbreviation of damage reduction (riduzione del danno). |
 | gp | **mo** | **STRICT** | Gold pieces (monete d'oro). formatGp() in trapMath.js emits this via t('gp'). |
 | HD | **DV** | **STRICT** | Abbreviation of Hit Dice (Dadi Vita), shown on stat pills. |
 | hp | **pf** | **STRICT** | Abbreviation of hit points, shown on stat pills and HP bars. |
+| Int | **Int** | **STRICT** | Intelligence ability score abbreviation (same in Italian). |
 | SP | **PA** | **STRICT** | Abbreviation of skill points (punti abilità). |
 | SR | **RI** | **STRICT** | Abbreviation of spell resistance (resistenza agli incantesimi). |
+| Str | **For** | **STRICT** | Strength ability score abbreviation. |
+| Wis | **Sag** | **STRICT** | Wisdom ability score abbreviation. |
 | XP | **PE** | **STRICT** | Experience points (Punti Esperienza). |
 
 ## Actions

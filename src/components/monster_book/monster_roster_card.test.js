@@ -18,6 +18,7 @@ import {
 } from '../../store/thunks/monsterBookThunks';
 import { listBestiary } from '../../lib/monster/monsterBook';
 import { MAX_INDIVIDUALS } from '../../lib/monster/monsterSheet';
+import { setLanguage } from '../../lib/i18n';
 
 /* The roster card, and the tab around it.
  *
@@ -371,5 +372,39 @@ describe('the health card on the sheet', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Back to full health' }));
     const entry = store.getState().monsterBook.roster[0];
     expect(entry.getIndividuals().map((i) => i.damage)).toEqual([0, 0]);
+  });
+});
+
+describe('the sheet in Italian', () => {
+  afterEach(() => setLanguage('en'));
+
+  test('the health eyebrow, the back button and the ability grid translate', () => {
+    setLanguage('it');
+    const store = storeWith(CREATURES[0].ref);
+    store.dispatch(onOpenRosterEntry(0));
+    renderIn(store, <MonsterBookPage />);
+    expect(screen.getByText('Salute')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Indietro/ })).toBeInTheDocument();
+    expect(screen.getByText('For')).toBeInTheDocument();
+    expect(screen.getByText('Car')).toBeInTheDocument();
+  });
+
+  test('the indexed HP buttons carry the translated word with the English index intact', () => {
+    setLanguage('it');
+    const ref = CREATURES[0].ref;
+    const store = storeWith(ref, ref);
+    store.dispatch(onOpenRosterEntry(0));
+    renderIn(store, <MonsterBookPage />);
+    expect(screen.getByRole('button', { name: 'Diminuisci PF di #1' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Aumenta PF di #2' })).toBeInTheDocument();
+  });
+
+  test('the multi-creature title stays a number plus the translated word', () => {
+    setLanguage('it');
+    const ref = CREATURES[0].ref;
+    const store = storeWith(ref, ref, ref);
+    store.dispatch(onOpenRosterEntry(0));
+    renderIn(store, <MonsterBookPage />);
+    expect(screen.getByText('3 creature')).toBeInTheDocument();
   });
 });

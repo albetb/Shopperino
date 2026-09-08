@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
+import { t, tx } from '../../../lib/i18n';
 import { addCardByLink, clearSharedShop, setSharedShopSheetOpen } from '../../../store/slices/appSlice';
 import { onBuyFromSharedShop } from '../../../store/thunks/playerSheetThunks';
 import { getEffectById } from '../../../lib/utils';
@@ -82,8 +83,8 @@ function ShopRow({ item, gold, onBuy, onOpenCard }) {
             <span className="shared-shop-row-type">{item.ItemType}</span>
           </span>
           <span className="shared-shop-row-right">
-            <span className="shared-shop-row-left-count">{available} left</span>
-            <span className="shared-shop-row-price">{formatGp(unitPrice(item))} g</span>
+            <span className="shared-shop-row-left-count">{tx('{0} left', available)}</span>
+            <span className="shared-shop-row-price">{formatGp(unitPrice(item))} {t('g')}</span>
             <Icon name={open ? 'expand_less' : 'add_shopping_cart'} size={18} />
           </span>
         </button>
@@ -98,7 +99,7 @@ function ShopRow({ item, gold, onBuy, onOpenCard }) {
             icon="info"
             className="shared-shop-row-info"
             onClick={() => onOpenCard(item)}
-            aria-label={`What is ${item.Name}?`}
+            aria-label={tx('What is {0}?', item.Name)}
           />
         )}
       </div>
@@ -107,7 +108,7 @@ function ShopRow({ item, gold, onBuy, onOpenCard }) {
         <div className="shared-shop-buy">
           <div className="shared-shop-buy-controls">
             <span className="shared-shop-field">
-              <span className="shared-shop-field-label">How many</span>
+              <span className="shared-shop-field-label">{t('How many')}</span>
               <Stepper
                 value={quantity}
                 min={1}
@@ -116,7 +117,7 @@ function ShopRow({ item, gold, onBuy, onOpenCard }) {
               />
             </span>
             <label className="shared-shop-field">
-              <span className="shared-shop-field-label">Price</span>
+              <span className="shared-shop-field-label">{t('Price')}</span>
               <input
                 type="number"
                 className="modern-input shared-shop-price-input"
@@ -125,7 +126,7 @@ function ShopRow({ item, gold, onBuy, onOpenCard }) {
                 step={0.01}
                 value={price === '' ? asking : price}
                 onChange={(e) => setPrice(e.target.value)}
-                aria-label={`Price for ${item.Name}`}
+                aria-label={tx('Price for {0}', item.Name)}
               />
             </label>
           </div>
@@ -133,16 +134,16 @@ function ShopRow({ item, gold, onBuy, onOpenCard }) {
           <p className="shared-shop-buy-note">
             {shortfall > 0 ? (
               <span className="is-short">
-                That is <b>{formatGp(shortfall)} g</b> more than you carry. Buying
-                it empties the purse — the rest is owed at the table.
+                {tx('That is {0} more than you carry. Buying it empties the purse — the rest is owed at the table.',
+                  <b>{formatGp(shortfall)} {t('g')}</b>)}
               </span>
             ) : (
-              <>Leaves you <b>{formatGp(remaining)} g</b>.</>
+              tx('Leaves you {0}.', <b>{formatGp(remaining)} {t('g')}</b>)
             )}
           </p>
 
           <Button block variant="primary" icon="shopping_bag" onClick={confirm}>
-            Buy for {formatGp(paying)} g
+            {tx('Buy for {0} {1}', formatGp(paying), t('g'))}
           </Button>
         </div>
       )}
@@ -178,7 +179,7 @@ export default function SharedShopCard({ player }) {
 
   const items = sharedStockToDisplayItems(sharedShop.stock).filter((i) => availableOf(i) > 0);
   const gold = player.getGold?.() ?? 0;
-  const name = sharedShop.name || 'Shared shop';
+  const name = sharedShop.name || t('Shared shop');
 
   const close = () => {
     setOpen(false);
@@ -203,21 +204,21 @@ export default function SharedShopCard({ player }) {
     <>
       <Card
         className="card-width-spellbook shared-shop-card"
-        eyebrow="Scanned shop"
+        eyebrow={t('Scanned shop')}
         title={name}
         action={
           <IconButton
             ghost size="sm"
             icon="close"
             onClick={close}
-            aria-label="Put this shop down"
-            title="Put this shop down"
+            aria-label={t('Put this shop down')}
+            title={t('Put this shop down')}
           />
         }
       >
         <div className="shared-shop-summary">
           <Pill tone="ghost" icon="inventory_2">
-            {items.length} {items.length === 1 ? 'item' : 'items'}
+            {tx(items.length === 1 ? '{0} item' : '{0} items', items.length)}
           </Pill>
           <Button
             variant="primary"
@@ -225,7 +226,7 @@ export default function SharedShopCard({ player }) {
             onClick={() => setOpen(true)}
             disabled={items.length === 0}
           >
-            Browse and buy
+            {t('Browse and buy')}
           </Button>
         </div>
       </Card>
@@ -233,19 +234,19 @@ export default function SharedShopCard({ player }) {
       <BottomSheet
         open={open}
         onClose={() => setOpen(false)}
-        eyebrow="Scanned shop"
+        eyebrow={t('Scanned shop')}
         title={name}
         fixedHeight
         subheader={
           <div className="shared-shop-purse">
             <Icon name="paid" size={18} color="var(--coin-gold)" />
-            <b>{formatGp(gold)} g</b>
-            <span className="shared-shop-purse-label">in the purse</span>
+            <b>{formatGp(gold)} {t('g')}</b>
+            <span className="shared-shop-purse-label">{t('in the purse')}</span>
           </div>
         }
       >
         {items.length === 0 ? (
-          <EmptyState icon="inventory_2" title="Nothing left" hint="You have bought out this shop." />
+          <EmptyState icon="inventory_2" title={t('Nothing left')} hint={t('You have bought out this shop.')} />
         ) : (
           <ul className="shared-shop-list">
             {items.map((item) => (
