@@ -602,6 +602,13 @@
   min-height: 0;
   overflow: auto;
   padding-bottom: max(var(--space-5), env(safe-area-inset-bottom, 0));
+  /* The sheet's own inline padding stops at this box, so `overflow: auto` clips
+     anything a control paints outside itself — the selected accent swatch draws
+     its ring 4px out, and in the first and last column that ring landed on the
+     cut. Widen the scroller by the ring and pad it straight back: the content
+     column does not move, it just stops being flush with the clip edge. */
+  margin-inline: calc(-1 * var(--space-1));
+  padding-inline: var(--space-1);
 }
 
 /* The sheet itself spans the viewport, which is right on a phone and wrong for
