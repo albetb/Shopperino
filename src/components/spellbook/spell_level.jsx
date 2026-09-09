@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { t, tx } from '../../lib/i18n';
+import { t, tx, tName } from '../../lib/i18n';
 import StatInfo from '../common/StatInfo';
 import InfoPopover from '../common/InfoPopover';
 import { AUGMENT_SUMMONING_ABILITY_NAMES } from '../../lib/player/augmentSummoning';
@@ -201,7 +201,7 @@ export default function SpellLevelCard({
                   </td>
                   {!isMobile() && (
                     <td className={`${i === 0 ? 'first' : ''} col-30`}>
-                      {item.School.split(' ')[0]}
+                      {tName('schools', item.School.split(' ')[0])}
                     </td>
                   )}
                 </tr>
@@ -284,7 +284,7 @@ export default function SpellLevelCard({
                           description below spans the full row width. */}
                       {isMobile() && inst.Class === 'Wizard' && page === 0 && (
                         <span className={'spell-school-inline' + schoolClass(item.School)}>
-                          {item.School.split(' ')[0]}
+                          {tName('schools', item.School.split(' ')[0])}
                         </span>
                       )}
                       <MetamagicPills mm={item.mm || 0} />
@@ -408,7 +408,7 @@ export default function SpellLevelCard({
                       inline inside the name cell (above) when applicable. */}
                   {!isMobile() && (
                     <td className={firstClass + schoolClass(item.School) + ' col-30'}>
-                      {item.School.split(' ')[0]}
+                      {tName('schools', item.School.split(' ')[0])}
                     </td>
                   )}
                 </tr>
