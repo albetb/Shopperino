@@ -177,19 +177,25 @@ export default function TopMenu() {
   const settingsMenuItems = (
     <>
       {mobile && (
-        <div className="sh-row-h sh-spread" style={{ marginBottom: 'var(--space-3)' }}>
+        <div className="sh-settings-row">
           <span className="sh-eyebrow">{t('Mode')}</span>
           {masterPlayerToggle}
         </div>
       )}
-      <Button block variant="ghost" icon="download"             onClick={handleDownloadClick}>{t('Export save')}</Button>
-      <Button block variant="ghost" icon="drive_folder_upload"  onClick={handleUploadClick}  >{t('Import save')}</Button>
-      {mobile && (
-        <Button block variant="ghost" icon="qr_code_scanner" onClick={handleScanClick}>{t('Scan shop QR')}</Button>
-      )}
-      <div className="sh-row-h sh-spread" style={{ marginTop: 'var(--space-2)' }}>
-        <span className="sh-eyebrow">{t('Accent & theme')}</span>
-        <ColorPicker />
+
+      <div className="sh-settings-row">
+        <span className="sh-eyebrow sh-units-label">
+          {t('Language')}
+          <InfoPopover label={t('language')}>
+            <p>
+              {t('Which language the interface and the rules text are read in. English is what the app is written in; anything not yet translated is shown in English rather than left blank.')}
+            </p>
+            <p>
+              {t('Names of things — items, spells, conditions — keep their English name inside your saved characters whatever you pick here, so switching language never touches a character sheet.')}
+            </p>
+          </InfoPopover>
+        </span>
+        {langToggle}
       </div>
 
       <div className="sh-units-row">
@@ -212,19 +218,17 @@ export default function TopMenu() {
         {unitToggle}
       </div>
 
-      <div className="sh-units-row">
-        <span className="sh-eyebrow sh-units-label">
-          {t('Language')}
-          <InfoPopover label={t('language')}>
-            <p>
-              {t('Which language the interface and the rules text are read in. English is what the app is written in; anything not yet translated is shown in English rather than left blank.')}
-            </p>
-            <p>
-              {t('Names of things — items, spells, conditions — keep their English name inside your saved characters whatever you pick here, so switching language never touches a character sheet.')}
-            </p>
-          </InfoPopover>
-        </span>
-        {langToggle}
+      <div className="sh-settings-save-row">
+        <Button variant="ghost" icon="download"            onClick={handleDownloadClick}>{t('Export save')}</Button>
+        <Button variant="ghost" icon="drive_folder_upload" onClick={handleUploadClick}  >{t('Import save')}</Button>
+      </div>
+      {mobile && (
+        <Button block variant="ghost" icon="qr_code_scanner" onClick={handleScanClick}>{t('Scan shop QR')}</Button>
+      )}
+
+      <div className="sh-settings-row">
+        <span className="sh-eyebrow">{t('Accent & theme')}</span>
+        <ColorPicker />
       </div>
     </>
   );

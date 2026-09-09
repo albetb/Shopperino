@@ -85,6 +85,10 @@
 /* --- MODE TOGGLE (Master / Player, Dark / Light) ------------ */
 .sh-mode-toggle {
   display: inline-flex;
+  /* Border-box because the units variant below is stretched to width:100% —
+     without it the padding and border are added on top of the full width and
+     the settings sheet scrolls sideways. */
+  box-sizing: border-box;
   padding: 0.1875rem;
   background: var(--surface-1);
   border: 1px solid var(--border-soft);
@@ -201,14 +205,25 @@
   }
 }
 
-/* --- UNITS (settings sheet) ---------------------------------
-   Three positions rather than two, so the row stacks: three labels do not fit
-   beside an eyebrow in a 16rem popover. */
+/* --- SETTINGS SHEET ROWS -------------------------------------
+   Mode, language and units read as one column of preferences, so the first two
+   share the shape the mode row has always had: label left, switch right. It
+   wraps rather than overflowing, because a long label and a wide switch cannot
+   always share one line inside the 16rem desktop popover. */
+.sh-settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+/* Units keeps its own stacked row: three labels do not fit beside an eyebrow in
+   a 16rem popover. */
 .sh-units-row {
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
-  margin-top: var(--space-3);
 }
 
 .sh-units-label {
@@ -229,12 +244,30 @@
   padding-right: var(--space-2);
 }
 
-/* The language switch, same shape as the units one it sits under. Two wide
-   buttons rather than three narrow ones, so the endonyms are not cramped. */
+/* The language switch sits on the right of its label, so it hugs its two
+   endonyms instead of stretching like the units one. */
 .sh-lang-toggle {
   flex: 0 0 auto;
 }
 
 .sh-lang-toggle button {
   padding-inline: var(--space-3);
+}
+
+/* Export and import side by side. The Italian labels are long enough to wrap on
+   a narrow phone, so the pair grows in height rather than pushing the sheet
+   sideways. */
+.sh-settings-save-row {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.sh-settings-save-row .sh-btn {
+  flex: 1 1 0;
+  min-width: 0;
+  height: auto;
+  min-height: var(--tap-target);
+  padding: var(--space-2);
+  line-height: 1.2;
+  text-align: center;
 }
