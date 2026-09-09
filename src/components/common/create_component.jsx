@@ -13,6 +13,11 @@ const PLACEHOLDER_KEYS = {
   note: 'Insert new note name',
 };
 
+/* A tab with no key of its own. Italian cannot agree with a noun it has not
+   been given, so the fallback drops the noun rather than composing around a
+   hole that would come out the wrong gender. */
+const PLACEHOLDER_FALLBACK = 'Insert new name';
+
 const CreateComponent = ({ props }) => {
   const [name, setName] = useState('');
   const inputRef = useRef(null);
@@ -36,7 +41,7 @@ const CreateComponent = ({ props }) => {
   };
 
   const placeholder = () => {
-    const key = PLACEHOLDER_KEYS[props.tabName] ?? `Insert new ${props.tabName} name`;
+    const key = PLACEHOLDER_KEYS[props.tabName] ?? PLACEHOLDER_FALLBACK;
     return t(key);
   };
 

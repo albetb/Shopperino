@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import { tx } from 'lib/i18n';
 import { isMobile, trimLine } from 'lib/utils';
 
 /**
@@ -10,7 +11,9 @@ export function useShopLabels(shopName, cityName) {
     [shopName]
   );
   const cityLabel = useCallback(
-    () => (cityName ? `from ${trimLine(cityName, isMobile() ? 26 : 40)}` : ''),
+    () => (cityName
+      ? tx('from {0}', trimLine(cityName, isMobile() ? 26 : 40))
+      : ''),
     [cityName]
   );
   return { shopLabel, cityLabel };

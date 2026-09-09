@@ -20,7 +20,8 @@
       "translate": [
         "Conditions/*",
         "*/#/Description",
-        "Spellcasting description/*"
+        "Spellcasting description/*",
+        "Domains/*"
       ],
       "frozen_note": [
         "Conditions KEYS are identity three times over: Player.conditions stores the",
@@ -30,7 +31,10 @@
         "names live in src/data/it/names.json instead.",
         "Enums/* are enum values used across the app. 'Shop Types'/#/Name is matched",
         "by shop.js against the saved ShopType. Link is a slug."
-      ]
+      ],
+      "glossary_exempt": {
+        "feat": "Domains/Strength's 'you can perform a feat of strength' is a deed, not a talento -- the granted power is a one-round Strength bonus and has nothing to do with feats."
+      }
     },
     "src/data/spells.json": {
       "translate": [

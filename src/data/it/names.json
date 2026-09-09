@@ -2111,7 +2111,12 @@
     "Merchant of the Slums": "Mercante dei Bassifondi",
     "Bazar Vendor": "Venditore del Bazar",
     "Holy Merchant": "Mercante Sacro",
-    "Alchemist": "Alchimista"
+    "Alchemist": "Alchimista",
+    "Jeweler": "Gioielliere",
+    "Wandmaker": "Bacchettaio",
+    "Staff Carver": "Intagliatore di Bastoni",
+    "Antiquarian": "Antiquario",
+    "Armorer": "Armaiolo"
   },
   "sizes": {
     "Colossal": "Colossale",

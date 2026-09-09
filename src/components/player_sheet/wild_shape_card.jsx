@@ -37,8 +37,10 @@ const ANIMAL_POOL = {
   getRemaining: (p) => p.getWildShapeRemaining(),
   getForms: (p) => p.getWildShapeForms(),
   ownsCurrentForm: (p) => p.isWildShaped() && !p.isElementalShaped(),
-  describeLimits: (p) => `${p.getWildShapeTypes().join(' and ')} forms · sizes `
-    + `${p.getWildShapeSizes().join(', ') || 'none'} · up to ${p.getWildShapeHdCap()} HD`,
+  describeLimits: (p) => tx('{0} forms · sizes {1} · up to {2} HD',
+    p.getWildShapeTypes().map((x) => tName('creatureTypes', x)).join(` ${t('and')} `),
+    p.getWildShapeSizes().map((s) => tName('sizes', s)).join(', ') || t('none'),
+    p.getWildShapeHdCap()),
 };
 
 const ELEMENTAL_POOL = {
@@ -52,8 +54,9 @@ const ELEMENTAL_POOL = {
   getRemaining: (p) => p.getElementalWildShapeRemaining(),
   getForms: (p) => p.getElementalWildShapeForms(),
   ownsCurrentForm: (p) => p.isElementalShaped(),
-  describeLimits: (p) => `air, earth, fire and water · sizes `
-    + `${p.getElementalWildShapeSizes().join(', ') || 'none'} · up to ${p.getWildShapeHdCap()} HD`,
+  describeLimits: (p) => tx('air, earth, fire and water · sizes {0} · up to {1} HD',
+    p.getElementalWildShapeSizes().map((s) => tName('sizes', s)).join(', ') || t('none'),
+    p.getWildShapeHdCap()),
 };
 
 export function WildShapeCard() {

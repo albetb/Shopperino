@@ -9,7 +9,7 @@
     "EthicalAlignments": ["Lawful", "Neutral", "Chaotic"],
     "Domains": ["Air", "Animal", "Chaos", "Death", "Destruction", "Earth", "Evil", "Fire", "Good", "Healing", "Knowledge", "Law", "Luck", "Magic", "Plant", "Protection", "Strength", "Sun", "Travel", "Trickery", "War", "Water"],
     "SpellSchools": ["Abjuration", "Conjuration", "Divination", "Enchantment", "Evocation", "Illusion", "Necromancy", "Transmutation", "Universal"],
-    "ShopTypes": ["None", "Druid Merchant", "Blacksmith", "Writer", "Mage Merchant", "Magic Blacksmith", "Wanderer", "Merchant of the Slums", "Bazar Vendor", "Holy Merchant", "Alchemist"],
+    "ShopTypes": ["None", "Druid Merchant", "Blacksmith", "Writer", "Mage Merchant", "Magic Blacksmith", "Wanderer", "Merchant of the Slums", "Bazar Vendor", "Holy Merchant", "Alchemist", "Jeweler", "Wandmaker", "Staff Carver", "Antiquarian", "Armorer"],
     "CustomItemTypes": ["Good", "Weapon", "Armor", "Ammo", "Shield", "Magic Weapon", "Magic Armor", "Potion", "Ring", "Rod", "Staff", "Wand", "Wondrous Item", "Scroll"]
   },
   "Shop Types": [
@@ -168,6 +168,58 @@
       "Modifier": {
         "Potion": 6,
         "Ring": 1.5
+      }
+    },
+    {
+      "Name": "Jeweler",
+      "Description": "Sell rings and jewels",
+      "Min level": 1,
+      "Modifier": {
+        "Good": 0.5,
+        "Ring": 2.5,
+        "Wondrous Item": 1.2
+      }
+    },
+    {
+      "Name": "Wandmaker",
+      "Description": "Sell wands",
+      "Min level": 1,
+      "Arcane Chance": 0.8,
+      "Modifier": {
+        "Wand": 3.5,
+        "Rod": 0.3
+      }
+    },
+    {
+      "Name": "Staff Carver",
+      "Description": "Sell staffs and rods",
+      "Min level": 1,
+      "Modifier": {
+        "Staff": 2,
+        "Rod": 1.6,
+        "Wand": 0.3
+      }
+    },
+    {
+      "Name": "Antiquarian",
+      "Description": "Sell wondrous items and relics",
+      "Min level": 2,
+      "Modifier": {
+        "Wondrous Item": 2.8,
+        "Ring": 0.4,
+        "Rod": 0.3,
+        "Staff": 0.3,
+        "Scroll": 0.3
+      }
+    },
+    {
+      "Name": "Armorer",
+      "Description": "Sell armors and shields",
+      "Min level": 0,
+      "Modifier": {
+        "Good": 0.5,
+        "Armor": 7,
+        "Magic Armor": 0.6
       }
     }
   ],

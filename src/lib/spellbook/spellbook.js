@@ -8,18 +8,29 @@ import {
     effectiveSpellLevel,
 } from './metamagic';
 
-const ALL_SPELLS = loadFile("spells");
+/* Deliberately a function, not a constant.
+ *
+ * `loadFile` lays the current language's prose over a copy of the English, and
+ * this module is imported long before a language is chosen or the prose chunk
+ * has landed. A snapshot taken here is therefore the English one for the life
+ * of the tab -- which is exactly why every short description on the spellbook
+ * page read English while the same spell read Italian in the info sidebar,
+ * where the lookup happens at call time.
+ *
+ * `applyProse` caches by (language, file) and checks the source by identity,
+ * so asking on each lookup costs a Map hit. */
+const allSpells = () => loadFile('spells');
 
 /** Lookup spell by numeric id from spells.json. */
 function getSpellById(id) {
     if (id == null || typeof id !== 'number') return null;
-    return ALL_SPELLS.find(s => s.id === id) || null;
+    return allSpells().find(s => s.id === id) || null;
 }
 
 /** Resolve spell link to numeric id. */
 function getSpellIdByLink(link) {
     if (!link) return -1;
-    const s = ALL_SPELLS.find(x => x.Link === link);
+    const s = allSpells().find(x => x.Link === link);
     return s != null && typeof s.id === 'number' ? s.id : -1;
 }
 
@@ -284,7 +295,7 @@ class Spellbook {
 
     /** Same, by link. */
     getSpellBaseLevelByLink(link) {
-        return this.getSpellBaseLevel(ALL_SPELLS.find(s => s.Link === link));
+        return this.getSpellBaseLevel(allSpells().find(s => s.Link === link));
     }
 
     /** The slot a preparation of this spell with this metamagic occupies. */
@@ -545,7 +556,7 @@ class Spellbook {
                 "summon-natures-ally-iv", "summon-natures-ally-v", "summon-natures-ally-vi",
                 "summon-natures-ally-vii", "summon-natures-ally-viii", "summon-natures-ally-ix"].splice(0, this.maxSpellLevel() + 1);
 
-        const spell_temp = spell_list.map(x => ALL_SPELLS.find(y => y.Link === x))
+        const spell_temp = spell_list.map(x => allSpells().find(y => y.Link === x))
 
         return this._getSpells(spell_temp, { name, school, level });
     }
@@ -616,7 +627,7 @@ class Spellbook {
     }
 
     getAllSpells({ name, school, level } = {}) {
-        return this._getSpells(ALL_SPELLS, { name, school, level });
+        return this._getSpells(allSpells(), { name, school, level });
     }
 
     /** For Wizard: all Sor/Wiz level 0 spells (not stored; shown as known/prepared in UI). */
@@ -784,8 +795,8 @@ class Spellbook {
 
     getDomainSpells({ name, school, level } = {}) {
         if (this.Class !== "Cleric") return [];
-        return this._getSpells(ALL_SPELLS, { name, school, level, domain: this.Domain1 })
-            .concat(this._getSpells(ALL_SPELLS, { name, school, level, domain: this.Domain2 }));
+        return this._getSpells(allSpells(), { name, school, level, domain: this.Domain1 })
+            .concat(this._getSpells(allSpells(), { name, school, level, domain: this.Domain2 }));
     }
 
     /** Returns prepared domain spells for spellbook tab: { level, spell, Prepared, Used }[] */
@@ -795,7 +806,7 @@ class Spellbook {
             (arr || [])
                 .filter(slot => slot && slot.Link)
                 .map(slot => {
-                    const spell = ALL_SPELLS.find(s => s.Link === slot.Link);
+                    const spell = allSpells().find(s => s.Link === slot.Link);
                     return spell ? { level: parseInt(level, 10), spell, Prepared: slot.Prepared, Used: slot.Used } : null;
                 })
                 .filter(Boolean)

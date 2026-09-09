@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { t, tx } from '../../lib/i18n';
+import { t, tx, tName } from '../../lib/i18n';
 import Card from '../common/Card';
 import Pill from '../common/Pill';
 import IconButton from '../common/IconButton';
@@ -127,8 +127,9 @@ export default function EquippedItemsCard() {
                   <div className="sh-warn-strip worn-item-warn">
                     <Icon name="warning" size={14} />
                     {effect.arcaneOnly
-                      ? 'Only an arcane caster gains this.'
-                      : `A ${effect.raceExcept} gains none of this.`}
+                      ? t('Only an arcane caster gains this.')
+                      : tx('A {0} gains none of this.',
+                        tName('races', effect.raceExcept))}
                   </div>
                 )}
                 {/* Normally answered when the item is added; this is the way

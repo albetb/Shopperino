@@ -101,7 +101,7 @@ export default function SpellLevelCard({
         let mageSpec = "";
         const hasOneSpellOfSpec = totalPrepSpec > 0;
         if (isSpecialized) {
-          mageSpec = `${hasOneSpellOfSpec ? "1" : "0"}/1 ${inst.Specialized}`;
+          mageSpec = `${hasOneSpellOfSpec ? "1" : "0"}/1 ${tName('schools', inst.Specialized)}`;
           if (hasOneSpellOfSpec)
             totalPrep -= 1;
         }
