@@ -1,6 +1,8 @@
 import Player from './player';
 import { sumContributions } from './contributions';
 import { getItemByRef, calculateWeaponAttackBonus, calculateWeaponDamage } from '../utils';
+import resolveLabel from '../i18n/resolveLabel';
+import { setLanguage } from '../i18n';
 
 /* The invariant this whole feature rests on: the rows a stat reports must add
    up to the number the sheet shows beside them. Every test here loads a
@@ -134,7 +136,7 @@ describe('initiative contributions', () => {
     const rows = loaded().getInitiativeContributions();
     expect(rows.find((c) => c.source === 'feats').value).toBe(4);
     expect(rows.find((c) => c.source === 'manual').value).toBe(3);
-    expect(rows.find((c) => c.source === 'ability').label).toBe('Dexterity');
+    expect(resolveLabel(rows.find((c) => c.source === 'ability').label)).toBe('Dexterity');
   });
 
   test('a character with no bonuses at all reports only the ability, or nothing', () => {
@@ -156,7 +158,7 @@ describe('maximum hit point contributions', () => {
     expect(rows.find((c) => c.source === 'rolled').value).toBe(60);
     expect(rows.find((c) => c.source === 'manual').value).toBe(5);
     expect(rows.find((c) => c.source === 'feats').value).toBe(3);
-    expect(rows.find((c) => c.source === 'con').label).toMatch(/8 levels/);
+    expect(resolveLabel(rows.find((c) => c.source === 'con').label)).toMatch(/8 levels/);
   });
 
   test('Toughness taken twice shows as six, and the sum still holds', () => {
@@ -210,7 +212,7 @@ describe('armor class contributions', () => {
     const armor = rows.find((c) => c.source === 'armor');
     const shield = rows.find((c) => c.source === 'shield');
     expect(armor.type).toBe('armor');
-    expect(armor.label).toMatch(/chain shirt/i);
+    expect(resolveLabel(armor.label)).toMatch(/chain shirt/i);
     expect(shield.type).toBe('shield');
     expect(rows.find((c) => c.source === 'size').type).toBe('size');
   });
@@ -317,7 +319,7 @@ describe('skill contributions', () => {
     expect(rows.find((c) => c.source === 'race').value).toBe(2);
     expect(rows.find((c) => c.source === 'race').type).toBe('racial');
     expect(rows.find((c) => c.source === 'feats').value).toBe(2);
-    expect(rows.find((c) => c.source === 'ability').label).toBe('Wisdom');
+    expect(resolveLabel(rows.find((c) => c.source === 'ability').label)).toBe('Wisdom');
   });
 
   test('an ability modifier of zero is not listed as a row', () => {
@@ -340,7 +342,7 @@ describe('skill contributions', () => {
     const p = make({ cls: 'Wizard', level: 6 });
     p.setAbilityBase('int', 18);
     const rows = p.getSkillContributions('Knowledge (arcana)');
-    expect(rows.find((c) => c.source === 'ability').label).toBe('Intelligence');
+    expect(resolveLabel(rows.find((c) => c.source === 'ability').label)).toBe('Intelligence');
     expect(sumContributions(rows)).toBe(p.getSkillTotal('Knowledge (arcana)'));
   });
 });
@@ -380,7 +382,7 @@ describe('weapon attack contributions', () => {
     p.setAbilityBase('dex', 18);
     const data = { weaponItem: getItemByRef('items/Weapon/rapier')?.raw };
     const rows = p.getWeaponAttackContributions(data);
-    expect(rows.find((c) => c.source === 'ability').label).toMatch(/Weapon Finesse/);
+    expect(resolveLabel(rows.find((c) => c.source === 'ability').label)).toMatch(/Weapon Finesse/);
     expect(sumContributions(rows)).toBe(calculateWeaponAttackBonus(p, data));
   });
 });
@@ -400,7 +402,7 @@ describe('weapon damage contributions', () => {
     p.setAbilityBase('str', 18);
     const data = { weaponItem: getItemByRef('items/Weapon/greatsword')?.raw, isTwoHanded: true };
     const ability = p.getWeaponDamageContributions(data).find((c) => c.source === 'ability');
-    expect(ability.label).toMatch(/two-handed/);
+    expect(resolveLabel(ability.label)).toMatch(/two-handed/);
     expect(ability.value).toBe(6);
   });
 });
@@ -417,5 +419,41 @@ describe('spell save DC contributions', () => {
 
   test('a non-caster reports nothing at all', () => {
     expect(make({ cls: 'Fighter' }).getSpellSaveDCContributions({ School: 'Evocation' }, 1)).toEqual([]);
+  });
+});
+
+describe('a breakdown row in Italian', () => {
+  /* The three the sheet showed in English however the app was set: the race
+     beside an ability score, the class on a save, and Constitution on the hit
+     points. None of them is a string the model could have translated — each is
+     a name, or a template with a name in it. */
+
+  afterEach(() => setLanguage('en'));
+
+  test('the race beside an ability score', () => {
+    setLanguage('it');
+    const p = make({ race: 'Dwarf' });
+    const row = p.getAbilityContributions('con').find((c) => c.source === 'race');
+    expect(resolveLabel(row.label)).toBe('Nano');
+  });
+
+  test('the class on a saving throw', () => {
+    setLanguage('it');
+    const p = make({ cls: 'Fighter', level: 4 });
+    const row = p.getSaveContributions('fortitude').find((c) => c.source === 'base');
+    expect(resolveLabel(row.label)).toBe('base da Guerriero');
+  });
+
+  test('Constitution on the hit points, with the level left as a number', () => {
+    setLanguage('it');
+    const row = loaded().getMaxLifeContributions().find((c) => c.source === 'con');
+    expect(resolveLabel(row.label)).toBe('Costituzione x 8 livelli');
+  });
+
+  test('the size row on AC names the size', () => {
+    setLanguage('it');
+    const p = make({ race: 'Halfling' });
+    const row = p.getArmorClassContributions().find((c) => c.source === 'size');
+    expect(resolveLabel(row.label)).toBe('taglia Piccolo');
   });
 });

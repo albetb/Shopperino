@@ -85,7 +85,7 @@ import {
   isProficientWithShield,
   isProficientWithUnarmedStrike,
 } from './proficiency';
-import { contribution, situational, compactContributions, BONUS_TYPES } from './contributions';
+import { contribution, situational, compactContributions, named, BONUS_TYPES } from './contributions';
 import {
   isAugmentableSummon,
   AUGMENT_SUMMONING_BONUS,
@@ -142,6 +142,16 @@ const SAVE_SCOPE_LABELS = {
 };
 
 /** Full ability names, for breakdown rows that must read as prose. */
+/* The labels a breakdown row carries when the word is a name rather than a
+   sentence: which table it belongs to is what the model knows, and the lookup
+   is what the component does. `|| '…'` keeps the generic English word for a
+   character who has not chosen one yet. */
+const raceLabel = (p) => (p.getRace() ? named('races', p.getRace()) : 'race');
+const itemLabel = (item, fallback) =>
+  (item?.Name ? named('items', item.Name) : fallback);
+const wildShapeLabel = (p) =>
+  (p.getWildShapeName() ? named('creatures', p.getWildShapeName()) : 'assumed form');
+
 const ABILITY_LABELS = {
   str: 'Strength',
   dex: 'Dexterity',
@@ -4744,12 +4754,12 @@ class Player {
       && Number.isFinite(Number(formScore));
 
     if (replaced) {
-      rows.push(contribution('form', this.getWildShapeName() || 'assumed form', Number(formScore)));
+      rows.push(contribution('form', wildShapeLabel(this), Number(formScore)));
     } else {
       rows.push(contribution('base', 'base score', this.getAbilityBase(abilityKey)));
       rows.push(contribution('manual', 'manual bonus', this.getAbilityBonus(abilityKey)));
       rows.push(contribution(
-        'race', this.getRace() || 'race',
+        'race', raceLabel(this),
         this.getRaceAbilityModifier(abilityKey), BONUS_TYPES.RACIAL
       ));
     }
@@ -4794,13 +4804,15 @@ class Player {
 
     const [abilityKey, abilityMod] = byWhich.ability;
     const rows = [
-      contribution('base', `${this.getClass() || 'class'} base save`, byWhich.base),
+      contribution('base', this.getClass()
+        ? ['{0} base save', named('classes', this.getClass())]
+        : 'class base save', byWhich.base),
       contribution('ability', ABILITY_LABELS[abilityKey] || abilityKey, abilityMod),
       contribution('manual', 'manual bonus', byWhich.manual),
       contribution('familiar', 'familiar', byWhich.familiar),
       contribution('divineGrace', 'Divine Grace', this.getDivineGraceBonus()),
       contribution('feats', 'feats', getFeatSaveBonus(this.getFeats(), which)),
-      contribution('race', this.getRace() || 'race', this.getFlatRacialSaveBonus(), BONUS_TYPES.RACIAL),
+      contribution('race', raceLabel(this), this.getFlatRacialSaveBonus(), BONUS_TYPES.RACIAL),
       contribution('conditions', 'conditions', this.getSaveConditionModifier()),
     ];
     if (which === 'will') {
@@ -4830,7 +4842,8 @@ class Player {
   getMaxLifeContributions() {
     return compactContributions([
       contribution('rolled', 'rolled hit points', Number(this.maxLife) || 0),
-      contribution('con', `Constitution x ${this.getLevel()} levels`, this.getUnshapedConMod() * this.getLevel()),
+      contribution('con', ['Constitution x {0} levels', this.getLevel()],
+        this.getUnshapedConMod() * this.getLevel()),
       contribution('manual', 'bonus life', Number(this.healthModifier) || 0),
       contribution('familiar', 'familiar', this.getFamiliarStatBonuses().hp),
       contribution('feats', 'Toughness', getFeatHpBonus(this.getFeats())),
@@ -4853,11 +4866,12 @@ class Player {
     return compactContributions([
       contribution('base', 'base', 10),
       contribution('ability', 'Dexterity', this.getAcDexMod()),
-      contribution('armor', armor?.Name || 'armor', this.getArmorBonus(), BONUS_TYPES.ARMOR),
-      contribution('shield', shield?.Name || 'shield', this.getShieldBonus(), BONUS_TYPES.SHIELD),
+      contribution('armor', itemLabel(armor, 'armor'), this.getArmorBonus(), BONUS_TYPES.ARMOR),
+      contribution('shield', itemLabel(shield, 'shield'), this.getShieldBonus(), BONUS_TYPES.SHIELD),
       contribution('monk', 'monk AC bonus', this.getMonkAcBonus()),
       contribution('natural', 'natural armor', this.getWildShapeNaturalArmor(), BONUS_TYPES.NATURAL),
-      contribution('size', `${this.getSize()} size`, this.getSizeAcModifier(), BONUS_TYPES.SIZE),
+      contribution('size', ['{0} size', named('sizes', this.getSize())],
+        this.getSizeAcModifier(), BONUS_TYPES.SIZE),
       contribution('manual', 'manual bonus', Number(this.acBonus || 0)),
       contribution('rage', 'rage', this.getRageAcModifier(), BONUS_TYPES.MORALE),
       contribution('combatExpertise', 'Combat expertise', this.getCombatExpertise(), BONUS_TYPES.DODGE),
@@ -4873,7 +4887,8 @@ class Player {
       contribution('base', 'base', 10),
       contribution('ability', 'Dexterity', this.getAcDexMod()),
       contribution('monk', 'monk AC bonus', this.getMonkAcBonus()),
-      contribution('size', `${this.getSize()} size`, this.getSizeAcModifier(), BONUS_TYPES.SIZE),
+      contribution('size', ['{0} size', named('sizes', this.getSize())],
+        this.getSizeAcModifier(), BONUS_TYPES.SIZE),
       contribution('manual', 'manual bonus', Number(this.acBonus || 0)),
       contribution('manualTouch', 'touch bonus', Number(this.acTouchBonus || 0)),
       contribution('rage', 'rage', this.getRageAcModifier(), BONUS_TYPES.MORALE),
@@ -4889,10 +4904,11 @@ class Player {
     const armor = this.getEquippedArmorRaw();
     return compactContributions([
       contribution('base', 'base', 10),
-      contribution('armor', armor?.Name || 'armor', this.getArmorBonus(), BONUS_TYPES.ARMOR),
+      contribution('armor', itemLabel(armor, 'armor'), this.getArmorBonus(), BONUS_TYPES.ARMOR),
       contribution('monk', 'monk AC bonus', this.getMonkAcBonus()),
       contribution('natural', 'natural armor', this.getWildShapeNaturalArmor(), BONUS_TYPES.NATURAL),
-      contribution('size', `${this.getSize()} size`, this.getSizeAcModifier(), BONUS_TYPES.SIZE),
+      contribution('size', ['{0} size', named('sizes', this.getSize())],
+        this.getSizeAcModifier(), BONUS_TYPES.SIZE),
       contribution('manual', 'manual bonus', Number(this.acBonus || 0)),
       contribution('manualFlat', 'flat-footed bonus', Number(this.acFlatBonus || 0)),
       contribution('rage', 'rage', this.getRageAcModifier(), BONUS_TYPES.MORALE),
@@ -4913,11 +4929,13 @@ class Player {
   getSpeedContributions() {
     const rows = [];
     if (this.getWildShapeForm()) {
-      rows.push(contribution('form', this.getWildShapeName() || 'assumed form', this.getWildShapeSpeed('land')));
+      rows.push(contribution('form', wildShapeLabel(this), this.getWildShapeSpeed('land')));
     } else {
       const races = loadFile('races');
       const racial = Number(races?.[this.race]?.landSpeed) || 30;
-      rows.push(contribution('race', `${this.getRace() || 'race'} base speed`, racial));
+      rows.push(contribution('race', this.getRace()
+        ? ['{0} base speed', named('races', this.getRace())]
+        : 'race base speed', racial));
       rows.push(contribution('class', 'fast movement', this.getBaseSpeed() - racial));
     }
     rows.push(contribution('manual', 'manual bonus', Number(this.speedBonus || 0)));
@@ -4965,7 +4983,7 @@ class Player {
       contribution('ranks', 'ranks', Math.floor(this.getSkillRanks(skillName))),
       contribution('ability', abilityKey ? ABILITY_LABELS[abilityKey] : 'ability', abilityKey ? this.getModifier(abilityKey) : 0),
       contribution('manual', 'manual bonus', this.getSkillBonus(skillName)),
-      contribution('race', this.getRace() || 'race', getFlatRacialSkillBonus(this.getRace(), skillName), BONUS_TYPES.RACIAL),
+      contribution('race', raceLabel(this), getFlatRacialSkillBonus(this.getRace(), skillName), BONUS_TYPES.RACIAL),
       contribution('familiar', 'familiar', this.getFamiliarStatBonuses().skills[skillName] || 0),
       contribution('feats', 'feats', getFeatSkillBonus(this.getFeats(), skillName)),
       contribution('classFeature', 'Nature Sense', this.getNatureSenseBonus(skillName)),
@@ -4976,7 +4994,8 @@ class Player {
        the bonus is the part a reader wants, and two synergies into the same
        skill only stack because they come from different sources. */
     this.getSkillSynergies(skillName).forEach(({ from, bonus: value }) => {
-      rows.push(contribution(`synergy:${from}`, `${from} (5 ranks)`, value, BONUS_TYPES.SYNERGY));
+      rows.push(contribution(`synergy:${from}`, ['{0} (5 ranks)', named('skills', from)],
+        value, BONUS_TYPES.SYNERGY));
     });
 
     const penalty = this.getArmorCheckPenalty();
@@ -5011,9 +5030,13 @@ class Player {
 
     return compactContributions([
       contribution('bab', 'base attack bonus', this.getBaseAttackBonus()),
-      contribution('ability', ABILITY_LABELS[abilityKey] + (finesse && !ranged ? ' (Weapon Finesse)' : ''), this.getModifier(abilityKey)),
+      contribution('ability', finesse && !ranged
+        ? ['{0} (Weapon Finesse)', ABILITY_LABELS[abilityKey]]
+        : ABILITY_LABELS[abilityKey], this.getModifier(abilityKey)),
       contribution('perfect', 'perfect weapon', perfect, BONUS_TYPES.ENHANCEMENT),
-      contribution('enhancement', enhancement > 1 ? `+${enhancement} weapon` : 'masterwork', enhancement, BONUS_TYPES.ENHANCEMENT),
+      contribution('enhancement', enhancement > 1
+        ? ['+{0} weapon', enhancement]
+        : 'masterwork', enhancement, BONUS_TYPES.ENHANCEMENT),
       contribution('feats', 'Weapon Focus', this.getWeaponFeatAttackBonus(weaponItem)),
       contribution('proficiency', 'not proficient', this.isProficientWithWeapon(weaponItem) ? 0 : NON_PROFICIENT_ATTACK_PENALTY),
       contribution('armorProficiency', 'untrained armor', armorPenalty, BONUS_TYPES.ARMOR),
@@ -5059,7 +5082,8 @@ class Player {
     return compactContributions([
       contribution('ability', strLabel, strValue),
       contribution('perfect', 'perfect weapon', perfect, BONUS_TYPES.ENHANCEMENT),
-      contribution('enhancement', `+${itemData?.bonus || 0} weapon`, itemData?.bonus || 0, BONUS_TYPES.ENHANCEMENT),
+      contribution('enhancement', ['+{0} weapon', itemData?.bonus || 0],
+        itemData?.bonus || 0, BONUS_TYPES.ENHANCEMENT),
       contribution('feats', 'Weapon Specialization', this.getWeaponFeatDamageBonus(weaponItem)),
       contribution(
         'powerAttack',
@@ -5100,10 +5124,10 @@ class Player {
     const school = spell?.School ?? spell;
     return compactContributions([
       contribution('base', 'base', 10),
-      contribution('level', `spell level ${Number(level) || 0}`, Number(level) || 0),
+      contribution('level', ['spell level {0}', Number(level) || 0], Number(level) || 0),
       contribution('ability', ABILITY_LABELS[ability], this.getModifier(ability)),
       contribution('feats', 'Spell Focus', this.getSpellFocusBonus(school)),
-      contribution('race', this.getRace() || 'race', this.getRacialSpellDcBonus(school), BONUS_TYPES.RACIAL),
+      contribution('race', raceLabel(this), this.getRacialSpellDcBonus(school), BONUS_TYPES.RACIAL),
     ]);
   }
 
@@ -5141,19 +5165,23 @@ class Player {
       });
       getRacialImmunities(race).forEach((what) => {
         if (statKey !== 'will') return;
-        out.push(situational('race:immunity', race, `Immune to ${String(what).toLowerCase()}`));
+        out.push(situational('race:immunity', named('races', race),
+          ['Immune to {0}', String(what).toLowerCase()]));
       });
     }
 
     if (statKey === 'ac' || statKey === 'acTouch') {
       getRacialACBonuses(race).forEach((b) => {
-        out.push(situational('race:ac', race, `+${b.bonus} ${b.type || ''} bonus against ${b.against}`.replace(/\s+/g, ' ')));
+        out.push(situational('race:ac', named('races', race), b.type
+          ? ['+{0} {1} bonus against {2}', b.bonus, named('bonusTypes', b.type), b.against]
+          : ['+{0} bonus against {1}', b.bonus, b.against]));
       });
     }
 
     if (statKey === 'attack') {
       getRacialAttackBonuses(race).forEach((b) => {
-        out.push(situational('race:attack', race, `+${b.bonus} on attack rolls against ${b.against}`));
+        out.push(situational('race:attack', named('races', race),
+          ['+{0} on attack rolls against {1}', b.bonus, b.against]));
       });
     }
 
@@ -5174,7 +5202,8 @@ class Player {
       const skillName = statKey.slice('skill:'.length);
       getRacialSkillBonuses(race)
         .filter((b) => !b.flat && b.skill.toLowerCase() === skillName.toLowerCase())
-        .forEach((b) => out.push(situational('race:skill', race, `+${b.bonus} when ${b.condition}`)));
+        .forEach((b) => out.push(situational('race:skill', named('races', race),
+          ['+{0} when {1}', b.bonus, b.condition])));
     }
 
     // —— The caps and reductions that are real but sit outside the total ——
@@ -5202,7 +5231,7 @@ class Player {
     // —— Class features whose bonus only exists in a situation ——
     const trapSense = getProgressionValue(cls, 'trapSense', level, 0);
     if (trapSense > 0 && (statKey === 'reflex' || statKey === 'ac')) {
-      out.push(situational('trapSense', 'Trap Sense', `+${trapSense} against traps`));
+      out.push(situational('trapSense', 'Trap Sense', ['+{0} against traps', trapSense]));
     }
     if (statKey === 'will' && hasFeatureAtLevel(cls, 'stillMindLevel', level)) {
       out.push(situational('stillMind', 'Still Mind', '+2 against enchantment spells and effects'));
@@ -5406,7 +5435,8 @@ class Player {
     getSituationalFeatNames(statKey)
       .filter((feat) => this.hasFeatNamed(feat))
       .forEach((feat) => {
-        out.push(situational(`feat:${feat}`, feat, this.getFeatShortDescription(feat)));
+        out.push(situational(`feat:${feat}`, named('feats', feat),
+          this.getFeatShortDescription(feat)));
       });
 
     /* —— Worn magic items ——

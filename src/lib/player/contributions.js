@@ -55,7 +55,8 @@ const TYPE_VALUES = new Set(Object.values(BONUS_TYPES));
  * One source feeding a derived value.
  *
  * @param {string} source - Machine key for the source ('armor', 'dex', 'rage').
- * @param {string} label - What the reader sees ('chain shirt', 'Dexterity').
+ * @param {string|object|Array} label - What the reader sees. See `asLabel`:
+ *   a plain string, a `named()` marker, or `[template, ...parts]`.
  * @param {number} value - Signed contribution to the total.
  * @param {string} [type] - A `BONUS_TYPES` value; anything unrecognised is
  *   stored as untyped rather than passed through, so a typo cannot invent a
@@ -65,7 +66,7 @@ const TYPE_VALUES = new Set(Object.values(BONUS_TYPES));
 export function contribution(source, label, value, type = BONUS_TYPES.UNTYPED) {
   return {
     source: String(source ?? ''),
-    label: String(label ?? ''),
+    label: asLabel(label),
     type: TYPE_VALUES.has(type) ? type : BONUS_TYPES.UNTYPED,
     value: Number(value) || 0,
   };
@@ -80,15 +81,16 @@ export function contribution(source, label, value, type = BONUS_TYPES.UNTYPED) {
  * which kind of entry is being looked at.
  *
  * @param {string} source - Machine key ('dwarfPoison', 'trapSense').
- * @param {string} label - The heading the reader sees ('Hardy').
- * @param {string} note - When it applies ('+2 on saves against poison').
+ * @param {string|object|Array} label - The heading the reader sees ('Hardy').
+ * @param {string|Array} note - When it applies ('+2 on saves against poison'),
+ *   or `[template, ...parts]` when the sentence has a number in it.
  * @returns {{source: string, label: string, note: string}}
  */
 export function situational(source, label, note) {
   return {
     source: String(source ?? ''),
-    label: String(label ?? ''),
-    note: String(note ?? ''),
+    label: asLabel(label),
+    note: asLabel(note),
   };
 }
 
@@ -123,4 +125,42 @@ export function sumContributions(list) {
 export function compactContributions(list) {
   if (!Array.isArray(list)) return [];
   return list.filter((entry) => (Number(entry?.value) || 0) !== 0);
+}
+
+/**
+ * A name whose Italian lives in a `names.json` domain.
+ *
+ * The model knows *which* table a word belongs to — a class name, a race, a
+ * size — and that is exactly the half of the translation it can supply without
+ * reading the language. The component does the lookup.
+ *
+ * @param {string} domain - a domain in names.json ('classes', 'races', …).
+ * @param {string} en - the English name, as src/data spells it.
+ */
+export function named(domain, en) {
+  return { domain: String(domain), en: String(en ?? '') };
+}
+
+/**
+ * Normalise whatever a call site passed as a label.
+ *
+ * Three shapes, and the model may use any of them:
+ *
+ *   'base score'                      a plain string; the pack keys on it
+ *   named('classes', 'Fighter')       a name, looked up in a names domain
+ *   ['{0} base save', named(…)]       a template and its parts
+ *
+ * The third is what makes a composed label translatable at all: "Fighter base
+ * save" is not a key any pack could hold, but `'{0} base save'` is, and the
+ * Italian may put the two halves in the other order.
+ *
+ * Everything here is still data — no language is read, and the result
+ * serialises. `resolveLabel` in lib/i18n turns it into a string.
+ */
+export function asLabel(label) {
+  if (Array.isArray(label)) return label;
+  if (label && typeof label === 'object' && typeof label.domain === 'string') {
+    return label;
+  }
+  return String(label ?? '');
 }

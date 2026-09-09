@@ -13,8 +13,12 @@ import EquipBonusControls from '../../../player_sheet/inventory/EquipBonusContro
 import AugmentSummoningNote from '../../../common/AugmentSummoningNote';
 import '../../../../style/menu_cards.css';
 import { useUnits } from '../../../hooks/useUnits';
-import { t, tx } from '../../../../lib/i18n';
+import { t, tx, tName } from '../../../../lib/i18n';
 import { itemCardTitle } from '../../../../lib/item/displayItemName';
+import {
+  creatureName, creatureTerm, skillLine, featName, sizeAndType, splitList,
+  alignmentText, environmentText, treasureText, advancementText,
+} from '../../../../lib/i18n/creatureText';
 
 const HIDDEN_KEYS = new Set(['Short Description', 'id', 'Link', 'editable', 'editKey', 'kind']);
 
@@ -53,6 +57,37 @@ function resolveBaseCard(entry, { applyBonus = true } = {}) {
     card.Name = composeNameWithEffect(card.Name, effect.Name);
   });
   return card;
+}
+
+/* A creature card's fields, and how each one is read. Anything not named here
+   is a number, a dice expression or a parsed attack line — all of which say
+   the same thing in both languages, and the attack lines are frozen besides:
+   attackParser reads them back for companions, familiars and wild shape. */
+const CREATURE_FIELD = {
+  Name: creatureName,
+  Type: sizeAndType,
+  'Special Attacks': (v) => splitList(v).map(creatureTerm).join(', '),
+  'Special Qualities': (v) => splitList(v).map(creatureTerm).join(', '),
+  Skills: (v) => splitList(v).map(skillLine).join(', '),
+  Feats: (v) => splitList(v).map(featName).join(', '),
+  Alignment: alignmentText,
+  Environment: environmentText,
+  Treasure: treasureText,
+  Advancement: advancementText,
+};
+
+/* The other three kinds are a single name and nothing else: the title. */
+const TITLE_DOMAIN = { feat: 'feats', skill: 'skills', condition: 'conditions' };
+
+/** One field of one card, in the reading language. */
+function cardValue(card, key, value) {
+  if (typeof value !== 'string') return value;
+  if (card?.kind === 'creature') {
+    const read = CREATURE_FIELD[key];
+    return read ? read(value) : value;
+  }
+  const domain = TITLE_DOMAIN[card?.kind];
+  return domain && key === 'Name' ? tName(domain, value) : value;
 }
 
 export default function InfoMenuCards({ cardsData, closeCard }) {
@@ -202,7 +237,9 @@ export default function InfoMenuCards({ cardsData, closeCard }) {
            language: names.json is keyed by exactly the English the card
            carries. A spell, a feat or a creature keeps its English name, which
            is what the rest of the app -- and every manual -- calls it. */
-        const cardName = data.kind === 'item' ? itemCardTitle(data.Name) : data.Name;
+        const cardName = data.kind === 'item'
+          ? itemCardTitle(data.Name)
+          : cardValue(data, 'Name', data.Name);
         const title = isEditing ? (editableValue || t('Edit')) : (cardName || tx('Card {0}', idx + 1));
         return (
           <div key={idx} className={`card ${state.collapsed ? 'collapsed' : ''}`}>
@@ -351,7 +388,9 @@ export default function InfoMenuCards({ cardsData, closeCard }) {
                             {parse(u.prose(value), descriptionOptions)}
                           </div>
                         ) : ['Name'].includes(key) ? null : (
-                          <span className="info-value info-card">{u.text(value)}</span>
+                          <span className="info-value info-card">
+                            {u.text(cardValue(data, key, value))}
+                          </span>
                         )}
                       </div>
                     );

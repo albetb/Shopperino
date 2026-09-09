@@ -1,6 +1,7 @@
 import Player from './player';
 import { sumContributions } from './conditionEffects';
 import { calculateWeaponAttackBonus, calculateWeaponDamage } from '../utils';
+import resolveLabel from '../i18n/resolveLabel';
 
 const MELEE_SWORD = { Subtype: 'Melee', Name: 'longsword', 'Dmg (M)': '1d8' };
 
@@ -19,7 +20,7 @@ describe('Player condition aggregation (wiring)', () => {
     expect(sumContributions(mods.saves)).toBe(-2);
     mods.saves.forEach((c) => {
       expect(typeof c.source).toBe('string');
-      expect(typeof c.label).toBe('string');
+      expect(typeof resolveLabel(c.label)).toBe('string');
       expect(typeof c.value).toBe('number');
     });
   });

@@ -2,6 +2,10 @@ import { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import parse from 'html-react-parser';
 import { t, tx } from '../../lib/i18n';
+import {
+  creatureName, creatureTerm, skillLine, featName, sizeAndType,
+  alignmentText, environmentText, treasureText,
+} from '../../lib/i18n/creatureText';
 import Card from '../common/Card';
 import Bar from '../common/Bar';
 import Pill from '../common/Pill';
@@ -214,9 +218,9 @@ export default function MonsterSheetView() {
             {t('Back')}
           </Button>
           <div className="monster-sheet-identity">
-            <Filigree>{sheet.getSizeAndType()}</Filigree>
+            <Filigree>{sizeAndType(sheet.getSizeAndType())}</Filigree>
             <div className="sh-display" style={{ fontSize: 'var(--font-size-2xl)' }}>
-              {sheet.getName()}
+              {creatureName(sheet.getName())}
             </div>
           </div>
           <span className="sh-row-h monster-sheet-meta" style={{ gap: 'var(--space-2)' }}>
@@ -257,7 +261,7 @@ export default function MonsterSheetView() {
               ghost size="sm"
               onClick={() => dispatch(onAddIndividual(openIndex))}
               disabled={atIndividualCap}
-              aria-label={tx('Add another {0}', sheet.getName())}
+              aria-label={tx('Add another {0}', creatureName(sheet.getName()))}
               title={atIndividualCap
                 ? tx('{0} is as many as one entry holds', MAX_INDIVIDUALS)
                 : t('Add another one of these')}
@@ -452,7 +456,9 @@ export default function MonsterSheetView() {
               <div className="sh-stack" style={{ gap: 'var(--space-1)' }}>
                 <Filigree>{t('Attacks')}</Filigree>
                 <div className="sh-row-h" style={{ gap: 'var(--space-2)', flexWrap: 'wrap' }}>
-                  {specialAttacks.map((s) => <Pill key={s} tone="accent">{u.text(s)}</Pill>)}
+                  {specialAttacks.map((s) => (
+                    <Pill key={s} tone="accent">{u.text(creatureTerm(s))}</Pill>
+                  ))}
                 </div>
               </div>
             )}
@@ -460,7 +466,9 @@ export default function MonsterSheetView() {
               <div className="sh-stack" style={{ gap: 'var(--space-1)' }}>
                 <Filigree>{t('Qualities')}</Filigree>
                 <div className="sh-row-h" style={{ gap: 'var(--space-2)', flexWrap: 'wrap' }}>
-                  {specialQualities.map((s) => <Pill key={s} tone="success">{u.text(s)}</Pill>)}
+                  {specialQualities.map((s) => (
+                    <Pill key={s} tone="success">{u.text(creatureTerm(s))}</Pill>
+                  ))}
                 </div>
               </div>
             )}
@@ -486,16 +494,22 @@ export default function MonsterSheetView() {
           <div className="sh-stack" style={{ gap: 'var(--space-2)' }}>
             {skills.length > 0 && (
               <div><span className="sh-eyebrow">{t('Skills')}</span>
-                <div className="sh-faint monster-detail-text">{skills.join(', ')}</div></div>
+                <div className="sh-faint monster-detail-text">{skills.map(skillLine).join(', ')}</div></div>
             )}
             {feats.length > 0 && (
               <div><span className="sh-eyebrow">{t('Feats')}</span>
-                <div className="sh-faint monster-detail-text">{feats.join(', ')}</div></div>
+                <div className="sh-faint monster-detail-text">{feats.map(featName).join(', ')}</div></div>
             )}
             <div className="sh-row-h" style={{ gap: 'var(--space-2)', flexWrap: 'wrap' }}>
-              {sheet.getAlignment() && <Pill tone="ghost">{sheet.getAlignment()}</Pill>}
-              {sheet.getEnvironment() && <Pill tone="ghost" icon="park">{sheet.getEnvironment()}</Pill>}
-              {sheet.getTreasure() && <Pill tone="ghost" icon="paid">{sheet.getTreasure()}</Pill>}
+              {sheet.getAlignment() && (
+                <Pill tone="ghost">{alignmentText(sheet.getAlignment())}</Pill>
+              )}
+              {sheet.getEnvironment() && (
+                <Pill tone="ghost" icon="park">{environmentText(sheet.getEnvironment())}</Pill>
+              )}
+              {sheet.getTreasure() && (
+                <Pill tone="ghost" icon="paid">{treasureText(sheet.getTreasure())}</Pill>
+              )}
             </div>
             {sheet.getOrganization() && (
               <div><span className="sh-eyebrow">{t('Organization')}</span>

@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { t, tx, tName } from '../../lib/i18n';
+import resolveLabel from '../../lib/i18n/resolveLabel';
 import Icon from './Icon';
 import BottomSheet from './BottomSheet';
 import { isMobile } from '../../lib/utils';
@@ -110,10 +111,10 @@ export default function StatInfo({
         <li key={`${keyPrefix}-${row.source}-${i}`} className="stat-info-row">
           <span className="stat-info-row-label">
             {/* Every string in a breakdown row was composed by the model,
-                which cannot read the language -- so it arrives in English and
-                is translated here. A label the pack has no entry for stays
-                English, which is what the reader would have seen anyway. */}
-            {t(row.label)}
+                which cannot read the language -- so it arrives as data and is
+                turned into a sentence here. A label the pack has no entry for
+                stays English, which is what the reader would have seen. */}
+            {resolveLabel(row.label)}
             {row.type ? <span className="stat-info-row-type">{tName('bonusTypes', row.type)}</span> : null}
           </span>
           <span className="stat-info-row-value sh-num">
@@ -166,8 +167,8 @@ export default function StatInfo({
           <ul className="stat-info-notes">
             {notes.map((note, i) => (
               <li key={`${note.source}-${i}`}>
-                <span className="stat-info-note-label">{t(note.label)}</span>
-                <span className="stat-info-note-text">{t(note.note)}</span>
+                <span className="stat-info-note-label">{resolveLabel(note.label)}</span>
+                <span className="stat-info-note-text">{resolveLabel(note.note)}</span>
               </li>
             ))}
           </ul>

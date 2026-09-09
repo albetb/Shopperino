@@ -111,6 +111,10 @@ export const appSlice = createSlice({
         if (creatureCards.length) {
           const newLinks = new Set(creatureCards.map(c => c.Link));
           state.infoCards = state.infoCards.filter(c => !newLinks.has(c.Link));
+          /* Which lookup answered — see the item branch below. A stat block is
+             almost entirely names, and the renderer needs to know which table
+             each line belongs to before it can look any of them up. */
+          creatureCards.forEach(c => { c.kind = 'creature'; });
           state.infoCards.unshift(...creatureCards);
           state.infoSidebarCollapsed = false;
         }
@@ -142,6 +146,7 @@ export const appSlice = createSlice({
       cards = getConditionByLink(conditionAnchor ?? firstLink);
 
       if (cards.length) {
+        cards.forEach(c => { c.kind = 'condition'; });
         state.infoCards.unshift(...cards);
         state.infoSidebarCollapsed = false;
         return;
@@ -150,6 +155,7 @@ export const appSlice = createSlice({
       cards = getFeatByLink(featLookupLink ?? (isFeatLink ? firstLink : null));
 
       if (cards.length) {
+        cards.forEach(c => { c.kind = 'feat'; });
         state.infoCards.unshift(...cards);
         state.infoSidebarCollapsed = false;
         return;
@@ -160,6 +166,7 @@ export const appSlice = createSlice({
       cards = getSkillByLink(skillLookupLink ?? (isSkillLink ? firstLink : null));
 
       if (cards.length) {
+        cards.forEach(c => { c.kind = 'skill'; });
         state.infoCards.unshift(...cards);
         if (isMobile()) state.infoSidebarCollapsed = false;
         return;

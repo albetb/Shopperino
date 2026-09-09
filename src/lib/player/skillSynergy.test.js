@@ -8,6 +8,7 @@ import {
   SYNERGY_BONUS,
 } from './skillSynergy';
 import { loadFile } from '../loadFile';
+import resolveLabel from '../i18n/resolveLabel';
 
 /* Five ranks in one skill grant +2 to a related one. The pairings used to exist
  * only inside the Description prose of skills.json, so nothing computed any of
@@ -112,7 +113,7 @@ describe('a synergy is earned at five ranks, not before', () => {
     const rows = p.getSkillContributions('Balance');
     const row = rows.find((r) => r.source === 'synergy:Tumble');
     expect(row).toBeTruthy();
-    expect(row.label).toBe('Tumble (5 ranks)');
+    expect(resolveLabel(row.label)).toBe('Tumble (5 ranks)');
     expect(row.value).toBe(2);
     expect(row.type).toBe('synergy');
     expect(sumContributions(rows)).toBe(p.getSkillTotal('Balance'));

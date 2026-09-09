@@ -1,6 +1,7 @@
 import Player from './player';
 import { getItemByRef, calculateWeaponDamage } from '../utils';
 import { sumContributions } from './contributions';
+import resolveLabel from '../i18n/resolveLabel';
 
 /* A weapon in each hand grants an extra attack with the off hand and costs
  * both hands a penalty. Nothing on the sheet applied that penalty before, so
@@ -183,12 +184,12 @@ describe('the off hand adds only half its Strength to damage', () => {
     const p = dualWielder();
     const off = { ...p.getHandWeapon('lh1'), isOffHand: true };
     const row = p.getWeaponDamageContributions(off).find((r) => r.source === 'ability');
-    expect(row.label).toBe('Strength (off-hand)');
+    expect(resolveLabel(row.label)).toBe('Strength (off-hand)');
     expect(row.value).toBe(1);
     // The main hand is unchanged by any of this.
     const mainRow = p.getWeaponDamageContributions(p.getHandWeapon('rh1'))
       .find((r) => r.source === 'ability');
-    expect(mainRow.label).toBe('Strength');
+    expect(resolveLabel(mainRow.label)).toBe('Strength');
     expect(mainRow.value).toBe(3);
   });
 });
@@ -226,7 +227,7 @@ describe("a ranger's combat style counts as holding the feat", () => {
     // The archery path grants Improved precise shot instead, which the
     // situational notes must also be able to see.
     expect(r.hasFeatNamed('Improved precise shot')).toBe(true);
-    expect(r.getSituationalContributions('attack').map((n) => n.label))
+    expect(r.getSituationalContributions('attack').map((n) => resolveLabel(n.label)))
       .toContain('Improved precise shot');
   });
 

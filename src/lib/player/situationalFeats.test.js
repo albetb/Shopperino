@@ -1,6 +1,7 @@
 import Player from './player';
 import { loadFile } from '../loadFile';
 import { SITUATIONAL_FEAT_STATS, getSituationalFeatNames } from './featEffects';
+import resolveLabel from '../i18n/resolveLabel';
 
 /* Sixteen feats grant a real bonus in a stated situation. None of them may
  * move a headline number — a +4 dodge AC against attacks of opportunity is
@@ -71,7 +72,7 @@ describe('a note appears only when the feat is held', () => {
     const p = make(['Mobility']);
     const ac = notesFor(p, 'ac');
     expect(ac).toHaveLength(1);
-    expect(ac[0].label).toBe('Mobility');
+    expect(resolveLabel(ac[0].label)).toBe('Mobility');
     expect(ac[0].note).toContain('dodge');
     expect(notesFor(p, 'attack')).toEqual([]);
     expect(notesFor(p, 'reflex')).toEqual([]);
@@ -91,7 +92,7 @@ describe('a note appears only when the feat is held', () => {
 
   test('the four Improved maneuvers all report against the attack roll', () => {
     const p = make(['Improved bull rush', 'Improved overrun', 'Improved sunder', 'Improved disarm']);
-    const labels = notesFor(p, 'attack').map((n) => n.label).sort();
+    const labels = notesFor(p, 'attack').map((n) => resolveLabel(n.label)).sort();
     expect(labels).toEqual([
       'Improved bull rush', 'Improved disarm', 'Improved overrun', 'Improved sunder',
     ]);
@@ -121,7 +122,7 @@ describe('a granted feat counts as a feat', () => {
     expect(ranger.getFeats()).not.toContain('Endurance');
     expect(ranger.getGrantedFeats().map((g) => g.feat)).toContain('Endurance');
     expect(ranger.hasFeatNamed('Endurance')).toBe(true);
-    expect(notesFor(ranger, 'fortitude').map((n) => n.label)).toContain('Endurance');
+    expect(notesFor(ranger, 'fortitude').map((n) => resolveLabel(n.label))).toContain('Endurance');
   });
 
   test('and not before the level that grants it', () => {
@@ -147,7 +148,7 @@ describe('the weapon box merges the two lists without repeating itself', () => {
 
   test('a feat on one stat only still comes through', () => {
     const p = make(['Precise shot', 'Spirited charge']);
-    const labels = p.getWeaponSituationalContributions().map((n) => n.label);
+    const labels = p.getWeaponSituationalContributions().map((n) => resolveLabel(n.label));
     expect(labels).toContain('Precise shot');
     expect(labels).toContain('Spirited charge');
   });

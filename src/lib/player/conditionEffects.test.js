@@ -1,4 +1,5 @@
 import { aggregateConditionEffects, sumContributions } from './conditionEffects';
+import resolveLabel from '../i18n/resolveLabel';
 
 describe('aggregateConditionEffects', () => {
   test('every contribution has the { source, label, value } shape', () => {
@@ -13,7 +14,7 @@ describe('aggregateConditionEffects', () => {
     ];
     lists.flat().forEach((c) => {
       expect(typeof c.source).toBe('string');
-      expect(typeof c.label).toBe('string');
+      expect(typeof resolveLabel(c.label)).toBe('string');
       expect(typeof c.value).toBe('number');
     });
   });

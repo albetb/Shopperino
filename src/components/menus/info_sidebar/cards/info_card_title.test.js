@@ -58,16 +58,47 @@ describe('the title of an info card', () => {
 
   test('the Hide skill is not renamed after the hide armour', () => {
     setLanguage('it');
-    /* The whole reason the card records which lookup answered: the item pack
-       translates `Hide` to `Pelle`, and that is the armour. */
+    /* The whole reason the card records which lookup answered: `Hide` is a
+       suit of armour in the item pack (Pelle) and a skill in the skill pack
+       (Nascondersi), and only the branch that built the card knows which. */
     const [card] = cards('skills#hide');
-    expect(card.kind).toBeUndefined();
-    expect(screen.getByRole('heading', { name: 'Hide' })).toBeInTheDocument();
+    expect(card.kind).toBe('skill');
+    expect(screen.getByRole('heading', { name: 'Nascondersi' })).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Pelle' })).toBe(null);
   });
 
   test('a spell keeps the name every manual prints', () => {
     setLanguage('it');
     cards('spells#fireball');
     expect(screen.getByRole('heading', { name: 'Fireball' })).toBeInTheDocument();
+  });
+});
+
+describe('a creature card', () => {
+  /* A stat block is almost all names, and it is assembled into flat strings
+     before it reaches the sidebar — so the card says which lookup built it and
+     the renderer keeps one table of field -> how to read it. */
+
+  test('is named, sized and typed in the reading language', () => {
+    setLanguage('it');
+    cards('monsters/aboleth');
+    expect(screen.getByRole('heading', { name: 'Aboleth' })).toBeInTheDocument();
+    expect(screen.getByText('Enorme Aberrazione (Acquatico)')).toBeInTheDocument();
+  });
+
+  test('the quality and skill lists are translated term by term', () => {
+    setLanguage('it');
+    const [card] = cards('monsters/aboleth');
+    expect(card.kind).toBe('creature');
+    expect(screen.getByText(/Ascoltare \+16/)).toBeInTheDocument();
+    /* The rating stays a rating, and the unit converter still gets to rewrite
+       it — the pack translates the word, not the distance. */
+    expect(screen.getByText(/scurovisione/i)).toBeInTheDocument();
+  });
+
+  test('English is what the SRD prints', () => {
+    cards('monsters/aboleth');
+    expect(screen.getByText('Huge Aberration (Aquatic)')).toBeInTheDocument();
+    expect(screen.getByText(/Listen \+16/)).toBeInTheDocument();
   });
 });

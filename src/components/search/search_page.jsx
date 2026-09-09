@@ -71,6 +71,17 @@ function slugify(name) {
   return name.toLowerCase().trim().replace(/\s+/g, '-');
 }
 
+/* Which table a result's name belongs to. Spells keep the name every manual
+   prints — the pack has never held one — so they fall through to the English.
+   A name the pack cannot answer does the same, which is the point of keying by
+   the English in the first place. */
+const SEARCH_DOMAIN = { Items: 'items', Feats: 'feats', Skills: 'skills' };
+
+const searchName = (searchType, name) => {
+  const domain = SEARCH_DOMAIN[searchType];
+  return domain ? tName(domain, name) : name;
+};
+
 export default function SearchPage() {
   const u = useUnits();
   const dispatch = useDispatch();
@@ -161,14 +172,18 @@ export default function SearchPage() {
     if (searchType === 'Feats') {
       const feats = loadFile('feats') || [];
       return feats.filter(f =>
-        !q || f.Name?.toLowerCase().includes(q)
+        !q
+        || f.Name?.toLowerCase().includes(q)
+        || tName('feats', f.Name)?.toLowerCase().includes(q)
       );
     }
 
     if (searchType === 'Skills') {
       const skills = loadFile('skills') || [];
       return skills.filter(s =>
-        !q || s.Name?.toLowerCase().includes(q)
+        !q
+        || s.Name?.toLowerCase().includes(q)
+        || tName('skills', s.Name)?.toLowerCase().includes(q)
       );
     }
 
@@ -409,7 +424,7 @@ export default function SearchPage() {
                           className="button-link"
                           onClick={() => handleOpenCard(r)}
                         >
-                          {searchType === 'Items' ? itemName(r.Name) : r.Name}
+                          {searchName(searchType, r.Name)}
                         </button>
                         {searchType === 'Spells' && spellClassFilter === 'All' && r['Short Description'] && (
                           <div className="desc-muted">

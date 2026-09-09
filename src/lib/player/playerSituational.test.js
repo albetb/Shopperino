@@ -1,5 +1,6 @@
 import Player from './player';
 import { sumContributions } from './contributions';
+import resolveLabel from '../i18n/resolveLabel';
 
 /* The situational group is everything the sheet knows about a stat that it must
    not add to that stat. A dwarf's +2 against poison is real and worth reading;
@@ -20,7 +21,8 @@ function make({ race = 'Human', cls = 'Fighter', level = 8 } = {}) {
   return p;
 }
 
-const notes = (p, key) => p.getSituationalContributions(key).map((e) => `${e.label}: ${e.note}`).join(' | ');
+const notes = (p, key) => p.getSituationalContributions(key)
+  .map((e) => `${resolveLabel(e.label)}: ${resolveLabel(e.note)}`).join(' | ');
 
 describe('the shape of a situational entry', () => {
   test('carries a note and never a value', () => {
@@ -150,7 +152,7 @@ describe('caps and reductions that sit outside the total', () => {
 
     expect(notes(p, 'speed')).not.toMatch(/encumbered/i);
     const rows = p.getSpeedContributions();
-    expect(rows.some((r) => /armor and load/i.test(r.label))).toBe(true);
+    expect(rows.some((r) => /armor and load/i.test(resolveLabel(r.label)))).toBe(true);
     expect(sumContributions(rows)).toBe(info.reducedSpeed);
   });
 });

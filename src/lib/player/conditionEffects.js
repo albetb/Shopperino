@@ -22,6 +22,8 @@
  *   - Ability damage/drain to the same ability sums.
  */
 
+import { named } from './contributions';
+
 const ABILITY_KEYS = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
 
 /* Conditions whose effect comes from the stored instance (ability + amount). */
@@ -100,19 +102,22 @@ function resolveEffect(inst) {
     const key = typeof inst.ability === 'string' ? inst.ability.toLowerCase() : null;
     if (!key || !ABILITY_KEYS.includes(key)) return null;
     const amount = Number.isFinite(inst.amount) ? inst.amount : 1;
-    return { effect: { ability: { [key]: -Math.abs(amount) } }, label: `${name} (${inst.ability})` };
+    return {
+      effect: { ability: { [key]: -Math.abs(amount) } },
+      label: ['{0} ({1})', named('conditions', name), inst.ability],
+    };
   }
 
   if (name === ENERGY_DRAIN) {
     const n = Number.isFinite(inst.amount) ? Math.abs(inst.amount) : 1;
     return {
       effect: { attack: -n, saves: -n, skillsAll: -n, abilityChecks: -n, hp: -5 * n },
-      label: `${name} (${n})`,
+      label: ['{0} ({1})', named('conditions', name), n],
     };
   }
 
   const effect = EFFECTS[name];
-  return effect ? { effect, label: name } : null;
+  return effect ? { effect, label: named('conditions', name) } : null;
 }
 
 /**

@@ -77,9 +77,11 @@ describe('the name on an attack row', () => {
     equip(p, 'rh1', 'items/Weapon/longsword', 'Longsword');
     equip(p, 'lh1', 'items/Weapon/sword-short', 'Sword short');
     renderCombat(p);
-    const two = screen.getByText(t('Two-weapon attack')).closest('.sh-stack');
-    /* The main hand is named once in the attack list and once here. */
-    expect(two.textContent).toContain('Spada lunga');
-    expect(two.textContent).toContain('Spada corta (mano secondaria)');
+    expect(screen.getByText(t('Two-weapon attack'))).toBeInTheDocument();
+    /* The off-hand row is the one that names both the weapon and the hand, so
+       finding it is enough to know the line read the pack rather than the
+       stored name. The main hand is named in the attack list above it. */
+    expect(screen.getByText('Spada corta (mano secondaria)')).toBeInTheDocument();
+    expect(screen.getAllByText('Spada lunga').length).toBeGreaterThan(1);
   });
 });

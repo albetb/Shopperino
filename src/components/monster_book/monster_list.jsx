@@ -8,6 +8,7 @@ import { onAddMonsterToRoster } from '../../store/thunks/monsterBookThunks';
 import { formatCr } from '../../lib/monster/monsterBook';
 import '../../style/monster_book.css';
 import { t, tx, tName } from '../../lib/i18n';
+import { creatureName } from '../../lib/i18n/creatureText';
 
 /**
  * The search results. The name opens the creature's stat block in the info
@@ -55,7 +56,7 @@ export default function MonsterList() {
               onClick={() => dispatch(addCardByLink({ links: creature.ref }))}
               title={t('Show stat block')}
             >
-              {creature.name}
+              {creatureName(creature.name)}
             </button>
             <span className="monster-row-meta">
               <span className="sh-faint monster-row-tags">
@@ -66,7 +67,7 @@ export default function MonsterList() {
                 icon="add"
                 size="sm"
                 onClick={() => dispatch(onAddMonsterToRoster(creature.ref))}
-                aria-label={tx('Add {0} to the roster', creature.name)}
+                aria-label={tx('Add {0} to the roster', creatureName(creature.name))}
                 title={t('Add to the roster')}
               />
             </span>

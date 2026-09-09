@@ -204,7 +204,7 @@ describe('Leadership rides on Diplomacy instead', () => {
 describe('the same pills in Italian', () => {
   afterEach(() => setLanguage('en'));
 
-  test('each group heading is translated, and the feat name is not', () => {
+  test('each group heading is translated, and so is the feat', () => {
     setLanguage('it');
     const p = withFeats(pc(), 'Cleave', 'Rapid shot', 'Trample');
     expect(p.getActionFeats('melee').map((f) => f.name)).toEqual(['Cleave']);
@@ -213,7 +213,10 @@ describe('the same pills in Italian', () => {
     ['mischia', 'a distanza', 'in sella'].forEach((label) => {
       expect(screen.getByText(label)).toBeInTheDocument();
     });
-    expect(screen.getByText('Cleave')).toBeInTheDocument();
+    /* The feats domain used to hold nine entries and Cleave was not one of
+       them; it holds 145 now, so the pill reads what the manual calls it. */
+    expect(screen.getByText('Incalzare')).toBeInTheDocument();
+    expect(screen.queryByText('Cleave')).toBe(null);
   });
 
   test('and the casting row carries its own eyebrow', () => {

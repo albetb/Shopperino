@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { t } from '../../lib/i18n';
+import { t, tName } from '../../lib/i18n';
 import SpellLink from '../common/spell_link';
 import { slug } from '../../lib/slugUtils';
 import { ATTACK_ACTION_GROUPS } from '../../lib/player/featEffects';
@@ -49,7 +49,7 @@ export default function ActionFeatsRow() {
             {feats.map((feat) => (
               <SpellLink key={feat.name} link={`feats#${slug(feat.name)}`}>
                 <span className="action-feat-pill" title={feat.description}>
-                  {feat.name}
+                  {tName('feats', feat.name)}
                 </span>
               </SpellLink>
             ))}
@@ -82,7 +82,7 @@ export function SpellcastingActionFeats() {
         {feats.map((feat) => (
           <SpellLink key={feat.name} link={`feats#${slug(feat.name)}`}>
             <span className="action-feat-pill" title={feat.description}>
-              {feat.name}
+              {tName('feats', feat.name)}
             </span>
           </SpellLink>
         ))}
