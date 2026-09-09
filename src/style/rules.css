@@ -245,6 +245,29 @@
   border-radius: var(--radius-sm);
   font-family: var(--font-mono);
   font-size: 0.9em;
+  /* A formula is one long monospace run — "AC = 10 + armor + shield + Dex mod
+     (capped by armor max Dex) + size + …" — and justified text gives it no
+     reason to break: it ran off the side and took the whole page with it.
+     Break inside the token if there is nowhere better. */
+  overflow-wrap: anywhere;
+}
+
+/* A fenced block keeps its line breaks but wraps the lines that are too long,
+   rather than scrolling the page sideways. The `overflow-x` is the last
+   resort, for a line with nothing to break on at all. */
+.rules-prose pre {
+  margin: 0 0 var(--space-2);
+  padding: var(--space-2);
+  background: var(--surface-2);
+  border-radius: var(--radius-sm);
+  overflow-x: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.rules-prose pre code {
+  padding: 0;
+  background: none;
 }
 
 .rules-prose blockquote {

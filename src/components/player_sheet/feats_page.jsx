@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { t, tx, tName } from '../../lib/i18n';
+/* Aliased: two handlers in this file take a parameter called `featName`. */
+import { featName as displayFeatName } from '../../lib/i18n/creatureText';
 import { loadFile } from '../../lib/loadFile';
 import { meetsPrerequisites } from '../../lib/featPrerequisites';
 import {
@@ -112,7 +114,10 @@ export default function FeatsPage() {
           const sc = Array.isArray(f.suggestedClass) ? f.suggestedClass : [];
           if (!sc.includes(playerClass)) return false;
         }
-        if (q && !f.Name.toLowerCase().includes(q)) return false;
+        /* Both languages: the list prints the Italian name, so typing
+           what is on screen has to find it. */
+        if (q && !f.Name.toLowerCase().includes(q)
+          && !displayFeatName(f.Name).toLowerCase().includes(q)) return false;
         return true;
       })
       .sort((a, b) => (a.Name || '').localeCompare(b.Name || ''));
@@ -213,7 +218,7 @@ export default function FeatsPage() {
                         where every other status pill on this page sits. */}
                     <span className="sh-row-h" style={{ gap: 'var(--space-2)', flexWrap: 'wrap' }}>
                       <SpellLink link={`feats#${slug(getBaseFeatName(feat))}`}>
-                        <span className="sh-display" style={{ fontSize: 'var(--font-size-lg)' }}>{feat}</span>
+                        <span className="sh-display" style={{ fontSize: 'var(--font-size-lg)' }}>{displayFeatName(feat)}</span>
                       </SpellLink>
                       <Pill tone="accent" className="sh-push-right">{tx('granted · lv {0}', level)}</Pill>
                     </span>
@@ -250,7 +255,7 @@ export default function FeatsPage() {
                   <Icon name="auto_awesome" className="sh-accent-text" />
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <SpellLink link={`feats#${slug(getBaseFeatName(displayFeat))}`}>
-                      <span className="sh-display" style={{ fontSize: 'var(--font-size-lg)' }}>{displayFeat}</span>
+                      <span className="sh-display" style={{ fontSize: 'var(--font-size-lg)' }}>{displayFeatName(displayFeat)}</span>
                     </SpellLink>
                     {desc && (
                       <div className="sh-faint" style={{
@@ -356,9 +361,14 @@ export default function FeatsPage() {
                 }}>
                   <div className="sh-row-h sh-spread" style={{ gap: 'var(--space-2)' }}>
                     <span className="sh-row-h" style={{ gap: 'var(--space-2)', minWidth: 0, flex: 1 }}>
-                      <SpellLink link={`feats#${slug(getBaseFeatName(feat.Name))}`}>
-                        <span className="sh-display" style={{ fontSize: 'var(--font-size-md)' }}>{feat.Name}</span>
-                      </SpellLink>
+                      {/* The sheet's scrim sits above the info sidebar, so a
+                          card opened from in here would render behind it and
+                          read as a dead link. Close the sheet with the tap. */}
+                      <span onClick={() => setIsSelection(false)}>
+                        <SpellLink link={`feats#${slug(getBaseFeatName(feat.Name))}`}>
+                          <span className="sh-display" style={{ fontSize: 'var(--font-size-md)' }}>{displayFeatName(feat.Name)}</span>
+                        </SpellLink>
+                      </span>
                       {!prereqOk && <Pill tone="warn" icon="warning">{t('prereq')}</Pill>}
                     </span>
                     <IconButton
@@ -369,7 +379,7 @@ export default function FeatsPage() {
                       title={isDisabled ? t('Already selected') : t('Add feat')}
                       /* Named, because the list shows one of these per feat and
                          "Add" alone tells a screen reader nothing about which. */
-                      aria-label={tx('Add {0}', feat.Name)}
+                      aria-label={tx('Add {0}', displayFeatName(feat.Name))}
                     />
                   </div>
                   {shortDesc && (

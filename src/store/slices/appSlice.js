@@ -134,6 +134,9 @@ export const appSlice = createSlice({
         if (abilityCards.length) {
           const newLinks = new Set(abilityCards.map(c => c.Link));
           state.infoCards = state.infoCards.filter(c => !newLinks.has(c.Link));
+          /* Which table names it — the title is "Link (Ex)", a name the pack
+             holds and the renderer cannot guess the domain of. */
+          abilityCards.forEach(c => { c.kind = 'creatureAbility'; });
           state.infoCards.unshift(...abilityCards);
           state.infoSidebarCollapsed = false;
         }
@@ -145,6 +148,7 @@ export const appSlice = createSlice({
         if (abilityCards.length) {
           const newLinks = new Set(abilityCards.map(c => c.Link));
           state.infoCards = state.infoCards.filter(c => !newLinks.has(c.Link));
+          abilityCards.forEach(c => { c.kind = 'creatureAbility'; });
           state.infoCards.unshift(...abilityCards);
           state.infoSidebarCollapsed = false;
         }

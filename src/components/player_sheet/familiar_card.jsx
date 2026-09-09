@@ -36,7 +36,7 @@ import Icon from '../common/Icon';
 import '../../style/familiar.css';
 import { useUnits } from '../hooks/useUnits';
 import { t, tx, tName } from '../../lib/i18n';
-import { attackName } from '../../lib/i18n/creatureText';
+import { attackName, creatureName } from '../../lib/i18n/creatureText';
 
 /** Single-value bonus thunks keyed by the familiar field they edit. */
 const BONUS_THUNK = {
@@ -250,7 +250,7 @@ export default function FamiliarCard() {
 
   return (
     <Card
-      title={name || t('Familiar')}
+      title={creatureName(name) || t('Familiar')}
       className="sh-card--head-spread"
       eyebrow={`lv${lvl}`}
       action={cardAction}
@@ -470,7 +470,7 @@ export default function FamiliarCard() {
                   onClick={() => dispatch(addCardByLink({ links: `familiarAbility#${slug(s)}` }))}
                   title={t('Show description')}
                 >
-                  <Pill tone="accent">{s}</Pill>
+                  <Pill tone="accent">{tName('creatureAbilities', s)}</Pill>
                 </button>
               ))}
             </div>

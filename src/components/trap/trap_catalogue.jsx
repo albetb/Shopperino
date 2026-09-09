@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { t, tx } from '../../lib/i18n';
+import { trapName, trapTerm } from '../../lib/i18n/trapText';
 import { setTrap, setTrapFilters, setIsCatalogueCollapsed } from '../../store/slices/trapSlice';
 import { filterTraps, trapTypeLabel, TRAP_TYPES } from '../../lib/trap';
 
@@ -18,7 +19,15 @@ export default function TrapCatalogue() {
   const collapsed = useSelector((s) => s.trap.isCatalogueCollapsed);
   const current = useSelector((s) => s.trap.trap);
 
-  const matches = filterTraps(filters);
+  /* The name filter is applied here rather than in `filterTraps`, so it can
+     read both languages: a reader typing *lame* is looking for the Blade Trap,
+     and the model has no business knowing what language they are typing in. */
+  const needle = String(filters.name || '').trim().toLowerCase();
+  const matches = filterTraps({ ...filters, name: '' }).filter((trap) => (
+    !needle
+    || trap.name.toLowerCase().includes(needle)
+    || trapName(trap.name).toLowerCase().includes(needle)
+  ));
   const setFilter = (patch) => dispatch(setTrapFilters(patch));
 
   return (
@@ -55,7 +64,7 @@ export default function TrapCatalogue() {
             >
               <option value="">{t('Any kind')}</option>
               {TRAP_TYPES.map((type) => (
-                <option key={type} value={type}>{trapTypeLabel(type)}</option>
+                <option key={type} value={type}>{trapTerm(trapTypeLabel(type))}</option>
               ))}
             </select>
             <label className="trap-field trap-field-inline">
@@ -94,8 +103,8 @@ export default function TrapCatalogue() {
                     onClick={() => dispatch(setTrap({ ...trap }))}
                   >
                     <span className="trap-list-cr">{t('CR')} {trap.cr}</span>
-                    <span className="trap-list-name">{trap.name}</span>
-                    <span className="trap-list-type">{trapTypeLabel(trap.type)}</span>
+                    <span className="trap-list-name">{trapName(trap.name)}</span>
+                    <span className="trap-list-type">{trapTerm(trapTypeLabel(trap.type))}</span>
                   </button>
                 </li>
               ))}

@@ -27,6 +27,7 @@ import {
 import {
   itemDescription, itemCategory, itemSubtype, itemTypeName,
 } from '../../../../lib/i18n/itemText';
+import { featDescription, skillDescription } from '../../../../lib/i18n/entryText';
 
 const HIDDEN_KEYS = new Set(['Short Description', 'id', 'Link', 'editable', 'editKey', 'kind']);
 
@@ -110,13 +111,21 @@ const ITEM_FIELD = {
   Subtype: itemSubtype,
 };
 
-/* The other three kinds are a single name and nothing else: the title. */
-const TITLE_DOMAIN = { feat: 'feats', skill: 'skills', condition: 'conditions' };
+/* The other kinds are a single name and nothing else: the title. */
+const TITLE_DOMAIN = {
+  skill: 'skills', condition: 'conditions', creatureAbility: 'creatureAbilities',
+};
 
-/* Two card kinds carry a description with English composed into it: a
+/* Four card kinds carry a description with English composed into it: a
    creature's joins its two prose blocks under a heading, an item's is prefixed
-   with the bonus note and suffixed with the spell it contains. */
-const DESCRIBE = { creature: creatureDescription, item: itemDescription };
+   with the bonus note and suffixed with the spell it contains, and a feat's and
+   a skill's are built out of the record by getFeatByLink and getSkillByLink. */
+const DESCRIBE = {
+  creature: creatureDescription,
+  item: itemDescription,
+  feat: featDescription,
+  skill: skillDescription,
+};
 
 /** One field of one card, in the reading language. */
 function cardValue(card, key, value) {
@@ -133,6 +142,7 @@ function cardValue(card, key, value) {
     const read = ITEM_FIELD[key];
     return read ? read(value) : value;
   }
+  if (card?.kind === 'feat') return key === 'Name' ? featName(value) : value;
   const domain = TITLE_DOMAIN[card?.kind];
   return domain && key === 'Name' ? tName(domain, value) : value;
 }

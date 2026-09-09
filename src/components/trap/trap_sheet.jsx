@@ -18,6 +18,8 @@ import {
 } from '../../lib/trap';
 import { useUnits } from '../hooks/useUnits';
 import { t, tName, tx } from '../../lib/i18n';
+import { trapName, trapTerm, trapRowLabel } from '../../lib/i18n/trapText';
+import { spellName } from '../../lib/i18n/spellText';
 
 /**
  * One trap, its diagram, and the two numbers that price it.
@@ -70,13 +72,13 @@ export default function TrapSheet({ trap, onChange }) {
         <div className="trap-sheet-head">
           <input
             className="modern-input trap-name"
-            value={trap.name || ''}
+            value={trapName(trap.name || '')}
             onChange={(e) => edit({ name: e.target.value })}
             aria-label={t('Trap name')}
           />
           <div className="trap-sheet-badges">
             <span className="trap-badge trap-badge-cr">{t('CR')} {cr}</span>
-            <span className="trap-badge">{trapTypeLabel(trap.type)}</span>
+            <span className="trap-badge">{trapTerm(trapTypeLabel(trap.type))}</span>
             {trap.rolled && trap.targetCR !== cr && (
               <span className="trap-badge is-warn" title={t('The roll aimed elsewhere')}>
                 {t('asked for')} {t('CR')} {trap.targetCR}
@@ -110,7 +112,7 @@ export default function TrapSheet({ trap, onChange }) {
               onChange={(e) => edit({ trigger: { ...(trap.trigger || {}), type: e.target.value } })}
             >
               {triggerOptions.map((opt) => (
-                <option key={opt.id} value={opt.id}>{opt.label}</option>
+                <option key={opt.id} value={opt.id}>{trapTerm(opt.label)}</option>
               ))}
             </select>
           </label>
@@ -129,7 +131,7 @@ export default function TrapSheet({ trap, onChange }) {
               onChange={(e) => edit({ reset: e.target.value })}
             >
               {(tables.resets || []).map((r) => (
-                <option key={r.id} value={r.id}>{r.label}</option>
+                <option key={r.id} value={r.id}>{trapTerm(r.label)}</option>
               ))}
             </select>
           </label>
@@ -216,7 +218,7 @@ export default function TrapSheet({ trap, onChange }) {
         )}
         {trap.poison && (
           <p className="trap-line">
-            <b>{t('Poison')}:</b> {u.text(trap.poison.name)}
+            <b>{t('Poison')}:</b> {u.text(tName('poisons', trap.poison.name))}
             {trap.poison.saveDC ? ` — ${t('DC')} ${trap.poison.saveDC} ${tName('saves', trap.poison.save || 'Fortitude')}` : ''}
             {trap.poison.initial ? `, ${trap.poison.initial} ${t('initial')}` : ''}
             {trap.poison.secondary ? `, ${trap.poison.secondary} ${t('secondary')}` : ''}
@@ -233,9 +235,9 @@ export default function TrapSheet({ trap, onChange }) {
                   className="button-link"
                   onClick={() => dispatch(addCardByLink({ links: link, bonus: 0 }))}
                 >
-                  {resolved?.name || sp.spell}
+                  {spellName(resolved?.name || sp.spell)}
                 </button>
-              ) : (resolved?.name || sp.spell)}
+              ) : spellName(resolved?.name || sp.spell)}
               {' '}({t('caster level')} {sp.casterLevel}, {tName('classes', sp.casterClass)})
               {sp.effect ? ` — ${u.text(sp.effect)}` : ''}
             </p>
@@ -259,7 +261,7 @@ export default function TrapSheet({ trap, onChange }) {
         <TrapBreakdown
           title={t('Challenge Rating')}
           total={cr}
-          rows={parts.map((p) => ({ key: p.key, label: p.label, value: p.cr }))}
+          rows={parts.map((p) => ({ key: p.key, label: trapRowLabel(p.label), value: p.cr }))}
         />
       </div>
 
@@ -271,7 +273,7 @@ export default function TrapSheet({ trap, onChange }) {
             rows={[
               ...price.lines.map((l) => ({
                 key: l.key,
-                label: l.label,
+                label: trapRowLabel(l.label),
                 value: l.gp,
                 display: `${l.gp >= 0 ? '+' : '−'}${Math.abs(l.gp).toLocaleString('en-US')} ${t('gp')}`,
               })),
@@ -297,7 +299,7 @@ export default function TrapSheet({ trap, onChange }) {
             rows={[
               ...price.perSpell.map((p, i) => ({
                 key: `spell-${i}`,
-                label: `${p.spell} — ${price.automatic ? 500 : 50} ${t('gp')} × CL ${p.casterLevel} × ${t('level')} ${p.spellLevel}`,
+                label: `${spellName(p.spell)} — ${price.automatic ? 500 : 50} ${t('gp')} × CL ${p.casterLevel} × ${t('level')} ${p.spellLevel}`,
                 value: p.gp,
                 display: formatGp(p.gp, t('gp')),
               })),
@@ -323,7 +325,7 @@ export default function TrapSheet({ trap, onChange }) {
           <TrapBreakdown
             title={t('Craft (trapmaking) DC')}
             total={craft.dc}
-            rows={craft.lines.map((l) => ({ key: l.key, label: l.label, value: l.gp }))}
+            rows={craft.lines.map((l) => ({ key: l.key, label: trapRowLabel(l.label), value: l.gp }))}
             note={t('Repairing it uses the same DC, with raw materials at one-fifth of the market price.')}
           />
         )}

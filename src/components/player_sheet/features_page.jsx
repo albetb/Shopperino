@@ -416,7 +416,7 @@ export default function FeaturesPage() {
           <tbody>
             {Array.from({ length: weaponArmorTable.rowCount }, (_, i) => (
               <tr key={i}>
-                <td>{weaponArmorTable.weapons[i] ?? ''}</td>
+                <td>{tName('proficiencies', weaponArmorTable.weapons[i] ?? '')}</td>
                 <td>{weaponArmorTable.armors[i] ?? ''}</td>
               </tr>
             ))}
@@ -438,7 +438,7 @@ export default function FeaturesPage() {
           ? <EmptyState icon="auto_fix_high" title={t('No racial traits')} />
           : (
             <div className="player-sheet-class-features">
-              {racialTraitsFiltered.map((trait, i) => renderFeature(`${trait.name}: ${trait.description}`, i))}
+              {racialTraitsFiltered.map((trait, i) => renderFeature(`${tName('traits', trait.name)}: ${trait.description}`, i))}
             </div>
           )}
       </CollapsibleCard>

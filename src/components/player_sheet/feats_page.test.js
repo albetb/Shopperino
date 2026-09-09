@@ -208,19 +208,29 @@ describe('the page in Italian', () => {
     renderFeatsPage(makePlayer());
     expect(screen.getByText('Talenti')).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: /Scegli talento/i }));
-    // The suggested chip names the class through tName('classes', …), so the
-    // class stays translated even though the feat names around it do not.
     expect(screen.getByRole('button', { name: /Consigliato per Guerriero/i })).toBeInTheDocument();
     expect(screen.getByPlaceholderText('Cerca talenti…')).toBeInTheDocument();
   });
 
-  test('the add button keeps the English feat name behind the translated word', () => {
+  test('the chooser names the feat in the reading language', () => {
     setLanguage('it');
     renderFeatsPage(makePlayer());
     fireEvent.click(screen.getByRole('button', { name: /Scegli talento/i }));
     fireEvent.change(screen.getByPlaceholderText('Cerca talenti…'), {
       target: { value: 'Toughness' },
     });
-    expect(screen.getByRole('button', { name: 'Aggiungi Toughness' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Aggiungi Robustezza' })).toBeInTheDocument();
+  });
+
+  test('the search box reads the language the list is printed in', () => {
+    /* The row says *Robustezza*, so typing that has to find it — searching
+       only the English left the reader typing what they could not see. */
+    setLanguage('it');
+    renderFeatsPage(makePlayer());
+    fireEvent.click(screen.getByRole('button', { name: /Scegli talento/i }));
+    fireEvent.change(screen.getByPlaceholderText('Cerca talenti…'), {
+      target: { value: 'Robustezza' },
+    });
+    expect(screen.getByRole('button', { name: 'Aggiungi Robustezza' })).toBeInTheDocument();
   });
 });

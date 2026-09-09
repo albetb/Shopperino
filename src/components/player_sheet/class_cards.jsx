@@ -209,6 +209,7 @@ export default function ClassCards() {
   const dispatch = useDispatch();
   const player = useSelector(state => state.playerSheet.player);
   const currentClass = player?.getClass?.() ?? '';
+  const playerLevel = player?.getLevel?.() ?? 1;
 
   const classesData = useMemo(() => loadFile('classes') ?? {}, []);
   const classNames = useMemo(
@@ -265,8 +266,12 @@ export default function ClassCards() {
                     </div>
                   </div>
                 )}
+                {/* The same pills the privileges tab uses, so a class reads
+                    the same way before and after it is chosen. No long list is
+                    passed: on this page the one-line summary *is* the body —
+                    the reader is comparing eleven classes, not studying one. */}
                 <div className="player-sheet-class-features">
-                  {features.map((text, idx) => renderFeature(text, idx))}
+                  <ClassFeaturePills features={features} level={playerLevel} />
                 </div>
                 <div className="card-side-div buttons-row-center margin-top">
                   <button

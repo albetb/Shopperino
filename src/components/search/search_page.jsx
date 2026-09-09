@@ -9,6 +9,7 @@ import '../../style/menu_cards.css';
 import { useUnits } from '../hooks/useUnits';
 import { t, tx, tName } from '../../lib/i18n';
 import { itemName } from '../../lib/item/displayItemName';
+import { spellName, spellLevelText } from '../../lib/i18n/spellText';
 
 const TYPE_OPTIONS = ['', 'Spells', 'Items', 'Feats', 'Skills'];
 const SPELL_CLASS_OPTIONS = ['All', 'Sorcerer', 'Wizard', 'Cleric', 'Druid', 'Bard', 'Ranger', 'Paladin', 'Domains'];
@@ -75,11 +76,16 @@ function slugify(name) {
    prints — the pack has never held one — so they fall through to the English.
    A name the pack cannot answer does the same, which is the point of keying by
    the English in the first place. */
-const SEARCH_DOMAIN = {
-  Items: 'items', Feats: 'feats', Skills: 'skills', Spells: 'spells',
-};
+const SEARCH_DOMAIN = { Feats: 'feats', Skills: 'skills' };
+
+/* Two of the four kinds are more than a lookup: an item's name may be a
+   composed one (a scroll is named from the spell it holds), and a spell's may
+   be spelled with either apostrophe. The other two are a plain table. */
+const SEARCH_NAME = { Items: itemName, Spells: spellName };
 
 const searchName = (searchType, name) => {
+  const compose = SEARCH_NAME[searchType];
+  if (compose) return compose(name);
   const domain = SEARCH_DOMAIN[searchType];
   return domain ? tName(domain, name) : name;
 };
@@ -439,7 +445,7 @@ export default function SearchPage() {
                         )}
                       </td>
                       {searchType === 'Spells' && spellClassFilter === 'All' && (
-                        <td>{r.Level}</td>
+                        <td>{spellLevelText(r.Level)}</td>
                       )}
                       {searchType === 'Spells' && spellClassFilter !== 'All' && (
                         <td>{u.text(r['Short Description'] || '')}</td>
@@ -516,7 +522,7 @@ export default function SearchPage() {
                                           className="button-link"
                                           onClick={() => handleOpenCard(spell)}
                                         >
-                                          {spell.Name}
+                                          {spellName(spell.Name)}
                                         </button>
                                         {spell['Short Description'] && (
                                           <div className="search-spell-short-desc">{u.text(spell['Short Description'])}</div>
@@ -543,7 +549,7 @@ export default function SearchPage() {
                                           className="button-link"
                                           onClick={() => handleOpenCard(spell)}
                                         >
-                                          {spell.Name}
+                                          {spellName(spell.Name)}
                                         </button>
                                       </td>
                                       <td>{u.text(spell['Short Description'] || '')}</td>
@@ -604,7 +610,7 @@ export default function SearchPage() {
                                           className="button-link"
                                           onClick={() => handleOpenCard(spell)}
                                         >
-                                          {spell.Name}
+                                          {spellName(spell.Name)}
                                         </button>
                                         {spell['Short Description'] && (
                                           <div className="search-spell-short-desc">{u.text(spell['Short Description'])}</div>
@@ -631,7 +637,7 @@ export default function SearchPage() {
                                           className="button-link"
                                           onClick={() => handleOpenCard(spell)}
                                         >
-                                          {spell.Name}
+                                          {spellName(spell.Name)}
                                         </button>
                                       </td>
                                       <td>{u.text(spell['Short Description'] || '')}</td>

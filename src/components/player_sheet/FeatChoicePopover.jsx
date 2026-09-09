@@ -1,14 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 import { t, tx } from '../../lib/i18n';
+import { featChoice, featName } from '../../lib/i18n/creatureText';
 import '../../style/shop_inventory.css';
 
-export default function FeatChoicePopover({ position, choices, reason, featName, onConfirm, onClose }) {
+export default function FeatChoicePopover({ position, choices, reason, featName: featSubject, onConfirm, onClose }) {
   const [selected, setSelected] = useState('');
   const popupRef = useRef(null);
 
   useEffect(() => {
     setSelected('');
-  }, [featName]);
+  }, [featSubject]);
 
   const handleConfirm = () => {
     if (selected.trim()) {
@@ -80,12 +81,14 @@ export default function FeatChoicePopover({ position, choices, reason, featName,
             value={selected}
             onChange={(e) => setSelected(e.target.value)}
             className="modern-dropdown feat-choice-select"
-            aria-label={tx('Select option for {0}', featName)}
+            aria-label={tx('Select option for {0}', featName(featSubject))}
           >
             <option value="">{t('— Choose —')}</option>
             {choices.map((c) => (
+              /* The value stays the English the model stores; only the word
+                 the reader picks from is translated. */
               <option key={c} value={c}>
-                {c}
+                {featChoice(c)}
               </option>
             ))}
           </select>

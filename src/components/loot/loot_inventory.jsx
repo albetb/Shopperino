@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { t, tx } from '../../lib/i18n';
+import { goodsName } from '../../lib/i18n/lootText';
 import { itemCardTitle } from '../../lib/item/displayItemName';
 import Loot from '../../lib/loot';
 import { unixToDisplay } from '../../lib/storageFormat';
@@ -97,7 +98,7 @@ export default function LootInventory() {
             {goodsDisplayList.map((g, idx) => (
               <tr key={idx}>
                 <td className="align-right td-muted">{g.Quantity ?? 1}</td>
-                <td className="td-muted">{itemCardTitle(g.Name)}</td>
+                <td className="td-muted">{goodsName(g.Name)}</td>
                 <td className="td-muted">{formatNumber(g.Cost)}</td>
               </tr>
             ))}

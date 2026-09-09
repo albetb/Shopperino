@@ -35,8 +35,8 @@ import Filigree from '../common/Filigree';
 import Icon from '../common/Icon';
 import '../../style/animal_companion.css';
 import { useUnits } from '../hooks/useUnits';
-import { t, tx } from '../../lib/i18n';
-import { attackName } from '../../lib/i18n/creatureText';
+import { t, tx, tName } from '../../lib/i18n';
+import { attackName, creatureName } from '../../lib/i18n/creatureText';
 
 /** Single-value bonus thunks keyed by the companion field they edit. */
 const BONUS_THUNK = {
@@ -265,7 +265,10 @@ export default function AnimalCompanionCard() {
 
   return (
     <Card
-      title={name || t('Animal companion')}
+      /* The name is the species until the druid renames it, and a species is
+         a name the pack holds. Once renamed it is the player's own word and
+         falls through untouched. */
+      title={creatureName(name) || t('Animal companion')}
       className="sh-card--head-spread"
       eyebrow={`lv${compEffLevel}`}
       action={cardAction}
@@ -483,7 +486,7 @@ export default function AnimalCompanionCard() {
                 onClick={() => dispatch(addCardByLink({ links: `companionAbility#${slug(s)}` }))}
                 title={t('Show description')}
               >
-                <Pill tone="accent">{s}</Pill>
+                <Pill tone="accent">{tName('creatureAbilities', s)}</Pill>
               </button>
             ))}
           </div>

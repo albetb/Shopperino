@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { t } from '../../lib/i18n';
+import { trapTerm } from '../../lib/i18n/trapText';
 import { setTrap, setTargetCR, setRollType, setIsTrapSidebarCollapsed } from '../../store/slices/trapSlice';
 import { rollTrap, TRAP_TYPES, trapTypeLabel } from '../../lib/trap';
 import { isMobile } from '../../lib/utils';
@@ -49,7 +50,7 @@ export function TrapRollControls() {
         >
           <option value="">{t('Any kind')}</option>
           {TRAP_TYPES.map((type) => (
-            <option key={type} value={type}>{trapTypeLabel(type)}</option>
+            <option key={type} value={type}>{trapTerm(trapTypeLabel(type))}</option>
           ))}
         </select>
       </label>

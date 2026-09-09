@@ -205,12 +205,38 @@ export function skillLine(en) {
   return `${tName('skills', head)}${tail}`;
 }
 
+/* A feat's own parenthetical may hold one of its own -- Skill focus
+   (Knowledge (arcana)) -- so unlike WITH_PAREN this takes everything up to the
+   last bracket. */
+const FEAT_PAREN = /^(.+?)\s*\((.*)\)$/;
+
+/* What the subject of a feat can be: a weapon, a skill, a school of magic (see
+   REPEATABLE_WITH_CHOICE in lib/featChoices), or the sub-skill inside a
+   Knowledge. Asked in turn, because the name alone does not say which. */
+const CHOICE_DOMAINS = ['items', 'skills', 'schools', 'knowledgeSubskills'];
+
+export function featChoice(en) {
+  const text = String(en ?? '').trim();
+  for (const domain of CHOICE_DOMAINS) {
+    const hit = tName(domain, text);
+    if (hit !== text) return hit;
+  }
+  const paren = FEAT_PAREN.exec(text);
+  if (paren) return `${featChoice(paren[1])} (${featChoice(paren[2])})`;
+  return t(text);
+}
+
 /** A feat, keeping whatever it was taken in. */
 export function featName(en) {
   const text = String(en ?? '');
-  const paren = WITH_PAREN.exec(text);
-  if (paren) return `${tName('feats', paren[1])} (${paren[2]})`;
-  return tName('feats', text);
+  /* The whole string first: three feats carry a parenthetical in their own
+     name -- Armor proficiency (light), (medium) and (heavy) -- and splitting
+     those would ask the pack for a feat called "Armor proficiency". */
+  const whole = tName('feats', text);
+  if (whole !== text) return whole;
+  const paren = FEAT_PAREN.exec(text);
+  if (!paren) return text;
+  return `${tName('feats', paren[1])} (${featChoice(paren[2])})`;
 }
 
 /** "Huge Aberration (Aquatic)" — a size, a type and its subtypes. */

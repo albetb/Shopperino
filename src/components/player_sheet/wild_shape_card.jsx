@@ -19,6 +19,7 @@ import Icon from '../common/Icon';
 import '../../style/wild_shape.css';
 import { useUnits } from '../hooks/useUnits';
 import { t, tx, tName } from '../../lib/i18n';
+import { creatureName, creatureTerm, featName } from '../../lib/i18n/creatureText';
 
 /**
  * The two wild shape allowances, as card configuration. They share every
@@ -135,9 +136,13 @@ function ShapeCard({ pool }) {
   const ready = useCreatureData();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const forms = useMemo(() => (player ? pool.getForms(player) : []), [player, pool, ready]);
+  /* Searched in both languages: the list prints the Italian name, so typing
+     what is on screen has to find it. */
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return q ? forms.filter((f) => String(f.name).toLowerCase().includes(q)) : forms;
+    if (!q) return forms;
+    return forms.filter((f) => String(f.name).toLowerCase().includes(q)
+      || creatureName(String(f.name)).toLowerCase().includes(q));
   }, [forms, query]);
 
   if (!player) return null;
@@ -249,10 +254,12 @@ function ShapeCard({ pool }) {
                         onClick={() => dispatch(addCardByLink({ links: creature.ref }))}
                         title={t('Show stat block')}
                       >
-                        {player.getFormDisplayName(creature)}
+                        {creatureName(player.getFormDisplayName(creature))}
                       </button>
                       <span className="wild-shape-row-meta">
-                        <span className="sh-faint">{creature.size} · {creature.hitDice?.count ?? 0} HD</span>
+                        <span className="sh-faint">
+                          {tName('sizes', creature.size)} · {creature.hitDice?.count ?? 0} {t('HD')}
+                        </span>
                         <IconButton
                           icon="change_circle"
                           size="sm"
@@ -323,7 +330,7 @@ function ShapedBody({ player, form, dispatch }) {
       </div>
 
       <div className="sh-row-h" style={{ gap: 'var(--space-2)', flexWrap: 'wrap' }}>
-        <Pill tone="accent" icon="straighten">{form?.size}</Pill>
+        <Pill tone="accent" icon="straighten">{tName('sizes', form?.size ?? '')}</Pill>
         {naturalArmor > 0 && <Pill tone="accent" icon="security">{tx('+{0} natural', naturalArmor)}</Pill>}
         {modes.map(({ mode, speed }) => (
           <Pill key={mode} tone="default" icon="directions_run">{t(mode.toUpperCase())} {u.distance(speed)}</Pill>
@@ -341,9 +348,9 @@ function ShapedBody({ player, form, dispatch }) {
         <div className="sh-stack" style={{ gap: 'var(--space-1)' }}>
           <Filigree>{t('Gained')}</Filigree>
           <div className="sh-row-h" style={{ gap: 'var(--space-2)', flexWrap: 'wrap' }}>
-            {specialAttacks.map((s) => <Pill key={`a-${s}`} tone="success">{s}</Pill>)}
-            {specialQualities.map((s) => <Pill key={`q-${s}`} tone="success">{s}</Pill>)}
-            {feats.map((s) => <Pill key={`f-${s}`} tone="accent" icon="auto_awesome">{s}</Pill>)}
+            {specialAttacks.map((s) => <Pill key={`a-${s}`} tone="success">{creatureTerm(s)}</Pill>)}
+            {specialQualities.map((s) => <Pill key={`q-${s}`} tone="success">{creatureTerm(s)}</Pill>)}
+            {feats.map((s) => <Pill key={`f-${s}`} tone="accent" icon="auto_awesome">{featName(s)}</Pill>)}
           </div>
           {isElemental && (
             <div className="sh-faint" style={{ fontSize: 'var(--font-size-xs)' }}>

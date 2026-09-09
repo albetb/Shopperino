@@ -185,8 +185,15 @@ class Loot {
                 break;
             }
         }
-        if (!pools[tier]) return { Name: "A strange bug", Cost: 4.04 };
-        const name = pools[tier][Math.floor(this._rand() * pools[tier].length)];
+        /* The book's gem table has six rows and this has five name pools: a
+           natural 100 fell off the end and produced a placeholder called "A
+           strange bug", priced at 4.04 gp. The top row is the same stones as
+           the row below it at ten times the price — the book's own examples
+           for it are a diamond, a jacinth and an oriental ruby, all of which
+           are in that pool — so the roll takes the last pool and keeps its
+           own 2d4x1000 cost. */
+        const pool = pools[Math.min(tier, pools.length - 1)];
+        const name = pool[Math.floor(this._rand() * pool.length)];
         const cost = rolls[tier].cost();
         return { Name: name, Cost: cost };
     }
