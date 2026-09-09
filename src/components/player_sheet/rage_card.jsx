@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { t } from '../../lib/i18n';
+import { t, tx } from '../../lib/i18n';
 import TrackerCard from './tracker_card';
 import Pill from '../common/Pill';
 import Switch from '../common/Switch';
@@ -50,16 +50,16 @@ export default function RageCard() {
           {raging ? 'Raging' : 'Calm'}
         </Pill>
         <Pill tone={raging ? 'accent' : 'default'}>
-          {player.getRageDuration()} rounds
+          {tx('{0} rounds', player.getRageDuration())}
         </Pill>
         {/* Damage reduction is not a rage benefit and does not belong here —
             it shows once, on the hit points card, alongside the HP it protects. */}
       </div>
 
       <div className="tracker-card-row tracker-card-meta">
-        <Pill tone={raging ? 'accent' : 'ghost'}>{fmt(bonuses.str)} Str</Pill>
-        <Pill tone={raging ? 'accent' : 'ghost'}>{fmt(bonuses.con)} Con</Pill>
-        <Pill tone={raging ? 'accent' : 'ghost'}>{fmt(bonuses.will)} Will</Pill>
+        <Pill tone={raging ? 'accent' : 'ghost'}>{tx('{0} {1}', fmt(bonuses.str), t('Str'))}</Pill>
+        <Pill tone={raging ? 'accent' : 'ghost'}>{tx('{0} {1}', fmt(bonuses.con), t('Con'))}</Pill>
+        <Pill tone={raging ? 'accent' : 'ghost'}>{tx('{0} {1}', fmt(bonuses.will), t('Will'))}</Pill>
         <Pill tone={raging ? 'warn' : 'ghost'}>{fmt(bonuses.ac)} AC</Pill>
         <Pill tone={raging ? 'accent' : 'ghost'}>{fmt(player.getRageTempHp())} HP</Pill>
       </div>

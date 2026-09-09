@@ -1,6 +1,7 @@
 import { render, screen, fireEvent, within } from '@testing-library/react';
 import StatInfo from './StatInfo';
 import { contribution, situational, BONUS_TYPES } from '../../lib/player/contributions';
+import { setLanguage, tx } from '../../lib/i18n';
 
 /* Two rules carry this component. It must render nothing at all when there is
    nothing to say — that is how "only show the button when something affects
@@ -128,5 +129,31 @@ describe('on a narrow screen', () => {
     const dialog = screen.getByRole('dialog');
     expect(dialog).toHaveClass('sh-sheet');
     expect(within(dialog).getByText('class base save')).toBeInTheDocument();
+  });
+});
+
+describe('the box in Italian', () => {
+  /* Everything in a breakdown row was composed by the model, which cannot read
+     the language — so it all arrives in English and is translated here. The
+     bonus type is the part that repeats on every row of every box. */
+
+  afterEach(() => setLanguage('en'));
+
+  test('names the bonus type the way the manuals do', () => {
+    setLanguage('it');
+    render(<StatInfo label="AC" value={19} contributions={AC_ROWS} />);
+    fireEvent.click(screen.getByRole('button', { name: tx('What makes up {0}', 'AC') }));
+    expect(screen.getByText('armatura')).toBeInTheDocument();
+    expect(screen.getByText('scudo')).toBeInTheDocument();
+  });
+
+  test('translates a label the pack knows and leaves the rest English', () => {
+    setLanguage('it');
+    render(<StatInfo label="AC" value={19} contributions={AC_ROWS} />);
+    fireEvent.click(screen.getByRole('button', { name: tx('What makes up {0}', 'AC') }));
+    expect(screen.getByText('Destrezza')).toBeInTheDocument();
+    /* Composed in the model out of an item's own name, so the pack has no
+       entry for it and the reader sees what src/data spells. */
+    expect(screen.getByText('Chain shirt')).toBeInTheDocument();
   });
 });

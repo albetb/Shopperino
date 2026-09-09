@@ -32,6 +32,7 @@ import SpellLink from '../common/spell_link';
 import Card from '../common/Card';
 import StatPill from '../common/StatPill';
 import StatInfo from '../common/StatInfo';
+import displayItemName from '../../lib/item/displayItemName';
 import CombatStancesRow from './combat_stances_row';
 import ActionFeatsRow from './action_feats_row';
 import HeldItemsRows from './held_items_rows';
@@ -213,8 +214,17 @@ export default function CombatPage() {
          cannot disagree about what counts as a weapon. */
       if (!handItemIsWeapon(rawItem, w.ItemType)) return;
       const item = applyItemOverrides(rawItem, w.overrides);
-      const displayName = w.overrides?.Name ?? w.name;
-      weapons.push({ slot, name: displayName, link: w.link, weaponItem: item, isTwoHanded: w.twoHanded === true, itemData: w });
+      const storedName = w.overrides?.Name ?? w.name;
+      /* An item is stored under the name src/data spells and translated on the
+         way out — see lib/item/displayItemName. The magic parts are separate
+         fields, so the qualifier and the property agree with the noun in
+         Italian instead of being welded onto an English base. */
+      const displayName = displayItemName(storedName, {
+        masterwork: w.masterwork,
+        bonus: w.bonus,
+        effectIds: w.effectIds,
+      });
+      weapons.push({ slot, name: storedName, displayName, link: w.link, weaponItem: item, isTwoHanded: w.twoHanded === true, itemData: w });
     };
     pushIf('main', mainHandWeapon);
     if (mainHandWeapon?.twoHanded !== true && (!mainHandWeapon || offHandWeapon?.link !== mainHandWeapon.link)) {
@@ -679,8 +689,8 @@ export default function CombatPage() {
           cond={acDelta}
           sub={
             <>
-              <span style={{ display: 'block' }}>touch {acTouch}</span>
-              <span style={{ display: 'block' }}>flat {acFlat}</span>
+              <span style={{ display: 'block' }}>{tx('touch {0}', acTouch)}</span>
+              <span style={{ display: 'block' }}>{tx('flat {0}', acFlat)}</span>
               {acCondAffected && condNote(acDelta)}
             </>
           }
@@ -858,7 +868,7 @@ export default function CombatPage() {
                       />
                       <span className="attack-row-name">
                         <SpellLink link={w.link}>
-                          <span className="sh-display" style={{ fontSize: 'var(--font-size-lg)' }}>{w.name}</span>
+                          <span className="sh-display" style={{ fontSize: 'var(--font-size-lg)' }}>{w.displayName}</span>
                         </SpellLink>
                         {(crit || range.feet > 0 || untrained) && (
                           <span className="sh-faint attack-row-meta">
@@ -885,7 +895,7 @@ export default function CombatPage() {
                           single button and the reader still gets the number
                           after the dice explained. */}
                       <StatInfo
-                        label={w.name}
+                        label={w.displayName}
                         value={ab}
                         primaryLabel={t('Attack bonus')}
                         contributions={player.getWeaponAttackContributions?.(wd) ?? []}
@@ -952,7 +962,7 @@ export default function CombatPage() {
               <span className="sh-display">{t('Attacks of opportunity')}</span>
               <span className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
                 <Pill tone="accent">
-                  {attacksOfOpportunity} / round
+                  {tx('{0} / round', attacksOfOpportunity)}
                 </Pill>
                 {statInfo(
                   t('Attacks of opportunity'),
@@ -1003,7 +1013,7 @@ export default function CombatPage() {
                 </span>
               </div>
               <div className="sh-row-h sh-spread sh-faint" style={{ gap: 'var(--space-3)' }}>
-                <span>{twoWeapon.main.name}</span>
+                <span>{displayItemName(twoWeapon.main.name, twoWeapon.main)}</span>
                 <span className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
                   <Pill tone="ghost">
                     {twoWeapon.main.attack >= 0 ? '+' : ''}{twoWeapon.main.attack}
@@ -1012,7 +1022,7 @@ export default function CombatPage() {
                 </span>
               </div>
               <div className="sh-row-h sh-spread sh-faint" style={{ gap: 'var(--space-3)' }}>
-                <span>{twoWeapon.offHand.name} (off hand)</span>
+                <span>{tx('{0} (off hand)', displayItemName(twoWeapon.offHand.name, twoWeapon.offHand))}</span>
                 <span className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
                   {twoWeapon.offHand.attacks.map((n, i) => (
                     <Pill key={`offhand-${i}`} tone="ghost">{n >= 0 ? '+' : ''}{n}</Pill>
@@ -1088,7 +1098,7 @@ export default function CombatPage() {
                 const flurried = calculateWeaponAttackBonus(player, wd) + flurry.penalty;
                 return (
                   <div key={`flurry-${w.link}-${w.slot}`} className="sh-row-h sh-spread sh-faint" style={{ gap: 'var(--space-3)' }}>
-                    <span>{w.name}</span>
+                    <span>{w.displayName}</span>
                     <Pill tone="ghost">{flurried >= 0 ? '+' : ''}{flurried}</Pill>
                   </div>
                 );

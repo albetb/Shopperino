@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { t } from '../../lib/i18n';
+import { t, tx, tName } from '../../lib/i18n';
 import TrackerCard from './tracker_card';
 import SpellLink from '../common/spell_link';
 import { getFeatureSpell } from '../../lib/player/featureSpells';
@@ -72,7 +72,7 @@ export default function BardicMusicCard() {
                   )}
                   {isInspireCourage && <Pill tone="accent">+{inspireCourage}</Pill>}
                   {p.saveDc != null && <Pill tone="accent">DC {p.saveDc}</Pill>}
-                  {!p.meetsRanks && <Pill tone="warn">{p.performRanks} Perform</Pill>}
+                  {!p.meetsRanks && <Pill tone="warn">{tx('{0} {1}', p.performRanks, tName('skills', 'Perform'))}</Pill>}
                 </span>
               </div>
               <span className="sh-faint bardic-performance-summary">{p.summary}</span>

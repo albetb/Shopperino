@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addCardByLink } from '../../store/slices/appSlice';
 import { onPlayerUseGnomeSpell } from '../../store/thunks/playerSheetThunks';
 import { StarOrbitCast } from '../spellbook/row_actions';
+import { tx } from '../../lib/i18n';
 import '../../style/menu_cards.css';
 import '../../style/shop_inventory.css';
 
@@ -32,7 +33,7 @@ export default function GnomeSpellsCard() {
     <div className="card card-width-spellbook">
       <div className="card-side-div card-expand-div">
         <h3 className="card-title">
-          Gnome spells (1/day each) CD {baseDC} + sp. level
+          {tx('Gnome spells (1/day each) DC {0} + spell level', baseDC)}
         </h3>
       </div>
       <div className="card-content">

@@ -321,7 +321,7 @@ function ShapedBody({ player, form, dispatch }) {
 
       <div className="sh-row-h" style={{ gap: 'var(--space-2)', flexWrap: 'wrap' }}>
         <Pill tone="accent" icon="straighten">{form?.size}</Pill>
-        {naturalArmor > 0 && <Pill tone="accent" icon="security">+{naturalArmor} natural</Pill>}
+        {naturalArmor > 0 && <Pill tone="accent" icon="security">{tx('+{0} natural', naturalArmor)}</Pill>}
         {modes.map(({ mode, speed }) => (
           <Pill key={mode} tone="default" icon="directions_run">{t(mode.toUpperCase())} {u.distance(speed)}</Pill>
         ))}

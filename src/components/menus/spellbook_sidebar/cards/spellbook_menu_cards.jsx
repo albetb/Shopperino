@@ -5,6 +5,7 @@ import { setPersist } from '../../../../store/slices/persistSlice';
 import MenuCardPlayer from './menu_card_player';
 import MenuCardSearch from './menu_card_search';
 import '../../../../style/menu_cards.css';
+import { t, tx, tName } from '../../../../lib/i18n';
 
 export default function SpellbookMenuCards() {
   const dispatch = useDispatch();
@@ -50,9 +51,9 @@ export default function SpellbookMenuCards() {
   ];
 
   const formatTitle = ({ title, saved, selected, level, _class }) => {
-    if (!saved || saved.length === 0) return title;
+    if (!saved || saved.length === 0) return t(title);
     const displayName = selected || saved[0];
-    return `${displayName} - ${_class} lv${level}`;
+    return tx('{0} - {1} lv{2}', displayName, tName('classes', _class), level);
   };
 
   return (

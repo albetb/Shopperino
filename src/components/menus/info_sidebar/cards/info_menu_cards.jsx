@@ -14,8 +14,9 @@ import AugmentSummoningNote from '../../../common/AugmentSummoningNote';
 import '../../../../style/menu_cards.css';
 import { useUnits } from '../../../hooks/useUnits';
 import { t, tx } from '../../../../lib/i18n';
+import { itemCardTitle } from '../../../../lib/item/displayItemName';
 
-const HIDDEN_KEYS = new Set(['Short Description', 'id', 'Link', 'editable', 'editKey']);
+const HIDDEN_KEYS = new Set(['Short Description', 'id', 'Link', 'editable', 'editKey', 'kind']);
 
 /* The three creature files, by the prefix their refs carry. A card built from
    one of them is a stat block rather than an item or a spell, which is the
@@ -197,7 +198,12 @@ export default function InfoMenuCards({ cardsData, closeCard }) {
         const state = cardStates.find((s) => s.id === idx) || { collapsed: idx !== 0 };
         const isEditing = editingIdx === idx;
         const editableValue = isEditing ? (editValues.Name ?? '') : null;
-        const title = isEditing ? (editableValue || t('Edit')) : (data.Name || tx('Card {0}', idx + 1));
+        /* An item's title is the one a reader can be shown in their own
+           language: names.json is keyed by exactly the English the card
+           carries. A spell, a feat or a creature keeps its English name, which
+           is what the rest of the app -- and every manual -- calls it. */
+        const cardName = data.kind === 'item' ? itemCardTitle(data.Name) : data.Name;
+        const title = isEditing ? (editableValue || t('Edit')) : (cardName || tx('Card {0}', idx + 1));
         return (
           <div key={idx} className={`card ${state.collapsed ? 'collapsed' : ''}`}>
             <div className="card-side-div card-expand-div">

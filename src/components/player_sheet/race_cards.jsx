@@ -54,7 +54,7 @@ function RaceCard({ name, isCurrent, onSelect }) {
   return (
     <div className={`card card-width-spellbook ${collapsed ? 'collapsed' : ''}`}>
       <div className="card-side-div card-expand-div" onClick={() => setCollapsed((v) => !v)}>
-        <h3 className="card-title">{name}</h3>
+        <h3 className="card-title">{tName('races', name)}</h3>
         {/* Readable with the card shut: what a race costs and gives in one
             line is the whole question when choosing one. */}
         <span className="race-card-glance">

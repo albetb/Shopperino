@@ -7,6 +7,7 @@ import Player from '../../lib/player';
 import RaceCards from './race_cards';
 import { loadFile } from '../../lib/loadFile';
 import { getRaceTraits, getRaceNames } from '../../lib/player/racialTraits';
+import { setLanguage } from '../../lib/i18n';
 
 /* The race card used to render a hand-typed RACE_INFO object — a third copy of
    facts races.json already held twice, and the copy a player actually read. The
@@ -125,4 +126,23 @@ test('no hand-typed race prose is left in the component', () => {
   expect(source).not.toMatch(/const\s+RACE_INFO/);
   expect(source).not.toContain('Land speed:');
   expect(source).not.toContain('Darkvision');
+});
+
+test('the card is titled with the race, in the reading language', () => {
+  /* The name a race is stored under is its English one — races.json is keyed
+     by it and the sheet looks it up by it — so the card title is the one place
+     the Italian may appear. */
+  setLanguage('it');
+  try {
+    renderCards(make('Dwarf'));
+    expect(screen.getByRole('heading', { name: 'Nano' })).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Dwarf' })).toBe(null);
+  } finally {
+    setLanguage('en');
+  }
+});
+
+test('English is what races.json spells', () => {
+  renderCards(make());
+  expect(screen.getByRole('heading', { name: 'Dwarf' })).toBeInTheDocument();
 });

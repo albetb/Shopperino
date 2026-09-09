@@ -35,7 +35,7 @@ import Filigree from '../common/Filigree';
 import Icon from '../common/Icon';
 import '../../style/familiar.css';
 import { useUnits } from '../hooks/useUnits';
-import { t, tName } from '../../lib/i18n';
+import { t, tx, tName } from '../../lib/i18n';
 
 /** Single-value bonus thunks keyed by the familiar field they edit. */
 const BONUS_THUNK = {
@@ -449,7 +449,7 @@ export default function FamiliarCard() {
 
           {/* Int + natural armor + per-species master bonus */}
           <div className="sh-row-h" style={{ gap: 'var(--space-2)', flexWrap: 'wrap', alignItems: 'center' }}>
-            <Pill tone="default" icon="psychology">Int {intScore}</Pill>
+            <Pill tone="default" icon="psychology">{tx('{0} {1}', t('Int'), intScore)}</Pill>
             <Pill tone="default" icon="shield">{t('Natural armor')} {fmtBonus(naturalArmorAdj)}</Pill>
             {speciesBonus && (
               <Pill tone="success" icon="auto_awesome">

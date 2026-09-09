@@ -7,6 +7,7 @@ import MenuCardCity from './menu_card_city';
 import MenuCardShop from './menu_card_shop';
 import MenuCardWorld from './menu_card_world';
 import '../../../../style/menu_cards.css';
+import { t, tx } from '../../../../lib/i18n';
 
 /** Set to true to show the City card in the left bar; when false, user selects shop directly after world. */
 const SHOW_CITY_CARD = false;
@@ -59,6 +60,8 @@ export default function ShopMenuCards() {
     }));
   };
 
+  /* English, because the title is also the pack key -- it is translated
+     where it is read, not where it is written. */
   const cards = [
     { id: 1, title: 'World', saved: worlds, selected: selectedWorld, level: playerLevel },
     { id: 2, title: 'City', saved: cities, selected: selectedCity, level: cityLevel },
@@ -67,9 +70,9 @@ export default function ShopMenuCards() {
 
   const trimLength = isMobile() ? 23 : 10;
   const formatTitle = ({ id, title, saved, selected, level }) => {
-    if (saved.length === 0) return title;
+    if (saved.length === 0) return t(title);
     const displayName = trimLine(selected || saved[0], trimLength);
-    return `${title} - ${displayName} - Lv ${level}`;
+    return tx('{0} - {1} - Lv {2}', t(title), displayName, level);
   };
 
   return (

@@ -3560,15 +3560,25 @@ class Player {
       hasFeat: this.hasFeatNamed('Two-weapon fighting'),
       offHandIsLight,
       penalties,
+      /* The name as it is stored, plus the three fields the display name is
+         built from. The model never composes a name a reader sees — that would
+         make it read the current language — so it hands the parts over and the
+         component puts them together in whichever language it is rendering. */
       main: {
         name: main.name,
         link: main.link,
+        masterwork: main.itemData?.masterwork,
+        bonus: main.itemData?.bonus,
+        effectIds: main.itemData?.effectIds,
         attack: calculateWeaponAttackBonus(this, main) + penalties.main,
         damage: calculateWeaponDamage(this, main),
       },
       offHand: {
         name: offHand.name,
         link: offHand.link,
+        masterwork: offHand.itemData?.masterwork,
+        bonus: offHand.itemData?.bonus,
+        effectIds: offHand.itemData?.effectIds,
         // One attack, plus one more for each of the two follow-up feats, each
         // five worse than the one before it.
         attacks: Array.from({ length: 1 + extraOffHandAttacks }, (_, i) => offBase - i * 5),

@@ -141,8 +141,8 @@ export function ActiveEffectPills({ onRemove }) {
       {warnings.map((w) => (
         <div className="sh-warn-strip potion-effects-warn" key={`${w.stat}:${w.type}`}>
           <Icon name="warning" size={14} />
-          {w.labels.join(' and ')} both give a {w.type} bonus — in 3.5 only the
-          larger applies, but both are counted here.
+          {tx('{0} both give a {1} bonus — in 3.5 only the larger applies, but both are counted here.',
+            w.labels.join(t(' and ')), w.type)}
         </div>
       ))}
     </div>

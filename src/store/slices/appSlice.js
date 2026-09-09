@@ -214,6 +214,12 @@ export const appSlice = createSlice({
           cards[0].editable = true;
           cards[0].editKey = editKey;
         }
+        /* Which of the eight lookups above answered. Every card is a bag of
+           fields with a Name, and nothing in the shape says whether that Name
+           is an item's or a skill's -- and one word, `Hide`, is both. The
+           sidebar translates item titles and only item titles, so the branch
+           that built the card is the thing that has to say so. */
+        cards[0].kind = 'item';
         state.infoCards.unshift(...cards);
         state.infoSidebarCollapsed = false;
       }

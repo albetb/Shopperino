@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { t, tx } from '../../lib/i18n';
+import { t, tx, tName } from '../../lib/i18n';
 import Icon from './Icon';
 import BottomSheet from './BottomSheet';
 import { isMobile } from '../../lib/utils';
@@ -109,8 +109,12 @@ export default function StatInfo({
       {list.map((row, i) => (
         <li key={`${keyPrefix}-${row.source}-${i}`} className="stat-info-row">
           <span className="stat-info-row-label">
-            {row.label}
-            {row.type ? <span className="stat-info-row-type">{row.type}</span> : null}
+            {/* Every string in a breakdown row was composed by the model,
+                which cannot read the language -- so it arrives in English and
+                is translated here. A label the pack has no entry for stays
+                English, which is what the reader would have seen anyway. */}
+            {t(row.label)}
+            {row.type ? <span className="stat-info-row-type">{tName('bonusTypes', row.type)}</span> : null}
           </span>
           <span className="stat-info-row-value sh-num">
             {row.value >= 0 ? `+${row.value}` : row.value}
@@ -162,8 +166,8 @@ export default function StatInfo({
           <ul className="stat-info-notes">
             {notes.map((note, i) => (
               <li key={`${note.source}-${i}`}>
-                <span className="stat-info-note-label">{note.label}</span>
-                <span className="stat-info-note-text">{note.note}</span>
+                <span className="stat-info-note-label">{t(note.label)}</span>
+                <span className="stat-info-note-text">{t(note.note)}</span>
               </li>
             ))}
           </ul>

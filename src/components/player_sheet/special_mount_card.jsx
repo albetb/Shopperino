@@ -35,7 +35,7 @@ import Filigree from '../common/Filigree';
 import Icon from '../common/Icon';
 import '../../style/animal_companion.css';
 import { useUnits } from '../hooks/useUnits';
-import { t } from '../../lib/i18n';
+import { t, tx } from '../../lib/i18n';
 
 /** Single-value bonus thunks keyed by the mount field they edit. */
 const BONUS_THUNK = {
@@ -270,7 +270,7 @@ export default function SpecialMountCard() {
     <Card
       title={name || t('Special mount')}
       className="sh-card--head-spread"
-      eyebrow={`${totalHD} HD · Int ${intelligence}`}
+      eyebrow={tx('{0} HD · {1} {2}', totalHD, t('Int'), intelligence)}
       action={cardAction}
     >
       {!collapsed && (
@@ -501,7 +501,7 @@ export default function SpecialMountCard() {
           {/* Advancement summary + special abilities */}
           <div className="sh-row-h" style={{ gap: 'var(--space-2)', flexWrap: 'wrap', alignItems: 'center' }}>
             <Pill tone="default" icon="add_circle">+{bonusHD} {t('HD')}</Pill>
-            <Pill tone="default" icon="psychology">Int {intelligence}</Pill>
+            <Pill tone="default" icon="psychology">{tx('{0} {1}', t('Int'), intelligence)}</Pill>
             {spellResistance > 0 && <Pill tone="accent" icon="shield">{t('SR')} {spellResistance}</Pill>}
             {specials.map((s) => <Pill key={s} tone="accent">{s}</Pill>)}
           </div>

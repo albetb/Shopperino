@@ -359,8 +359,8 @@ export default function AnimalCompanionCard() {
               value={ac}
               sub={
                 <>
-                  <span style={{ display: 'block' }}>touch {acTouch}</span>
-                  <span style={{ display: 'block' }}>flat {acFlat}</span>
+                  <span style={{ display: 'block' }}>{tx('touch {0}', acTouch)}</span>
+                  <span style={{ display: 'block' }}>{tx('flat {0}', acFlat)}</span>
                 </>
               }
               editing={editBonus === 'ac'}

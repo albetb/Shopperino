@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { t } from '../../lib/i18n';
+import { t, tx } from '../../lib/i18n';
 import Card from '../common/Card';
 import Pill from '../common/Pill';
 import IconButton from '../common/IconButton';
@@ -167,8 +167,8 @@ export default function EquippedItemsCard() {
           {stackingWarnings.map((w) => (
             <div className="sh-warn-strip worn-item-warn" key={`${w.stat}:${w.type}`}>
               <Icon name="warning" size={14} />
-              {w.labels.join(' and ')} both give a {w.type} bonus — in 3.5 only the
-              larger applies, but both are counted here.
+              {tx('{0} both give a {1} bonus — in 3.5 only the larger applies, but both are counted here.',
+                w.labels.join(t(' and ')), w.type)}
             </div>
           ))}
         </div>

@@ -265,7 +265,7 @@ export default function SpellbookTable({ source = 'app' }) {
       />
 
       <ClassDescriptionCard
-        className={spellbook.Class}
+        className={tName('classes', spellbook.Class)}
         description={classDesc}
         collapsed={isCollapsed.classDesc}
         toggle={() => setClassDescCollapsed(!isCollapsed.classDesc)}

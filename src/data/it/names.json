@@ -21,6 +21,26 @@
     "Lawful": "Legale",
     "Neutral": "Neutrale"
   },
+  "bonusTypes": {
+    "alchemical": "alchemico",
+    "armor": "armatura",
+    "circumstance": "circostanza",
+    "competence": "competenza",
+    "deflection": "deviazione",
+    "dodge": "schivare",
+    "enhancement": "potenziamento",
+    "insight": "intuizione",
+    "luck": "fortuna",
+    "morale": "morale",
+    "natural": "naturale",
+    "profane": "profano",
+    "racial": "razziale",
+    "resistance": "resistenza",
+    "sacred": "sacro",
+    "shield": "scudo",
+    "size": "taglia",
+    "synergy": "sinergia"
+  },
   "classes": {
     "Barbarian": "Barbaro",
     "Bard": "Bardo",

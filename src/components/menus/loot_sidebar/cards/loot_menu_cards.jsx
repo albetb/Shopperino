@@ -4,6 +4,7 @@ import * as db from '../../../../lib/storage';
 import { setPersist } from '../../../../store/slices/persistSlice';
 import { isMobile, trimLine } from '../../../../lib/utils';
 import '../../../../style/menu_cards.css';
+import { t, tx, tName } from '../../../../lib/i18n';
 import MenuCardLoot from './menu_card_loot';
 
 export default function LootMenuCards() {
@@ -41,9 +42,9 @@ export default function LootMenuCards() {
 
   const trimLength = isMobile() ? 23 : 10;
   const formatTitle = ({ id, title, saved, selected, level, _class }) => {
-    if (!saved || saved.length === 0) return title;
+    if (!saved || saved.length === 0) return t(title);
     const displayName = trimLine(selected || saved[0], trimLength);
-    return `${displayName} - ${_class} lv${level}`;
+    return tx('{0} - {1} lv{2}', displayName, tName('classes', _class), level);
   };
 
   return (
