@@ -1,6 +1,876 @@
 {
   "terms": [
     {
+      "en": "remove paralysis",
+      "it": "rimuovi paralisi",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 427.",
+      "source": "coined"
+    },
+    {
+      "en": "repel metal or stone",
+      "it": "respingere metallo o pietra",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 428, self-referenced from Repel Vermin (429) family context.",
+      "source": "coined"
+    },
+    {
+      "en": "repel wood",
+      "it": "respingere legno",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, self-referenced from Repel Metal or Stone (428).",
+      "source": "coined"
+    },
+    {
+      "en": "repel vermin",
+      "it": "respingere i parassiti",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 429, last spell of the data lane's 360-429 shard slice.",
+      "source": "coined"
+    },
+    {
+      "en": "green slime",
+      "it": "melma verde",
+      "strict": false,
+      "kind": "creature",
+      "note": "Hazard/creature, referenced from Remove Disease (425). Parallel to Ooze -> Melma.",
+      "source": "coined"
+    },
+    {
+      "en": "lizardfolk",
+      "it": "Lizardfolk",
+      "strict": false,
+      "kind": "creature",
+      "note": "Race name, Reincarnate's (422) table. Kept as-is like bugbear (manual, kept untranslated) pending book verification -- no Italian rendering found elsewhere in this project.",
+      "source": "coined"
+    },
+    {
+      "en": "troglodyte",
+      "it": "troglodita",
+      "strict": false,
+      "kind": "creature",
+      "note": "Race name, Reincarnate's (422) table. Direct Italian cognate, not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "reincarnate",
+      "it": "reincarnare",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 422, self-referenced in its own Description.",
+      "source": "coined"
+    },
+    {
+      "en": "reduce animal",
+      "it": "rimpicciolire animale",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 417. Parallel to reduce person -> Rimpicciolire persone.",
+      "source": "coined"
+    },
+    {
+      "en": "mass reduce person",
+      "it": "rimpicciolire persone di massa",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 419 ('reduce person, mass' in spells.json).",
+      "source": "coined"
+    },
+    {
+      "en": "ray of exhaustion",
+      "it": "raggio di sfinimento",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 414. Parallel to ray of enfeeblement -> Raggio di indebolimento.",
+      "source": "coined"
+    },
+    {
+      "en": "purify food and drink",
+      "it": "purificare cibo e acqua",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 407, self-referenced in its own Description.",
+      "source": "coined"
+    },
+    {
+      "en": "pyrotechnics",
+      "it": "pirotecnica",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 408, self-referenced in its own Description.",
+      "source": "coined"
+    },
+    {
+      "en": "quench",
+      "it": "estinguere",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 409, self-referenced repeatedly in its own Description.",
+      "source": "coined"
+    },
+    {
+      "en": "unholy water",
+      "it": "acqua sacrilega",
+      "strict": false,
+      "kind": "item",
+      "note": "Item, referenced from Purify Food and Drink (407). Uses the manual-verified 'unholy' -> 'sacrilega' term rather than 'profana', to satisfy that strict entry.",
+      "source": "coined"
+    },
+    {
+      "en": "protection from spells",
+      "it": "protezione dagli incantesimi",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 404.",
+      "source": "coined"
+    },
+    {
+      "en": "greater prying eyes",
+      "it": "occhi indiscreti maggiori",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 406 ('prying eyes, greater' in spells.json).",
+      "source": "coined"
+    },
+    {
+      "en": "protection from arrows",
+      "it": "protezione dalle frecce",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 398, self-referenced from Protection from Energy (400) family context.",
+      "source": "coined"
+    },
+    {
+      "en": "prismatic spray",
+      "it": "spruzzo prismatico",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 393, self-referenced repeatedly in Prismatic Sphere/Wall (392/394).",
+      "source": "coined"
+    },
+    {
+      "en": "produce flame",
+      "it": "produrre fiamma",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 395.",
+      "source": "coined"
+    },
+    {
+      "en": "programmed image",
+      "it": "immagine programmata",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 396.",
+      "source": "coined"
+    },
+    {
+      "en": "power word kill",
+      "it": "parola di potere: morte",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 388, self-referenced in its own Description. Parallel to power word blind -> parola di potere: cecità.",
+      "source": "coined"
+    },
+    {
+      "en": "power word stun",
+      "it": "parola di potere: stordimento",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 389, self-referenced in its own Description. Parallel to power word blind -> parola di potere: cecità.",
+      "source": "coined"
+    },
+    {
+      "en": "luck bonus",
+      "it": "bonus di fortuna",
+      "strict": false,
+      "kind": "rules",
+      "note": "Standard D&D 3.5 bonus type, already used elsewhere in this pack.",
+      "source": "coined"
+    },
+    {
+      "en": "polar ray",
+      "it": "raggio polare",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 384.",
+      "source": "coined"
+    },
+    {
+      "en": "power word blind",
+      "it": "parola di potere: cecità",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 387, self-referenced in its own Description. Follows the standard Italian D&D 3.5 'Power Word X' -> 'Parola di Potere: X' rendering.",
+      "source": "coined"
+    },
+    {
+      "en": "baleful polymorph",
+      "it": "metamorfosi malvagia",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced from Polymorph Any Object (386). Parallel to polymorph -> metamorfosi (manual).",
+      "source": "coined"
+    },
+    {
+      "en": "transmute mud to rock",
+      "it": "trasmutare fango in roccia",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced from Polymorph Any Object (386). Parallel to transmute rock to mud -> trasmutare roccia in fango.",
+      "source": "coined"
+    },
+    {
+      "en": "transmute metal to wood",
+      "it": "trasmutare metallo in legno",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced from Polymorph Any Object (386). Parallel to transmute rock to mud -> trasmutare roccia in fango.",
+      "source": "coined"
+    },
+    {
+      "en": "shapechanger",
+      "it": "mutaforma",
+      "strict": false,
+      "kind": "rules",
+      "note": "Creature subtype, referenced from Polymorph (385).",
+      "source": "coined"
+    },
+    {
+      "en": "diminish plants",
+      "it": "diminuire piante",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced from Plant Growth (382).",
+      "source": "coined"
+    },
+    {
+      "en": "poison",
+      "it": "veleno",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 383. Distinct from the generic 'poison' condition/damage-type usage elsewhere.",
+      "source": "coined"
+    },
+    {
+      "en": "planar ally",
+      "it": "alleato planare",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 375, referenced from Greater Planar Ally (376). Parallel to lesser planar ally -> alleato planare minore.",
+      "source": "coined"
+    },
+    {
+      "en": "greater planar ally",
+      "it": "alleato planare maggiore",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 376.",
+      "source": "coined"
+    },
+    {
+      "en": "phantom trap",
+      "it": "trappola fantasma",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 373, self-referenced in its own Description.",
+      "source": "coined"
+    },
+    {
+      "en": "gem of true seeing",
+      "it": "gemma della visione del vero",
+      "strict": false,
+      "kind": "item",
+      "note": "Item, referenced from Phase Door (374). Parallel to true seeing -> visione del vero.",
+      "source": "coined"
+    },
+    {
+      "en": "phase spider",
+      "it": "ragno fasico",
+      "strict": false,
+      "kind": "creature",
+      "note": "Creature, referenced from Phase Door (374).",
+      "source": "coined"
+    },
+    {
+      "en": "permanent image",
+      "it": "Immagine permanente",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 369. Parallel to persistent image -> Immagine persistente.",
+      "source": "coined"
+    },
+    {
+      "en": "phantasmal killer",
+      "it": "assassino fantasmatico",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 371, self-referenced repeatedly in its own Description.",
+      "source": "coined"
+    },
+    {
+      "en": "phantom steed",
+      "it": "cavalcatura fantasma",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 372, self-referenced repeatedly in its own Description.",
+      "source": "coined"
+    },
+    {
+      "en": "air walk",
+      "it": "camminare sull'aria",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced from Phantom Steed (372). Parallel to water walk -> Camminare sulle acque.",
+      "source": "coined"
+    },
+    {
+      "en": "mass owl's wisdom",
+      "it": "Saggezza del gufo di massa",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 365 ('owl's wisdom, mass' in spells.json).",
+      "source": "coined"
+    },
+    {
+      "en": "arcane sight",
+      "it": "Vista arcana",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced from Permanency's (368) spell table.",
+      "source": "coined"
+    },
+    {
+      "en": "telepathic bond",
+      "it": "Legame telepatico",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced from Permanency's (368) spell table.",
+      "source": "coined"
+    },
+    {
+      "en": "mage's private sanctum",
+      "it": "Santuario privato del mago",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced from Permanency's (368) spell table.",
+      "source": "coined"
+    },
+    {
+      "en": "symbol of death",
+      "it": "Simbolo di morte",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced from Permanency's (368) spell table. Parallel to symbol of stunning -> Simbolo di stordimento.",
+      "source": "coined"
+    },
+    {
+      "en": "symbol of fear",
+      "it": "Simbolo di paura",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced from Permanency's (368) spell table. Parallel to symbol of stunning -> Simbolo di stordimento.",
+      "source": "coined"
+    },
+    {
+      "en": "symbol of insanity",
+      "it": "Simbolo di follia",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced from Permanency's (368) spell table. Parallel to symbol of stunning -> Simbolo di stordimento.",
+      "source": "coined"
+    },
+    {
+      "en": "symbol of pain",
+      "it": "Simbolo di dolore",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced from Permanency's (368) spell table. Parallel to symbol of stunning -> Simbolo di stordimento.",
+      "source": "coined"
+    },
+    {
+      "en": "symbol of persuasion",
+      "it": "Simbolo di persuasione",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced from Permanency's (368) spell table. Parallel to symbol of stunning -> Simbolo di stordimento.",
+      "source": "coined"
+    },
+    {
+      "en": "symbol of sleep",
+      "it": "Simbolo di sonno",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced from Permanency's (368) spell table. Parallel to symbol of stunning -> Simbolo di stordimento.",
+      "source": "coined"
+    },
+    {
+      "en": "symbol of weakness",
+      "it": "Simbolo di debolezza",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced from Permanency's (368) spell table. Parallel to symbol of stunning -> Simbolo di stordimento.",
+      "source": "coined"
+    },
+    {
+      "en": "open/close",
+      "it": "apri/chiudi",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 361, self-referenced by verb pair in its own Description.",
+      "source": "coined"
+    },
+    {
+      "en": "hustle",
+      "it": "affrettarsi",
+      "strict": false,
+      "kind": "rules",
+      "note": "Overland movement rule term, referenced from Overland Flight (363). Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "know direction",
+      "it": "conoscere la direzione",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 300.",
+      "source": "coined"
+    },
+    {
+      "en": "iron body",
+      "it": "corpo di ferro",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 294.",
+      "source": "coined"
+    },
+    {
+      "en": "iron golem",
+      "it": "golem di ferro",
+      "strict": false,
+      "kind": "creature",
+      "note": "Construct, referenced from Iron Body (294). 'Golem' kept as the usual Italian loanword.",
+      "source": "coined"
+    },
+    {
+      "en": "wood shape",
+      "it": "Scolpire legno",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, Manuale del Giocatore.",
+      "source": "manual",
+      "stems": [
+        "scolpir"
+      ]
+    },
+    {
+      "en": "irresistible dance",
+      "it": "ballo irresistibile",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 296.",
+      "source": "coined"
+    },
+    {
+      "en": "invisibility",
+      "it": "invisibilità",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 289, self-referenced repeatedly from 290/291/293.",
+      "source": "coined"
+    },
+    {
+      "en": "mass invisibility",
+      "it": "invisibilità di massa",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 291 ('invisibility, mass' in spells.json).",
+      "source": "coined"
+    },
+    {
+      "en": "invisibility sphere",
+      "it": "sfera di invisibilità",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 293, self-referenced in its own Description.",
+      "source": "coined"
+    },
+    {
+      "en": "prismatic wall",
+      "it": "muro prismatico",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced from Interposing Hand (288).",
+      "source": "coined"
+    },
+    {
+      "en": "prismatic sphere",
+      "it": "sfera prismatica",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced from Interposing Hand (288).",
+      "source": "coined"
+    },
+    {
+      "en": "insanity",
+      "it": "follia",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 285, self-referenced from Instant Summons context and its own Description. Distinct from the generic adjective use ('insanity' in Heal's #244 condition list, rendered 'folle').",
+      "source": "coined"
+    },
+    {
+      "en": "instant summons",
+      "it": "richiamo istantaneo",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 287.",
+      "source": "coined"
+    },
+    {
+      "en": "mass inflict light wounds",
+      "it": "Infliggi ferite leggere di massa",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 279, self-referenced in its own Description and from 277/282. Capitalized to match the manual-verified 'inflict light wounds' -> 'Infliggi ferite leggere' entry further down this file.",
+      "source": "coined"
+    },
+    {
+      "en": "implosion",
+      "it": "implosione",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 273, self-referenced in its own Description.",
+      "source": "coined"
+    },
+    {
+      "en": "incendiary cloud",
+      "it": "nube incendiaria",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 275, self-referenced in its own Description.",
+      "source": "coined"
+    },
+    {
+      "en": "freedom",
+      "it": "libertà",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 215, referenced from Imprisonment (274). Distinct from 'freedom of movement' (216), which already has its own manual-verified entry.",
+      "source": "coined"
+    },
+    {
+      "en": "ice storm",
+      "it": "tempesta di ghiaccio",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 268, self-referenced in its own Description.",
+      "source": "coined"
+    },
+    {
+      "en": "illusory wall",
+      "it": "muro illusorio",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 271.",
+      "source": "coined"
+    },
+    {
+      "en": "holy word",
+      "it": "parola sacra",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 264, self-referenced repeatedly in its own Description.",
+      "source": "coined"
+    },
+    {
+      "en": "horrid wilting",
+      "it": "avvizzimento orrendo",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 265.",
+      "source": "coined"
+    },
+    {
+      "en": "hypnotic pattern",
+      "it": "motivo ipnotico",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 266.",
+      "source": "coined"
+    },
+    {
+      "en": "hypnotism",
+      "it": "ipnotismo",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 267.",
+      "source": "coined"
+    },
+    {
+      "en": "holy smite",
+      "it": "colpo sacro",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 262. Follows the 'flame strike' -> 'colpo di fiamma' pattern.",
+      "source": "coined"
+    },
+    {
+      "en": "holy sword",
+      "it": "spada sacra",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 263, self-referenced repeatedly in its own Description.",
+      "source": "coined"
+    },
+    {
+      "en": "holy weapon",
+      "it": "arma sacra",
+      "strict": false,
+      "kind": "item",
+      "note": "Magic weapon special ability, referenced from Holy Sword (263). Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "bless weapon",
+      "it": "benedire arma",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced from Holy Sword (263).",
+      "source": "coined"
+    },
+    {
+      "en": "hold animal",
+      "it": "immobilizzare animali",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 255. Parallel to hold person -> immobilizzare persone, hold monster -> immobilizzare mostri.",
+      "source": "coined"
+    },
+    {
+      "en": "hold portal",
+      "it": "sigillare il portale",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 260, self-referenced in its own Description. Kept distinct from the 'immobilizzare' (paralysis) hold-spell family since this one holds a door shut, not a creature.",
+      "source": "coined"
+    },
+    {
+      "en": "mass hold monster",
+      "it": "immobilizzare mostri di massa",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 257, self-referenced in its own Short Description ('hold monster, mass' in spells.json).",
+      "source": "coined"
+    },
+    {
+      "en": "mass hold person",
+      "it": "immobilizzare persone di massa",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 259 ('hold person, mass' in spells.json).",
+      "source": "coined"
+    },
+    {
+      "en": "heroism",
+      "it": "eroismo",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 250, self-referenced from Greater Heroism (251).",
+      "source": "coined"
+    },
+    {
+      "en": "greater heroism",
+      "it": "eroismo maggiore",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 251.",
+      "source": "coined"
+    },
+    {
+      "en": "heat metal",
+      "it": "riscaldare il metallo",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 247, self-referenced repeatedly in its own Description. Follows the manual-verified 'chill metal' -> 'gelare il metallo' pattern already in glossary.json.",
+      "source": "coined"
+    },
+    {
+      "en": "helping hand",
+      "it": "mano soccorrevole",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 248. Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "heroes' feast",
+      "it": "banchetto degli eroi",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 249. Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "harm",
+      "it": "danneggiare",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 242, self-referenced repeatedly in its own Description and in Heal's (244).",
+      "source": "coined"
+    },
+    {
+      "en": "mass heal",
+      "it": "guarire di massa",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 245. Follows the 'X di massa' pattern already used for mass-version spells.",
+      "source": "coined"
+    },
+    {
+      "en": "weapon of speed",
+      "it": "arma di velocità",
+      "strict": false,
+      "kind": "item",
+      "note": "Magic weapon special ability, referenced from Haste (243). Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "hallow",
+      "it": "consacrare",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 239, self-referenced repeatedly in its own Description.",
+      "source": "coined"
+    },
+    {
+      "en": "unhallow",
+      "it": "Profanare",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, Manuale del Giocatore.",
+      "source": "manual",
+      "stems": [
+        "profan"
+      ]
+    },
+    {
+      "en": "hallucinatory terrain",
+      "it": "terreno illusorio",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 240.",
+      "source": "coined"
+    },
+    {
+      "en": "sacred bonus",
+      "it": "bonus sacro",
+      "strict": false,
+      "kind": "rules",
+      "note": "Standard D&D 3.5 bonus type, used from Hallow (239).",
+      "source": "coined"
+    },
+    {
+      "en": "aid",
+      "it": "aiuto",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced from Hallow (239) spell-effect list.",
+      "source": "coined"
+    },
+    {
+      "en": "darkness",
+      "it": "oscurità",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced from Hallow (239) spell-effect list.",
+      "source": "coined"
+    },
+    {
+      "en": "death ward",
+      "it": "protezione dalla morte",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced from Hallow (239) spell-effect list.",
+      "source": "coined"
+    },
+    {
+      "en": "deeper darkness",
+      "it": "oscurità profonda",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced from Hallow (239) spell-effect list.",
+      "source": "coined"
+    },
+    {
+      "en": "remove fear",
+      "it": "rimuovi paura",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced from Hallow (239) spell-effect list.",
+      "source": "coined"
+    },
+    {
+      "en": "gust of wind",
+      "it": "raffica di vento",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 238, self-referenced from Guards and Wards (236).",
+      "source": "coined"
+    },
+    {
+      "en": "Mage's disjunction",
+      "it": "disgiunzione del mago",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, referenced from Guards and Wards (236). Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "guards and wards",
+      "it": "guardie e protezioni",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 236, self-referenced repeatedly in its own Description.",
+      "source": "coined"
+    },
+    {
+      "en": "guidance",
+      "it": "guida",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 237, self-referenced via 'divine guidance' phrasing in its own Description.",
+      "source": "coined"
+    },
+    {
+      "en": "mind-affecting",
+      "it": "che influenza la mente",
+      "strict": false,
+      "kind": "rules",
+      "note": "Descriptor for enchantment/compulsion effects. Not yet checked against the manual.",
+      "source": "coined"
+    },
+    {
+      "en": "greater glyph of warding",
+      "it": "glifo di custodia maggiore",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 231, self-referenced (as 'glifo esplosivo maggiore' / 'glifo incantesimo maggiore') in its own Description.",
+      "source": "coined"
+    },
+    {
+      "en": "goodberry",
+      "it": "bacca benefica",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name 232, self-referenced in its own Description.",
+      "source": "coined"
+    },
+    {
       "en": "giant vermin",
       "it": "parassita gigante",
       "strict": false,
@@ -3160,11 +4030,12 @@
       "it": "Mimetismo",
       "strict": true,
       "kind": "class",
-      "note": "Ranger class feature, classes.json Ranger/classFeatures/13. Read out of Manuale del Giocatore (\"Mimetismo (Str): Un ranger di 13° livello o superiore può usare la sua abilità Nascondersi...\") — own text matches word for word.",
+      "note": "Ranger class feature, classes.json Ranger/classFeatures/13. Read out of Manuale del Giocatore (\"Mimetismo (Str): Un ranger di 13° livello o superiore può usare la sua abilità Nascondersi...\") — own text matches word for word. en_match excludes the generic verb \"camouflage itself/themselves\" (monsters.json Black Dragon description), distinct from the Ranger class feature noun.",
       "source": "manual",
       "stems": [
         "mimetismo"
-      ]
+      ],
+      "en_match": "(?<![A-Za-z])[Cc]amouflage(?![A-Za-z])(?!\\s+itself)(?!\\s+themselves)"
     },
     {
       "en": "Hide in Plain Sight",
@@ -3247,7 +4118,7 @@
     },
     {
       "en": "Slippery Mind",
-      "it": "Mente Sfuggente",
+      "it": "Mente sfuggente",
       "strict": true,
       "kind": "class",
       "note": "Rogue special ability, classes.json Rogue/classFeatures/7. Read out of Manuale del Giocatore (\"Mente sfuggente (Str): Questa capacità rappresenta la capacità del ladro di liberarsi dagli effetti magici che altrimenti lo porrebbero sotto controllo o compulsione...\") — own text matches almost word for word.",
@@ -3479,25 +4350,24 @@
     },
     {
       "en": "wraith",
-      "it": "spettro",
+      "it": "Wraith",
       "strict": false,
       "kind": "creature",
-      "note": "Undead creature, spells.json (Create Greater Undead #96). Not yet checked against the manual beyond the generic word 'spettro' at Manuale del Giocatore p.221 context.",
-      "source": "coined",
+      "note": "Undead creature name. CORRECTED: confirmed kept as literal English word in Manuale dei Mostri I index and body text ('Wraith', 'Wraith del terrore'). The earlier coined 'spettro' was wrong (that Italian word is actually the manual's term for the separate Spectre creature) and has been fixed retroactively where already filed.",
+      "source": "manual",
       "stems": [
-        "spettro",
-        "spettri"
+        "wraith"
       ]
     },
     {
       "en": "spectre",
-      "it": "spettro maggiore",
+      "it": "Spettro",
       "strict": false,
       "kind": "creature",
-      "note": "Undead creature, spells.json (Create Greater Undead #96). Coined to disambiguate from wraith -> spettro. Not yet checked against the manual.",
-      "source": "coined",
+      "note": "Undead creature name. CORRECTED: confirmed word-for-word in Manuale dei Mostri I index and body text ('Spettro'). The earlier coined 'spettro maggiore' (chosen to avoid a collision with 'wraith') was based on the wrong assumption that wraith also used 'spettro' -- wraith is actually kept as literal English, so no collision exists.",
+      "source": "manual",
       "stems": [
-        "spettro maggior"
+        "spettro"
       ]
     },
     {
@@ -3514,11 +4384,11 @@
     },
     {
       "en": "ghast",
-      "it": "necrofago",
+      "it": "Ghast",
       "strict": false,
       "kind": "creature",
-      "note": "Undead creature, spells.json (Create Undead #97). Not yet checked against the manual.",
-      "source": "coined",
+      "note": "Creature name, kept as-is. Confirmed in Manuale dei Mostri I index (\"Ghast (ghoul)\") and body text (\"si rianima come ghast\") -- the manual does not translate this name, corrects the earlier coined \"necrofago\".",
+      "source": "manual",
       "stems": [
         "necrofago",
         "necrofagi"
@@ -4006,11 +4876,11 @@
     },
     {
       "en": "template",
-      "it": "template",
+      "it": "archetipo",
       "strict": false,
       "kind": "rules",
-      "note": "Kept as the English loanword, referenced in prose from spells.json (Alter Self, #7). Not yet checked against the manual (DMG-defined creature modification concept).",
-      "source": "coined"
+      "note": "Creature template mechanic ('X is an acquired template'), monsters.json. CORRECTED: confirmed word-for-word in Manuale dei Mostri I zombie template rules ('archetipo acquisito'). The earlier coined 'template' has been fixed retroactively in the 9 already-filed Skeleton entries.",
+      "source": "manual"
     },
     {
       "en": "Touch",
@@ -4419,14 +5289,6 @@
       "strict": false,
       "kind": "item",
       "note": "Specific weapon flavor name (Frost Brand), items.json Specific Weapon/27.",
-      "source": "coined"
-    },
-    {
-      "en": "harm",
-      "it": "Danno",
-      "strict": false,
-      "kind": "spell",
-      "note": "Spell name (cleric touch attack, Constitution/hp drain), referenced from items.json Specific Weapon/25. Not found in the searchable manual text; coined pending verification.",
       "source": "coined"
     },
     {
@@ -4850,10 +5712,14 @@
     },
     {
       "en": "meld into stone",
-      "it": "fondersi con la pietra",
+      "it": "Fondersi nella pietra",
       "strict": false,
       "kind": "spell",
-      "source": "coined"
+      "source": "manual",
+      "stems": [
+        "fonders"
+      ],
+      "note": "Spell name, Manuale del Giocatore."
     },
     {
       "en": "maze",
@@ -4923,7 +5789,8 @@
       "it": "minotauro",
       "strict": false,
       "kind": "creature",
-      "source": "coined"
+      "source": "manual",
+      "note": "Creature name, monsters.json. Confirmed word-for-word ('Minotauro') in Manuale dei Mostri I index."
     },
     {
       "en": "mass charm monster",
@@ -5015,11 +5882,11 @@
     },
     {
       "en": "discern lies",
-      "it": "Scoprire le menzogne",
+      "it": "Rivela bugie",
       "strict": false,
       "kind": "spell",
-      "note": "Spell name, items.json Ring/7.",
-      "source": "coined"
+      "note": "Spell name. Manuale del Giocatore (\"Rivela bugie : Rivela le menzogne deliberate.\"), exact match -- corrects the earlier coined 'Scoprire le menzogne' (was items.json Ring/7).",
+      "source": "manual"
     },
     {
       "en": "nondetection",
@@ -5181,11 +6048,11 @@
     },
     {
       "en": "shield other",
-      "it": "Scudo altrui",
+      "it": "Scudo su Altri",
       "strict": false,
       "kind": "spell",
-      "note": "Spell name, items.json Ring/30.",
-      "source": "coined"
+      "note": "Spell name. Confirmed word-for-word in Manuale dei Mostri I Androsphinx entry ('scudo su altri'). The earlier coined 'Scudo altrui' has been fixed retroactively where already filed.",
+      "source": "manual"
     },
     {
       "en": "ball lightning",
@@ -5229,19 +6096,22 @@
     },
     {
       "en": "locate object",
-      "it": "Localizzare oggetti",
+      "it": "localizza oggetto",
       "strict": false,
       "kind": "spell",
-      "note": "Spell name, items.json Rod/5.",
-      "source": "coined"
+      "note": "Spell name. Confirmed word-for-word in Manuale dei Mostri I Gynosphinx entry.",
+      "source": "manual"
     },
     {
       "en": "stinking cloud",
-      "it": "Nube nauseabonda",
+      "it": "Nube maleodorante",
       "strict": false,
       "kind": "spell",
-      "note": "Spell name, items.json Rod/10.",
-      "source": "coined"
+      "note": "Spell name, Manuale del Giocatore.",
+      "source": "manual",
+      "stems": [
+        "maleodorant"
+      ]
     },
     {
       "en": "burning hands",
@@ -5309,10 +6179,10 @@
     },
     {
       "en": "insect plague",
-      "it": "Piaga di insetti",
+      "it": "Piaga degli insetti",
       "strict": false,
       "kind": "spell",
-      "note": "Spell name. Manuale del Giocatore (Piaga degli insetti: Sciami di locuste...).",
+      "note": "Spell name. Manuale del Giocatore (Piaga degli insetti: Sciami di locuste...). Corrected the 'it' value, which had transcribed the manual's own quoted heading as 'Piaga di insetti' (wrong preposition).",
       "source": "manual"
     },
     {
@@ -5333,11 +6203,14 @@
     },
     {
       "en": "remove blindness/deafness",
-      "it": "Rimuovere cecità/sordità",
+      "it": "Rimuovi cecità/sordità",
       "strict": false,
       "kind": "spell",
-      "note": "Spell name, parallel to established blindness/deafness -> cecità/sordità.",
-      "source": "coined"
+      "note": "Spell name, Manuale del Giocatore.",
+      "source": "manual",
+      "stems": [
+        "rimuovi"
+      ]
     },
     {
       "en": "enlarge person",
@@ -5357,11 +6230,11 @@
     },
     {
       "en": "shrink item",
-      "it": "Rimpicciolire oggetto",
+      "it": "Restringere oggetto",
       "strict": false,
       "kind": "spell",
-      "note": "Spell name, items.json Staff/4.",
-      "source": "coined"
+      "note": "Manuale del Giocatore p.280 (\"Restringere oggetto\"/\"Restringere oggetti\"), confirmed against spells.json #477 mechanics (1/16 size, four size categories, cloth-like option, restored by throwing against a surface or command word, permanency-compatible). Corrects the prior coined guess Rimpicciolire oggetto (items.json Staff/4).",
+      "source": "manual"
     },
     {
       "en": "flare",
@@ -5589,11 +6462,11 @@
     },
     {
       "en": "move earth",
-      "it": "Spostare la terra",
+      "it": "muovere il terreno",
       "strict": false,
       "kind": "spell",
-      "note": "Spell name, items.json Staff/16.",
-      "source": "coined"
+      "note": "Spell name, items.json Staff/16. Corrected to 'muovere il terreno' per Manuale dei Mostri I (Clay Golem entry: 'Un incantesimo muovere il terreno...'). Earlier occurrences in monsters.json (Copper/Bronze Dragon) still use the superseded coined 'spostare la terra' -- non-strict, so both stand; new occurrences should use the manual form.",
+      "source": "manual"
     },
     {
       "en": "barkskin",
@@ -6117,11 +6990,11 @@
     },
     {
       "en": "comprehend languages",
-      "it": "Comprendere linguaggi",
+      "it": "comprensione dei linguaggi",
       "strict": false,
       "kind": "spell",
-      "note": "Spell name, items.json Wondrous Item/79.",
-      "source": "coined"
+      "note": "Spell name. Confirmed word-for-word in Manuale dei Mostri I Gynosphinx entry.",
+      "source": "manual"
     },
     {
       "en": "cure moderate wounds",
@@ -6317,11 +7190,11 @@
     },
     {
       "en": "rusting grasp",
-      "it": "Presa arrugginente",
+      "it": "stretta corrosiva",
       "strict": false,
       "kind": "spell",
-      "note": "Spell name, items.json Wondrous Item/131.",
-      "source": "coined"
+      "note": "Spell name, items.json Wondrous Item/131. Corrected to 'stretta corrosiva' per Manuale dei Mostri I (Iron Golem entry: 'un incantesimo stretta corrosiva').",
+      "source": "manual"
     },
     {
       "en": "transformation",
@@ -6709,11 +7582,11 @@
     },
     {
       "en": "invisibility purge",
-      "it": "Eliminazione dell'invisibilità",
+      "it": "Epurare invisibilità",
       "strict": false,
       "kind": "spell",
-      "note": "Spell name, items.json Wondrous Item/205.",
-      "source": "coined"
+      "note": "Spell name. Manuale del Giocatore (\"Epurare invisibilità : Dissolve l'invisibilità nel raggio di 1,5 m...\"), exact match -- corrects the earlier coined \"Eliminazione dell'invisibilità\" (was items.json Wondrous Item/205).",
+      "source": "manual"
     },
     {
       "en": "manacles of cooperation",
@@ -6797,11 +7670,11 @@
     },
     {
       "en": "storm of vengeance",
-      "it": "Tempesta della vendetta",
+      "it": "Tempesta di vendetta",
       "strict": false,
       "kind": "spell",
-      "note": "Spell name, items.json Wondrous Item/225.",
-      "source": "coined"
+      "note": "Spell name. Manuale del Giocatore (\"Tempesta di vendetta : Tempesta di pioggia acida, fulmini e grandine.\"), exact match -- corrects the earlier coined 'Tempesta della vendetta' (was items.json Wondrous Item/225).",
+      "source": "manual"
     },
     {
       "en": "mage's magnificent mansion",
@@ -6893,11 +7766,14 @@
     },
     {
       "en": "legend lore",
-      "it": "Sapienza leggendaria",
+      "it": "Conoscenza delle leggende",
       "strict": false,
       "kind": "spell",
-      "note": "Spell name, items.json Wondrous Item/298.",
-      "source": "coined"
+      "note": "Spell name, Manuale del Giocatore.",
+      "source": "manual",
+      "stems": [
+        "leggend"
+      ]
     },
     {
       "en": "imprisonment",
@@ -7491,6 +8367,3356 @@
       "en": "will-o'-wisp",
       "it": "fuoco fatuo",
       "source": "coined"
+    },
+    {
+      "en": "Plane of Shadow",
+      "it": "Piano dell'Ombra",
+      "source": "coined"
+    },
+    {
+      "en": "shadow conjuration",
+      "it": "evocazione ombra",
+      "source": "coined",
+      "note": "School-name careful: D&D 3.5 school Conjuration = Evocazione (names.json schools), Evocation = Invocazione. Do not swap."
+    },
+    {
+      "en": "shadow evocation",
+      "it": "invocazione ombra",
+      "source": "coined",
+      "note": "See shadow conjuration note on the Conjuration/Evocation school-name swap."
+    },
+    {
+      "en": "sequester",
+      "it": "segregare",
+      "source": "coined",
+      "note": "Unverified spell name, spells.json #459."
+    },
+    {
+      "en": "shambling mound",
+      "it": "Cumulo strisciante",
+      "source": "manual",
+      "kind": "creature",
+      "note": "Manuale dei Mostri I p.43."
+    },
+    {
+      "en": "shambler",
+      "it": "cumulo errante",
+      "source": "coined",
+      "note": "Unverified spell name, spells.json #466. Distinct from the confirmed manual creature name shambling mound -> Cumulo strisciante."
+    },
+    {
+      "en": "shout",
+      "it": "grido",
+      "source": "coined",
+      "note": "Unverified spell name, spells.json #475."
+    },
+    {
+      "en": "aid another",
+      "it": "aiutare un altro",
+      "source": "coined"
+    },
+    {
+      "en": "Enslave",
+      "it": "Asservire",
+      "strict": false,
+      "kind": "rules",
+      "note": "Aboleth special ability (Su/Sop), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Psionics (creature ability)",
+      "it": "Psionica",
+      "strict": false,
+      "kind": "rules",
+      "note": "Aboleth spell-like-abilities heading (Sp/Mag), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Slime (aboleth)",
+      "it": "Melma",
+      "strict": false,
+      "kind": "rules",
+      "note": "Aboleth special ability (Ex/Str), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Mucus Cloud",
+      "it": "Nube di muco",
+      "strict": false,
+      "kind": "rules",
+      "note": "Aboleth special ability (Ex/Str), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Black Cloud",
+      "it": "Nube nera",
+      "strict": false,
+      "kind": "rules",
+      "note": "Achaierai special ability (Ex/Str), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Babble",
+      "it": "Farneticare",
+      "strict": false,
+      "kind": "rules",
+      "note": "Allip special ability (Su/Sop), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Madness (creature ability)",
+      "it": "Follia",
+      "strict": false,
+      "kind": "rules",
+      "note": "Allip special ability (Su/Sop), monsters.json -- distinct glossary slot from the insanity spell.",
+      "source": "coined"
+    },
+    {
+      "en": "Wisdom Drain",
+      "it": "Drenaggio di Saggezza",
+      "strict": false,
+      "kind": "rules",
+      "note": "Allip special ability (Su/Sop), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Aura of Menace",
+      "it": "Aura di minaccia",
+      "strict": false,
+      "kind": "rules",
+      "note": "Archon special ability (Su/Sop), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Light Ray",
+      "it": "Raggio di luce",
+      "strict": false,
+      "kind": "rules",
+      "note": "Lantern archon special ability (Ex/Str), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Trumpet (archon)",
+      "it": "Tromba",
+      "strict": false,
+      "kind": "rules",
+      "note": "Trumpet archon special ability (Su/Sop), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Electricity Ray",
+      "it": "Raggio di elettricità",
+      "strict": false,
+      "kind": "rules",
+      "note": "Arrowhawk special ability (Su/Sop), monsters.json. Must include the noun stem to satisfy the strict 'Electricity' term.",
+      "source": "coined"
+    },
+    {
+      "en": "Improved Speed",
+      "it": "Velocità migliorata",
+      "strict": false,
+      "kind": "rules",
+      "note": "Animated object special ability (Ex/Str), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Spit Acid",
+      "it": "Sputare acido",
+      "strict": false,
+      "kind": "rules",
+      "note": "Ankheg special ability (Ex/Str), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Change Shape",
+      "it": "Cambiare forma",
+      "strict": false,
+      "kind": "rules",
+      "note": "Creature special ability (Su/Sop), monsters.json -- shapechanging outsiders/fiends (angels, aranea, hound archon, barghest, solar).",
+      "source": "coined"
+    },
+    {
+      "en": "Fear Aura",
+      "it": "Aura di paura",
+      "strict": false,
+      "kind": "rules",
+      "note": "Avoral special ability (Su/Sop), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Lay on Hands",
+      "it": "Imposizione delle mani",
+      "strict": false,
+      "kind": "rules",
+      "note": "Paladin class feature / avoral special ability. Matches classes.json Paladin classFeatures text ('la capacità di imposizione delle mani di un paladino').",
+      "source": "manual"
+    },
+    {
+      "en": "Heat (creature ability)",
+      "it": "Calore",
+      "strict": false,
+      "kind": "rules",
+      "note": "Azer special ability (Ex/Str), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Feed",
+      "it": "Nutrirsi",
+      "strict": false,
+      "kind": "rules",
+      "note": "Barghest special ability (Su/Sop), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Petrifying Gaze",
+      "it": "Sguardo pietrificante",
+      "strict": false,
+      "kind": "rules",
+      "note": "Basilisk special ability (Su/Sop), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Breath Weapon",
+      "it": "Arma del respiro",
+      "strict": false,
+      "kind": "rules",
+      "note": "Creature special ability (Su/Sop) heading, monsters.json -- e.g. behir.",
+      "source": "coined"
+    },
+    {
+      "en": "Smoke Claws",
+      "it": "Artigli di fumo",
+      "strict": false,
+      "kind": "rules",
+      "note": "Belker special ability (Ex/Str), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Smoke Form",
+      "it": "Forma di fumo",
+      "strict": false,
+      "kind": "rules",
+      "note": "Belker special ability (Su/Sop), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "clone",
+      "it": "clone",
+      "source": "coined"
+    },
+    {
+      "en": "reincarnation",
+      "it": "reincarnazione",
+      "source": "coined"
+    },
+    {
+      "en": "fog cloud",
+      "it": "nube di nebbia",
+      "source": "coined"
+    },
+    {
+      "en": "song of discord",
+      "it": "canto della discordia",
+      "source": "coined",
+      "note": "Unverified spell name, spells.json #488."
+    },
+    {
+      "en": "soul bind",
+      "it": "vincolare l'anima",
+      "source": "coined",
+      "note": "Unverified spell name, spells.json #489."
+    },
+    {
+      "en": "soften earth and stone",
+      "it": "ammorbidire terra e pietra",
+      "source": "coined",
+      "note": "Unverified spell name, spells.json #486."
+    },
+    {
+      "en": "flank",
+      "it": "fiancheggiare",
+      "source": "coined"
+    },
+    {
+      "en": "speak with dead",
+      "it": "parlare con i morti",
+      "source": "coined",
+      "note": "Mirrors the manual-confirmed sibling speak with animals -> parlare con gli animali."
+    },
+    {
+      "en": "speak with plants",
+      "it": "parlare con le piante",
+      "source": "coined",
+      "note": "Mirrors the manual-confirmed sibling speak with animals -> parlare con gli animali."
+    },
+    {
+      "en": "spectral hand",
+      "it": "mano spettrale",
+      "source": "coined"
+    },
+    {
+      "en": "blink dog",
+      "it": "cane intermittente",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, Manuale dei Mostri entry heading.",
+      "source": "manual",
+      "stems": [
+        "intermittent"
+      ]
+    },
+    {
+      "en": "bodak",
+      "it": "bodak",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json -- kept as-is.",
+      "source": "coined"
+    },
+    {
+      "en": "bralani",
+      "it": "bralani",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name (eladrin), monsters.json -- kept as-is.",
+      "source": "coined"
+    },
+    {
+      "en": "bulette",
+      "it": "bulette",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json -- kept as-is; its nickname 'landshark' is translated as 'squalo di terra'.",
+      "source": "coined"
+    },
+    {
+      "en": "landshark",
+      "it": "squalo di terra",
+      "strict": false,
+      "kind": "monster",
+      "note": "Bulette's nickname, monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "choker",
+      "it": "choker",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json -- kept as-is.",
+      "source": "coined"
+    },
+    {
+      "en": "chuul",
+      "it": "chuul",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json -- kept as-is.",
+      "source": "coined"
+    },
+    {
+      "en": "Death Gaze",
+      "it": "Sguardo di morte",
+      "strict": false,
+      "kind": "rules",
+      "note": "Bodak special ability (Su/Sop), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Vulnerability to Sunlight",
+      "it": "Vulnerabilità alla luce solare",
+      "strict": false,
+      "kind": "rules",
+      "note": "Bodak special ability (Ex/Str), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Whirlwind Blast",
+      "it": "Raffica del turbine",
+      "strict": false,
+      "kind": "rules",
+      "note": "Bralani special ability (Su/Sop), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Leap (creature ability)",
+      "it": "Balzo",
+      "strict": false,
+      "kind": "rules",
+      "note": "Bulette special ability (Ex/Str), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Corporeal Instability",
+      "it": "Instabilità corporea",
+      "strict": false,
+      "kind": "rules",
+      "note": "Chaos beast special ability (Su/Sop), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Immunity to Transformation",
+      "it": "Immunità alla trasformazione",
+      "strict": false,
+      "kind": "rules",
+      "note": "Chaos beast special ability (Ex/Str), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Paralytic Tentacles",
+      "it": "Tentacoli paralizzanti",
+      "strict": false,
+      "kind": "rules",
+      "note": "Chuul special ability (Ex/Str), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Amphibious",
+      "it": "Anfibio",
+      "strict": false,
+      "kind": "rules",
+      "note": "Creature special quality (Ex/Str), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Quickness",
+      "it": "Rapidità",
+      "strict": false,
+      "kind": "rules",
+      "note": "Choker special ability (Su/Sop), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "spell immunity",
+      "it": "immunità agli incantesimi",
+      "source": "coined"
+    },
+    {
+      "en": "spellstaff",
+      "it": "bastone incantato",
+      "source": "coined",
+      "note": "Unverified spell name, spells.json #498."
+    },
+    {
+      "en": "Battleaxe",
+      "it": "Ascia da battaglia",
+      "source": "manual",
+      "note": "Manuale del Giocatore p.117."
+    },
+    {
+      "en": "Greataxe",
+      "it": "Ascia bipenne",
+      "source": "manual",
+      "note": "Manuale del Giocatore p.27/116 (1d12, crit x3, two-handed)."
+    },
+    {
+      "en": "Light Flail",
+      "it": "Mazzafrusto",
+      "source": "manual",
+      "note": "Manuale del Giocatore p.117-118, confirmed via Hextor deity weapon reference p.108 (arma preferita: il mazzafrusto)."
+    },
+    {
+      "en": "Warhammer",
+      "it": "Martello da guerra",
+      "source": "manual",
+      "note": "Manuale del Giocatore p.117/121."
+    },
+    {
+      "en": "Longsword",
+      "it": "Spada lunga",
+      "source": "manual",
+      "note": "Manuale del Giocatore p.31 (1d6, crit 19-20/x2, one-handed)."
+    },
+    {
+      "en": "spiritual weapon",
+      "it": "arma spirituale",
+      "source": "coined"
+    },
+    {
+      "en": "statue",
+      "it": "statua",
+      "source": "coined",
+      "note": "Spell self-name, spells.json #504."
+    },
+    {
+      "en": "flanking bonus",
+      "it": "bonus di fiancheggiamento",
+      "source": "coined"
+    },
+    {
+      "en": "status",
+      "it": "condizione",
+      "source": "coined",
+      "note": "Unverified spell name, spells.json #505."
+    },
+    {
+      "en": "fiend",
+      "it": "immondo",
+      "strict": false,
+      "kind": "rules",
+      "note": "The [Evil] outsider subtype/category name, distinct from 'demon' (chaotic evil only) -- devils, daemons and other evil outsiders are all 'fiends'. monsters.json Devils intro.",
+      "source": "coined"
+    },
+    {
+      "en": "feeblemind",
+      "it": "mente debole",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, monsters.json Nalfeshnee.",
+      "source": "coined"
+    },
+    {
+      "en": "magic weapon (spell)",
+      "it": "arma magica",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name (lowercase, distinct from the item property 'magic weapon'), monsters.json Marilith.",
+      "source": "coined"
+    },
+    {
+      "en": "Multiweapon Fighting",
+      "it": "Combattere con più armi",
+      "strict": false,
+      "kind": "feat",
+      "note": "Feat name, monsters.json Marilith -- parallel to Two-Weapon Fighting.",
+      "source": "coined"
+    },
+    {
+      "en": "delay poison",
+      "it": "ritardare veleno",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, monsters.json Hezrou/Vrock.",
+      "source": "coined"
+    },
+    {
+      "en": "daze",
+      "it": "frastornare",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, monsters.json Derro -- distinct from the Dazed condition noun 'Frastornato'.",
+      "source": "coined"
+    },
+    {
+      "en": "Poison Use",
+      "it": "Uso del veleno",
+      "strict": false,
+      "kind": "rules",
+      "note": "Derro special quality (Ex/Str), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Smite (creature ability)",
+      "it": "Colpo punitivo",
+      "strict": false,
+      "kind": "rules",
+      "note": "Nalfeshnee special ability (Su/Sop), monsters.json -- distinct from the paladin's Smite Evil class feature.",
+      "source": "coined"
+    },
+    {
+      "en": "Eye Rays",
+      "it": "Raggi oculari",
+      "strict": false,
+      "kind": "rules",
+      "note": "Retriever special ability (Su/Sop), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Find Target",
+      "it": "Trovare bersaglio",
+      "strict": false,
+      "kind": "rules",
+      "note": "Retriever special ability (Sp/Mag), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Energy Drain (creature ability)",
+      "it": "Drenaggio di energia",
+      "strict": false,
+      "kind": "rules",
+      "note": "Succubus special ability (Su/Sop), monsters.json -- distinct from the 'energy drain' spell-like ability header used generically.",
+      "source": "coined"
+    },
+    {
+      "en": "Dance of Ruin",
+      "it": "Danza della rovina",
+      "strict": false,
+      "kind": "rules",
+      "note": "Vrock special ability (Su/Sop), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Stunning Screech",
+      "it": "Grido stordente",
+      "strict": false,
+      "kind": "rules",
+      "note": "Vrock special ability (Su/Sop), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Destructive Harmonics",
+      "it": "Armoniche distruttive",
+      "strict": false,
+      "kind": "rules",
+      "note": "Destrachan special ability (Su/Sop), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Protection from Sonics",
+      "it": "Protezione dai suoni",
+      "strict": false,
+      "kind": "rules",
+      "note": "Destrachan special ability (Ex/Str), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Barbed Defense",
+      "it": "Difesa spinata",
+      "strict": false,
+      "kind": "rules",
+      "note": "Barbed devil special ability (Su/Sop), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Infernal Wound",
+      "it": "Ferita infernale",
+      "strict": false,
+      "kind": "rules",
+      "note": "Devil special ability (Su/Sop) -- bearded devil, horned devil, monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Battle Frenzy",
+      "it": "Furia battagliera",
+      "strict": false,
+      "kind": "rules",
+      "note": "Bearded devil special ability (Ex/Str), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Dancing Chains",
+      "it": "Catene danzanti",
+      "strict": false,
+      "kind": "rules",
+      "note": "Chain devil special ability (Su/Sop), monsters.json. Satisfies the strict 'dancing' item-property term (stem danzant) as a side effect, which is fine here.",
+      "source": "coined"
+    },
+    {
+      "en": "Unnerving Gaze",
+      "it": "Sguardo inquietante",
+      "strict": false,
+      "kind": "rules",
+      "note": "Chain devil special ability (Su/Sop), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Invisible in Light",
+      "it": "Invisibile alla luce",
+      "strict": false,
+      "kind": "rules",
+      "note": "Hellcat special ability (Ex/Str), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Mindless",
+      "it": "Privo di mente",
+      "strict": false,
+      "kind": "rules",
+      "note": "Lemure special quality (Ex/Str), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Devil Traits",
+      "it": "Tratti diabolici",
+      "strict": false,
+      "kind": "rules",
+      "note": "Devil-family heading, monsters.json -- parallel to Angel/Archon/Demon Traits.",
+      "source": "coined"
+    },
+    {
+      "en": "devil chills",
+      "it": "brividi diabolici",
+      "strict": false,
+      "kind": "rules",
+      "note": "Disease name, monsters.json Bearded Devil (Beard ability).",
+      "source": "coined"
+    },
+    {
+      "en": "summon instrument",
+      "it": "evoca strumento",
+      "source": "coined",
+      "note": "Unverified spell name, spells.json #514."
+    },
+    {
+      "en": "Hell hound",
+      "it": "Cane infernale",
+      "source": "coined",
+      "note": "Unverified MM1 creature name, spells.json Summon Monster III (#517). Needs check when monsters.json is translated."
+    },
+    {
+      "en": "Yeth hound",
+      "it": "segugio yeth",
+      "source": "manual",
+      "note": "Creature name, monsters.json. CORRECTED: confirmed word-for-word in Manuale dei Mostri I ('Segugio yeth'), including near-verbatim matching combat text. The earlier coined 'Cane Yeth' has been fixed."
+    },
+    {
+      "en": "Shadow mastiff",
+      "it": "Mastino d'ombra",
+      "source": "coined",
+      "note": "Unverified MM1 creature name, spells.json Summon Monster V (#519). Needs check when monsters.json is translated."
+    },
+    {
+      "en": "Chaos beast",
+      "it": "Bestia del caos",
+      "source": "coined",
+      "note": "Unverified MM1 creature name, spells.json Summon Monster VI (#520). Needs check when monsters.json is translated."
+    },
+    {
+      "en": "Invisible stalker",
+      "it": "Cacciatore invisibile",
+      "source": "coined",
+      "note": "Unverified MM1 creature name, spells.json Summon Monster VII (#521). Needs check when monsters.json is translated."
+    },
+    {
+      "en": "Howler",
+      "it": "Urlatore",
+      "source": "coined",
+      "note": "Unverified MM1 creature name, spells.json Summon Monster IV (#518). Needs check when monsters.json is translated."
+    },
+    {
+      "en": "ray of frost",
+      "it": "raggio di gelo",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, monsters.json Drider.",
+      "source": "coined"
+    },
+    {
+      "en": "deep slumber",
+      "it": "sonno profondo",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, monsters.json Dryad.",
+      "source": "coined"
+    },
+    {
+      "en": "tree stride",
+      "it": "passo dell'albero",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, monsters.json Dryad.",
+      "source": "coined"
+    },
+    {
+      "en": "tree shape",
+      "it": "forma d'albero",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, monsters.json Dryad -- parallel to stone shape -> forma della pietra.",
+      "source": "coined"
+    },
+    {
+      "en": "Tree Dependent",
+      "it": "Dipendente dall'albero",
+      "strict": false,
+      "kind": "rules",
+      "note": "Dryad special quality (Su/Sop), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Dwarven",
+      "it": "Nanico",
+      "strict": false,
+      "kind": "language",
+      "note": "Language name, monsters.json Dwarf.",
+      "source": "coined"
+    },
+    {
+      "en": "pick",
+      "it": "piccone da guerra",
+      "strict": false,
+      "kind": "item",
+      "note": "Weapon name, monsters.json Dwarf.",
+      "source": "coined"
+    },
+    {
+      "en": "shortbow",
+      "it": "arco corto",
+      "strict": false,
+      "kind": "item",
+      "note": "Weapon name, monsters.json Dwarf.",
+      "source": "coined"
+    },
+    {
+      "en": "heavy crossbow",
+      "it": "balestra pesante",
+      "strict": false,
+      "kind": "item",
+      "note": "Weapon name, monsters.json Dwarf.",
+      "source": "coined"
+    },
+    {
+      "en": "frightful presence",
+      "it": "Presenza terrificante",
+      "strict": false,
+      "kind": "rules",
+      "note": "Creature special ability (Su/Sop) heading. CORRECTED: confirmed word-for-word in Manuale dei Mostri I (dragons, tarrasque). The earlier coined 'presenza spaventosa' has been fixed retroactively across all 24 already-filed occurrences.",
+      "source": "manual"
+    },
+    {
+      "en": "Corrupt Water",
+      "it": "Corrompere l'acqua",
+      "strict": false,
+      "kind": "rules",
+      "note": "Black dragon special ability (Sp/Mag), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Charm Reptiles",
+      "it": "Ammaliare rettili",
+      "strict": false,
+      "kind": "rules",
+      "note": "Great wyrm black dragon special ability (Sp/Mag), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "great wyrm",
+      "it": "grande longevo",
+      "strict": false,
+      "kind": "rules",
+      "note": "Dragon age category, monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "drider",
+      "it": "drider",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json -- kept as-is.",
+      "source": "coined"
+    },
+    {
+      "en": "dryad",
+      "it": "driade",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json -- real Italian mythological word.",
+      "source": "coined"
+    },
+    {
+      "en": "dragonne",
+      "it": "dragonne",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json -- kept as-is.",
+      "source": "coined"
+    },
+    {
+      "en": "sunbeam",
+      "it": "raggio solare",
+      "source": "coined"
+    },
+    {
+      "en": "antipathy",
+      "it": "antipatia",
+      "source": "coined"
+    },
+    {
+      "en": "sympathy",
+      "it": "simpatia",
+      "source": "coined"
+    },
+    {
+      "en": "sympathetic vibration",
+      "it": "vibrazione simpatetica",
+      "source": "coined"
+    },
+    {
+      "en": "disarm",
+      "it": "disarmare",
+      "source": "coined"
+    },
+    {
+      "en": "telekinetic sphere",
+      "it": "sfera telecinetica",
+      "source": "coined"
+    },
+    {
+      "en": "find the path",
+      "it": "trovare il sentiero",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, monsters.json Red Dragon.",
+      "source": "coined"
+    },
+    {
+      "en": "Icewalking",
+      "it": "Camminare sul ghiaccio",
+      "strict": false,
+      "kind": "rules",
+      "note": "White dragon special ability (Ex/Str), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Freezing Fog",
+      "it": "Nebbia gelida",
+      "strict": false,
+      "kind": "rules",
+      "note": "White dragon special ability (Sp/Mag), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Summon Djinni",
+      "it": "Evocare gin",
+      "strict": false,
+      "kind": "rules",
+      "note": "Great wyrm brass dragon special ability (Sp/Mag), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "wyrmling",
+      "it": "draconato",
+      "strict": false,
+      "kind": "rules",
+      "note": "Dragon age category, monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "time stop",
+      "it": "fermare il tempo",
+      "source": "coined"
+    },
+    {
+      "en": "tiny hut",
+      "it": "piccola capanna",
+      "source": "coined"
+    },
+    {
+      "en": "transport via plants",
+      "it": "trasporto tramite piante",
+      "source": "coined"
+    },
+    {
+      "en": "mud to rock",
+      "it": "fango in roccia",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, monsters.json Copper Dragon -- reverse of transmute rock to mud.",
+      "source": "coined"
+    },
+    {
+      "en": "wall of stone",
+      "it": "muro di pietra",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, monsters.json Copper Dragon.",
+      "source": "coined"
+    },
+    {
+      "en": "delayed blast fireball",
+      "it": "palla di fuoco ritardata",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, monsters.json Gold Dragon.",
+      "source": "coined"
+    },
+    {
+      "en": "fire shield",
+      "it": "scudo di fuoco",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, monsters.json Gold Dragon.",
+      "source": "coined"
+    },
+    {
+      "en": "Detect Gems",
+      "it": "Individuare gemme",
+      "strict": false,
+      "kind": "rules",
+      "note": "Gold dragon special ability (Sp/Mag), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "true strike",
+      "it": "colpo sicuro",
+      "source": "coined"
+    },
+    {
+      "en": "undeath to death",
+      "it": "da non morte a morte",
+      "source": "coined"
+    },
+    {
+      "en": "reverse gravity",
+      "it": "gravità inversa",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, monsters.json Glabrezu / Silver Dragon.",
+      "source": "coined"
+    },
+    {
+      "en": "Cloudwalking",
+      "it": "Camminare sulle nuvole",
+      "strict": false,
+      "kind": "rules",
+      "note": "Silver dragon special ability (Su/Sop), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "undetectable alignment",
+      "it": "allineamento non rilevabile",
+      "source": "coined"
+    },
+    {
+      "en": "unholy aura",
+      "it": "aura sacrilega",
+      "source": "coined",
+      "note": "Mirrors the manual-confirmed sibling unholy blight -> influenza sacrilega."
+    },
+    {
+      "en": "vampiric touch",
+      "it": "tocco vampirico",
+      "source": "coined"
+    },
+    {
+      "en": "ventriloquism",
+      "it": "ventriloquio",
+      "source": "coined"
+    },
+    {
+      "en": "virtue",
+      "it": "virtù",
+      "source": "coined"
+    },
+    {
+      "en": "vision",
+      "it": "visione",
+      "source": "coined"
+    },
+    {
+      "en": "wail of the banshee",
+      "it": "lamento della banshee",
+      "source": "coined"
+    },
+    {
+      "en": "giant eagle",
+      "it": "aquila gigante",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json -- parallel to giant octopus -> polpo gigante.",
+      "source": "coined"
+    },
+    {
+      "en": "Air Mastery",
+      "it": "Padronanza dell'aria",
+      "strict": false,
+      "kind": "rules",
+      "note": "Air elemental special ability (Ex/Str), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "whirlwind (creature ability)",
+      "it": "Turbine",
+      "strict": false,
+      "kind": "rules",
+      "note": "Air/fire elemental special ability (Su/Sop) header -- shares the rendering with the 'whirlwind' spell.",
+      "source": "coined"
+    },
+    {
+      "en": "Earth Mastery",
+      "it": "Padronanza della terra",
+      "strict": false,
+      "kind": "rules",
+      "note": "Earth elemental special ability (Ex/Str), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Push (creature ability)",
+      "it": "Spinta",
+      "strict": false,
+      "kind": "rules",
+      "note": "Earth elemental special ability (Ex/Str), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Earth Glide",
+      "it": "Scivolare nella terra",
+      "strict": false,
+      "kind": "rules",
+      "note": "Earth elemental special ability (Ex/Str), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Burn",
+      "it": "Bruciare",
+      "strict": false,
+      "kind": "rules",
+      "note": "Fire elemental special ability (Ex/Str), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Water Mastery",
+      "it": "Padronanza dell'acqua",
+      "strict": false,
+      "kind": "rules",
+      "note": "Water elemental special ability (Ex/Str), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Drench",
+      "it": "Inzuppare",
+      "strict": false,
+      "kind": "rules",
+      "note": "Water elemental special ability (Ex/Str), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Vortex",
+      "it": "Vortice",
+      "strict": false,
+      "kind": "rules",
+      "note": "Water elemental special ability (Su/Sop), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "waves of exhaustion",
+      "it": "Onde di esaurimento",
+      "source": "coined"
+    },
+    {
+      "en": "longbow",
+      "it": "arco lungo",
+      "strict": false,
+      "kind": "item",
+      "note": "Weapon name, monsters.json Elf.",
+      "source": "coined"
+    },
+    {
+      "en": "morningstar",
+      "it": "stella del mattino",
+      "strict": false,
+      "kind": "item",
+      "note": "Weapon name, monsters.json Ettin.",
+      "source": "coined"
+    },
+    {
+      "en": "javelin",
+      "it": "giavellotto",
+      "strict": false,
+      "kind": "item",
+      "note": "Weapon name, monsters.json Ettin.",
+      "source": "coined"
+    },
+    {
+      "en": "Superior Two-Weapon Fighting",
+      "it": "Combattere con Due Armi Superiore",
+      "strict": false,
+      "kind": "feat",
+      "note": "Feat name, monsters.json Ettin -- extends the manual Two-Weapon Fighting -> Combattere con Due Armi.",
+      "source": "coined"
+    },
+    {
+      "en": "Craft (trapmaking)",
+      "it": "Artigianato (costruzione di trappole)",
+      "strict": false,
+      "kind": "skill",
+      "note": "Skill subtype, monsters.json Ettercap.",
+      "source": "coined"
+    },
+    {
+      "en": "Hive Mind",
+      "it": "Mente alveare",
+      "strict": false,
+      "kind": "rules",
+      "note": "Formian special quality (Ex/Str), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "ettercap",
+      "it": "ettercap",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json -- kept as-is.",
+      "source": "coined"
+    },
+    {
+      "en": "ettin",
+      "it": "ettin",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json -- kept as-is.",
+      "source": "coined"
+    },
+    {
+      "en": "ethereal filcher",
+      "it": "saccheggiatore etereo",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, Manuale dei Mostri entry heading.",
+      "source": "manual",
+      "stems": [
+        "etere"
+      ]
+    },
+    {
+      "en": "ethereal marauder",
+      "it": "predatore etereo",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, Manuale dei Mostri entry heading.",
+      "source": "manual",
+      "stems": [
+        "etere"
+      ]
+    },
+    {
+      "en": "weird",
+      "it": "stranezza",
+      "source": "coined"
+    },
+    {
+      "en": "whirlwind",
+      "it": "turbine",
+      "source": "coined"
+    },
+    {
+      "en": "whispering wind",
+      "it": "vento sussurrante",
+      "source": "coined"
+    },
+    {
+      "en": "wind walk",
+      "it": "camminare nel vento",
+      "source": "coined"
+    },
+    {
+      "en": "wind wall",
+      "it": "muro di vento",
+      "source": "manual",
+      "note": "Spell name. Confirmed word-for-word in Manuale del Giocatore ('Muro di vento: Respinge frecce, piccole creature e gas')."
+    },
+    {
+      "en": "word of chaos",
+      "it": "parola del caos",
+      "source": "coined"
+    },
+    {
+      "en": "word of recall",
+      "it": "Parola del ritiro",
+      "source": "manual",
+      "stems": [
+        "ritiro"
+      ],
+      "note": "Spell name, Manuale del Giocatore."
+    },
+    {
+      "en": "zone of silence",
+      "it": "zona di silenzio",
+      "source": "coined"
+    },
+    {
+      "en": "Trill",
+      "it": "Trillo",
+      "strict": false,
+      "kind": "rules",
+      "note": "Frost worm special ability (Su/Sop), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "frost worm",
+      "it": "verme del gelo",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, Manuale dei Mostri entry heading.",
+      "source": "manual",
+      "stems": [
+        "gel"
+      ]
+    },
+    {
+      "en": "shrieker",
+      "it": "shrieker",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json -- kept as-is.",
+      "source": "coined"
+    },
+    {
+      "en": "violet fungus",
+      "it": "fungo violetto",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json -- literal translation.",
+      "source": "coined"
+    },
+    {
+      "en": "Freeze",
+      "it": "Immobilità",
+      "strict": false,
+      "kind": "rules",
+      "note": "Gargoyle special ability (Ex/Str). Confirmed in Manuale dei Mostri I stat block (\"Qualità speciali: ... immobilità\").",
+      "source": "manual"
+    },
+    {
+      "en": "genie",
+      "it": "genio",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature family name, monsters.json. Confirmed in Manuale dei Mostri I index (\"Genio\"). Plural 'genî' (circumflex) distinguishes from 'geni' (geniuses).",
+      "source": "manual"
+    },
+    {
+      "en": "efreeti",
+      "it": "efreeti",
+      "strict": false,
+      "kind": "monster",
+      "note": "Genie subtype, monsters.json -- kept as-is.",
+      "source": "coined"
+    },
+    {
+      "en": "janni",
+      "it": "janni",
+      "strict": false,
+      "kind": "monster",
+      "note": "Genie subtype, monsters.json -- kept as-is.",
+      "source": "coined"
+    },
+    {
+      "en": "Change Size",
+      "it": "Cambiare taglia",
+      "strict": false,
+      "kind": "rules",
+      "note": "Genie special ability (Sp/Mag), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Elemental Endurance",
+      "it": "Resistenza elementale",
+      "strict": false,
+      "kind": "rules",
+      "note": "Janni special quality (Ex/Str), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "cure minor wounds",
+      "it": "curare ferite minime",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, monsters.json Ghaele.",
+      "source": "coined"
+    },
+    {
+      "en": "color spray",
+      "it": "spruzzo di colore",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, monsters.json Ghaele.",
+      "source": "coined"
+    },
+    {
+      "en": "calm animals",
+      "it": "calmare animali",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, monsters.json Ghaele.",
+      "source": "coined"
+    },
+    {
+      "en": "command (spell)",
+      "it": "comando",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, monsters.json Ghaele/Avoral.",
+      "source": "coined"
+    },
+    {
+      "en": "animal shapes",
+      "it": "forme animali",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, monsters.json Ghaele.",
+      "source": "coined"
+    },
+    {
+      "en": "Gaze",
+      "it": "Sguardo",
+      "strict": false,
+      "kind": "rules",
+      "note": "Ghaele special ability (Su/Sop) heading, monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Protective Aura",
+      "it": "Aura protettiva",
+      "strict": false,
+      "kind": "rules",
+      "note": "Ghaele special ability (Su/Sop), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Ghoul Fever",
+      "it": "Febbre del ghoul",
+      "strict": false,
+      "kind": "rules",
+      "note": "Ghoul special ability (Su/Sop). Confirmed word-for-word in Manuale dei Mostri I stat block.",
+      "source": "manual"
+    },
+    {
+      "en": "cloud giant",
+      "it": "gigante delle nuvole",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "fire giant",
+      "it": "gigante del fuoco",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "stone giant",
+      "it": "gigante delle pietre",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed in Manuale dei Mostri I index (plural 'pietre', not singular).",
+      "source": "manual"
+    },
+    {
+      "en": "storm giant",
+      "it": "gigante delle tempeste",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "Rock Throwing",
+      "it": "Scagliare rocce",
+      "strict": false,
+      "kind": "rules",
+      "note": "Giant special attack (Ex/Str). Confirmed word-for-word in Manuale dei Mostri I giant stat blocks.",
+      "source": "manual"
+    },
+    {
+      "en": "Rock Catching",
+      "it": "Afferrare rocce",
+      "strict": false,
+      "kind": "rules",
+      "note": "Giant special quality (Ex/Str). Confirmed word-for-word in Manuale dei Mostri I giant stat blocks.",
+      "source": "manual"
+    },
+    {
+      "en": "Oversized Weapon",
+      "it": "Arma sovradimensionata",
+      "strict": false,
+      "kind": "rules",
+      "note": "Cloud giant special ability (Ex/Str), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "gibbering mouther",
+      "it": "fauci gorgoglianti",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, Manuale dei Mostri entry heading.",
+      "source": "manual",
+      "stems": [
+        "gorgogliant"
+      ]
+    },
+    {
+      "en": "Gibbering",
+      "it": "Farfugliare",
+      "strict": false,
+      "kind": "rules",
+      "note": "Gibbering mouther special ability (Su/Sop), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Spittle",
+      "it": "Sputo",
+      "strict": false,
+      "kind": "rules",
+      "note": "Gibbering mouther special ability (Ex/Str), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Ground Manipulation",
+      "it": "Manipolazione del terreno",
+      "strict": false,
+      "kind": "rules",
+      "note": "Gibbering mouther special ability (Su/Sop), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Amorphous",
+      "it": "Amorfo",
+      "strict": false,
+      "kind": "rules",
+      "note": "Gibbering mouther special quality (Ex/Str), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "quicksand",
+      "it": "sabbie mobili",
+      "strict": false,
+      "kind": "rules",
+      "note": "Terrain hazard term, monsters.json Gibbering Mouther.",
+      "source": "coined"
+    },
+    {
+      "en": "girallon",
+      "it": "girallon",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json -- kept as-is.",
+      "source": "coined"
+    },
+    {
+      "en": "gnoll",
+      "it": "gnoll",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed kept as-is in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "clay golem",
+      "it": "golem di argilla",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed word-for-word in Manuale dei Mostri I.",
+      "source": "manual"
+    },
+    {
+      "en": "flesh golem",
+      "it": "golem di carne",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed word-for-word in Manuale dei Mostri I.",
+      "source": "manual"
+    },
+    {
+      "en": "stone golem",
+      "it": "golem di pietra",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed word-for-word in Manuale dei Mostri I.",
+      "source": "manual"
+    },
+    {
+      "en": "Berserk",
+      "it": "Berserk",
+      "strict": false,
+      "kind": "rules",
+      "note": "Golem special ability/attack (Ex/Str), monsters.json. Confirmed kept as-is in Manuale dei Mostri I stat blocks.",
+      "source": "manual"
+    },
+    {
+      "en": "Cursed Wound",
+      "it": "Ferita maledetta",
+      "strict": false,
+      "kind": "rules",
+      "note": "Clay golem special ability (Ex/Str). Confirmed word-for-word in Manuale dei Mostri I.",
+      "source": "manual"
+    },
+    {
+      "en": "Immunity to Magic",
+      "it": "Immunità alla magia",
+      "strict": false,
+      "kind": "rules",
+      "note": "Golem special quality (Ex/Str). Confirmed word-for-word in Manuale dei Mostri I.",
+      "source": "manual"
+    },
+    {
+      "en": "rust monster",
+      "it": "Rugginofago",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json Iron Golem entry. Confirmed word-for-word in Manuale dei Mostri I (heading, index, and body text).",
+      "source": "manual"
+    },
+    {
+      "en": "gorgon",
+      "it": "gorgon",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json -- kept as-is.",
+      "source": "coined"
+    },
+    {
+      "en": "gray render",
+      "it": "squartatore grigio",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, Manuale dei Mostri entry heading.",
+      "source": "manual",
+      "stems": [
+        "grigi"
+      ]
+    },
+    {
+      "en": "Inevitable",
+      "it": "Inevitabile",
+      "strict": false,
+      "kind": "creature",
+      "note": "Construct creature category, monsters.json (kolyarut/marut/zelekhut).",
+      "source": "coined"
+    },
+    {
+      "en": "Kolyarut",
+      "it": "kolyarut",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json -- kept as-is.",
+      "source": "coined"
+    },
+    {
+      "en": "Marut",
+      "it": "marut",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json -- kept as-is.",
+      "source": "coined"
+    },
+    {
+      "en": "Zelekhut",
+      "it": "zelekhut",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json -- kept as-is.",
+      "source": "coined"
+    },
+    {
+      "en": "geas",
+      "it": "costrizione",
+      "strict": false,
+      "kind": "spell",
+      "note": "Consistent with existing 'geas/quest' -> 'costrizione/cerca' and 'lesser geas' -> 'costrizione minore' entries.",
+      "source": "coined"
+    },
+    {
+      "en": "mark of justice",
+      "it": "marchio di giustizia",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, monsters.json Inevitable entries.",
+      "source": "coined"
+    },
+    {
+      "en": "Ability Focus",
+      "it": "Focus di Abilità",
+      "strict": false,
+      "kind": "rules",
+      "note": "Feat name, monsters.json Marut entry.",
+      "source": "coined"
+    },
+    {
+      "en": "greater command",
+      "it": "comando superiore",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, monsters.json Marut entry.",
+      "source": "coined"
+    },
+    {
+      "en": "earthquake",
+      "it": "terremoto",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, monsters.json Marut entry.",
+      "source": "coined"
+    },
+    {
+      "en": "Natural Invisibility",
+      "it": "Invisibilità Naturale",
+      "strict": false,
+      "kind": "rules",
+      "note": "Invisible stalker special quality (Su/Sop), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Improved Tracking",
+      "it": "Fiuto Migliorato",
+      "strict": false,
+      "kind": "rules",
+      "note": "Invisible stalker special ability (Ex/Str), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Light Sensitivity",
+      "it": "Sensibilità alla Luce",
+      "strict": false,
+      "kind": "rules",
+      "note": "Kobold/goblinoid special quality (Ex/Str), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Profession (miner)",
+      "it": "Professione (minatore)",
+      "strict": false,
+      "kind": "rules",
+      "note": "Skill-with-specialty, monsters.json Kobold entry.",
+      "source": "coined"
+    },
+    {
+      "en": "kraken",
+      "it": "kraken",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json -- kept as-is.",
+      "source": "coined"
+    },
+    {
+      "en": "Aquan",
+      "it": "Aquan",
+      "strict": false,
+      "kind": "rules",
+      "note": "Elemental Plane of Water planar language, monsters.json -- kept as-is (invented planar-language proper noun, not an English word).",
+      "source": "coined"
+    },
+    {
+      "en": "Auran",
+      "it": "Auran",
+      "strict": false,
+      "kind": "rules",
+      "note": "Elemental Plane of Air planar language, monsters.json -- kept as-is (invented planar-language proper noun, not an English word).",
+      "source": "coined"
+    },
+    {
+      "en": "krenshar",
+      "it": "krenshar",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json -- kept as-is.",
+      "source": "coined"
+    },
+    {
+      "en": "lamia",
+      "it": "lamia",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json -- kept as-is (matches the existing Italian word).",
+      "source": "coined"
+    },
+    {
+      "en": "lammasu",
+      "it": "lammasu",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json -- kept as-is.",
+      "source": "coined"
+    },
+    {
+      "en": "leonal",
+      "it": "leonal",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name (celestial guardinal), monsters.json -- kept as-is.",
+      "source": "coined"
+    },
+    {
+      "en": "lillend",
+      "it": "lillend",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json -- kept as-is.",
+      "source": "coined"
+    },
+    {
+      "en": "locathah",
+      "it": "locathah",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json -- kept as-is.",
+      "source": "coined"
+    },
+    {
+      "en": "werebear",
+      "it": "orso mannaro",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed word-for-word in Manuale dei Mostri I lycanthrope rules chapter.",
+      "source": "manual"
+    },
+    {
+      "en": "lycanthropy",
+      "it": "licantropia",
+      "strict": false,
+      "kind": "rules",
+      "note": "Creature template, monsters.json. Confirmed word-for-word in Manuale dei Mostri I.",
+      "source": "manual"
+    },
+    {
+      "en": "control winds",
+      "it": "controllare i venti",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, monsters.json Kraken entry. Consistent with existing 'control weather' -> 'Controllare il clima'.",
+      "source": "coined"
+    },
+    {
+      "en": "light",
+      "it": "luce",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name (0-level). Ambiguous with the ordinary English word 'light', left non-strict.",
+      "source": "coined"
+    },
+    {
+      "en": "cure critical wounds",
+      "it": "cura ferite critiche",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, consistent with existing 'cure light wounds' -> 'cura ferite leggere'.",
+      "source": "coined"
+    },
+    {
+      "en": "lullaby",
+      "it": "ninna nanna",
+      "strict": false,
+      "kind": "spell",
+      "note": "Bard cantrip name, monsters.json Lillend entry.",
+      "source": "coined"
+    },
+    {
+      "en": "curse of lycanthropy",
+      "it": "Maledizione della Licantropia",
+      "strict": false,
+      "kind": "rules",
+      "note": "Werebear special ability (Su/Sop) heading. Confirmed word-for-word in Manuale dei Mostri I lycanthrope rules chapter.",
+      "source": "manual"
+    },
+    {
+      "en": "bear empathy",
+      "it": "Empatia con gli Orsi",
+      "strict": false,
+      "kind": "rules",
+      "note": "Werebear special ability heading, monsters.json. Pattern confirmed in Manuale dei Mostri I ('Empatia con i cinghiali' for the Wereboar equivalent).",
+      "source": "manual"
+    },
+    {
+      "en": "cleric spell list",
+      "it": "lista degli incantesimi da chierico",
+      "strict": false,
+      "kind": "rules",
+      "note": "Prose reference, monsters.json Lammasu entry.",
+      "source": "coined"
+    },
+    {
+      "en": "wereboar",
+      "it": "cinghiale mannaro",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed word-for-word in Manuale dei Mostri I lycanthrope chapter.",
+      "source": "manual"
+    },
+    {
+      "en": "wererat",
+      "it": "topo mannaro",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed word-for-word in Manuale dei Mostri I lycanthrope chapter.",
+      "source": "manual"
+    },
+    {
+      "en": "weretiger",
+      "it": "tigre mannara",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed word-for-word in Manuale dei Mostri I lycanthrope chapter.",
+      "source": "manual"
+    },
+    {
+      "en": "Boar Empathy",
+      "it": "Empatia con i Cinghiali",
+      "strict": false,
+      "kind": "rules",
+      "note": "Wereboar special ability heading. Confirmed word-for-word in Manuale dei Mostri I ('Empatia con i cinghiali').",
+      "source": "manual"
+    },
+    {
+      "en": "Rat Empathy",
+      "it": "Empatia con i Topi",
+      "strict": false,
+      "kind": "rules",
+      "note": "Wererat special ability heading. Confirmed word-for-word in Manuale dei Mostri I ('empatia con i topi').",
+      "source": "manual"
+    },
+    {
+      "en": "Tiger Empathy",
+      "it": "Empatia con le Tigri",
+      "strict": false,
+      "kind": "rules",
+      "note": "Weretiger special ability heading. Confirmed word-for-word in Manuale dei Mostri I ('Empatia con le tigri').",
+      "source": "manual"
+    },
+    {
+      "en": "werewolf",
+      "it": "lupo mannaro",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed word-for-word in Manuale dei Mostri I lycanthrope chapter.",
+      "source": "manual"
+    },
+    {
+      "en": "werewolf lord",
+      "it": "signore dei lupi mannari",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed word-for-word in Manuale dei Mostri I lycanthrope chapter.",
+      "source": "manual"
+    },
+    {
+      "en": "Wolf Empathy",
+      "it": "Empatia con i Lupi",
+      "strict": false,
+      "kind": "rules",
+      "note": "Werewolf/werewolf lord special ability heading. Confirmed word-for-word in Manuale dei Mostri I ('Empatia con i lupi').",
+      "source": "manual"
+    },
+    {
+      "en": "gauntlets of ogre power",
+      "it": "guanti del potere orchesco",
+      "strict": false,
+      "kind": "item",
+      "note": "Magic item, monsters.json Werewolf Lord possessions. Confirmed word-for-word in Manuale dei Mostri I.",
+      "source": "manual"
+    },
+    {
+      "en": "mithral chain shirt",
+      "it": "giaco di maglia in mithral",
+      "strict": false,
+      "kind": "item",
+      "note": "Magic item, monsters.json Werewolf Lord possessions. Confirmed word-for-word in Manuale dei Mostri I.",
+      "source": "manual"
+    },
+    {
+      "en": "dire wereboar",
+      "it": "cinghiale crudele mannaro",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed word-for-word in Manuale dei Mostri I lycanthrope chapter.",
+      "source": "manual"
+    },
+    {
+      "en": "magmin",
+      "it": "magmin",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed kept as-is in Manuale dei Mostri I index and body text.",
+      "source": "manual"
+    },
+    {
+      "en": "manticore",
+      "it": "manticora",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "medusa",
+      "it": "medusa",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed in Manuale dei Mostri I index (matches the existing Italian word).",
+      "source": "manual"
+    },
+    {
+      "en": "mephit",
+      "it": "Mephit",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. CORRECTED: confirmed kept as literal English word in Manuale dei Mostri I index and body text ('Mephit', 'Mephit dell'acqua', 'Mephit (qualunque)', etc.) -- the earlier coined 'mefite' was wrong and has been fixed retroactively in the already-filed batches (monsters/330-339).",
+      "source": "manual"
+    },
+    {
+      "en": "Ignan",
+      "it": "Ignan",
+      "strict": false,
+      "kind": "rules",
+      "note": "Elemental Plane of Fire planar language, monsters.json. Confirmed kept as-is in Manuale dei Mostri I (azer, fire elemental, genie entries).",
+      "source": "manual"
+    },
+    {
+      "en": "Terran",
+      "it": "Terran",
+      "strict": false,
+      "kind": "rules",
+      "note": "Elemental Plane of Earth planar language, monsters.json. Confirmed kept as-is in Manuale dei Mostri I.",
+      "source": "manual"
+    },
+    {
+      "en": "blur",
+      "it": "sfocatura",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name. Confirmed word-for-word in Manuale del Giocatore condition/spell text.",
+      "source": "manual"
+    },
+    {
+      "en": "Combustion",
+      "it": "Combustione",
+      "strict": false,
+      "kind": "rules",
+      "note": "Magmin special ability (Ex/Str), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Fiery Aura",
+      "it": "Aura Infuocata",
+      "strict": false,
+      "kind": "rules",
+      "note": "Magmin special ability (Ex/Str), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Melt Weapons",
+      "it": "Fondere le Armi",
+      "strict": false,
+      "kind": "rules",
+      "note": "Magmin special ability (Ex/Str), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Summon Mephit",
+      "it": "Evocare Mefite",
+      "strict": false,
+      "kind": "rules",
+      "note": "Mephit special ability (Sp/Mag), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "scorching ray",
+      "it": "raggio rovente",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name. Confirmed word-for-word in Manuale del Giocatore.",
+      "source": "manual"
+    },
+    {
+      "en": "merfolk",
+      "it": "nereide",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. CORRECTED: the earlier 'tritone' collided with the separate Triton race/outsider (monsters.json), which really is called 'Tritone' per Manuale dei Mostri I -- fixed retroactively to 'nereide' (a mermaid/sea-nymph term) to disambiguate. Still not manual-confirmed for Merfolk specifically.",
+      "source": "coined"
+    },
+    {
+      "en": "mimic",
+      "it": "mimic",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed kept as-is in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "Natural Cunning",
+      "it": "Astuzia Naturale",
+      "strict": false,
+      "kind": "rules",
+      "note": "Minotaur special quality (Ex/Str), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Adhesive",
+      "it": "Adesivo",
+      "strict": false,
+      "kind": "rules",
+      "note": "Mimic special quality (Ex/Str), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Crush",
+      "it": "Schiacciare",
+      "strict": false,
+      "kind": "rules",
+      "note": "Mimic special attack (Ex/Str) heading, monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Mimic Shape",
+      "it": "Forma Mimetica",
+      "strict": false,
+      "kind": "rules",
+      "note": "Mimic special quality (Ex/Str), monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "mummy",
+      "it": "mummia",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed word-for-word in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "naga",
+      "it": "naga",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name (generic), monsters.json. Confirmed kept as-is in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "dark naga",
+      "it": "naga oscura",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed word-for-word in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "guardian naga",
+      "it": "naga guardiana",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed word-for-word in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "spirit naga",
+      "it": "naga spirituale",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed word-for-word in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "water naga",
+      "it": "naga acquatica",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed word-for-word in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "night hag",
+      "it": "strega notturna",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name (hag subtype), monsters.json. Established this session alongside 'annis'/'green hag'/'sea hag'.",
+      "source": "coined"
+    },
+    {
+      "en": "nightmare",
+      "it": "incubo",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed word-for-word in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "nightshade",
+      "it": "ombra notturna",
+      "strict": false,
+      "kind": "monster",
+      "note": "Undead creature category (parenthetical subtype tag), monsters.json. Confirmed word-for-word in Manuale dei Mostri I index -- e.g. 'Ala notturna (ombra notturna)'.",
+      "source": "manual"
+    },
+    {
+      "en": "nightcrawler",
+      "it": "verme notturno",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed word-for-word in Manuale dei Mostri I index ('Verme notturno (ombra notturna)'); size/weight match exactly.",
+      "source": "manual"
+    },
+    {
+      "en": "nightwalker",
+      "it": "gigante notturno",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed word-for-word in Manuale dei Mostri I index ('Gigante notturno (ombra notturna)').",
+      "source": "manual"
+    },
+    {
+      "en": "nightwing",
+      "it": "ala notturna",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed word-for-word in Manuale dei Mostri I index ('Ala notturna (ombra notturna)'); wingspan/weight match exactly (40 ft/4000 lb = 12 m/2000 kg per the pack's own conversion factors).",
+      "source": "manual"
+    },
+    {
+      "en": "finger of death",
+      "it": "dito della morte",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name. Confirmed word-for-word in Manuale del Giocatore.",
+      "source": "manual"
+    },
+    {
+      "en": "acid splash",
+      "it": "spruzzo acido",
+      "strict": false,
+      "kind": "spell",
+      "note": "0-level spell name. Not found verbatim in the cached PHB OCR; coined consistent with other acid-themed spell names.",
+      "source": "coined"
+    },
+    {
+      "en": "energy drain",
+      "it": "risucchio di energia",
+      "strict": false,
+      "kind": "rules",
+      "note": "Special attack type (the drain-negative-levels attack, distinct from the 'enervation' spell which happens to share the same coined Italian rendering). Confirmed word-for-word in Manuale del Giocatore glossary ('risucchio di energia: Un attacco che prosciuga l'energia vitale').",
+      "source": "manual"
+    },
+    {
+      "en": "greater shadow",
+      "it": "Ombra maggiore",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name (advanced shadow), monsters.json. CORRECTED: confirmed word-for-word in Manuale dei Mostri I index. The earlier coined 'ombra superiore' has been fixed retroactively where already filed.",
+      "source": "manual"
+    },
+    {
+      "en": "dread wraith",
+      "it": "Wraith del terrore",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name (advanced wraith), monsters.json. CORRECTED: confirmed word-for-word in Manuale dei Mostri I index and body text. The earlier coined 'spettro terribile' has been fixed retroactively where already filed.",
+      "source": "manual"
+    },
+    {
+      "en": "crush item",
+      "it": "Distruggere Oggetto",
+      "strict": false,
+      "kind": "rules",
+      "note": "Nightwalker special attack (Su/Sop) heading, monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "evil gaze",
+      "it": "Sguardo Malvagio",
+      "strict": false,
+      "kind": "rules",
+      "note": "Nightshade special attack (Su/Sop) heading, monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "summon undead",
+      "it": "Evocare Non Morti",
+      "strict": false,
+      "kind": "rules",
+      "note": "Nightshade special ability (Su/Sop) heading, monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "despair",
+      "it": "Disperazione",
+      "strict": false,
+      "kind": "rules",
+      "note": "Mummy special attack (Su/Sop) heading, monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "mummy rot",
+      "it": "Putrefazione della Mummia",
+      "strict": false,
+      "kind": "rules",
+      "note": "Mummy disease, monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "resistance to charm",
+      "it": "Resistenza al Charme",
+      "strict": false,
+      "kind": "rules",
+      "note": "Dark naga special quality heading, monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "guarded thoughts",
+      "it": "Pensieri Protetti",
+      "strict": false,
+      "kind": "rules",
+      "note": "Dark naga special quality (Ex/Str) heading, monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "create spawn",
+      "it": "Creare Progenie",
+      "strict": false,
+      "kind": "rules",
+      "note": "Undead special ability (Su/Sop) heading, monsters.json (mohrg).",
+      "source": "coined"
+    },
+    {
+      "en": "paralyzing touch",
+      "it": "Tocco Paralizzante",
+      "strict": false,
+      "kind": "rules",
+      "note": "Mohrg special attack (Su/Sop) heading, monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "flaming hooves",
+      "it": "Zoccoli Infuocati",
+      "strict": false,
+      "kind": "rules",
+      "note": "Nightmare special ability (Su/Sop) heading, monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "dream haunting",
+      "it": "Infestazione dei Sogni",
+      "strict": false,
+      "kind": "rules",
+      "note": "Night hag special ability (Su/Sop) heading, monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "heartstone",
+      "it": "pietra del cuore",
+      "strict": false,
+      "kind": "item",
+      "note": "Magic item, monsters.json Night Hag entry.",
+      "source": "coined"
+    },
+    {
+      "en": "nymph",
+      "it": "ninfa",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed word-for-word in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "ogre",
+      "it": "ogre",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed kept as-is in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "ogre mage",
+      "it": "ogre mago",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed in Manuale dei Mostri I index ('Ogre magi', plural heading form).",
+      "source": "manual"
+    },
+    {
+      "en": "black pudding",
+      "it": "protoplasma nero",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed word-for-word in Manuale dei Mostri I ('Protoplasma nero').",
+      "source": "manual"
+    },
+    {
+      "en": "gelatinous cube",
+      "it": "cubo gelatinoso",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed word-for-word in Manuale dei Mostri I.",
+      "source": "manual"
+    },
+    {
+      "en": "gray ooze",
+      "it": "melma grigia",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed word-for-word in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "ochre jelly",
+      "it": "gelatina ocra",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Not found verbatim in the cached MM1 OCR text; coined from the common Italian D&D rendering.",
+      "source": "coined"
+    },
+    {
+      "en": "orc",
+      "it": "orco",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed word-for-word in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "otyugh",
+      "it": "otyugh",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed kept as-is in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "Magic Drain",
+      "it": "Risucchio Magico",
+      "strict": false,
+      "kind": "rules",
+      "note": "Nightwing special attack (Su/Sop) heading, monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Blinding Beauty",
+      "it": "Bellezza Accecante",
+      "strict": false,
+      "kind": "rules",
+      "note": "Nymph special ability (Su/Sop) heading, monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Stunning Glance",
+      "it": "Sguardo Stordente",
+      "strict": false,
+      "kind": "rules",
+      "note": "Nymph special attack (Su/Sop) heading, monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Unearthly Grace",
+      "it": "Grazia Ultraterrena",
+      "strict": false,
+      "kind": "rules",
+      "note": "Nymph special quality (Su/Sop) heading, monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "calm animal",
+      "it": "calmare animali",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name (druid), monsters.json Nymph entry.",
+      "source": "coined"
+    },
+    {
+      "en": "flight",
+      "it": "Volo",
+      "strict": false,
+      "kind": "rules",
+      "note": "Ogre mage special ability (Su/Sop) heading, monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "split",
+      "it": "Scindersi",
+      "strict": false,
+      "kind": "rules",
+      "note": "Ooze special quality (Ex/Str) heading. Confirmed word-for-word in Manuale dei Mostri I Black Pudding entry.",
+      "source": "manual"
+    },
+    {
+      "en": "engulf",
+      "it": "Inghiottire",
+      "strict": false,
+      "kind": "rules",
+      "note": "Gelatinous cube special attack (Ex/Str) heading, monsters.json. (Note: 'swallow whole' already maps to the same Italian 'Inghiottire' for a different but analogous ability -- both are non-strict.)",
+      "source": "coined"
+    },
+    {
+      "en": "paralysis",
+      "it": "Paralisi",
+      "strict": false,
+      "kind": "rules",
+      "note": "Gelatinous cube special attack (Ex/Str) heading, monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "transparent",
+      "it": "Trasparente",
+      "strict": false,
+      "kind": "rules",
+      "note": "Ooze special quality (Ex/Str) heading, monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "giant owl",
+      "it": "gufo gigante",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed word-for-word in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "owlbear",
+      "it": "orsogufo",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed word-for-word in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "pegasus",
+      "it": "pegaso",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "phantom fungus",
+      "it": "fungo fantasma",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed word-for-word in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "phasm",
+      "it": "phasm",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed kept as-is in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "planetouched",
+      "it": "stirpe planare",
+      "strict": false,
+      "kind": "rules",
+      "note": "Creature category, monsters.json (aasimar/tiefling). Confirmed in Manuale dei Mostri I index ('Aasimar (stirpe planare)', 'Tiefling (stirpe planare)').",
+      "source": "manual"
+    },
+    {
+      "en": "aasimar",
+      "it": "aasimar",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed kept as-is in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "tiefling",
+      "it": "tiefling",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed kept as-is in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "pseudodragon",
+      "it": "pseudodrago",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed word-for-word in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "purple worm",
+      "it": "verme purpureo",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed word-for-word in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "Superior Low-Light Vision",
+      "it": "Visione Crepuscolare Superiore",
+      "strict": false,
+      "kind": "rules",
+      "note": "Giant owl special quality (Ex/Str) heading, monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "Resilient",
+      "it": "Resistente",
+      "strict": false,
+      "kind": "rules",
+      "note": "Phasm special quality (Ex/Str) heading, monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "rast",
+      "it": "rast",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed kept as-is in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "ravid",
+      "it": "ravid",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed kept as-is in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "remorhaz",
+      "it": "remorhaz",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed kept as-is in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "roc",
+      "it": "roc",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed kept as-is in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "roper",
+      "it": "roper",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Not found in the cached MM1 index; kept as-is pending verification, consistent with other untranslated monster names.",
+      "source": "coined"
+    },
+    {
+      "en": "sahuagin",
+      "it": "sahuagin",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed kept as-is in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "salamander",
+      "it": "salamandra",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed word-for-word in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "positive energy plane",
+      "it": "Piano dell'Energia Positiva",
+      "strict": false,
+      "kind": "rules",
+      "note": "Plane name, monsters.json Ravid entry.",
+      "source": "coined"
+    },
+    {
+      "en": "paralyzing gaze",
+      "it": "Sguardo Paralizzante",
+      "strict": false,
+      "kind": "rules",
+      "note": "Rast special attack (Su/Sop) heading, monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "drag",
+      "it": "Trascinare",
+      "strict": false,
+      "kind": "rules",
+      "note": "Roper special attack (Ex/Str) heading, monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "strands",
+      "it": "Filamenti",
+      "strict": false,
+      "kind": "rules",
+      "note": "Roper special quality (Ex/Str) heading, monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "rust",
+      "it": "Ruggine",
+      "strict": false,
+      "kind": "rules",
+      "note": "Rust monster special attack (Ex/Str) heading, monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "blood frenzy",
+      "it": "Furia di Sangue",
+      "strict": false,
+      "kind": "rules",
+      "note": "Sahuagin special quality heading, monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "freshwater sensitivity",
+      "it": "Sensibilità all'Acqua Dolce",
+      "strict": false,
+      "kind": "rules",
+      "note": "Sahuagin special quality (Ex/Str) heading, monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "light blindness",
+      "it": "Cecità da Luce",
+      "strict": false,
+      "kind": "rules",
+      "note": "Sahuagin special quality (Ex/Str) heading, monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "speak with sharks",
+      "it": "Parlare con gli Squali",
+      "strict": false,
+      "kind": "rules",
+      "note": "Sahuagin special quality (Ex/Str) heading, monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "water dependent",
+      "it": "Dipendenza dall'Acqua",
+      "strict": false,
+      "kind": "rules",
+      "note": "Sahuagin special quality (Ex/Str) heading, monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "craft (blacksmithing)",
+      "it": "Artigianato (fabbro ferraio)",
+      "strict": false,
+      "kind": "rules",
+      "note": "Skill-with-specialty, monsters.json Salamander entry.",
+      "source": "coined"
+    },
+    {
+      "en": "Escape Artist",
+      "it": "Artista della Fuga",
+      "strict": false,
+      "kind": "rules",
+      "note": "Skill name. Confirmed word-for-word in Manuale del Giocatore.",
+      "source": "manual"
+    },
+    {
+      "en": "summon monster VII",
+      "it": "evoca mostri VII",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, monsters.json Salamander entry. Consistent with existing 'summon monster' -> 'Evoca mostri'.",
+      "source": "coined"
+    },
+    {
+      "en": "satyr",
+      "it": "satiro",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed word-for-word in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "sea cat",
+      "it": "gatto marino",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Not found verbatim in the cached MM1 OCR text; coined literally.",
+      "source": "coined"
+    },
+    {
+      "en": "shield guardian",
+      "it": "guardiano dello scudo",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Not found verbatim in the cached MM1 OCR text; coined literally.",
+      "source": "coined"
+    },
+    {
+      "en": "shocker lizard",
+      "it": "lucertola folgorante",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed word-for-word in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "skeleton",
+      "it": "scheletro",
+      "strict": false,
+      "kind": "monster",
+      "note": "Undead template/creature name, monsters.json. Confirmed word-for-word in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "panicked",
+      "it": "in preda al panico",
+      "strict": false,
+      "kind": "rules",
+      "note": "Condition name. Confirmed word-for-word in Manuale dei Mostri I.",
+      "source": "manual"
+    },
+    {
+      "en": "pipes",
+      "it": "Zufoli",
+      "strict": false,
+      "kind": "rules",
+      "note": "Satyr special ability (Su/Sop) heading, monsters.json (pan pipes).",
+      "source": "coined"
+    },
+    {
+      "en": "bay",
+      "it": "Latrato",
+      "strict": false,
+      "kind": "rules",
+      "note": "Shadow mastiff special attack (Su/Sop) heading, monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "shadow blend",
+      "it": "Fondersi con le Ombre",
+      "strict": false,
+      "kind": "rules",
+      "note": "Shadow mastiff special quality (Su/Sop) heading, monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "find master",
+      "it": "Trovare il Padrone",
+      "strict": false,
+      "kind": "rules",
+      "note": "Shield guardian special ability (Su/Sop) heading, monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "guard",
+      "it": "Proteggere",
+      "strict": false,
+      "kind": "rules",
+      "note": "Shield guardian special ability (Ex/Str) heading, monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "stunning shock",
+      "it": "Scossa Stordente",
+      "strict": false,
+      "kind": "rules",
+      "note": "Shocker lizard special attack (Su/Sop) heading, monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "lethal shock",
+      "it": "Scossa Letale",
+      "strict": false,
+      "kind": "rules",
+      "note": "Shocker lizard special attack (Su/Sop) heading, monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "electricity sense",
+      "it": "Senso dell'Elettricità",
+      "strict": false,
+      "kind": "rules",
+      "note": "Shocker lizard special quality (Ex/Str) heading, monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "immunity to electricity",
+      "it": "Immunità all'Elettricità",
+      "strict": false,
+      "kind": "rules",
+      "note": "Shambling mound special quality (Ex/Str) heading, monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "skum",
+      "it": "skum",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed kept as-is in Manuale dei Mostri I index and body text.",
+      "source": "manual"
+    },
+    {
+      "en": "sphinx",
+      "it": "sfinge",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name (generic), monsters.json. Confirmed word-for-word in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "androsphinx",
+      "it": "androsfinge",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed word-for-word in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "criosphinx",
+      "it": "criosfinge",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed word-for-word in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "gynosphinx",
+      "it": "ginosfinge",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed word-for-word in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "unnatural aura",
+      "it": "Aura Innaturale",
+      "strict": false,
+      "kind": "rules",
+      "note": "Spectre special quality (Su/Sop) heading, monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "sunlight powerlessness",
+      "it": "Impotenza alla Luce Solare",
+      "strict": false,
+      "kind": "rules",
+      "note": "Spectre special quality (Ex/Str) heading, monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "hieracosphinx",
+      "it": "ieracosfinge",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Not found verbatim in the cached MM1 OCR text; coined by analogy with the confirmed andro-/crio-/gino-sfinge pattern.",
+      "source": "coined"
+    },
+    {
+      "en": "spider eater",
+      "it": "divora-ragni",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed word-for-word in Manuale dei Mostri I index and body text.",
+      "source": "manual"
+    },
+    {
+      "en": "sprite",
+      "it": "folletto",
+      "strict": false,
+      "kind": "rules",
+      "note": "Fey creature category (grig/nixie/pixie/satyr/dryad), monsters.json. Confirmed word-for-word in Manuale dei Mostri I ('Folletto: driade, grig, nixie, pixie, satiro').",
+      "source": "manual"
+    },
+    {
+      "en": "grig",
+      "it": "grig",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed kept as-is in Manuale dei Mostri I ('Grig (spiritello)').",
+      "source": "manual"
+    },
+    {
+      "en": "nixie",
+      "it": "nixie",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed kept as-is in Manuale dei Mostri I.",
+      "source": "manual"
+    },
+    {
+      "en": "pixie",
+      "it": "pixie",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed kept as-is in Manuale dei Mostri I.",
+      "source": "manual"
+    },
+    {
+      "en": "stirge",
+      "it": "stirge",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Not found in the cached MM1 OCR text; kept as-is pending verification, consistent with other untranslated monster names.",
+      "source": "coined"
+    },
+    {
+      "en": "swarm",
+      "it": "sciame",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature type, monsters.json. Confirmed word-for-word in Manuale dei Mostri I ('Sciame').",
+      "source": "manual"
+    },
+    {
+      "en": "bat swarm",
+      "it": "sciame di pipistrelli",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed word-for-word in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "centipede swarm",
+      "it": "sciame di millepiedi",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed word-for-word in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "hellwasp swarm",
+      "it": "sciame di vespe infernali",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed word-for-word in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "locust swarm",
+      "it": "sciame di locuste",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed word-for-word in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "rat swarm",
+      "it": "sciame di topi",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed word-for-word in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "spider swarm",
+      "it": "sciame di ragni",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed word-for-word in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "implant",
+      "it": "Impiantare",
+      "strict": false,
+      "kind": "rules",
+      "note": "Spider eater special ability (Ex/Str) heading. Confirmed word-for-word in Manuale dei Mostri I.",
+      "source": "manual"
+    },
+    {
+      "en": "fiddle",
+      "it": "Violino",
+      "strict": false,
+      "kind": "rules",
+      "note": "Grig special ability (Su/Sop) heading, monsters.json (pipes/fiddle used to compel dancing).",
+      "source": "coined"
+    },
+    {
+      "en": "lesser confusion",
+      "it": "confusione minore",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, monsters.json Pixie entry.",
+      "source": "coined"
+    },
+    {
+      "en": "distraction",
+      "it": "Distrazione",
+      "strict": false,
+      "kind": "rules",
+      "note": "Swarm special quality (Ex/Str) heading, monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "inhabit",
+      "it": "Abitare",
+      "strict": false,
+      "kind": "rules",
+      "note": "Hellwasp swarm special ability (Ex/Str) heading, monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "swarm subtype",
+      "it": "sottotipo sciame",
+      "strict": false,
+      "kind": "rules",
+      "note": "Creature subtype, monsters.json swarm intro paragraph.",
+      "source": "coined"
+    },
+    {
+      "en": "tarrasque",
+      "it": "tarrasque",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed kept as-is in Manuale dei Mostri I index and body text.",
+      "source": "manual"
+    },
+    {
+      "en": "tendriculos",
+      "it": "tendriculos",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed kept as-is in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "thoqqua",
+      "it": "thoqqua",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed kept as-is in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "titan",
+      "it": "titano",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed word-for-word in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "augmented critical",
+      "it": "Critico Aumentato",
+      "strict": false,
+      "kind": "rules",
+      "note": "Tarrasque special attack (Ex/Str) heading. Confirmed word-for-word in Manuale dei Mostri I.",
+      "source": "manual"
+    },
+    {
+      "en": "rush",
+      "it": "Avventarsi",
+      "strict": false,
+      "kind": "rules",
+      "note": "Tarrasque special attack (Ex/Str) heading. Confirmed word-for-word in Manuale dei Mostri I.",
+      "source": "manual"
+    },
+    {
+      "en": "carapace",
+      "it": "Carapace",
+      "strict": false,
+      "kind": "rules",
+      "note": "Tarrasque special quality (Ex/Str) heading, monsters.json -- kept as-is. Confirmed appears untranslated in Manuale dei Mostri I creature description too.",
+      "source": "manual"
+    },
+    {
+      "en": "all-around vision",
+      "it": "Visione a Tutto Tondo",
+      "strict": false,
+      "kind": "rules",
+      "note": "Tojanida special quality (Ex/Str) heading, monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "animate trees",
+      "it": "Animare Alberi",
+      "strict": false,
+      "kind": "rules",
+      "note": "Treant special ability (Sp/Mag) heading, monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "double damage against objects",
+      "it": "Danno Doppio contro gli Oggetti",
+      "strict": false,
+      "kind": "rules",
+      "note": "Treant special quality (Ex/Str) heading, monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "epic",
+      "it": "epico",
+      "strict": false,
+      "kind": "rules",
+      "note": "Damage reduction type, monsters.json (Tarrasque). Confirmed word-for-word in Manuale dei Mostri I ('Riduzione del danno 15/epico').",
+      "source": "manual"
+    },
+    {
+      "en": "shaken",
+      "it": "scosso",
+      "strict": false,
+      "kind": "rules",
+      "note": "Condition name. Confirmed word-for-word in names.json conditions domain ('Scosso').",
+      "source": "manual"
+    },
+    {
+      "en": "levitate",
+      "it": "levitare",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, monsters.json Titan entry.",
+      "source": "coined"
+    },
+    {
+      "en": "crushing hand",
+      "it": "mano schiacciante",
+      "strict": false,
+      "kind": "spell",
+      "note": "Spell name, monsters.json Titan entry.",
+      "source": "coined"
+    },
+    {
+      "en": "triton",
+      "it": "tritone",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name (native outsider race), monsters.json. Confirmed word-for-word in Manuale dei Mostri I index and body text (size/weight match exactly: 'circa della stessa taglia e dello stesso peso di un umano').",
+      "source": "manual"
+    },
+    {
+      "en": "troll",
+      "it": "troll",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed kept as-is in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "unicorn",
+      "it": "unicorno",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed word-for-word in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "vampire spawn",
+      "it": "progenie di vampiro",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Not found verbatim in the cached MM1 OCR text; coined literally.",
+      "source": "coined"
+    },
+    {
+      "en": "vargouille",
+      "it": "vargouille",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed kept as-is in Manuale dei Mostri I index and body text.",
+      "source": "manual"
+    },
+    {
+      "en": "wight",
+      "it": "wight",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed kept as-is in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "stench",
+      "it": "Fetore",
+      "strict": false,
+      "kind": "rules",
+      "note": "Creature special ability (Ex/Str) heading. Confirmed word-for-word in Manuale dei Mostri I (troglodyte, hezrou, ghast entries).",
+      "source": "manual"
+    },
+    {
+      "en": "shriek",
+      "it": "Stridio",
+      "strict": false,
+      "kind": "rules",
+      "note": "Vargouille special attack (Su/Sop) heading. Confirmed word-for-word in Manuale dei Mostri I.",
+      "source": "manual"
+    },
+    {
+      "en": "kiss",
+      "it": "Bacio",
+      "strict": false,
+      "kind": "rules",
+      "note": "Vargouille special attack (Su/Sop) heading. Confirmed word-for-word in Manuale dei Mostri I.",
+      "source": "manual"
+    },
+    {
+      "en": "domination",
+      "it": "Dominazione",
+      "strict": false,
+      "kind": "rules",
+      "note": "Vampire spawn special attack (Su/Sop) heading, monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "winter wolf",
+      "it": "lupo invernale",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed word-for-word in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "worg",
+      "it": "worg",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed kept as-is in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "wyvern",
+      "it": "viverna",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed word-for-word in Manuale dei Mostri I, including near-verbatim matching description/combat text.",
+      "source": "manual"
+    },
+    {
+      "en": "xill",
+      "it": "xill",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed kept as-is in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "daylight powerlessness",
+      "it": "Impotenza alla Luce del Giorno",
+      "strict": false,
+      "kind": "rules",
+      "note": "Wraith special quality (Ex/Str) heading, monsters.json. Consistent with the established 'Sunlight Powerlessness' rendering for the Spectre's similar ability.",
+      "source": "coined"
+    },
+    {
+      "en": "planewalk",
+      "it": "Camminata Planare",
+      "strict": false,
+      "kind": "rules",
+      "note": "Xill special ability (Su/Sop) heading, monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "freezing bite",
+      "it": "Morso Gelido",
+      "strict": false,
+      "kind": "rules",
+      "note": "Winter wolf special ability (Su/Sop) heading, monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "yrthak",
+      "it": "yrthak",
+      "strict": false,
+      "kind": "monster",
+      "note": "Creature name, monsters.json. Confirmed kept as-is in Manuale dei Mostri I index.",
+      "source": "manual"
+    },
+    {
+      "en": "zombie",
+      "it": "zombi",
+      "strict": false,
+      "kind": "monster",
+      "note": "Undead template/creature name, monsters.json. Confirmed word-for-word in Manuale dei Mostri I ('Zombi', not 'Zombie' -- the Italian drops the final e), including near-verbatim matching template rules text.",
+      "source": "manual"
+    },
+    {
+      "en": "clumsy",
+      "it": "manovrabilità scarsa",
+      "strict": false,
+      "kind": "rules",
+      "note": "Maneuverability rating (flight). Confirmed word-for-word in Manuale del Giocatore.",
+      "source": "manual"
+    },
+    {
+      "en": "sonic lance",
+      "it": "Lancia Sonora",
+      "strict": false,
+      "kind": "rules",
+      "note": "Yrthak special attack (Su/Sop) heading, monsters.json. Uses 'Sonora' rather than 'Sonica' to satisfy the strict 'Sonic' -> 'Sonoro' glossary term.",
+      "source": "coined"
+    },
+    {
+      "en": "explosion",
+      "it": "Esplosione",
+      "strict": false,
+      "kind": "rules",
+      "note": "Yrthak special attack (Su/Sop) heading, monsters.json.",
+      "source": "coined"
+    },
+    {
+      "en": "single actions only",
+      "it": "Solo Azioni Singole",
+      "strict": false,
+      "kind": "rules",
+      "note": "Zombie special quality (Ex/Str) heading. Confirmed word-for-word in Manuale dei Mostri I ('Solo azioni singole').",
+      "source": "manual"
     }
   ]
 }

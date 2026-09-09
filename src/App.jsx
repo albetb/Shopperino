@@ -18,6 +18,8 @@ import TrapPage from './components/trap/trap_page';
 import * as db from './lib/storage';
 import { preloadCreatureData } from './lib/loadFile';
 import useCreatureData from './components/hooks/useCreatureData';
+import useProse from './components/hooks/useProse';
+import { preloadProse } from './lib/i18n/prose';
 import { serialize } from './lib/utils';
 import {
   setStateCurrentTab,
@@ -165,6 +167,15 @@ export default function App() {
      values (a wild-shaped sheet, a companion) stops showing the empty state. */
   useCreatureData();
 
+  /* The translated descriptions are their own chunk, one per language (see
+     i18n/prose.js), so an English reader downloads none of them. Start it as
+     soon as the language is known; `proseReady` is true from the first frame
+     for English, so nothing below changes for an English reader at all. */
+  const proseReady = useProse();
+  useEffect(() => {
+    preloadProse(lang).catch(() => {});
+  }, [lang]);
+
   const currentTab = useSelector(state => state.persist?.ct ?? state.app?.currentTab ?? 0);
   const sharedShop = useSelector(state => state.app.sharedShop);
   const theme = useSelector(selectTheme);
@@ -262,8 +273,15 @@ export default function App() {
   return (
     /* Keyed on the language: changing it remounts everything below, which is
        how a `t()` call that is not a hook still updates. See the note in
-       lib/i18n. */
-    <div className="app" key={lang}>
+       lib/i18n.
+
+       The prose chunk is part of the key for the same reason. It lands after
+       the first paint, and a `useMemo` that read a description before it
+       arrived would otherwise hold the English for the life of the component.
+       Remounting once, early, is the same answer the language switch already
+       gives. English never has a chunk, so this half of the key never changes
+       for an English reader. */
+    <div className="app" key={`${lang}:${proseReady}`}>
       <TopMenu />
       {currentTab !== 0 && <InfoSidebar />}
       {currentTabContent}

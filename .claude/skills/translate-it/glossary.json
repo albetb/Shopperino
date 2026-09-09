@@ -121,7 +121,9 @@
       "it": "Guerriero",
       "strict": true,
       "kind": "class",
-      "source": "coined"
+      "source": "coined",
+      "en_case": true,
+      "note": "Class name -- en_case restricts matching to the capitalized proper noun so it does not fire on the ordinary plural noun \"fighters\" (combatants), e.g. monsters.json Vrock (\"vicious fighters\")."
     },
     {
       "en": "Monk",
@@ -290,7 +292,7 @@
       "strict": true,
       "kind": "school",
       "source": "coined",
-      "en_match": "(?<![A-Za-z])Enchantment(?![A-Za-z])",
+      "en_match": "(?<![A-Za-z])(?<![Tt]he )Enchantment(?![A-Za-z])",
       "stems": [
         "ammaliament",
         "incantament"
@@ -450,7 +452,7 @@
         "Volont"
       ],
       "en_case": true,
-      "en_match": "(?<![A-Za-z])Will(?![A-Za-z])(?!\\s+(?!saves?\\b|saving\\b)[a-z])",
+      "en_match": "(?<![A-Za-z])Will(?![A-Za-z])(?!-o)(?!\\s+(?!saves?\\b|saving\\b)[a-z])",
       "source": "coined",
       "note": "The saving throw. 'Will save' -> 'tiro salvezza su Volonta'. Not the modal verb: 'Will take risks to hurt you' is a monster attitude, and its Italian is a future tense."
     },
@@ -751,8 +753,8 @@
       "stem": "personagg",
       "strict": true,
       "kind": "rules",
-      "en_match": "(?<![A-Za-z])characters?(?![A-Za-z])(?<!six characters)(?<!seven characters)(?<!eight characters)(?<!nine characters)(?<!ten characters)",
-      "note": "en_match narrowed by the data lane: some spells count text glyphs, not player characters ('no more than six characters', spells.json Arcane Mark #23). Excludes the common small-number-prefixed letter-count idiom; extend the exclusion list if another count word turns up.",
+      "en_match": "(?<![A-Za-z])(?<!basic )(?<!six )(?<!seven )(?<!eight )(?<!nine )(?<!ten )characters?(?![A-Za-z])",
+      "note": "en_match narrowed by the data lane: some spells count text glyphs, not player characters ('no more than six characters', spells.json Arcane Mark #23), and Ghost Sound (#223) uses 'basic character' to mean a sound's basic nature. Front-loaded the exclusion lookbehinds (checking only the word immediately before 'character', not a trailing lookbehind re-scanning the whole matched phrase) after finding that style silently checks the wrong text window; this form was verified against both the count idiom and the new 'basic character' case.",
       "source": "coined"
     },
     {
@@ -773,8 +775,8 @@
         "famigliari"
       ],
       "source": "coined",
-      "en_match": "(?<![A-Za-z])familiars?(?![A-Za-z])(?!\\s+with)(?!\\s+to)(?!\\s+creature)(?!\\s*\\()",
-      "note": "A wizard's or sorcerer's familiar. Not the English adjective: 'dwarves are familiar with valuable items', 'a place familiar to you' (spells.json Clairaudience/Clairvoyance #69), 'locate creature' (spells.json #307): 'this spell locates a known or familiar creature', or a table-row label like 'Familiar (you know the subject well)' (spells.json #357, Nightmare)."
+      "en_match": "(?<![A-Za-z])(?<![Vv]ery )familiars?(?![A-Za-z])(?!\\s+with)(?!\\s+to)(?!\\s+creature)(?!\\s+location)(?!\\s*\\()(?!\\s+and\\s)",
+      "note": "A wizard's or sorcerer's familiar. Not the English adjective: 'dwarves are familiar with valuable items', 'a place familiar to you' (spells.json Clairaudience/Clairvoyance #69), 'locate creature' (spells.json #307): 'this spell locates a known or familiar creature', a table-row label like 'Familiar (you know the subject well)' (spells.json #357, Nightmare), 'a creature with which you are familiar and send' (spells.json #457, Sending), 'not very familiar'/'Very familiar'/'familiar location' (spells.json #549, Teleport)."
     },
     {
       "en": "animal companion",
@@ -863,7 +865,7 @@
     },
     {
       "en": "round",
-      "en_match": "(?<![A-Za-z])rounds?(?![A-Za-z])(?<!as )(?!\\s+as\\b)",
+      "en_match": "(?<![A-Za-z])rounds?(?![A-Za-z])(?<!as )(?!\\s+as\\b)(?!\\s+(?:down|up)\\b)",
       "it": "round",
       "strict": true,
       "kind": "action",
@@ -928,8 +930,8 @@
       "strict": true,
       "kind": "combat",
       "source": "coined",
-      "en_match": "(?<!ft\\. )(?<!foot )(?<!feet )(?<![A-Za-z])squares?(?![A-Za-z])(?!\\s+of\\s+(?:silk|cloth|paper|linen))(?![\\s-]+(?:feet|foot|meters?|yards?))(?!\\s+sail)",
-      "note": "The grid-distance unit. Not a square piece of material: 'a small square of silk' (spells.json #319, Magic Aura). Not a shape dimension either: '750 ft. square', '150-foot square' (spells.json #355, Move Earth)."
+      "en_match": "(?<!ft\\. )(?<!foot )(?<!feet )(?<!ft\\.-)(?<!foot-)(?<!feet-)(?<![A-Za-z])squares?(?![A-Za-z])(?!\\s+of\\s+(?:\\w+\\s+){0,2}(?:silk|cloth|paper|linen))(?!\\s+chip)(?!\\s+wind)(?![\\s-]+(?:feet|foot|meters?|yards?))(?!\\s+sail)",
+      "note": "The grid-distance unit. Not a square piece of material: 'a small square of silk' (spells.json #319, Magic Aura), 'a square of red cloth' (spells.json #533, Summon Swarm), 'a square chip of stone' (spells.json #454, Secure Shelter). Not a shape dimension either: '750 ft. square', '150-foot square' (spells.json #355, Move Earth), '20-ft.-square structure' (spells.json #454, Secure Shelter, hyphenated form), 'cylindrical or square wind walls' (spells.json #598, Wind Wall)."
     },
     {
       "en": "reach",
@@ -1123,7 +1125,7 @@
       "en_case": true,
       "source": "manual",
       "stems": [
-        "sonoro"
+        "sonor"
       ]
     },
     {
@@ -1731,6 +1733,8 @@
       "it": "Melma",
       "strict": true,
       "kind": "creature-type",
+      "en_match": "(?<![A-Za-z])[Oo]ozes?(?![A-Za-z])(?! through)",
+      "note": "en_match narrowed by the data lane: Helping Hand (spells.json #248) uses 'ooze through small cracks' as an ordinary verb, not the creature type.",
       "stems": [
         "melm"
       ],
@@ -1802,7 +1806,8 @@
       "strict": true,
       "kind": "alignment",
       "en_case": true,
-      "note": "The moral-axis alignment word, not the general English adjective; en_case keeps it from firing on 'a good save'. The cleric domain of the same name is 'Bene' in names.json, and the paladin's aura of good is 'aura di Bene' -- both satisfy this term.",
+      "en_match": "(?<![A-Za-z])Good(?![A-Za-z])(?! [Hh]ope)",
+      "note": "The moral-axis alignment word, not the general English adjective; en_case keeps it from firing on 'a good save'. The cleric domain of the same name is 'Bene' in names.json, and the paladin's aura of good is 'aura di Bene' -- both satisfy this term. en_match excludes the spell name 'Good hope' (spells.json #233), capitalized at the start of its own self-referencing sentence, from the alignment word.",
       "source": "coined",
       "stems": [
         "buon",
@@ -1950,7 +1955,8 @@
       "it": "Libro degli incantesimi",
       "strict": true,
       "kind": "ui",
-      "note": "App tab name: the per-character spell tracker.",
+      "scope": "ui",
+      "note": "App tab name: the per-character spell tracker. Scoped to ui: the ordinary English word 'spellbook' also appears in spells.json prose (e.g. Read Magic #416, 'Read scrolls and spellbooks'), which is not this UI label.",
       "source": "coined"
     },
     {
@@ -2023,14 +2029,14 @@
     },
     {
       "en": "frost",
-      "en_match": "(?<![A-Za-z])frost(?![A-Za-z])(?!\\s+[Gg]iant)",
+      "en_match": "(?<![A-Za-z])(?<!ray of )(?<!Ray of )frost(?![A-Za-z])(?!\\s+[Gg]iant)(?!\\s+worn)(?!\\s+worm)",
       "it": "gelida",
       "strict": true,
       "kind": "item",
       "stems": [
         "gelid"
       ],
-      "note": "Magic weapon special ability. Official Italian D&D 3.5 term (per the game manual). en_match excludes 'Frost Giant', a creature name (Gigante del ghiaccio), not the weapon property.",
+      "note": "Magic weapon special ability. Official Italian D&D 3.5 term (per the game manual). en_match excludes 'Frost Giant', a creature name (Gigante del ghiaccio), not the weapon property. Also excludes the spell name \"ray of frost\" (monsters.json Drider spell list). Also excludes the frost worm creature name.",
       "source": "manual"
     },
     {
@@ -2038,11 +2044,11 @@
       "it": "folgorante",
       "strict": true,
       "kind": "item",
-      "en_match": "(?<!The )(?<!the )(?<![A-Za-z])shocks?(?![A-Za-z])",
+      "en_match": "(?<!The )(?<!the )(?<!mental )(?<!Mental )(?<!electrical )(?<!Electrical )(?<![A-Za-z])shocks?(?![A-Za-z])",
       "stems": [
         "folgorant"
       ],
-      "note": "Magic weapon special ability (not the 'shocking burst' variant, which is its own term). en_match narrowed by the data lane: ordinary prose uses the noun for a tremor/impact ('The shock knocks creatures down', spells.json Earthquake #169), unrelated to the item property; excludes 'shock' preceded by an article, the pattern that phrase uses.",
+      "note": "Magic weapon special ability (not the 'shocking burst' variant, which is its own term). en_match narrowed by the data lane: ordinary prose uses the noun for a tremor/impact ('The shock knocks creatures down', spells.json Earthquake #169), unrelated to the item property; excludes 'shock' preceded by an article, the pattern that phrase uses. Also excludes 'mental shock' (monsters.json Chaos Beast, Wisdom-drain prose), same ordinary-noun sense.",
       "source": "manual"
     },
     {
@@ -2142,9 +2148,9 @@
       "stems": [
         "immoral"
       ],
-      "note": "Magic weapon special ability. Official Italian D&D 3.5 term (per the game manual). Not the ordinary adjective: 'a vicious bite' (spells.json #314, Mage's Faithful Hound). Also not 'vicious predators' (animals.json, whale entries).",
+      "note": "Magic weapon special ability. Official Italian D&D 3.5 term (per the game manual). Not the ordinary adjective: 'a vicious bite' (spells.json #314, Mage's Faithful Hound). Also not 'vicious predators' (animals.json, whale entries). en_match now also skips one intervening adjective ('vicious little predators', monsters.json Choker). Also excludes an intervening adjective before fighters (monsters.json Vrock: vicious fighters). Broadened to allow multiple intervening adjectives (monsters.json Ettin: vicious and unpredictable hunters).",
       "source": "manual",
-      "en_match": "(?<![A-Za-z])vicious(?![A-Za-z])(?!\\s+bite)(?!\\s+(?:predators?|creatures?))"
+      "en_match": "(?<![A-Za-z])vicious(?![A-Za-z])(?!\\s+bite)(?!\\s+(?:\\w+\\s+){0,3}(?:predators?|creatures?|fighters?|hunters?)\\b)"
     },
     {
       "en": "anarchic",
@@ -2245,7 +2251,8 @@
       "stems": [
         "feriment"
       ],
-      "note": "Magic weapon special ability. Official Italian D&D 3.5 term (per the game manual).",
+      "en_match": "(?<![A-Za-z])wounding(?![A-Za-z])(?!\\s+awakens)",
+      "note": "Magic weapon special ability. Official Italian D&D 3.5 term (per the game manual). Not the ordinary gerund: 'slapping or wounding awakens an affected creature' (spells.json #482, Sleep).",
       "source": "manual"
     },
     {
@@ -2267,8 +2274,9 @@
       "stems": [
         "danzant"
       ],
-      "note": "Magic weapon special ability.",
-      "source": "manual"
+      "note": "Magic weapon special ability. en_match excludes the generic gerund \"dancing wildly\" (monsters.json Vrock, Dance of Ruin prose). Also excludes \"dancing on\" (monsters.json Dragon Turtle: \"light dancing on open water\").",
+      "source": "manual",
+      "en_match": "(?<![A-Za-z])(?<!of )(?<!rounds of )dancing(?![A-Za-z])(?!\\s+(?:wildly|around|about|on))"
     },
     {
       "en": "vorpal",
@@ -2710,8 +2718,9 @@
       "stems": [
         "sfondament"
       ],
-      "note": "Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term.",
-      "source": "manual"
+      "note": "Magic armor/shield special ability (tables.json Magic Armor / Magic Shield). Official Italian D&D 3.5 term. en_match excludes the generic gerund 'bashing foes/enemies' (astral deva combat text) so it only fires on the magic weapon/armor property.",
+      "source": "manual",
+      "en_match": "(?<![A-Za-z])[Bb]ashing(?![A-Za-z])(?!\\s+(?:evil\\s+)?(?:foes|enemies|opponents|creatures|things))(?!\\s+with\\b)"
     },
     {
       "en": "Blinding",
@@ -2849,14 +2858,14 @@
     },
     {
       "en": "summon monster",
-      "it": "evocare mostri",
+      "it": "Evoca mostri",
       "strict": false,
       "kind": "spell",
       "stems": [
-        "evocar"
+        "evoca mostr"
       ],
       "source": "manual",
-      "note": "Spell name, Manuale del Giocatore."
+      "note": "Spell name. Manuale del Giocatore (\"Evoca mostri I : Richiama una creatura extraplanare...\"), exact match -- corrects the earlier coined 'evocare mostri'. Roman numeral suffix (I-IX) attaches directly, e.g. 'Evoca mostri VII'."
     },
     {
       "en": "control undead",
@@ -3099,6 +3108,248 @@
       ],
       "source": "manual",
       "note": "Manuale del Giocatore: \"Ehlonna, dea delle terre boschive\"."
+    },
+    {
+      "en": "horned devil",
+      "it": "diavolo cornuto",
+      "strict": false,
+      "kind": "creature",
+      "stems": [
+        "cornut"
+      ],
+      "source": "manual",
+      "note": "Creature name, Manuale dei Mostri entry heading."
+    },
+    {
+      "en": "bearded devil",
+      "it": "diavolo barbuto",
+      "strict": false,
+      "kind": "creature",
+      "stems": [
+        "barbut"
+      ],
+      "source": "manual",
+      "note": "Creature name, Manuale dei Mostri entry heading."
+    },
+    {
+      "en": "chain devil",
+      "it": "diavolo delle catene",
+      "strict": false,
+      "kind": "creature",
+      "stems": [
+        "caten"
+      ],
+      "source": "manual",
+      "note": "Creature name, Manuale dei Mostri entry heading."
+    },
+    {
+      "en": "barbed devil",
+      "it": "diavolo uncinato",
+      "strict": false,
+      "kind": "creature",
+      "stems": [
+        "uncinat"
+      ],
+      "source": "manual",
+      "note": "Creature name, Manuale dei Mostri entry heading."
+    },
+    {
+      "en": "bone devil",
+      "it": "diavolo d'ossa",
+      "strict": false,
+      "kind": "creature",
+      "stems": [
+        "d'oss"
+      ],
+      "source": "manual",
+      "note": "Creature name, Manuale dei Mostri entry heading."
+    },
+    {
+      "en": "ice devil",
+      "it": "diavolo del ghiaccio",
+      "strict": false,
+      "kind": "creature",
+      "stems": [
+        "ghiacci"
+      ],
+      "source": "manual",
+      "note": "Creature name, Manuale dei Mostri entry heading."
+    },
+    {
+      "en": "lantern archon",
+      "it": "arconte lanterna",
+      "strict": false,
+      "kind": "creature",
+      "stems": [
+        "lantern"
+      ],
+      "source": "manual",
+      "note": "Creature name, Manuale dei Mostri entry heading."
+    },
+    {
+      "en": "hound archon",
+      "it": "arconte segugio",
+      "strict": false,
+      "kind": "creature",
+      "stems": [
+        "segugi"
+      ],
+      "source": "manual",
+      "note": "Creature name, Manuale dei Mostri entry heading."
+    },
+    {
+      "en": "trumpet archon",
+      "it": "arconte tromba",
+      "strict": false,
+      "kind": "creature",
+      "stems": [
+        "tromb"
+      ],
+      "source": "manual",
+      "note": "Creature name, Manuale dei Mostri entry heading."
+    },
+    {
+      "en": "gray render",
+      "it": "squartatore grigio",
+      "strict": false,
+      "kind": "creature",
+      "stems": [
+        "grigi"
+      ],
+      "source": "manual",
+      "note": "Creature name, Manuale dei Mostri entry heading."
+    },
+    {
+      "en": "gibbering mouther",
+      "it": "fauci gorgoglianti",
+      "strict": false,
+      "kind": "creature",
+      "stems": [
+        "gorgogliant"
+      ],
+      "source": "manual",
+      "note": "Creature name, Manuale dei Mostri entry heading."
+    },
+    {
+      "en": "frost worm",
+      "it": "verme del gelo",
+      "strict": false,
+      "kind": "creature",
+      "stems": [
+        "gel"
+      ],
+      "source": "manual",
+      "note": "Creature name, Manuale dei Mostri entry heading."
+    },
+    {
+      "en": "ethereal marauder",
+      "it": "predatore etereo",
+      "strict": false,
+      "kind": "creature",
+      "stems": [
+        "etere"
+      ],
+      "source": "manual",
+      "note": "Creature name, Manuale dei Mostri entry heading."
+    },
+    {
+      "en": "ethereal filcher",
+      "it": "saccheggiatore etereo",
+      "strict": false,
+      "kind": "creature",
+      "stems": [
+        "etere"
+      ],
+      "source": "manual",
+      "note": "Creature name, Manuale dei Mostri entry heading."
+    },
+    {
+      "en": "blink dog",
+      "it": "cane intermittente",
+      "strict": false,
+      "kind": "creature",
+      "stems": [
+        "intermittent"
+      ],
+      "source": "manual",
+      "note": "Creature name, Manuale dei Mostri entry heading."
+    },
+    {
+      "en": "wood shape",
+      "it": "Scolpire legno",
+      "strict": false,
+      "kind": "spell",
+      "stems": [
+        "scolpir"
+      ],
+      "source": "manual",
+      "note": "Spell name, Manuale del Giocatore."
+    },
+    {
+      "en": "legend lore",
+      "it": "Conoscenza delle leggende",
+      "strict": false,
+      "kind": "spell",
+      "stems": [
+        "leggend"
+      ],
+      "source": "manual",
+      "note": "Spell name, Manuale del Giocatore."
+    },
+    {
+      "en": "meld into stone",
+      "it": "Fondersi nella pietra",
+      "strict": false,
+      "kind": "spell",
+      "stems": [
+        "fonders"
+      ],
+      "source": "manual",
+      "note": "Spell name, Manuale del Giocatore."
+    },
+    {
+      "en": "stinking cloud",
+      "it": "Nube maleodorante",
+      "strict": false,
+      "kind": "spell",
+      "stems": [
+        "maleodorant"
+      ],
+      "source": "manual",
+      "note": "Spell name, Manuale del Giocatore."
+    },
+    {
+      "en": "unhallow",
+      "it": "Profanare",
+      "strict": false,
+      "kind": "spell",
+      "stems": [
+        "profan"
+      ],
+      "source": "manual",
+      "note": "Spell name, Manuale del Giocatore."
+    },
+    {
+      "en": "remove blindness/deafness",
+      "it": "Rimuovi cecità/sordità",
+      "strict": false,
+      "kind": "spell",
+      "stems": [
+        "rimuovi"
+      ],
+      "source": "manual",
+      "note": "Spell name, Manuale del Giocatore."
+    },
+    {
+      "en": "word of recall",
+      "it": "Parola del ritiro",
+      "strict": false,
+      "kind": "spell",
+      "stems": [
+        "ritiro"
+      ],
+      "source": "manual",
+      "note": "Spell name, Manuale del Giocatore."
     }
   ]
 }

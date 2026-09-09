@@ -9,4 +9,12 @@ import '@testing-library/jest-dom';
  */
 import { preloadCreatureData } from './lib/loadFile';
 
-beforeAll(() => preloadCreatureData());
+/*
+ * The prose packs load the same way, one chunk per language (see i18n/prose.js).
+ * A test that switches to Italian and asserts on a translated description would
+ * otherwise read the English, because nothing had started the chunk. Pull it in
+ * up front, exactly as the app does the moment the language is known.
+ */
+import { preloadProse } from './lib/i18n/prose';
+
+beforeAll(() => Promise.all([preloadCreatureData(), preloadProse('it')]));

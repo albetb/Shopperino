@@ -18,48 +18,106 @@
  * translation therefore happens on the whole parsed file, before `loadFile`
  * takes its slice.
  *
- * ## Size
+ * ## Size: one lazy chunk per language
  *
- * These are imported statically because right now they are small — tens of kB.
- * **That stops being true once spells and monsters are translated**: those two
- * packs alone will be well over a megabyte, and an English reader should not
- * download a byte of them. When the first big pack lands, move these to a lazy
- * chunk with the pattern `loadFile.js` already uses for the creature files —
- * one dynamic `import()`, a `listeners` set, and a synchronous accessor that
- * answers with the English until the chunk arrives.
+ * These were imported statically while they were small — tens of kB. They are
+ * not small any more: the Italian is **235 kB gzipped** with spells still only
+ * two thirds translated, and an English reader should not download a byte of
+ * it. So they load the way `loadFile.js` already loads the creature files —
+ * one dynamic `import()` per pack under a shared chunk name, a `listeners`
+ * set, and a synchronous accessor that answers with the English until the
+ * chunk arrives.
+ *
+ * `applyProse` stays synchronous for every caller. Nothing downstream of
+ * `loadFile` knows the difference; the only visible consequence is that a
+ * description reads English for the few hundred milliseconds before the chunk
+ * lands, which is why App.jsx keys the tree on `isProseReady` as well as the
+ * language — see the note there.
+ *
+ * The English path never loads anything at all: `en` has no entry in FILES, so
+ * `isProseReady('en')` is true from the first frame and nothing is fetched.
  */
 
 import { getLanguage } from './index';
-import itTables from '../../data/it/tables.json';
-import itFeats from '../../data/it/feats.json';
-import itSkills from '../../data/it/skills.json';
-import itRaces from '../../data/it/races.json';
-import itClasses from '../../data/it/classes.json';
-import itItems from '../../data/it/items.json';
-import itAnimals from '../../data/it/animals.json';
-import itTraps from '../../data/it/traps.json';
-import itVermin from '../../data/it/vermin.json';
-import itDeities from '../../data/it/deities.json';
-import itFamiliarAbilities from '../../data/it/familiarAbilities.json';
-import itCompanionAbilities from '../../data/it/companionAbilities.json';
 
-/** Every prose pack, by language and then by data file name. */
-const PROSE = {
+/**
+ * Every prose pack, by language and then by data file name.
+ *
+ * One `webpackChunkName` for the whole language, so the twelve files arrive as
+ * a single request rather than twelve. Adding a pack means adding a line here
+ * — and `verify.py` fails the build if a pack exists in `src/data/<lang>/` and
+ * this map does not name it, because a pack nobody imports is invisible.
+ */
+const FILES = {
   it: {
-    tables: itTables,
-    feats: itFeats,
-    skills: itSkills,
-    races: itRaces,
-    classes: itClasses,
-    items: itItems,
-    animals: itAnimals,
-    traps: itTraps,
-    vermin: itVermin,
-    deities: itDeities,
-    familiarAbilities: itFamiliarAbilities,
-    companionAbilities: itCompanionAbilities,
+    tables: () => import(/* webpackChunkName: "prose-it" */ '../../data/it/tables.json'),
+    feats: () => import(/* webpackChunkName: "prose-it" */ '../../data/it/feats.json'),
+    skills: () => import(/* webpackChunkName: "prose-it" */ '../../data/it/skills.json'),
+    races: () => import(/* webpackChunkName: "prose-it" */ '../../data/it/races.json'),
+    classes: () => import(/* webpackChunkName: "prose-it" */ '../../data/it/classes.json'),
+    items: () => import(/* webpackChunkName: "prose-it" */ '../../data/it/items.json'),
+    animals: () => import(/* webpackChunkName: "prose-it" */ '../../data/it/animals.json'),
+    traps: () => import(/* webpackChunkName: "prose-it" */ '../../data/it/traps.json'),
+    vermin: () => import(/* webpackChunkName: "prose-it" */ '../../data/it/vermin.json'),
+    deities: () => import(/* webpackChunkName: "prose-it" */ '../../data/it/deities.json'),
+    familiarAbilities: () => import(/* webpackChunkName: "prose-it" */ '../../data/it/familiarAbilities.json'),
+    companionAbilities: () => import(/* webpackChunkName: "prose-it" */ '../../data/it/companionAbilities.json'),
+    monsters: () => import(/* webpackChunkName: "prose-it" */ '../../data/it/monsters.json'),
+    spells: () => import(/* webpackChunkName: "prose-it" */ '../../data/it/spells.json'),
   },
 };
+
+/** Packs that have arrived, by language. A language absent here is not ready. */
+const PROSE = {};
+/* One request per language however many callers ask, and a failure that can be
+   retried rather than cached forever. */
+const inFlight = {};
+const listeners = new Set();
+
+/** Whether a language needs a chunk at all. English is the source and does not. */
+function isTranslated(lang) {
+  return Boolean(FILES[lang]);
+}
+
+/**
+ * Whether a language's prose is in place.
+ *
+ * True immediately for a language with no packs, so an English reader never
+ * waits for — or downloads — anything.
+ */
+export function isProseReady(lang = getLanguage()) {
+  return !isTranslated(lang) || Boolean(PROSE[lang]);
+}
+
+/** Fetch a language's prose chunk. Idempotent; every caller shares one request. */
+export function preloadProse(lang = getLanguage()) {
+  if (!isTranslated(lang) || PROSE[lang]) return Promise.resolve();
+  if (inFlight[lang]) return inFlight[lang];
+
+  const entries = Object.entries(FILES[lang]);
+  inFlight[lang] = Promise.all(entries.map(([, load]) => load()))
+    .then((mods) => {
+      const pack = {};
+      entries.forEach(([name], i) => {
+        pack[name] = mods[i].default ?? mods[i];
+      });
+      PROSE[lang] = pack;
+      listeners.forEach((fn) => fn());
+      return pack;
+    })
+    .catch((error) => {
+      // Allow a retry rather than caching the failure forever.
+      delete inFlight[lang];
+      throw error;
+    });
+  return inFlight[lang];
+}
+
+/** Notified when a prose chunk lands. Returns its own unsubscribe. */
+export function subscribeProse(listener) {
+  listeners.add(listener);
+  return () => listeners.delete(listener);
+}
 
 /* One translated copy per (language, file), built on first use. Keyed by
    language so switching back and forth costs nothing after the first time. */
@@ -94,7 +152,13 @@ function setPath(root, path, value) {
  */
 export function applyProse(name, data, lang = getLanguage()) {
   const pack = PROSE[lang]?.[name];
-  if (!pack || !data) return data;
+  if (!pack || !data) {
+    /* A synchronous read this early means nobody started the chunk yet — start
+       it, so the caller's next render has something to show. Same shape as
+       `creatureFile` in loadFile.js. */
+    if (!pack && isTranslated(lang)) preloadProse(lang).catch(() => {});
+    return data;
+  }
 
   const key = `${lang}:${name}`;
   const hit = cache.get(key);
@@ -106,9 +170,11 @@ export function applyProse(name, data, lang = getLanguage()) {
   return copy;
 }
 
-/** Which data files a language has prose for. Used by the coverage tests. */
+/** Which data files a language has prose for. Used by the coverage tests.
+    Read from the declaration, not from what has arrived, so it answers the
+    same before and after the chunk lands. */
 export function proseFiles(lang) {
-  return Object.keys(PROSE[lang] ?? {});
+  return Object.keys(FILES[lang] ?? {});
 }
 
 /** One pack, for tests and tooling. */
