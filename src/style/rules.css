@@ -7,15 +7,32 @@
    to add without changing the generator, and the note should read like the
    rest of the app rather than like a text file. */
 
+/* The column is centred by three separate rules on purpose. `.app-header` is a
+   centring flex column, so `align-self` is what actually places it; the auto
+   margins hold it in the middle if it is ever rendered anywhere else; and
+   `min-width: 0` is what stops the whole thing sliding off-centre when
+   something inside refuses to wrap — a flex item's floor is its content, so a
+   long formula or an unbreakable path widens the page rather than scrolling
+   inside its own card, and the reader gets a horizontally scrolling page with
+   the column pinned to the left of it.
+
+   `text-align` is set explicitly because `.app` sets it to center for the
+   whole application, which a page of prose must not inherit. */
 .rules-page {
   display: flex;
   flex-direction: column;
+  align-self: center;
   gap: var(--space-3);
-  width: min(52rem, 94%);
+  width: 100%;
+  min-width: 0;
+  max-width: 52rem;
   margin: 0 auto;
-  padding: var(--space-4) 0 var(--space-12);
+  padding: var(--space-4) var(--space-3) var(--space-12);
+  text-align: left;
   box-sizing: border-box;
 }
+
+.rules-page > * { min-width: 0; }
 
 .rules-skeleton {
   height: 18rem;
@@ -41,6 +58,16 @@
   min-width: 0;          /* an input will not shrink inside flex without this */
   border: none;
   background: none;
+}
+
+/* The browser's own clear button for type="search". The box already has a
+   Clear button of its own, in the application's language and reachable by the
+   keyboard, so the second ✕ beside it is one control too many. */
+.rules-search input[type='search']::-webkit-search-cancel-button,
+.rules-search input[type='search']::-webkit-search-decoration {
+  -webkit-appearance: none;
+  appearance: none;
+  display: none;
 }
 
 .rules-clear {
@@ -188,9 +215,23 @@
 
 /* --- the generated prose --------------------------------------------- */
 
-.rules-prose { font-size: var(--font-size-sm); line-height: 1.6; }
+.rules-prose {
+  font-size: var(--font-size-sm);
+  line-height: 1.6;
+  /* A rule is often a long formula or a file path with no space in it. Left to
+     itself it sets the minimum width of the card it is in, which pushes the
+     page wider than the window. */
+  overflow-wrap: break-word;
+}
 .rules-prose > :first-child { margin-top: 0; }
 .rules-prose > :last-child { margin-bottom: 0; }
+
+/* Justified: these notes are dense running text and a ragged right edge on a
+   narrow column reads as ragged content. Headings, table cells and the bullet
+   markers keep their own alignment. */
+.rules-prose p,
+.rules-prose li { text-align: justify; }
+
 .rules-prose p { margin: 0 0 var(--space-2); }
 .rules-prose ul,
 .rules-prose ol { margin: 0 0 var(--space-2); padding-left: var(--space-4); }
@@ -249,11 +290,8 @@
   cursor: pointer;
 }
 
-/* A link the app cannot follow — a data file with no view, a path into the
-   source tree. It keeps the note's own emphasis and loses the underline, so it
-   reads as the file name it is rather than as something to press. */
-.rules-deadlink {
-  color: var(--ink-muted);
-  font-family: var(--font-mono);
-  font-size: 0.9em;
-}
+/* A reference the app cannot open — a data file with no view of its own, a
+   path into the source tree. It is named rather than pathed (see
+   DATA_FILE_LABEL in rules_page.jsx), so it reads as part of the sentence; the
+   muted colour is all that marks it as a reference rather than prose. */
+.rules-dataref { color: var(--ink-muted); }

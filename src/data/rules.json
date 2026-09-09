@@ -137,7 +137,7 @@
     {
       "slug": "animal-companion",
       "title": "Animal Companion",
-      "blurb": "Druid / ranger animal-companion sub-system: how a companion is chosen, how it advances with class level (bonus HD, natural armor, ability boosts, tricks, special abilities), and the alternative creature lists with their level adjustments. Per-creature base stat blocks live in [src/data/animals.json](../../src/data/animals.json).",
+      "blurb": "Druid / ranger animal-companion sub-system: how a companion is chosen, how it advances with class level (bonus HD, natural armor, ability boosts, tricks, special abilities), and the alternative creature lists with their level adjustments. Per-creature base stat blocks live in <a href=\"../../src/data/animals.json\">src/data/animals.json</a>.",
       "sections": [
         {
           "level": 2,
@@ -321,7 +321,7 @@
     {
       "slug": "class-features",
       "title": "Class Features",
-      "blurb": "Per-class catalog of named features and how they resolve mechanically. Per-class numbers (uses/day by level, damage dice, save DCs that depend on level, etc.) live in [src/data/classes.json](../../src/data/classes.json); this file documents the *mechanics* each feature triggers.",
+      "blurb": "Per-class catalog of named features and how they resolve mechanically. Per-class numbers (uses/day by level, damage dice, save DCs that depend on level, etc.) live in <a href=\"../../src/data/classes.json\">src/data/classes.json</a>; this file documents the <em>mechanics</em> each feature triggers.",
       "sections": [
         {
           "level": 2,
@@ -437,7 +437,7 @@
     {
       "slug": "classes",
       "title": "Classes",
-      "blurb": "Class system: HD, BAB and save progressions, skill points, class features, multiclassing combination rules. Per-class numeric data lives in [src/data/classes.json](../../src/data/classes.json).",
+      "blurb": "Class system: HD, BAB and save progressions, skill points, class features, multiclassing combination rules. Per-class numeric data lives in <a href=\"../../src/data/classes.json\">src/data/classes.json</a>.",
       "sections": [
         {
           "level": 2,
@@ -1074,7 +1074,7 @@
     {
       "slug": "equipment",
       "title": "Equipment",
-      "blurb": "Wealth, coinage, starting gear, weapon categories and mechanics. Per-weapon stats (damage, crit, range, weight) live in [src/data/items.json](../../src/data/items.json); this file documents only the *systems* that drive how those numbers behave in play.",
+      "blurb": "Wealth, coinage, starting gear, weapon categories and mechanics. Per-weapon stats (damage, crit, range, weight) live in <a href=\"../../src/data/items.json\">src/data/items.json</a>; this file documents only the <em>systems</em> that drive how those numbers behave in play.",
       "sections": [
         {
           "level": 2,
@@ -1334,7 +1334,7 @@
     {
       "slug": "familiar",
       "title": "Familiar",
-      "blurb": "Sorcerer / wizard familiar sub-system: how a familiar is obtained, how its statistics are derived from the master, how it advances with the master's level (natural armor, Intelligence, special abilities), and the familiar creature list with each one's per-species bonus to the master. Per-creature base stat blocks live in [src/data/animals.json](../../src/data/animals.json).",
+      "blurb": "Sorcerer / wizard familiar sub-system: how a familiar is obtained, how its statistics are derived from the master, how it advances with the master's level (natural armor, Intelligence, special abilities), and the familiar creature list with each one's per-species bonus to the master. Per-creature base stat blocks live in <a href=\"../../src/data/animals.json\">src/data/animals.json</a>.",
       "sections": [
         {
           "level": 2,
@@ -1390,7 +1390,7 @@
     {
       "slug": "feats",
       "title": "Feats",
-      "blurb": "Feat system: how feats are acquired, prerequisites, categories. The list of specific feats and their effects lives in [src/data/feats.json](../../src/data/feats.json).",
+      "blurb": "Feat system: how feats are acquired, prerequisites, categories. The list of specific feats and their effects lives in <a href=\"../../src/data/feats.json\">src/data/feats.json</a>.",
       "sections": [
         {
           "level": 2,
@@ -2061,7 +2061,7 @@
     {
       "slug": "movement",
       "title": "Movement",
-      "blurb": "Tactical movement on the grid: speed, diagonals, terrain, squeezing, creature size & reach, special movement rules.",
+      "blurb": "Tactical movement on the grid: speed, diagonals, terrain, squeezing, creature size &amp; reach, special movement rules.",
       "sections": [
         {
           "level": 2,
@@ -2322,7 +2322,7 @@
     {
       "slug": "races",
       "title": "Races",
-      "blurb": "Racial trait *system*: the categories of traits a race grants, and how each category resolves. Per-race specifics (which abilities, which bonuses, which weapons, which languages) live in [src/data/races.json](../../src/data/races.json).",
+      "blurb": "Racial trait <em>system</em>: the categories of traits a race grants, and how each category resolves. Per-race specifics (which abilities, which bonuses, which weapons, which languages) live in <a href=\"../../src/data/races.json\">src/data/races.json</a>.",
       "sections": [
         {
           "level": 2,
@@ -2462,7 +2462,7 @@
     {
       "slug": "skills-detail",
       "title": "Skills — Per-Skill Detail",
-      "blurb": "Per-skill DCs, action types, retry rules, and skill-specific mechanics. Skip everything captured by [src/data/skills.json](../../src/data/skills.json) (key ability, trained-only, ACP flag, class/cross-class map, synergy table). The system-level rules live in [skills.md](skills.md).",
+      "blurb": "Per-skill DCs, action types, retry rules, and skill-specific mechanics. Skip everything captured by <a href=\"../../src/data/skills.json\">src/data/skills.json</a> (key ability, trained-only, ACP flag, class/cross-class map, synergy table). The system-level rules live in <a href=\"skills.md\">skills.md</a>.",
       "sections": [
         {
           "level": 2,
@@ -3008,7 +3008,7 @@
     {
       "slug": "traps",
       "title": "Traps",
-      "blurb": "How a trap is assembled and priced: the element checklist (trigger, reset, bypass, attack-or-save, effect), the detection and disarm DCs, and the CR / cost / Craft formulas used to build one from scratch. The 105 sample traps and every numeric table on this page live in [src/data/traps.json](../../src/data/traps.json).",
+      "blurb": "How a trap is assembled and priced: the element checklist (trigger, reset, bypass, attack-or-save, effect), the detection and disarm DCs, and the CR / cost / Craft formulas used to build one from scratch. The 105 sample traps and every numeric table on this page live in <a href=\"../../src/data/traps.json\">src/data/traps.json</a>.",
       "sections": [
         {
           "level": 2,

@@ -1,9 +1,13 @@
 /**
  * Searching the rule notes.
  *
- * 33 topics, 498 sections. That is small enough that the search is a scan over
- * an array on every keystroke — no index, no fuzzy library, no debouncing. The
- * Search tab already filters 605 spells and 800-odd items the same way.
+ * 33 topics, 498 sections. That is small enough for the search to be a scan
+ * over an array — no index and no fuzzy library. The Search tab already filters
+ * 605 spells and 800-odd items the same way.
+ *
+ * The scan is cheap but not free, so the page debounces the query it passes in
+ * (see useDebounced): typing a twelve-letter word is otherwise twelve scans,
+ * eleven of them producing results that are on screen for one keystroke.
  *
  * ## A hit is a section, not a line
  *

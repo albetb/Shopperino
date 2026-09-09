@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import parse, { domToReact } from 'html-react-parser';
 
@@ -6,6 +6,7 @@ import { t, tx } from '../../lib/i18n';
 import { loadFile, rulesEnglish } from '../../lib/loadFile';
 import { buildRulesIndex, searchRules, plainText, topicBySlug } from '../../lib/rules/rulesSearch';
 import { setStateCurrentTab, setSearchTypeRequest } from '../../store/slices/appSlice';
+import useDebounced from '../hooks/useDebounced';
 import useRulesData from '../hooks/useRulesData';
 import EmptyState from '../common/EmptyState';
 import Icon from '../common/Icon';
@@ -29,6 +30,102 @@ const DATA_FILE_SEARCH = {
   'spells.json': 'Spells',
   'items.json': 'Items',
 };
+
+/* What a link out of the prose is *called* on screen.
+ *
+ * The notes are written for someone reading them in the repository, so a
+ * cross-reference is spelled as the thing it is there: `src/data/animals.json`,
+ * `combat.md`. In the app that is a file name for a file the reader cannot
+ * open, in a sentence that otherwise reads as English — "base stat blocks in
+ * src/data/animals.json". The href still decides where the press goes; only
+ * the words change.
+ *
+ * A note's own title comes from the data and is already translated, so only
+ * these fall to the pack. */
+export const DATA_FILE_LABEL = {
+  'skills.json': 'the skill list',
+  'feats.json': 'the feat list',
+  'spells.json': 'the spell list',
+  'items.json': 'the item list',
+  'scrolls.json': 'the scroll list',
+  'races.json': 'the race list',
+  'classes.json': 'the class list',
+  'animals.json': 'the animal list',
+  'monsters.json': 'the bestiary',
+  'traps.json': 'the trap list',
+  player: 'the character model',
+  'trapCR.test.js': 'the trap CR tests',
+};
+
+/* Only text that is a path gets replaced. A note that writes a proper phrase
+   for its link — "the animal list", already the right words — keeps it, and
+   keeps its translation with it. */
+const LOOKS_LIKE_A_PATH = /^[\w./-]+(\.(json|jsx?|md)|\/)$/;
+
+/** The readable text of a parsed node, for deciding whether to replace it. */
+function textOf(node) {
+  if (node.type === 'text') return node.data ?? '';
+  return (node.children ?? []).map(textOf).join('');
+}
+
+/** A file name nothing names, worded as well as it can be worded blind. */
+const prettify = (file) => file
+  .replace(/\.(json|jsx?|md)$/, '')
+  .replace(/\.test$/, '')
+  .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+  .toLowerCase();
+
+/**
+ * Put a freshly opened note where the reader is looking.
+ *
+ * The window does not scroll in this app: every page is inside `.app-header`,
+ * which is a flex column with its own `overflow: auto`, so `window.scrollTo`
+ * is a no-op and a note opened from a hit near the end of combat.md used to
+ * appear already scrolled to wherever the results had been left.
+ *
+ * @param {string} [anchor] - the section a search hit named, if any.
+ */
+function reveal(anchor) {
+  /* Every call is optional: jsdom implements none of these, and a scroll that
+     does not happen is not a reason for a component to throw. */
+  const section = anchor ? document.getElementById(anchor) : null;
+  if (section) {
+    section.scrollIntoView?.({ block: 'start' });
+    return;
+  }
+  const page = document.querySelector('.rules-page');
+  for (let node = page?.parentElement; node; node = node.parentElement) {
+    const overflow = window.getComputedStyle(node).overflowY;
+    if (overflow === 'auto' || overflow === 'scroll') {
+      node.scrollTo?.({ top: 0 });
+      return;
+    }
+  }
+  document.scrollingElement?.scrollTo?.({ top: 0 });
+}
+
+/** The last segment of a link target: `../../src/data/animals.json` → the file. */
+const basename = (target) => target.replace(/\/+$/, '').replace(/^.*\//, '');
+
+/**
+ * What to call a link, or null to keep the words the note used.
+ *
+ * @param {object} node - the parsed `<a>`.
+ * @param {string} target - its href with any anchor removed.
+ * @param {object} data - the topics, for resolving a note to its title.
+ */
+function labelFor(node, target, data) {
+  if (!LOOKS_LIKE_A_PATH.test(textOf(node).trim())) return null;
+  const file = basename(target);
+  if (target.endsWith('.md')) {
+    /* A note is called by its title, which the data already carries in the
+       reading language — `combat.md` reads as *Combat*, and as *Combattimento*
+       to someone reading the Italian. */
+    return topicBySlug(data, file.replace(/\.md$/, ''))?.title ?? null;
+  }
+  const label = DATA_FILE_LABEL[file];
+  return label ? t(label) : prettify(file);
+}
 
 /**
  * The rules reference.
@@ -56,15 +153,26 @@ export default function RulesPage() {
   const data = useMemo(() => loadFile('rules'), [ready]);          // eslint-disable-line react-hooks/exhaustive-deps
   const english = useMemo(() => rulesEnglish(), [ready]);          // eslint-disable-line react-hooks/exhaustive-deps
   const index = useMemo(() => buildRulesIndex(data, english), [data, english]);
-  const hits = useMemo(() => searchRules(index, query), [index, query]);
+
+  /* The box shows what was typed at once; the scan waits for a pause. 498
+     sections searched twelve times to type "counterspell" is eleven scans
+     nobody reads — every intermediate result is on screen for the length of a
+     keystroke. Emptying the box is exempt: clearing is a request to see the
+     topic list again, and waiting on that is just lag. */
+  const settled = useDebounced(query, 200);
+  const active = query === '' ? '' : settled;
+  const hits = useMemo(() => searchRules(index, active), [index, active]);
 
   const openTopic = topicBySlug(data, openSlug);
 
   const open = (slug, anchor = null) => {
     setOpenSlug(slug);
     setOpenAnchor(anchor);
-    window.scrollTo({ top: 0 });
   };
+
+  /* After the note is on screen, not during the press: the section a hit named
+     does not exist in the document until the render that opens its note. */
+  useEffect(() => { reveal(openSlug ? openAnchor : null); }, [openSlug, openAnchor]);
 
   /* Two kinds of link live in the notes, and they are 363 of them. One points
      at another note and navigates in place; the other points at the JSON the
@@ -77,16 +185,17 @@ export default function RulesPage() {
       const href = node.attribs.href;
       const [target, hash] = href.split('#');
       const children = <>{domToReact(node.children, linkOptions)}</>;
+      const named = labelFor(node, target, data);
+      const file = basename(target);
 
       if (target.endsWith('.md')) {
-        const slug = target.replace(/^.*\//, '').replace(/\.md$/, '');
+        const slug = file.replace(/\.md$/, '');
         return (
           <button type="button" className="rules-link" onClick={() => open(slug, hash ?? null)}>
-            {children}
+            {named ?? children}
           </button>
         );
       }
-      const file = target.replace(/^.*\//, '');
       const searchType = DATA_FILE_SEARCH[file];
       if (searchType) {
         return (
@@ -98,15 +207,30 @@ export default function RulesPage() {
               dispatch(setStateCurrentTab(DATA_TAB));
             }}
           >
-            {children}
+            {named ?? children}
           </button>
         );
       }
       /* Everything else — a data file Search cannot show, a path into src/lib
-         — keeps its text and loses its href. An <a> pointing at a repository
+         — keeps its words and loses its href. An <a> pointing at a repository
          path is not a link in a served app: following it navigates the tab to
          a 404 and loses whatever the reader had open. */
-      return <span className="rules-deadlink">{children}</span>;
+      return <span className="rules-dataref">{named ?? children}</span>;
+    },
+  };
+
+  /* The same names with none of the buttons. A topic card is itself a button,
+     and a button inside a button is neither valid markup nor pressable. */
+  const flatOptions = {
+    replace: (node) => {
+      if (node.name !== 'a' || !node.attribs?.href) return undefined;
+      const [target] = node.attribs.href.split('#');
+      const named = labelFor(node, target, data);
+      return (
+        <span className="rules-dataref">
+          {named ?? <>{domToReact(node.children, flatOptions)}</>}
+        </span>
+      );
     },
   };
 
@@ -147,13 +271,13 @@ export default function RulesPage() {
           topic={openTopic}
           anchor={openAnchor}
           linkOptions={linkOptions}
-          backLabel={query ? t('Back to results') : t('All topics')}
+          backLabel={active ? t('Back to results') : t('All topics')}
           onBack={() => open(null)}
         />
-      ) : query ? (
-        <RulesResults hits={hits} query={query} onOpen={open} linkOptions={linkOptions} />
+      ) : active ? (
+        <RulesResults hits={hits} query={active} onOpen={open} linkOptions={linkOptions} />
       ) : (
-        <RulesIndex topics={data?.topics ?? []} onOpen={open} />
+        <RulesIndex topics={data?.topics ?? []} onOpen={open} linkOptions={flatOptions} />
       )}
     </div>
   );
@@ -168,7 +292,15 @@ export default function RulesPage() {
  * second copy of a list that is already here — and one that the hook
  * regenerates for English and not for Italian.
  */
-function RulesIndex({ topics, onOpen }) {
+function RulesIndex({ topics, onOpen, linkOptions }) {
+  /* Alphabetical by the title as shown, not by the file name underneath it.
+     The data is in English file order, which in Italian is an order with no
+     visible rule at all — *Trappole* between *Equipaggiamento* and *Talenti*
+     because the files are traps.md, equipment.md, feats.md. */
+  const ordered = useMemo(
+    () => [...topics].sort((a, b) => a.title.localeCompare(b.title)),
+    [topics],
+  );
   return (
     <>
       <p className="rules-lede">
@@ -176,11 +308,11 @@ function RulesIndex({ topics, onOpen }) {
           topics.length)}
       </p>
       <ul className="rules-index">
-        {topics.map((topic) => (
+        {ordered.map((topic) => (
           <li key={topic.slug}>
             <button type="button" className="rules-topic" onClick={() => onOpen(topic.slug)}>
               <span className="rules-topic-title">{topic.title}</span>
-              <span className="rules-topic-blurb">{topic.blurb}</span>
+              <span className="rules-topic-blurb">{parse(topic.blurb, linkOptions)}</span>
             </button>
           </li>
         ))}
@@ -241,7 +373,7 @@ function RulesNote({ topic, anchor, linkOptions, backLabel, onBack }) {
         {backLabel}
       </button>
       <h1 className="sh-display rules-title">{topic.title}</h1>
-      <p className="rules-blurb">{topic.blurb}</p>
+      <p className="rules-blurb">{parse(topic.blurb, linkOptions)}</p>
       {topic.intro && <div className="rules-prose">{parse(topic.intro, linkOptions)}</div>}
       {topic.sections.map((section) => (
         <section
