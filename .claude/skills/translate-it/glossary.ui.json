@@ -447,6 +447,151 @@
       "kind": "class",
       "note": "Feat name (druid wild shape casting). PHB p.99: \"INCANTESIMI NATURALI [GENERALE]\" — also filed in names.json feats domain.",
       "source": "manual"
+    },
+    {
+      "en": "Equipment",
+      "it": "Equipaggiamento",
+      "kind": "ui",
+      "note": "Manuale del Giocatore, Capitolo 7: \"Equipaggiamento\". Card title on the combat page and the equipment grid.",
+      "scope": "ui",
+      "source": "manual"
+    },
+    {
+      "en": "Rage",
+      "it": "Ira",
+      "kind": "class",
+      "note": "Barbarian class feature. Card title; matches 'Rage' -> 'Ira' already in the data glossary.",
+      "source": "manual"
+    },
+    {
+      "en": "greater rage",
+      "it": "ira superiore",
+      "kind": "class",
+      "note": "Rage tier eyebrow on the rage card, lowercase as the English is.",
+      "source": "manual"
+    },
+    {
+      "en": "mighty rage",
+      "it": "ira possente",
+      "kind": "class",
+      "note": "Rage tier eyebrow on the rage card, lowercase as the English is.",
+      "source": "manual"
+    },
+    {
+      "en": "polymorph",
+      "it": "metamorfosi",
+      "kind": "rules",
+      "note": "Spell named inline in the wild shape note; same rendering as the data glossary.",
+      "source": "manual"
+    },
+    {
+      "en": "dimension door",
+      "it": "porta dimensionale",
+      "kind": "rules",
+      "note": "Spell named inline in the monk Abundant Step note.",
+      "source": "manual"
+    },
+    {
+      "en": "etherealness",
+      "it": "forma eterea",
+      "kind": "rules",
+      "note": "Spell named inline in the monk Empty Body note.",
+      "source": "manual"
+    },
+    {
+      "en": "Bardic music",
+      "it": "Musica bardica",
+      "kind": "class",
+      "note": "Card title. Same rendering as 'Bardic Music' in the data glossary.",
+      "source": "coined"
+    },
+    {
+      "en": "Unequip",
+      "it": "Rimuovi",
+      "kind": "ui",
+      "note": "Tooltip on the X in an equipment slot. No book term: the manuals never name the act of taking gear off.",
+      "scope": "ui",
+      "source": "coined"
+    },
+    {
+      "en": "Toggle equipment",
+      "it": "Mostra/nascondi equipaggiamento",
+      "kind": "ui",
+      "note": "Matches the other 'Toggle ...' aria-labels in the pack.",
+      "scope": "ui",
+      "source": "coined"
+    },
+    {
+      "en": "Options",
+      "it": "Opzioni",
+      "kind": "ui",
+      "note": "aria-label on the inventory row's overflow button.",
+      "scope": "ui",
+      "source": "coined"
+    },
+    {
+      "en": "Actions",
+      "it": "Azioni",
+      "kind": "ui",
+      "note": "Column header and the eyebrow over the action-feat pills.",
+      "scope": "ui",
+      "source": "coined"
+    },
+    {
+      "en": "Casting",
+      "it": "Lancio",
+      "kind": "ui",
+      "note": "Eyebrow over the two casting feats; matches 'Casting Time' -> 'Tempo di Lancio'.",
+      "scope": "ui",
+      "source": "coined"
+    },
+    {
+      "en": "Potions",
+      "it": "Pozioni",
+      "kind": "ui",
+      "note": "Card title; 'potion' -> 'pozione' is already in the glossary.",
+      "scope": "ui",
+      "source": "coined"
+    },
+    {
+      "en": "Use",
+      "it": "Usa",
+      "kind": "ui",
+      "note": "Drink/apply button on a potion row; matches 'Use {0}' -> 'Usa {0}'.",
+      "scope": "ui",
+      "source": "coined"
+    },
+    {
+      "en": "Long rest",
+      "it": "Riposo lungo",
+      "kind": "ui",
+      "note": "Spellbook rest box. Not a 3.5 term — the app's own label for refreshing spells.",
+      "scope": "ui",
+      "source": "coined"
+    },
+    {
+      "en": "enhancement",
+      "it": "potenziamento",
+      "kind": "item",
+      "note": "The +N stepper on an equipped item; matches 'enhancement bonus' -> 'bonus di potenziamento'.",
+      "scope": "ui",
+      "source": "coined"
+    },
+    {
+      "en": "mounted",
+      "it": "in sella",
+      "kind": "combat",
+      "note": "Group label over the mounted action feats; the book renders 'Mounted Combat' as 'Combattere in Sella'.",
+      "scope": "ui",
+      "source": "coined"
+    },
+    {
+      "en": "Shopperino",
+      "it": "Shopperino",
+      "kind": "ui",
+      "note": "The app's name. A proper noun, identical in every language; wrapped only so the gate can see it is deliberate.",
+      "scope": "ui",
+      "source": "coined"
     }
   ]
 }

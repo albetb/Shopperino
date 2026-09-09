@@ -100,7 +100,7 @@ function ShapeRules({ pool, player, hours, max }) {
       <p>
         {tx(
           "Assuming a form works like {0}: you take the creature's physical scores, natural attacks, movement modes and natural armor, and heal as though you had rested a night. You keep your own hit points, Intelligence, Wisdom, Charisma, base attack bonus, saves, skills and class features. Your gear melds into the new body and stops working.",
-          <i>polymorph</i>
+          <i>{t('polymorph')}</i>
         )}
       </p>
       {elemental ? (
@@ -197,12 +197,9 @@ function ShapeCard({ pool }) {
           {overCap && (
             <div className="sh-warn-strip">
               <Icon name="warning" />
-              {tx(
-                (used - max) === 1
-                  ? '{0} more transformation than the day allows.'
-                  : '{0} more transformations than the day allows.',
-                used - max
-              )}
+              {(used - max) === 1
+                ? tx('{0} more transformation than the day allows.', used - max)
+                : tx('{0} more transformations than the day allows.', used - max)}
             </div>
           )}
 

@@ -120,7 +120,7 @@ export default function TopMenu() {
   const brand = (
     <button type="button" className="sh-topbar-brand" onClick={() => gotoTab(0)} aria-label={t('Shopperino · home')}>
       <img src={logo} alt="" className="sh-brand-logo" />
-      <span className="sh-brand-word">Shopperino</span>
+      <span className="sh-brand-word">{t('Shopperino')}</span>
     </button>
   );
 

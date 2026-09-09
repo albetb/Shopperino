@@ -252,17 +252,39 @@ export function updatePlayerAt(app, index, serializedCharacter) {
 
 //#region Load / Save
 
-export function loadApp() {
+/**
+ * The saved app, and whether there actually was one.
+ *
+ * `loadApp` cannot answer the second question: it collapses "nothing stored",
+ * "stored but unreadable" and "stored by an older `CURRENT_VERSION`" into the
+ * same defaults, which is right for loading and wrong for anything that needs
+ * to know this is a first visit.
+ *
+ * The one caller that needs it is the language. A preference cannot be read off
+ * a missing key, because `compactApp` omits every key equal to its default and
+ * the default language is English — so "never chose" and "deliberately chose
+ * English" are byte-identical on disk. `saved: false` is the only honest signal
+ * that nobody has chosen yet.
+ *
+ * A `CURRENT_VERSION` bump therefore reads as a first visit. That is
+ * deliberate: every other preference resets at the same moment, so the language
+ * resetting with them is consistent rather than surprising.
+ */
+export function readSavedApp() {
   try {
     const raw = localStorage.getItem(ROOT_KEY);
-    if (!raw) return getDefaultApp();
+    if (!raw) return { app: getDefaultApp(), saved: false };
     const parsed = JSON.parse(decompressFromUTF16(raw));
-    if (!parsed || typeof parsed !== 'object') return getDefaultApp();
-    if ((parsed.v | 0) < CURRENT_VERSION) return getDefaultApp();
-    return expandApp(parsed);
+    if (!parsed || typeof parsed !== 'object') return { app: getDefaultApp(), saved: false };
+    if ((parsed.v | 0) < CURRENT_VERSION) return { app: getDefaultApp(), saved: false };
+    return { app: expandApp(parsed), saved: true };
   } catch {
-    return getDefaultApp();
+    return { app: getDefaultApp(), saved: false };
   }
+}
+
+export function loadApp() {
+  return readSavedApp().app;
 }
 
 export function saveApp(app) {

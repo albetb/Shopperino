@@ -1,4 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
+import { t } from '../../lib/i18n';
 import TrackerCard from './tracker_card';
 import SpellLink from '../common/spell_link';
 import { getFeatureSpell } from '../../lib/player/featureSpells';
@@ -30,7 +31,7 @@ export default function BardicMusicCard() {
 
   return (
     <TrackerCard
-      title="Bardic music"
+      title={t('Bardic music')}
       collapseKey="bardicMusic"
       used={player.getClassFeatureUsed('bardicMusic')}
       max={max}

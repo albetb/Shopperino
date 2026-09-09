@@ -6,6 +6,7 @@ import ActionFeatsRow, { SpellcastingActionFeats } from './action_feats_row';
 import CombatPage from './combat_page';
 import { ACTION_FEAT_GROUPS } from '../../lib/player/featEffects';
 import { loadFile } from '../../lib/loadFile';
+import { setLanguage } from '../../lib/i18n';
 
 /* The feats that grant an action rather than a number.
  *
@@ -194,5 +195,30 @@ describe('Leadership rides on Diplomacy instead', () => {
     const p = pc('Bard', 9);
     expect(p.getSituationalContributions('skill:Diplomacy')
       .some((n) => n.source === 'feat:Leadership')).toBe(false);
+  });
+});
+
+/* The three group headings are the one thing here a static scan cannot check:
+   the key is `GROUP_LABEL[group]`, so nothing but a render proves the pack
+   answers all three. The feats are stored in English throughout. */
+describe('the same pills in Italian', () => {
+  afterEach(() => setLanguage('en'));
+
+  test('each group heading is translated, and the feat name is not', () => {
+    setLanguage('it');
+    const p = withFeats(pc(), 'Cleave', 'Rapid shot', 'Trample');
+    expect(p.getActionFeats('melee').map((f) => f.name)).toEqual(['Cleave']);
+    renderWith(<ActionFeatsRow />, p);
+    expect(screen.getByText('Azioni')).toBeInTheDocument();
+    ['mischia', 'a distanza', 'in sella'].forEach((label) => {
+      expect(screen.getByText(label)).toBeInTheDocument();
+    });
+    expect(screen.getByText('Cleave')).toBeInTheDocument();
+  });
+
+  test('and the casting row carries its own eyebrow', () => {
+    setLanguage('it');
+    renderWith(<SpellcastingActionFeats />, withFeats(pc('Wizard', 9), 'Eschew materials'));
+    expect(screen.getByText('Lancio')).toBeInTheDocument();
   });
 });

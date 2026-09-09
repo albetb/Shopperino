@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { t, tName } from '../../lib/i18n';
 
 export default function DomainDescriptionCard({
   description,
@@ -18,7 +19,7 @@ export default function DomainDescriptionCard({
   return (
     <div className={`card card-width-spellbook ${collapsed ? 'collapsed' : ''}`}>
       <div className="card-side-div card-expand-div" onClick={toggle}>
-        <h3 className="card-title">Domains</h3>
+        <h3 className="card-title">{t('Domains')}</h3>
         <button type="button" className="collapse-button">
           <span className="material-symbols-outlined">
             {collapsed ? 'expand_more' : 'expand_less'}
@@ -31,7 +32,7 @@ export default function DomainDescriptionCard({
           {showDomainDropdowns && (
             <div className="card-content player-sheet-alignment-card-content">
               <div className="player-sheet-alignment-row">
-                <label className="player-sheet-alignment-label">Domain 1</label>
+                <label className="player-sheet-alignment-label">{t('Domain 1')}</label>
                 <select
                   className="modern-dropdown small-long"
                   value={domain1}
@@ -39,12 +40,12 @@ export default function DomainDescriptionCard({
                 >
                   <option value="">-</option>
                   {possibleDomain1.map((d) => (
-                    <option key={d} value={d}>{d}</option>
+                    <option key={d} value={d}>{tName('domains', d)}</option>
                   ))}
                 </select>
               </div>
               <div className="player-sheet-alignment-row">
-                <label className="player-sheet-alignment-label">Domain 2</label>
+                <label className="player-sheet-alignment-label">{t('Domain 2')}</label>
                 <select
                   className="modern-dropdown small-long"
                   value={domain2}
@@ -52,7 +53,7 @@ export default function DomainDescriptionCard({
                 >
                   <option value="">-</option>
                   {possibleDomain2.map((d) => (
-                    <option key={d} value={d}>{d}</option>
+                    <option key={d} value={d}>{tName('domains', d)}</option>
                   ))}
                 </select>
               </div>

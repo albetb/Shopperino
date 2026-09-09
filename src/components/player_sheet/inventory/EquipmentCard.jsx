@@ -1,4 +1,5 @@
 import React from 'react';
+import { t } from '../../../lib/i18n';
 import { getItemByRef, calculateWeaponAttackBonus, calculateWeaponDamage, applyItemOverrides, signed } from '../../../lib/utils';
 import formatItemName from '../../../lib/item/formatItemName';
 import { getEffectById } from '../../../lib/item/effectsUtils';
@@ -132,7 +133,7 @@ function EquipmentSlotBox({ slotKey, dataSlot, config, entry, onUnequip, onOpenC
             type="button"
             className="slot-unequip-btn"
             onClick={() => onUnequip(dataSlot || slotKey)}
-            title="Unequip"
+            title={t('Unequip')}
           >
             <span className="material-symbols-outlined">close</span>
           </button>
@@ -203,7 +204,7 @@ export default function EquipmentCard({
         className="card-side-div card-expand-div"
         onClick={() => setEquipmentCollapsed((c) => !c)}
       >
-        <h3 className="card-title">Equipment</h3>
+        <h3 className="card-title">{t('Equipment')}</h3>
         <button type="button" className="collapse-button">
           <span className="material-symbols-outlined">
             {equipmentCollapsed ? 'expand_more' : 'expand_less'}

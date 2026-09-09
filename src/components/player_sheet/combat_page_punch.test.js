@@ -3,6 +3,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
 import Player from '../../lib/player';
 import CombatPage from './combat_page';
+import { setLanguage } from '../../lib/i18n';
 
 /* Who gets a punch line, and when the flurry appears beside it.
 
@@ -124,5 +125,36 @@ describe('the flurry explanation', () => {
     fireEvent.click(button);
     const box = screen.getByRole('dialog', { name: 'Flurry of blows' });
     expect(within(box).getByText(/unarmed strikes or monk weapons/i)).toBeInTheDocument();
+  });
+});
+
+/* The flurry pill picks between a singular and a plural sentence, and Italian
+   inflects the noun with it — a gate that reads the source sees one string and
+   cannot tell the two branches apart. */
+describe('the flurry pill', () => {
+  afterEach(() => setLanguage('en'));
+
+  test('reads +1 attack in English, and +2 attacks at 11th', () => {
+    const { unmount } = renderCombat(character({ cls: 'Monk', level: 6 }));
+    expect(screen.getByText('+1 attack')).toBeInTheDocument();
+    unmount();
+    renderCombat(character({ cls: 'Monk', level: 11 }));
+    expect(screen.getByText('+2 attacks')).toBeInTheDocument();
+  });
+
+  test('one extra attack reads attacco, singular', () => {
+    setLanguage('it');
+    const p = character({ cls: 'Monk', level: 6 });
+    expect(p.getFlurryOfBlows().extraAttacks).toBe(1);
+    renderCombat(p);
+    expect(screen.getByText('+1 attacco')).toBeInTheDocument();
+  });
+
+  test('two of them read attacchi, plural', () => {
+    setLanguage('it');
+    const p = character({ cls: 'Monk', level: 11 });
+    expect(p.getFlurryOfBlows().extraAttacks).toBe(2);
+    renderCombat(p);
+    expect(screen.getByText('+2 attacchi')).toBeInTheDocument();
   });
 });

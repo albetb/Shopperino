@@ -305,7 +305,7 @@ export function MonkAbilitiesCard() {
                     <p>
                       {tx(
                         "Once a day, teleport as {0}, at {1} — half your monk level. It is a spell-like ability, so the range and everything it can carry are the spell's.",
-                        <SpellLink link="spells#dimension-door">dimension door</SpellLink>,
+                        <SpellLink link="spells#dimension-door">{t('dimension door')}</SpellLink>,
                         <b>{tx('caster level {0}', player.getAbundantStepCasterLevel())}</b>
                       )}
                     </p>
@@ -364,7 +364,7 @@ export function MonkAbilitiesCard() {
                     <p>
                       {tx(
                         'Become ethereal as {0} for {1}, and the rounds may be split across as many separate uses as you like.',
-                        <SpellLink link="spells#etherealness">etherealness</SpellLink>,
+                        <SpellLink link="spells#etherealness">{t('etherealness')}</SpellLink>,
                         <b>{t('one round per monk level each day')}</b>
                       )}
                     </p>

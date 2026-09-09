@@ -68,6 +68,34 @@ export function normalizeLang(value) {
   return LANGUAGES.some((l) => l.code === value) ? value : DEFAULT_LANG;
 }
 
+/**
+ * The language to start in when nobody has chosen one yet.
+ *
+ * `navigator.languages` is the reader's own ordered preference list, so the
+ * first entry the app actually speaks is the right answer — an Italian reader
+ * gets Italian without having to find the setting, and everyone else gets
+ * English. Region is dropped: `it-CH` is Italian.
+ *
+ * This never overrides a stored choice. `readSavedApp().saved` is what says
+ * whether one exists, and it is false only when localStorage held no usable
+ * app at all — a missing `lg` means English, not "unset", because
+ * `compactApp` omits every key equal to its default.
+ *
+ * Adding a language to LANGUAGES is all it takes to be detected; there is no
+ * second list to keep in step.
+ *
+ * @param {{languages?: string[], language?: string}} [nav] - defaults to
+ *   `navigator`; injectable so a test does not have to redefine a global.
+ */
+export function detectLanguage(nav = typeof navigator === 'undefined' ? null : navigator) {
+  const prefs = nav?.languages?.length ? nav.languages : [nav?.language];
+  for (const tag of prefs) {
+    const code = String(tag ?? '').toLowerCase().split('-')[0];
+    if (LANGUAGES.some((l) => l.code === code)) return code;
+  }
+  return DEFAULT_LANG;
+}
+
 /** Whether a language has anything to say — English never does. */
 export function hasPack(lang) {
   return Boolean(PACKS[normalizeLang(lang)]);

@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { t } from '../../lib/i18n';
 
 export default function RestBox({ page, hasUsedSpells, onRefreshSpell }) {
     if (page !== 2) return null;
@@ -18,7 +19,7 @@ export default function RestBox({ page, hasUsedSpells, onRefreshSpell }) {
                         bedtime
                     </span>
                 </button>
-                <p className="filter-icon-white">Long rest</p>
+                <p className="filter-icon-white">{t('Long rest')}</p>
             </div>
         </div>
     );

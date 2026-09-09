@@ -1,3 +1,5 @@
+import { t } from '../../../lib/i18n';
+
 const INVENTORY_COLUMNS = ['number', 'type', 'name'];
 
 export default function InventoryTableHeader({ sortColumn, sortDesc, onSort }) {
@@ -5,7 +7,7 @@ export default function InventoryTableHeader({ sortColumn, sortDesc, onSort }) {
     <thead>
       <tr className="sh-inv-head-row">
         {INVENTORY_COLUMNS.map((col) => {
-          const label = col === 'number' ? '#' : col === 'name' ? 'Name' : '';
+          const label = col === 'number' ? '#' : col === 'name' ? t('Name') : '';
           const isActive = sortColumn === col;
           const thClass =
             col === 'number' ? 'sh-inv-th sh-inv-th--num' :
@@ -16,7 +18,7 @@ export default function InventoryTableHeader({ sortColumn, sortDesc, onSort }) {
               key={col}
               className={`${thClass} ${isActive ? 'is-active' : ''}`}
               onClick={() => onSort(col)}
-              aria-label={col === 'type' ? 'Sort by type' : undefined}
+              aria-label={col === 'type' ? t('Sort by type') : undefined}
             >
               {label}
               {isActive && (
@@ -27,7 +29,7 @@ export default function InventoryTableHeader({ sortColumn, sortDesc, onSort }) {
             </th>
           );
         })}
-        <th className="sh-inv-th sh-inv-th--action" aria-label="Actions"></th>
+        <th className="sh-inv-th sh-inv-th--action" aria-label={t('Actions')}></th>
       </tr>
     </thead>
   );

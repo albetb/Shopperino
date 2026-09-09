@@ -1,4 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
+import { t } from '../../lib/i18n';
 import Card from '../common/Card';
 import Pill from '../common/Pill';
 import IconButton from '../common/IconButton';
@@ -59,7 +60,7 @@ export default function EquippedItemsCard() {
 
   return (
     <Card
-      title="Equipment"
+      title={t('Equipment')}
       className="sh-card--head-spread"
       onHeadClick={() => dispatch(setCombatPageCardCollapsed({ key: 'items', value: !collapsed }))}
       action={
@@ -67,7 +68,7 @@ export default function EquippedItemsCard() {
           icon={collapsed ? 'expand_more' : 'expand_less'}
           ghost size="sm"
           onClick={() => dispatch(setCombatPageCardCollapsed({ key: 'items', value: !collapsed }))}
-          aria-label="Toggle equipment"
+          aria-label={t('Toggle equipment')}
         />
       }
     >

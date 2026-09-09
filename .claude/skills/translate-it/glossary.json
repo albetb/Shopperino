@@ -3350,6 +3350,222 @@
       ],
       "source": "manual",
       "note": "Spell name, Manuale del Giocatore."
+    },
+    {
+      "en": "Blindsense",
+      "it": "Percezione cieca",
+      "strict": true,
+      "kind": "rules term",
+      "stems": [
+        "percezione ciec"
+      ],
+      "source": "manual",
+      "note": "Manuale dei Mostri. NOT \"vista cieca\", which is blindsight -- a different ability the book keeps separate."
+    },
+    {
+      "en": "ability check",
+      "it": "prova di caratteristica",
+      "strict": true,
+      "kind": "rules term",
+      "stems": [
+        "prova di caratteristic",
+        "prove di caratteristic"
+      ],
+      "source": "manual",
+      "note": "Manuale del Giocatore p.319. Head inflects: prove."
+    },
+    {
+      "en": "attack roll",
+      "it": "tiro per colpire",
+      "strict": true,
+      "kind": "rules term",
+      "stems": [
+        "tiro per colpir",
+        "tiri per colpir"
+      ],
+      "source": "manual",
+      "note": "Manuale del Giocatore, throughout. Not \"tiro di attacco\". Both numbers are listed: the data writes the plural 153 times and a tail-chopped stem misses all of them."
+    },
+    {
+      "en": "forced march",
+      "it": "marcia forzata",
+      "strict": true,
+      "kind": "rules term",
+      "stems": [
+        "marcia forzat",
+        "marce forzat"
+      ],
+      "source": "manual",
+      "note": "Manuale del Giocatore. Head inflects: marce."
+    },
+    {
+      "en": "special attack",
+      "it": "attacco speciale",
+      "strict": true,
+      "kind": "rules term",
+      "stems": [
+        "attacco special",
+        "attacchi special"
+      ],
+      "source": "manual",
+      "note": "Manuale del Giocatore, Attacchi speciali. Head and adjective both inflect."
+    },
+    {
+      "en": "Heighten Spell",
+      "it": "Incantesimi Intensificati",
+      "strict": true,
+      "kind": "rules term",
+      "stems": [
+        "incantesimi intensificat",
+        "incantesimo intensificat"
+      ],
+      "source": "manual",
+      "note": "Manuale del Giocatore feat table, which names this whole family in the plural: Incantesimi Ampliati, Estesi, Immobili, Ingranditi, Intensificati, Massimizzati, Potenziati, Rapidi, Silenziosi. Not Incantesimi Estesi, which is Extend Spell."
+    },
+    {
+      "en": "caster level check",
+      "it": "prova di livello dell'incantatore",
+      "strict": true,
+      "kind": "rules term",
+      "stems": [
+        "prova di livello dell'incantator",
+        "prove di livello dell'incantator"
+      ],
+      "source": "manual",
+      "note": "Manuale del Giocatore. The head inflects: the data writes \"prove\" 6 times and a tail-chopped stem misses every one."
+    },
+    {
+      "en": "metamagic feat",
+      "it": "talento di metamagia",
+      "strict": true,
+      "kind": "rules term",
+      "stems": [
+        "talento di metamagia",
+        "talenti di metamagia"
+      ],
+      "source": "manual",
+      "note": "Manuale del Giocatore, \"talenti di metamagia\" 16 times. Head inflects."
+    },
+    {
+      "en": "Empower Spell",
+      "it": "Incantesimi Potenziati",
+      "strict": false,
+      "kind": "feat",
+      "stems": [
+        "incantesim",
+        "potenziat"
+      ],
+      "source": "manual",
+      "note": "Manuale del Giocatore. The metamagic feat NAMES are plural and capitalised in the feat table; the singular lowercase form is the effect in prose, not the name."
+    },
+    {
+      "en": "Maximize Spell",
+      "it": "Incantesimi Massimizzati",
+      "strict": false,
+      "kind": "feat",
+      "stems": [
+        "incantesim",
+        "massimizzat"
+      ],
+      "source": "manual",
+      "note": "Manuale del Giocatore. The metamagic feat NAMES are plural and capitalised in the feat table; the singular lowercase form is the effect in prose, not the name."
+    },
+    {
+      "en": "Extend Spell",
+      "it": "Incantesimi Estesi",
+      "strict": false,
+      "kind": "feat",
+      "stems": [
+        "incantesim",
+        "estes"
+      ],
+      "source": "manual",
+      "note": "Manuale del Giocatore. The metamagic feat NAMES are plural and capitalised in the feat table; the singular lowercase form is the effect in prose, not the name."
+    },
+    {
+      "en": "Enlarge Spell",
+      "it": "Incantesimi Ingranditi",
+      "strict": false,
+      "kind": "feat",
+      "stems": [
+        "incantesim",
+        "ingrandit"
+      ],
+      "source": "manual",
+      "note": "Manuale del Giocatore. The metamagic feat NAMES are plural and capitalised in the feat table; the singular lowercase form is the effect in prose, not the name."
+    },
+    {
+      "en": "Silent Spell",
+      "it": "Incantesimi Silenziosi",
+      "strict": false,
+      "kind": "feat",
+      "stems": [
+        "incantesim",
+        "silenzios"
+      ],
+      "source": "manual",
+      "note": "Manuale del Giocatore. The metamagic feat NAMES are plural and capitalised in the feat table; the singular lowercase form is the effect in prose, not the name."
+    },
+    {
+      "en": "Still Spell",
+      "it": "Incantesimi Immobili",
+      "strict": false,
+      "kind": "feat",
+      "stems": [
+        "incantesim",
+        "immobil"
+      ],
+      "source": "manual",
+      "note": "Manuale del Giocatore. The metamagic feat NAMES are plural and capitalised in the feat table; the singular lowercase form is the effect in prose, not the name."
+    },
+    {
+      "en": "Quicken Spell",
+      "it": "Incantesimi Rapidi",
+      "strict": false,
+      "kind": "feat",
+      "stems": [
+        "incantesim",
+        "rapid"
+      ],
+      "source": "manual",
+      "note": "Manuale del Giocatore. The metamagic feat NAMES are plural and capitalised in the feat table; the singular lowercase form is the effect in prose, not the name."
+    },
+    {
+      "en": "Widen Spell",
+      "it": "Incantesimi Ampliati",
+      "strict": false,
+      "kind": "feat",
+      "stems": [
+        "incantesim",
+        "ampliat"
+      ],
+      "source": "manual",
+      "note": "Manuale del Giocatore. The metamagic feat NAMES are plural and capitalised in the feat table; the singular lowercase form is the effect in prose, not the name."
+    },
+    {
+      "en": "bardic knowledge",
+      "it": "Conoscenze bardiche",
+      "strict": false,
+      "kind": "class feature",
+      "stems": [
+        "conoscenz",
+        "bardic"
+      ],
+      "source": "manual",
+      "note": "Manuale del Giocatore: \"Conoscenze bardiche: Un bardo raccoglie molte nozioni casuali\". The singular appears nowhere."
+    },
+    {
+      "en": "mind-affecting",
+      "it": "che influenza la mente",
+      "strict": false,
+      "homonym": true,
+      "kind": "descriptor",
+      "stems": [
+        "influenza la mente",
+        "influenzano la mente"
+      ],
+      "source": "manual",
+      "note": "Both forms are the book's: the verb agrees with its noun. \"effetto che influenza la mente\", \"effetti che influenzano la mente\". Grammar, not vocabulary."
     }
   ]
 }

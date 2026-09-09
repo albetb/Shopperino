@@ -99,7 +99,7 @@ export default function MenuCardWorld() {
               {false && (<div className={`card-side-div margin-top ${isShopGenerated ? '' : 'opacity-50'}`}>
                 <input
                   type="number"
-                  placeholder="hours"
+                  placeholder={t('hours')}
                   value={hours}
                   min={0}
                   max={23}
@@ -110,7 +110,7 @@ export default function MenuCardWorld() {
                 />
                 <input
                   type="number"
-                  placeholder="days"
+                  placeholder={t('days')}
                   value={days}
                   min={0}
                   max={7}

@@ -218,7 +218,9 @@ export default function SharedShopCard({ player }) {
       >
         <div className="shared-shop-summary">
           <Pill tone="ghost" icon="inventory_2">
-            {tx(items.length === 1 ? '{0} item' : '{0} items', items.length)}
+            {items.length === 1
+              ? tx('{0} item', items.length)
+              : tx('{0} items', items.length)}
           </Pill>
           <Button
             variant="primary"

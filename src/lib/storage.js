@@ -12,6 +12,7 @@ import { rosterFromTuples } from './monster/monsterRoster';
 
 // Re-export appState so consumers can use db.loadApp, db.saveApp, etc.
 export const loadApp = appState.loadApp;
+export const readSavedApp = appState.readSavedApp;
 export const saveApp = appState.saveApp;
 export const getDefaultApp = appState.getDefaultApp;
 export const getWorldByIndex = appState.getWorldByIndex;

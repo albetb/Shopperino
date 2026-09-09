@@ -1,0 +1,932 @@
+{
+  "terms": [
+    {
+      "en": "ability (score)",
+      "it": "caratteristica",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.6, 'prova di caratteristica'/'punteggio di caratteristica'/'modificatore di caratteristica'. Generic word for one of the six abilities."
+    },
+    {
+      "en": "score",
+      "it": "punteggio",
+      "strict": false,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.6, 'punteggio di caratteristica'. Soft: 'score' is ordinary English prose elsewhere."
+    },
+    {
+      "en": "modifier",
+      "it": "modificatore",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.6, 'modificatore di caratteristica'."
+    },
+    {
+      "en": "attack roll",
+      "it": "tiro per colpire",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.4, p.9, throughout. Not 'tiro di attacco'."
+    },
+    {
+      "en": "ability check",
+      "it": "prova di caratteristica",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.6, p.67, p.319 ('prova di caratteristica: Una prova di 1d20 + l'appropriato modificatore di caratteristica')."
+    },
+    {
+      "en": "opposed check / opposed roll",
+      "it": "prova contrapposta",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.63, p.65 ('Una prova contrapposta è una prova in cui il successo o il fallimento viene determinato comparando il risultato della prova al risultato della prova di un altro')."
+    },
+    {
+      "en": "Combat Reflexes",
+      "it": "Riflessi in Combattimento",
+      "strict": true,
+      "source": "manual",
+      "note": "Feat name. Manuale del Giocatore p.92, p.100-101."
+    },
+    {
+      "en": "Uncanny Dodge",
+      "it": "Schivare prodigioso",
+      "strict": true,
+      "source": "manual",
+      "note": "Rogue/barbarian class feature. Manuale del Giocatore p.26-27. Improved Uncanny Dodge = 'Schivare prodigioso migliorato'."
+    },
+    {
+      "en": "surprise round",
+      "it": "round di sorpresa",
+      "strict": false,
+      "source": "manual",
+      "note": "Used in conditions.md for flat-footed trigger; standard D&D Italian phrasing."
+    },
+    {
+      "en": "petrification",
+      "it": "pietrificazione",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.248, p.254, p.262. Not 'petrificazione' (missing i)."
+    },
+    {
+      "en": "disease",
+      "it": "malattia",
+      "strict": false,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.50, p.77, 'Rimuovi malattia'."
+    },
+    {
+      "en": "poison (noun)",
+      "it": "veleno",
+      "strict": false,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.8-10."
+    },
+    {
+      "en": "disintegrate (spell)",
+      "it": "Disintegrazione",
+      "strict": false,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.137, p.190, p.199 ('Disintegrazione: Fa svanire una creatura o un oggetto')."
+    },
+    {
+      "en": "dragon breath",
+      "it": "soffio del drago",
+      "strict": false,
+      "source": "manual",
+      "note": "Manuale dei Mostri I p.67-68, Manuale del Dungeon Master p.282."
+    },
+    {
+      "en": "mind-affecting",
+      "it": "che influenza la mente",
+      "strict": false,
+      "source": "manual",
+      "note": "The verb agrees with its noun: \"incantesimi che influenzano la mente\" (MdG p.175), \"una capacita che influenza la mente\" (p.30). Both stems listed so neither form reads as a defect.",
+      "stems": [
+        "che influenza la mente",
+        "che influenzano la mente"
+      ]
+    },
+    {
+      "en": "charm (effect)",
+      "it": "charme",
+      "strict": false,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.10, p.30, p.45 -- kept as the Italian manuals' loanword, e.g. 'effetti di charme'."
+    },
+    {
+      "en": "carrying capacity",
+      "it": "capacità di trasporto",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.4 (Table of Contents), Table 9-1: 'Capacità di trasporto'. NOT 'capacità di carico' (a plausible but unattested guess)."
+    },
+    {
+      "en": "off-hand",
+      "it": "mano secondaria",
+      "strict": false,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.9, p.47, p.91 ('attacchi effettuati con la mano secondaria')."
+    },
+    {
+      "en": "composite bow",
+      "it": "arco composito",
+      "strict": false,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.116, plural 'archi compositi'."
+    },
+    {
+      "en": "inherent bonus",
+      "it": "bonus intrinseco",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.11, p.224. Ability score cap +5 wording confirmed alongside it."
+    },
+    {
+      "en": "aging",
+      "it": "invecchiamento",
+      "strict": false,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.4, p.11, p.38, Table 6-5 'Effetti dell'invecchiamento'."
+    },
+    {
+      "en": "gloves/gauntlets of <ability> (item)",
+      "it": "guanti della <Caratteristica>",
+      "strict": false,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.11, 'i guanti della...' pattern for ability-boosting worn items. Low-confidence: page text is truncated by OCR, pattern inferred."
+    },
+    {
+      "en": "restoration (spell)",
+      "it": "restaurazione",
+      "strict": false,
+      "source": "guess",
+      "note": "LOW CONFIDENCE: not found verbatim in core-book text search (OCR/extraction may miss it). Used only in a passing cross-reference in ability-scores.md ('restored only by spells such as restoration'). Verify against PHB spell list before treating as authoritative."
+    },
+    {
+      "en": "ray of X (spell prefix)",
+      "it": "raggio di X",
+      "strict": false,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.88/195 confirms 'raggio di indebolimento' (ray of enfeeblement) as the pattern for 'ray of' spells."
+    },
+    {
+      "en": "ray of exhaustion (spell)",
+      "it": "raggio di sfinimento",
+      "strict": false,
+      "source": "guess",
+      "note": "Built from the confirmed 'raggio di X' pattern (ray of enfeeblement = raggio di indebolimento) and 'sfinimento' for exhaustion-type effects (Manuale dei Mostri I p.317). Spell name itself not directly located in the extracted core-book text; low-medium confidence."
+    },
+    {
+      "en": "bull's strength (spell)",
+      "it": "forza del toro",
+      "strict": false,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.11, p.173, p.187."
+    },
+    {
+      "en": "Extraordinary (Ex)",
+      "it": "straordinaria",
+      "strict": true,
+      "source": "manual",
+      "note": "Special-ability type tag. Manuale del Giocatore p.16, p.35 ('straordinariamente')."
+    },
+    {
+      "en": "Supernatural (Su)",
+      "it": "soprannaturale",
+      "strict": true,
+      "source": "manual",
+      "note": "Special-ability type tag. Manuale del Giocatore p.16, p.25."
+    },
+    {
+      "en": "natural weapon",
+      "it": "arma naturale",
+      "strict": false,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.37, p.48."
+    },
+    {
+      "en": "natural armor",
+      "it": "armatura naturale",
+      "strict": false,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.37, p.51 ('bonus di armatura naturale')."
+    },
+    {
+      "en": "special quality",
+      "it": "qualità speciale",
+      "strict": false,
+      "source": "guess",
+      "note": "MEDIUM CONFIDENCE: 'qualità' (p.12, p.46, p.70...) and 'speciale/i' independently confirmed; the compound stat-block header itself wasn't matched verbatim by the search tool (accent-stripping issue). 'Attacchi speciali' (special attacks) IS directly confirmed (Manuale del Giocatore p.4, p.126)."
+    },
+    {
+      "en": "special attack",
+      "it": "attacco speciale",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.4 (Table 8-7 'Attacchi speciali'), p.126."
+    },
+    {
+      "en": "range (spell/weapon)",
+      "it": "gittata",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.27, p.31, weapon and spell range. NOT 'portata', which is reach (see glossary.md)."
+    },
+    {
+      "en": "subtype (creature)",
+      "it": "sottotipo",
+      "strict": false,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.54, p.203 ('Tipo (sottotipo)')."
+    },
+    {
+      "en": "duration",
+      "it": "durata",
+      "strict": false,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.13, p.16; ordinary word also used for spell duration blocks."
+    },
+    {
+      "en": "class level",
+      "it": "livello di classe",
+      "strict": false,
+      "source": "manual",
+      "note": "Standard compositional phrase, consistent with 'livello dell'incantatore' pattern already in glossary.md."
+    },
+    {
+      "en": "target (of a spell/attack)",
+      "it": "bersaglio",
+      "strict": false,
+      "source": "manual",
+      "note": "Already used compositionally in glossary.md ('valore bersaglio' in core-mechanic.md); standard word."
+    },
+    {
+      "en": "area (spell)",
+      "it": "area",
+      "strict": false,
+      "source": "manual",
+      "note": "Cognate, unremarkable."
+    },
+    {
+      "en": "wild empathy",
+      "it": "empatia selvatica",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 1 (movement.md/experience-and-leveling.md). Manuale del Giocatore p.36, 53, 54."
+    },
+    {
+      "en": "turning check",
+      "it": "prova di scacciare",
+      "strict": false,
+      "source": "manual",
+      "note": "Batch 1. Manuale del Giocatore p.159-160."
+    },
+    {
+      "en": "forced march",
+      "it": "marcia forzata",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 1 (movement.md). Manuale del Giocatore p.164-165."
+    },
+    {
+      "en": "difficult terrain",
+      "it": "terreno difficile",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 1 (movement.md). Manuale del Giocatore p.164."
+    },
+    {
+      "en": "Overrun (combat maneuver, verb 'to overrun')",
+      "it": "Oltrepassare",
+      "strict": true,
+      "source": "manual",
+      "note": "CORRECTED. Manuale del Giocatore p.100 ('OLTREPASSARE MIGLIORATO'), p.142, p.148-149, p.155-157. Batch 1 (movement.md) initially wrote this as 'Travolgere' -- WRONG, that word is a separate feat (Trample, below); fixed by the coordinator to 'Oltrepassare'."
+    },
+    {
+      "en": "Improved Overrun (feat)",
+      "it": "Oltrepassare Migliorato",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.91, p.100."
+    },
+    {
+      "en": "Trample (feat/special attack, distinct from Overrun)",
+      "it": "Travolgere",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.91, p.103 ('TRAVOLGERE [GENERALE]'), p.158-159 ('Oltrepassare in sella (Travolgere)' = Mounted Overrun (Trample), showing the two are explicitly distinct game terms, not synonyms). Also Manuale dei Mostri I p.64, 133, tagged (Str) as a monster special attack."
+    },
+    {
+      "en": "hustle (movement)",
+      "it": "andatura veloce",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 1 (movement.md). Manuale del Giocatore p.164-165."
+    },
+    {
+      "en": "Run (feat, x3/x4 speed)",
+      "it": "Correre",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 1 (movement.md). Manuale del Giocatore p.83, 91, 144, 164."
+    },
+    {
+      "en": "class skill",
+      "it": "abilità di classe",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 1 (skills.md). Manuale del Giocatore p.7, 23."
+    },
+    {
+      "en": "cross-class skill",
+      "it": "abilità di classe incrociata",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 1 (skills.md). Manuale del Giocatore p.7, 23."
+    },
+    {
+      "en": "take 10",
+      "it": "prendere 10",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 1 (skills.md). Manuale del Giocatore p.64."
+    },
+    {
+      "en": "take 20",
+      "it": "prendere 20",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 1 (skills.md). Manuale del Giocatore p.65."
+    },
+    {
+      "en": "Untrained (skill table header)",
+      "it": "Senza addestramento",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 1 (skills.md). Manuale del Giocatore p.65 (Tabella 4-2 column), p.69."
+    },
+    {
+      "en": "bardic knowledge",
+      "it": "conoscenze bardiche",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 1 (skills.md). Manuale del Giocatore p.28."
+    },
+    {
+      "en": "trapfinding (rogue class feature)",
+      "it": "Scoprire trappole",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 1 (skills.md). Manuale del Giocatore p.41."
+    },
+    {
+      "en": "Try Again (skill-format header)",
+      "it": "Ritentare",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 1 (skills.md). Manuale del Giocatore p.65, 71."
+    },
+    {
+      "en": "DC descriptor ladder (Very easy..Nearly impossible)",
+      "it": "Molto facile / Facile / Media / Difficile / Impegnativa / Eroica / Quasi impossibile",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 1 (skills.md). Manuale del Giocatore p.65, Tabella 4-3, for DC 0/5/10/15/20/30/40."
+    },
+    {
+      "en": "Tactical / Local / Overland (movement scale)",
+      "it": "movimento tattico / movimento locale / movimento via terra",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 1 (movement.md). Manuale del Giocatore p.164 headings."
+    },
+    {
+      "en": "CORRECTION -- Speak Language",
+      "it": "Parlare Linguaggi (plural)",
+      "strict": true,
+      "source": "manual",
+      "note": "glossary.md line ~339 currently lists this STRICT as 'Parlare Linguaggio' (singular) -- CONFIRMED WRONG via book.py: Manuale del Giocatore p.29, 34, 36 all print 'Parlare Linguaggi' (plural), matching src/data/it/names.json's 'Parlare Linguaggi'. Whoever owns glossary.json should fix this entry. Batch 1 used the (wrong) singular per glossary.md's STRICT instruction in languages.md/skills.md and has already corrected those two files to the plural."
+    },
+    {
+      "en": "Extraordinary ability tag abbreviation \"(Ex)\"",
+      "it": "(Str)",
+      "strict": true,
+      "source": "manual",
+      "note": "Confirmed p.37: 'Andatura nel bosco (Str)', 'Eludere (Str)'. Abbreviates 'Straordinaria'. No real collision with the Strength ability-score abbreviation, since that is 'For' in Italian (see glossary.md abbreviations table), not 'Str'."
+    },
+    {
+      "en": "Supernatural ability tag abbreviation \"(Su)\"",
+      "it": "(Sop)",
+      "strict": true,
+      "source": "manual",
+      "note": "Confirmed p.30, 34, 38: 'Ispirare coraggio (Sop)', 'Scacciare o intimorire non morti (Sop)', 'Forma selvatica (Sop)'. Abbreviates 'Soprannaturale'."
+    },
+    {
+      "en": "Spell-Like ability tag abbreviation \"(Sp)\"",
+      "it": "(Mag)",
+      "strict": true,
+      "source": "manual",
+      "note": "Confirmed p.30-31: 'Suggestione (Mag)', 'Affascinare (Mag)', 'Canto di libertà (Mag)'. Consistent with glossary.md's existing note that Spell-Like -> 'Magica'."
+    },
+    {
+      "en": "favored class",
+      "it": "classe preferita",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 2 (races.md/multiclassing.md). Manuale del Giocatore p.12, 14, 16-21."
+    },
+    {
+      "en": "Smite Evil",
+      "it": "punire il male",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 2 (classes-adjacent). Manuale del Giocatore p.50, paladin class table."
+    },
+    {
+      "en": "True Neutral",
+      "it": "Neutrale puro",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 2 (alignment.md). Manuale del Giocatore p.206, 296; DMG p.139."
+    },
+    {
+      "en": "Darkvision",
+      "it": "Scurovisione",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 2 (races.md). Manuale del Giocatore p.15, 20."
+    },
+    {
+      "en": "Low-light vision",
+      "it": "Visione crepuscolare",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 2 (races.md). Manuale del Giocatore p.17-19, 153."
+    },
+    {
+      "en": "Link (animal companion ability)",
+      "it": "Legame",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 2 (animal-companion.md). Manuale del Giocatore p.37, tagged (Str)."
+    },
+    {
+      "en": "Share Spells (animal companion ability)",
+      "it": "Condividere incantesimi",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 2 (animal-companion.md). Manuale del Giocatore p.37, 51, 58, tagged (Str)."
+    },
+    {
+      "en": "Evasion",
+      "it": "Eludere",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 2. Manuale del Giocatore p.37, 41-42, 48, 53, 55, tagged (Str); matches names.json rogueAbilities 'Improved Evasion'->'Eludere migliorato'."
+    },
+    {
+      "en": "Devotion (animal companion ability)",
+      "it": "Devozione",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 2 (animal-companion.md). Manuale del Giocatore p.37, tagged (Str)."
+    },
+    {
+      "en": "Multiattack (bonus feat)",
+      "it": "Multiattacco",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 2. src/data/it/companionAbilities.json app text."
+    },
+    {
+      "en": "Bonus HD / Natural Armor Adj. / Str-Dex Adj. (animal companion table headers)",
+      "it": "DV bonus / Mod. armatura naturale / Mod. For/Des",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 2 (animal-companion.md). Manuale del Giocatore p.37, 51, 57."
+    },
+    {
+      "en": "Dire (creature prefix, e.g. Dire Wolf)",
+      "it": "crudele (as a suffix: 'Lupo crudele')",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 2. Manuale del Giocatore/Mostri I p.4-5, 14-18, confirmed for wolf, boar, wolverine, badger, bat, weasel, rat, lion, tiger, bear, shark."
+    },
+    {
+      "en": "Wolverine",
+      "it": "Ghiottone",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 2. Manuale del Giocatore p.37, 232."
+    },
+    {
+      "en": "Alertness (feat)",
+      "it": "Allerta",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 3 (familiar.md). src/data/it/familiarAbilities.json app text."
+    },
+    {
+      "en": "Deliver Touch Spells (familiar ability)",
+      "it": "Trasmettere incantesimi a contatto",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 3 (familiar.md). Manuale del Giocatore p.58, tagged (Sop)."
+    },
+    {
+      "en": "Scry on Familiar (ability)",
+      "it": "Scrutare sul famiglio",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 3 (familiar.md). Manuale del Giocatore p.58."
+    },
+    {
+      "en": "dispel magic (spell)",
+      "it": "dissolvi magie",
+      "strict": false,
+      "source": "manual",
+      "note": "Batch 3 (counterspelling.md). Manuale del Giocatore pp.76,161,172,185-201."
+    },
+    {
+      "en": "dispel check",
+      "it": "prova di dissolvere",
+      "strict": false,
+      "source": "manual",
+      "note": "Batch 3 (counterspelling.md)."
+    },
+    {
+      "en": "point-buy (ability score variant rule)",
+      "it": "acquisto punteggi standard",
+      "strict": false,
+      "source": "manual",
+      "note": "Batch 3 (character-creation.md). Manuale del Dungeon Master p.170-171."
+    },
+    {
+      "en": "standard array",
+      "it": "serie di punteggi standard",
+      "strict": false,
+      "source": "manual",
+      "note": "Batch 3 (character-creation.md). Manuale dei Mostri I p.295/297/303."
+    },
+    {
+      "en": "Quicken Spell (metamagic feat)",
+      "it": "Incantesimi Rapidi",
+      "strict": true,
+      "source": "manual",
+      "note": "CORRECTED after batch 3 initially guessed 'Incantesimo Accelerato' (wrong, unverified) in counterspelling.md -- fixed by the coordinator. Confirmed via book.py: Manuale del Giocatore p.99 'il lancio di un incantesimo rapido è un'azione gratuita', p.142 'Lanciare un incantesimo rapido'."
+    },
+    {
+      "en": "Silent Spell (metamagic feat)",
+      "it": "Incantesimi Silenziosi",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.89, p.99."
+    },
+    {
+      "en": "casting time",
+      "it": "tempo di lancio",
+      "strict": false,
+      "source": "manual",
+      "note": "Batch 3. Manuale del Giocatore p.73, p.89, p.99."
+    },
+    {
+      "en": "Bull Rush / Improved Bull Rush",
+      "it": "Spingere / Spingere Migliorato",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 4 (combat-maneuvers.md). Manuale del Giocatore pp.91,102,155,159."
+    },
+    {
+      "en": "Sunder / Improved Sunder",
+      "it": "Spezzare / Spezzare Migliorato",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 4 (combat-maneuvers.md/objects.md). Manuale del Giocatore pp.91,102,155,160."
+    },
+    {
+      "en": "Disarm / Improved Disarm",
+      "it": "Disarmare / Disarmare Migliorato",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 4 (combat-maneuvers.md). Manuale del Giocatore pp.92,97,155-156."
+    },
+    {
+      "en": "Trip / Improved Trip",
+      "it": "Sbilanciare / Sbilanciare Migliorato",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 4 (combat-maneuvers.md). Manuale del Giocatore pp.92,101,155,158-159."
+    },
+    {
+      "en": "Feint / Improved Feint (verb/noun)",
+      "it": "Fintare / finta / Fintare Migliorato",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 4 (combat-maneuvers.md). Manuale del Giocatore pp.92,97,155,157."
+    },
+    {
+      "en": "Mounted Combat (feat)",
+      "it": "Combattere in Sella",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 4. Manuale del Giocatore p.94."
+    },
+    {
+      "en": "Hardness",
+      "it": "Durezza",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 4 (objects.md). Manuale del Giocatore pp.160,166, Table 8-10 'Durezza e punti ferita'."
+    },
+    {
+      "en": "Arcane Lock (spell)",
+      "it": "Serratura arcana",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 4 (objects.md). Manuale del Giocatore pp.167,196."
+    },
+    {
+      "en": "Blindsense",
+      "it": "Percezione cieca",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 4 (vision-and-light.md). Manuale del Giocatore pp.203,258,263."
+    },
+    {
+      "en": "Blindsight",
+      "it": "Vista cieca",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 4 (vision-and-light.md). Manuale del Giocatore pp.203,263,294."
+    },
+    {
+      "en": "Dazzled",
+      "it": "Abbagliato",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 4 (vision-and-light.md). Manuale del Giocatore pp.152,241,311. NOTE: not in src/data/it/names.json's conditions map either -- worth adding there too."
+    },
+    {
+      "en": "Total concealment",
+      "it": "Occultamento totale",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 4 (vision-and-light.md). Manuale del Giocatore pp.78,103,153."
+    },
+    {
+      "en": "Spell Mastery (feat)",
+      "it": "Padronanza degli Incantesimi",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 4 (feats.md). Manuale del Giocatore pp.92,324."
+    },
+    {
+      "en": "Metamagic (feat category)",
+      "it": "Metamagia / talenti di metamagia",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 4 (feats.md). Manuale del Giocatore pp.26,44,88-89. Directly relevant to metamagic.md (batch 5)."
+    },
+    {
+      "en": "Item Creation (feat category)",
+      "it": "Creazione oggetto",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 4 (feats.md). Manuale del Giocatore pp.26,44,88."
+    },
+    {
+      "en": "Track (feat)",
+      "it": "Seguire Tracce",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 4 (feats.md). Manuale del Giocatore pp.54,85,92,100."
+    },
+    {
+      "en": "Endurance (feat)",
+      "it": "Resistenza Fisica",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 4 (feats.md). Manuale del Giocatore pp.53-54,92,100."
+    },
+    {
+      "en": "Weapon Focus (feat)",
+      "it": "Arma Focalizzata",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 4 (feats.md). Manuale del Giocatore p.90."
+    },
+    {
+      "en": "Skill Focus (feat)",
+      "it": "Abilità Focalizzata",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 4 (feats.md). Manuale del Giocatore pp.64,90-91."
+    },
+    {
+      "en": "Power Attack (feat)",
+      "it": "Attacco Poderoso",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 4, from src/data/it/names.json feats map (already app-verified)."
+    },
+    {
+      "en": "Verbal (spell component, V)",
+      "it": "Verbale (V)",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 5 (spell-components.md). Manuale del Giocatore p.141,176,303."
+    },
+    {
+      "en": "Somatic (spell component, S)",
+      "it": "Somatica (S)",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 5. Manuale del Giocatore p.44,124,141,176."
+    },
+    {
+      "en": "Material (spell component, M)",
+      "it": "Materiale (M)",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 5. Manuale del Giocatore p.89,133,141,176."
+    },
+    {
+      "en": "Focus (spell component, F)",
+      "it": "Focus (F)",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 5. Manuale del Giocatore p.130,176 -- Italian loanword, unchanged."
+    },
+    {
+      "en": "Divine Focus (spell component, DF)",
+      "it": "Focus Divina (FD)",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 5. Manuale del Giocatore p.176. NOTE abbreviation letters are reversed vs English: FD not DF."
+    },
+    {
+      "en": "Empower Spell",
+      "it": "Incantesimi Potenziati",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 5 (metamagic.md). Manuale del Giocatore p.99, header 'INCANTESIMI POTENZIATI'."
+    },
+    {
+      "en": "Maximize Spell",
+      "it": "Incantesimi Massimizzati",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 5. Manuale del Giocatore p.98-99."
+    },
+    {
+      "en": "Still Spell",
+      "it": "Incantesimi Immobili",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 5. Manuale del Giocatore p.89,98."
+    },
+    {
+      "en": "Extend Spell",
+      "it": "Incantesimi Estesi",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 5. Manuale del Giocatore p.98."
+    },
+    {
+      "en": "Heighten Spell",
+      "it": "Incantesimi Intensificati",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 5. Manuale del Giocatore p.98."
+    },
+    {
+      "en": "Enlarge Spell",
+      "it": "Incantesimi Ingranditi",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 5. Manuale del Giocatore p.98."
+    },
+    {
+      "en": "Widen Spell",
+      "it": "Incantesimi Ampliati",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 5, medium-high confidence: plural header 'INCANTESIMI AMPLIATI [METAMAGIA]' confirmed p.98; singular inferred by pattern with the other 7 confirmed metamagic feat names."
+    },
+    {
+      "en": "Spell Penetration",
+      "it": "Incantesimi Inarrestabili",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 5. Manuale del Giocatore p.92,98,323; also src/data/it/feats.json idx 92."
+    },
+    {
+      "en": "Greater Spell Penetration",
+      "it": "Incantesimi Inarrestabili Superiore",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 5. Manuale del Giocatore p.92,98,323; src/data/it/feats.json idx 38."
+    },
+    {
+      "en": "caster level check",
+      "it": "prova di livello dell'incantatore",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 5 (spell-resistance.md). Manuale del Giocatore p.48,179,319, the SR-check formula phrase."
+    },
+    {
+      "en": "metamagic feat",
+      "it": "talento di metamagia",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 5. Manuale del Giocatore p.88-90."
+    },
+    {
+      "en": "Improved Unarmed Strike (feat)",
+      "it": "Colpo Senz'Armi Migliorato",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 5. src/data/it/feats.json idx 57; Manuale del Giocatore p.47."
+    },
+    {
+      "en": "unarmed strike / unarmed attack",
+      "it": "colpo senz'armi",
+      "strict": false,
+      "source": "manual",
+      "note": "Batch 5. Manuale del Giocatore p.41,46,47."
+    },
+    {
+      "en": "Withdraw (action)",
+      "it": "ritirata / azione di ritirata",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 5 (attacks-of-opportunity.md). Manuale del Giocatore p.136,138,143."
+    },
+    {
+      "en": "5-ft step",
+      "it": "passo di 1,5 m",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 5. Manuale del Giocatore p.98 ('passo di 1,5 metri'); matches short form already used in dnd-rules-it/conditions.md."
+    },
+    {
+      "en": "threatened square",
+      "it": "quadretto minacciato",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 5. Manuale del Giocatore p.100,138 ('Quadretti minacciati')."
+    },
+    {
+      "en": "reach weapon",
+      "it": "arma con portata",
+      "strict": false,
+      "source": "manual",
+      "note": "Batch 5. Manuale del Giocatore p.114,118."
+    },
+    {
+      "en": "counterspell (verb/noun)",
+      "it": "controincantesimo / controincantare",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 5 (counterspelling.md-adjacent). Manuale del Giocatore p.90-91 ('Controincantesimo Migliorato')."
+    },
+    {
+      "en": "antimagic field (spell)",
+      "it": "campo di antimagia",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 5 (spell-resistance.md). Manuale del Dungeon Master p.291."
+    },
+    {
+      "en": "Lay on Hands",
+      "it": "imposizione delle mani",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 5 (paladin ability, cross-ref). Manuale del Giocatore p.50,323; DMG p.122-123, tagged (Sop)."
+    },
+    {
+      "en": "summon nature's ally (spell)",
+      "it": "evoca alleato naturale",
+      "strict": false,
+      "source": "manual",
+      "note": "Batch 5. Manuale del Giocatore p.36,182-183, lowercase per book convention."
+    },
+    {
+      "en": "lesser globe of invulnerability (spell)",
+      "it": "globo di invulnerabilità inferiore",
+      "strict": false,
+      "source": "manual",
+      "note": "Batch 5 (spell-resistance.md). Manuale del Giocatore p.197."
+    },
+    {
+      "en": "Spell-Like Abilities (full noun phrase)",
+      "it": "Capacità magiche",
+      "strict": true,
+      "source": "manual",
+      "note": "Batch 5. Confirms/extends glossary.md's existing 'Spell-Like -> Magica' note. Manuale del Giocatore p.18,34-35; src/data/it/names.json traits pack."
+    }
+  ]
+}

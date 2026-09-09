@@ -1399,11 +1399,15 @@
     },
     {
       "en": "bardic knowledge",
-      "it": "conoscenza bardica",
+      "it": "Conoscenze bardiche",
       "strict": false,
       "kind": "class",
       "note": "Bard class feature, referenced from skills.json (Knowledge) before classes.json is translated. Not yet checked against the manual.",
-      "source": "coined"
+      "source": "coined",
+      "stems": [
+        "conoscenz",
+        "bardic"
+      ]
     },
     {
       "en": "thieves' tools",
@@ -4129,13 +4133,13 @@
     },
     {
       "en": "Still Spell",
-      "it": "Incantesimo Immobile",
+      "it": "Incantesimi Immobili",
       "strict": true,
       "kind": "feat",
       "note": "Metamagic feat, classes.json Wizard/classFeatures/8. Read out of Manuale del Giocatore (\"Beneficio: Il personaggio può lanciare un incantesimo immobile senza le componenti somatiche...\"). NOT 'Incantesimo Silenzioso' -- that is Silent Spell (removes the verbal component instead); the two are easy to swap since the English names are so similar, but the manual keeps them distinct: immobile=no somatic, silenzioso=no verbal.",
       "source": "manual",
       "stems": [
-        "incantesimo immobile"
+        "incantesimi immobil"
       ]
     },
     {

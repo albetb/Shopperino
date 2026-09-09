@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { t, tx } from '../../lib/i18n';
 import { useSelector } from 'react-redux';
 import Card from '../common/Card';
 import Pill from '../common/Pill';
@@ -48,7 +49,7 @@ export default function PotionsCard() {
   return (
     <>
       <Card
-        title="Potions"
+        title={t('Potions')}
         className="sh-card--head-spread"
         onHeadClick={() => toggle.props.onClick()}
         action={toggle}
@@ -62,9 +63,9 @@ export default function PotionsCard() {
                   size="sm"
                   icon={potion.kind === 'oil' ? 'colors' : 'local_bar'}
                   onClick={() => setUsing(potion)}
-                  aria-label={`Use ${potion.name}`}
+                  aria-label={tx('Use {0}', potion.name)}
                 >
-                  Use
+                  {t('Use')}
                 </Button>
                 <span className="potion-row-name">
                   <SpellLink link={`items/Potion/${potion.link}`}>

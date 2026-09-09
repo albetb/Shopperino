@@ -1,4 +1,5 @@
 import { useSelector } from 'react-redux';
+import { t } from '../../lib/i18n';
 import SpellLink from '../common/spell_link';
 import { slug } from '../../lib/slugUtils';
 import { ATTACK_ACTION_GROUPS } from '../../lib/player/featEffects';
@@ -40,10 +41,10 @@ export default function ActionFeatsRow() {
 
   return (
     <div className="action-feats">
-      <span className="sh-eyebrow">Actions</span>
+      <span className="sh-eyebrow">{t('Actions')}</span>
       {groups.map(({ group, feats }) => (
         <div className="action-feats-group" key={group}>
-          <span className="sh-faint action-feats-label">{GROUP_LABEL[group]}</span>
+          <span className="sh-faint action-feats-label">{t(GROUP_LABEL[group])}</span>
           <div className="action-feats-pills">
             {feats.map((feat) => (
               <SpellLink key={feat.name} link={`feats#${slug(feat.name)}`}>
@@ -76,7 +77,7 @@ export function SpellcastingActionFeats() {
     /* Same wrapper as the arcane-failure note above it: the spells page is a
        centred column of fixed-width cards, and a bare div would sit narrow. */
     <div className="card card-width-spellbook action-feats action-feats--inline">
-      <span className="sh-eyebrow">Casting</span>
+      <span className="sh-eyebrow">{t('Casting')}</span>
       <div className="action-feats-pills">
         {feats.map((feat) => (
           <SpellLink key={feat.name} link={`feats#${slug(feat.name)}`}>

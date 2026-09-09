@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { t } from '../../../lib/i18n';
 
 export default function FusedStepper({
   value = 0,
@@ -15,7 +16,7 @@ export default function FusedStepper({
         type="button"
         onClick={dec}
         disabled={value <= min}
-        aria-label="Prepare one less"
+        aria-label={t('Prepare one less')}
       >
         −
       </button>
@@ -24,7 +25,7 @@ export default function FusedStepper({
         type="button"
         onClick={inc}
         disabled={value >= max}
-        aria-label="Prepare one more"
+        aria-label={t('Prepare one more')}
       >
         +
       </button>

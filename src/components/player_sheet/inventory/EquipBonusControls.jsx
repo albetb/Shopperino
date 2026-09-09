@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { t } from '../../../lib/i18n';
 import { loadFile, getItemByRef, getWeaponType } from '../../../lib/utils';
 
 function effectTableForItem(itemLink) {
@@ -56,14 +57,14 @@ export default function EquipBonusControls({ itemLink, masterwork, bonus, effect
             type="button"
             className="equip-bonus-step-btn"
             onClick={() => handleBonusDelta(-1)}
-            aria-label="Decrease enhancement"
+            aria-label={t('Decrease enhancement')}
           >−</button>
           <span className="equip-bonus-val">+{bonus}</span>
           <button
             type="button"
             className="equip-bonus-step-btn"
             onClick={() => handleBonusDelta(1)}
-            aria-label="Increase enhancement"
+            aria-label={t('Increase enhancement')}
           >+</button>
         </div>
       </div>

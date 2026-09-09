@@ -24,7 +24,7 @@ export default function SpellSwapNote({ inst, onSetSwapsUsed }) {
   if (levels.length === 0) return null;
 
   const current = Number(inst?.Level) || 0;
-  const earned = inst?.getSpellSwapsEarned?.() ?? levels.filter((lvl) => lvl <= current).length;
+  const earned = inst?.getSpellSwapsEarned?.() ?? levels.filter((lvl) => current >= lvl).length;
   const used = inst?.getSpellSwapsUsed?.() ?? 0;
   const next = levels.find((lvl) => lvl > current);
   const overCap = used > earned;

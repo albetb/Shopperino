@@ -28,7 +28,7 @@ export default function MainPage() {
       <div className="sh-home-hero">
         <Filigree>{isMasterMode ? t('Welcome back, dungeon master') : t('Welcome back, adventurer')}</Filigree>
         <h1 className="sh-display" style={{ fontSize: 'var(--font-size-3xl)', margin: 'var(--space-1) 0' }}>
-          Shopperino
+          {t('Shopperino')}
         </h1>
         <p className="sh-faint sh-home-tagline" style={{ fontSize: 'var(--font-size-sm)' }}>
           {t('A collection of tools for D&D 3.5')}

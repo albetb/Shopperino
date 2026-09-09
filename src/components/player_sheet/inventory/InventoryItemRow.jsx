@@ -1,4 +1,5 @@
 import formatItemName, { magicTypeFor, iconForItemType } from 'lib/item/formatItemName';
+import { t } from 'lib/i18n';
 
 function itemBonus(item) {
   if (typeof item.bonus === 'number') return item.bonus;
@@ -65,7 +66,7 @@ export default function InventoryItemRow({
             baseLink: typeof item.baseLink === 'string' ? item.baseLink : '',
             overrides: item.overrides && typeof item.overrides === 'object' ? item.overrides : null,
           })}
-          aria-label="Options"
+          aria-label={t('Options')}
         >
           <span className="material-symbols-outlined">more_horiz</span>
         </button>

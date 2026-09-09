@@ -109,7 +109,7 @@ export default function AnimalCompanionCard() {
       <Card title={t('Animal companion')} className="sh-card--head-spread" eyebrow={`lv${effLevel}`} action={cardAction}>
         {!collapsed && (
           <div className="companion-card sh-stack">
-            <span className="sh-eyebrow">Effective druid level {effLevel}</span>
+            <span className="sh-eyebrow">{tx('Effective druid level {0}', effLevel)}</span>
             {selectable.length === 0 ? (
               <div className="sh-faint" style={{ fontSize: 'var(--font-size-sm)' }}>
                 {t('No companions available at this level yet.')}
@@ -219,7 +219,7 @@ export default function AnimalCompanionCard() {
   const renderBonusEditor = (label, min, max, step = 1) => (
     <Card padding>
       <div className="sh-row-h" style={{ gap: 'var(--space-2)', flexWrap: 'wrap' }}>
-        <span className="sh-eyebrow">{label} bonus</span>
+        <span className="sh-eyebrow">{tx('{0} bonus', label)}</span>
         <Stepper value={tempBonus} min={min} max={max} step={step} onChange={setTempBonus} />
         <IconButton icon="check" size="sm" onClick={saveBonus} aria-label={t('Save bonus')} style={{ marginLeft: 'auto' }} />
         <IconButton icon="close" ghost size="sm" onClick={() => setEditBonus(null)} aria-label={t('Cancel')} />
@@ -294,7 +294,7 @@ export default function AnimalCompanionCard() {
                   onClick={() => dispatch(addCardByLink({ links: ref }))}
                   title={t('Show base stat block')}
                 >
-                  <Icon name="menu_book" size={16} /> Stat block
+                  <Icon name="menu_book" size={16} /> {t('Stat block')}
                 </button>
                 <span className="sh-row-h" style={{ gap: 'var(--space-1)' }}>
                   <IconButton icon="edit" ghost size="sm" onClick={startEditName} aria-label={t('Rename companion')} />
@@ -370,7 +370,7 @@ export default function AnimalCompanionCard() {
               className="sh-stat-pill--sm"
               label={t('Init')}
               value={fmtBonus(init)}
-              sub={companion.initBonus ? `bonus ${fmtBonus(companion.initBonus)}` : null}
+              sub={companion.initBonus ? `${t('bonus')} ${fmtBonus(companion.initBonus)}` : null}
               editing={editBonus === 'initBonus'}
               onEdit={() => toggleEditBonus('initBonus')}
             />
@@ -379,7 +379,7 @@ export default function AnimalCompanionCard() {
               label={t('Speed')}
               value={u.distance(speed)}
               sub={(companion.speedBonus || shoeBonus)
-                ? `bonus ${fmtBonus(companion.speedBonus + shoeBonus)}`
+                ? `${t('bonus')} ${fmtBonus(companion.speedBonus + shoeBonus)}`
                 : null}
               editing={editBonus === 'speedBonus'}
               onEdit={() => toggleEditBonus('speedBonus')}
@@ -393,7 +393,7 @@ export default function AnimalCompanionCard() {
               className="sh-stat-pill--sm"
               label={t('Fort')}
               value={fmtBonus(fort)}
-              sub={companion.fortBonus ? `bonus ${fmtBonus(companion.fortBonus)}` : null}
+              sub={companion.fortBonus ? `${t('bonus')} ${fmtBonus(companion.fortBonus)}` : null}
               editing={editBonus === 'fortBonus'}
               onEdit={() => toggleEditBonus('fortBonus')}
             />
@@ -401,7 +401,7 @@ export default function AnimalCompanionCard() {
               className="sh-stat-pill--sm"
               label={t('Ref')}
               value={fmtBonus(reflex)}
-              sub={companion.reflexBonus ? `bonus ${fmtBonus(companion.reflexBonus)}` : null}
+              sub={companion.reflexBonus ? `${t('bonus')} ${fmtBonus(companion.reflexBonus)}` : null}
               editing={editBonus === 'reflexBonus'}
               onEdit={() => toggleEditBonus('reflexBonus')}
             />
@@ -409,7 +409,7 @@ export default function AnimalCompanionCard() {
               className="sh-stat-pill--sm"
               label={t('Will')}
               value={fmtBonus(will)}
-              sub={companion.willBonus ? `bonus ${fmtBonus(companion.willBonus)}` : null}
+              sub={companion.willBonus ? `${t('bonus')} ${fmtBonus(companion.willBonus)}` : null}
               editing={editBonus === 'willBonus'}
               onEdit={() => toggleEditBonus('willBonus')}
             />

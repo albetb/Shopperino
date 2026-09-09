@@ -1,0 +1,837 @@
+{
+  "terms": [
+    {
+      "en": "flat-footed",
+      "it": "colto alla sprovvista",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore pp.16, 41, 47 ('colto alla sprovvista'). Condition name, distinct from 'impreparato'."
+    },
+    {
+      "en": "Staggered (condition)",
+      "it": "barcollante",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Dungeon Master p.301, condition appendix: 'Un personaggio i cui danni non letali sono pari agli attuali punti ferita e barcollante.'"
+    },
+    {
+      "en": "Disabled (condition, 0 HP)",
+      "it": "inabile",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Dungeon Master p.302, condition appendix: 'Un personaggio con 0 punti ferita... e inabile.' Not 'disabilitato', which is not the book's term."
+    },
+    {
+      "en": "Prone",
+      "it": "prono",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.144 ('posizione prona'); Manuale del Dungeon Master p.302 condition appendix."
+    },
+    {
+      "en": "Helpless",
+      "it": "indifeso",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.41; Manuale del Dungeon Master p.302 condition appendix, full definition."
+    },
+    {
+      "en": "Dying (condition)",
+      "it": "morente",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Dungeon Master p.302, condition appendix."
+    },
+    {
+      "en": "Dead (condition)",
+      "it": "morto",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Dungeon Master p.302, condition appendix."
+    },
+    {
+      "en": "Stable (condition)",
+      "it": "stabile",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Dungeon Master p.303, condition appendix."
+    },
+    {
+      "en": "Nauseated",
+      "it": "nauseato",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Dungeon Master p.302, condition appendix."
+    },
+    {
+      "en": "Paralyzed",
+      "it": "paralizzato",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Dungeon Master p.302, condition appendix."
+    },
+    {
+      "en": "Petrified",
+      "it": "pietrificato",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Dungeon Master p.302, condition appendix."
+    },
+    {
+      "en": "Unconscious",
+      "it": "privo di sensi",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Dungeon Master p.302, condition appendix."
+    },
+    {
+      "en": "Shaken",
+      "it": "scosso",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Dungeon Master p.302, condition appendix: 'Scosso: Un personaggio scosso subisce una penalita di -2...'"
+    },
+    {
+      "en": "Sickened",
+      "it": "infermo",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Dungeon Master p.302, condition appendix."
+    },
+    {
+      "en": "Entangled (condition)",
+      "it": "intralciato",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Dungeon Master p.302, condition appendix."
+    },
+    {
+      "en": "Pinned",
+      "it": "immobilizzato",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Dungeon Master p.302, condition appendix: 'Immobilizzato: Tenuto immobile (ma non indifeso) in una lotta' matches Pinned exactly."
+    },
+    {
+      "en": "Ability drain",
+      "it": "risucchio di caratteristiche",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Dungeon Master p.302, condition appendix."
+    },
+    {
+      "en": "Energy drain (effect)",
+      "it": "risucchio di energia",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Dungeon Master p.302, condition appendix."
+    },
+    {
+      "en": "Turned (undead condition)",
+      "it": "scacciato",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Dungeon Master p.302, condition appendix: 'Scacciato: Soggetto a un tentativo di scacciare non morti.'"
+    },
+    {
+      "en": "full attack (action)",
+      "it": "attacco completo",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.93, p.99."
+    },
+    {
+      "en": "aid another (action)",
+      "it": "aiutare un alleato",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.30 ('aiutare un alleato a eseguire un compito'), p.142 combat table ('Aiutare un altro'), p.153."
+    },
+    {
+      "en": "double weapon",
+      "it": "arma doppia",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.93, p.97."
+    },
+    {
+      "en": "cover (combat)",
+      "it": "copertura",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.72."
+    },
+    {
+      "en": "total cover",
+      "it": "copertura totale",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.78, p.103, p.126."
+    },
+    {
+      "en": "running start (Jump)",
+      "it": "rincorsa",
+      "strict": false,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.82. Soft: ordinary word elsewhere."
+    },
+    {
+      "en": "temporary hit points",
+      "it": "punti ferita temporanei",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.30, p.57, p.147."
+    },
+    {
+      "en": "massive damage",
+      "it": "danno massiccio",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.146, p.323."
+    },
+    {
+      "en": "Rage (barbarian class feature)",
+      "it": "Ira",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.25-26 ('Ira (Str)')."
+    },
+    {
+      "en": "Greater rage",
+      "it": "Ira superiore",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.26, barbarian table."
+    },
+    {
+      "en": "Mighty rage",
+      "it": "Ira possente",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.26, barbarian table."
+    },
+    {
+      "en": "Trap sense",
+      "it": "Percepire trappole",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.26-27, barbarian/rogue class feature."
+    },
+    {
+      "en": "Fast movement",
+      "it": "Movimento veloce",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.27 ('movimento veloce'), monk table p.47."
+    },
+    {
+      "en": "Indomitable Will (barbarian)",
+      "it": "Volontà indomita",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.26, barbarian table ('Volonta indomita')."
+    },
+    {
+      "en": "Bardic music",
+      "it": "Musica bardica",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.28, p.30."
+    },
+    {
+      "en": "Countersong",
+      "it": "Controcanto",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.28."
+    },
+    {
+      "en": "Fascinate (bardic music)",
+      "it": "Affascinare",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.28."
+    },
+    {
+      "en": "Inspire courage",
+      "it": "Ispirare coraggio",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.28."
+    },
+    {
+      "en": "Inspire competence",
+      "it": "Ispirare competenza",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.28, p.30."
+    },
+    {
+      "en": "Inspire greatness",
+      "it": "Ispirare grandezza",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.28, p.30."
+    },
+    {
+      "en": "Song of freedom",
+      "it": "Canto di libertà",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.28, p.31."
+    },
+    {
+      "en": "Inspire heroism",
+      "it": "Ispirare eroismo",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.28, p.31."
+    },
+    {
+      "en": "Mass suggestion (bardic music)",
+      "it": "Suggestione di massa",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.28."
+    },
+    {
+      "en": "Granted power (domain)",
+      "it": "Potere concesso",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.33."
+    },
+    {
+      "en": "Divine grace",
+      "it": "Grazia divina",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.50."
+    },
+    {
+      "en": "Aura of courage",
+      "it": "Aura di coraggio",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.50."
+    },
+    {
+      "en": "Divine health",
+      "it": "Salute divina",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.50."
+    },
+    {
+      "en": "Special mount (paladin)",
+      "it": "Cavalcatura speciale",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.50-51."
+    },
+    {
+      "en": "Code of conduct (paladin/cleric)",
+      "it": "Codice di condotta",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.34, p.52."
+    },
+    {
+      "en": "Detect evil",
+      "it": "Individuazione del male",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.50, p.145."
+    },
+    {
+      "en": "Combat style (ranger)",
+      "it": "Stile di combattimento",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.53-54."
+    },
+    {
+      "en": "A thousand faces",
+      "it": "Mille volti",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.36, p.38."
+    },
+    {
+      "en": "Timeless body",
+      "it": "Corpo senza tempo",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.38, p.47-48."
+    },
+    {
+      "en": "Camouflage (ranger)",
+      "it": "Mimetismo",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.53, p.55."
+    },
+    {
+      "en": "Hide in plain sight",
+      "it": "Nascondersi in piena vista",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.53, p.55."
+    },
+    {
+      "en": "Favored enemy",
+      "it": "Nemico prescelto",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.53."
+    },
+    {
+      "en": "Improved Evasion",
+      "it": "Eludere migliorato",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.42, monk table p.47."
+    },
+    {
+      "en": "Crippling Strike (rogue)",
+      "it": "Colpo menomante",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.42."
+    },
+    {
+      "en": "Defensive Roll (rogue)",
+      "it": "Attutire il colpo",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.42."
+    },
+    {
+      "en": "Opportunist (rogue)",
+      "it": "Opportunismo",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.42."
+    },
+    {
+      "en": "Skill Mastery (rogue)",
+      "it": "Padronanza dell'abilità",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.42."
+    },
+    {
+      "en": "Slippery Mind",
+      "it": "Mente sfuggente",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.42."
+    },
+    {
+      "en": "AC bonus (monk, Wis-based)",
+      "it": "Bonus alla CA",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.47. NOT an Ex/Su/Sp ability-type tag despite the parenthetical letters looking similar -- the English source tags this one '(Wis)', naming the ability score, not the ability type."
+    },
+    {
+      "en": "Still mind (monk)",
+      "it": "Mente lucida",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.47."
+    },
+    {
+      "en": "Ki strike",
+      "it": "Colpo ki",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.47-48."
+    },
+    {
+      "en": "Slow fall (monk)",
+      "it": "Caduta lenta",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.47."
+    },
+    {
+      "en": "Purity of body",
+      "it": "Purezza del corpo",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.47."
+    },
+    {
+      "en": "Wholeness of body",
+      "it": "Integrità del corpo",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.47."
+    },
+    {
+      "en": "Diamond body",
+      "it": "Corpo adamantino",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.47."
+    },
+    {
+      "en": "Abundant step",
+      "it": "Passo abbondante",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.47."
+    },
+    {
+      "en": "Diamond soul",
+      "it": "Anima adamantina",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.47."
+    },
+    {
+      "en": "Quivering palm",
+      "it": "Palmo tremante",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.47."
+    },
+    {
+      "en": "Empty body",
+      "it": "Corpo vuoto",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.47."
+    },
+    {
+      "en": "Perfect self",
+      "it": "Perfezione interiore",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.47, monk table."
+    },
+    {
+      "en": "Improved Grapple (feat)",
+      "it": "Lottare Migliorato",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.48, monk bonus feat list."
+    },
+    {
+      "en": "Stunning Fist (feat)",
+      "it": "Pugno Stordente",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.48, p.91."
+    },
+    {
+      "en": "Deflect Arrows (feat)",
+      "it": "Deviare Frecce",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.90-91."
+    },
+    {
+      "en": "Scribe Scroll (feat)",
+      "it": "Scrivere Pergamene",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.43, p.89."
+    },
+    {
+      "en": "Brew Potion (feat)",
+      "it": "Mescere Pozioni",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.89 ('Mescere Pozioni, Creare Bacchette e Scrivere Pergamene')."
+    },
+    {
+      "en": "Craft Wand (feat)",
+      "it": "Creare Bacchette",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.89, p.92."
+    },
+    {
+      "en": "Craft Staff (feat)",
+      "it": "Creare Bastoni",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.96 ('CREARE BASTONI [CREAZIONE OGGETTO]')."
+    },
+    {
+      "en": "Craft Rod (feat)",
+      "it": "Creare Verghe",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.96 ('CREARE VERGHE [CREAZIONE OGGETTO]')."
+    },
+    {
+      "en": "Craft Wondrous Item (feat)",
+      "it": "Creare Oggetti Meravigliosi",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.92."
+    },
+    {
+      "en": "Craft Magic Arms and Armor (feat)",
+      "it": "Creare Armi e Armature Magiche",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.323; Manuale del Dungeon Master p.218."
+    },
+    {
+      "en": "Forge Ring (feat)",
+      "it": "Forgiare Anelli",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.92, p.97 ('FORGIARE ANELLI [CREAZIONE OGGETTO]')."
+    },
+    {
+      "en": "Craft Construct (feat)",
+      "it": "Creare Costrutti",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Dungeon Master p.261."
+    },
+    {
+      "en": "Melf's acid arrow (spell)",
+      "it": "freccia acida di Melf",
+      "strict": false,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.96, p.141. Soft: spell name."
+    },
+    {
+      "en": "fireball (spell)",
+      "it": "palla di fuoco",
+      "strict": false,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.41-42. Soft: spell name."
+    },
+    {
+      "en": "ray of enfeeblement (spell)",
+      "it": "indebolimento",
+      "strict": false,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.11, p.195. Soft: spell name."
+    },
+    {
+      "en": "bear's endurance (spell)",
+      "it": "resistenza dell'orso",
+      "strict": false,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.187. Soft: spell name, pairs with already-glossed bull's strength."
+    },
+    {
+      "en": "resurrection (spell)",
+      "it": "resurrezione",
+      "strict": false,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.173, p.180. Soft: spell name."
+    },
+    {
+      "en": "arcane eye (spell)",
+      "it": "occhio arcano",
+      "strict": false,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.197, p.265. Soft: spell name."
+    },
+    {
+      "en": "sepia snake sigil (spell)",
+      "it": "sigillo del serpente",
+      "strict": false,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.185, p.197. Soft: spell name."
+    },
+    {
+      "en": "fire trap (spell)",
+      "it": "trappola di fuoco",
+      "strict": false,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.73, p.76. Soft: spell name, also the generic trap-type phrase in traps.md."
+    },
+    {
+      "en": "magic circle (spell)",
+      "it": "cerchio magico",
+      "strict": false,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.187, p.189. Soft: spell name."
+    },
+    {
+      "en": "dimensional anchor (spell)",
+      "it": "ancora dimensionale",
+      "strict": false,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.83, p.187. Soft: spell name."
+    },
+    {
+      "en": "spiritual weapon (spell)",
+      "it": "arma spirituale",
+      "strict": false,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.73, p.144. Soft: spell name."
+    },
+    {
+      "en": "mage armor (spell)",
+      "it": "armatura magica",
+      "strict": false,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.123, p.172 ('l'incantesimo armatura magica'). Soft: spell name; do not confuse with the generic item property 'magic armor', also armatura magica in ordinary prose -- context disambiguates."
+    },
+    {
+      "en": "bracers of armor (item)",
+      "it": "bracciali dell'armatura",
+      "strict": false,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.123. Soft: item name."
+    },
+    {
+      "en": "shield (spell)",
+      "it": "scudo",
+      "strict": false,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.123 ('l'incantesimo scudo'). Soft: collides with the ordinary noun 'scudo' (the equipment); context disambiguates, same as the English 'shield' collides with the equipment noun."
+    },
+    {
+      "en": "aid (spell)",
+      "it": "aiuto",
+      "strict": false,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.147 ('l'incantesimo aiuto'). Soft: collides with ordinary prose 'aiuto' (help); context disambiguates."
+    },
+    {
+      "en": "clairaudience/clairvoyance (spell)",
+      "it": "Chiaroudienza/Chiaroveggenza",
+      "strict": false,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.185, p.190 ('Chiaroudienza/Chiaroveggenza'). Soft: spell name, book spelling kept verbatim despite looking like an OCR artifact of 'Chiarudienza'."
+    },
+    {
+      "en": "true seeing (spell)",
+      "it": "visione del vero",
+      "strict": false,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.174 ('chiaroveggenza e visione del vero')."
+    },
+    {
+      "en": "detect magic (spell)",
+      "it": "individuazione del magico",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Dungeon Master p.213-214, used repeatedly (e.g. 'Quando un personaggio impiega individuazione del magico su un oggetto magico...')."
+    },
+    {
+      "en": "alter self (spell)",
+      "it": "alterare se stesso",
+      "strict": false,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.38, p.143. Soft: spell name."
+    },
+    {
+      "en": "polymorph (spell)",
+      "it": "metamorfosi",
+      "strict": false,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.72, p.175 (listed among shapechanging spells 'alterare se stesso, camuffare se stesso, metamorfosi e trasformazione'). Soft: spell name."
+    },
+    {
+      "en": "command word",
+      "it": "parola di comando",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.26, p.30; Manuale del Dungeon Master p.213-214, magic item activation method."
+    },
+    {
+      "en": "cursed item",
+      "it": "oggetto maledetto",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.282, p.297."
+    },
+    {
+      "en": "intelligent item",
+      "it": "oggetto intelligente",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.221, p.252."
+    },
+    {
+      "en": "tower shield",
+      "it": "scudo torre",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.39, p.95."
+    },
+    {
+      "en": "artifact (item category)",
+      "it": "artefatto",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Dungeon Master p.212 ('gli artefatti. Gli artefatti sono classificati... minori... maggiori'); Manuale del Giocatore p.204, p.207, p.226."
+    },
+    {
+      "en": "spell completion (activation method)",
+      "it": "completamento di incantesimo",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Dungeon Master p.214: 'I quattro metodi per attivare gli oggetti magici sono: Completamento di incantesimo...'"
+    },
+    {
+      "en": "spell trigger (activation method)",
+      "it": "attivazione di incantesimo",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Dungeon Master p.214: '...Attivazione di incantesimo: L'attivazione di incantesimo e simile al completamento di incantesimo...'"
+    },
+    {
+      "en": "use-activated (activation method)",
+      "it": "attivato ad uso / attivazione ad uso",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Dungeon Master p.214: 'Attivati ad uso: Questo genere di oggetti viene attivato semplicemente facendone uso.'"
+    },
+    {
+      "en": "mishap (magic item)",
+      "it": "malfunzionamento",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Dungeon Master p.214, cross-referencing 'Malfunzionamenti delle pergamene' (scroll mishaps), p.238."
+    },
+    {
+      "en": "spiked chain",
+      "it": "catena chiodata",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.90, p.118-119."
+    },
+    {
+      "en": "whip (weapon)",
+      "it": "frusta",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.29, p.116, p.118."
+    },
+    {
+      "en": "Combat Expertise (feat)",
+      "it": "Maestria in Combattimento",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.91-92, feat prerequisite chain: 'Int 13, Maestria in Combattimento' precedes Disarmare Migliorato / Fintare Migliorato / Sbilanciare Migliorato, matching Combat Expertise's real prerequisite role for Improved Disarm/Feint/Trip. IMPORTANT: not 'Combattimento in Finta', which was this translator's own first, wrong guess -- caught and fixed only by checking the prerequisite chain, since 'Finta' (Feint) is a completely different feat."
+    },
+    {
+      "en": "Cleave (feat)",
+      "it": "Incalzare",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.91: 'For 13, Attacco Poderoso' precedes 'Un attacco in mischia extra per un avversario abbattuto', in the row labeled 'Incalzare'."
+    },
+    {
+      "en": "Great Cleave (feat)",
+      "it": "Incalzare Potenziato",
+      "strict": true,
+      "source": "manual",
+      "note": "Manuale del Giocatore p.91: prerequisite 'For 13, Attacco Poderoso, Incalzare, bonus di attacco base +4' → 'Nessun limite agli attacchi di incalzare per ogni round', row 'Incalzare Potenziato'."
+    }
+  ]
+}

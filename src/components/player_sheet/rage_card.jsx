@@ -1,4 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
+import { t } from '../../lib/i18n';
 import TrackerCard from './tracker_card';
 import Pill from '../common/Pill';
 import Switch from '../common/Switch';
@@ -29,8 +30,8 @@ export default function RageCard() {
 
   return (
     <TrackerCard
-      title="Rage"
-      eyebrow={tier === 'rage' ? undefined : tier}
+      title={t('Rage')}
+      eyebrow={tier === 'rage' ? undefined : t(tier)}
       collapseKey="rage"
       used={player.getClassFeatureUsed('rage')}
       max={player.getRageUsesMax()}

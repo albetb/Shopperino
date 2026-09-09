@@ -19,6 +19,7 @@ import * as db from './lib/storage';
 import { preloadCreatureData } from './lib/loadFile';
 import useCreatureData from './components/hooks/useCreatureData';
 import useProse from './components/hooks/useProse';
+import { detectLanguage } from './lib/i18n';
 import { preloadProse } from './lib/i18n/prose';
 import { serialize } from './lib/utils';
 import {
@@ -73,7 +74,7 @@ export default function App() {
 
   useEffect(() => {
     db.validateDb();
-    const app = db.loadApp();
+    const { app, saved } = db.readSavedApp();
     dispatch(setPersist(app));
 
     dispatch(clearSharedShop());
@@ -85,7 +86,12 @@ export default function App() {
     dispatch(setTheme(db.getTheme(app)));
     dispatch(setAccent(db.getAccent(app)));
     dispatch(setUnits(db.getUnits(app)));
-    dispatch(setLang(db.getLang(app)));
+    /* On a first visit nobody has chosen a language, so take the browser's.
+       `saved` is what distinguishes that from a reader who chose English:
+       `compactApp` omits `lg` when it is the default, so a missing key means
+       English rather than "unset". Dispatching it persists it through
+       persistSyncMiddleware, so the choice is made once and then kept. */
+    dispatch(setLang(saved ? db.getLang(app) : detectLanguage()));
     dispatch(setDiceMultiplierMask(db.getDiceMultiplierMask(app)));
     dispatch(setDiceLastRoll(db.getDiceLastRoll(app)));
     /* The bestiary is a lazy chunk (see loadFile.js). Start it now, so it is in
@@ -173,6 +179,11 @@ export default function App() {
      for English, so nothing below changes for an English reader at all. */
   const proseReady = useProse();
   useEffect(() => {
+    /* The document's own language, which is what a screen reader picks its
+       pronunciation from — an Italian page announced with English phonetics is
+       unintelligible. It has been wrong since the translation started, and this
+       is the effect that already knows the answer. */
+    document.documentElement.lang = lang;
     preloadProse(lang).catch(() => {});
   }, [lang]);
 

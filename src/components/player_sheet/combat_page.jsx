@@ -371,7 +371,7 @@ export default function CombatPage() {
   const renderBonusEditor = (label, min, max, step = 1) => (
     <Card padding>
       <div className="sh-row-h" style={{ gap: 'var(--space-2)', flexWrap: 'wrap' }}>
-        <span className="sh-eyebrow">{label} bonus</span>
+        <span className="sh-eyebrow">{tx('{0} bonus', label)}</span>
         <Stepper
           value={tempBonus}
           min={min}
@@ -692,7 +692,7 @@ export default function CombatPage() {
           value={totalInitiative >= 0 ? `+${totalInitiative}` : `${totalInitiative}`}
           info={statInfo(t('Initiative'), totalInitiative, player.getInitiativeContributions?.(), 'initiative')}
           cond={condDeltas.initiative || 0}
-          sub={withCond(initiativeBonus !== 0 ? `bonus ${initiativeBonus >= 0 ? '+' : ''}${initiativeBonus}` : null, condDeltas.initiative || 0)}
+          sub={withCond(initiativeBonus !== 0 ? `${t('bonus')} ${initiativeBonus >= 0 ? '+' : ''}${initiativeBonus}` : null, condDeltas.initiative || 0)}
           editing={editBonus === 'initiativeBonus'}
           onEdit={() => toggleEditBonus('initiativeBonus')}
         />
@@ -715,7 +715,7 @@ export default function CombatPage() {
               {/* The run distance is reference, not a number read mid-turn, so
                   it lives in the breakdown box rather than crowding the pill. */}
               {withCond(
-                speedInfo?.hasReduction ? t('encumbered') : (speedBonus !== 0 ? `bonus +${speedBonus}` : null),
+                speedInfo?.hasReduction ? t('encumbered') : (speedBonus !== 0 ? `${t('bonus')} +${speedBonus}` : null),
                 condDeltas.speed || 0
               )}
             </>
@@ -733,7 +733,7 @@ export default function CombatPage() {
           value={totalFort >= 0 ? `+${totalFort}` : totalFort}
           info={statInfo(t('Fortitude save'), totalFort, player.getSaveContributions?.('fortitude'), 'fortitude')}
           cond={condDeltas.fort || 0}
-          sub={withCond(fortBonus ? `bonus ${fortBonus >= 0 ? '+' : ''}${fortBonus}` : null, condDeltas.fort || 0)}
+          sub={withCond(fortBonus ? `${t('bonus')} ${fortBonus >= 0 ? '+' : ''}${fortBonus}` : null, condDeltas.fort || 0)}
           editing={editBonus === 'fortBonus'}
           onEdit={() => toggleEditBonus('fortBonus')}
         />
@@ -742,7 +742,7 @@ export default function CombatPage() {
           value={totalRef >= 0 ? `+${totalRef}` : totalRef}
           info={statInfo(t('Reflex save'), totalRef, player.getSaveContributions?.('reflex'), 'reflex')}
           cond={condDeltas.reflex || 0}
-          sub={withCond(reflexBonus ? `bonus ${reflexBonus >= 0 ? '+' : ''}${reflexBonus}` : null, condDeltas.reflex || 0)}
+          sub={withCond(reflexBonus ? `${t('bonus')} ${reflexBonus >= 0 ? '+' : ''}${reflexBonus}` : null, condDeltas.reflex || 0)}
           editing={editBonus === 'reflexBonus'}
           onEdit={() => toggleEditBonus('reflexBonus')}
         />
@@ -751,7 +751,7 @@ export default function CombatPage() {
           value={totalWill >= 0 ? `+${totalWill}` : totalWill}
           info={statInfo(t('Will save'), totalWill, player.getSaveContributions?.('will'), 'will')}
           cond={condDeltas.will || 0}
-          sub={withCond(willBonus ? `bonus ${willBonus >= 0 ? '+' : ''}${willBonus}` : null, condDeltas.will || 0)}
+          sub={withCond(willBonus ? `${t('bonus')} ${willBonus >= 0 ? '+' : ''}${willBonus}` : null, condDeltas.will || 0)}
           editing={editBonus === 'willBonus'}
           onEdit={() => toggleEditBonus('willBonus')}
         />
@@ -1036,7 +1036,9 @@ export default function CombatPage() {
                 <span className="sh-display">{t('Flurry of blows')}</span>
                 <span className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
                   <Pill tone="accent">
-                    +{flurry.extraAttacks} attack{flurry.extraAttacks === 1 ? '' : 's'}
+                    {flurry.extraAttacks === 1
+                      ? tx('+{0} attack', flurry.extraAttacks)
+                      : tx('+{0} attacks', flurry.extraAttacks)}
                   </Pill>
                   <Pill tone={flurry.penalty < 0 ? 'warn' : 'default'}>
                     {flurry.penalty === 0 ? t('no penalty') : tx('{0} to all', flurry.penalty)}
@@ -1046,13 +1048,17 @@ export default function CombatPage() {
                       phone, where a hover title never appears. */}
                   <InfoPopover label={t('Flurry of blows')}>
                     <p>
-                      {tx(
-                        flurry.extraAttacks === 1
-                          ? 'A {0} granting {1} extra attack at your highest base attack bonus.'
-                          : 'A {0} granting {1} extra attacks at your highest base attack bonus.',
-                        <b>{t('full-round action')}</b>,
-                        flurry.extraAttacks
-                      )}
+                      {flurry.extraAttacks === 1
+                        ? tx(
+                          'A {0} granting {1} extra attack at your highest base attack bonus.',
+                          <b>{t('full-round action')}</b>,
+                          flurry.extraAttacks
+                        )
+                        : tx(
+                          'A {0} granting {1} extra attacks at your highest base attack bonus.',
+                          <b>{t('full-round action')}</b>,
+                          flurry.extraAttacks
+                        )}
                       {flurry.penalty === 0
                         ? t(' At your level it costs no penalty at all.')
                         : tx(' Every attack in the flurry, the extra one included, takes {0}.', flurry.penalty)}

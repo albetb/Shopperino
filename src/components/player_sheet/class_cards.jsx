@@ -254,7 +254,7 @@ export default function ClassCards() {
                   <div className="player-sheet-class-bars">
                     <StatBar label={t('Life')} {...stats.life} />
                     <StatBar label={t('Attack')} {...stats.attack} />
-                    {/* <StatBar label="Weapon" {...stats.weapon} /> */}
+                    {/* <StatBar label={t('Weapon')} {...stats.weapon} /> */}
                     <StatBar label={t('Armor')} {...stats.armor} />
                     <StatBar label={t('Abilities')} {...stats.abilities} />
                     <StatBar label={t('Spells')} {...stats.spells} />
