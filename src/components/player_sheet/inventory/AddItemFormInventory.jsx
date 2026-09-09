@@ -9,6 +9,8 @@ import Button from '../../common/Button';
 import EquipBonusControls from './EquipBonusControls';
 import 'style/shop_inventory.css';
 import { t, tx, tName } from 'lib/i18n';
+import { itemName as translateItemName } from 'lib/item/displayItemName';
+import { getItemByRef } from 'lib/utils';
 
 export default function AddItemFormInventory({ open, onAddItem, items, onClose }) {
   const [number, setNumber] = useState(1);
@@ -77,8 +79,10 @@ export default function AddItemFormInventory({ open, onAddItem, items, onClose }
 
   useEffect(() => {
     if (itemName.length >= 2) {
+      const typed = itemName.toLowerCase();
       const filteredSuggestions = items.filter((item) =>
-        item.Name.toLowerCase().includes(itemName.toLowerCase())
+        item.Name.toLowerCase().includes(typed)
+        || translateItemName(item.Name).toLowerCase().includes(typed)
       );
       const otherItems = getItem(itemName, itemType);
       /* Scrolls live in scrolls.json, not items.json, so they are absent from
@@ -112,7 +116,8 @@ export default function AddItemFormInventory({ open, onAddItem, items, onClose }
   useEffect(() => {
     const typed = itemName.trim().toLowerCase();
     if (!typed) return;
-    const exact = suggestions.find((s) => String(s.Name).toLowerCase() === typed);
+    const exact = suggestions.find((s) => String(s.Name).toLowerCase() === typed
+      || translateItemName(String(s.Name)).toLowerCase() === typed);
     if (!exact) return;
     const resolved = itemRefLink(exact) || exact.Link || '';
     if (resolved && resolved !== link) setLink(resolved);
@@ -131,12 +136,18 @@ export default function AddItemFormInventory({ open, onAddItem, items, onClose }
          with its resistance and no type, and says so, rather than guessing. */
       ...(choiceKind && choice ? { overrides: { [choiceKind]: choice } } : {}),
     };
-    onAddItem(itemName, itemType, number, link, Object.keys(opts).length ? opts : undefined);
+    /* The name is taken off the link rather than out of the box: it is the
+       item's identity, it is what every lookup uses, and it must not depend
+       on which language the box was filled in. Only a name with no link --
+       something the player invented -- is stored as typed. */
+    const canonical = link ? getItemByRef(link)?.raw?.Name : null;
+    onAddItem(canonical || itemName, itemType, number, link,
+      Object.keys(opts).length ? opts : undefined);
     onClose?.();
   };
 
   const handleSuggestionClick = (suggestion) => {
-    setItemName(suggestion.Name);
+    setItemName(translateItemName(suggestion.Name));
     setItemType(suggestion.ItemType);
     setLink(itemRefLink(suggestion) || suggestion.Link || '');
     // Pre-fill magical metadata from Specific items (auto-detect base + bonus
@@ -190,8 +201,9 @@ export default function AddItemFormInventory({ open, onAddItem, items, onClose }
   const shouldShowSuggestions =
     isFocused &&
     (suggestions.length > 1 ||
-      (suggestions.length === 1 &&
-        suggestions[0].Name.toLowerCase() !== itemName.toLowerCase()));
+      (suggestions.length === 1
+        && suggestions[0].Name.toLowerCase() !== itemName.toLowerCase()
+        && translateItemName(suggestions[0].Name).toLowerCase() !== itemName.toLowerCase()));
 
   return (
     <BottomSheet
@@ -222,7 +234,7 @@ export default function AddItemFormInventory({ open, onAddItem, items, onClose }
                     onMouseDown={() => handleSuggestionClick(suggestion)}
                     className="suggestion-item"
                   >
-                    <span>{suggestion.Name}</span>
+                    <span>{translateItemName(suggestion.Name)}</span>
                     {/* 151 spells exist as both an Arcane and a Divine scroll
                         under the same name, so without the source the two are
                         one row repeated — and they can sit at different spell

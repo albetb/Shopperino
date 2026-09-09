@@ -139,6 +139,13 @@ Three rules that are never bent:
 - **Don't import i18n into a pure model or math module.** Reading the current
   language there makes it depend on hidden global state — take the word as an
   argument and let the component pass `t('gp')`.
+- **Never translate a name that is going to be stored.** An item's name is its
+  identity — the row keeps it, `getItemByRef` looks it up by it, the share
+  codec puts it on the wire — so it is stored exactly as `src/data` spells it
+  and translated only on the way to the screen. `formatItemName` composes in
+  English for the model; `displayItemName` composes the same name through the
+  pack for a component. A character sheet written in one language therefore
+  reads correctly in the other.
 
 Use the **`translate-it` skill** ([.claude/skills/translate-it/SKILL.md](.claude/skills/translate-it/SKILL.md),
 invoked as `/translate-it`) for anything beyond a string or two: it owns the

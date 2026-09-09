@@ -1,4 +1,5 @@
 import { useRef } from 'react';
+import { t, tx } from '../../lib/i18n';
 import '../../style/range_slider.css';
 
 /**
@@ -103,7 +104,7 @@ export default function RangeSlider({
           max={max}
           step={1}
           value={low}
-          aria-label={label ? `${label} minimum` : 'Range minimum'}
+          aria-label={label ? tx('{0} minimum', label) : t('Range minimum')}
           onChange={(e) => handleLow(e.target.value)}
         />
         <input
@@ -114,7 +115,7 @@ export default function RangeSlider({
           max={max}
           step={1}
           value={high}
-          aria-label={label ? `${label} maximum` : 'Range maximum'}
+          aria-label={label ? tx('{0} maximum', label) : t('Range maximum')}
           onChange={(e) => handleHigh(e.target.value)}
         />
       </div>

@@ -1,4 +1,6 @@
 import { isMobile } from 'lib/utils';
+import { t, tName } from 'lib/i18n';
+import displayItemName from 'lib/item/displayItemName';
 
 function itemBonus(item) {
   if (item.Bonus != null && !isNaN(item.Bonus)) return item.Bonus;
@@ -18,8 +20,14 @@ export default function ShopItemRow({
   onOpenCard,
   getEffectById,
 }) {
-  const abbrevType = isMobile() && item.ItemType === 'Wondrous Item' ? 'W. Item' : item.ItemType;
+  const abbrevType = isMobile() && item.ItemType === 'Wondrous Item'
+    ? t('W. Item')
+    : tName('itemTypes', item.ItemType);
   const bonus = itemBonus(item);
+  const displayName = displayItemName(item.BaseName ?? item.Name, {
+    bonus: item.Bonus,
+    effectIds: item.effectIds,
+  });
 
   const handleNameClick = () => {
     const links = Array.isArray(item.effectIds) && item.effectIds.length
@@ -37,10 +45,10 @@ export default function ShopItemRow({
       <td className="td-muted shop-cell shop-cell--name">
         {item.Link ? (
           <button type="button" className="button-link" onClick={handleNameClick}>
-            {item.Name}
+            {displayName}
           </button>
         ) : (
-          item.Name
+          displayName
         )}
       </td>
       <td className="td-muted shop-cell shop-cell--type">{abbrevType}</td>

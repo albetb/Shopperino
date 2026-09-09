@@ -62,6 +62,12 @@ function resolveEntry(entry) {
         const itemType = entry.ItemType != null && entry.ItemType !== '' ? entry.ItemType : itemTypeFromLink(link);
         return {
             Name: name,
+            /* The same name with nothing composed onto it. The row re-composes
+               for display, in the reading language; `Name` stays English
+               because it is what the row key, the delete handler and the share
+               codec all use. A user-added entry has no base and keeps the text
+               its owner typed. */
+            BaseName: base.Name,
             Cost: baseCost,
             PriceModifier: entry.PriceModifier ?? 0,
             ItemType: itemType,

@@ -1,14 +1,28 @@
 import { getEffectById } from './effectsUtils';
 
-export function formatItemName(baseName, { masterwork, bonus, effectIds } = {}) {
+/**
+ * The name a row shows, composed from the parts a row stores.
+ *
+ * English in, English out by default -- Shop.resolveEntry composes with it too,
+ * and a name that is going to be compared, keyed or shared must not depend on
+ * who is reading. A caller that is *displaying* passes `naming`, which is the
+ * one place the reading language enters: see displayItemName.js.
+ *
+ * @param {string} baseName - the item's name as src/data spells it.
+ * @param {object} [parts] - masterwork, bonus and effectIds, as stored.
+ * @param {object} [naming] - `item`, `masterwork` and `effect` translators.
+ */
+export function formatItemName(baseName, { masterwork, bonus, effectIds } = {}, naming = {}) {
+  const base = naming.item ? naming.item(baseName) : baseName;
   let name = ((bonus == null || bonus === 0) && masterwork === true)
-    ? `Masterwork ${baseName}`
-    : baseName;
+    ? (naming.masterwork ? naming.masterwork(base) : `Masterwork ${base}`)
+    : base;
 
   if (Array.isArray(effectIds) && effectIds.length) {
     const suffix = effectIds
       .map(id => getEffectById(id)?.Name)
-      .filter(Boolean);
+      .filter(Boolean)
+      .map(effect => (naming.effect ? naming.effect(effect) : effect));
     if (suffix.length) name = `${name}, ${suffix.join(', ')}`;
   }
 

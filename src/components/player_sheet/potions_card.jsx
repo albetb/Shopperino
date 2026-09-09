@@ -128,7 +128,7 @@ export function ActiveEffectPills({ onRemove }) {
               type="button"
               className="cond-pill-x"
               onClick={() => onRemove(effect.index)}
-              aria-label={`End ${effect.label}`}
+              aria-label={tx('End {0}', effect.label)}
             >
               <Icon name="close" size={12} />
             </button>

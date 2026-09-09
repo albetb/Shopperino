@@ -8,6 +8,7 @@ import '../../style/sidebar.css';
 import '../../style/menu_cards.css';
 import { useUnits } from '../hooks/useUnits';
 import { t, tx, tName } from '../../lib/i18n';
+import { itemName } from '../../lib/item/displayItemName';
 
 const TYPE_OPTIONS = ['', 'Spells', 'Items', 'Feats', 'Skills'];
 const SPELL_CLASS_OPTIONS = ['All', 'Sorcerer', 'Wizard', 'Cleric', 'Druid', 'Bard', 'Ranger', 'Paladin', 'Domains'];
@@ -181,8 +182,13 @@ export default function SearchPage() {
       const allItems = types.flatMap(type =>
         (itemsData[type] || []).map(it => ({ ...it, ItemType: type }))
       );
+      /* Either language matches. The names of 3.5's gear are remembered in
+         English by anyone who has read the SRD, and in Italian by anyone
+         reading the manual, so both find the row. */
       return allItems.filter(it =>
-        !q || it.Name?.toLowerCase().includes(q)
+        !q
+        || it.Name?.toLowerCase().includes(q)
+        || itemName(it.Name)?.toLowerCase().includes(q)
       );
     }
 
@@ -403,7 +409,7 @@ export default function SearchPage() {
                           className="button-link"
                           onClick={() => handleOpenCard(r)}
                         >
-                          {r.Name}
+                          {searchType === 'Items' ? itemName(r.Name) : r.Name}
                         </button>
                         {searchType === 'Spells' && spellClassFilter === 'All' && r['Short Description'] && (
                           <div className="desc-muted">

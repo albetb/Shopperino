@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
+import { t, tx } from '../../../lib/i18n';
 
 export default function StarOrbitCast({ remaining = 0, total = 1, onClick, blocked = false, blockedReason = '' }) {
   const empty = remaining <= 0;
@@ -24,8 +25,10 @@ export default function StarOrbitCast({ remaining = 0, total = 1, onClick, block
         (casting ? ' casting' : '')
       }
       aria-label={blocked
-        ? (blockedReason || 'Cannot cast right now')
-        : (empty ? 'No slots remaining' : `Cast spell (${remaining} of ${total} left)`)}
+        ? (blockedReason || t('Cannot cast right now'))
+        : (empty
+          ? t('No slots remaining')
+          : tx('Cast spell ({0} of {1} left)', remaining, total))}
       title={blocked ? blockedReason || undefined : undefined}
       disabled={disabled}
       onClick={handleClick}

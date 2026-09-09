@@ -480,7 +480,7 @@ export default function CombatPage() {
           overlap enough that splitting them meant reading two cards for one
           state — Dead, Dying and Disabled are derived from the HP number. */}
       <Card
-        title={`${currentHp} / ${maxHp} hp`}
+        title={tx('{0} / {1} hp', currentHp, maxHp)}
         eyebrow={t('Health')}
         /* Tapping the head collapses the card. The breakdown and rest buttons
            live in the action slot, which Card excludes from this handler, so
@@ -760,7 +760,7 @@ export default function CombatPage() {
 
       {/* Attacks card */}
       <Card
-        eyebrow={`BAB ${bab_display}`}
+        eyebrow={tx('BAB {0}', bab_display)}
         title={t('Attacks')}
         onHeadClick={() => toggleCard('combat')}
         action={

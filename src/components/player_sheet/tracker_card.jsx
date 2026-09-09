@@ -1,4 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
+import { t, tx } from '../../lib/i18n';
 import Card from '../common/Card';
 import IconButton from '../common/IconButton';
 import TrackerRow from './tracker_row';
@@ -59,8 +60,8 @@ export default function TrackerCard({
               icon={collapsed ? 'expand_more' : 'expand_less'}
               ghost
               size="sm"
-              title={collapsed ? 'Expand' : 'Collapse'}
-              aria-label={`Toggle ${title}`}
+              title={collapsed ? t('Expand') : t('Collapse')}
+              aria-label={tx('Toggle {0}', title)}
               onClick={toggleCollapsed}
             />
           )}

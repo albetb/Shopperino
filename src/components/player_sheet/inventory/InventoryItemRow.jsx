@@ -1,5 +1,6 @@
-import formatItemName, { magicTypeFor, iconForItemType } from 'lib/item/formatItemName';
-import { t } from 'lib/i18n';
+import { magicTypeFor, iconForItemType } from 'lib/item/formatItemName';
+import displayItemName from 'lib/item/displayItemName';
+import { t, tName } from 'lib/i18n';
 
 function itemBonus(item) {
   if (typeof item.bonus === 'number') return item.bonus;
@@ -21,7 +22,7 @@ export default function InventoryItemRow({
   const typeIcon = iconForItemType(effectiveType);
   const bonus = itemBonus(item);
   const baseName = item.overrides?.Name ?? item.Name;
-  const displayName = formatItemName(baseName, {
+  const displayName = displayItemName(baseName, {
     masterwork: item.masterwork,
     bonus: item.bonus,
     effectIds: item.effectIds,
@@ -41,8 +42,11 @@ export default function InventoryItemRow({
   return (
     <tr>
       <td className="align-right td-muted">{item.Number}</td>
-      <td className="td-muted sh-inv-td--type" title={effectiveType}>
-        <span className="material-symbols-outlined sh-inv-type-icon" aria-label={effectiveType}>
+      <td className="td-muted sh-inv-td--type" title={tName('itemTypes', effectiveType)}>
+        <span
+          className="material-symbols-outlined sh-inv-type-icon"
+          aria-label={tName('itemTypes', effectiveType)}
+        >
           {typeIcon}
         </span>
       </td>

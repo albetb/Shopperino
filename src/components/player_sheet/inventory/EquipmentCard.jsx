@@ -1,7 +1,7 @@
 import React from 'react';
 import { t } from '../../../lib/i18n';
 import { getItemByRef, calculateWeaponAttackBonus, calculateWeaponDamage, applyItemOverrides, signed } from '../../../lib/utils';
-import formatItemName from '../../../lib/item/formatItemName';
+import displayItemName from '../../../lib/item/displayItemName';
 import { getEffectById } from '../../../lib/item/effectsUtils';
 import '../../../style/equipment_grid.css';
 import { resolveHeldItem } from '../../../lib/item/heldItems';
@@ -142,7 +142,7 @@ function EquipmentSlotBox({ slotKey, dataSlot, config, entry, onUnequip, onOpenC
       {entry ? (
         <div className="slot-content">
           {(() => {
-            const displayName = formatItemName(entry.overrides?.Name ?? entry.name, {
+            const displayName = displayItemName(entry.overrides?.Name ?? entry.name, {
               masterwork: entry.masterwork,
               bonus: entry.bonus,
               effectIds: entry.effectIds,

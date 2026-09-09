@@ -5,7 +5,7 @@ import Pill from '../common/Pill';
 import IconButton from '../common/IconButton';
 import { setCombatPageCardCollapsed } from '../../store/slices/playerSheetSlice';
 import { addCardByLink } from '../../store/slices/appSlice';
-import { formatItemName } from '../../lib/item/formatItemName';
+import displayItemName from '../../lib/item/displayItemName';
 import { getEffectById } from '../../lib/item/effectsUtils';
 import Icon from '../common/Icon';
 import { formatWornEffectSummary, ENERGY_TYPES } from '../../lib/item/wornEffects';
@@ -75,7 +75,7 @@ export default function EquippedItemsCard() {
       {!collapsed && (
         <div className="sh-stack" style={{ gap: 'var(--space-2)' }}>
           {items.map((item, idx) => {
-            const displayName = formatItemName(item.name, {
+            const displayName = displayItemName(item.name, {
               masterwork: item.masterwork,
               bonus: item.bonus,
               effectIds: item.effectIds,

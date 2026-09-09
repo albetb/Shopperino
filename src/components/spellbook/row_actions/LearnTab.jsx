@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { t } from '../../../lib/i18n';
 
 export default function LearnTab({ learned = false, disabled = false, onClick }) {
   return (
@@ -10,7 +11,7 @@ export default function LearnTab({ learned = false, disabled = false, onClick })
         (disabled ? ' is-disabled' : '')
       }
       aria-pressed={learned}
-      aria-label={learned ? 'Unlearn spell' : 'Learn spell'}
+      aria-label={learned ? t('Unlearn spell') : t('Learn spell')}
       disabled={disabled}
       onClick={onClick}
     >

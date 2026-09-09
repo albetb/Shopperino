@@ -40,7 +40,7 @@ export default function RageCard() {
       action={
         <Switch
           checked={raging}
-          aria-label={raging ? 'End rage' : 'Enter rage'}
+          aria-label={raging ? t('End rage') : t('Enter rage')}
           onChange={() => dispatch(onToggleRage())}
         />
       }
