@@ -14,6 +14,7 @@ import MetamagicPrepareButton from './metamagic_prepare';
 import MetamagicCastButton from './metamagic_cast';
 import '../../style/metamagic.css';
 import { useUnits } from '../hooks/useUnits';
+import { spellName } from '../../lib/i18n/spellText';
 
 export default function SpellLevelCard({
   level,
@@ -191,7 +192,7 @@ export default function SpellLevelCard({
                       className="button-link spell-table-cell-name"
                       onClick={() => dispatch(addCardByLink({ links: item.Link, bonus: 0 }))}
                     >
-                      {item.Name}
+                      {spellName(item.Name)}
                     </button>
                     {showShortDescriptions && item['Short Description'] && (
                       <div className="spell-table-cell-desc">
@@ -278,7 +279,7 @@ export default function SpellLevelCard({
                         className={'button-link spell-table-cell-name' + schoolClass(item.School)}
                         onClick={() => dispatch(addCardByLink({ links: item.Link, bonus: 0 }))}
                       >
-                        {item.Name}
+                        {spellName(item.Name)}
                       </button>
                       {/* Mobile wizard-learn: school inline with name so the
                           description below spans the full row width. */}
@@ -334,7 +335,7 @@ export default function SpellLevelCard({
                               {t('DC')} {save.dc}
                             </span>
                             <StatInfo
-                              label={tx('{0} save DC', item.Name)}
+                              label={tx('{0} save DC', spellName(item.Name))}
                               value={save.dc}
                               contributions={save.contributions ?? []}
                             />
@@ -360,7 +361,7 @@ export default function SpellLevelCard({
                               {label} +{sr.check}
                             </span>
                             <StatInfo
-                              label={tx('{0} caster level check', item.Name)}
+                              label={tx('{0} caster level check', spellName(item.Name))}
                               value={sr.check}
                               primaryLabel={t('Caster level check')}
                               contributions={sr.contributions ?? []}

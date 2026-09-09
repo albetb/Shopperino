@@ -5,6 +5,14 @@ import { normalizeMultiplierMask } from '../../lib/dice';
 import { normalizeUnits } from '../../lib/units';
 import { normalizeLang, setLanguage } from '../../lib/i18n';
 
+/* Which lookup answered, stamped on the card so the renderer knows which table
+   to name it from — the same reason the creature and item branches below do it.
+   A spell card is the record out of spells.json itself rather than a card built
+   around it, so the mark goes on a copy: writing it onto the record would put a
+   display field into the data every other reader shares. */
+const spellCardsFor = (link) => getSpellByLink(link).map(
+  (card) => ({ ...card, kind: 'spell' }));
+
 const DEFAULT_BLUE = '#238f8b';
 const DEFAULT_BLUE_T = '#238f8bb3';
 const DEFAULT_BLUE_T2 = '#238f8b43';
@@ -96,7 +104,7 @@ export const appSlice = createSlice({
         return true;
       });
 
-      let cards = spellLookupLink ? getSpellByLink(spellLookupLink) : [];
+      let cards = spellLookupLink ? spellCardsFor(spellLookupLink) : [];
 
       if (cards.length) {
         state.infoCards.unshift(...cards);
@@ -178,7 +186,7 @@ export const appSlice = createSlice({
       // prefer opening the spell card instead of an item/scroll card.
       if (!isSpellLink && !isFeatLink && !isSkillLink && !isConditionLink && linkStr) {
         const plainSpellSlug = hasHash ? linkStr.split('#')[1] : linkStr;
-        const spellCards = getSpellByLink(plainSpellSlug);
+        const spellCards = spellCardsFor(plainSpellSlug);
         if (spellCards.length) {
           state.infoCards.unshift(...spellCards);
           state.infoSidebarCollapsed = false;
@@ -189,7 +197,7 @@ export const appSlice = createSlice({
       const itemRef = linkStr && linkStr.includes('/') ? getItemByRef(firstLink) : null;
       const spellSlug = itemRef?.raw?.Link && getSpellByLink(itemRef.raw.Link).length ? itemRef.raw.Link : null;
       if (spellSlug) {
-        cards = getSpellByLink(spellSlug);
+        cards = spellCardsFor(spellSlug);
         if (cards.length) {
           state.infoCards = state.infoCards.filter(c => c.Link !== spellSlug);
           state.infoCards.unshift(...cards);

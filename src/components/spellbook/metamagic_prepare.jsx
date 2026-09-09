@@ -5,6 +5,7 @@ import AnchorPopover from '../common/AnchorPopover';
 import MetamagicChooser from './metamagic_chooser';
 import MetamagicPills from './metamagic_pills';
 import { FusedStepper } from './row_actions';
+import { spellName } from '../../lib/i18n/spellText';
 
 /**
  * Attach metamagic to a preparation, at the moment of preparing it.
@@ -33,7 +34,7 @@ export default function MetamagicPrepareButton({
 
   return (
     <AnchorPopover
-      label={tx('Metamagic — {0}', spell.Name)}
+      label={tx('Metamagic — {0}', spellName(spell.Name))}
       className="mm-popover"
       width="24rem"
       renderTrigger={({ ref, open, toggle }) => (
@@ -43,8 +44,8 @@ export default function MetamagicPrepareButton({
           className={'mm-trigger' + (preparations.length ? ' has-any' : '')}
           onClick={(e) => { e.stopPropagation(); toggle(); }}
           aria-expanded={open}
-          aria-label={tx('Prepare {0} with metamagic', spell.Name)}
-          title={tx('Prepare {0} with metamagic', spell.Name)}
+          aria-label={tx('Prepare {0} with metamagic', spellName(spell.Name))}
+          title={tx('Prepare {0} with metamagic', spellName(spell.Name))}
         >
           <span className="material-symbols-outlined">auto_fix_high</span>
         </button>

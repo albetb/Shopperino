@@ -6,6 +6,7 @@ import {
   creatureName, creatureTerm, skillLine, featName, sizeAndType,
   alignmentText, environmentText, treasureText,
   attackName, damageText, attackLine, speedText, spaceReachText,
+  organizationText,
 } from '../../lib/i18n/creatureText';
 import Card from '../common/Card';
 import Bar from '../common/Bar';
@@ -282,18 +283,23 @@ export default function MonsterSheetView() {
             ))}
           </div>
           <div className="sh-row-h" style={{ gap: 'var(--space-2)', flexWrap: 'wrap' }}>
-            <Pill tone="ghost">{sheet.getHitDiceLine()}</Pill>
-            {individuals.length > 1 && (
-              <Pill tone="ghost">
-                {tx('{0} still up', individuals.filter((i) => !i.isDying).length)}
-              </Pill>
-            )}
             <IconButton
               icon={hpAdvancedOpen ? 'expand_less' : 'expand_more'}
               ghost size="sm"
               onClick={() => setHpAdvancedOpen((v) => !v)}
               aria-label={hpAdvancedOpen ? t('Hide max hp') : t('Show max hp')}
             />
+            <span
+              className="sh-row-h"
+              style={{ gap: 'var(--space-2)', marginLeft: 'auto', flexWrap: 'wrap' }}
+            >
+              <Pill tone="ghost">{sheet.getHitDiceLine()}</Pill>
+              {individuals.length > 1 && (
+                <Pill tone="ghost">
+                  {tx('{0} still up', individuals.filter((i) => !i.isDying).length)}
+                </Pill>
+              )}
+            </span>
           </div>
           {hpAdvancedOpen && (
             <div className="sh-row-h sh-spread">
@@ -520,7 +526,9 @@ export default function MonsterSheetView() {
             </div>
             {sheet.getOrganization() && (
               <div><span className="sh-eyebrow">{t('Organization')}</span>
-                <div className="sh-faint monster-detail-text">{sheet.getOrganization()}</div></div>
+                <div className="sh-faint monster-detail-text">
+                  {organizationText(sheet.getOrganization())}
+                </div></div>
             )}
             {sheet.getCombatHtml() && (
               <div className="monster-detail-prose">

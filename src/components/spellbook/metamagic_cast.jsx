@@ -4,6 +4,7 @@ import { t, tx } from '../../lib/i18n';
 import AnchorPopover from '../common/AnchorPopover';
 import MetamagicChooser from './metamagic_chooser';
 import { metamagicLabel, modifiedSpellLevel } from '../../lib/spellbook/metamagic';
+import { spellName } from '../../lib/i18n/spellText';
 
 const QUICKEN = 'Quicken spell';
 const QUICKEN_WARNING_EN = 'A spontaneously cast spell cannot be quickened — applying '
@@ -39,7 +40,7 @@ export default function MetamagicCastButton({
 
   return (
     <AnchorPopover
-      label={tx('Metamagic — {0}', spell.Name)}
+      label={tx('Metamagic — {0}', spellName(spell.Name))}
       className="mm-popover"
       width="24rem"
       renderTrigger={({ ref, open, toggle }) => (
@@ -49,8 +50,8 @@ export default function MetamagicCastButton({
           className="mm-trigger"
           onClick={(e) => { e.stopPropagation(); toggle(); }}
           aria-expanded={open}
-          aria-label={tx('Cast {0} with metamagic', spell.Name)}
-          title={tx('Cast {0} with metamagic', spell.Name)}
+          aria-label={tx('Cast {0} with metamagic', spellName(spell.Name))}
+          title={tx('Cast {0} with metamagic', spellName(spell.Name))}
         >
           <span className="material-symbols-outlined">auto_fix_high</span>
         </button>

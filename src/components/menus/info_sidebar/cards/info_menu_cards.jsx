@@ -18,8 +18,12 @@ import { itemCardTitle } from '../../../../lib/item/displayItemName';
 import {
   creatureName, creatureTerm, skillLine, featName, sizeAndType, splitList,
   alignmentText, environmentText, treasureText, advancementText,
-  attackLine, speedText, spaceReachText,
+  attackLine, speedText, spaceReachText, armorClassText, organizationText,
+  creatureDescription,
 } from '../../../../lib/i18n/creatureText';
+import {
+  spellName, spellSchool, spellLevelText, spellComponentsText,
+} from '../../../../lib/i18n/spellText';
 
 const HIDDEN_KEYS = new Set(['Short Description', 'id', 'Link', 'editable', 'editKey', 'kind']);
 
@@ -76,10 +80,23 @@ const CREATURE_FIELD = {
   'Natural Attacks': attackLine,
   'Space/Reach': spaceReachText,
   Speed: speedText,
+  'Armor Class': armorClassText,
+  Organization: organizationText,
   Alignment: alignmentText,
   Environment: environmentText,
   Treasure: treasureText,
   Advancement: advancementText,
+};
+
+/* A spell's four short fields. Everything else on the card is prose, and
+   prose is translated in the pack before the card is ever built. */
+const SPELL_FIELD = {
+  Name: spellName,
+  School: spellSchool,
+  Level: spellLevelText,
+  Components: spellComponentsText,
+  /* One record in spells.json spells the field in the singular. */
+  Component: spellComponentsText,
 };
 
 /* The other three kinds are a single name and nothing else: the title. */
@@ -90,6 +107,10 @@ function cardValue(card, key, value) {
   if (typeof value !== 'string') return value;
   if (card?.kind === 'creature') {
     const read = CREATURE_FIELD[key];
+    return read ? read(value) : value;
+  }
+  if (card?.kind === 'spell') {
+    const read = SPELL_FIELD[key];
     return read ? read(value) : value;
   }
   const domain = TITLE_DOMAIN[card?.kind];
@@ -391,7 +412,11 @@ export default function InfoMenuCards({ cardsData, closeCard }) {
                         )}
                         {key === 'Description' ? (
                           <div className="info-value info-card description-content">
-                            {parse(u.prose(value), descriptionOptions)}
+                            {parse(
+                              u.prose(data.kind === 'creature'
+                                ? creatureDescription(value) : value),
+                              descriptionOptions,
+                            )}
                           </div>
                         ) : ['Name'].includes(key) ? null : (
                           <span className="info-value info-card">

@@ -300,7 +300,7 @@ export default function ConditionsSection() {
                       {exhausted && <Icon name="check" size={14} />}
                       {!exhausted && !canToggle && <Icon name="tune" size={14} />}
                     </span>
-                    <span className="cond-list-desc">{c.description}</span>
+                    <span className="cond-list-desc">{c.summary}</span>
                   </button>
                 );
               })

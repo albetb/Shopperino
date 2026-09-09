@@ -3,6 +3,7 @@ import { t, tName } from '../../lib/i18n';
 import { isMobile } from '../../lib/utils';
 import { addCardByLink } from '../../store/slices/appSlice';
 import { StarOrbitCast } from './row_actions';
+import { spellName } from '../../lib/i18n/spellText';
 
 export default function SpontaneousSpells({
     spontaneousByLevel,
@@ -44,7 +45,7 @@ export default function SpontaneousSpells({
                                             className="button-link spell-table-cell-name"
                                             onClick={() => dispatch(addCardByLink({ links: item.Link, bonus: 0 }))}
                                         >
-                                            {item.Name}
+                                            {spellName(item.Name)}
                                         </button>
                                         {showShortDescriptions && item['Short Description'] && (
                                             <div className="spell-table-cell-desc">

@@ -31,6 +31,21 @@ const TRAIL = /\s*([-+]?\d[\d,/]*\s*(?:ft\.?|feet|hp|\/[a-z -]+)?\.?)$/i;
 const SKILL_LINE = /^(.*?)\s*([-+]\d+.*)$/;
 const WITH_PAREN = /^(.+?)\s*\(([^)]*)\)$/;
 
+/* A rank or an age the SRD prints *before* the species: "Adult Tojanida",
+   "Greater Barghest", "Elder Xorn". Italian puts it after — the manual's own
+   headings are *Tojanida adulto*, *Ombra maggiore*, *Xorn anziano* — so the
+   two halves swap on the way out.
+
+   Only ranks compose. A colour or a size in front of a name is usually part of
+   the species rather than a qualifier of it ("Black Pudding" is not a pudding
+   that happens to be black), and those are keyed whole instead. Longest first,
+   so "Young Adult" is not read as "Young". */
+const LEADING_RANK = [
+  'Great Wyrm', 'Mature Adult', 'Young Adult', 'Very Young',
+  'Wyrmling', 'Juvenile', 'Advanced', 'Ancient', 'Greater', 'Lesser',
+  'Adult', 'Elder',
+];
+
 /**
  * A creature's own name.
  *
@@ -49,12 +64,27 @@ export function creatureName(en) {
   if (whole !== text) return whole;
 
   const comma = text.lastIndexOf(', ');
-  if (comma < 0) return text;
-  const base = text.slice(0, comma);
-  const qualifier = text.slice(comma + 2);
-  const namedBase = tName('creatures', base);
-  if (namedBase === base) return text;   // the base is unknown; say nothing new
-  return `${namedBase}, ${creatureQualifier(qualifier)}`;
+  if (comma >= 0) {
+    const base = text.slice(0, comma);
+    const namedBase = tName('creatures', base);
+    // The base being unknown means there is nothing new to say about the name.
+    if (namedBase !== base) {
+      return `${namedBase}, ${creatureQualifier(text.slice(comma + 2))}`;
+    }
+  }
+
+  const rank = LEADING_RANK.find(
+    (word) => text.toLowerCase().startsWith(`${word.toLowerCase()} `));
+  if (rank) {
+    const rest = text.slice(rank.length + 1);
+    const base = creatureName(rest);
+    const qualifier = creatureQualifier(rank);
+    /* Swapping the halves is only ever right in a language that puts the
+       adjective after the noun. Reading English, neither half moved and
+       neither should the order. */
+    if (base !== rest || qualifier !== rank) return `${base} ${qualifier}`;
+  }
+  return text;
 }
 
 /** What follows the comma: an age category, a size, a form, a colour. */
@@ -66,9 +96,47 @@ export function creatureQualifier(en) {
   return size === text ? text : size.toLowerCase();
 }
 
+/* "immunity to acid and cold", "resistance to electricity 10 and fire 10",
+   "vulnerability to fire" — three heads and a list of what they are *to*.
+   Italian fuses the preposition to the article and the article to the noun —
+   all'acido, al freddo, alla pietrificazione — so the pack keys the articled
+   form and this only has to find where one target ends and the next begins. */
+const AFFINITY = /^(immunity|resistance|vulnerability)\s+to\s+(.+)$/i;
+const RATING = /\s+(\d+)$/;
+
+/** Capitalised in, capitalised out: the stat block writes both. */
+function matchCase(sample, text) {
+  if (!sample || sample[0] !== sample[0].toUpperCase()) return text;
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
+/** "all'elettricità 10 e al fuoco 10" — each target with its rating kept. */
+function affinityTargets(list) {
+  return String(list).split(/\s+and\s+/i).map((piece) => {
+    const one = piece.trim();
+    const rated = RATING.exec(one);
+    const head = rated ? one.slice(0, rated.index) : one;
+    const named = tName('affinities', head);
+    return rated ? `${named} ${rated[1]}` : named;
+  }).join(` ${t('and')} `);
+}
+
 /** One special attack or special quality, with its rating left alone. */
 export function creatureTerm(en) {
   const text = String(en ?? '');
+
+  const affinity = AFFINITY.exec(text.trim());
+  if (affinity) {
+    /* The head answering is the signal that this language fuses the
+       preposition into the target. English does not — it says "immunity *to*
+       acid" — so when the pack has nothing to say the SRD sentence stands. */
+    const key = affinity[1].toLowerCase();
+    const head = t(key);
+    if (head !== key) {
+      return `${matchCase(affinity[1], head)} ${affinityTargets(affinity[2])}`;
+    }
+  }
+
   const m = TRAIL.exec(text);
   if (!m) return tName('creatureTraits', text);
   const head = text.slice(0, m.index);
@@ -100,12 +168,32 @@ export function splitList(joined) {
   return parts.filter(Boolean);
 }
 
+/* "Survival +1 (+3 other planes and following tracks)" — the second bonus, and
+   what it applies to. The phrase is the vocabulary; the bonus is the
+   creature's, so it splits off the same way a quality's rating does. A comma
+   inside the parenthesis starts another one: "(+9 following tracks, +9 Plane
+   of Air)". */
+const SKILL_RIDER = /^([-+]\d+)\s*(.*)$/;
+
+/** What a skill's parenthetical says the extra bonus is good for. */
+function skillRiders(inner) {
+  return String(inner).split(',').map((piece) => {
+    const one = piece.trim();
+    const m = SKILL_RIDER.exec(one);
+    if (!m) return tName('skillRiders', one);
+    return m[2] ? `${m[1]} ${tName('skillRiders', m[2])}` : m[1];
+  }).join(', ');
+}
+
 /** A skill line: the skill named from the pack, its modifier untouched. */
 export function skillLine(en) {
   const text = String(en ?? '');
   const m = SKILL_LINE.exec(text);
   const head = (m ? m[1] : text).trim();
-  const tail = m ? ` ${m[2]}` : '';
+  /* Anything the modifier drags along is a rider — "+1 (+3 con legami)". */
+  const tail = m
+    ? ` ${m[2].replace(/\(([^)]*)\)/g, (_, inner) => `(${skillRiders(inner)})`)}`
+    : '';
   const paren = WITH_PAREN.exec(head);
   if (paren) {
     /* Knowledge (arcana), Craft (weaponsmithing) — both halves are names, and
@@ -293,4 +381,159 @@ export function speedText(en) {
 export function spaceReachText(en) {
   return String(en ?? '')
     .replace(WITH_ATTACK, (_, name) => `${t('with')} ${attackName(name.trim())})`);
+}
+
+/* ------------------------------------------------------------------------ *
+ * The armour class line, and who the creature is found with.
+ * ------------------------------------------------------------------------ */
+
+/* "22 (+1 size, +1 Dex, +10 natural), touch 12, flat-footed 21" — the manual
+   prints it as "20 (-1 taglia, +1 Des, +10 naturale), contatto 10, colto alla
+   sprovvista 19". Every word in it is already keyed somewhere: the components
+   are bonus types, one of them is an ability, a few are armour the creature
+   wears, and the two after the bracket are the touch and flat-footed labels
+   the defence pill already uses. */
+const AC_COMPONENT = /^([-+]\d+)\s+(.+)$/;
+const AC_LABEL = /\b(touch|flat-footed)\b/gi;
+
+/* A worn component carries its own enhancement bonus, at either end: "+2 full
+   plate armor", "bracers of armor +5". The number is the creature's gear, not
+   the vocabulary, so it comes off before the lookup and goes back where it
+   was. */
+const AC_WORN = /^(?:([+-]\d+)\s+)?(.*?)(?:\s+([+-]\d+))?$/;
+
+function acComponent(piece) {
+  const one = piece.trim();
+  const m = AC_COMPONENT.exec(one);
+  if (!m) return one;
+  const word = m[2].replace(/\.$/, '');
+  const bonus = tName('bonusTypes', word);
+  if (bonus !== word) return `${m[1]} ${bonus}`;
+  const ability = t(word);
+  if (ability !== word) return `${m[1]} ${ability}`;
+
+  const worn = AC_WORN.exec(word);
+  const before = worn[1] ? `${worn[1]} ` : '';
+  const after = worn[3] ? ` ${worn[3]}` : '';
+  return `${m[1]} ${before}${tName('acComponents', worn[2])}${after}`;
+}
+
+export function armorClassText(en) {
+  const text = String(en ?? '');
+  if (!text) return text;
+  return text
+    .replace(/\(([^)]*)\)/g,
+      (_, inner) => `(${inner.split(',').map(acComponent).join(', ')})`)
+    .replace(AC_LABEL, (word) => t(word.toLowerCase()));
+}
+
+/* "Solitary or clutch (2-4)" — a list of group nouns, each with how many are
+   in one. A dragon's runs to two clauses with the age categories in front:
+   "Wyrmling, very young, ...: solitary or clutch (2-5); adult, ...: solitary,
+   pair, or family (1-2 and 2-5 offspring)".
+
+   The nouns and the connectors are vocabulary. What is inside the bracket is
+   mostly numbers, but a hundred-odd of them carry a phrase — and a few carry a
+   whole sentence naming other creatures and their class levels. Those come
+   back as the SRD prints them: a half-translated sentence would read worse
+   than an English one. */
+const GROUP_ENTRY = /^(.*?)(?:\s*\(([^)]*)\))?$/;
+/* One word at a time — the phrases that are worth a key are looked up whole
+   first, and a class of words in the class regex would swallow the space
+   between them. */
+const NOTE_WORD = /[A-Za-z][A-Za-z'-]*/g;
+/* "2-4 mephits of mixed types" — how many, then what they are. */
+const NOTE_COUNT = /^((?:[\d]+(?:[-–][\d]+)?%?\s+)+)(.*)$/;
+const GROUP_SEP = /^\s+(and|or)\s+/i;
+
+/* The list is joined by commas *and* by the words "and" and "or", which is one
+   more separator than `splitList` knows about — and neither may be taken from
+   inside a bracket, where whole sentences of them live. Separators are kept so
+   the list can be put back together the way it came apart. */
+function splitGroups(text) {
+  const parts = [];
+  const s = String(text);
+  let depth = 0;
+  let start = 0;
+  let i = 0;
+  while (i < s.length) {
+    const ch = s[i];
+    if (ch === '(') depth += 1;
+    else if (ch === ')') depth = Math.max(0, depth - 1);
+    else if (depth === 0) {
+      if (ch === ',') {
+        /* An Oxford comma is one separator, not two: ", or family" joins the
+           last two entries and Italian writes it without the comma. */
+        const oxford = /^,\s*(and|or)\s+/i.exec(s.slice(i));
+        if (oxford) {
+          parts.push(s.slice(start, i), ` ${t(oxford[1].toLowerCase())} `);
+          start = i + oxford[0].length;
+          i = start;
+          continue;
+        }
+        parts.push(s.slice(start, i), ', ');
+        start = i + 1;
+        i += 1;
+        continue;
+      }
+      const sep = GROUP_SEP.exec(s.slice(i));
+      if (sep) {
+        parts.push(s.slice(start, i), ` ${t(sep[1].toLowerCase())} `);
+        start = i + sep[0].length;
+        i = start;
+        continue;
+      }
+    }
+    i += 1;
+  }
+  parts.push(s.slice(start));
+  return parts;
+}
+
+function groupNote(inner) {
+  const one = inner.trim();
+  const whole = tName('groupNotes', one);
+  if (whole !== one) return whole;
+  const counted = NOTE_COUNT.exec(one);
+  if (counted) {
+    const named = tName('groupNotes', counted[2]);
+    if (named !== counted[2]) return `${counted[1]}${named}`;
+  }
+  return one.replace(NOTE_WORD, (word) => tName('groupNotes', word));
+}
+
+function groupEntry(entry) {
+  const one = entry.trim();
+  if (!one) return one;
+  const m = GROUP_ENTRY.exec(one);
+  const head = tName('creatureGroups', m[1].trim());
+  return m[2] === undefined ? head : `${head} (${groupNote(m[2])})`;
+}
+
+/** One clause: the group list, with the age categories that lead it if any. */
+function groupClause(clause) {
+  const colon = clause.indexOf(':');
+  if (colon >= 0) {
+    const ages = splitGroups(clause.slice(0, colon))
+      .map((part, i) => (i % 2 ? part : creatureQualifier(part.trim())))
+      .join('');
+    return `${ages}: ${groupClause(clause.slice(colon + 1).trim())}`;
+  }
+  return splitGroups(clause).map((part, i) => (i % 2 ? part : groupEntry(part)))
+    .join('');
+}
+
+export function organizationText(en) {
+  const text = String(en ?? '').trim();
+  if (!text || text === '-') return text;
+  return text.split(';').map((clause) => groupClause(clause.trim())).join('; ');
+}
+
+/* `buildCard` in animalsUtils joins a creature's two prose blocks into one
+   field with a heading between them, and that heading is the only English left
+   in it — both blocks come from the prose pack. It is swapped here rather than
+   there so i18n stays out of a module the rules read. */
+export function creatureDescription(html) {
+  return String(html ?? '')
+    .replace('<p><b>Combat</b></p>', `<p><b>${t('Combat')}</b></p>`);
 }

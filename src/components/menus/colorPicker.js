@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectAccent, selectTheme, setAccent, setTheme } from '../../store/slices/appSlice';
 import { isMobile } from '../../lib/utils';
+import { t, tx, tName } from '../../lib/i18n';
 import BottomSheet from '../common/BottomSheet';
 import IconButton from '../common/IconButton';
 
@@ -31,12 +32,12 @@ function AccentSheet({ open, onClose }) {
     <BottomSheet
       open={open}
       onClose={onClose}
-      eyebrow="UI preferences"
-      title="Accent & theme"
+      eyebrow={t('UI preferences')}
+      title={t('Accent & theme')}
     >
       <div className="sh-stack">
         <div>
-          <div className="sh-eyebrow" style={{ marginBottom: 'var(--space-2)' }}>Accent color</div>
+          <div className="sh-eyebrow" style={{ marginBottom: 'var(--space-2)' }}>{t('Accent color')}</div>
           <div className="sh-accent-grid">
             {HUES.map(({ id, swatch }) => (
               <button
@@ -44,7 +45,7 @@ function AccentSheet({ open, onClose }) {
                 type="button"
                 className={`sh-hue ${accent === id ? 'is-active' : ''}`}
                 style={{ '--swatch': swatch }}
-                aria-label={`Accent ${id}`}
+                aria-label={tx('Accent {0}', tName('accents', id))}
                 aria-pressed={accent === id}
                 onClick={() => dispatch(setAccent(id))}
               />
@@ -52,19 +53,19 @@ function AccentSheet({ open, onClose }) {
           </div>
         </div>
 
-        <div>
-          <div className="sh-eyebrow" style={{ marginBottom: 'var(--space-2)' }}>Theme</div>
+        <div className="sh-settings-row">
+          <span className="sh-eyebrow">{t('Theme')}</span>
           <div className="sh-mode-toggle">
             <button
               type="button"
               aria-pressed={theme === 'dark' ? 'true' : 'false'}
               onClick={() => dispatch(setTheme('dark'))}
-            >Dark</button>
+            >{t('Dark')}</button>
             <button
               type="button"
               aria-pressed={theme === 'light' ? 'true' : 'false'}
               onClick={() => dispatch(setTheme('light'))}
-            >Parchment</button>
+            >{t('Parchment')}</button>
           </div>
         </div>
       </div>
@@ -99,8 +100,8 @@ function AccentPopover({ open, anchorRef, onClose }) {
   if (!open) return null;
 
   return (
-    <div className="sh-accent-popover" ref={popRef} role="dialog" aria-label="Accent and theme">
-      <div className="sh-eyebrow">Accent color</div>
+    <div className="sh-accent-popover" ref={popRef} role="dialog" aria-label={t('Accent and theme')}>
+      <div className="sh-eyebrow">{t('Accent color')}</div>
       <div className="sh-accent-grid">
         {HUES.map(({ id, swatch }) => (
           <button
@@ -108,24 +109,26 @@ function AccentPopover({ open, anchorRef, onClose }) {
             type="button"
             className={`sh-hue ${accent === id ? 'is-active' : ''}`}
             style={{ '--swatch': swatch }}
-            aria-label={`Accent ${id}`}
+            aria-label={tx('Accent {0}', tName('accents', id))}
             aria-pressed={accent === id}
             onClick={() => dispatch(setAccent(id))}
           />
         ))}
       </div>
-      <div className="sh-eyebrow" style={{ marginTop: 'var(--space-3)' }}>Theme</div>
-      <div className="sh-mode-toggle" style={{ marginTop: 'var(--space-2)' }}>
-        <button
-          type="button"
-          aria-pressed={theme === 'dark' ? 'true' : 'false'}
-          onClick={() => dispatch(setTheme('dark'))}
-        >Dark</button>
-        <button
-          type="button"
-          aria-pressed={theme === 'light' ? 'true' : 'false'}
-          onClick={() => dispatch(setTheme('light'))}
-        >Parchment</button>
+      <div className="sh-settings-row" style={{ marginTop: 'var(--space-3)' }}>
+        <span className="sh-eyebrow">{t('Theme')}</span>
+        <div className="sh-mode-toggle">
+          <button
+            type="button"
+            aria-pressed={theme === 'dark' ? 'true' : 'false'}
+            onClick={() => dispatch(setTheme('dark'))}
+          >{t('Dark')}</button>
+          <button
+            type="button"
+            aria-pressed={theme === 'light' ? 'true' : 'false'}
+            onClick={() => dispatch(setTheme('light'))}
+          >{t('Parchment')}</button>
+        </div>
       </div>
     </div>
   );
@@ -148,11 +151,11 @@ export default function ColorPicker() {
     <span style={{ position: 'relative', display: 'inline-flex' }} ref={anchorRef}>
       <IconButton
         ghost
-        title={`Accent color (${accent})`}
+        title={tx('Accent color ({0})', tName('accents', accent))}
         onClick={toggle}
         aria-haspopup="dialog"
         aria-expanded={open}
-        aria-label="Open accent picker"
+        aria-label={t('Open accent picker')}
       >
         <span className="sh-accent-dot" aria-hidden="true" />
       </IconButton>

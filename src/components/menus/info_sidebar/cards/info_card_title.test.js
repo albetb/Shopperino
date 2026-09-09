@@ -67,10 +67,20 @@ describe('the title of an info card', () => {
     expect(screen.queryByRole('heading', { name: 'Pelle' })).toBe(null);
   });
 
-  test('a spell keeps the name every manual prints', () => {
+  test('a spell is named the way the Manuale del Giocatore names it', () => {
+    setLanguage('it');
+    const [card] = cards('spells#fireball');
+    expect(card.kind).toBe('spell');
+    expect(screen.getByRole('heading', { name: 'Palla di fuoco' })).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Fireball' })).toBe(null);
+  });
+
+  test('and so are its school, its level and its components', () => {
     setLanguage('it');
     cards('spells#fireball');
-    expect(screen.getByRole('heading', { name: 'Fireball' })).toBeInTheDocument();
+    expect(screen.getByText(/Invocazione \[Fuoco\]/)).toBeInTheDocument();
+    expect(screen.getByText(/Mag\/Str 3/)).toBeInTheDocument();
+    expect(screen.queryByText(/Sor\/Wiz/)).toBe(null);
   });
 });
 

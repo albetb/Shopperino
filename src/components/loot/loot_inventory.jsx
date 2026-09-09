@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { t, tx } from '../../lib/i18n';
+import { itemCardTitle } from '../../lib/item/displayItemName';
 import Loot from '../../lib/loot';
 import { unixToDisplay } from '../../lib/storageFormat';
 import { formatNumber, isMobile, trimLine } from '../../lib/utils';
@@ -96,7 +97,7 @@ export default function LootInventory() {
             {goodsDisplayList.map((g, idx) => (
               <tr key={idx}>
                 <td className="align-right td-muted">{g.Quantity ?? 1}</td>
-                <td className="td-muted">{g.Name}</td>
+                <td className="td-muted">{itemCardTitle(g.Name)}</td>
                 <td className="td-muted">{formatNumber(g.Cost)}</td>
               </tr>
             ))}
@@ -134,10 +135,10 @@ export default function LootInventory() {
                         className="button-link"
                         onClick={() => dispatch(addCardByLink({ links: item.Link, bonus: itemBonus }))}
                       >
-                        {item.Name}
+                        {itemCardTitle(item.Name)}
                       </button>
                     ) : (
-                      item.Name
+                      itemCardTitle(item.Name)
                     )}
                   </td>
                   <td className="td-muted">{formatNumber(item.Cost)}</td>

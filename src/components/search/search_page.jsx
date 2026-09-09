@@ -75,7 +75,9 @@ function slugify(name) {
    prints — the pack has never held one — so they fall through to the English.
    A name the pack cannot answer does the same, which is the point of keying by
    the English in the first place. */
-const SEARCH_DOMAIN = { Items: 'items', Feats: 'feats', Skills: 'skills' };
+const SEARCH_DOMAIN = {
+  Items: 'items', Feats: 'feats', Skills: 'skills', Spells: 'spells',
+};
 
 const searchName = (searchType, name) => {
   const domain = SEARCH_DOMAIN[searchType];
@@ -141,7 +143,11 @@ export default function SearchPage() {
       const spells = loadFile('spells') || [];
 
       return spells.filter(s => {
-        if (q && !s.Name?.toLowerCase().includes(q)) return false;
+        /* Bilingual, like the other three: a reader typing *palla* and a
+           reader typing *fireball* both find it. */
+        if (q
+          && !s.Name?.toLowerCase().includes(q)
+          && !tName('spells', s.Name)?.toLowerCase().includes(q)) return false;
         if (!spellClassFilter || spellClassFilter === 'All') return true;
 
         const levelStr = s.Level || '';

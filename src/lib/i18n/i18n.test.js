@@ -145,9 +145,9 @@ describe('prose packs', () => {
   });
 
   test('loadFile hands back the translated prose once the language is Italian', () => {
-    expect(loadFile('tables').Conditions.Blinded).toMatch(/^The character cannot see/);
+    expect(loadFile('tables').Conditions.Blinded).toMatch(/^<p>The character cannot see/);
     setLanguage('it');
-    expect(loadFile('tables').Conditions.Blinded).toMatch(/^Il personaggio non pu/);
+    expect(loadFile('tables').Conditions.Blinded).toMatch(/^<p>Il personaggio non pu/);
   });
 });
 

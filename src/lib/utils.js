@@ -134,7 +134,12 @@ export function conditionSlug(name) {
   return typeof name === 'string' ? name.toLowerCase().trim().replace(/\s+/g, '-') : '';
 }
 
-/** All conditions as [{ name, description, slug }], in tables.json order. */
+/**
+ * All conditions as [{ name, description, summary, slug }], in tables.json
+ * order. `description` is the card's markup; `summary` is the same text with
+ * the tags taken out, for the places that render it as plain text -- Confused
+ * carries a d% table, which reads as angle brackets in a two-line preview.
+ */
 export function getAllConditions() {
   try {
     const conditions = loadFile('tables')?.Conditions;
@@ -142,6 +147,7 @@ export function getAllConditions() {
     return Object.entries(conditions).map(([name, description]) => ({
       name,
       description: description || '',
+      summary: String(description || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim(),
       slug: conditionSlug(name),
     }));
   } catch (err) {
