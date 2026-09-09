@@ -1,5 +1,6 @@
 import { tx, tName, hasName } from '../i18n';
 import { formatItemName } from './formatItemName';
+import { spellName } from '../i18n/spellText';
 
 /**
  * An item's name, in the reading language.
@@ -24,7 +25,7 @@ import { formatItemName } from './formatItemName';
  * because Italian puts it after: *spada lunga di fattura superiore*.
  */
 export const ITEM_NAMING = {
-  item: (name) => tName('items', name),
+  item: (name) => itemName(name),
   masterwork: (name) => tx('Masterwork {0}', name),
   effect: (name) => tName('itemEffects', name),
 };
@@ -37,9 +38,23 @@ export default function displayItemName(baseName, parts) {
   return formatItemName(baseName, parts, ITEM_NAMING);
 }
 
+/* "Scroll of Acid splash" -- 752 of them, one per spell per list, and the only
+   part that is a word is the spell. `items.json` names potions and wands one
+   by one because their names are not always the spell's, but a scroll's always
+   is, so it composes rather than being keyed 752 times. */
+const SCROLL_OF = /^Scroll of (.+)$/i;
+
 /** Just the name, with no masterwork or bonus around it. */
 export function itemName(name) {
-  return tName('items', name);
+  const text = String(name ?? '');
+  const hit = tName('items', text);
+  if (hit !== text) return hit;
+  const scroll = SCROLL_OF.exec(text);
+  if (scroll) {
+    const spell = spellName(scroll[1]);
+    if (spell !== scroll[1]) return tx('Scroll of {0}', spell);
+  }
+  return hit;
 }
 
 /* The suffixes an already-composed name carries, in the order they are read
@@ -84,7 +99,7 @@ export function itemCardTitle(composed) {
 
   /* Unknown either way: an item the pack has no name for comes back exactly as
      it went in, because every lookup below falls back to its English key. */
-  let head = tName('items', name);
+  let head = itemName(name);
   const rest = [];
   suffixes.forEach((suffix) => {
     if (MASTERWORK_SUFFIX.test(suffix)) head = tx('Masterwork {0}', head);

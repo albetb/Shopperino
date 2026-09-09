@@ -1,6 +1,6 @@
 import { isMobile } from 'lib/utils';
 import { t, tName } from 'lib/i18n';
-import displayItemName from 'lib/item/displayItemName';
+import displayItemName, { itemCardTitle } from 'lib/item/displayItemName';
 
 function itemBonus(item) {
   if (item.Bonus != null && !isNaN(item.Bonus)) return item.Bonus;
@@ -24,10 +24,17 @@ export default function ShopItemRow({
     ? t('W. Item')
     : tName('itemTypes', item.ItemType);
   const bonus = itemBonus(item);
-  const displayName = displayItemName(item.BaseName ?? item.Name, {
-    bonus: item.Bonus,
-    effectIds: item.effectIds,
-  });
+  /* A stock entry is one of two shapes, and they must not be composed the same
+     way. A *ref* entry carries `BaseName` -- the item as src/data spells it --
+     and the parts to build from, so the row composes it in the reading
+     language. A generated magic item is stored whole, with the effects and the
+     +N already in its `Name`; composing onto that appended the bonus a second
+     time, which is where "Shield, heavy wooden, Arrow catching +1 +1" came
+     from, and asked the pack for a name it could never hold. `itemCardTitle`
+     takes an already-composed name apart instead. */
+  const displayName = item.BaseName
+    ? displayItemName(item.BaseName, { bonus: item.Bonus, effectIds: item.effectIds })
+    : itemCardTitle(item.Name);
 
   const handleNameClick = () => {
     const links = Array.isArray(item.effectIds) && item.effectIds.length

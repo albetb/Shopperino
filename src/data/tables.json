@@ -193,11 +193,11 @@
     {
       "Name": "Staff Carver",
       "Description": "Sell staffs and rods",
-      "Min level": 1,
+      "Min level": 4,
       "Modifier": {
         "Staff": 2,
         "Rod": 1.6,
-        "Wand": 0.3
+        "Wand": 0.6
       }
     },
     {

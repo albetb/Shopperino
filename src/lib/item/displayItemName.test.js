@@ -22,7 +22,10 @@ describe('an item name on its way to the screen', () => {
 
   test('a name the pack does not have stays English rather than going blank', () => {
     setLanguage('it');
-    expect(itemName('Sword of the planes')).toBe('Sword of the planes');
+    /* Every one of the 828 names in items.json is in the pack now, so this
+       needs an item that is not in the file at all — a shopkeeper's own
+       invention, which is exactly the case the fallback is for. */
+    expect(itemName('Chair of unusual comfort')).toBe('Chair of unusual comfort');
   });
 
   test('every part of a composed name is translated, or none of it is', () => {
@@ -75,7 +78,7 @@ describe('a name that arrives already composed', () => {
 
   test('a name the pack does not have comes back exactly as it went in', () => {
     setLanguage('it');
-    expect(itemCardTitle('Sword of the planes +3')).toBe('Sword of the planes +3');
+    expect(itemCardTitle('Chair of unusual comfort +3')).toBe('Chair of unusual comfort +3');
   });
 
   test('English changes nothing', () => {

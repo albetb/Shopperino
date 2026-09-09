@@ -16,8 +16,24 @@ import { tName } from './index';
 /** "Evocation [Fire]" — the pack has all 79 of the strings that appear. */
 export const spellSchool = (en) => tName('schools', en);
 
+/* spells.json writes a possessive with a curly apostrophe -- Bear’s Endurance
+   -- and scrolls.json with a straight one. They are the same spell, and 39 of
+   the 752 scroll names are exactly this pair, so the lookup tries both. */
+const APOSTROPHES = /['’]/g;
+/* The same class without /g: `test` on a global regex carries lastIndex from
+   one call to the next, so every other call would answer false. */
+const HAS_APOSTROPHE = /['’]/;
+
 /** The spell, by the name the manual gives it. */
-export const spellName = (en) => tName('spells', en);
+export function spellName(en) {
+  const text = String(en ?? '');
+  const hit = tName('spells', text);
+  if (hit !== text || !HAS_APOSTROPHE.test(text)) return hit;
+  const swapped = text.replace(APOSTROPHES,
+    (ch) => (ch === "'" ? '’' : "'"));
+  const second = tName('spells', swapped);
+  return second === swapped ? text : second;
+}
 
 /* "Sor/Wiz 3, Brd 2" — a list of the classes that get the spell and at what
    level. The abbreviations differ between the two manuals (*Mag/Str* for

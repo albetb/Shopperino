@@ -24,6 +24,9 @@ import {
 import {
   spellName, spellSchool, spellLevelText, spellComponentsText,
 } from '../../../../lib/i18n/spellText';
+import {
+  itemDescription, itemCategory, itemSubtype, itemTypeName,
+} from '../../../../lib/i18n/itemText';
 
 const HIDDEN_KEYS = new Set(['Short Description', 'id', 'Link', 'editable', 'editKey', 'kind']);
 
@@ -99,8 +102,21 @@ const SPELL_FIELD = {
   Component: spellComponentsText,
 };
 
+/* An item's three word-fields. Everything else on the card is a number, a
+   die or a measurement, and `u.text` already converts the measurements. */
+const ITEM_FIELD = {
+  Type: itemTypeName,
+  Category: itemCategory,
+  Subtype: itemSubtype,
+};
+
 /* The other three kinds are a single name and nothing else: the title. */
 const TITLE_DOMAIN = { feat: 'feats', skill: 'skills', condition: 'conditions' };
+
+/* Two card kinds carry a description with English composed into it: a
+   creature's joins its two prose blocks under a heading, an item's is prefixed
+   with the bonus note and suffixed with the spell it contains. */
+const DESCRIBE = { creature: creatureDescription, item: itemDescription };
 
 /** One field of one card, in the reading language. */
 function cardValue(card, key, value) {
@@ -111,6 +127,10 @@ function cardValue(card, key, value) {
   }
   if (card?.kind === 'spell') {
     const read = SPELL_FIELD[key];
+    return read ? read(value) : value;
+  }
+  if (card?.kind === 'item') {
+    const read = ITEM_FIELD[key];
     return read ? read(value) : value;
   }
   const domain = TITLE_DOMAIN[card?.kind];
@@ -413,8 +433,8 @@ export default function InfoMenuCards({ cardsData, closeCard }) {
                         {key === 'Description' ? (
                           <div className="info-value info-card description-content">
                             {parse(
-                              u.prose(data.kind === 'creature'
-                                ? creatureDescription(value) : value),
+                              u.prose(DESCRIBE[data.kind]
+                                ? DESCRIBE[data.kind](value) : value),
                               descriptionOptions,
                             )}
                           </div>

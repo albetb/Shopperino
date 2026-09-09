@@ -672,8 +672,15 @@ tr {
   z-index: 1100;
 }
 
+/* Light in both themes, on purpose, and not through a token.
+   `--white` is a legacy alias for `var(--ink)` -- the *text* colour -- so this
+   box followed the ink: near-white in the dark theme (which is what it wanted)
+   and near-black in parchment (which is not). A QR code is dark-on-light and
+   has to stay that way to scan, so the panel pins its own light ground and its
+   own dark ink rather than borrowing either from the theme. */
 .share-shop-modal-box {
-  background: var(--white);
+  background: #f9f9f9;
+  color: #2a2622;
   padding: 1.25rem;
   border-radius: 0.8rem;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
@@ -687,6 +694,14 @@ tr {
 }
 
 /* Desktop: minimum QR size so it stays scannable on large screens */
+/* The heading and the caption are `--ink-muted`, which follows the theme and
+   would be invisible on this fixed ground in one of them. */
+.share-shop-modal-box .modal-heading,
+.share-shop-modal-box .modal-body-muted,
+.share-shop-modal-box .modal-error {
+  color: #5b524a;
+}
+
 .share-shop-modal-box img {
   min-width: 300px;
   min-height: 300px;

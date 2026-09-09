@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
-import { getItem, itemRefLink } from 'lib/item';
+import { useEffect, useMemo, useState } from 'react';
+import { getItem, itemRefLink, getItemByRef } from 'lib/item';
+import { itemName as translateItemName } from 'lib/item/displayItemName';
 import { itemTypes } from 'lib/utils';
 import Modal from '../common/Modal';
 import Button from '../common/Button';
 import 'style/shop_inventory.css';
-import { t, tName } from 'lib/i18n';
+import { t, tx, tName } from 'lib/i18n';
 
 export default function AddItemForm({ open, onAddItem, items, onClose }) {
   const [number, setNumber] = useState(1);
@@ -12,9 +13,11 @@ export default function AddItemForm({ open, onAddItem, items, onClose }) {
   const [itemType, setItemType] = useState('Good');
   const [cost, setCost] = useState(1);
   const [suggestions, setSuggestions] = useState([]);
+  const [suggestionOverflow, setSuggestionOverflow] = useState(0);
   const [isFocused, setIsFocused] = useState(false);
   const [link, setLink] = useState('');
 
+  const MAX_SUGGESTIONS = 40;
   const MAX_NUMBER = 99;
   const MAX_COST = 999999999;
   const MAX_NAME_LENGTH = 64;
@@ -27,32 +30,58 @@ export default function AddItemForm({ open, onAddItem, items, onClose }) {
       setCost(1);
       setLink('');
       setSuggestions([]);
+      setSuggestionOverflow(0);
       setIsFocused(false);
     }
   }, [open]);
 
+  /* Every item the shop can stock, of every type, gathered once.
+     The box used to search only the type in the dropdown, so finding a
+     longsword meant knowing to pick "Weapon" first -- knowing the answer
+     before asking the question -- and scrolls, which live in their own file,
+     were unreachable unless the dropdown already said "Scroll". The type is
+     an answer the suggestion gives, not a question it asks. */
+  const catalogue = useMemo(
+    () => itemTypes.flatMap((type) => getItem('', type)), []);
+
   useEffect(() => {
-    if (itemName.length >= 2) {
-      const filteredSuggestions = items.filter(item =>
-        item.Name.toLowerCase().includes(itemName.toLowerCase())
-      );
-      const otherItems = getItem(itemName, itemType);
-      const namesInFilteredSuggestions = new Set(filteredSuggestions.map(item => item.Name));
-      const filteredOtherItems = otherItems.filter(item => !namesInFilteredSuggestions.has(item.Name));
-      setSuggestions([...filteredSuggestions, ...filteredOtherItems]);
-    } else {
+    if (itemName.length < 2) {
       setSuggestions([]);
+      setSuggestionOverflow(0);
+      return;
     }
-  }, [itemName, itemType, items]);
+    const typed = itemName.toLowerCase();
+    /* Both languages, always: a reader who sees *Spada lunga* on the shelf
+       types *spada*, and one who knows the SRD types *longsword*. */
+    const matches = (name) => String(name).toLowerCase().includes(typed)
+      || translateItemName(String(name)).toLowerCase().includes(typed);
+
+    const inStock = items.filter((item) => matches(item.Name));
+    const seen = new Set(inStock.map((item) => item.Name));
+    const fromData = catalogue.filter(
+      (item) => !seen.has(item.Name) && matches(item.Name));
+
+    /* Capped: every one of the 752 scrolls begins with "Scroll of", so a
+       two-letter query matches all of them and a list that long is worse than
+       no list. The row below says how many were left out. */
+    const all = [...inStock, ...fromData];
+    setSuggestions(all.slice(0, MAX_SUGGESTIONS));
+    setSuggestionOverflow(Math.max(0, all.length - MAX_SUGGESTIONS));
+  }, [itemName, items, catalogue]);
 
   const handleAddItemClick = () => {
     if (!itemName.trim()) return;
-    onAddItem(itemName, itemType, cost, number, link);
+    /* The name is taken off the link rather than out of the box: it is the
+       item's identity, and it must not depend on which language the box was
+       filled in. Only a name with no link -- something the shopkeeper
+       invented -- is stored as typed. */
+    const canonical = link ? getItemByRef(link)?.raw?.Name : null;
+    onAddItem(canonical || itemName, itemType, cost, number, link);
     onClose?.();
   };
 
   const handleSuggestionClick = (suggestion) => {
-    setItemName(suggestion.Name);
+    setItemName(translateItemName(suggestion.Name));
     setItemType(suggestion.ItemType);
     setCost(suggestion.Cost);
     setLink(itemRefLink(suggestion) || suggestion.Link || '');
@@ -83,8 +112,10 @@ export default function AddItemForm({ open, onAddItem, items, onClose }) {
 
   const shouldShowSuggestions =
     isFocused &&
-    (suggestions.length > 1 ||
-      (suggestions.length === 1 && suggestions[0].Name.toLowerCase() !== itemName.toLowerCase()));
+    (suggestions.length > 1
+      || (suggestions.length === 1
+        && suggestions[0].Name.toLowerCase() !== itemName.toLowerCase()
+        && translateItemName(suggestions[0].Name).toLowerCase() !== itemName.toLowerCase()));
 
   return (
     <Modal
@@ -114,7 +145,7 @@ export default function AddItemForm({ open, onAddItem, items, onClose }) {
               type="text"
               placeholder={t('Item name')}
               value={itemName}
-              onChange={(e) => setItemName(e.target.value)}
+              onChange={(e) => { setItemName(e.target.value); setLink(''); }}
               onFocus={() => setIsFocused(true)}
               onBlur={handleNameBlur}
               className="sh-input"
@@ -128,9 +159,14 @@ export default function AddItemForm({ open, onAddItem, items, onClose }) {
                     onMouseDown={() => handleSuggestionClick(suggestion)}
                     className="suggestion-item"
                   >
-                    {suggestion.Name}
+                    {translateItemName(suggestion.Name)}
                   </li>
                 ))}
+                {suggestionOverflow > 0 && (
+                  <li className="suggestion-item suggestion-item--more">
+                    {tx('{0} more — keep typing to narrow it', suggestionOverflow)}
+                  </li>
+                )}
               </ul>
             )}
           </div>
