@@ -47,6 +47,7 @@ import EmptyState from '../common/EmptyState';
 import Icon from '../common/Icon';
 import { useUnits } from 'components/hooks/useUnits';
 import { t, tx } from '../../lib/i18n';
+import { attackName } from '../../lib/i18n/creatureText';
 
 function formatBaseAttackBonus(bab) {
   const b = Number(bab) || 0;
@@ -803,7 +804,7 @@ export default function CombatPage() {
                     : { gap: 'var(--space-3)', borderTop: '1px solid var(--border-soft)', paddingTop: 'var(--space-2)' }}
                 >
                   <span className="sh-display" style={{ fontSize: 'var(--font-size-lg)', textTransform: 'capitalize' }}>
-                    {line.count > 1 ? `${line.count} ` : ''}{line.name}
+                    {line.count > 1 ? `${line.count} ` : ''}{attackName(line.name)}
                   </span>
                   <span className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
                     <Pill tone="accent">{line.bonus >= 0 ? '+' : ''}{line.bonus ?? 0}</Pill>

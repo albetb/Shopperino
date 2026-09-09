@@ -36,6 +36,7 @@ import Icon from '../common/Icon';
 import '../../style/animal_companion.css';
 import { useUnits } from '../hooks/useUnits';
 import { t, tx } from '../../lib/i18n';
+import { attackName } from '../../lib/i18n/creatureText';
 
 /** Single-value bonus thunks keyed by the companion field they edit. */
 const BONUS_THUNK = {
@@ -422,7 +423,7 @@ export default function AnimalCompanionCard() {
               <Filigree>{t('Attacks')}</Filigree>
               {attacks.map((line) => {
                 const overridden = !!companion.overrides?.[line.index];
-                const labelName = `${line.count > 1 ? `${line.count} ` : ''}${line.name}`;
+                const labelName = `${line.count > 1 ? `${line.count} ` : ''}${attackName(line.name)}`;
                 if (editAtk === line.index) {
                   return (
                     <Card key={line.index} padding>
@@ -456,7 +457,7 @@ export default function AnimalCompanionCard() {
                     <span className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
                       <Pill tone={overridden ? 'warn' : 'default'}>{fmtBonus(line.bonus ?? 0)}</Pill>
                       {line.damage && <Pill tone={overridden ? 'warn' : 'default'}>{line.damage}</Pill>}
-                      <IconButton icon="edit" ghost size="sm" onClick={() => startEditAtk(line)} aria-label={tx('Edit {0} attack', line.name)} />
+                      <IconButton icon="edit" ghost size="sm" onClick={() => startEditAtk(line)} aria-label={tx('Edit {0} attack', attackName(line.name))} />
                     </span>
                   </div>
                 );

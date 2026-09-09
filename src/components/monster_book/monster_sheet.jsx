@@ -5,6 +5,7 @@ import { t, tx } from '../../lib/i18n';
 import {
   creatureName, creatureTerm, skillLine, featName, sizeAndType,
   alignmentText, environmentText, treasureText,
+  attackName, damageText, attackLine, speedText, spaceReachText,
 } from '../../lib/i18n/creatureText';
 import Card from '../common/Card';
 import Bar from '../common/Bar';
@@ -409,7 +410,9 @@ export default function MonsterSheetView() {
       <Card title={t('Attacks')} eyebrow={sheet.getBaseAttackGrapple()} className="sh-card--head-spread">
         <div className="sh-stack" style={{ gap: 'var(--space-2)' }}>
           {attacks.length === 0 ? (
-            <div className="sh-faint">{sheet.getAttackLine() || t('This creature has no attacks.')}</div>
+            <div className="sh-faint">
+              {u.text(attackLine(sheet.getAttackLine())) || t('This creature has no attacks.')}
+            </div>
           ) : attacks.map((line, idx) => (
             <div
               key={line.index}
@@ -419,7 +422,7 @@ export default function MonsterSheetView() {
                 : { gap: 'var(--space-3)', borderTop: '1px solid var(--border-soft)', paddingTop: 'var(--space-2)' }}
             >
               <span className="sh-display" style={{ fontSize: 'var(--font-size-lg)', textTransform: 'capitalize' }}>
-                {line.count > 1 ? `${line.count} ` : ''}{line.name}
+                {line.count > 1 ? `${line.count} ` : ''}{attackName(line.name)}
               </span>
               <span className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
                 {/* Crush and tail sweep are rolled against, not for: they show
@@ -433,16 +436,20 @@ export default function MonsterSheetView() {
                 ) : (
                   <Pill tone={line.type === 'secondary' ? 'default' : 'accent'}>{fmt(line.bonus ?? 0)}</Pill>
                 )}
-                {line.damage && <Pill tone="default">{line.damage}</Pill>}
+                {line.damage && <Pill tone="default">{u.text(damageText(line.damage))}</Pill>}
               </span>
             </div>
           ))}
           <div className="sh-row-h" style={{ gap: 'var(--space-2)', flexWrap: 'wrap' }}>
             {sheet.getSpaceReach() && (
-              <Pill tone="ghost" icon="straighten">{sheet.getSpaceReach()}</Pill>
+              <Pill tone="ghost" icon="straighten">
+                {u.text(spaceReachText(sheet.getSpaceReach()))}
+              </Pill>
             )}
             {sheet.getSpeedLine() && (
-              <Pill tone="ghost" icon="directions_run">{u.text(sheet.getSpeedLine())}</Pill>
+              <Pill tone="ghost" icon="directions_run">
+                {u.text(speedText(sheet.getSpeedLine()))}
+              </Pill>
             )}
           </div>
         </div>

@@ -159,3 +159,138 @@ export function advancementText(en) {
   });
   return converted.join('; ');
 }
+
+/* ------------------------------------------------------------------------ *
+ * The attack line.
+ *
+ * `attack` and `fullAttack` are frozen in the data, and for a good reason:
+ * `attackParser` reads them back to recompute an animal companion's, a
+ * familiar's, a special mount's and a wild-shape form's attacks. A translated
+ * string in `monsters.json` would break every one of them silently.
+ *
+ * The *display* is a separate question, and it gets the same answer an item's
+ * name does — the data stays exactly as the SRD prints it, and the words are
+ * looked up on the way to the screen. Nothing here writes anything back.
+ *
+ * The shape is the manual's own:  morso +4 in mischia (4d6+2 più veleno)
+ * ------------------------------------------------------------------------ */
+
+/* A segment is "<count> <name> <+N> <mode> (<damage>)", and every piece is
+   optional except the name. The connectors are the SRD's "and" / "or" / ";". */
+const CONNECTOR = /(\s*;\s*or\s*|\s*;\s*|\s+and\s+|\s+or\s+)/i;
+const MODE = /\b(melee touch|ranged touch|melee|ranged)\b/i;
+const LEADING_COUNT = /^(\d+)\s+/;
+const BONUS = /([+-]\s*\d+)/;
+const PLUS_RIDER = /\s+plus\s+(.+)$/i;
+const LEADING_DICE = /^(\d+(?:d\d+)?(?:[+-]\d+)?\s+)/;
+
+/** One natural weapon or manufactured weapon, as a stat block names it. */
+export function attackName(en) {
+  const text = String(en ?? '').trim();
+  if (!text) return text;
+  /* A qualified weapon — "masterwork longbow", "Huge greataxe" — is its own
+     entry rather than an adjective composed onto a noun: Italian puts the
+     adjective after, so composing gives "fattura perfetta arco lungo" where
+     the manual says "arco lungo perfetto". A name the pack has not got comes
+     back in English, which is at least what the SRD prints. */
+  return tName('naturalAttacks', text);
+}
+
+/** What follows "plus" in the damage: an energy type, a poison, a condition. */
+function rider(en) {
+  const text = String(en ?? '').trim();
+  const dice = LEADING_DICE.exec(text);
+  const head = dice ? text.slice(dice[1].length) : text;
+  const named = tName('attackRiders', head);
+  return `${dice ? dice[1] : ''}${named}`;
+}
+
+/** "2d6+4 plus poison" — the dice untouched, the rider named. */
+export function damageText(en) {
+  const text = String(en ?? '');
+  const m = PLUS_RIDER.exec(text);
+  if (!m) return text;
+  return `${text.slice(0, m.index)} ${t('plus')} ${rider(m[1])}`;
+}
+
+/** One whole attack segment, rebuilt in the reading language. */
+function attackSegment(seg) {
+  const text = String(seg ?? '').trim();
+  if (!text) return text;
+
+  let rest = text;
+  let count = '';
+  const c = LEADING_COUNT.exec(rest);
+  if (c) { count = `${c[1]} `; rest = rest.slice(c[0].length); }
+
+  let damage = '';
+  const open = rest.lastIndexOf('(');
+  if (open >= 0 && rest.endsWith(')')) {
+    damage = ` (${damageText(rest.slice(open + 1, -1))})`;
+    rest = rest.slice(0, open).trim();
+  }
+
+  let mode = '';
+  const m = MODE.exec(rest);
+  if (m) {
+    mode = ` ${tName('attackModes', m[1].toLowerCase())}`;
+    rest = (rest.slice(0, m.index) + rest.slice(m.index + m[1].length)).trim();
+  }
+
+  let bonus = '';
+  const b = BONUS.exec(rest);
+  if (b) {
+    bonus = ` ${b[1].replace(/\s+/g, '')}`;
+    rest = rest.slice(0, b.index).trim();
+  }
+
+  return `${count}${attackName(rest.replace(/\*+$/, ''))}${bonus}${mode}${damage}`;
+}
+
+/**
+ * A whole `attack` / `fullAttack` line, in the reading language.
+ *
+ * A segment the shape does not fit comes back as it went in, so an oddly
+ * written stat block reads as the SRD wrote it rather than as nonsense.
+ */
+export function attackLine(en) {
+  const text = String(en ?? '').trim();
+  if (!text || text === '-' || text === '—') return text;
+  return text.split(CONNECTOR).map((piece, i) => {
+    if (i % 2 === 1) {
+      /* The connector itself: "and", "or", "; or". */
+      return piece.replace(/\band\b/i, t('and')).replace(/\bor\b/i, t('or'));
+    }
+    return attackSegment(piece);
+  }).join('');
+}
+
+/* ------------------------------------------------------------------------ *
+ * The two pills beside the attacks: space/reach, and the speed line.
+ *
+ * Both are `raw` strings the model keeps in step with the numbers beside them,
+ * so both are frozen in the data for the same reason the attack line is. They
+ * are also both mostly measurements, which the unit converter rewrites at
+ * render — so all that is left to translate is the words between the numbers,
+ * and the translation has to leave "ft" alone for the converter to find.
+ * ------------------------------------------------------------------------ */
+
+/* fly 150 ft. (poor), swim 60 ft. — a movement mode, a distance, and for
+   flight a manoeuvrability rating. */
+const SPEED_WORD = /\b(fly|swim|climb|burrow|squares|square|base speed|base)\b/gi;
+const MANEUVER = /\((perfect|good|average|poor|clumsy)\)/gi;
+/* "15 ft./10 ft. (15 ft. with bite)" — the reach a particular attack has. */
+const WITH_ATTACK = /\bwith\s+([a-z ]+)\)/gi;
+
+/** The speed line's words, with every measurement left for the converter. */
+export function speedText(en) {
+  return String(en ?? '')
+    .replace(MANEUVER, (_, word) => `(${tName('maneuverability', word.toLowerCase())})`)
+    .replace(SPEED_WORD, (word) => tName('movementModes', word.toLowerCase()));
+}
+
+/** The space/reach line: "with bite" names an attack the pack already has. */
+export function spaceReachText(en) {
+  return String(en ?? '')
+    .replace(WITH_ATTACK, (_, name) => `${t('with')} ${attackName(name.trim())})`);
+}

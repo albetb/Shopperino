@@ -36,6 +36,7 @@ import Icon from '../common/Icon';
 import '../../style/familiar.css';
 import { useUnits } from '../hooks/useUnits';
 import { t, tx, tName } from '../../lib/i18n';
+import { attackName } from '../../lib/i18n/creatureText';
 
 /** Single-value bonus thunks keyed by the familiar field they edit. */
 const BONUS_THUNK = {
@@ -405,7 +406,7 @@ export default function FamiliarCard() {
               <Filigree>{t('Attacks')}</Filigree>
               {attacks.map((line) => {
                 const overridden = !!familiar.overrides?.[line.index];
-                const labelName = `${line.count > 1 ? `${line.count} ` : ''}${line.name}`;
+                const labelName = `${line.count > 1 ? `${line.count} ` : ''}${attackName(line.name)}`;
                 if (editAtk === line.index) {
                   return (
                     <Card key={line.index} padding>
@@ -439,7 +440,7 @@ export default function FamiliarCard() {
                     <span className="sh-row-h" style={{ gap: 'var(--space-2)' }}>
                       <Pill tone={overridden ? 'warn' : 'default'}>{fmtBonus(line.bonus ?? 0)}</Pill>
                       {line.damage && <Pill tone={overridden ? 'warn' : 'default'}>{line.damage}</Pill>}
-                      <IconButton icon="edit" ghost size="sm" onClick={() => startEditAtk(line)} aria-label={`${t('Edit')} ${line.name} ${t('attack')}`} />
+                      <IconButton icon="edit" ghost size="sm" onClick={() => startEditAtk(line)} aria-label={`${t('Edit')} ${attackName(line.name)} ${t('attack')}`} />
                     </span>
                   </div>
                 );

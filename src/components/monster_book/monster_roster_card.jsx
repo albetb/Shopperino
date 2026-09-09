@@ -12,6 +12,7 @@ import {
 import { MAX_ROSTER_ENTRIES, countIndividuals } from '../../lib/monster/monsterRoster';
 import '../../style/monster_book.css';
 import { t, tx } from '../../lib/i18n';
+import { creatureName } from '../../lib/i18n/creatureText';
 
 /**
  * The creatures the master is running right now.
@@ -69,7 +70,7 @@ export default function MonsterRosterCard() {
                   onClick={() => dispatch(addCardByLink({ links: sheet.getRef() }))}
                   title={t('Show stat block')}
                 >
-                  {sheet.getName()}
+                  {creatureName(sheet.getName())}
                 </button>
                 <span className="roster-entry-meta">
                   {individuals.length > 1 && (
@@ -79,7 +80,7 @@ export default function MonsterRosterCard() {
                     icon="swords"
                     size="sm"
                     onClick={() => dispatch(onOpenRosterEntry(entryIndex))}
-                    aria-label={tx('Open the combat sheet for {0}', sheet.getName())}
+                    aria-label={tx('Open the combat sheet for {0}', creatureName(sheet.getName()))}
                     title={t('Open combat sheet')}
                   />
                 </span>
@@ -104,8 +105,8 @@ export default function MonsterRosterCard() {
                     onClick={() => dispatch(onRemoveIndividual(entryIndex, individual.index))}
                     aria-label={
                       individuals.length === 1
-                        ? tx('Remove {0} from the roster', sheet.getName())
-                        : tx('Remove {0} #{1}', sheet.getName(), individual.index + 1)
+                        ? tx('Remove {0} from the roster', creatureName(sheet.getName()))
+                        : tx('Remove {0} #{1}', creatureName(sheet.getName()), individual.index + 1)
                     }
                     title={
                       individuals.length === 1

@@ -18,6 +18,7 @@ import { itemCardTitle } from '../../../../lib/item/displayItemName';
 import {
   creatureName, creatureTerm, skillLine, featName, sizeAndType, splitList,
   alignmentText, environmentText, treasureText, advancementText,
+  attackLine, speedText, spaceReachText,
 } from '../../../../lib/i18n/creatureText';
 
 const HIDDEN_KEYS = new Set(['Short Description', 'id', 'Link', 'editable', 'editKey', 'kind']);
@@ -70,6 +71,11 @@ const CREATURE_FIELD = {
   'Special Qualities': (v) => splitList(v).map(creatureTerm).join(', '),
   Skills: (v) => splitList(v).map(skillLine).join(', '),
   Feats: (v) => splitList(v).map(featName).join(', '),
+  Attack: attackLine,
+  'Full Attack': attackLine,
+  'Natural Attacks': attackLine,
+  'Space/Reach': spaceReachText,
+  Speed: speedText,
   Alignment: alignmentText,
   Environment: environmentText,
   Treasure: treasureText,
