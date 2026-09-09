@@ -157,7 +157,7 @@ Ogni classe fornisce un modello pre-costruito opzionale di 1° livello (abilità
 - [saving-throws.md](saving-throws.md) — tiri salvezza legati alle caratteristiche.
 - [combat.md](combat.md) — BAB, CA, azione di attacco completo per gli iterativi.
 - [magic.md](magic.md) — incantesimi bonus, minimi di lancio, CD del tiro salvezza degli incantesimi.
-- [multiclassing.md](multiclassing.md) — classe favorita e penalità ai PE.
+- [multiclassing.md](multiclassing.md) — classe preferita e penalità ai PE.
 - [experience-and-leveling.md](experience-and-leveling.md) — tabella dei PE, calendario dei talenti disponibili, aumenti di caratteristica.
 - [feats.md](feats.md) — regole di selezione dei talenti.
 - [class-features.md](class-features.md) — privilegi nominati per classe (ira, attacco furtivo, punire il male, forma selvatica, ecc.) e i sottosistemi di famiglio/compagno animale/cavalcatura speciale.

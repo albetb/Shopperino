@@ -6,7 +6,7 @@ Un **famiglio** è un animale normale che ottiene nuovi poteri e **diventa una b
 
 Solo un **animale normale, non modificato** può diventare un famiglio. Un compagno animale **non può** fungere anche da famiglio.
 
-> **Differenza di tipo rispetto al compagno animale.** Il famiglio *diventa una bestia magica*; il **compagno animale** di druido/ranger **mantiene il proprio tipo** (animale). Poiché il famiglio è una bestia magica, *condividere incantesimi* funziona comunque su di esso grazie all'eccezione esplicita di tipo indicata sotto. (Vedi [animal-companion.md](animal-companion.md) per il sottosistema del compagno.)
+> **Differenza di tipo rispetto al compagno animale.** Il famiglio *diventa una bestia magica*; il compagno animale di druido/ranger **mantiene il proprio tipo** (animale). Poiché il famiglio è una bestia magica, *condividere incantesimi* funziona comunque su di esso grazie all'eccezione esplicita di tipo indicata sotto. (Vedi [animal-companion.md](animal-companion.md) per il sottosistema del compagno.)
 
 ---
 
@@ -15,7 +15,7 @@ Solo un **animale normale, non modificato** può diventare un famiglio. Un compa
 - **Costo:** **24 ore** di lavoro + materiali magici del valore di **100 mo**.
 - Lo stregone/mago **sceglie il tipo** di famiglio dall'elenco sottostante.
 - Un personaggio con **più di una classe che concede un famiglio** può avere **un solo famiglio alla volta**.
-- Le **capacità speciali** concesse si applicano solo mentre padrone e famiglio sono entro **1 miglio** l'uno dall'altro.
+- Le capacità speciali concesse **si applicano solo mentre padrone e famiglio sono entro 1 miglio** l'uno dall'altro.
 
 ---
 

@@ -165,7 +165,7 @@ Taglie uguali si colpiscono normalmente a vicenda (i modificatori si annullano).
 ### Danno non letale
 
 - Alcuni attacchi infliggono danno **non letale** (subdual): colpi senz'armi (predefinito), esaurimento, calore, colpi di piatto.
-- Tracciato separatamente dai pf. **Non** sottrae dai pf attuali — si accumula come contatore.
+- Tracciato separatamente dai pf. Non sottrae dai pf attuali — si accumula come contatore.
 - Quando il non letale accumulato **= pf attuali** → **barcollante** (1 azione standard OPPURE 1 di movimento a turno).
 - Quando il non letale **> pf attuali** → **privo di sensi** (indifeso).
 - Guarisce a 1 non letale per livello di personaggio all'ora (molto più veloce del letale). La cura magica dei pf rimuove anche un pari ammontare di non letale.
@@ -279,7 +279,7 @@ Taglie uguali si colpiscono normalmente a vicenda (i modificatori si annullano).
 - Fonti multiple di occultamento **non** si cumulano (si usa la più alta).
 - **Occultamento variabile**: il DM può fissare 10–40% in base alle condizioni.
 - **Occultamento e Nascondersi**: si può tentare Nascondersi tramite occultamento; senza copertura/occultamento, Nascondersi è impossibile (alcuni privilegi di classe possono aggirarlo).
-- **Occultamento ignorato**: la scorgere nel buio penetra l'occultamento da luce fioca; la scurovisione elimina l'occultamento dovuto all'oscurità (ma non oscurità magica, nebbia, ecc.).
+- **Occultamento ignorato**: la visione crepuscolare penetra l'occultamento da luce fioca; la scurovisione elimina l'occultamento dovuto all'oscurità (ma non oscurità magica, nebbia, ecc.).
 
 ### Attaccare ai fianchi
 
@@ -359,7 +359,7 @@ Il difensore è …
 - [saving-throws.md](saving-throws.md) — meccaniche di Tempra/Riflessi/Volontà.
 - [conditions.md](conditions.md) — colto alla sprovvista, inabile, morente, morto, prono, indifeso, barcollante.
 - [equipment.md](equipment.md) — Destrezza massima dell'armatura, proprietà delle armi, incrementi di gittata.
-- [magic.md](magic.md) — tempi di lancio, componenti, CD dei tiri salvezza.
+- [magic.md](magic.md) — tempi di lancio degli incantesimi, componenti, CD dei tiri salvezza.
 - [classes.md](classes.md) — progressioni di BAB e tiri salvezza base.
 - [class-features.md](class-features.md) — sottosistema di scacciare/intimorire non morti.
 

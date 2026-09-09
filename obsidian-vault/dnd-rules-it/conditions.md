@@ -15,7 +15,7 @@ Lo stato di un personaggio dipende dai suoi punti ferita.
 
 - **1+ pf** — funzionamento normale.
 - **0 pf — Inabile (disabled)**:
-  - Può compiere **una sola** azione standard OPPURE 1 azione di movimento per turno (non entrambe, niente azione di round completo, niente azione veloce).
+  - Può compiere **soltanto** 1 azione standard OPPURE 1 azione di movimento per turno (non entrambe, niente azione di round completo, niente azione veloce).
   - Compiere un'azione standard infligge 1 pf di danno a chi agisce (facendolo scendere a morente).
   - Un'azione di movimento che non comporti sforzo è "sicura".
 - **Da −1 a −9 pf — Morente (dying)**:

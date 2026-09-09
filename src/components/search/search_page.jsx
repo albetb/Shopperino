@@ -1,7 +1,7 @@
-import { useMemo, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useEffect, useMemo, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import parse, { domToReact } from 'html-react-parser';
-import { addCardByLink } from '../../store/slices/appSlice';
+import { addCardByLink, setSearchTypeRequest } from '../../store/slices/appSlice';
 import { loadFile, isMobile } from '../../lib/utils';
 import SpellLink from '../common/spell_link';
 import '../../style/sidebar.css';
@@ -80,6 +80,17 @@ export default function SearchPage() {
   const [spellClassFilter, setSpellClassFilter] = useState('All');
   const [spellLevelCollapsed, setSpellLevelCollapsed] = useState({});
   const [domainCollapsed, setDomainCollapsed] = useState({});
+
+  /* A rule note can ask for a type on the way in: skills.md links to
+     skills.json, and arriving here with nothing selected would make the reader
+     choose the thing they just clicked. Read once and cleared, so pressing
+     back and returning does not re-apply it. */
+  const typeRequest = useSelector((s) => s.app.searchTypeRequest);
+  useEffect(() => {
+    if (!typeRequest) return;
+    if (TYPE_OPTIONS.includes(typeRequest)) setSearchType(typeRequest);
+    dispatch(setSearchTypeRequest(''));
+  }, [typeRequest, dispatch]);
 
   const handleToggleSidebar = () => {
     setSidebarCollapsed((prev) => !prev);

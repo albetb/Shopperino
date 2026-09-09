@@ -25,7 +25,7 @@ Un GS base meccanico di 0 è legittimo a metà calcolo; se il totale finale arri
 | Qualsiasi trappola magica | `25 + livello dell'incantesimo` | `25 + livello dell'incantesimo` | **solo scoprire trappole** |
 
 - Il costruttore sceglie liberamente le CD di Cercare e Disattivare Congegni di una trappola meccanica; entrambe alimentano il GS e il costo.
-- Le CD delle trappole magiche sono fissate dall'incantesimo di livello più alto usato e non influenzano **né** il GS **né** il costo.
+- Le CD delle trappole magiche sono fissate dall'incantesimo di livello più alto usato e non influenzano **né il GS né il costo**.
 - Le trappole magiche senza un tiro salvezza indicato usano **CD `10 + livello dell'incantesimo × 1,5`**. Le trappole a incantesimo usano la normale CD dell'incantesimo: **`10 + livello dell'incantesimo + modificatore di caratteristica dell'incantatore`**.
 
 ## Elementi

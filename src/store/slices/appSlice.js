@@ -22,6 +22,10 @@ const initialState = {
   currentTab: 100,
   mainColor: null,
   sharedShop: null, // { name, gold, stock } when viewing a scanned shop (read-only)
+  /* Which type the Search tab should open on, set by a link in a rule
+     note and cleared by the tab as it reads it. Never persisted: it is a
+     navigation intent, not a preference. */
+  searchTypeRequest: '',
   /* Whether the scanned shop's buying drawer is open on the player sheet.
      In the store rather than in the card because the scan handler in the top
      menu opens it: scanning while the sheet is already in front of you puts
@@ -256,6 +260,10 @@ export const appSlice = createSlice({
       state.sharedShop = action.payload; // { name, gold, stock } or null
     },
 
+    setSearchTypeRequest(state, action) {
+      state.searchTypeRequest = action.payload || '';
+    },
+
     clearSharedShop(state) {
       state.sharedShop = null;
       state.sharedShopSheetOpen = false;
@@ -351,6 +359,7 @@ export const {
   setMainColor,
   resetMainColor,
   setSharedShop,
+  setSearchTypeRequest,
   clearSharedShop,
   setSharedShopSheetOpen,
   buySharedShopItem,

@@ -22,6 +22,7 @@ import InfoPopover from '../common/InfoPopover';
    home tiles carry the same order minus Home itself. */
 export const TABS = [
   { id: 0, label: 'Home',         icon: 'home',          masterOnly: false },
+  { id: 8, label: 'Rules',        icon: 'menu_book',     masterOnly: false },
   { id: 4, label: 'Search',       icon: 'search',        masterOnly: false },
   { id: 1, label: 'Shop',         icon: 'shopping_cart', masterOnly: true  },
   { id: 3, label: 'Loot',         icon: 'paid',          masterOnly: true  },

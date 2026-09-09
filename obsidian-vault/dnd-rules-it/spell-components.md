@@ -16,11 +16,11 @@
 
 ### Somatica (S)
 
-- Un gesto delle mani misurato, che richiede almeno **una mano libera** con piena mobilità.
+- Un **gesto delle mani** misurato, che richiede almeno **una mano libera** con piena mobilità.
 - Non può essere fornita se:
   - Entrambe le mani sono occupate (combattimento con due armi, tenere due oggetti pesanti, arrampicarsi con entrambe le mani).
   - Il personaggio è in lotta o immobilizzato.
-  - La mano è immobilizzata (manette, *tenere persone*, paralisi).
+  - La mano è immobilizzata (manette, *tenere persone*, paralizzato).
 - Uno scudo/un'arma impugnati contano come occupare quella mano, a meno che non vengano lasciati cadere o altrimenti liberati.
 - Indossare un'armatura / usare uno scudo mentre si lancia un incantesimo arcano con componente S causa il **Fallimento degli Incantesimi Arcani** (vedi [equipment.md](equipment.md)). I bardi con armatura leggera sono esenti per gli incantesimi da bardo.
 
@@ -49,7 +49,7 @@
 
 ### Componenti combinate "M/FD" o "F/FD"
 
-- Un testo delle componenti come `Componenti: V, S, M/FD` significa che **gli incantatori arcani usano M, quelli divini usano FD**.
+- Un testo delle componenti dell'incantesimo come `Componenti: V, S, M/FD` significa che **gli incantatori arcani usano M, quelli divini usano FD**.
 - `F/FD` segue la stessa convenzione (focus per gli arcani, focus divina per i divini).
 
 ### Costo in PE (PE)

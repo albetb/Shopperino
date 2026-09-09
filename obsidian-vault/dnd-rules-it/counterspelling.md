@@ -54,7 +54,7 @@
 - È necessario essere consapevoli dell'avversario e avere linea di vista nel momento in cui inizia a lanciare.
 - Non si può contrastare un incantesimo con tempo di lancio di 1 azione gratuita (es. accelerato) — è già lanciato prima che si possa reagire.
 - Si contrasta un incantesimo con tempo di lancio di 1 round quando l'**avversario inizia a lanciarlo** (suo turno 1), non quando si completa (suo turno 2).
-- Un controincantatore può muoversi alla velocità base prima di completare l'azione preparata, ma un passo di 5 piedi conta.
+- Un controincantatore può muoversi alla velocità base prima di completare l'azione preparata, ma un passo di 1,5 m conta.
 
 ## Riferimenti incrociati
 

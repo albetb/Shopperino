@@ -673,7 +673,11 @@
       "never": [
         "abilità speciale"
       ],
-      "source": "coined"
+      "source": "coined",
+      "stems": [
+        "talent",
+        "impres"
+      ]
     },
     {
       "en": "skill",
@@ -710,7 +714,11 @@
       "strict": true,
       "kind": "rules",
       "source": "coined",
-      "note": "en_match excludes 'spell-like', which is its own term (Spell-Like -> Magica) and would otherwise double-fire this one whenever spell-like abilities are mentioned without the literal word incantesimo nearby."
+      "note": "en_match excludes 'spell-like', which is its own term (Spell-Like -> Magica) and would otherwise double-fire this one whenever spell-like abilities are mentioned without the literal word incantesimo nearby.",
+      "stems": [
+        "incantesim",
+        "formul"
+      ]
     },
     {
       "en": "spell slot",
@@ -897,7 +905,11 @@
       "it": "a distanza",
       "strict": true,
       "kind": "combat",
-      "source": "coined"
+      "source": "coined",
+      "stems": [
+        "a distanz",
+        "distanz"
+      ]
     },
     {
       "en": "touch attack",
@@ -1584,8 +1596,15 @@
       "stem": "fiancheggi",
       "strict": true,
       "kind": "combat",
-      "note": "Confirmed: Manuale dei Mostri I p.12/30 use 'fiancheggiare'/'fiancheggiano' for this exact mechanic (\"Può fiancheggiare\", \"non si possono fiancheggiare\"). The passive/adjective form 'flanked' instead renders as 'attaccato ai fianchi' in the Manuale del Giocatore (Barbarian Improved Uncanny Dodge) — both are manual-attested, for different grammatical forms of the same rule.",
-      "source": "manual"
+      "note": "Manuale del Giocatore prints BOTH, and the phrase more often than the verb: \"attaccare ai fianchi\" 8 times against \"fiancheggiare\" 2. Neither is a defect, so both are stems.",
+      "source": "manual",
+      "stems": [
+        "fiancheggi",
+        "attaccando ai fianchi",
+        "attaccare ai fianchi",
+        "attacca ai fianchi",
+        "ai fianchi"
+      ]
     },
     {
       "en": "Two-Weapon Fighting",
@@ -1863,7 +1882,12 @@
       "kind": "abbrev",
       "en_case": true,
       "note": "Abbreviation of Hit Dice (Dadi Vita), shown on stat pills.",
-      "source": "coined"
+      "source": "coined",
+      "stems": [
+        "dv",
+        "dadi vita",
+        "dado vita"
+      ]
     },
     {
       "en": "Challenge Rating",

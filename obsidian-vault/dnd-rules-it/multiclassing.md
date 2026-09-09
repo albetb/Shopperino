@@ -28,7 +28,7 @@
 
 - Se due o più livelli di classe di un personaggio multiclasse sono sufficientemente sbilanciati, il personaggio subisce una **penalità percentuale ai PE** guadagnati (aritmetica completa a p. 60 — da estrarre).
 - La **classe preferita del personaggio viene ignorata** nel calcolo dello sbilanciamento.
-- Per la classe preferita "qualsiasi" (umani/mezzelfi): la classe di livello più alto è trattata come preferita e ignorata, quindi un umano non può mai subire la penalità sulla propria classe più alta. Può comunque subirla tra le classi rimanenti, se sufficientemente sbilanciate.
+- Per la classe preferita "qualsiasi" (umani/mezzelfi): la classe di livello più alto è trattata come preferita e ignorata, quindi un umano non può mai subire la penalità sulla propria classe più alta. *Può* comunque subirla tra le classi rimanenti, se sufficientemente sbilanciate.
 
 ## Restrizioni di multiclasse specifiche per classe
 
@@ -36,7 +36,7 @@
 - **Paladino** — una volta che un paladino prende un livello in un'altra classe, non può **mai più guadagnare un altro livello da paladino**. I livelli e i privilegi da paladino già ottenuti restano, purché il codice non venga violato. Cadere in disgrazia (ex-paladino) è una questione separata che richiede *espiazione* prima di ulteriori avanzamenti in qualsiasi classe — in realtà è il riavanzamento in paladino nello specifico a essere bloccato dalla regola precedente; l'*espiazione* ripristina i privilegi da paladino già posseduti, non l'avanzamento.
 - **Druido** — uno spostamento di allineamento lontano da neutrale, o insegnare il Druidico a un non-druido → status di ex-druido (perde i privilegi di classe) fino a *espiazione*; l'avanzamento è bloccato mentre si è ex-druido.
 - **Chierico** — una grave violazione di allineamento → ex-chierico (perde incantesimi e privilegi di classe) fino a *espiazione*.
-- **Barbaro** — deve essere **non legale**. Diventare legale rende il barbaro un ex-barbaro (perde furia e movimento rapido); gli altri privilegi (RD, intuito nelle trappole, schivare prodigioso) restano.
+- **Barbaro** — deve essere **non legale**. Diventare legale rende il barbaro un ex-barbaro (perde Ira e Movimento veloce); gli altri privilegi (RD, Percepire trappole, Schivare prodigioso) restano.
 - **Bardo** — deve essere **non legale**. Stesso modello del barbaro riguardo lo spostamento di allineamento.
 
 ## Casi particolari & eccezioni

@@ -17,7 +17,7 @@ This is a personal tool used by the developer and their friends. There is no bac
 
 ## What This Project Is
 
-Shopperino is a D&D 3.5 toolset SPA (React 18 + Redux Toolkit). It has seven tabs, selectable via `currentTab` in state:
+Shopperino is a D&D 3.5 toolset SPA (React 18 + Redux Toolkit). It has nine tabs, selectable via `currentTab` in state:
 
 | Tab | ID | Description |
 |-----|----|-------------|
@@ -28,8 +28,10 @@ Shopperino is a D&D 3.5 toolset SPA (React 18 + Redux Toolkit). It has seven tab
 | Search | 4 | Browse spells, items, feats, skills |
 | Player Sheet | 5 | D&D 3.5 character sheet |
 | Monsters | 6 | Bestiary browser + one tracked monster sheet (Master mode only) |
+| Traps | 7 | Trap generator and the book's catalogue (Master mode only) |
+| Rules | 8 | The rule notes, searchable and readable in the app |
 
-**Master/Player mode** (`isMasterMode`) hides the Shop, Loot and Monsters tabs when in Player mode.
+**Master/Player mode** (`isMasterMode`) hides the Shop, Loot, Monsters and Traps tabs when in Player mode.
 
 Tabs are declared in two places that must stay in step: `tabPages` in [src/App.jsx](src/App.jsx) and the `TABS` list in [src/components/menus/top_menu.jsx](src/components/menus/top_menu.jsx). The Home page's own tile grid (`TILES` in [src/components/main_page/main_page.jsx](src/components/main_page/main_page.jsx)) is a third, separate list.
 
@@ -98,6 +100,13 @@ Rule mechanics live in [obsidian-vault/dnd-rules/](obsidian-vault/dnd-rules/) as
 Before writing or modifying code that touches a D&D rule, **read [obsidian-vault/dnd-rules/INDEX.md](obsidian-vault/dnd-rules/INDEX.md) first** to find the relevant topic file, then read that file. INDEX.md maps topics to files and to the related `src/data/*.json` sources. The rule notes carry the mechanics; the JSON carries the values — don't confuse the two and don't rederive a rule from memory if a topic file exists for it.
 
 The notes are built by the `dnd-rules-extract` skill. Their auto-generated section in INDEX.md is refreshed by a PostToolUse hook on every write into the rules folder.
+
+**The notes are also rendered in the app, on the Rules tab.**
+[scripts/build-rules.mjs](scripts/build-rules.mjs) turns both note trees into [src/data/rules.json](src/data/rules.json) (English) and `src/data/it/rules.json` (the Italian pack, keyed by the same JSON paths), converting the markdown to HTML on the Node side so no markdown parser enters the bundle. The same PostToolUse hook runs it.
+
+- **Never edit either file by hand.** They are the only generated files in `src/data/`, and the next write into the notes folder overwrites both. Fix the markdown in `obsidian-vault/dnd-rules/` — or, for the Italian, in `obsidian-vault/dnd-rules-it/` — and let the generator run.
+- **The Italian is checked against the English it was written for.** Each section carries a hash of its English source; when the English moves, the generator refuses to emit and names the section. Re-translate it, then `npm run rules:accept`. It fails rather than falling back to English on purpose — a silent revert to English is invisible.
+- `npm run rules` builds by hand; `npm run rules:accept` also records the English as the version the Italian now matches.
 
 ### Translation: every string a person reads is wrapped
 

@@ -80,7 +80,7 @@ Da usare quando si sfonda o si forza qualcosa piuttosto che attaccarlo con un'ar
 | Spezzare una catena (ordinaria) | 26 |
 | Piegare una sbarra di ferro | 24 |
 | Spezzare delle manette | 26 |
-| Sfondare una porta di ferro (spessa 5 cm) | 28 |
+| Sfondare una porta di ferro robusta | 28 |
 | Spezzare le corde che legano un prigioniero | 23 |
 | Modificatore per porta chiusa a chiave | +5 |
 | Modificatore per serratura arcana | +10 (se entrambi, usa solo il più alto) |

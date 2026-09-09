@@ -147,7 +147,7 @@ Le statistiche per armatura (costo, bonus alla CA, Des massima, penalità di arm
 
 - Ogni armatura limita il bonus di Destrezza alla CA di chi la indossa al valore indicato.
 - Il limite riguarda anche il **contributo della Destrezza** a qualsiasi altra caratteristica che usi il modificatore di Destrezza legato alla CA (es. i tiri salvezza sui Riflessi **non** sono limitati — solo la CA).
-- L'*elusione dei pericoli* di un ladro: anche se la Destrezza massima è 0, il ladro tratta comunque normalmente i bersagli a cui è negato il bonus di Destrezza ai fini dell'attacco furtivo.
+- Lo *schivare prodigioso* di un ladro: anche se la Destrezza massima è 0, il ladro tratta comunque normalmente i bersagli a cui è negato il bonus di Destrezza ai fini dell'attacco furtivo.
 - L'ingombro (carico) impone il proprio limite alla Destrezza massima — applicare entrambi (usare il *più basso*).
 
 ### Penalità di armatura

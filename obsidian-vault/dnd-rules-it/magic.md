@@ -219,7 +219,7 @@ Ogni voce di incantesimo in [src/data/spells.json](../../src/data/spells.json) �
 - **S** somatica — richiede almeno una mano libera. Non si può lanciare mentre si lotta/si è immobilizzati/con entrambe le mani occupate.
 - **M** materiale — sostanza fisica consumata nel lancio; tracciata solo se il costo non è trascurabile. La normale borsa dei componenti copre tutte le componenti M senza costo indicato.
 - **F** focus — oggetto non consumato richiesto durante il lancio. La normale borsa copre i focus senza costo indicato.
-- **FD** focus divino — un simbolo sacro (chierici buoni) o un simbolo empio (chierici malvagi) o uno specifico oggetto naturale (druidi: vischio/agrifoglio).
+- **FD** focus divino — un simbolo sacro (chierici buoni) o un simbolo sacrilego (chierici malvagi) o uno specifico oggetto naturale (druidi: vischio/agrifoglio).
 - **PE** — i PE devono essere spesi al lancio; non possono scendere sotto i PE richiesti per il livello attuale.
 - **Contrassegni suffisso** nelle voci della lista incantesimi:
   - `m` dopo il nome dell'incantesimo = componente materiale costosa (non nella borsa — deve essere tracciata).
@@ -411,7 +411,7 @@ Solo qualità fisiche:
 - **Modalità di movimento comuni** — scavare, arrampicarsi, camminare, nuotare, volare con ali. Limitato a **120 piedi volando / 60 piedi non volando**.
 - **Bonus razziali alle abilità** e **talenti bonus razziali** della forma.
 - Qualità fisiche grossolane (ali, numero di arti).
-- **Tutti gli attacchi speciali straordinari** della forma (solo *metamorfosi*).
+- **Tutti gli *attacchi* speciali straordinari** della forma (solo *metamorfosi*).
 
 ### Cosa si mantiene
 
@@ -423,7 +423,7 @@ Solo qualità fisiche:
 
 ### Cosa NON si ottiene
 
-- Le **qualità** straordinarie speciali della forma: scurovisione, scorgere nel buio, percezione cieca, vista cieca, guarigione accelerata, rigenerazione, **fiuto**, e così via. Questa è la clausola più comunemente applicata male — una forma di lupo concede il morso, non il fiuto.
+- Le **qualità** straordinarie speciali della forma: scurovisione, visione crepuscolare, percezione cieca, vista cieca, guarigione accelerata, rigenerazione, **fiuto**, e così via. Questa è la clausola più comunemente applicata male — una forma di lupo concede il morso, non il fiuto.
 - Qualsiasi capacità **soprannaturale o magica** della nuova forma.
 - I Dadi Vita della forma, il BAB, i gradi abilità o i talenti (non razziali).
 

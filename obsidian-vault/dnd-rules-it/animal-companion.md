@@ -47,7 +47,7 @@ Parti dalle **statistiche base per una creatura della specie del compagno** (da 
   - **Tiri salvezza** — tratta il compagno come un personaggio il cui livello è pari ai suoi **DV totali**, con tiri salvezza **buoni su Tempra e Riflessi**. (Il tiro salvezza su Volontà non è migliorato da questa regola; resta quello dell'animale base.)
   - I DV bonus concedono inoltre **punti abilità e talenti aggiuntivi**, come di norma per l'avanzamento dei Dadi Vita di un mostro.
 - **Mod. armatura naturale** — un **miglioramento** (aggiunto sopra) al bonus di armatura naturale già esistente della creatura.
-- **Mod. For/Des** — aggiungi questo valore sia alla Forza sia alla Destrezza del compagno.
+- **Mod. For/Des** — aggiungi questo valore **sia alla Forza sia alla Destrezza** del compagno.
 - **Comandi bonus** — il numero totale di comandi "bonus" che l'animale conosce **in aggiunta** a quelli che il druido gli insegna tramite Addestrare Animali. I comandi bonus non richiedono **né tempo di addestramento né prove di Addestrare Animali** e **non contano** ai fini del normale limite di comandi dell'animale. Il druido li seleziona e, **una volta selezionati, non possono essere cambiati**.
 
 ---

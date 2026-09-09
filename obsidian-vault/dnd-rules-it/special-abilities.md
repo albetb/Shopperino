@@ -4,7 +4,7 @@
 
 ## Scopo della categorizzazione
 
-Gli incantesimi seguono regole ben definite (componenti, tempo di lancio, attacchi di opportunità, RI, ecc.). Molti poteri di creature e di classe non sono incantesimi ma producono effetti magici o straordinari. Le quattro categorie indicano al Master e ai giocatori come ciascuna capacità interagisce con le regole legate alla magia: controincantesimi, antimagia, attacchi di opportunità, RI.
+Gli incantesimi seguono regole ben definite (componenti, tempo di lancio, attacchi di opportunità, RI, ecc.). Molti poteri di creature e di classe **non** sono incantesimi ma producono effetti magici o straordinari. Le quattro categorie indicano al Master e ai giocatori come ciascuna capacità interagisce con le regole legate alla magia: controincantesimi, antimagia, attacchi di opportunità, RI.
 
 ## Capacità magiche (Mag)
 
@@ -44,7 +44,7 @@ Gli incantesimi seguono regole ben definite (componenti, tempo di lancio, attacc
 - **Non soggette a RI**.
 - **Non possono essere controincantate** né dissolte.
 - **Funzionano normalmente in un campo di antimagia** — non sono magiche.
-- Esempi: Schivare del ladro; Ira del barbaro; Raffica di Colpi del monaco; schivare prodigioso; la maggior parte dei talenti di combattimento del guerriero; stile di combattimento del ranger. (Nota: la rigenerazione del troll è **Sop**, non Str.)
+- Esempi: Eludere del ladro; Ira del barbaro; Raffica di Colpi del monaco; schivare prodigioso; la maggior parte dei talenti di combattimento del guerriero; stile di combattimento del ranger. (Nota: la rigenerazione del troll è **Sop**, non Str.)
 
 ## Capacità naturali
 
@@ -68,7 +68,7 @@ Gli incantesimi seguono regole ben definite (componenti, tempo di lancio, attacc
 ## Considerazioni sull'uso
 
 - Una creatura che possiede sia capacità magiche sia soprannaturali affronta l'antimagia con attenzione: anche le capacità soprannaturali si spengono, ma la creatura non perde la CA né gli attacchi naturali (Str/Naturale).
-- La progressione di completezza del corpo / passo abbondante / corpo vuoto di un monaco rientra tra le capacità soprannaturali; le sue capacità di combattimento di base (Raffica, bonus alla CA, Caduta lenta) sono straordinarie.
+- La progressione di Integrità del corpo / passo abbondante / corpo vuoto di un monaco rientra tra le capacità soprannaturali; le sue capacità di combattimento di base (Raffica, bonus alla CA, Caduta lenta) sono straordinarie.
 - L'imposizione delle mani di un paladino è soprannaturale (nessuna componente); scacciare non morti è soprannaturale; punire il male è soprannaturale (funziona in antimagia? **No** — le capacità soprannaturali si spengono in antimagia).
 - Un chierico che tenta di scacciare i non morti in antimagia: **fallisce** (soprannaturale).
 - Un barbaro in ira in antimagia: funziona (straordinaria).

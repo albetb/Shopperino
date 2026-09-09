@@ -6,7 +6,7 @@
 
 | Livello | Effetti in combattimento | Note |
 |-------|---|---|
-| Piena luce (luce del sole, incantesimo *luce del giorno*) | Visibilità normale | Alcune creature (es. i drow) sono abbagliate. |
+| Piena luce (luce del sole, incantesimo luce del giorno) | Visibilità normale | Alcune creature (es. i drow) sono abbagliate. |
 | Normale (lanterna, stanza illuminata) | Visibilità normale per chi può vedere | Predefinito per le aree interne illuminate. |
 | Penombra / luce fioca (torcia lontana, crepuscolo) | Tutte le creature ottengono **occultamento** (20% di probabilità di mancare per chi attacca); prove di Nascondersi possibili senza copertura | La visione crepuscolare vede come se fosse luce normale. |
 | Oscurità (nessuna fonte di luce, notte senza luna) | Le creature senza scurovisione sono **accecate**: 50% di probabilità di mancare, perdono la Destrezza alla CA, −2 CA, velocità dimezzata, −4 a Cercare e alle prove di abilità basate su Forza/Destrezza | La scurovisione vede normalmente entro il raggio; non ci si può nascondere da essa. |
@@ -46,9 +46,9 @@ I raggi di piena luce / penombra seguono la specifica di ciascun oggetto. Genera
 - Una tipica **torcia**: piena luce 6 m (4 quadretti), penombra 12 m (8 quadretti); durata ~1 ora.
 - Una tipica **lanterna**: piena luce 9 m, penombra 18 m; durata in base all'olio (~6 ore per pinta).
 - **Verga solare**: piena luce 9 m, penombra 18 m; durata 6 ore; non può essere spenta prima del tempo.
-- Incantesimo *luce*: equivalente di piena luce su un oggetto toccato (per descrizione dell'incantesimo).
-- Incantesimo *luce del giorno*: piena luce solare in un raggio di 18 m (conta come piena luce; può abbagliare i drow).
-- *Fiamma perenne* / *luce perenne*: equivalente di una torcia permanente (senza combustibile).
+- Incantesimo **luce**: equivalente di piena luce su un oggetto toccato (per descrizione dell'incantesimo).
+- Incantesimo **luce del giorno**: piena luce solare in un raggio di 18 m (conta come piena luce; può abbagliare i drow).
+- **Fiamma perenne** / *luce perenne*: equivalente di una torcia permanente (senza combustibile).
 
 ## Occultamento da fonti non luminose
 

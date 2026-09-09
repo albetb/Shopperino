@@ -259,7 +259,7 @@ Ogni sezione elenca solo ciò che il JSON non cattura: le *azioni* che un'abilit
   - 25 = memorabile (1d6 mo/giorno; reputazione regionale);
   - 30 = straordinario (3d6 mo/giorno; reputazione nazionale; attenzione planare).
 - Strumento perfetto: +2 di circostanza.
-- Vincoli della **musica bardica**: es. 3 gradi per *affascinare*, 6 per *ispirare competenza*, 9 per *suggestione*, 12 per *ispirare grandezza*, 15 per *canto di libertà*, 18 per *ispirare eroismo*, 21 per *suggestione di massa*. (Privilegio di classe del bardo; vedi [class-features.md](class-features.md).)
+- Vincoli della **musica bardica**: es. 3 gradi per *ispirare coraggio*, 6 per *ispirare competenza*, 9 per *suggestione*, 12 per *ispirare grandezza*, 15 per *canto di libertà*, 18 per *ispirare eroismo*, 21 per *suggestione di massa*. (Privilegio di classe del bardo; vedi [class-features.md](class-features.md).)
 - **Azione**: tipicamente il lavoro di una serata (o di un giorno).
 - **Ritentare**: sì, ma gli spettacoli falliti danneggiano le CD future (+2 per fallimento).
 

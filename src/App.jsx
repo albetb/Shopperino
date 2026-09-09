@@ -15,6 +15,7 @@ import SearchPage from './components/search/search_page';
 import PlayerSheetPage from './components/player_sheet/player_sheet_page';
 import MonsterBookPage from './components/monster_book/monster_book_page';
 import TrapPage from './components/trap/trap_page';
+import RulesPage from './components/rules/rules_page';
 import * as db from './lib/storage';
 import { preloadCreatureData } from './lib/loadFile';
 import useCreatureData from './components/hooks/useCreatureData';
@@ -259,6 +260,15 @@ export default function App() {
     </header>
   </>;
 
+  /* No sidebar: the search box and the topic index are the controls, and they
+     belong above the thing they filter rather than in a drawer beside it. The
+     Search and Monsters tabs make the same call for the same reason. */
+  const rules = <>
+    <header className="app-header">
+      <RulesPage />
+    </header>
+  </>;
+
   const playerSheet = <>
     <PlayerSheetSidebar />
     <header className="app-header">
@@ -276,6 +286,7 @@ export default function App() {
     5: playerSheet,
     6: monsterBook,
     7: traps,
+    8: rules,
   };
 
   const currentTabContent = tabPages[currentTab] ??

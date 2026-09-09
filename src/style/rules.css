@@ -1,0 +1,259 @@
+/* --- RULES REFERENCE ------------------------------------------------
+   The topic index, the search results, and a note rendered whole. All sizing
+   in rem per the CSS convention in CLAUDE.md.
+
+   The prose is generated HTML from the markdown notes, so everything under
+   .rules-prose is styled by element rather than by class — there are no hooks
+   to add without changing the generator, and the note should read like the
+   rest of the app rather than like a text file. */
+
+.rules-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  width: min(52rem, 94%);
+  margin: 0 auto;
+  padding: var(--space-4) 0 var(--space-12);
+  box-sizing: border-box;
+}
+
+.rules-skeleton {
+  height: 18rem;
+  border-radius: var(--radius-md);
+}
+
+/* --- the search box ------------------------------------------------- */
+
+.rules-search {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: var(--surface-1);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-md);
+}
+
+.rules-search .material-symbols-outlined { color: var(--ink-muted); }
+
+.rules-search input {
+  flex: 1;
+  min-width: 0;          /* an input will not shrink inside flex without this */
+  border: none;
+  background: none;
+}
+
+.rules-clear {
+  border: none;
+  background: none;
+  color: var(--ink-muted);
+  font: inherit;
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+}
+
+.rules-lede {
+  margin: 0;
+  color: var(--ink-muted);
+  font-size: var(--font-size-sm);
+}
+
+/* --- the topic index ------------------------------------------------ */
+
+.rules-index {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rules-topic {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  width: 100%;
+  height: 100%;
+  padding: var(--space-3);
+  text-align: left;
+  background: var(--surface-1);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-md);
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.rules-topic:hover { border-color: var(--accent-ring); }
+
+.rules-topic-title {
+  font-family: var(--font-display);
+  font-size: var(--font-size-lg);
+}
+
+.rules-topic-blurb {
+  color: var(--ink-muted);
+  font-size: var(--font-size-xs);
+  line-height: 1.4;
+}
+
+/* --- search results -------------------------------------------------- */
+
+.rules-hits {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rules-hit {
+  padding: var(--space-3);
+  background: var(--surface-1);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-md);
+}
+
+.rules-hit-head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  width: 100%;
+  padding: 0 0 var(--space-2);
+  text-align: left;
+  background: none;
+  border: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.rules-hit-topic {
+  color: var(--ink-muted);
+  font-size: var(--font-size-2xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.rules-hit-heading {
+  font-family: var(--font-display);
+  font-size: var(--font-size-lg);
+}
+
+/* --- one note -------------------------------------------------------- */
+
+.rules-back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  align-self: flex-start;
+  padding: 0;
+  background: none;
+  border: none;
+  color: var(--ink-muted);
+  font: inherit;
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+}
+
+.rules-title { margin: 0; font-size: var(--font-size-3xl); }
+
+.rules-blurb {
+  margin: 0 0 var(--space-3);
+  color: var(--ink-muted);
+  font-size: var(--font-size-sm);
+}
+
+.rules-section { scroll-margin-top: var(--space-8); }
+
+/* The section a search hit named. A left rule rather than a background so it
+   marks the place without recolouring a whole screen of text. */
+.rules-section.is-target {
+  padding-left: var(--space-3);
+  border-left: 0.1875rem solid var(--accent);
+}
+
+.rules-h2 {
+  margin: var(--space-5) 0 var(--space-2);
+  font-family: var(--font-display);
+  font-size: var(--font-size-xl);
+}
+
+.rules-h3 {
+  margin: var(--space-4) 0 var(--space-2);
+  font-size: var(--font-size-lg);
+}
+
+/* --- the generated prose --------------------------------------------- */
+
+.rules-prose { font-size: var(--font-size-sm); line-height: 1.6; }
+.rules-prose > :first-child { margin-top: 0; }
+.rules-prose > :last-child { margin-bottom: 0; }
+.rules-prose p { margin: 0 0 var(--space-2); }
+.rules-prose ul,
+.rules-prose ol { margin: 0 0 var(--space-2); padding-left: var(--space-4); }
+.rules-prose li { margin-bottom: var(--space-1); }
+.rules-prose li > ul,
+.rules-prose li > ol { margin-top: var(--space-1); }
+
+.rules-prose code {
+  padding: 0.0625rem 0.25rem;
+  background: var(--surface-2);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+}
+
+.rules-prose blockquote {
+  margin: 0 0 var(--space-2);
+  padding-left: var(--space-3);
+  border-left: 0.125rem solid var(--border-soft);
+  color: var(--ink-muted);
+}
+
+/* A table is the largest feature in these notes after bullets — the CR bands,
+   the save progressions, the DC scales — and several are wider than a phone.
+   The wrapper scrolls rather than the page. */
+.rules-prose table {
+  display: block;
+  width: 100%;
+  margin: 0 0 var(--space-2);
+  overflow-x: auto;
+  border-collapse: collapse;
+  font-size: var(--font-size-xs);
+}
+
+.rules-prose th,
+.rules-prose td {
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--border-soft);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.rules-prose th { background: var(--surface-2); }
+
+/* A link into another note, or onto the Search tab. Rendered as a button so it
+   navigates in the app rather than following an href to a file that is not
+   served — see the note in rules_page.jsx. */
+.rules-link {
+  padding: 0;
+  background: none;
+  border: none;
+  color: var(--accent);
+  font: inherit;
+  text-align: left;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* A link the app cannot follow — a data file with no view, a path into the
+   source tree. It keeps the note's own emphasis and loses the underline, so it
+   reads as the file name it is rather than as something to press. */
+.rules-deadlink {
+  color: var(--ink-muted);
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+}

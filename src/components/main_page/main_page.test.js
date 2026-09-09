@@ -9,6 +9,7 @@ import { setLanguage } from '../../lib/i18n';
    itself — so this test covers every value TILES can hand it. */
 
 const TITLES_IT = {
+  'Rules reference': 'Manuale delle regole',
   Search: 'Cerca',
   'Shop generator': 'Generatore di negozi',
   'Loot generator': 'Generatore di bottino',

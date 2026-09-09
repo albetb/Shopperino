@@ -132,7 +132,7 @@ Stessa andatura, unità diverse:
 ### Viaggio via terra (fuoripista)
 
 - **Camminare**: 8 ore al giorno = km/h base × 8.
-- **Andare veloce su strada**: equivalente a 16 ore di distanza al giorno (×2 la distanza a piedi) ma attiva il costo di danno non letale orario oltre la prima ora.
+- **Andare veloce su strada**: equivalente a 16 ore di distanza al giorno (×2 la distanza a piedi) ma attiva il costo di danno non letale orario oltre l'ora 1.
 - Non si può **correre** per blocchi di tempo su scala via terra (solo per ~1 minuto).
 
 ### Moltiplicatori di terreno e strada
@@ -169,7 +169,7 @@ Le velocità via terra orarie e giornaliere per le cavalcature/veicoli comuni so
 - Una cavalcatura con carico pesante usa la riga più lenta (un cavallo da guerra con un cavaliere che pesa più del carico indicato).
 - Le cavalcature quadrupedi usano i moltiplicatori per quadrupedi per la capacità di trasporto (vedi [equipment.md](equipment.md)).
 - La **marcia forzata di una cavalcatura** usa la stessa regola della prova di Costituzione della marcia forzata umanoide.
-- **Viaggio per mare**: le barche a remi possono percorrere ~10 ore al giorno; le barche a vela possono viaggiare 24 ore su 24 se più equipaggi si alternano.
+- **Viaggio per mare**: le barche a remi possono percorrere ~10 ore al giorno; le barche a vela possono viaggiare 24 ore al giorno se più equipaggi si alternano.
 
 ### Movimento ostacolato (moltiplicativo)
 

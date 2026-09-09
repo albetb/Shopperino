@@ -44,7 +44,7 @@ Dipende dallo stile di lancio:
 
 - Non tutti i talenti di metamagia funzionano su tutti gli incantesimi. Le restrizioni per singolo talento sono nel JSON (es. Incantesimi Potenziati funziona solo su incantesimi con effetti numerici variabili).
 - Un incantesimo **senza componente verbale** non è idoneo per Incantesimi Silenziosi; uno senza componente somatica non è idoneo per Incantesimi Immobili.
-- Incantesimi Rapidi non si cumula con sé stesso; può essere lanciato un solo incantesimo accelerato per round, anche se ne fossero disponibili più di uno.
+- Incantesimi Rapidi **non** si cumula con sé stesso; può essere lanciato un solo incantesimo accelerato per round, anche se ne fossero disponibili più di uno.
 
 ## Interazione con gli attacchi di opportunità
 

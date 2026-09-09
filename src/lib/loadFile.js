@@ -10,7 +10,8 @@ import deitiesData from '../data/deities.json';
 import companionAbilitiesData from '../data/companionAbilities.json';
 import familiarAbilitiesData from '../data/familiarAbilities.json';
 import trapsData from '../data/traps.json';
-import { applyProse } from './i18n/prose';
+import { applyProse, preloadProseFile } from './i18n/prose';
+import { getLanguage } from './i18n';
 
 /*
  * The three creature files are deliberately NOT imported here.
@@ -66,6 +67,75 @@ export function preloadCreatureData() {
   return creaturesPromise;
 }
 
+/*
+ * The rule notes are the same story a second time, one tab further away.
+ *
+ * `rules.json` is generated from obsidian-vault/dnd-rules/ by
+ * scripts/build-rules.mjs — 33 topics, 498 sections, 123 kB gzipped — and it
+ * is reached only by an explicit click on the rules tab. So it loads on the
+ * creature pattern: one chunk, a synchronous accessor that answers with the
+ * empty shape until it lands, and subscribers that redraw when it does.
+ *
+ * The Italian pack rides along in the same call but a *different* chunk, so an
+ * English reader fetches only the English and an Italian reader pays for both
+ * exactly once, when they open the tab.
+ */
+const EMPTY_RULES = { topics: [] };
+let rulesData = null;
+let rulesPromise = null;
+
+/** Fetch the rules chunk, and the current language's pack for it. */
+export function preloadRules() {
+  if (rulesPromise) return rulesPromise;
+  rulesPromise = Promise.all([
+    import(/* webpackChunkName: "rules" */ '../data/rules.json'),
+    preloadProseFile(getLanguage(), 'rules'),
+  ])
+    .then(([mod]) => {
+      rulesData = mod.default ?? mod;
+      listeners.forEach((fn) => fn());
+      return rulesData;
+    })
+    .catch((error) => {
+      rulesPromise = null;
+      throw error;
+    });
+  return rulesPromise;
+}
+
+/** Whether the rules chunk has arrived. */
+export function isRulesDataReady() {
+  return rulesData !== null;
+}
+
+/**
+ * The rule notes in English, whatever the reading language is.
+ *
+ * The rules search matches an Italian reader's query against both languages,
+ * because half the terms of art in 3.5 are remembered in English by anyone who
+ * has read the SRD. `loadFile('rules')` answers in the reading language, so
+ * the English original needs its own way out — and it is already in memory,
+ * since the pack is laid over a copy rather than replacing it.
+ *
+ * This is the only accessor that returns untranslated text on purpose. Nothing
+ * should render from it.
+ */
+export function rulesEnglish() {
+  return rulesData ?? EMPTY_RULES;
+}
+
+/**
+ * Notified when the rules chunk lands.
+ *
+ * The same listener set as the creatures, so a subscriber to either is woken
+ * by both. That costs a re-render nothing was waiting for, once, and is worth
+ * more than two sets that can drift apart.
+ */
+export const subscribeRulesData = (listener) => {
+  listeners.add(listener);
+  return () => listeners.delete(listener);
+};
+
 /** Whether the creature chunk has arrived. */
 export function isCreatureDataReady() {
   return creatures !== null;
@@ -88,7 +158,7 @@ function creatureFile(key) {
 
 /**
  * Load a data file by name. Returns the parsed content or null.
- * Supported: 'items' | 'scrolls' | 'tables' | 'spells' | 'feats' | 'skills' | 'skillsynergies' | 'races' | 'classes' | 'animals' | 'monsters' | 'vermin' | 'deities' | 'traps'
+ * Supported: 'items' | 'scrolls' | 'tables' | 'spells' | 'feats' | 'skills' | 'skillsynergies' | 'races' | 'classes' | 'animals' | 'monsters' | 'vermin' | 'deities' | 'traps' | 'rules'
  */
 export function loadFile(fileName) {
   try {
@@ -125,6 +195,13 @@ export function loadFile(fileName) {
         return applyProse('monsters', creatureFile('monsters'));
       case 'vermin':
         return applyProse('vermin', creatureFile('vermin'));
+      case 'rules': {
+        if (!rulesData) {
+          preloadRules().catch(() => {});
+          return EMPTY_RULES;
+        }
+        return applyProse('rules', rulesData);
+      }
       case 'traps':
         return applyProse('traps', trapsData) ?? { traps: [], tables: {} };
       case 'deities':

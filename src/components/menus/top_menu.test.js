@@ -29,6 +29,7 @@ describe('the tab bar in Italian', () => {
     TABS.forEach((tab) => {
       expect(within(nav).getByText(tab.label === 'Player sheet' ? 'Scheda del personaggio' : {
         Home: 'Home',
+        Rules: 'Regole',
         Search: 'Cerca',
         Shop: 'Negozio',
         Loot: 'Bottino',

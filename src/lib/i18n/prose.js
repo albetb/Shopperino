@@ -67,6 +67,30 @@ const FILES = {
   },
 };
 
+/**
+ * Packs that are declared but not fetched with the rest of their language.
+ *
+ * `rules` is 131 kB gzipped on its own — as large as everything above put
+ * together — and nothing outside the rules tab ever reads a word of it. Adding
+ * it to `FILES` would put that on the critical path of every Italian reader
+ * who never opens the tab, which is the mistake the lazy chunk was created to
+ * undo in the first place.
+ *
+ * It is still *declared* here, and `proseFiles` reports it, because
+ * `verify.py` fails on a pack in `src/data/it/` that this module does not
+ * name — a pack nobody imports is a translation nobody can read, and that gate
+ * exists because three finished packs once sat dead on disk. Declaring it
+ * late keeps the gate satisfied and the chunk out of the way.
+ *
+ * `preloadProseFile` fetches one of these; `loadFile.preloadRules` is what
+ * calls it, alongside the English data it translates.
+ */
+const LATE = {
+  it: {
+    rules: () => import(/* webpackChunkName: "prose-it-rules" */ '../../data/it/rules.json'),
+  },
+};
+
 /** Packs that have arrived, by language. A language absent here is not ready. */
 const PROSE = {};
 /* One request per language however many callers ask, and a failure that can be
@@ -113,6 +137,43 @@ export function preloadProse(lang = getLanguage()) {
   return inFlight[lang];
 }
 
+/**
+ * Fetch one late pack and merge it into the language that is already loaded.
+ *
+ * Resolves to nothing at all for a language with no such pack, so a caller
+ * never has to ask whether the current language is translated. Safe to call
+ * repeatedly: the second caller gets the first one's request.
+ */
+export function preloadProseFile(lang, name) {
+  const load = LATE[lang]?.[name];
+  if (!load) return Promise.resolve();
+  if (PROSE[lang]?.[name]) return Promise.resolve();
+
+  const key = `${lang}:${name}`;
+  if (inFlight[key]) return inFlight[key];
+
+  /* The eager packs have to be in place first: this merges into `PROSE[lang]`,
+     and `preloadProse` assigns that object wholesale when it resolves, which
+     would drop a late pack that landed before it. */
+  inFlight[key] = preloadProse(lang)
+    .then(load)
+    .then((mod) => {
+      PROSE[lang][name] = mod.default ?? mod;
+      listeners.forEach((fn) => fn());
+    })
+    .catch((error) => {
+      delete inFlight[key];
+      throw error;
+    });
+  return inFlight[key];
+}
+
+/** Whether a late pack is in place — or was never needed in this language. */
+export function isProseFileReady(name, lang = getLanguage()) {
+  if (!LATE[lang]?.[name]) return true;
+  return Boolean(PROSE[lang]?.[name]);
+}
+
 /** Notified when a prose chunk lands. Returns its own unsubscribe. */
 export function subscribeProse(listener) {
   listeners.add(listener);
@@ -156,7 +217,11 @@ export function applyProse(name, data, lang = getLanguage()) {
     /* A synchronous read this early means nobody started the chunk yet — start
        it, so the caller's next render has something to show. Same shape as
        `creatureFile` in loadFile.js. */
-    if (!pack && isTranslated(lang)) preloadProse(lang).catch(() => {});
+    if (!pack && LATE[lang]?.[name]) {
+      preloadProseFile(lang, name).catch(() => {});
+    } else if (!pack && isTranslated(lang)) {
+      preloadProse(lang).catch(() => {});
+    }
     return data;
   }
 
@@ -174,7 +239,7 @@ export function applyProse(name, data, lang = getLanguage()) {
     Read from the declaration, not from what has arrived, so it answers the
     same before and after the chunk lands. */
 export function proseFiles(lang) {
-  return Object.keys(FILES[lang] ?? {});
+  return [...Object.keys(FILES[lang] ?? {}), ...Object.keys(LATE[lang] ?? {})];
 }
 
 /** One pack, for tests and tooling. */

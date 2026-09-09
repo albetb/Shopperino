@@ -18,7 +18,7 @@ I sottosistemi condivisi (famiglio, compagno animale, cavalcatura speciale, scac
   - Si può entrare in ira una sola volta per scontro. Non si può entrare in ira come reazione all'azione di un altro (nessuna ira preparata/interrompente).
 - **Ira superiore (Str)** (al livello indicato in JSON) — i bonus diventano +6/+6/+3.
 - **Ira possente** — +8/+8/+4.
-- **Ira instancabile** — nessun affaticamento post-ira.
+- **Ira infaticabile** — nessun affaticamento post-ira.
 - **Schivare prodigioso (Str)** — mantiene il bonus di Destrezza alla CA contro attaccanti invisibili e contro l'essere colto alla sprovvista. Ancora perso se immobilizzato.
 - **Schivare prodigioso migliorato** — non può essere attaccato ai fianchi, tranne che da un ladro il cui livello di classe superi di ≥4 quello del barbaro che concede lo schivare prodigioso.
 - **Percepire trappole (Str)** — `+X` ai tiri salvezza sui Riflessi contro le trappole e `+X` di schivare alla CA contro gli attacchi delle trappole. Si cumula tra le classi che concedono percepire trappole (barbaro + ladro).
@@ -40,7 +40,7 @@ I sottosistemi condivisi (famiglio, compagno animale, cavalcatura speciale, scac
   - **Ispirare eroismo (Sop)** (18 gradi; L15+) — 1 alleato + 1 ogni 3 livelli oltre il 15° ottiene +4 morale ai tiri salvezza, +4 di schivare alla CA.
   - **Suggestione di massa (Mag)** (21 gradi; L18+) — *suggestione* applicata a un numero qualsiasi di bersagli affascinati simultaneamente.
 - **Lanciare incantesimi** — arcani, **basati su Carisma**, **spontanei** (conosce una lista fissa; vedi [magic.md](magic.md) per il sistema preparati-contro-spontanei). Livello massimo di incantesimo 6.
-- **Armatura e lancio arcano** — un bardo in armatura leggera non subisce alcuna percentuale di fallimento delle formule arcane per gli incantesimi da bardo. Armatura media/pesante o qualsiasi scudo → percentuale di fallimento normale.
+- **Armatura e lancio arcano** — un bardo in armatura leggera non subisce **alcuna percentuale di fallimento delle formule arcane** per gli incantesimi da bardo. Armatura media/pesante o qualsiasi scudo → percentuale di fallimento normale.
 
 ## Chierico
 
@@ -60,9 +60,9 @@ I sottosistemi condivisi (famiglio, compagno animale, cavalcatura speciale, scac
 - **Compagno animale (Str)** — vedi il sottosistema *Compagno animale* sotto.
 - **Senso della natura (Str)** — `+2` alle prove di Conoscenze (natura) e Sopravvivenza.
 - **Empatia selvatica (Str)** — `d20 + livello da druido + modificatore di Carisma` per migliorare l'atteggiamento di un animale, come una prova di Diplomazia. Raggio 9 m, 1 minuto. Utilizzabile anche su bestie magiche con Intelligenza 1–2 a `−4`.
-- **Passo silvano (Str)** — si muove attraverso il terreno difficile naturale (rovi, sottobosco) a velocità normale, senza danno. Gli effetti magici (es. *groviglio*) si applicano comunque.
+- **Andatura nel bosco (Str)** — si muove attraverso il terreno difficile naturale (rovi, sottobosco) a velocità normale, senza danno. Gli effetti magici (es. *groviglio*) si applicano comunque.
 - **Passo senza tracce (Str)** — non lascia traccia in terreno naturale a meno che non lo desideri.
-- **Resistere al fascino della natura (Str)** — `+4` ai tiri salvezza contro incantesimi e capacità magiche dei folletti.
+- **Resistenza al richiamo della natura (Str)** — `+4` ai tiri salvezza contro incantesimi e capacità magiche dei folletti.
 - **Forma selvatica (Sop)** — vedi il sottosistema *Forma selvatica* sotto.
 - **Immunità al veleno (Str)** — immune a tutti i veleni (naturali e magici).
 - **Mille volti (Sop)** — *alterare se stesso* a volontà, ma solo nella propria forma. Cosmetico, non da combattimento.
@@ -137,8 +137,8 @@ I sottosistemi condivisi (famiglio, compagno animale, cavalcatura speciale, scac
 - **Resistenza** — talento bonus al L3.
 - **Compagno animale (Str)** — vedi sottosistema. Il ranger usa le meccaniche del druido ma a **metà livello da ranger** (quindi idoneo per la prima volta al L4 da ranger → compagno effettivo da druido L2).
 - **Lanciare incantesimi** — divini, **basati su Saggezza**, preparati. Inizia al L4. Livello dell'incantatore = `½ livello da ranger`. Saggezza minima 11.
-- **Passo silvano** — come quello del druido, ottenuto più tardi.
-- **Inseguitore rapido (Str)** — velocità piena normale mentre segue tracce (`−10` alla prova di Sopravvivenza invece del normale `−20` a velocità piena; velocità doppia a `−20` invece del normale `−40`).
+- **Andatura nel bosco** — come quello del druido, ottenuto più tardi.
+- **Rapido segugio (Str)** — velocità piena normale mentre segue tracce (`−10` alla prova di Sopravvivenza invece del normale `−20` a velocità piena; velocità doppia a `−20` invece del normale `−40`).
 - **Eludere (Str)** — come quello del monaco; solo con armatura leggera o nessuna.
 - **Padronanza dello stile di combattimento (Str)** — talento bonus aggiuntivo nello stile scelto, prerequisiti ignorati, efficace solo con armatura leggera/nessuna.
 - **Mimetismo (Str)** — può usare Nascondersi in qualsiasi terreno naturale anche quando non offre copertura/occultamento.
@@ -156,7 +156,7 @@ I sottosistemi condivisi (famiglio, compagno animale, cavalcatura speciale, scac
     - L'**occultamento** di qualsiasi grado nega l'attacco furtivo.
     - Si può scegliere il danno non letale dall'attacco furtivo **senza penalità** usando un manganello; con un'arma letale, si applica la normale `−4` per il danno non letale.
     - Non si può eseguire un attacco furtivo su un bersaglio le cui parti vitali sono fuori portata.
-- **Scoprire trappole (Str)** — può usare **Cercare** per trovare trappole con CD > 20 (gli altri non possono). Può usare Disattivare Congegni per disarmare trappole magiche (CD = `25 + livello dell'incantesimo`).
+- **Scoprire trappole (Str)** — può usare **Cercare** per trovare trappole con CD > 20 (gli altri non possono). Può usare **Disattivare Congegni** per disarmare trappole magiche (CD = `25 + livello dell'incantesimo`).
 - **Eludere (Str)** — vedi quello del monaco, stessa regola.
 - **Percepire trappole (Str)** — `+1` ai Riflessi contro le trappole e `+1` di schivare alla CA contro gli attacchi delle trappole, in scala. Si cumula tra le classi con percepire trappole.
 - **Schivare prodigioso (Str)** — come quello del barbaro.
@@ -232,7 +232,7 @@ I sottosistemi condivisi (famiglio, compagno animale, cavalcatura speciale, scac
 - Il druido deve aver visto personalmente quel tipo di animale.
 - **Meccaniche del cambiamento** — usa le sotto-regole di *metamorfosi*:
   - **Forza/Destrezza/Costituzione diventano quelle della forma**; Intelligenza/Saggezza/Carisma restano quelle del druido. Classe, livello, **punti ferita**, BAB e tiri salvezza base sono tutti mantenuti — cambiano solo i modificatori di caratteristica sovrapposti ad essi.
-  - Ottiene gli attacchi naturali, l'armatura naturale, la taglia e le modalità di movimento della forma — ma **non** le sue *qualità* straordinarie speciali (fiuto, scorgere nel buio) né alcuna capacità Sop/Mag. Dettagli completi in [magic.md](magic.md) → Sotto-regole di metamorfosi.
+  - Ottiene gli attacchi naturali, l'armatura naturale, la taglia e le modalità di movimento della forma — ma **non** le sue *qualità* straordinarie speciali (fiuto, visione crepuscolare) né alcuna capacità Sop/Mag. Dettagli completi in [magic.md](magic.md) → Sotto-regole di metamorfosi.
   - **Ogni uso ripristina i pf come se si fosse riposato per una notte** (`1 pf per livello di personaggio`). Tornare alla forma normale non cura nulla.
   - Non può lanciare incantesimi: il druido perde la parola in forma animale, quindi le componenti verbali falliscono. Il talento **Incantesimi Naturali** rimuove questa restrizione. Le capacità soprannaturali e magiche di classe restano utilizzabili tranne dove la forma lo impedisce.
   - L'equipaggiamento si fonde nella forma e diventa non funzionante — l'armatura indossata smette di contribuire alla CA, le armi impugnate smettono di essere utilizzabili. Riappare intatto al ritorno alla forma normale.
@@ -250,7 +250,7 @@ I sottosistemi condivisi (famiglio, compagno animale, cavalcatura speciale, scac
 - I **non morti colpiti (scacciati)** fuggono a velocità piena per `10 round`. **Si acquattano** se messi all'angolo. Avvicinarsi entro **3 m (2 quadretti)** di un non morto scacciato, OPPURE attaccarlo in mischia, **interrompe** l'effetto per quella creatura. Gli attacchi a distanza o restare a ≥ 3 m di distanza **non** lo interrompono.
 - **Distruzione** — un chierico il cui livello effettivo di scacciata è **≥ 2× i DV del non morto** lo distrugge invece di scacciarlo.
 - **Chierico malvagio** — **intimorisce** (intimoriti, +2 agli attacchi contro di loro mentre sono intimoriti, dura 10 round) invece di scacciare; può **comandare** invece di distruggere (controllo mentale: azione standard per dare un comando mentale di un'azione; DV totali comandati contemporaneamente ≤ livello da chierico; può rilasciarne alcuni per comandarne altri).
-- Il **chierico neutrale** sceglie scacciare o intimorire al 1° livello, permanente.
+- Il **chierico neutrale** sceglie scacciare *o* intimorire al 1° livello, permanente.
 - Alcune divinità specialistiche invertono questo per i loro chierici (es. i chierici neutrali buoni di Wee Jas intimoriscono; i chierici legali buoni di San Cuthbert intimoriscono; i chierici di Obad-Hai scacciano).
 - **Annullare la scacciata** (chierico malvagio contro la scacciata di uno buono, o viceversa) — effettua una prova di scacciata; se supera il risultato di scacciata originale, i non morti colpiti sono liberati dall'effetto. Il chierico che annulla può quindi intimorire/comandare con `2d6 + livello + Carisma` DV.
 - **Rinforzare i non morti** (chierico malvagio, azione di round completo) — sceglie un non morto bersaglio; il risultato della prova di scacciata si aggiunge ai DV effettivi del bersaglio contro futuri tentativi di scacciata per **10 round**.
