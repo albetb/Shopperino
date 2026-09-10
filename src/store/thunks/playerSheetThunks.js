@@ -9,9 +9,16 @@ import {
   setCharactersList,
   setSelectedCharacterIndex,
   setPlayer,
+  setPlayerSheetMainView,
 } from '../slices/playerSheetSlice';
 import { setPersist } from '../slices/persistSlice';
-import { addCardByLink, buySharedShopItem } from '../slices/appSlice';
+import {
+  addCardByLink,
+  buySharedShopItem,
+  setIncomingGift,
+  clearIncomingGift,
+  setStateCurrentTab,
+} from '../slices/appSlice';
 import { getEffectById } from '../../lib/item/effectsUtils';
 import { getPotionByName, resolvePotionEffect, potionItemType } from '../../lib/item/potionEffects';
 import { resolveScroll } from '../../lib/item/scrolls';
@@ -19,6 +26,10 @@ import AnimalCompanion from '../../lib/player/animalCompanion';
 import Familiar from '../../lib/player/familiar';
 import { getAnimalBaseByRef } from '../../lib/utils';
 import { inventoryArgsFor } from '../../lib/shop/shopPurchase';
+import { inventoryArgsForGift } from '../../lib/share';
+
+/** The player sheet's tab id, from `tabPages` in App.jsx. */
+const PLAYER_SHEET_TAB = 5;
 
 function hydratePlayerSheet(dispatch, app) {
   dispatch(setCharactersList(db.getPlayerSheetCharactersList(app)));
@@ -870,6 +881,67 @@ export const onRemoveInventoryItem = (name, type, number, opts) => (dispatch, ge
   if (!player) return;
   player.removeInventoryItem(name, type, number, opts);
   persistPlayer(dispatch, getState, player);
+};
+
+/**
+ * Hand an item to another player — this end of it.
+ *
+ * The press happens after the other phone has read the code, so nothing here
+ * waits on anything: the item leaves the bag, and the hands holding the last
+ * copy of it let go (`Player.giveInventoryItem`). Nobody's app can tell
+ * whether the other player actually accepted, which is why "Keep" exists on
+ * the panel — the two presses are the two people, not two steps of a protocol.
+ */
+export const onGiveInventoryItem = (gift) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  const args = inventoryArgsForGift(gift);
+  if (!player || !args) return;
+  player.giveInventoryItem(args.name, args.type, args.number, { link: args.link, ...args.opts });
+  persistPlayer(dispatch, getState, player);
+};
+
+/**
+ * A scanned gift, arriving.
+ *
+ * Nothing is added yet: the offer is put in front of a character, and the
+ * character's player decides. Which character is not a question the giver's
+ * code can answer, so it is the one already open, or else the last one this
+ * phone was used for — which is what `pss` in localStorage means.
+ *
+ * @returns {boolean} whether there was anyone to offer it to at all.
+ */
+export const onReceiveGift = (gift) => (dispatch, getState) => {
+  if (!gift) return false;
+  const app = getState().persist;
+  const characters = Array.isArray(app.psc) ? app.psc : [];
+  if (!characters.length) return false;
+
+  if (!getState().playerSheet?.player) {
+    const idx = (app.pss != null && app.pss >= 0 && characters[app.pss]) ? app.pss : 0;
+    const newApp = { ...app, pss: idx };
+    db.saveApp(newApp);
+    dispatch(setPersist(newApp));
+    hydratePlayerSheet(dispatch, newApp);
+  }
+
+  /* The bag is where a received item belongs, and it is also where the offer
+     is worth reading: the sheet opens on the inventory whichever page it was
+     showing, exactly as a scanned shop does. */
+  dispatch(setPlayerSheetMainView('inventory'));
+  dispatch(setStateCurrentTab(PLAYER_SHEET_TAB));
+  dispatch(setIncomingGift(gift));
+  return true;
+};
+
+/** Take what is being offered. Refusing is `clearIncomingGift` and nothing else. */
+export const onAcceptGift = () => (dispatch, getState) => {
+  const gift = getState().app?.incomingGift;
+  const player = getState().playerSheet?.player;
+  const args = inventoryArgsForGift(gift);
+  if (!player || !args) return;
+  player.addInventoryItem(args.name, args.type, args.number, args.link, args.opts);
+  persistPlayer(dispatch, getState, player);
+  dispatch(clearIncomingGift());
 };
 
 // Equipment

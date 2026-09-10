@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { t } from 'lib/i18n';
 import 'style/shop_inventory.css';
 import 'style/slider.css';
 
@@ -43,6 +44,7 @@ export default function InventoryOptionsPopup({
   onClose,
   onRemove,
   onEquip,
+  onGive,
 }) {
   const [num, setNum] = useState(itemNumber);
   const popupRef = useRef(null);
@@ -56,6 +58,14 @@ export default function InventoryOptionsPopup({
 
   const handleRemove = () => {
     onRemove(itemName, itemType, num);
+    onClose();
+  };
+
+  /* The number on the slider is the number handed over, read now rather than
+     later: the code the other player scans has to say how many, and the menu
+     it was set in is about to close behind it. */
+  const handleGive = () => {
+    onGive(num);
     onClose();
   };
 
@@ -90,7 +100,7 @@ export default function InventoryOptionsPopup({
               type="button"
               className="item-number-button small-middle inventory-equip-btn"
               onClick={() => { onEquip(slot); onClose(); }}
-              title={`Equip: ${slot}`}
+              title={`${t('Equip')}: ${slot}`}
             >
               <span className="material-symbols-outlined">{icon}</span>
             </button>
@@ -114,6 +124,16 @@ export default function InventoryOptionsPopup({
       <div className="card-side-div around" style={{ width: '100%' }}>
         <button type="button" className="item-number-button small-middle" onClick={handleRemove}>
           <span aria-hidden="true">−</span>
+        </button>
+        <button
+          type="button"
+          className="item-number-button small-middle"
+          onClick={handleGive}
+          disabled={num < 1}
+          title={t('Give item')}
+          aria-label={t('Give item')}
+        >
+          <span className="material-symbols-outlined">qr_code</span>
         </button>
         <button type="button" className="item-number-button small-middle" onClick={onClose}>
           <span className="material-symbols-outlined">close</span>

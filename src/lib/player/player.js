@@ -258,6 +258,24 @@ function sameInventoryEntry(a, b) {
   return stableOverrides(a.overrides) === stableOverrides(b.overrides);
 }
 
+/**
+ * Whether an equipped slot is holding *this* row of the bag.
+ *
+ * The same test as `sameInventoryEntry` minus the item type, which an equipped
+ * entry does not carry, and read off the slot's own lower-cased field names.
+ */
+function sameEquippedItem(entry, item) {
+  if (!entry || !item) return false;
+  if ((entry.name ?? '') !== (item.Name ?? '')) return false;
+  if ((entry.link || '') !== (item.Link || '')) return false;
+  if (!!entry.masterwork !== !!item.masterwork) return false;
+  if ((entry.bonus || 0) !== (item.bonus || 0)) return false;
+  const ae = (Array.isArray(entry.effectIds) ? entry.effectIds : []).slice().sort().join(',');
+  const be = (Array.isArray(item.effectIds) ? item.effectIds : []).slice().sort().join(',');
+  if (ae !== be) return false;
+  return stableOverrides(entry.overrides) === stableOverrides(item.overrides);
+}
+
 /* The four free slots at the bottom of the equipment grid. Not hands, not
    armor: worn and carried gear — a cloak, a ring, a wondrous item. Order is
    display order.
@@ -6739,6 +6757,49 @@ class Player {
     }
   }
 
+  /**
+   * Hand some of a row to another character.
+   *
+   * Removing it from the bag is only half of the act. A sword given away while
+   * it is still in a hand would go on granting its attacks, and a cloak still
+   * worn would go on granting its AC, to a character who no longer owns it —
+   * so when the last copy leaves, every slot holding that exact item is
+   * emptied with it. Giving *part* of a stack leaves the equipped one alone:
+   * there is still one in the bag to be the one being held.
+   *
+   * Dropping an item — the "−" in the same menu — deliberately does not do
+   * this. That button is a correction to the list, and a correction should not
+   * quietly rearrange what the character is wearing.
+   *
+   * @param {object} [opts] the row's magical identity, as `removeInventoryItem`
+   *   takes it: link, masterwork, bonus, effectIds, overrides.
+   */
+  giveInventoryItem(name, type, number, opts = {}) {
+    if (!Array.isArray(this.inventory)) return;
+    /* The same row `removeInventoryItem` is about to pick, found by the same
+       test, so the count read here is the count that is about to change. */
+    const overrides = normalizeOverrides(opts.overrides);
+    const before = this.inventory.find((item) => sameInventoryEntry(item, {
+      Name: name,
+      ItemType: type,
+      Link: typeof opts.link === 'string' ? opts.link : '',
+      masterwork: !!opts.masterwork,
+      bonus: Math.max(0, Math.min(5, parseInt(opts.bonus, 10) || 0)),
+      effectIds: Array.isArray(opts.effectIds) ? opts.effectIds.filter((n) => Number.isInteger(n)) : [],
+      overrides: overrides || undefined,
+    }));
+    if (!before) return;
+    const remaining = (before.Number || 0) - Math.max(1, Math.floor(number));
+
+    this.removeInventoryItem(name, type, number, opts);
+    if (remaining > 0) return;
+
+    const equipment = this.getEquipment();
+    for (const slot of Object.keys(equipment)) {
+      if (sameEquippedItem(equipment[slot], before)) this.unequipSlot(slot);
+    }
+  }
+
   // —— Equipment ——
   getEquipment() {
     return this.equipment && typeof this.equipment === 'object' ? this.equipment : {};
@@ -6802,17 +6863,7 @@ class Player {
       .filter(({ entry }) => entry && (entry.name || entry.link))
       .map(({ slot, entry }) => {
         const name = entry.overrides?.Name ?? entry.name ?? '';
-        /* Same test as sameInventoryEntry, minus ItemType — an equipped entry
-           does not carry one. */
-        const row = inventory.find((item) => (
-          item.Name === (entry.name ?? '')
-          && (item.Link || '') === (entry.link || '')
-          && !!item.masterwork === !!entry.masterwork
-          && (item.bonus || 0) === (entry.bonus || 0)
-          && (Array.isArray(item.effectIds) ? item.effectIds : []).slice().sort().join(',')
-             === (Array.isArray(entry.effectIds) ? entry.effectIds : []).slice().sort().join(',')
-          && stableOverrides(item.overrides) === stableOverrides(entry.overrides)
-        ));
+        const row = inventory.find((item) => sameEquippedItem(entry, item));
         return {
           slot,
           name,

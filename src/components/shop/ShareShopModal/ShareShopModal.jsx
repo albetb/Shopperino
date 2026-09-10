@@ -18,13 +18,13 @@ export default function ShareShopModal({ payload, onClose }) {
 
   const modal = (
     <div
-      className="share-shop-modal-overlay"
+      className="qr-modal-overlay"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-label={t('Share shop QR code')}
     >
-      <div className="share-shop-modal-box" onClick={e => e.stopPropagation()}>
+      <div className="qr-modal-box" onClick={e => e.stopPropagation()}>
         <h3 className="modal-heading">{t('Share shop')}</h3>
         {error && <p className="modal-error">{error}</p>}
         {dataUrl && !error && (

@@ -39,6 +39,9 @@ const initialState = {
      menu opens it: scanning while the sheet is already in front of you puts
      the shop there directly, with no tab change and nothing to press. */
   sharedShopSheetOpen: false,
+  /* The item a scanned code is offering this character. Cleared the moment it
+     is accepted or refused; never written to localStorage. */
+  incomingGift: null,
   isMasterMode: false, // false = Player (hide Shop/Loot), true = Master (show all)
   theme: 'dark',      // 'dark' | 'light' — drives body.theme-* class
   accent: 'crimson',  // accent hue name — drives body.accent-* class
@@ -299,6 +302,21 @@ export const appSlice = createSlice({
     },
 
     /**
+     * An item another player is handing over, waiting to be accepted.
+     *
+     * Held here rather than on the sheet, and never persisted: it is an offer
+     * on the table, not something the character owns. A refused offer — or a
+     * closed app — leaves nothing behind.
+     */
+    setIncomingGift(state, action) {
+      state.incomingGift = action.payload || null;
+    },
+
+    clearIncomingGift(state) {
+      state.incomingGift = null;
+    },
+
+    /**
      * Take one row of a scanned shop off the shelf.
      *
      * Local to this phone, and deliberately so: the scan is a snapshot, so two
@@ -387,6 +405,8 @@ export const {
   setSearchTypeRequest,
   clearSharedShop,
   setSharedShopSheetOpen,
+  setIncomingGift,
+  clearIncomingGift,
   buySharedShopItem,
   setMasterMode,
   setTheme,

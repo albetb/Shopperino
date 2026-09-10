@@ -661,8 +661,8 @@ tr {
   margin-bottom: 0.75rem;
 }
 
-/* Share shop QR modal */
-.share-shop-modal-overlay {
+/* The QR panel — the shop share, the item share, and the scanner all use it. */
+.qr-modal-overlay {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.5);
@@ -678,7 +678,7 @@ tr {
    and near-black in parchment (which is not). A QR code is dark-on-light and
    has to stay that way to scan, so the panel pins its own light ground and its
    own dark ink rather than borrowing either from the theme. */
-.share-shop-modal-box {
+.qr-modal-box {
   background: #f9f9f9;
   color: #2a2622;
   padding: 1.25rem;
@@ -696,26 +696,51 @@ tr {
 /* Desktop: minimum QR size so it stays scannable on large screens */
 /* The heading and the caption are `--ink-muted`, which follows the theme and
    would be invisible on this fixed ground in one of them. */
-.share-shop-modal-box .modal-heading,
-.share-shop-modal-box .modal-body-muted,
-.share-shop-modal-box .modal-error {
+.qr-modal-box .modal-heading,
+.qr-modal-box .modal-body-muted,
+.qr-modal-box .modal-error {
   color: #5b524a;
 }
 
-.share-shop-modal-box img {
+.qr-modal-box img {
   min-width: 300px;
   min-height: 300px;
   max-width: 100%;
   height: auto;
 }
 
+/* What is being handed over, read above its own code. The panel pins its own
+   light ground (see above), so these lines pin their ink with it rather than
+   following the theme's. */
+.qr-modal-item {
+  margin: 0 0 0.5rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  color: #2a2622;
+}
+
+.qr-modal-item-note {
+  font-size: 0.85em;
+  color: #5b524a;
+}
+
+/* Keep and Give sit side by side. Neither of them is the way out of a dialog:
+   one of the two is the answer, and the panel does not close without one. */
+.qr-modal-actions {
+  display: flex;
+  gap: 0.5rem;
+  width: 100%;
+  justify-content: center;
+}
+
 @media (max-width: 760px) {
-  .share-shop-modal-box {
+  .qr-modal-box {
     width: 85vw;
     max-width: 85vw;
   }
 
-  .share-shop-modal-box img {
+  .qr-modal-box img {
     width: 100%;
     min-width: 80vw;
     max-width: 88vw;

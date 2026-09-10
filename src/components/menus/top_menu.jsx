@@ -8,13 +8,14 @@ import { setMasterMode, setSharedShop, setSharedShopSheetOpen, setStateCurrentTa
 import { setPlayerSheetMainView } from '../../store/slices/playerSheetSlice';
 import { UNIT_MODES, UNIT_MODE_LABELS, UNIT_MODE_HINTS } from '../../lib/units';
 import { LANGUAGES } from '../../lib/i18n';
-import { ScanShopScanner } from '../shop/ShareShopModal';
 import { scanLanding } from '../../lib/shop';
+import { onReceiveGift } from '../../store/thunks/playerSheetThunks';
 import ColorPicker from './colorPicker';
 import IconButton from '../common/IconButton';
 import BottomSheet from '../common/BottomSheet';
 import Button from '../common/Button';
 import DiceRollerSheet from '../common/DiceRollerSheet';
+import QrScannerModal from '../common/QrScannerModal';
 import InfoPopover from '../common/InfoPopover';
 
 /* Listed in the order they are used at the table, not by tab id: reference
@@ -44,6 +45,9 @@ export default function TopMenu() {
   const [navOpen, setNavOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [showScan, setShowScan] = useState(false);
+  /* Why a perfectly readable code could not be acted on — shown in the
+     scanner, which is where the reader is still looking. */
+  const [scanNotice, setScanNotice] = useState('');
   const [diceOpen, setDiceOpen] = useState(false);
 
   const settingsBtnRef = useRef(null);
@@ -67,15 +71,36 @@ export default function TopMenu() {
     setSettingsOpen(false);
   };
   const handleScanClick = () => {
+    setScanNotice('');
     setShowScan(true);
     setSettingsOpen(false);
   };
+  /* One button, one camera: what was scanned decides what happens, so the
+     reader never has to know which kind of code they are about to meet. */
+  const handleScanSuccess = result => {
+    if (result.kind === 'gift') return handleGiftScanned(result.gift);
+    return handleShopScanned(result.shop);
+  };
+
+  /* An item needs somebody to give it to. With no character saved on this
+     phone there is nobody, and the reader is told so rather than the code
+     silently doing nothing — the camera stays on, because the next thing
+     scanned might be a shop. */
+  const handleGiftScanned = gift => {
+    if (!dispatch(onReceiveGift(gift))) {
+      setScanNotice(t('No saved character'));
+      return false;
+    }
+    setShowScan(false);
+    return true;
+  };
+
   /* Where a scanned shop lands depends on what you were already looking at.
      Scanning with your own sheet in front of you means you are about to buy
      something, so the shop opens right there as the drawer over the Inventory
      page — no tab change, nothing further to press. Scanning from anywhere else
      opens the read-only list on the Shop tab, as it always has. */
-  const handleScanSuccess = shop => {
+  const handleShopScanned = shop => {
     dispatch(setSharedShop(shop));
     const { openOnSheet, goToTab } = scanLanding({ currentTab, hasCharacter });
     if (openOnSheet) {
@@ -87,6 +112,7 @@ export default function TopMenu() {
       dispatch(setStateCurrentTab(goToTab));
     }
     setShowScan(false);
+    return true;
   };
 
   useEffect(() => {
@@ -224,7 +250,7 @@ export default function TopMenu() {
         <Button variant="ghost" icon="drive_folder_upload" onClick={handleUploadClick}  >{t('Import save')}</Button>
       </div>
       {mobile && (
-        <Button block variant="ghost" icon="qr_code_scanner" onClick={handleScanClick}>{t('Scan shop QR')}</Button>
+        <Button block variant="ghost" icon="qr_code_scanner" onClick={handleScanClick}>{t('Scan QR')}</Button>
       )}
 
       <div className="sh-settings-row">
@@ -352,7 +378,8 @@ export default function TopMenu() {
       <DiceRollerSheet open={diceOpen} onClose={() => setDiceOpen(false)} />
 
       {showScan && (
-        <ScanShopScanner
+        <QrScannerModal
+          notice={scanNotice}
           onClose={() => setShowScan(false)}
           onSuccess={handleScanSuccess}
         />

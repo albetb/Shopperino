@@ -151,3 +151,42 @@
 .shared-shop-row-info {
   flex-shrink: 0;
 }
+
+/* —— An item another player is handing over ——
+   The sheet is a question with two answers, so it is a short column: what it
+   is, what accepting means, and the two buttons. */
+.incoming-gift {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+}
+
+.incoming-gift-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  margin: 0;
+  font-size: var(--font-size-lg);
+}
+
+.incoming-gift-note {
+  font-size: var(--font-size-xs);
+  color: var(--ink-muted);
+}
+
+.incoming-gift-hint {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  line-height: 1.45;
+  color: var(--ink-muted);
+}
+
+/* Accept sits on the right, where the affirmative button sits everywhere else
+   in the app, and neither of the two is wider than the other: refusing a gift
+   is as ordinary as taking it. */
+.incoming-gift-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}

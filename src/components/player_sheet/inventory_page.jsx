@@ -6,15 +6,19 @@ import { setCombatPageCardCollapsed } from '../../store/slices/playerSheetSlice'
 import {
   onAddInventoryItem,
   onRemoveInventoryItem,
+  onGiveInventoryItem,
   onEquipItem,
   onUnequipSlot,
 } from '../../store/thunks/playerSheetThunks';
+import { giftFromInventoryEntry } from '../../lib/share';
 import { getEquipType } from '../../lib/equipType';
 import { loadFile } from '../../lib/utils';
 import AddItemFormInventory from './inventory/AddItemFormInventory';
 import InventoryItemRow from './inventory/InventoryItemRow';
 import InventoryTableHeader from './inventory/InventoryTableHeader';
 import InventoryOptionsPopup from './inventory/InventoryOptionsPopup';
+import GiveItemModal from './inventory/GiveItemModal';
+import ReceiveGiftSheet from './inventory/ReceiveGiftSheet';
 import EquipmentCard from './inventory/EquipmentCard';
 import CarryingCapacityCard from './inventory/CarryingCapacityCard';
 import MoneyCard from './inventory/MoneyCard';
@@ -36,6 +40,9 @@ export default function InventoryPage() {
   );
 
   const [popupState, setPopupState] = useState(null);
+  /* The item whose code is on screen, with the quantity already decided. Held
+     here rather than in the menu because the menu closes behind it. */
+  const [gift, setGift] = useState(null);
   const [showAddItemForm, setShowAddItemForm] = useState(false);
   const [sortColumn, setSortColumn] = useState('name');
   const [sortDesc, setSortDesc] = useState(false);
@@ -116,6 +123,23 @@ export default function InventoryPage() {
       ...(popupState.overrides ? { overrides: popupState.overrides } : {}),
     }));
   };
+  /* Everything the popup knows about the row is everything the row is, so the
+     gift is built from that rather than reaching back into the inventory. */
+  const handleGiveItem = (number) => {
+    if (!popupState) return;
+    setGift(giftFromInventoryEntry({
+      Name: popupState.itemName,
+      ItemType: popupState.itemType,
+      Number: popupState.itemNumber,
+      Link: popupState.itemLink,
+      masterwork: popupState.masterwork,
+      bonus: popupState.bonus,
+      effectIds: popupState.effectIds,
+      baseLink: popupState.baseLink,
+      overrides: popupState.overrides,
+    }, number));
+  };
+
   const handleOpenCard = (links, bonus, opts = {}) =>
     dispatch(addCardByLink({
       links,
@@ -262,8 +286,17 @@ export default function InventoryPage() {
           onClose={() => setPopupState(null)}
           onRemove={handleRemoveItem}
           onEquip={handleEquipItem}
+          onGive={handleGiveItem}
         />
       )}
+
+      <GiveItemModal
+        gift={gift}
+        onKeep={() => setGift(null)}
+        onGive={() => { dispatch(onGiveInventoryItem(gift)); setGift(null); }}
+      />
+
+      <ReceiveGiftSheet />
     </div>
   );
 }
