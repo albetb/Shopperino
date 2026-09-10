@@ -512,6 +512,20 @@ tr.add-item td.action-size .item-number-button {
 .inventory-options-equip-row--single .inventory-equip-btn .material-symbols-outlined {
   font-size: 1.5rem;
 }
+/* The foot of the menu: drop, and hand over. Laid out on the same grid as the
+   equip buttons above and sized the same way, so the menu reads as one set of
+   controls rather than two — the number on the slider is what both of them
+   spend. */
+.inventory-options-action-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.4rem;
+  width: 100%;
+}
+.inventory-options-action-row .item-number-button {
+  width: 100% !important;
+  min-width: 0 !important;
+}
 /* Same treatment for the slider-row level frame and the bottom action
    buttons so they all look like they belong on the same surface. */
 .inventory-options-popup .item-number-button {

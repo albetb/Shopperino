@@ -183,10 +183,13 @@
 }
 
 /* Accept sits on the right, where the affirmative button sits everywhere else
-   in the app, and neither of the two is wider than the other: refusing a gift
-   is as ordinary as taking it. */
+   in the app. The two share the row equally: refusing a gift is as ordinary as
+   taking it, and a thumb should not have to aim for the smaller one. */
 .incoming-gift-actions {
   display: flex;
-  justify-content: flex-end;
   gap: var(--space-2);
+}
+
+.incoming-gift-actions > .sh-btn {
+  flex: 1 1 0;
 }

@@ -121,8 +121,19 @@ export default function InventoryOptionsPopup({
           <label className="level-text">{num}</label>
         </div>
       </div>
-      <div className="card-side-div around" style={{ width: '100%' }}>
-        <button type="button" className="item-number-button small-middle" onClick={handleRemove}>
+      {/* The two things the number above can be spent on, on the same grid as
+          the equip buttons so the menu reads as one set of controls. There is
+          no close button: tapping anywhere outside already dismisses this, and
+          a third button of equal weight suggested three actions where there
+          are two. */}
+      <div className="inventory-options-action-row">
+        <button
+          type="button"
+          className="item-number-button small-middle"
+          onClick={handleRemove}
+          title={t('Remove')}
+          aria-label={t('Remove')}
+        >
           <span aria-hidden="true">−</span>
         </button>
         <button
@@ -134,9 +145,6 @@ export default function InventoryOptionsPopup({
           aria-label={t('Give item')}
         >
           <span className="material-symbols-outlined">qr_code</span>
-        </button>
-        <button type="button" className="item-number-button small-middle" onClick={onClose}>
-          <span className="material-symbols-outlined">close</span>
         </button>
       </div>
     </div>

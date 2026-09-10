@@ -47,13 +47,13 @@ export default function ReceiveGiftSheet() {
           </span>
         </p>
         <p className="incoming-gift-hint">
-          {t('Accepting puts it in the bag. Nothing leaves the other player\'s bag until they press Give on their own screen.')}
+          {t('Accepting puts it in the bag.')}
         </p>
         <div className="incoming-gift-actions">
-          <Button variant="ghost" onClick={() => dispatch(clearIncomingGift())}>
+          <Button block variant="ghost" onClick={() => dispatch(clearIncomingGift())}>
             {t('Decline')}
           </Button>
-          <Button variant="primary" icon="backpack" onClick={() => dispatch(onAcceptGift())}>
+          <Button block variant="primary" icon="backpack" onClick={() => dispatch(onAcceptGift())}>
             {t('Accept')}
           </Button>
         </div>
