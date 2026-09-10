@@ -189,3 +189,23 @@ button.sh-skill-group-head--button:focus-visible {
     pointer-events: none;
   }
 }
+
+/* The three sort chips are one control, so they hold one line together: when
+   "Total" wrapped onto a row of its own it read as a fourth, unrelated button.
+   Equal shares and no wrapping, the way the condition picker's chips work. */
+.sh-skill-sort {
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: nowrap;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.sh-skill-sort .sh-chip {
+  flex: 1 1 0;
+  min-width: 0;
+  justify-content: center;
+  white-space: nowrap;
+  padding-left: var(--space-2);
+  padding-right: var(--space-2);
+}

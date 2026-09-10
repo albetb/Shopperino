@@ -42,6 +42,8 @@ const initialState = {
   /* The item a scanned code is offering this character. Cleared the moment it
      is accepted or refused; never written to localStorage. */
   incomingGift: null,
+  /* The same, for an effect somebody is singing at this character. */
+  incomingEffect: null,
   isMasterMode: false, // false = Player (hide Shop/Loot), true = Master (show all)
   theme: 'dark',      // 'dark' | 'light' — drives body.theme-* class
   accent: 'crimson',  // accent hue name — drives body.accent-* class
@@ -54,6 +56,11 @@ const initialState = {
      count button; the roll is { sides, rolls, total } or null. */
   diceMultiplierMask: 1,
   diceLastRoll: null,
+  /* House rule: a potion's flat "+1 per caster level" is read off the
+     drinker's own level instead of the bottle's, still capped by what the
+     potion allows. A table plays this way or it does not, so it is a
+     preference that is remembered rather than a tick box per drink. */
+  potionHealsByCharacterLevel: false,
 };
 
 export const appSlice = createSlice({
@@ -288,6 +295,10 @@ export const appSlice = createSlice({
       state.sharedShop = action.payload; // { name, gold, stock } or null
     },
 
+    setPotionHealsByCharacterLevel(state, action) {
+      state.potionHealsByCharacterLevel = !!action.payload;
+    },
+
     setSearchTypeRequest(state, action) {
       state.searchTypeRequest = action.payload || '';
     },
@@ -314,6 +325,14 @@ export const appSlice = createSlice({
 
     clearIncomingGift(state) {
       state.incomingGift = null;
+    },
+
+    setIncomingEffect(state, action) {
+      state.incomingEffect = action.payload || null;
+    },
+
+    clearIncomingEffect(state) {
+      state.incomingEffect = null;
     },
 
     /**
@@ -390,6 +409,9 @@ export const selectUnits = state => normalizeUnits(state.app?.units);
 /** The language everything reads in. Safe on a store with no app slice. */
 export const selectLang = state => normalizeLang(state.app?.lang);
 
+/** Whether a potion's per-level bonus is read off the drinker rather than the bottle. */
+export const selectPotionHealsByCharacterLevel = state => !!state.app?.potionHealsByCharacterLevel;
+
 export const {
   toggleSidebar,
   toggleInfoSidebar,
@@ -407,6 +429,9 @@ export const {
   setSharedShopSheetOpen,
   setIncomingGift,
   clearIncomingGift,
+  setIncomingEffect,
+  clearIncomingEffect,
+  setPotionHealsByCharacterLevel,
   buySharedShopItem,
   setMasterMode,
   setTheme,

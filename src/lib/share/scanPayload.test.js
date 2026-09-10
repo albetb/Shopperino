@@ -1,6 +1,8 @@
 import { readScannedPayload } from './scanPayload';
 import { encodeItemGift, giftFromInventoryEntry } from './itemGift';
+import { encodeEffectShare } from './effectShare';
 import { encodeShopPayloadToBase64Url } from '../shop';
+import { compressToEncodedURIComponent } from 'lz-string';
 
 /**
  * One button, one camera, more than one kind of code. The reader is what keeps
@@ -46,4 +48,32 @@ test('a damaged item code is a damaged item, not an offer to the shop reader', (
 test('a code from something else entirely is refused', () => {
   expect(readScannedPayload('https://example.com').ok).toBe(false);
   expect(readScannedPayload('').ok).toBe(false);
+});
+
+describe('the third kind of code', () => {
+  const effectPayload = () => encodeEffectShare({
+    id: 'inspireCourage', bonus: 2, from: 'Lyra',
+  }).payload;
+
+  test('an effect code reads as an effect', () => {
+    const result = readScannedPayload(effectPayload());
+    expect(result).toMatchObject({ ok: true, kind: 'effect' });
+    expect(result.effect).toEqual({ id: 'inspireCourage', bonus: 2, from: 'Lyra' });
+  });
+
+  test('and is never read as one of the other two', () => {
+    expect(readScannedPayload(effectPayload()).kind).toBe('effect');
+    expect(readScannedPayload(giftPayload()).kind).toBe('gift');
+    expect(readScannedPayload(shopPayload()).kind).toBe('shop');
+  });
+
+  test('a song this build has never heard of is refused', () => {
+    /* A code written by a newer version of the app. Refusing it is the point:
+       an effect that resolved to nothing would sit on the sheet looking as
+       though it had worked. */
+    const fromTheFuture = `buff1:${compressToEncodedURIComponent(
+      JSON.stringify({ i: 'inspireSomethingNew', n: 9 })
+    )}`;
+    expect(readScannedPayload(fromTheFuture).ok).toBe(false);
+  });
 });

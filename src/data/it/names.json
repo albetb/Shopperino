@@ -186,6 +186,18 @@
     "size": "taglia",
     "synergy": "sinergia"
   },
+  "classFeatures": {
+    "Bardic music": "Musica bardica",
+    "Countersong": "Controcanto",
+    "Fascinate": "Affascinare",
+    "Inspire competence": "Ispirare competenza",
+    "Inspire courage": "Ispirare coraggio",
+    "Inspire greatness": "Ispirare grandezza",
+    "Inspire heroism": "Ispirare eroismo",
+    "Mass suggestion": "Suggestione di massa",
+    "Song of freedom": "Canto di libertà",
+    "Suggestion": "Suggestione"
+  },
   "classes": {
     "Barbarian": "Barbaro",
     "Bard": "Bardo",

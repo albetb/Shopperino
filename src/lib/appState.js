@@ -16,6 +16,10 @@ const ROOT_KEY = 'app';
 // uiFlags: one integer, each bit = one boolean. stc: one integer, bits 0-9 = spell table level collapsed.
 export const UI_FLAG = {
   mm: 0, sbc: 1, ibc: 2, wc: 3, cc: 4, sc: 5, pc: 6, src: 7, sbsbc: 8, cdc: 9, ddc: 10, ssd: 11, lsc: 12, lc: 13, psbc: 14,
+  /* phl: a healing potion's flat bonus comes from the drinker's own level
+     rather than from the potion's caster level. A house rule some tables play,
+     so it is a preference rather than a per-drink choice. */
+  phl: 15,
 };
 const DEFAULT_UI_FLAGS = (1 << UI_FLAG.cdc) | (1 << UI_FLAG.ssd); // cdc and ssd default true
 

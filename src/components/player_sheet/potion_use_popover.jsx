@@ -1,10 +1,15 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { t, tx, tName } from '../../lib/i18n';
 import BottomSheet from '../common/BottomSheet';
 import Button from '../common/Button';
 import Icon from '../common/Icon';
 import Pill from '../common/Pill';
+import Switch from '../common/Switch';
+import {
+  selectPotionHealsByCharacterLevel,
+  setPotionHealsByCharacterLevel,
+} from '../../store/slices/appSlice';
 import { onUsePotion } from '../../store/thunks/playerSheetThunks';
 import { dicePerLevelBonus, parseDiceExpr } from '../../lib/item/potionEffects';
 import { rollDice } from '../../lib/dice';
@@ -24,6 +29,15 @@ import '../../style/potions.css';
  * *is* rolling types what it actually saw. The per-caster-level part is added
  * on top and is not editable, because it is not random — it is a property of
  * the bottle.
+ *
+ * **Unless the table plays it otherwise.** Four potions carry a `+1 per caster
+ * level`, and some groups read that level off the *drinker* rather than the
+ * bottle — a level-11 character drinking a 2d8 cure gets the potion's full
+ * +10 rather than the brewer's +3. The cap is the potion's either way, so the
+ * house rule can never take a cure past what the book allows it to heal. It is
+ * a switch here rather than a setting three menus away, because this box is
+ * where the number it changes is read; it is remembered, because a table plays
+ * this way at every session or at none.
  *
  * **An oil is applied, not drunk.** It needs a target first, so the button stays
  * inert until one is chosen and the wording changes to match.
@@ -46,14 +60,20 @@ const TARGET_EMPTY = {
 
 export default function PotionUsePopover({ potion, targets = [], damagedAbilities = [], onClose }) {
   const dispatch = useDispatch();
+  const byCharacterLevel = useSelector(selectPotionHealsByCharacterLevel);
+  const characterLevel = useSelector((state) => state.playerSheet?.player?.getLevel?.() ?? 0);
   const [rolled, setRolled] = useState('');
   const [target, setTarget] = useState('');
 
   const dice = potion?.dice || null;
   const parsed = useMemo(() => parseDiceExpr(dice?.expr), [dice]);
+  /* Whose level the flat part is counted in. `dicePerLevelBonus` applies the
+     potion's own cap to whichever it is given, so the switch changes where the
+     number comes from and never how large it is allowed to be. */
+  const scalingLevel = byCharacterLevel ? characterLevel : (potion?.casterLevel ?? 0);
   const levelBonus = useMemo(
-    () => dicePerLevelBonus(dice, potion?.casterLevel),
-    [dice, potion]
+    () => dicePerLevelBonus(dice, scalingLevel),
+    [dice, scalingLevel]
   );
 
   /* Rolled once, when the box opens. Re-rolling on every render would move the
@@ -134,8 +154,23 @@ export default function PotionUsePopover({ potion, targets = [], damagedAbilitie
             </div>
             {levelBonus > 0 && (
               <span className="sh-faint potion-use-hint">
-                {tx("The +{0} is the potion’s caster level and is not rolled.", levelBonus)}
+                {byCharacterLevel
+                  ? tx('The +{0} is your character level, capped at what this potion allows, and is not rolled.', levelBonus)
+                  : tx("The +{0} is the potion’s caster level and is not rolled.", levelBonus)}
               </span>
+            )}
+
+            {/* Only where there is a per-level bonus to move: the other 103
+                potions have nothing this switch could change. */}
+            {dice.perLevel > 0 && (
+              <label className="potion-use-house-rule">
+                <Switch
+                  checked={byCharacterLevel}
+                  aria-label={t('Count the bonus in character levels')}
+                  onChange={(value) => dispatch(setPotionHealsByCharacterLevel(value))}
+                />
+                <span>{t('Count the bonus in character levels')}</span>
+              </label>
             )}
           </div>
         )}

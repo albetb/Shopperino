@@ -1,8 +1,14 @@
 import { useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addCardByLink } from '../../store/slices/appSlice';
-import { onAddCondition, onRemoveCondition, onRemovePotionEffect } from '../../store/thunks/playerSheetThunks';
+import {
+  onAddCondition,
+  onRemoveCondition,
+  onRemovePotionEffect,
+  onRemoveSharedEffect,
+} from '../../store/thunks/playerSheetThunks';
 import { ActiveEffectPills } from './potions_card';
+import ReceiveEffectSheet from './ReceiveEffectSheet';
 import { getAllConditions, conditionSlug } from '../../lib/utils';
 import IconButton from '../common/IconButton';
 import BottomSheet from '../common/BottomSheet';
@@ -10,7 +16,7 @@ import Button from '../common/Button';
 import Stepper from '../common/Stepper';
 import Icon from '../common/Icon';
 import '../../style/conditions.css';
-import { t, tName } from '../../lib/i18n';
+import { t, tx, tName } from '../../lib/i18n';
 
 /* Conditions that need a sub-choice when added. Ability Damaged/Drained
    target a single ability; Energy Drained carries a count of negative
@@ -52,6 +58,46 @@ function formatConditionLabel(c) {
 }
 
 /**
+ * Effects another character is running on this one, as removable pills.
+ *
+ * Beside the conditions and the running potions rather than on a card of its
+ * own, for the same reason those two are: a bard's music is one more thing
+ * temporarily true about this character, and the numbers it moves are the ones
+ * on this page.
+ *
+ * The pill says whose it is. Two bards in a party is not unusual, and "Inspire
+ * courage" twice over tells the reader nothing about which one to end.
+ */
+function SharedEffectPills({ effects, onRemove }) {
+  if (effects.length === 0) return null;
+  return (
+    <div className="cond-pills">
+      {effects.map((effect) => {
+        const name = tName('classFeatures', effect.name);
+        return (
+          <span className="cond-pill cond-pill--positive" key={`${effect.id}:${effect.index}`}>
+            <span className="cond-pill-label">
+              {name}
+              {effect.bonus > 0 && ` +${effect.bonus}`}
+              {effect.skill && ` · ${tName('skills', effect.skill)}`}
+              {effect.from && <span className="sh-faint"> · {effect.from}</span>}
+            </span>
+            <button
+              type="button"
+              className="cond-pill-x"
+              onClick={() => onRemove(effect.index)}
+              aria-label={tx('End {0}', name)}
+            >
+              <Icon name="close" size={12} />
+            </button>
+          </span>
+        );
+      })}
+    </div>
+  );
+}
+
+/**
  * Conditions, as a section inside the Health card rather than a card of its
  * own — a condition is something happening to the character's health, and
  * splitting it from the hit points it modifies meant reading two cards to see
@@ -72,6 +118,7 @@ export default function ConditionsSection() {
      instead of the list. */
   const [config, setConfig] = useState(null); // { name, ability, amount }
 
+  const sharedEffects = player?.getResolvedSharedEffects?.() ?? [];
   const derived = player?.getDerivedConditions?.() ?? [];
   const manualAll = player?.getConditions?.() ?? [];
   // A condition that is also auto-derived (e.g. Paralyzed from Dex 0) renders
@@ -215,6 +262,16 @@ export default function ConditionsSection() {
           condition — temporarily true about the character, and wanted beside
           the hit points it may be propping up. */}
       <ActiveEffectPills onRemove={(index) => dispatch(onRemovePotionEffect(index))} />
+
+      {/* And what another character is running on this one. */}
+      <SharedEffectPills
+        effects={sharedEffects}
+        onRemove={(index) => dispatch(onRemoveSharedEffect(index))}
+      />
+
+      {/* The offer a scanned code makes. It opens over this page because this
+          is where what it does can be seen. */}
+      <ReceiveEffectSheet />
 
       <BottomSheet
         open={pickerOpen}

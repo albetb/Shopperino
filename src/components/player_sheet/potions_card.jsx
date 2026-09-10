@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { t, tx } from '../../lib/i18n';
+import { t, tx, tName } from '../../lib/i18n';
+import resolveLabel from '../../lib/i18n/resolveLabel';
 import { useSelector } from 'react-redux';
 import Card from '../common/Card';
 import Pill from '../common/Pill';
@@ -106,8 +107,10 @@ export default function PotionsCard() {
 export function ActiveEffectPills({ onRemove }) {
   const player = useSelector((state) => state.playerSheet?.player);
   const effects = player?.getResolvedEffects?.() ?? [];
-  const warnings = player?.getPotionStackingWarnings?.() ?? [];
-  if (effects.length === 0) return null;
+  const warnings = player?.getBuffStackingWarnings?.() ?? [];
+  /* The warnings outlive the pills: a bard's music can overlap a potion that
+     has already been removed, and the strip is the only place that says so. */
+  if (effects.length === 0 && warnings.length === 0) return null;
 
   return (
     <div className="potion-effects">
@@ -142,7 +145,7 @@ export function ActiveEffectPills({ onRemove }) {
         <div className="sh-warn-strip potion-effects-warn" key={`${w.stat}:${w.type}`}>
           <Icon name="warning" size={14} />
           {tx('{0} both give a {1} bonus — in 3.5 only the larger applies, but both are counted here.',
-            w.labels.join(t(' and ')), w.type)}
+            w.labels.map(resolveLabel).join(t(' and ')), tName('bonusTypes', w.type))}
         </div>
       ))}
     </div>

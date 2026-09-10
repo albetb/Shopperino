@@ -3,16 +3,19 @@
  *
  * The camera does not know what it is looking at, and there is only one scan
  * button, so the reading happens here: every kind of code the app can produce
- * is tried in turn and the caller is told which one answered. A new kind — an
- * effect handed from a master to a player, next — is one more branch here and
- * one more case in the handler, rather than a second button.
+ * is tried in turn and the caller is told which one answered: a master's shop,
+ * an item another player is handing over, an effect a bard is singing at you.
+ * A new kind is one more branch here and one more case in the handler, rather
+ * than another button for the reader to choose between first.
  */
 import { isItemGiftPayload, parseItemGift } from './itemGift';
+import { isEffectSharePayload, parseEffectShare } from './effectShare';
 import { parseSharedShop } from '../shop';
 
 /**
  * @param {string} text  exactly what the camera read
  * @returns {{ ok: true, kind: 'gift', gift: object }
+ *   | { ok: true, kind: 'effect', effect: object }
  *   | { ok: true, kind: 'shop', shop: object }
  *   | { ok: false, error: string }}
  */
@@ -27,6 +30,13 @@ export function readScannedPayload(text) {
     const result = parseItemGift(data);
     return result.ok
       ? { ok: true, kind: 'gift', gift: result.gift }
+      : { ok: false, error: result.error };
+  }
+
+  if (isEffectSharePayload(data)) {
+    const result = parseEffectShare(data);
+    return result.ok
+      ? { ok: true, kind: 'effect', effect: result.effect }
       : { ok: false, error: result.error };
   }
 

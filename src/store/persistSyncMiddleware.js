@@ -15,6 +15,7 @@ import {
   setLang,
   setDiceMultiplierMask,
   setDiceLastRoll,
+  setPotionHealsByCharacterLevel,
 } from './slices/appSlice';
 import { rollToTuple } from '../lib/dice';
 
@@ -33,6 +34,7 @@ const PREF_ACTIONS = [
   setLang.type,
   setDiceMultiplierMask.type,
   setDiceLastRoll.type,
+  setPotionHealsByCharacterLevel.type,
   'spellbook/setIsSpellTableCollapsed',
   'spellbook/setIsClassDescriptionCollapsed',
   'spellbook/setIsDomainDescriptionCollapsed',
@@ -79,6 +81,9 @@ export function persistSyncMiddleware(store) {
         break;
       case setMasterMode.type:
         nextPersist = db.setAppUIFlag(nextPersist, db.UI_FLAG.mm, !!action.payload);
+        break;
+      case setPotionHealsByCharacterLevel.type:
+        nextPersist = db.setAppUIFlag(nextPersist, db.UI_FLAG.phl, !!action.payload);
         break;
       case setTheme.type:
         nextPersist = { ...nextPersist, th: action.payload === 'light' ? 'light' : 'dark' };

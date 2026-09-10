@@ -9,7 +9,7 @@ import { setPlayerSheetMainView } from '../../store/slices/playerSheetSlice';
 import { UNIT_MODES, UNIT_MODE_LABELS, UNIT_MODE_HINTS } from '../../lib/units';
 import { LANGUAGES } from '../../lib/i18n';
 import { scanLanding } from '../../lib/shop';
-import { onReceiveGift } from '../../store/thunks/playerSheetThunks';
+import { onReceiveGift, onReceiveEffect } from '../../store/thunks/playerSheetThunks';
 import ColorPicker from './colorPicker';
 import IconButton from '../common/IconButton';
 import BottomSheet from '../common/BottomSheet';
@@ -78,16 +78,17 @@ export default function TopMenu() {
   /* One button, one camera: what was scanned decides what happens, so the
      reader never has to know which kind of code they are about to meet. */
   const handleScanSuccess = result => {
-    if (result.kind === 'gift') return handleGiftScanned(result.gift);
+    if (result.kind === 'gift') return handleOffered(onReceiveGift(result.gift));
+    if (result.kind === 'effect') return handleOffered(onReceiveEffect(result.effect));
     return handleShopScanned(result.shop);
   };
 
-  /* An item needs somebody to give it to. With no character saved on this
-     phone there is nobody, and the reader is told so rather than the code
-     silently doing nothing — the camera stays on, because the next thing
+  /* An item or an effect needs somebody to give it to. With no character saved
+     on this phone there is nobody, and the reader is told so rather than the
+     code silently doing nothing — the camera stays on, because the next thing
      scanned might be a shop. */
-  const handleGiftScanned = gift => {
-    if (!dispatch(onReceiveGift(gift))) {
+  const handleOffered = thunk => {
+    if (!dispatch(thunk)) {
       setScanNotice(t('No saved character'));
       return false;
     }

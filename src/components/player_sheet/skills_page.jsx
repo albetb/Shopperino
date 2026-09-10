@@ -56,7 +56,9 @@ export default function SkillsPage() {
 
   const sortedSkills = useMemo(() => {
     const arr = [...rawSkills];
-    const cmpName = (a, b) => a.Name.localeCompare(b.Name);
+    /* Compared on the name the reader can see, not the English one behind it:
+       an Italian list sorted in English order files Ascoltare under L. */
+    const cmpName = (a, b) => skillLabel(a.Name).localeCompare(skillLabel(b.Name));
     if (sortBy === 'armor') {
       arr.sort((a, b) => {
         const va = a.ArmorPenalty ? 1 : 0;
@@ -269,11 +271,14 @@ export default function SkillsPage() {
             {classOnly ? `✓ ${t('Only class skills')}` : t('Only class skills')}
           </button>
         ) : (
-          <>
-            <button type="button" className="sh-chip" onClick={() => handleSort('name')}    aria-pressed={sortBy === 'name'}>{t('Sort by name')}</button>
+          <div className="sh-skill-sort">
+            {/* Three ways to read the same list, so they are one control on one
+                line. Each says only what it sorts by — the words "sort by" were
+                two thirds of the first chip and none of the other two. */}
+            <button type="button" className="sh-chip" onClick={() => handleSort('name')}    aria-pressed={sortBy === 'name'}>{t('Name')}</button>
             <button type="button" className="sh-chip" onClick={() => handleSort('ability')} aria-pressed={sortBy === 'ability'}>{t('Ability')}</button>
             <button type="button" className="sh-chip" onClick={() => handleSort('value')}   aria-pressed={sortBy === 'value'}>{t('Total')}</button>
-          </>
+          </div>
         )}
       </div>
 

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { t, tx, tName } from '../../lib/i18n';
 import TrackerCard from './tracker_card';
@@ -5,6 +6,9 @@ import SpellLink from '../common/spell_link';
 import { getFeatureSpell } from '../../lib/player/featureSpells';
 import Pill from '../common/Pill';
 import Icon from '../common/Icon';
+import IconButton from '../common/IconButton';
+import ShareEffectModal from './ShareEffectModal';
+import { sharedEffectForFeature } from '../../lib/player/sharedEffects';
 import {
   onUseClassFeature,
   onResetClassFeature,
@@ -22,6 +26,9 @@ import '../../style/bardic_music.css';
 export default function BardicMusicCard() {
   const dispatch = useDispatch();
   const player = useSelector((state) => state.playerSheet?.player);
+  /* The performance whose code is on screen. Held here because the modal is
+     one panel serving nine rows. */
+  const [sharing, setSharing] = useState(null);
   const max = player?.getBardicMusicMax?.() ?? 0;
   if (max <= 0) return null;
 
@@ -54,6 +61,11 @@ export default function BardicMusicCard() {
              a performance's name — link straight to the stat block, since that
              is where the save and the duration are. */
           const spell = getFeatureSpell(p.name);
+          /* Four of the nine put a bonus on somebody else's sheet, and those
+             four can be handed over as a code. The other five happen to the
+             enemy, or replace a roll the bard makes — there is nothing for an
+             ally's sheet to hold. */
+          const shareable = p.available ? sharedEffectForFeature(p.name) : null;
           return (
             <li
               key={p.name}
@@ -62,7 +74,7 @@ export default function BardicMusicCard() {
               <div className="bardic-performance-head">
                 <span className="bardic-performance-name">
                   {!p.available && <Icon name="lock" size={14} />}
-                  {p.name}
+                  {tName('classFeatures', p.name)}
                 </span>
                 <span className="bardic-performance-tags">
                   {spell && (
@@ -73,6 +85,22 @@ export default function BardicMusicCard() {
                   {isInspireCourage && <Pill tone="accent">+{inspireCourage}</Pill>}
                   {p.saveDc != null && <Pill tone="accent">DC {p.saveDc}</Pill>}
                   {!p.meetsRanks && <Pill tone="warn">{tx('{0} {1}', p.performRanks, tName('skills', 'Perform'))}</Pill>}
+                  {shareable && (
+                    <IconButton
+                      ghost size="sm"
+                      icon="qr_code"
+                      onClick={() => setSharing({
+                        id: shareable.id,
+                        /* Only inspire courage scales with the bard's level;
+                           the table drops the number for the three that
+                           do not. */
+                        bonus: inspireCourage,
+                        from: player.getName?.() ?? '',
+                      })}
+                      title={t('Share effect')}
+                      aria-label={tx('Share {0}', tName('classFeatures', p.name))}
+                    />
+                  )}
                 </span>
               </div>
               <span className="sh-faint bardic-performance-summary">{p.summary}</span>
@@ -80,6 +108,8 @@ export default function BardicMusicCard() {
           );
         })}
       </ul>
+
+      <ShareEffectModal effect={sharing} onClose={() => setSharing(null)} />
     </TrackerCard>
   );
 }

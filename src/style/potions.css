@@ -84,6 +84,18 @@
   line-height: 1.35;
 }
 
+/* The house rule, under the number it changes: a switch and its sentence on
+   one line, tappable anywhere along it. */
+.potion-use-house-rule {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+  font-size: 0.8em;
+  color: var(--ink-muted);
+  cursor: pointer;
+}
+
 .potion-use-targets {
   display: flex;
   flex-wrap: wrap;

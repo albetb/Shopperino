@@ -17,6 +17,8 @@ import {
   buySharedShopItem,
   setIncomingGift,
   clearIncomingGift,
+  setIncomingEffect,
+  clearIncomingEffect,
   setStateCurrentTab,
 } from '../slices/appSlice';
 import { getEffectById } from '../../lib/item/effectsUtils';
@@ -459,6 +461,9 @@ export const onPlayerRest = () => (dispatch, getState) => {
        the only moment the sheet can be sure of — there is no combat clock for
        a "1 min./level" duration to tick against. */
     player.resetPotionEffectsOnRest();
+    /* And every effect somebody else was running on this character: bardic
+       music is counted in rounds, so a night is many times over. */
+    player.clearSharedEffectsOnRest();
     // A night's natural healing: 1 HP per character level, never past the
     // maximum (combat.md). healAsIfRested floors damage at 0, which is the
     // same cap expressed the other way round.
@@ -931,6 +936,53 @@ export const onReceiveGift = (gift) => (dispatch, getState) => {
   dispatch(setStateCurrentTab(PLAYER_SHEET_TAB));
   dispatch(setIncomingGift(gift));
   return true;
+};
+
+/**
+ * A scanned effect, arriving.
+ *
+ * The same landing as a gift, one page over: an effect lands among the
+ * conditions, and those live on the combat page beside the hit points they may
+ * be propping up.
+ *
+ * @returns {boolean} whether there was anyone to offer it to at all.
+ */
+export const onReceiveEffect = (effect) => (dispatch, getState) => {
+  if (!effect?.id) return false;
+  const app = getState().persist;
+  const characters = Array.isArray(app.psc) ? app.psc : [];
+  if (!characters.length) return false;
+
+  if (!getState().playerSheet?.player) {
+    const idx = (app.pss != null && app.pss >= 0 && characters[app.pss]) ? app.pss : 0;
+    const newApp = { ...app, pss: idx };
+    db.saveApp(newApp);
+    dispatch(setPersist(newApp));
+    hydratePlayerSheet(dispatch, newApp);
+  }
+
+  dispatch(setPlayerSheetMainView('combat'));
+  dispatch(setStateCurrentTab(PLAYER_SHEET_TAB));
+  dispatch(setIncomingEffect(effect));
+  return true;
+};
+
+/** Take what is being sung at you. Refusing is `clearIncomingEffect` alone. */
+export const onAcceptEffect = () => (dispatch, getState) => {
+  const effect = getState().app?.incomingEffect;
+  const player = getState().playerSheet?.player;
+  if (!player || !effect) return;
+  if (!player.addSharedEffect(effect)) return;
+  persistPlayer(dispatch, getState, player);
+  dispatch(clearIncomingEffect());
+};
+
+/** End one that is running, by the index getResolvedSharedEffects reported. */
+export const onRemoveSharedEffect = (index) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player) return;
+  if (!player.removeSharedEffect(index)) return;
+  persistPlayer(dispatch, getState, player);
 };
 
 /** Take what is being offered. Refusing is `clearIncomingGift` and nothing else. */

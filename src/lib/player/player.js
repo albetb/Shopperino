@@ -86,6 +86,7 @@ import {
   isProficientWithUnarmedStrike,
 } from './proficiency';
 import { contribution, situational, compactContributions, named, BONUS_TYPES } from './contributions';
+import { SHARED_EFFECTS, makeSharedEffect, resolveSharedEffect } from './sharedEffects';
 import {
   isAugmentableSummon,
   AUGMENT_SUMMONING_BONUS,
@@ -538,6 +539,14 @@ class Player {
        or when they rest, which is the one moment everything is certainly
        over. See resetPotionEffectsOnRest. */
     this.activeEffects = [];
+    /* Effects another character handed this one — a bard's music, so far.
+       Each entry is `{ id, bonus?, skill?, from? }`: the id of a row in
+       sharedEffects.js, the size the sharer's own level gave it, the skill it
+       was pointed at, and whose it was. Nothing translated and nothing
+       computed is stored, so the same entry means the same thing on a phone
+       reading the other language. Ends the way a potion does: by hand, or at
+       the next rest. */
+    this.sharedEffects = [];
   }
 
   /**
@@ -622,6 +631,16 @@ class Player {
     if (typeof data.ethicalAlignment === 'string') this.ethicalAlignment = data.ethicalAlignment;
     if (typeof data.deity === 'string') this.deity = data.deity;
     if (typeof data.wildShapeRef === 'string') this.wildShapeRef = data.wildShapeRef;
+    if (Array.isArray(data.sharedEffects)) {
+      this.sharedEffects = data.sharedEffects
+        .filter((e) => e && typeof e.id === 'string' && SHARED_EFFECTS[e.id])
+        .map((e) => ({
+          id: e.id,
+          ...(Number.isFinite(Number(e.bonus)) ? { bonus: Number(e.bonus) } : {}),
+          ...(e.skill ? { skill: String(e.skill) } : {}),
+          ...(e.from ? { from: String(e.from) } : {}),
+        }));
+    }
     if (Array.isArray(data.activeEffects)) {
       this.activeEffects = data.activeEffects
         .filter((e) => e && typeof e.name === 'string')
@@ -892,6 +911,8 @@ class Player {
       wildShapeRef: this.wildShapeRef || '',
       activeEffects: Array.isArray(this.activeEffects)
         ? this.activeEffects.map((e) => ({ ...e })) : [],
+      sharedEffects: Array.isArray(this.sharedEffects)
+        ? this.sharedEffects.map((e) => ({ ...e })) : [],
     };
   }
 
@@ -1028,11 +1049,11 @@ class Player {
     const rage = this.getRageAbilityBonus(abilityKey);
     if (shaped && SHAPE_REPLACED_ABILITIES.includes(abilityKey)) {
       const score = this.getWildShapeForm()?.abilities?.[abilityKey];
-      if (Number.isFinite(Number(score))) return Number(score) + rage + this.getPotionBonus(abilityKey)
+      if (Number.isFinite(Number(score))) return Number(score) + rage + this.getPotionBonus(abilityKey) + this.getSharedEffectBonus(abilityKey)
         + this.getWornBonus(abilityKey);
     }
     return this.getAbilityBase(abilityKey) + this.getAbilityBonus(abilityKey)
-      + this.getRaceAbilityModifier(abilityKey) + rage + this.getPotionBonus(abilityKey)
+      + this.getRaceAbilityModifier(abilityKey) + rage + this.getPotionBonus(abilityKey) + this.getSharedEffectBonus(abilityKey)
       + this.getWornBonus(abilityKey);
   }
 
@@ -2232,7 +2253,7 @@ class Player {
    */
   getTotalSpeed() {
     const speed = this.getBaseSpeed() + Number(this.speedBonus || 0)
-      + this.getPotionBonus('speed') + this.getWornBonus('speed');
+      + this.getPotionBonus('speed') + this.getSharedEffectBonus('speed') + this.getWornBonus('speed');
     // Half-speed conditions (Blinded/Exhausted/Entangled/Disabled) apply once.
     return this.isHalfSpeed() ? Math.floor(speed / 2) : speed;
   }
@@ -2389,7 +2410,7 @@ class Player {
       /* The equipped-weapon path picks these up in calculateWeaponAttackBonus;
          the punch is its own path and was quietly missing them, so a potion of
          bless moved every weapon line except this one. */
-      + this.getPotionBonus('attack') + this.getWornBonus('attack')
+      + this.getPotionBonus('attack') + this.getSharedEffectBonus('attack') + this.getWornBonus('attack')
       /* An amulet of mighty fists enhances unarmed strikes and natural
          weapons, and nothing else. */
       + this.getNaturalWeaponBonus('naturalAttack');
@@ -2407,7 +2428,7 @@ class Player {
       + this.getDamageConditionModifier()
       + getFeatUnarmedDamageBonus(this.getFeats())
       + this.getPowerAttackDamageBonus()
-      + this.getPotionBonus('damage') + this.getWornBonus('damage')
+      + this.getPotionBonus('damage') + this.getSharedEffectBonus('damage') + this.getWornBonus('damage')
       + this.getNaturalWeaponBonus('naturalDamage');
     if (bonus === 0) return dice;
     return bonus > 0 ? `${dice}+${bonus}` : `${dice}${bonus}`;
@@ -4036,7 +4057,7 @@ class Player {
     const ac = 10 + this.getAcDexMod() + this.getArmorBonus() + this.getShieldBonus()
       + this.getMonkAcBonus() + this.getWildShapeNaturalArmor() + this.getSizeAcModifier();
     return ac + Number(this.acBonus || 0) + this.getAcConditionModifier() + this.getRageAcModifier()
-      + this.getCombatExpertise() + this.getPotionBonus('ac') + this.getWornBonus('ac');
+      + this.getCombatExpertise() + this.getPotionBonus('ac') + this.getSharedEffectBonus('ac') + this.getWornBonus('ac');
   }
 
   /**
@@ -4048,7 +4069,7 @@ class Player {
     const ac = 10 + this.getAcDexMod() + this.getMonkAcBonus() + this.getSizeAcModifier();
     return ac + Number(this.acBonus || 0) + Number(this.acTouchBonus || 0)
       + this.getAcConditionModifier() + this.getRageAcModifier()
-      + this.getCombatExpertise() + this.getPotionBonus('acTouch') + this.getWornBonus('acTouch');
+      + this.getCombatExpertise() + this.getPotionBonus('acTouch') + this.getSharedEffectBonus('acTouch') + this.getWornBonus('acTouch');
   }
 
   /**
@@ -4060,7 +4081,7 @@ class Player {
       + this.getWildShapeNaturalArmor() + this.getSizeAcModifier();
     return ac + Number(this.acBonus || 0) + Number(this.acFlatBonus || 0)
       + this.getAcConditionModifier() + this.getRageAcModifier()
-      + this.getPotionBonus('acFlat') + this.getWornBonus('acFlat');
+      + this.getPotionBonus('acFlat') + this.getSharedEffectBonus('acFlat') + this.getWornBonus('acFlat');
   }
 
   /**
@@ -4117,7 +4138,7 @@ class Player {
     return this.getFortitudeSave() + Number(this.fortBonus || 0)
       + this.getFamiliarStatBonuses().fort + this.getDivineGraceBonus()
       + getFeatSaveBonus(this.getFeats(), 'fortitude')
-      + this.getFlatRacialSaveBonus() + this.getPotionBonus('fortitude')
+      + this.getFlatRacialSaveBonus() + this.getPotionBonus('fortitude') + this.getSharedEffectBonus('fortitude')
       + this.getWornBonus('fortitude');
   }
 
@@ -4125,14 +4146,14 @@ class Player {
     return this.getReflexSave() + Number(this.reflexBonus || 0)
       + this.getFamiliarStatBonuses().reflex + this.getDivineGraceBonus()
       + getFeatSaveBonus(this.getFeats(), 'reflex')
-      + this.getFlatRacialSaveBonus() + this.getPotionBonus('reflex')
+      + this.getFlatRacialSaveBonus() + this.getPotionBonus('reflex') + this.getSharedEffectBonus('reflex')
       + this.getWornBonus('reflex');
   }
 
   getTotalWillSave() {
     return this.getWillSave() + Number(this.willBonus || 0) + this.getDivineGraceBonus()
       + getFeatSaveBonus(this.getFeats(), 'will')
-      + this.getFlatRacialSaveBonus() + this.getPotionBonus('will')
+      + this.getFlatRacialSaveBonus() + this.getPotionBonus('will') + this.getSharedEffectBonus('will')
       + this.getWornBonus('will');
   }
 
@@ -4783,6 +4804,7 @@ class Player {
     }
     rows.push(contribution('rage', 'rage', this.getRageAbilityBonus(abilityKey), BONUS_TYPES.MORALE));
     rows.push(...this.getPotionContributions(abilityKey));
+    rows.push(...this.getSharedEffectContributions(abilityKey));
     rows.push(...this.getWornContributions(abilityKey));
     this.getAbilityConditionContributions(abilityKey).forEach((c) => {
       rows.push(contribution(c.source, c.label, c.value));
@@ -4837,6 +4859,7 @@ class Player {
       rows.push(contribution('rage', 'rage', this.getRageWillBonus(), BONUS_TYPES.MORALE));
     }
     rows.push(...this.getPotionContributions(which));
+    rows.push(...this.getSharedEffectContributions(which));
     rows.push(...this.getWornContributions(which));
     return compactContributions(rows);
   }
@@ -4895,6 +4918,7 @@ class Player {
       contribution('combatExpertise', 'Combat expertise', this.getCombatExpertise(), BONUS_TYPES.DODGE),
       contribution('conditions', 'conditions', this.getAcConditionModifier()),
       ...this.getPotionContributions('ac'),
+      ...this.getSharedEffectContributions('ac'),
       ...this.getWornContributions('ac'),
     ]);
   }
@@ -4913,6 +4937,7 @@ class Player {
       contribution('combatExpertise', 'Combat expertise', this.getCombatExpertise(), BONUS_TYPES.DODGE),
       contribution('conditions', 'conditions', this.getAcConditionModifier()),
       ...this.getPotionContributions('acTouch'),
+      ...this.getSharedEffectContributions('acTouch'),
       ...this.getWornContributions('acTouch'),
     ]);
   }
@@ -4932,6 +4957,7 @@ class Player {
       contribution('rage', 'rage', this.getRageAcModifier(), BONUS_TYPES.MORALE),
       contribution('conditions', 'conditions', this.getAcConditionModifier()),
       ...this.getPotionContributions('acFlat'),
+      ...this.getSharedEffectContributions('acFlat'),
       ...this.getWornContributions('acFlat'),
     ]);
   }
@@ -4958,9 +4984,10 @@ class Player {
     }
     rows.push(contribution('manual', 'manual bonus', Number(this.speedBonus || 0)));
     rows.push(...this.getPotionContributions('speed'));
+    rows.push(...this.getSharedEffectContributions('speed'));
     rows.push(...this.getWornContributions('speed'));
     const raw = this.getBaseSpeed() + Number(this.speedBonus || 0)
-      + this.getPotionBonus('speed') + this.getWornBonus('speed');
+      + this.getPotionBonus('speed') + this.getSharedEffectBonus('speed') + this.getWornBonus('speed');
     if (this.isHalfSpeed()) {
       rows.push(contribution('conditions', 'halved by conditions', Math.floor(raw / 2) - raw));
     }
@@ -5022,6 +5049,7 @@ class Player {
       rows.push(contribution('armorCheck', 'armor check penalty', -penalty * multiplier, BONUS_TYPES.ARMOR));
     }
     rows.push(...this.getPotionContributions(`skill:${skillName}`));
+    rows.push(...this.getSharedEffectContributions(`skill:${skillName}`));
     rows.push(...this.getWornContributions(`skill:${skillName}`));
     return compactContributions(rows);
   }
@@ -5062,6 +5090,7 @@ class Player {
       contribution('combatExpertise', 'Combat expertise', ranged ? 0 : -this.getCombatExpertise()),
       contribution('conditions', 'conditions', this.getAttackConditionModifier()),
       ...this.getPotionContributions('attack'),
+      ...this.getSharedEffectContributions('attack'),
       ...this.getWornContributions('attack'),
       ...this.getOilContributions(data.slot, 'attack'),
     ]);
@@ -5110,6 +5139,7 @@ class Player {
       ),
       contribution('conditions', 'conditions', this.getDamageConditionModifier()),
       ...this.getPotionContributions('damage'),
+      ...this.getSharedEffectContributions('damage'),
       ...this.getWornContributions('damage'),
       ...this.getOilContributions(data.slot, 'damage'),
     ]);
@@ -5511,6 +5541,12 @@ class Player {
       out.push(situational(`potion:${effect.index}`, effect.label, effect.situational));
     });
 
+    /* —— Effects another character is running on this one ——
+       The half of a bard's music the sheet cannot add up: a save bonus that
+       only exists against charm and fear, and two bonus Hit Dice of temporary
+       hit points that have to be rolled. */
+    out.push(...this.getSharedEffectSituational(statKey));
+
     return out;
   }
 
@@ -5840,7 +5876,7 @@ class Player {
   //
   // Effects are never enforced. Two potions of the same enhancement bonus do
   // not stack in 3.5, and the sheet says so beside the number rather than
-  // silently dropping one; see getPotionStackingWarnings.
+  // silently dropping one; see getBuffStackingWarnings.
 
   /**
    * The potions and oils in the bag, with what each one does already resolved.
@@ -5971,6 +6007,110 @@ class Player {
     return true;
   }
 
+  /* —— Effects handed over by another character ——
+
+     A bard's music is the first of them. The bonus is decided on the bard's
+     sheet and lands on this one, so what is stored is only the id of a row in
+     sharedEffects.js plus the numbers the sharer's level fixed — see that
+     file for why nothing computed and nothing translated is kept here.
+
+     Everything below is the potion rail's twin, deliberately: an effect being
+     sung at you and an effect you drank are the same kind of fact about the
+     character, and every total that already counts one counts the other. */
+
+  /** The raw entries, as stored. */
+  getSharedEffects() {
+    return Array.isArray(this.sharedEffects) ? this.sharedEffects.map((e) => ({ ...e })) : [];
+  }
+
+  /**
+   * Each entry with its table row resolved, carrying the array `index` that
+   * identifies it for removal. An entry whose id this build does not know is
+   * dropped rather than half-applied.
+   */
+  getResolvedSharedEffects() {
+    return this.getSharedEffects()
+      .map((entry, index) => {
+        const resolved = resolveSharedEffect(entry);
+        return resolved ? { ...resolved, index } : null;
+      })
+      .filter(Boolean);
+  }
+
+  hasSharedEffects() {
+    return this.getResolvedSharedEffects().length > 0;
+  }
+
+  /**
+   * Accept an effect. `entry` is what the code carried:
+   * `{ id, bonus?, skill?, from? }`.
+   */
+  addSharedEffect(entry) {
+    const made = makeSharedEffect(entry?.id, entry || {});
+    if (!made) return false;
+    if (!Array.isArray(this.sharedEffects)) this.sharedEffects = [];
+    this.sharedEffects.push(made);
+    return true;
+  }
+
+  /** End one, by the index getResolvedSharedEffects reported. */
+  removeSharedEffect(index) {
+    if (!Array.isArray(this.sharedEffects)) return false;
+    const at = Number(index);
+    if (!Number.isInteger(at) || at < 0 || at >= this.sharedEffects.length) return false;
+    this.sharedEffects.splice(at, 1);
+    return true;
+  }
+
+  /**
+   * What the running shared effects add to one stat, as contribution rows.
+   * The `statKey` vocabulary is `getPotionContributions`'s.
+   */
+  getSharedEffectContributions(statKey) {
+    if (!statKey) return [];
+    const rows = [];
+    this.getResolvedSharedEffects().forEach((effect) => {
+      const pick = effect.stats[statKey];
+      if (!pick) return;
+      const [value, type] = pick;
+      rows.push(contribution(
+        `shared:${effect.index}`, named('classFeatures', effect.name), value, type
+      ));
+    });
+    return compactContributions(rows);
+  }
+
+  /** The net number the running shared effects add to one stat. */
+  getSharedEffectBonus(statKey) {
+    return sumContributions(this.getSharedEffectContributions(statKey));
+  }
+
+  /**
+   * The parts of a shared effect that do *not* move a number: inspire
+   * courage's save bonus applies against charm and fear only, and inspire
+   * greatness's bonus Hit Dice are rolled temporary hit points.
+   */
+  getSharedEffectSituational(statKey) {
+    if (!statKey) return [];
+    const out = [];
+    this.getResolvedSharedEffects().forEach((effect) => {
+      effect.situational.forEach(([key, note]) => {
+        if (key !== statKey) return;
+        out.push(situational(`shared:${effect.index}`, named('classFeatures', effect.name), note));
+      });
+    });
+    return out;
+  }
+
+  /**
+   * Rest ends these too. Bardic music is counted in rounds and minutes, so a
+   * night is many times over — and, like a potion, there is no clock for it to
+   * tick against.
+   */
+  clearSharedEffectsOnRest() {
+    this.sharedEffects = [];
+  }
+
   /**
    * Rest ends everything. No potion in the set lasts more than a few hours,
    * and rest is the only moment the sheet can be certain of, so it is the one
@@ -6080,9 +6220,19 @@ class Player {
    *
    * @returns {Array<{stat: string, type: string, labels: string[]}>}
    */
-  getPotionStackingWarnings() {
+  getBuffStackingWarnings() {
     const seen = new Map();
-    this.getStatEffects().forEach((effect) => {
+    /* Both rails at once. Two bards singing inspire courage at the same
+       character overlap exactly as two potions of bless would, and the reader
+       has no way to tell which of the two numbers is being wasted unless the
+       warning counts them together. */
+    const running = [
+      ...this.getStatEffects(),
+      ...this.getResolvedSharedEffects().map((effect) => ({
+        ...effect, label: named('classFeatures', effect.name),
+      })),
+    ];
+    running.forEach((effect) => {
       const counted = new Set();
       Object.entries(effect.stats).forEach(([stat, [, type]]) => {
         if (!type) return; // untyped bonuses always stack
@@ -6523,7 +6673,7 @@ class Player {
     }
 
     return result + this.getSkillConditionModifier(skillName)
-      + this.getPotionBonus(`skill:${skillName}`)
+      + this.getPotionBonus(`skill:${skillName}`) + this.getSharedEffectBonus(`skill:${skillName}`)
       + this.getWornBonus(`skill:${skillName}`);
   }
 

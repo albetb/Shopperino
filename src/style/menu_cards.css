@@ -725,6 +725,17 @@ tr {
   color: #5b524a;
 }
 
+/* What the effect is being pointed at, above its code. A select on the panel's
+   own light ground, so it is read as part of the code rather than as the sheet
+   showing through. */
+.qr-modal-choice {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
 /* Keep and Give sit side by side. Neither of them is the way out of a dialog:
    one of the two is the answer, and the panel does not close without one. */
 .qr-modal-actions {

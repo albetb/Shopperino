@@ -28,6 +28,7 @@ import {
   setMainColor,
   clearSharedShop,
   setMasterMode,
+  setPotionHealsByCharacterLevel,
   setSidebarCollapsed,
   setInfoSidebarCollapsed,
   setTheme,
@@ -80,6 +81,7 @@ export default function App() {
 
     dispatch(clearSharedShop());
     dispatch(setMasterMode(db.getIsMasterMode(app)));
+    dispatch(setPotionHealsByCharacterLevel(db.getPotionHealsByCharacterLevel(app)));
     dispatch(setSidebarCollapsed(db.getIsShopSidebarCollapsed(app)));
     dispatch(setInfoSidebarCollapsed(db.getIsInfoSidebarCollapsed(app)));
     dispatch(setStateCurrentTab(db.getCurrentTab(app)));

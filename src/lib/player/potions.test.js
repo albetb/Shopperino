@@ -370,7 +370,7 @@ describe('stacking is reported, never enforced', () => {
     const p = pc();
     drink(p, "Potion of Bull's strength");
     drink(p, "Potion of Bull's strength");
-    const warnings = p.getPotionStackingWarnings();
+    const warnings = p.getBuffStackingWarnings();
     expect(warnings).toHaveLength(1);
     expect(warnings[0]).toMatchObject({ stat: 'str', type: 'enhancement' });
   });
@@ -387,14 +387,14 @@ describe('stacking is reported, never enforced', () => {
     const p = pc();
     drink(p, 'Potion of Mage armor');       // armor
     drink(p, 'Potion of Shield of faith +2'); // deflection
-    expect(p.getPotionStackingWarnings()).toEqual([]);
+    expect(p.getBuffStackingWarnings()).toEqual([]);
   });
 
   test('untyped bonuses always stack, so they are never flagged', () => {
     const p = pc();
     drink(p, 'Potion of Rage');
     drink(p, 'Potion of Rage');
-    const acWarning = p.getPotionStackingWarnings().find((w) => w.stat === 'ac');
+    const acWarning = p.getBuffStackingWarnings().find((w) => w.stat === 'ac');
     expect(acWarning).toBeUndefined();
   });
 });
