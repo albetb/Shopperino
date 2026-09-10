@@ -977,6 +977,25 @@ export const onAcceptEffect = () => (dispatch, getState) => {
   dispatch(clearIncomingEffect());
 };
 
+/**
+ * Put a shared effect on the sheet that is *sharing* it.
+ *
+ * Inspire greatness and inspire heroism name the bard as a legal target in so
+ * many words, and a bard playing at a table where inspire courage is read the
+ * same way should not have to hand himself a code through a second phone. It
+ * takes the effect as the panel has it — the bonus at this bard's level, the
+ * skill picked for competence — so what he gets is what the code gives.
+ *
+ * @returns {boolean} whether it landed, so the panel can say it did.
+ */
+export const onTakeSharedEffect = (effect) => (dispatch, getState) => {
+  const player = getState().playerSheet?.player;
+  if (!player || !effect) return false;
+  if (!player.addSharedEffect(effect)) return false;
+  persistPlayer(dispatch, getState, player);
+  return true;
+};
+
 /** End one that is running, by the index getResolvedSharedEffects reported. */
 export const onRemoveSharedEffect = (index) => (dispatch, getState) => {
   const player = getState().playerSheet?.player;

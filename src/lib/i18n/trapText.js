@@ -1,4 +1,5 @@
-import { t, tx, tName } from './index';
+import { t, tx, tName, hasPack, getLanguage } from './index';
+import { spellName } from './spellText';
 
 /**
  * A trap, in the reading language.
@@ -17,8 +18,34 @@ import { t, tx, tName } from './index';
  * the number is put back into the translated template.
  */
 
-/** A sample trap's own name. */
-export const trapName = (en) => tName('traps', String(en ?? ''));
+/* The generator's magic traps are named after the spell inside them —
+   "Fireball trap" — which is 605 names the pack cannot hold one by one. Every
+   other name it composes is a fixed phrase and is keyed in `traps` directly. */
+const SPELL_TRAP = /^(.+) trap$/i;
+
+/**
+ * A trap's own name, whether it came out of the book or out of the generator.
+ *
+ * The book's 105 samples are keyed whole. The generator's names are keyed whole
+ * too — there are sixteen of them, and each is a phrase Italian rearranges
+ * rather than translates word by word ("Pit trap" is "Fossa", not "Trappola a
+ * fossa"). Only the spell traps are composed here, because the spell is the
+ * one part of the name that can be any of six hundred things.
+ */
+export function trapName(en) {
+  const text = String(en ?? '').trim();
+  /* English is the source: the name is already in the reading language, and
+     composing it again would only lowercase the "Trap" the book capitalises. */
+  if (!text || !hasPack(getLanguage())) return text;
+
+  const known = tName('traps', text);
+  if (known !== text) return known;
+
+  const spell = SPELL_TRAP.exec(text);
+  if (spell) return tx('{0} trap', spellName(spell[1]));
+
+  return text;
+}
 
 /** A type, trigger, reset, bypass or feature — by id or by printed label. */
 export const trapTerm = (en) => tName('trapTerms', String(en ?? ''));

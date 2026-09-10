@@ -1,4 +1,13 @@
 /* Player sheet: center race cards in main content */
+/* The three stacked-card pages space their cards with the container's `gap`.
+   The card's own margin-bottom was added on top of it on desktop — the mobile
+   rule below had zeroed it there years ago, so only desktop double-spaced. */
+.player-sheet-race-cards .card-width-spellbook,
+.player-sheet-class-cards .card-width-spellbook,
+.player-sheet-features-cards .card-width-spellbook {
+  margin-bottom: 0;
+}
+
 .player-sheet-race-cards {
   width: 100%;
   display: flex;
@@ -946,15 +955,6 @@
        safe-area inset) so the last item of any page can scroll above it
        instead of being covered. */
     padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0) + var(--space-3));
-  }
-
-  /* Race/class/features cards keep the .card-width-spellbook default
-     (92% on mobile). Container gap already provides vertical rhythm, so
-     cancel the per-card margin-bottom to avoid double-stacking. */
-  .player-sheet-race-cards .card-width-spellbook,
-  .player-sheet-class-cards .card-width-spellbook,
-  .player-sheet-features-cards .card-width-spellbook {
-    margin-bottom: 0;
   }
 
   /* Combat page: cards (and StatPill rows) span 92% of the page on mobile

@@ -82,6 +82,18 @@
 }
 .sh-tab:disabled { opacity: 0.5; cursor: default; }
 
+/* --- MOBILE NAVIGATION SHEET -------------------------------- */
+/* Two to a row. Eight destinations one under another filled the sheet past the
+   fold, so the one most people were reaching for — the character sheet — was
+   the one they had to scroll to. The pairs are the ones TABS is written in:
+   the two reference tools, the two generators, the two master tools, the two
+   character pages. */
+.sh-nav-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2);
+}
+
 /* --- MODE TOGGLE (Master / Player, Dark / Light) ------------ */
 .sh-mode-toggle {
   display: inline-flex;
@@ -126,7 +138,9 @@
 .sh-accent-popover-anchor {
   position: absolute;
   top: calc(100% + 0.5rem);
-  right: 0;
+  /* Pulled in from the button's own right edge, which sits close enough to the
+     window that the box looked pinned to it. */
+  right: var(--space-2);
   z-index: 1100;
 }
 .sh-accent-popover {

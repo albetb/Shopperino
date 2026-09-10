@@ -8,8 +8,8 @@ import Icon from '../common/Icon';
 /* Same order as the nav list in top_menu.jsx — the two must stay in step, or
    the home grid and the menu disagree about where a tool lives. */
 export const TILES = [
-  { id: 8, icon: 'menu_book',     title: 'Rules reference', desc: 'Read and search the D&D 3.5 rules, condensed by topic.',   masterOnly: false },
   { id: 4, icon: 'search',        title: 'Search',          desc: 'Browse spells, items, feats and skills in one place.', masterOnly: false },
+  { id: 8, icon: 'menu_book',     title: 'Rules reference', desc: 'Read and search the D&D 3.5 rules, condensed by topic.',   masterOnly: false },
   { id: 1, icon: 'shopping_cart', title: 'Shop generator',  desc: 'Randomized shops scaled to the player level.',         masterOnly: true  },
   { id: 3, icon: 'paid',          title: 'Loot generator',  desc: 'Randomized loot scaled to the player level.',          masterOnly: true  },
   { id: 6, icon: 'skull',         title: 'Monster book',    desc: 'Browse the bestiary and track one creature in combat.', masterOnly: true  },

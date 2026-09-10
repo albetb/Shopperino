@@ -343,10 +343,12 @@ export function calculateWeaponAttackBonus(player, weaponData) {
   // place and this and getWeaponAttackContributions cannot disagree.
   const stancePenalty = player.getStanceAttackPenalty?.(weaponItem) ?? 0;
 
-  // A running potion (heroism, haste, good hope) and any oil applied to this
-  // particular slot. The oil is slot-scoped on purpose: an oil of magic weapon
-  // on the longsword must not raise the dagger in the other hand.
+  // A running potion (heroism, haste, good hope), a song somebody else is
+  // singing at you, and any oil applied to this particular slot. The oil is
+  // slot-scoped on purpose: an oil of magic weapon on the longsword must not
+  // raise the dagger in the other hand.
   const potionBonus = (player.getPotionBonus?.('attack') ?? 0)
+    + (player.getSharedEffectBonus?.('attack') ?? 0)
     + (player.getWornBonus?.('attack') ?? 0);
   const oilBonus = player.getOilBonus?.(weaponData.slot, 'attack') ?? 0;
 
@@ -454,8 +456,10 @@ export function calculateWeaponDamage(player, weaponData) {
   // Power Attack: doubled in two hands, and nothing at all for a light weapon.
   damageBonus += player.getPowerAttackDamageBonus?.(weaponData) ?? 0;
 
-  // A running potion (good hope) and any oil applied to this slot.
+  // A running potion (good hope), a shared effect (inspire courage) and any
+  // oil applied to this slot.
   damageBonus += (player.getPotionBonus?.('damage') ?? 0)
+    + (player.getSharedEffectBonus?.('damage') ?? 0)
     + (player.getWornBonus?.('damage') ?? 0);
   damageBonus += player.getOilBonus?.(weaponData.slot, 'damage') ?? 0;
 

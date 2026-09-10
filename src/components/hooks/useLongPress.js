@@ -31,11 +31,17 @@ const useLongPress = (onLongPress, onClick, { shouldPreventDefault = true, delay
     event.preventDefault();
   };
 
+  /* Leaving the button cancels the press, it does not complete it. With a
+     mouse the pointer leaves on the way to anywhere else — including straight
+     after a click, which fired the action a second time — and a press the
+     reader dragged off is the standard way to say "no, not that one". */
+  const cancel = useCallback(event => clear(event, false), [clear]);
+
   return {
     onMouseDown: (e, params) => start(e, params),
     onTouchStart: (e, params) => start(e, params),
     onMouseUp: clear,
-    onMouseLeave: clear,
+    onMouseLeave: cancel,
     onTouchEnd: clear,
   };
 };

@@ -107,7 +107,11 @@
 .sidebar.collapsed .toggle-button,
 .info-sidebar.collapsed .info-toggle-button {
   pointer-events: auto;     /* re-enable on the button itself */
-  margin: var(--space-4) var(--space-2) 0 var(--space-0);
+  /* An even gutter on both sides and under the top bar. The left tab used to
+     carry a left margin of zero, so it sat flush against the window edge while
+     its opposite number had half a rem — the pair read as misaligned. */
+  margin: var(--space-4);
+  margin-bottom: 0;
 }
 
 .sidebar.collapsed .toggle-button { align-self: flex-start; }
@@ -270,6 +274,17 @@ p {
   overflow-y: auto;
   max-height: 100%;
   margin-top: 0.7rem;
+}
+
+/* The results list already lives inside .app-header, which is the page's
+   scroll container. Its own overflow put a second bar immediately beside the
+   first — and with the sidebar's, three on one screen. Let the page scroll. */
+@media (min-width: 769px) {
+  .search-results { height: auto; }
+  .search-results-table-wrapper {
+    overflow-y: visible;
+    max-height: none;
+  }
 }
 
 .search-results-table {
@@ -464,6 +479,21 @@ p {
 .search-hint {
   color: #f9f9f9;
   margin: 0.75rem 0;
+}
+
+/* Every page's "there is nothing here yet" line, in one place.
+   They had drifted apart — one justified against the left edge of a full-width
+   column, one with a 1rem box margin, one centred by an ancestor — so the same
+   kind of sentence sat somewhere different on each tab. Desktop only: the
+   mobile margins further down are left exactly as they were. */
+@media (min-width: 769px) {
+  .search-hint {
+    max-width: 34rem;
+    margin: var(--space-6) auto;
+    padding: 0 var(--space-4);
+    text-align: center;
+    color: var(--ink-muted);
+  }
 }
 
 /* When a search results table is inside a card, use black text like spellbook tables */

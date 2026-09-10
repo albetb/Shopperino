@@ -236,7 +236,7 @@ export default function SkillsPage() {
   };
 
   return (
-    <div className="sh-stack" style={{ width: '100%', padding: 'var(--space-4)', paddingBottom: 'var(--space-12)', boxSizing: 'border-box' }}>
+    <div className="sh-stack sh-skills-page" style={{ width: '100%', padding: 'var(--space-4)', paddingBottom: 'var(--space-12)', boxSizing: 'border-box' }}>
       <div className="sh-row-h sh-spread">
         <div>
           <Filigree>{t('Skills')}</Filigree>

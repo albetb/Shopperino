@@ -63,6 +63,20 @@
   margin: 1rem;
 }
 
+/* The same shape .search-hint takes on desktop (sidebar.css). Both say "there
+   is nothing here yet" and they sat in different places on different tabs.
+   Declared here rather than beside it because this is where the class is
+   defined — otherwise which rule wins depends on the bundler's import order. */
+@media (min-width: 769px) {
+  .empty-state-message {
+    max-width: 34rem;
+    margin: var(--space-6) auto;
+    padding: 0 var(--space-4);
+    text-align: center;
+    color: var(--ink-muted);
+  }
+}
+
 .money-box.money-box-column {
   flex-direction: column;
   align-items: center;

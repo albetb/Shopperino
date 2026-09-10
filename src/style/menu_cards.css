@@ -213,6 +213,27 @@
   gap: var(--space-2);
 }
 
+/* The row's label. It may shrink and it may end in an ellipsis: the control
+   beside it carries a fixed width, so a long word like "Specializzazione"
+   would otherwise push the dropdown past the edge of the card. */
+.modern-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The name box shares its row with a confirm button, and its size class sets a
+   min-width four buttons wide that nothing could shrink — on desktop, where the
+   sidebar is narrower than the phone screen it was measured on, the button was
+   pushed out of the card. */
+@media (min-width: 769px) {
+  .card-side-div > .modern-dropdown.small-longer {
+    min-width: 0 !important;
+    flex: 1 1 auto;
+  }
+}
+
 .buttons-row-center {
   justify-content: center;
 }

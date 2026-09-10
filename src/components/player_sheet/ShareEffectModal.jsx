@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { useDispatch } from 'react-redux';
 import QRCode from 'qrcode';
 import { encodeEffectShare } from '../../lib/share';
+import { onTakeSharedEffect } from '../../store/thunks/playerSheetThunks';
 import { resolveSharedEffect } from '../../lib/player/sharedEffects';
 import resolveLabel from '../../lib/i18n/resolveLabel';
 import { loadFile } from '../../lib/utils';
@@ -33,9 +35,15 @@ function skillOptions() {
  * table, which is why nothing here is a translated word.
  */
 export default function ShareEffectModal({ effect, onClose }) {
+  const dispatch = useDispatch();
   const [skill, setSkill] = useState('');
   const [dataUrl, setDataUrl] = useState(null);
   const [error, setError] = useState(null);
+  /* Whether this panel has already put the effect on its own sheet. The button
+     stops there rather than adding a second copy on the next press — the panel
+     stays open so the bard can go on showing the code around, and a second
+     press would otherwise stack the same song on himself unnoticed. */
+  const [taken, setTaken] = useState(false);
 
   const skills = useMemo(() => skillOptions(), []);
   const needsSkill = Boolean(effect && resolveSharedEffect(effect)?.needsSkill);
@@ -46,6 +54,8 @@ export default function ShareEffectModal({ effect, onClose }) {
   const payload = useMemo(() => (
     effect ? encodeEffectShare({ ...effect, skill: chosen }).payload : null
   ), [effect, chosen]);
+
+  useEffect(() => { setTaken(false); }, [effect, chosen]);
 
   useEffect(() => {
     if (!payload) return;
@@ -92,12 +102,22 @@ export default function ShareEffectModal({ effect, onClose }) {
         {dataUrl && !error && (
           <img src={dataUrl} alt={t('QR code for the effect being shared')} className="modal-qr-img" />
         )}
-        <p className="modal-body-muted">
-          {t('Whoever scans this is asked whether to take it. Nothing leaves your own sheet.')}
-        </p>
-        <button type="button" className="modern-button small-long" onClick={onClose}>
-          {t('Close')}
-        </button>
+        <div className="qr-modal-actions">
+          <button
+            type="button"
+            className="modern-button small-long"
+            disabled={taken}
+            /* No `from`: on the bard's own sheet the pill would otherwise read
+               "Inspire courage · Lyra" to Lyra. The source is worth naming only
+               when it is somebody else. */
+            onClick={() => setTaken(dispatch(onTakeSharedEffect({ ...effect, skill: chosen, from: '' })))}
+          >
+            {taken ? t('Taken') : t('Take the effect')}
+          </button>
+          <button type="button" className="modern-button small-long" onClick={onClose}>
+            {t('Close')}
+          </button>
+        </div>
       </div>
     </div>
   );

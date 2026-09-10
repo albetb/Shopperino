@@ -86,6 +86,47 @@ describe('the bardic music card', () => {
   });
 });
 
+describe('the bard keeping the song', () => {
+  /* Inspire greatness and inspire heroism name the bard as a legal target in
+     so many words, and plenty of tables read inspire courage the same way. The
+     panel is already open and already knows the size — handing it to yourself
+     through a second phone would be theatre. */
+  test('the panel puts the effect on the sharer’s own sheet', () => {
+    const player = bard(14);
+    const attack = player.getPunchAttackBonus();
+    renderWith(<BardicMusicCard />, player);
+    fireEvent.click(screen.getByRole('button', { name: 'Share Inspire courage' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Take the effect' }));
+    expect(player.getPunchAttackBonus()).toBe(attack + 3);
+  });
+
+  test('and stays open, so the code can still be shown around', () => {
+    renderWith(<BardicMusicCard />, bard(14));
+    fireEvent.click(screen.getByRole('button', { name: 'Share Inspire courage' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Take the effect' }));
+    expect(screen.getByRole('dialog', { name: /Share effect/i })).toBeInTheDocument();
+  });
+
+  test('a second press cannot stack the same song on the same bard', () => {
+    const player = bard(14);
+    renderWith(<BardicMusicCard />, player);
+    fireEvent.click(screen.getByRole('button', { name: 'Share Inspire courage' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Take the effect' }));
+    const done = screen.getByRole('button', { name: 'Taken' });
+    expect(done).toBeDisabled();
+    fireEvent.click(done);
+    expect(player.getSharedEffects()).toHaveLength(1);
+  });
+
+  test('what it takes is unattributed — it is the bard’s own song', () => {
+    const player = bard(14);
+    renderWith(<BardicMusicCard />, player);
+    fireEvent.click(screen.getByRole('button', { name: 'Share Inspire courage' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Take the effect' }));
+    expect(player.getSharedEffects()[0].from).toBeUndefined();
+  });
+});
+
 describe('the offer, on the receiving sheet', () => {
   const offer = (store, effect) => act(() => { store.dispatch(setIncomingEffect(effect)); });
 

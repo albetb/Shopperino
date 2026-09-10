@@ -97,6 +97,15 @@ button.sh-skill-group-head--button:focus-visible {
 }
 .sh-skill-edit-col .sh-eyebrow { display: none; }
 
+/* The same column the inventory cards occupy — .card-width-spellbook plus the
+   page's own padding. A skill list stretched across a 1500px window puts the
+   name at one edge of the screen and its total at the other. */
+@media (min-width: 769px) {
+  .sh-skills-page {
+    max-width: calc(var(--btn-width-sm) * 20.4 + var(--space-4) * 2);
+  }
+}
+
 @media (min-width: 540px) {
   .sh-skill-row {
     grid-template-columns: auto 1fr auto auto;

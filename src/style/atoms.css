@@ -736,10 +736,12 @@ body.theme-light :focus-visible {
 }
 
 /* --- HOME PAGE LAYOUT --------------------------------------- */
-.sh-home-toggle { align-self: flex-start; }
+/* Centred at every width. It used to sit against the left edge on desktop,
+   which read as a stray control rather than as the page's own switch — the
+   hero above it and the tile grid below it are both centred. */
+.sh-home-toggle { align-self: center; }
 @media (max-width: 768px) {
   .sh-home-hero { text-align: center; }
-  .sh-home-toggle { align-self: center; }
   /* Override the global "p { text-align: justify }" rule in sidebar.css
      so the hero tagline tracks the hero's centered alignment on mobile. */
   .sh-home-hero p,
@@ -811,6 +813,12 @@ body.theme-light :focus-visible {
 .sh-bnav.sh-bnav--hidden {
   z-index: 700;
   pointer-events: none;
+}
+/* Desktop navigates the sheet from the left sidebar, which lists every one of
+   these sections and more. The bar was a second answer to a question already
+   answered, pinned over the bottom of the page. */
+@media (min-width: 769px) {
+  .sh-bnav { display: none; }
 }
 .sh-bnav-item {
   flex: 1;

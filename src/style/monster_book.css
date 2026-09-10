@@ -92,8 +92,10 @@
 
 /* --- SHEET -------------------------------------------------------- */
 
+/* No width of its own: the page's `> *` rule caps every direct child at 48rem,
+   and a `width: 100%` here overrode it — the open sheet spread to the full page
+   while the roster card above it stayed in its column. */
 .monster-sheet {
-  width: 100%;
   gap: var(--space-3);
 }
 

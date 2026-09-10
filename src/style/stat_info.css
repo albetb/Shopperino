@@ -231,3 +231,11 @@
 .sh-sheet .info-popover-prose {
   font-size: var(--font-size-md);
 }
+
+/* In a row of pills the `info` button led nothing and trailed everything: the
+   reader had to find the end of a list whose length changes per weapon before
+   they could reach it. First in the row it is always in the same place — on a
+   phone as much as on a desktop, so this rule carries no media query. */
+.sh-row-h > .stat-info-button {
+  order: -1;
+}

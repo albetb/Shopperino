@@ -18,20 +18,32 @@ import DiceRollerSheet from '../common/DiceRollerSheet';
 import QrScannerModal from '../common/QrScannerModal';
 import InfoPopover from '../common/InfoPopover';
 
-/* Listed in the order they are used at the table, not by tab id: reference
-   first, the master's generators next, the character's own pages last. The
-   home tiles carry the same order minus Home itself. */
+/* Listed in the order they are used at the table, not by tab id: the two
+   reference tools first, the master's generators next, the character's own
+   pages last. The home tiles carry the same order.
+
+   Home is deliberately absent. It is one tap away from everywhere through the
+   logo in the corner, and as a row in this list it was a ninth entry that took
+   a whole line to say "back to the start". The pairs the mobile sheet lays out
+   two to a row come straight from this order — search beside rules, shop
+   beside loot, monsters beside traps, spellbook beside the sheet — so
+   reordering here reshapes the grid and nothing else needs to know. */
 export const TABS = [
-  { id: 0, label: 'Home',         icon: 'home',          masterOnly: false },
-  { id: 8, label: 'Rules',        icon: 'menu_book',     masterOnly: false },
   { id: 4, label: 'Search',       icon: 'search',        masterOnly: false },
+  { id: 8, label: 'Rules',        icon: 'menu_book',     masterOnly: false },
   { id: 1, label: 'Shop',         icon: 'shopping_cart', masterOnly: true  },
   { id: 3, label: 'Loot',         icon: 'paid',          masterOnly: true  },
   { id: 6, label: 'Monsters',     icon: 'skull',         masterOnly: true  },
   { id: 7, label: 'Traps',        icon: 'crisis_alert',  masterOnly: true  },
   { id: 2, label: 'Spellbook',    icon: 'auto_stories',  masterOnly: false },
-  { id: 5, label: 'Player sheet', icon: 'badge',  masterOnly: false },
+  { id: 5, label: 'Player sheet', icon: 'badge',         masterOnly: false },
 ];
+
+/* Navigation is the one place these two need a short name: two of them share a
+   row on a phone, and "Libro degli incantesimi" beside "Scheda del personaggio"
+   fits nowhere. The long names stay everywhere else — the home tiles have room
+   for them, and that is where a reader meets the tool for the first time. */
+const navLabel = (label) => t(label, 'nav');
 
 export default function TopMenu() {
   const dispatch = useDispatch();
@@ -202,14 +214,15 @@ export default function TopMenu() {
     </div>
   );
 
+  /* Master/Player lives in here on both layouts. It is a preference, set once
+     and then left alone for a whole campaign, and it sat in the top bar taking
+     permanent room beside the tabs it hides and shows. */
   const settingsMenuItems = (
     <>
-      {mobile && (
-        <div className="sh-settings-row">
-          <span className="sh-eyebrow">{t('Mode')}</span>
-          {masterPlayerToggle}
-        </div>
-      )}
+      <div className="sh-settings-row">
+        <span className="sh-eyebrow">{t('Mode')}</span>
+        {masterPlayerToggle}
+      </div>
 
       <div className="sh-settings-row">
         <span className="sh-eyebrow sh-units-label">
@@ -304,7 +317,7 @@ export default function TopMenu() {
           onClick={() => gotoTab(tab.id)}
         >
           <span className="material-symbols-outlined">{tab.icon}</span>
-          <span>{t(tab.label)}</span>
+          <span>{navLabel(tab.label)}</span>
         </button>
       ))}
     </nav>
@@ -321,7 +334,6 @@ export default function TopMenu() {
           <>
             <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>{tabBar}</div>
             <div className="sh-topbar-actions">
-              {masterPlayerToggle}
               {diceButton}
               {settingsButton}
             </div>
@@ -347,7 +359,7 @@ export default function TopMenu() {
           eyebrow={t('Navigate')}
           title={t('Where to?')}
         >
-          <div className="sh-stack">
+          <div className="sh-nav-grid">
             {visibleTabs.map(tab => (
               <Button
                 key={tab.id}
@@ -356,7 +368,7 @@ export default function TopMenu() {
                 icon={tab.icon}
                 onClick={() => gotoTab(tab.id)}
               >
-                {t(tab.label)}
+                {navLabel(tab.label)}
               </Button>
             ))}
           </div>
